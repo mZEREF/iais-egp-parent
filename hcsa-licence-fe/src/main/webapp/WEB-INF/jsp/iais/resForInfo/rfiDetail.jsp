@@ -46,8 +46,8 @@
                                         <iais:row>
                                             <iais:field value="Due Date "/>
                                             <iais:value width="18">
-                                                <span class="control-label"><fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}"
-                                                                      pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></span>
+                                                <label class="control-label"><fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}"
+                                                                      pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></label>
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
@@ -76,10 +76,10 @@
                                                     <label>
                                                         <textarea maxlength="1000" name="userReply${infoReply.id}"
                                                                   rows="8" style=" font-weight:normal;"
-                                                                  cols="70">${infoReply.userReply}</textarea><span
-                                                            id="error_userReply${infoReply.id}" name="iaisErrorMsg"
-                                                            class="error-msg"></span>
+                                                                  cols="130">${infoReply.userReply}</textarea>
                                                     </label>
+                                                    <span id="error_userReply${infoReply.id}" name="iaisErrorMsg"
+                                                            class="error-msg"></span>
                                                 </iais:value>
                                             </iais:row>
                                         </c:forEach>

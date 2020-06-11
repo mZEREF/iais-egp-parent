@@ -175,15 +175,14 @@ public class ResponseForInformationDelegator {
     public Map<String, String> validate(HttpServletRequest httpServletRequest ,LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) httpServletRequest.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        if(IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto())){
+        if(!IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto())){
             for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
                 CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
                 if(!(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename()))){
                     errMap.put("UploadFile"+doc.getId(),"The file cannot be empty.");
                 }
-                LicPremisesReqForInfoDto licPreReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(httpServletRequest ,"licPreReqForInfoDto");
-                if(licPreReqForInfoDto.isNeedDocument()){
-                    if(file==null){
+                if(licPremisesReqForInfoDto.isNeedDocument()){
+                    if(doc.getDocSize()==null){
                         errMap.put("UploadFile"+doc.getId(),"The file cannot be empty.");
                     }else{
                         Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file);
@@ -202,11 +201,11 @@ public class ResponseForInformationDelegator {
 
             }
         }
-        if(IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
+        if(!IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
             for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
                 String userReply=mulReq.getParameter("userReply"+info.getId());
                 if(StringUtil.isEmpty(userReply)){
-                    errMap.put("userReply"+info.getId(),"ERR009");
+                    errMap.put("userReply"+info.getId(),"ERR0009");
                 }
             }
         }

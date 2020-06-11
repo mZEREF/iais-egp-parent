@@ -537,7 +537,7 @@ public class RequestForInformationDelegator {
         }else {
             date= ParamUtil.getString(request, "Due_date");
             String now=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(new Date());
-            if(date.compareTo(now) <0 ){
+            if(date.compareTo(now) <=0 ){
                 errMap.put("Due_date","Due Date should be a future Date.");
             }
         }
@@ -551,7 +551,7 @@ public class RequestForInformationDelegator {
         if(licenceNo==null){
             errMap.put("licenceNo","ERR0010");
         }else if(licCorrId==null){
-            errMap.put("licenceNo","Please provide the correct licence no.");
+            errMap.put("licenceNo","Please provide the correct licence no");
             }else {
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licCorrId);
             if(!licPremisesReqForInfoDtoList.isEmpty()) {
