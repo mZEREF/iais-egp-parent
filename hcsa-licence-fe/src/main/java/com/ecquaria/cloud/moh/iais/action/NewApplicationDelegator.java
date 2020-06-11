@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -233,6 +232,7 @@ public class NewApplicationDelegator {
         bpc.request.getSession().setAttribute("coMap",coMap);
         //request For Information Loading
         ParamUtil.setSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG,null);
+
         requestForChangeOrRenewLoading(bpc);
         //renewLicence(bpc);
         requestForInformationLoading(bpc,appNo);
@@ -4825,12 +4825,14 @@ public class NewApplicationDelegator {
 
     private void loadingSpecifiedInfo(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
-        //todo:existing base service
         List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licence");
         List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "specifiedServiceChecked");
         List<String> baseSvcIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseServiceChecked");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
         if(!IaisCommonUtils.isEmpty(licenceIds) && !IaisCommonUtils.isEmpty(specifiedServiceIds) && appSubmissionDto == null){
+            //todo: now 1:1
+            AppSvcRelatedInfoDto svcRelaDto = new AppSvcRelatedInfoDto();
+
             appSubmissionDto = appSubmissionService.getExistBaseSvcInfo(licenceIds);
             if(appSubmissionDto != null){
                 //deal with premises page load
@@ -4842,18 +4844,18 @@ public class NewApplicationDelegator {
                 }
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
                 for(String specifiedServiceId:specifiedServiceIds){
-                    HcsaServiceDto baseService = HcsaServiceCacheHelper.getServiceById(specifiedServiceId);
-                    AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+                    HcsaServiceDto spcService = HcsaServiceCacheHelper.getServiceById(specifiedServiceId);
+                    AppSvcRelatedInfoDto appSvcRelatedInfoDto =  appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
                     appSvcRelatedInfoDto.setServiceId(specifiedServiceId);
-                    appSvcRelatedInfoDto.setServiceName(baseService.getSvcName());
-                    appSvcRelatedInfoDto.setServiceCode(baseService.getSvcCode());
-                    appSvcRelatedInfoDto.setServiceType(baseService.getSvcType());
+                    appSvcRelatedInfoDto.setServiceName(spcService.getSvcName());
+                    appSvcRelatedInfoDto.setServiceCode(spcService.getSvcCode());
+                    appSvcRelatedInfoDto.setServiceType(spcService.getSvcType());
+                    HcsaServiceDto baseService = HcsaServiceCacheHelper.getServiceByServiceName(appSvcRelatedInfoDto.getBaseServiceName());
+                    appSvcRelatedInfoDto.setBaseServiceId(baseService.getId());
                     appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                 }
                 appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-                //appSubmissionDto.setOnlySpecifiedSvc(true);
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-                //appSubmissionDto.setExistBaseServiceList(baseSvcIds);
             }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }

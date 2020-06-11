@@ -36,61 +36,7 @@
             <div class="tab-content  ">
               <div class="tab-pane active" id="premisesTab" role="tabpanel">
                   <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-                <%--<c:if test="${AppSubmissionDto.needEditController}">--%>
-                  <%--<c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">--%>
-                    <%--<c:if test="${'APPPN01' == clickEditPage}">--%>
-                      <%--<c:set var="isClickEdit" value="true"/>--%>
-                    <%--</c:if>--%>
-                  <%--</c:forEach>--%>
-
-                  <%--<c:choose>--%>
-                    <%--<c:when test="${'true' != isClickEdit}">--%>
-                      <%--<input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>--%>
-                    <%--</c:when>--%>
-                    <%--<c:otherwise>--%>
-                      <%--<input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>--%>
-                    <%--</c:otherwise>--%>
-                  <%--</c:choose>--%>
-                  <%--<c:if test="${'true' != isClickEdit}">--%>
-                    <%--<c:set var="showPreview" value="true"/>--%>
-                    <%--<c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.premisesEdit}"/>--%>
-                    <%--<div class="premises-summary-preview <c:if test="${'true' != showPreview}">hidden</c:if>">--%>
-                      <%--<c:choose>--%>
-                        <%--<c:when test="${'true' == canEdit}">--%>
-                          <%--<p class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a></p>--%>
-                        <%--</c:when>--%>
-                        <%--<c:otherwise>--%>
-
-                        <%--</c:otherwise>--%>
-                      <%--</c:choose>--%>
-                      <%--<c:forEach var="appGrpPremDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="stat">--%>
-                        <%--<h3 class="without-header-line">Premises ${stat.index+1}</h3>--%>
-                        <%--<p class="premise-address-gp">--%>
-                          <%--<span class="premise-type">--%>
-                            <%--<strong>--%>
-                              <%--<c:if test="${'ONSITE' == appGrpPremDto.premisesType}">--%>
-                                <%--<c:out value="On-site: "/>--%>
-                              <%--</c:if>--%>
-                              <%--<c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">--%>
-                                <%--<c:out value="Conveyance: "/>--%>
-                              <%--</c:if>--%>
-                              <%--<c:if test="${'OFFSIET' == appGrpPremDto.premisesType}">--%>
-                                <%--<c:out value="Off-site: "/>--%>
-                              <%--</c:if>--%>
-                            <%--</strong>--%>
-                          <%--</span>--%>
-                          <%--<span class="premise-address">--%>
-                            <%--<c:out value="${appGrpPremDto.address}"/>--%>
-                          <%--</span>--%>
-                        <%--</p>--%>
-                        <%--<c:if test="${'CONVEYANCE' == appGrpPremDto.premisesType}">--%>
-                          <%--<p class="vehicle-txt hidden"><strong>Vehicle No:</strong> <span class="vehicle-info">${appGrpPremDto.conveyanceVehicleNo}</span></p>--%>
-                        <%--</c:if>--%>
-                      <%--</c:forEach>--%>
-                    <%--</div>--%>
-                  <%--</c:if>--%>
-                <%--</c:if>--%>
-                <div class="premises-content <%--<c:if test="${'true' == showPreview}">hidden</c:if>--%>" >
+                <div class="premises-content" >
                   <div class="row ">
                     <div class="col-xs-12">
                       <div class="premises-txt">
@@ -107,13 +53,20 @@
                       </div>
                     </c:if>
                   </c:if>
+                  <c:set var="readOnly" value="false"/>
+                  <c:forEach var="appSvcDto" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
+                    <c:if test="${!empty appSvcDto.relLicenceNo || !empty appSvcDto.alignLicenceNo }">
+                      <c:set var="readOnly" value="true"/>
+                    </c:if>
+                  </c:forEach>
+                  readOnly${readOnly}
                   <!--prem content -->
                   <%@include file="../common/premisesContent.jsp"%>
                 </div>
                 <div class="row">
                   <div class="col-xs-12" id="addPremBody" hidden>
                     <%--<c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
-                    <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType }">
+                    <c:if test="${requestInformationConfig == null && 'APTY005' != AppSubmissionDto.appType && !multiBase && 'APTY004' != AppSubmissionDto.appType && !readOnly}">
                       <button id="addPremBtn" class="btn btn-primary" type="button">Add Premises</button>
                     </c:if>
                   </div>
@@ -225,8 +178,11 @@
                 submit('premises','saveDraft',$('#selectDraftNo').val());
         });
 <%--<c:if test="${AppSubmissionDto.needEditController || AppSubmissionDto.onlySpecifiedSvc}">--%>
+        <c:if test="${!AppSubmissionDto.needEditController && readOnly}">
+        readonlyPartPage($('div.premises-content'));
+        </c:if>
 
-        <c:if test="${AppSubmissionDto.needEditController }">
+        <c:if test="${AppSubmissionDto.needEditController}">
         readonlyPartPage($('div.premises-content'));
         </c:if>
 
