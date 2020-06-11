@@ -260,22 +260,22 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         if(appEditSelectDto != null){
             if(appEditSelectDto.isPremisesEdit()){
-                editSelect = editSelect + "<li style=\"padding-left: 0px;\">Premises</li>";
+                editSelect = editSelect + "Premises";
             }
             if(appEditSelectDto.isDocEdit()){
-                editSelect = editSelect + "<li style=\"padding-left: 0px;\">Primary Documents</li>";
+                editSelect = editSelect +(StringUtil.isEmpty(editSelect)?"":",") +"Primary Documents";
             }
             if(appEditSelectDto.isServiceEdit()){
-                editSelect = editSelect + "<li style=\"padding-left: 0px;\">Service Related Information - " + applicationViewDto.getServiceType() + "</li>";
+                editSelect = editSelect + "Service Related Information - " + applicationViewDto.getServiceType();
             }
             if(appEditSelectDto.isPoEdit()){
-                editSelect = editSelect + "<li style=\"padding-left: 0px;\">PO</li>";
+                editSelect = editSelect + "PO";
             }
             if(appEditSelectDto.isDpoEdit()){
-                editSelect = editSelect + "<li style=\"padding-left: 0px;\">DPO</li>";
+                editSelect = editSelect + "DPO";
             }
             if(appEditSelectDto.isMedAlertEdit()){
-                editSelect = editSelect + "<li style=\"padding-left: 0px;\">medAlert</li>";
+                editSelect = editSelect + "medAlert";
             }
         }
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
