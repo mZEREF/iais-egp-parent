@@ -125,6 +125,8 @@ public class OnlineApptAjaxController {
                         appointmentUserDto.setWorkHours(peopleHours);
                         appointmentUserDtos.add(appointmentUserDto);
                     }
+                    //If one person is doing multiple services at the same time, The superposition of time
+                    appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
                     appointmentDto.setUsers(appointmentUserDtos);
                     apptInspectionDateDto.setAppointmentDto(appointmentDto);
                     FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
@@ -190,12 +192,53 @@ public class OnlineApptAjaxController {
                     appointmentUserDto.setWorkHours(peopleHours);
                     appointmentUserDtos.add(appointmentUserDto);
                 }
+                //If one person is doing multiple services at the same time, The superposition of time
+                appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
                 specificApptDto.setUsers(appointmentUserDtos);
                 apptInspectionDateDto.setSpecificApptDto(specificApptDto);
                 ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
             }
         }
         return map;
+    }
+
+    private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
+        List<AppointmentUserDto> appointmentUserDtoList = null;
+        if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
+            for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
+                if(IaisCommonUtils.isEmpty(appointmentUserDtoList)){
+                    appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
+                    appointmentUserDtoList.add(appointmentUserDto);
+                } else {
+                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
+                }
+            }
+        }
+        return appointmentUserDtoList;
+    }
+
+    private List<AppointmentUserDto> filterRepetitiveUser(AppointmentUserDto appointmentUserDto, List<AppointmentUserDto> appointmentUserDtoList) {
+        List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
+        for(AppointmentUserDto appointmentUserDto1 : appointmentUserDtoList){
+            String loginUserId = appointmentUserDto.getLoginUserId();
+            String curLoginUserId = appointmentUserDto1.getLoginUserId();
+            if (loginUserId.equals(curLoginUserId)) {
+                int hours = appointmentUserDto.getWorkHours();
+                int curHours = appointmentUserDto1.getWorkHours();
+                int allHours = hours + curHours;
+                appointmentUserDto1.setWorkHours(allHours);
+            } else {
+                appointmentUserDtos.add(appointmentUserDto);
+            }
+        }
+        if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
+            for(AppointmentUserDto auDto : appointmentUserDtos){
+                if(auDto != null){
+                    appointmentUserDtoList.add(auDto);
+                }
+            }
+        }
+        return appointmentUserDtoList;
     }
 
     private int getServiceManHours(String refNo, ApptAppInfoShowDto apptAppInfoShowDto) {
@@ -228,6 +271,7 @@ public class OnlineApptAjaxController {
             apptInspectionDateDto.setInspectionDate(inspectionDates);
             apptInspectionDateDto.setInspectionDateMap(inspectionDateMap);
         } else {
+            apptInspectionDateDto.setInspectionDate(null);
             apptInspectionDateDto.setSysInspDateFlag(AppConsts.FALSE);
         }
         return apptInspectionDateDto;
