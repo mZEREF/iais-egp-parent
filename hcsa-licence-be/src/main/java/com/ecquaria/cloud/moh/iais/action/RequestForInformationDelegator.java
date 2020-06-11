@@ -123,6 +123,8 @@ public class RequestForInformationDelegator {
         List<LicPremisesDto> licPremisesDtos = (List<LicPremisesDto>) ParamUtil.getSessionAttr(request,"licPremisesDtos");
         List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoLists=IaisCommonUtils.genNewArrayList();
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String searchEmail=ParamUtil.getString(request,"searchEmail");
+        ParamUtil.setSessionAttr(request,"searchEmail",searchEmail);
         for(LicPremisesDto licPremisesDto:licPremisesDtos){
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licPremisesDto.getId());
             licPremisesReqForInfoDtoLists.addAll(licPremisesReqForInfoDtoList);
@@ -135,7 +137,8 @@ public class RequestForInformationDelegator {
         }
 
         ParamUtil.setRequestAttr(request, "isValid", "Y");
-
+        List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoListSearch=IaisCommonUtils.genNewArrayList();
+        licPremisesReqForInfoDtoListSearch.addAll(licPremisesReqForInfoDtoLists);
         if(!licPremisesReqForInfoDtoLists.isEmpty()) {
             for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoLists
             ) {
@@ -144,10 +147,15 @@ public class RequestForInformationDelegator {
                 }catch (Exception e){
                     licPreRfi.setEmail("-");
                 }
+                if(!StringUtil.isEmpty(searchEmail)){
+                    if(!licPreRfi.getEmail().contains(searchEmail)){
+                        licPremisesReqForInfoDtoListSearch.remove(licPreRfi);
+                    }
+                }
             }
         }
 
-        ParamUtil.setRequestAttr(request,"licPreReqForInfoDtoList", licPremisesReqForInfoDtoLists);
+        ParamUtil.setRequestAttr(request,"licPreReqForInfoDtoList", licPremisesReqForInfoDtoListSearch);
 
     }
 

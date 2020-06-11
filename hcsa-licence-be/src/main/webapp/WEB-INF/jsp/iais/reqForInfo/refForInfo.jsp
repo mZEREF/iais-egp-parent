@@ -26,9 +26,17 @@
                         <span>Request For Information List</span>
                     </h3>
                     <div class="table-gp">
-                        <iais:action style="text-align:left;">
-                            <button class="btn btn-primary" type="button"  onclick="javascript:doNew()">New</button>
-                        </iais:action>
+                        <iais:row style="text-align:left;">
+                            <label class="col-xs-9 col-md-6">
+                                <button class="btn btn-primary" type="button"  onclick="javascript:doNew()">New</button>
+                            </label>
+                            <label class="col-xs-9 col-md-4">
+                                <input type="text"  style=" font-weight:normal;" name="searchEmail" maxlength="100" value="${searchEmail}" />
+                            </label>
+                            <label class="col-xs-9 col-md-2">
+                                <button class="btn btn-primary" type="button"  onclick="SOP.Crud.cfxSubmit('mainForm', 'search');">Search</button>
+                            </label>
+                        </iais:row>
                         <table class="table">
                             <thead>
                             <tr align="center">
