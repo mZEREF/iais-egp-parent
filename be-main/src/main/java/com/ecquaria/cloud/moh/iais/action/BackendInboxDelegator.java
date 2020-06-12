@@ -89,15 +89,15 @@ public class BackendInboxDelegator {
     @Autowired
     private BroadcastMainService broadcastService;
 
-    private String application_no;
-    private String application_type;
-    private String application_status;
-    private String hci_code;
-    private String hci_address;
-    private String hci_name;
-    private List<String> applicationDtoIds;
-    private SearchParam searchParamGroup;
-    private List<TaskDto> commPools;
+//    private String application_no;
+//    private String application_type;
+//    private String application_status;
+//    private String hci_code;
+//    private String hci_address;
+//    private String hci_name;
+//    private List<String> applicationDtoIds;
+//    private SearchParam searchParamGroup;
+//    private List<TaskDto> commPools;
     public void start(BaseProcessClass bpc){
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
@@ -107,7 +107,8 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the BackendInboxDelegator start ...."));
         String curRole = "";
         curRole = loginContext.getCurRoleId();
-        initSearchParam();
+        SearchParam searchParamGroup = getSearchParam(bpc.request,true);
+        ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
         ParamUtil.setSessionAttr(bpc.request, "curRole",curRole);
         ParamUtil.setSessionAttr(bpc.request, "searchParamAjax",null);
         ParamUtil.setSessionAttr(bpc.request, "taskList",null);
@@ -124,12 +125,7 @@ public class BackendInboxDelegator {
 
     public void searchInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchInit start ...."));
-        application_no = "";
-        application_type = "";
-        application_status = "";
-        hci_code = "";
-        hci_address = "";
-        hci_name = "";
+        ParamUtil.setSessionAttr(bpc.request, "taskList",null);
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
     }
 
@@ -143,16 +139,12 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchPre start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         AuditTrailHelper.auditFunction("BE-inbox", "Backend Inbox");
-        commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
         List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext.getCurRoleId());
+        SearchParam searchParamGroup = getSearchParam(bpc.request,false);
+        ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
 
-        ParamUtil.setRequestAttr(bpc.request,"hci_code",hci_code);
-        ParamUtil.setRequestAttr(bpc.request,"hci_address",hci_address);
-        ParamUtil.setRequestAttr(bpc.request,"hci_name",hci_name);
-        ParamUtil.setRequestAttr(bpc.request,"application_no",application_no);
-        ParamUtil.setRequestAttr(bpc.request, "supTaskSearchParam", searchParamGroup);
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setRequestAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setRequestAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
@@ -162,11 +154,15 @@ public class BackendInboxDelegator {
         }
     }
 
-    private void initSearchParam(){
-        searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
-        searchParamGroup.setPageSize(10);
-        searchParamGroup.setPageNo(1);
-        searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
+    private SearchParam getSearchParam(HttpServletRequest request, boolean neednew){
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "backendinboxSearchParam");
+        if(neednew){
+            searchParamGroup = new SearchParam(InspectionAppGroupQueryDto.class.getName());
+            searchParamGroup.setPageSize(10);
+            searchParamGroup.setPageNo(1);
+            searchParamGroup.setSort("SUBMIT_DT", SearchParam.ASCENDING);
+        }
+        return searchParamGroup;
 
     }
 
@@ -189,17 +185,12 @@ public class BackendInboxDelegator {
      */
     public void doSearch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchDoSearch start ...."));
-        initSearchParam();
+        SearchParam searchParamGroup = getSearchParam(bpc.request,true);
+        ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        application_no = ParamUtil.getString(bpc.request, "application_no");
-        application_type = ParamUtil.getString(bpc.request, "application_type");
-        application_status = ParamUtil.getString(bpc.request, "application_status");
-        hci_code = ParamUtil.getString(bpc.request, "hci_code");
-        hci_address = ParamUtil.getString(bpc.request, "hci_address");
-        hci_name = ParamUtil.getString(bpc.request, "hci_name");
 
         String inspectorValue = loginContext.getLoginId();
-
+        List<TaskDto> commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
         String[] applicationNo_list = inspectionService.getApplicationNoListByPool(commPools);
         if(applicationNo_list == null || applicationNo_list.length == 0){
             applicationNo_list = new String[]{SystemParameterConstants.PARAM_FALSE};
@@ -214,17 +205,18 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void searchPage(BaseProcessClass bpc){
+        SearchParam searchParamGroup = getSearchParam(bpc.request,false);
         CrudHelper.doPaging(searchParamGroup,bpc.request);
     }
 
     public void changeRole(BaseProcessClass bpc){
-        initSearchParam();
+        SearchParam searchParamGroup = getSearchParam(bpc.request,true);
+        ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
         String curRole = ParamUtil.getRequestString(bpc.request, "roleIds");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         loginContext.setCurRoleId(curRole);
         ParamUtil.setSessionAttr(bpc.request,"curRole",curRole);
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
-        commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
     }
 
 
@@ -260,7 +252,6 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void doApprove(BaseProcessClass bpc)  throws FeignException, CloneNotSupportedException {
-        applicationDtoIds = IaisCommonUtils.genNewArrayList();
         String[] taskList =  ParamUtil.getMaskedStrings(bpc.request, "taskId");
         String action =  ParamUtil.getString(bpc.request, "action");
         String successStatus = "";
@@ -316,7 +307,7 @@ public class BackendInboxDelegator {
                 }
             }
             //update commPools
-            commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
+            List<TaskDto> commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
 
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(successStatus)){
                 successInfo = MessageCodeKey.ACK005;
@@ -346,7 +337,7 @@ public class BackendInboxDelegator {
         String newCorrelationId = newAppPremisesCorrelationDto.getId();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
-
+        List<String> applicationDtoIds = IaisCommonUtils.genNewArrayList();
         applicationDtoIds.add(applicationDto.getApplicationNo());
 
         //judge the final status is Approve or Reject.
@@ -518,11 +509,19 @@ public class BackendInboxDelegator {
     public void searchQuery(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("the inspectionSupSearchQuery1 start ...."));
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-
+        List<TaskDto> commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
+        SearchParam searchParamGroup = getSearchParam(bpc.request,false);
         SearchParam searchParamAjax = new SearchParam(InspectionAppInGroupQueryDto.class.getName());
         searchParamAjax.setPageSize(100);
         searchParamAjax.setPageNo(1);
         searchParamAjax.setSort("APPLICATION_NO", SearchParam.ASCENDING);
+
+        String application_no = ParamUtil.getString(bpc.request, "application_no");
+        String application_type = ParamUtil.getString(bpc.request, "application_type");
+        String application_status = ParamUtil.getString(bpc.request, "application_status");
+        String hci_code = ParamUtil.getString(bpc.request, "hci_code");
+        String hci_address = ParamUtil.getString(bpc.request, "hci_address");
+        String hci_name = ParamUtil.getString(bpc.request, "hci_name");
 
         if(commPools != null && !commPools.isEmpty()){
             String inspectorValue = loginContext.getLoginId();
@@ -641,6 +640,7 @@ public class BackendInboxDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appNoUrl",(Serializable) appNoUrl);
         ParamUtil.setSessionAttr(bpc.request, "taskMap",(Serializable) taskMap);
         ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
+        ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
 
     }
 

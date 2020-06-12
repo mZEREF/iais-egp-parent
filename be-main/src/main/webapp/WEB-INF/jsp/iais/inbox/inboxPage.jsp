@@ -48,25 +48,25 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">HCI Code</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="hci_code" value="${hci_code}"/>
+                                <input type="text" name="hci_code" value="${backendinboxSearchParam.filters['hci_code']}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">HCI Name</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="hci_name" value="${hci_name}"/>
+                                <input type="text" name="hci_name" value="${backendinboxSearchParam.filters['hci_name']}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">HCI Address</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="hci_address" value="${hci_address}"/>
+                                <input type="text" name="hci_address" value="${backendinboxSearchParam.filters['hci_address']}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Application No.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="application_no" value="${application_no}"/>
+                                <input type="text" name="application_no" value="${backendinboxSearchParam.filters['application_no']}"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -74,7 +74,7 @@
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <iais:select name="application_type" options="appTypeOption" cssClass="application_type"
                                              firstOption="Please Select"
-                                             value="${supTaskSearchParam.filters['application_type']}"></iais:select>
+                                             value="${backendinboxSearchParam.filters['application_type']}"></iais:select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -83,7 +83,7 @@
                                 <iais:select name="application_status" options="appStatusOption"
                                              cssClass="application_status"
                                              firstOption="Please Select"
-                                             value="${supTaskSearchParam.filters['application_status']}"></iais:select>
+                                             value="${backendinboxSearchParam.filters['application_status']}"></iais:select>
                             </div>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                 </div>
             </div>
 
-            <iais:pagination param="supTaskSearchParam" result="supTaskSearchResult"/>
+            <iais:pagination param="backendinboxSearchParam" result="supTaskSearchResult"/>
 
             <div class="col-xs-12" style="margin-top: 2.5em;">
                 <div class="components">
@@ -132,12 +132,12 @@
                                             <c:otherwise>
                                                 <c:forEach var="pool" items="${supTaskSearchResult.rows}"
                                                            varStatus="status">
-                                                    <tr style="display: table-row;" id="advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}">
-                                                        <td><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
+                                                    <tr style="display: table-row;" id="advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}">
+                                                        <td><c:out value="${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"/></td>
                                                         <td><p><c:out value="${pool.applicationGroupNo}"/><a class="accordion-toggle  collapsed"
                                                                    data-toggle="collapse" aria-expanded="false"
-                                                                   data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
-                                                                   onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')"></a></p></td>
+                                                                   data-target="#advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"
+                                                                   onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}')"></a></p></td>
                                                         <td><c:out value="${pool.applicationType}"/></td>
                                                         <td><c:if test="${pool.count > 1}"><c:out value="Multiple"/></c:if><c:if test="${pool.count == 1}"><c:out value="Single"/></c:if></td>
                                                         <td><c:out value="${pool.submitDate}"/></td>
