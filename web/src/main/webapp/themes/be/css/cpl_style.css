@@ -4235,64 +4235,7 @@ iframe .section table .control-grid > tbody > tr:nth-child(odd), iframe .section
 .license-info-gp .license-info-row .license-edit p {
   text-align: right;
 }
-.withdraw-addmore {
-background-color: #F8F8F8;
-border-radius: 14px;
-padding: 20px;
-margin-bottom: 10px;
-border:1px solid #d1d1d1;
-}
-.withdraw-content-box {
-background-color: #e7f6fd;
-border-radius: 14px;
-padding: 20px;
-margin-bottom: 10px;
-}
-.withdraw-info-gp {
-  margin-top: 10px; 
-}
-.withdraw-info-gp .withdraw-info-row .withdraw-info {
-  width: calc(95% - 80px);
-  display: inline-block;
-  vertical-align: top;
 
-}
-.withdraw-info-gp .withdraw-info-row .withdraw-info p {
-  position: relative;
-  padding-left: 50px;
-  font-size: 18px;
-}
-.withdraw-info-gp .withdraw-info-row .withdraw-info p:before {
-  content: "";
-  font:normal normal normal 14px/1 FontAwesome;
-  color: #a2d9e7;
-  font-size: 30px;
-  width: 6px;
-  height: 6px;
- /* background-color: #333333;*/
-  border-radius: 3px;
-  position: absolute;
-  top: 0px;
-  left: 8px;
-}
-.withdraw-info-gp .withdraw-info-row .withdraw-delete {
-  margin-left: 20px;
-  width: 80px;
-  display: inline-block;
-  text-align: right;
-}
-.withdraw-info-gp .withdraw-info-row .withdraw-delete p {
-  text-align: right;
-}
-
-.fa.fa-trash-o {
-    font-size: 1.6rem;
-    margin-right: 5px;
-}
-.fa.fa-plus-circle {
-    font-size: 2.6rem;
-    margin-right: 5px;
-}
 .prelogin {
   padding-top: 80px;
   padding-bottom: 45px;
