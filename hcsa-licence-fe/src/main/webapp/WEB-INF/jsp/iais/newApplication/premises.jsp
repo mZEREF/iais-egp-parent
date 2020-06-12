@@ -59,7 +59,6 @@
                       <c:set var="readOnly" value="true"/>
                     </c:if>
                   </c:forEach>
-                  readOnly${readOnly}
                   <!--prem content -->
                   <%@include file="../common/premisesContent.jsp"%>
                 </div>
