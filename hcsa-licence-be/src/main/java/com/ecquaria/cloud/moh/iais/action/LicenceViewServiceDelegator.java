@@ -347,7 +347,7 @@ public class LicenceViewServiceDelegator {
         ParamUtil.setRequestAttr(bpc.request, "successMsg", successMsg);
         ParamUtil.setRequestAttr(bpc.request, "isSuccess", isSuccess);
         ParamUtil.setRequestAttr(bpc.request, "errorMsg", errorMsg);
-        ParamUtil.setRequestAttr(bpc.request, "parentMsg", parentMsg);
+        ParamUtil.setSessionAttr(bpc.request, "parentMsg", parentMsg);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect end ..."));
     }

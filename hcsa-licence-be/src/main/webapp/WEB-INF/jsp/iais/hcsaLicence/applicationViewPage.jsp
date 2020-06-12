@@ -474,6 +474,22 @@
         }
     }
 
+    //request for information validate
+    function rfiValidate(){
+        //error_nextStage
+        var selectValue = $("[name='nextStage']").val();
+        if (selectValue == "PROCRFI") {
+            var rfiSelectValue = $('#rfiSelectValue').val();
+            if(rfiSelectValue == null || rfiSelectValue == ''){
+                $('#error_nextStage').html("Please select at least 1 section to unlock");
+                return false;
+            }else{
+                $('#error_nextStage').html("");
+                return true;
+            }
+        }
+    }
+
     //appeal
         $("[name='appealRecommendationValues']").change(function selectChange() {
             if (${isAppealType}) {
@@ -525,13 +541,17 @@
 
 
     $("#submitButton").click(function () {
-        showWaiting();
         var selectDetail = $('#selectDetail').html();
         if(selectDetail != null && selectDetail != ''){
             $('#rfiSelectValue').val(selectDetail);
         }
-        document.getElementById("mainForm").submit();
-        $("#submitButton").attr("disabled", true);
+        if(rfiValidate()){
+            showWaiting();
+            document.getElementById("mainForm").submit();
+            $("#submitButton").attr("disabled", true);
+        }else{
+            return;
+        }
     });
 
     function check(){
