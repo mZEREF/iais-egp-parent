@@ -1584,6 +1584,22 @@ public class HcsaApplicationDelegator {
         if(!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)){
             processDecision = nextStageReplys;
         }
+
+        String routeBackReview = (String)ParamUtil.getSessionAttr(bpc.request,"routeBackReview");
+        if("canRouteBackReview".equals(routeBackReview)){
+            AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
+            appPremisesRoutingHistoryExtDto.setComponentName(ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW);
+            String[] routeBackReviews =  ParamUtil.getStrings(bpc.request,"routeBackReview");
+            if(routeBackReviews!=null){
+                appPremisesRoutingHistoryExtDto.setComponentValue("Y");
+            }else{
+                appPremisesRoutingHistoryExtDto.setComponentValue("N");
+                //route back and route task processing
+                processDecision = ApplicationConsts.PROCESSING_DECISION_ROUTE_BACK_AND_ROUTE_TASK;
+            }
+            broadcastApplicationDto.setNewTaskHistoryExt(appPremisesRoutingHistoryExtDto);
+        }
+
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
                 applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,null,processDecision,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
@@ -1631,19 +1647,6 @@ public class HcsaApplicationDelegator {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,subStageId,
                 taskDto.getWkGrpId(),null,null,null,roleId);
         broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
-
-        String routeBackReview = (String)ParamUtil.getSessionAttr(bpc.request,"routeBackReview");
-        if("canRouteBackReview".equals(routeBackReview)){
-            AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
-            appPremisesRoutingHistoryExtDto.setComponentName(ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW);
-            String[] routeBackReviews =  ParamUtil.getStrings(bpc.request,"routeBackReview");
-            if(routeBackReviews!=null){
-                appPremisesRoutingHistoryExtDto.setComponentValue("Y");
-            }else{
-                appPremisesRoutingHistoryExtDto.setComponentValue("N");
-            }
-            broadcastApplicationDto.setNewTaskHistoryExt(appPremisesRoutingHistoryExtDto);
-        }
 
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
