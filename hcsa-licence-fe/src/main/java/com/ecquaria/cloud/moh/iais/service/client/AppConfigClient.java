@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ChecklistQuestionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.SpecicalPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
@@ -187,4 +188,7 @@ public interface AppConfigClient {
 
     @GetMapping(value = "/hcsa-config/hcsa-svc-perosnnel-by-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HcsaSvcPersonnelDto> getHcsaSvcPersonnelDtoByServiceId(@RequestParam("serviceId") String serviceId);
+
+    @GetMapping (value = "/iais-regulation/regulation/{id}")
+    FeignResponseEntity<HcsaChklSvcRegulationDto> getRegulationById(@PathVariable(value = "id") String id);
 }
