@@ -154,7 +154,8 @@ public class ExcelReader {
     private Sheet parseFile(final File file) throws Exception {
         Workbook workBook = null;
         try (FileInputStream in = new FileInputStream(file)){
-            String suffix = file.getName().substring(file.getName().indexOf(".") + 1);
+            char indexChar = ".".charAt(0);
+            String suffix = file.getName().substring(file.getName().indexOf(indexChar) + 1);
             workBook = suffix.equals(EXCEL_TYPE_XSSF) ? new XSSFWorkbook(in) : new HSSFWorkbook(in);
             return workBook.getSheetAt(sheetAt);
         } catch (Exception e) {
