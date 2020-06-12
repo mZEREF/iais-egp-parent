@@ -299,7 +299,7 @@
                         }
                         html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>N/A</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>' + res[i].expiryDate + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res[i].status + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res[i].hciCode + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + address + '</p></td>' +
