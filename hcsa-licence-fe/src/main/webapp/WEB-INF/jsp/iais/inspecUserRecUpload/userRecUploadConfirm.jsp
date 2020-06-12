@@ -82,7 +82,7 @@
                               <a href="${pageContext.request.contextPath}/file-repo-popup?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${recFile.id}"/>&fileRepoName=${recFile.fileName}" title="Download" class="downloadFile">
                                   ${recFile.fileName}
                               </a>
-                              &nbsp;<button type="button" class="btn btn-danger btn-sm" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')"><i class="fa fa-times"></i></button>
+                              &nbsp;<button type="button" class="btn btn-danger btn-sm" onclick="javascript:doUserRecUploadConfirmDel('<iais:mask name="fileId" value="${recFile.id}"/>')"><em class="fa fa-times"></em></button>
                               <br><br>
                             </c:forEach>
                           </c:if>
