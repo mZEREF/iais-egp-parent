@@ -242,7 +242,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             if(!StringUtil.isEmpty(selfRfiDecision)){
                 applicationDto.setSelfAssMtFlag(2);
             }
-            applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+            applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
             if(!StringUtil.isEmpty(selfRfiDecision)){
                 applicationDto1.setSelfAssMtFlag(2);
             }
@@ -251,7 +251,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             applicationViewDto.setApplicationDto(applicationDto1);
         } else {
             applicationDto.setSelfAssMtFlag(2);
-            applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
+            applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
             applicationDto1.setSelfAssMtFlag(2);
             applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             applicationService.updateFEApplicaiton(applicationDto1);
