@@ -427,7 +427,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
         String oldPremiseHci = "";
         //new rfi
-        if((ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && rfi) && (oldAppSubmissionDto != null)){
+        boolean appTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
+        if((appTypeFlag && rfi) && (oldAppSubmissionDto != null)){
             AppGrpPremisesDto oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0);
             String premiseKey = NewApplicationHelper.getPremKey(oldAppGrpPremisesDto);
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(oldAppGrpPremisesDto.getPremisesType())){
@@ -705,12 +706,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         boolean clickEdit = appGrpPremisesDto.isClickEdit();
                         boolean hciFlag =  StringUtil.isEmpty(hciNameErr) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:"+hciFlag));
-                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag && !rfi){
+                        boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
+                        if((newTypeFlag && hciFlag) && !rfi){
                             //new
                             if(!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)){
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
                             }
-                        }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag && rfi && clickEdit){
+                        }else if(((newTypeFlag && hciFlag) && rfi) && clickEdit){
                             //new rfi
                             if(!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHci.equals(currentHci) && premisesHciList.contains(currentHci)){
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
