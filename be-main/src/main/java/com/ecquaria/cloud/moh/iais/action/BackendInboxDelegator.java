@@ -89,7 +89,7 @@ public class BackendInboxDelegator {
     @Autowired
     private BroadcastMainService broadcastService;
 
-//    private String application_no;
+    //    private String application_no;
 //    private String application_type;
 //    private String application_status;
 //    private String hci_code;

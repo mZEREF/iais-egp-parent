@@ -37,7 +37,7 @@
                 <div class="row">
                     <div class="col-xs-10 col-md-12">
                         <div class="components">
-                            <a class="btn btn-secondary" name="filterBtn" data-toggle="collapse"
+                            <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn"
                                data-target="#searchCondition">Filter</a>
                         </div>
                     </div>
@@ -48,25 +48,25 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">HCI Code</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="hci_code" value="${backendinboxSearchParam.filters['hci_code']}"/>
+                                <input type="text" name="hci_code" value="${hci_code}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">HCI Name</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="hci_name" value="${backendinboxSearchParam.filters['hci_name']}"/>
+                                <input type="text" name="hci_name" value="${hci_name}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">HCI Address</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="hci_address" value="${backendinboxSearchParam.filters['hci_address']}"/>
+                                <input type="text" name="hci_address" value="${hci_address}"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Application No.</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input type="text" name="application_no" value="${backendinboxSearchParam.filters['application_no']}"/>
+                                <input type="text" name="application_no" value="${application_no}"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -74,7 +74,7 @@
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <iais:select name="application_type" options="appTypeOption" cssClass="application_type"
                                              firstOption="Please Select"
-                                             value="${backendinboxSearchParam.filters['application_type']}"></iais:select>
+                                             value="${supTaskSearchParam.filters['application_type']}"></iais:select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -83,7 +83,7 @@
                                 <iais:select name="application_status" options="appStatusOption"
                                              cssClass="application_status"
                                              firstOption="Please Select"
-                                             value="${backendinboxSearchParam.filters['application_status']}"></iais:select>
+                                             value="${supTaskSearchParam.filters['application_status']}"></iais:select>
                             </div>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                 </div>
             </div>
 
-            <iais:pagination param="backendinboxSearchParam" result="supTaskSearchResult"/>
+            <iais:pagination param="supTaskSearchParam" result="supTaskSearchResult"/>
 
             <div class="col-xs-12" style="margin-top: 2.5em;">
                 <div class="components">
@@ -109,45 +109,45 @@
                     </h3>
 
 
-                                <div class="table-gp">
-                                    <table class="table application-group" style="border-collapse:collapse;">
-                                        <thead>
-                                        <tr>
-                                            <th>S/N</th>
-                                            <th>Application No.</th>
-                                            <th>Application Type</th>
-                                            <th>Submission Type</th>
-                                            <th>Application Date</th>
-                                            <th>Payment Status</th>
+                    <div class="table-gp">
+                        <table class="table application-group" style="border-collapse:collapse;">
+                            <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Application No.</th>
+                                <th>Application Type</th>
+                                <th>Submission Type</th>
+                                <th>Application Date</th>
+                                <th>Payment Status</th>
+                            </tr>
+                            </thead>
+                            <c:choose>
+                                <c:when test="${empty supTaskSearchResult.rows}">
+                                    <tr>
+                                        <td colspan="6">
+                                            <iais:message key="ACK018" escape="true"></iais:message>
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="pool" items="${supTaskSearchResult.rows}"
+                                               varStatus="status">
+                                        <tr style="display: table-row;" id="advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}">
+                                            <td><c:out value="${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"/></td>
+                                            <td><p><c:out value="${pool.applicationGroupNo}"/><a class="accordion-toggle  collapsed"
+                                                                                                 data-toggle="collapse" aria-expanded="false"
+                                                                                                 data-target="#advfilter${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}"
+                                                                                                 onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (supTaskSearchParam.pageNo - 1) * supTaskSearchParam.pageSize}')"></a></p></td>
+                                            <td><c:out value="${pool.applicationType}"/></td>
+                                            <td><c:if test="${pool.count > 1}"><c:out value="Multiple"/></c:if><c:if test="${pool.count == 1}"><c:out value="Single"/></c:if></td>
+                                            <td><c:out value="${pool.submitDate}"/></td>
+                                            <td><c:out value="${pool.paymentstatus}"/></td>
                                         </tr>
-                                        </thead>
-                                        <c:choose>
-                                            <c:when test="${empty supTaskSearchResult.rows}">
-                                                <tr>
-                                                    <td colspan="6">
-                                                        <iais:message key="ACK018" escape="true"></iais:message>
-                                                    </td>
-                                                </tr>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <c:forEach var="pool" items="${supTaskSearchResult.rows}"
-                                                           varStatus="status">
-                                                    <tr style="display: table-row;" id="advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}">
-                                                        <td><c:out value="${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"/></td>
-                                                        <td><p><c:out value="${pool.applicationGroupNo}"/><a class="accordion-toggle  collapsed"
-                                                                   data-toggle="collapse" aria-expanded="false"
-                                                                   data-target="#advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"
-                                                                   onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}')"></a></p></td>
-                                                        <td><c:out value="${pool.applicationType}"/></td>
-                                                        <td><c:if test="${pool.count > 1}"><c:out value="Multiple"/></c:if><c:if test="${pool.count == 1}"><c:out value="Single"/></c:if></td>
-                                                        <td><c:out value="${pool.submitDate}"/></td>
-                                                        <td><c:out value="${pool.paymentstatus}"/></td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </table>
-                                </div>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
+                        </table>
+                    </div>
                 </div>
             </div>
             <c:choose>
@@ -299,7 +299,7 @@
                         }
                         html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>' + res[i].expiryDate + '</p></td>' +
+                            '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>N/A</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res[i].status + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res[i].hciCode + '</p></td>' +
                             '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + address + '</p></td>' +
