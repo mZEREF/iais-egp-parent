@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,6 +64,8 @@ public class SelfAssessmentSchematicsDelegator {
             .resultAttr("appResult")
             .sortField("CREATED_DT")
             .sortType("DESC").build();
+
+
     public void start(BaseProcessClass bpc){
         log.info("****   start ******");
 
@@ -87,11 +91,8 @@ public class SelfAssessmentSchematicsDelegator {
         ParamUtil.setRequestAttr(bpc.request, BASE_SERVICE_ATTR, allbaseService);
         ParamUtil.setRequestAttr(bpc.request, SPECIFIED_SERVICE_ATTR, allspecifiedService);
 
-
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-
-
 
         SearchParam appParam = SearchResultHelper.getSearchParam(bpc.request,appParameter,true);
         appParam.addFilter("licenseeId", licenseeId,true);
@@ -164,7 +165,14 @@ public class SelfAssessmentSchematicsDelegator {
 
     }
     public void renewLic(BaseProcessClass bpc){
-
+        String[] renewLics = ParamUtil.getStrings(bpc.request,"renew1LicId");
+        if(renewLics != null){
+            List<String> licIdValue = IaisCommonUtils.genNewArrayList();
+            for(String item:renewLics){
+                licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
+            }
+        ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
+        }
     }
     public void renewLicUpdate(BaseProcessClass bpc){
 

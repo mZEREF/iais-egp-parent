@@ -162,26 +162,22 @@
                                                     </div>
                                                     <div class="withdrawApplication hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include
-                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/withdrawApplication.jsp" %>
+                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/withdrawApplication.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="resumeDraftApplication hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include
-                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/resumeDraftApplication.jsp" %>
+                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/resumeDraftApplication.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="submitDataMoh hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include
-                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/submitDataMoh.jsp" %>
+                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/submitDataMoh.jsp" %>
                                                         </div>
                                                     </div>
                                                     <div class="updateAdminPersonnel hidden">
                                                         <div class="form-check-gp">
-                                                            <%@include
-                                                                    file="/WEB-INF/jsp/iais/selfassessment/schematics/updateAdminPersonnel.jsp" %>
+                                                            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/updateAdminPersonnel.jsp" %>
                                                         </div>
                                                     </div>
                                                 </div>
