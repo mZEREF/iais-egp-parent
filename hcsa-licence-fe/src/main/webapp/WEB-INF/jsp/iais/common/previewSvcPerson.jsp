@@ -2,10 +2,12 @@
   <label style="font-size: 2.2rem">SERVICE PERSONNEL</label>
   <div class="amend-preview-info">
     <c:forEach items="${currentPreviewSvcInfo.appSvcPersonnelDtoList}" var="appSvcPersonnelDtoList" varStatus="status">
-      <p>Service Personnel ${status.index+1}:</p>
       <div class="form-check-gp">
         <div class="row">
           <div class="col-xs-12">
+            <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
+              <p><strong>Service Personnel ${status.index+1}:</strong></p>
+            </div>
             <table class="col-xs-8">
               <c:choose>
                 <c:when test="${currentPreviewSvcInfo.serviceCode=='BLB'}">

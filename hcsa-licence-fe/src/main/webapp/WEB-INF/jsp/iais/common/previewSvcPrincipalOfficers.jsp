@@ -9,13 +9,13 @@
                     <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po">
                         <c:if test="${po.psnType=='PO'}">
                             <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Principal Officer  ${poIndex+1}</p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Principal Officer ${poIndex+1}:</strong></p>
                                 <c:set value="${poIndex=poIndex+1}" var="poIndex"></c:set>
                             </div>
                         </c:if>
                         <c:if test="${po.psnType=='DPO'}">
                             <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Deputy Principal Officer ${dpoIndex+1} </p>
+                                <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Deputy Principal Officer ${dpoIndex+1}:</strong></p>
                                 <c:set var="dpoIndex" value="${dpoIndex=dpoIndex+1}"></c:set>
                             </div>
                         </c:if>

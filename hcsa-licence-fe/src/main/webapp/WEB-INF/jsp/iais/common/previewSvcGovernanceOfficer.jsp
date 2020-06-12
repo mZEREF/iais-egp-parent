@@ -2,10 +2,13 @@
     <label style="font-size: 2.2rem">CLINICAL GOVERNANCE OFFICER</label>
     <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
-            <p>Clinical Governance Officer ${status.index+1}:</p>
+
             <div class="form-check-gp">
                 <div class="row">
                     <div class="col-xs-12">
+                        <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
+                            <p><strong>Clinical Governance Officer ${status.index+1}:</strong></p>
+                        </div>
                         <table class="col-xs-8">
                             <tr>
                                 <td class="col-xs-8">
