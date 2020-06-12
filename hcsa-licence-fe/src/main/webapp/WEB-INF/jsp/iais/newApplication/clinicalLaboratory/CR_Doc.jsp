@@ -62,7 +62,7 @@
                 </c:when>
                 <c:otherwise>
                                                       <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
-                                                        &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
+                                                        &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
                                                     </span>
                 </c:otherwise>
               </c:choose>
