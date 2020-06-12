@@ -427,7 +427,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         Set<String> distinctVehicleNo = IaisCommonUtils.genNewHashSet();
         String oldPremiseHci = "";
         //new rfi
-        if((ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && rfi) && oldAppSubmissionDto != null){
+        if((ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && rfi) && (oldAppSubmissionDto != null)){
             AppGrpPremisesDto oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0);
             String premiseKey = NewApplicationHelper.getPremKey(oldAppGrpPremisesDto);
             if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(oldAppGrpPremisesDto.getPremisesType())){
