@@ -49,7 +49,7 @@
 
                 </iais:section>
                 <div align="right">
-                    <button type="button" class="btn btn-primary" onclick="javascript: doSubmit();">
+                    <button type="button" class="btn btn-primary" name="submitBtn" onclick="javascript: doSubmit();">
                         Submit
                     </button>
                 </div>
