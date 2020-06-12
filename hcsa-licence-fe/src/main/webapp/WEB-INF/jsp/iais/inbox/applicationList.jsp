@@ -32,7 +32,7 @@
                 <div class="search-wrap">
                     <div class="input-group">
                         <input class="form-control" id="applicationAdvancedSearch" type="text" placeholder="Application no." name="applicationAdvancedSearch" aria-label="applicationAdvancedSearch"><span class="input-group-btn">
-                              <button class="btn btn-default buttonsearch" title="Search by keywords"><i class="fa fa-search"></i></button></span>
+                              <button class="btn btn-default buttonsearch" title="Search by keywords"><em class="fa fa-search"></em></button></span>
                     </div>
                 </div>
             </div>
