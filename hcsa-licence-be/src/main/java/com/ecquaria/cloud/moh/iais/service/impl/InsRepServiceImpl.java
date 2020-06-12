@@ -519,7 +519,7 @@ public class InsRepServiceImpl implements InsRepService {
             for (RiskResultDto riskResultDto : listRiskResultDto) {
                 String dateType = riskResultDto.getDateType();
                 String count = String.valueOf(riskResultDto.getTimeCount());
-                Boolean dafLicture = riskResultDto.getDafLicture();
+                Boolean dafLicture = riskResultDto.isDafLicture();
                 if(dafLicture){
                     defaultOption =   count + " " + dateType ;
                 }
