@@ -919,9 +919,9 @@ public class NewApplicationDelegator {
                 LocalDate today = LocalDate.now();
                 LocalDate configDate = LocalDate.now().plusDays(Integer.parseInt(configDateSize));
                 if(effectiveDate.isBefore(today)){
-                    errorMap.put("rfcEffectiveDate","ERRRFC008");
+                    errorMap.put("rfcEffectiveDate","RFC_ERR009");
                 }else if(effectiveDate.isAfter(configDate)){
-                    String errorMsg = MessageUtil.getMessageDesc("ERRRFC007");
+                    String errorMsg = MessageUtil.getMessageDesc("RFC_ERR008");
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
                     errorMsg = errorMsg.replace("<date>",configDate.format(dtf));
                     errorMap.put("rfcEffectiveDate",errorMsg);
