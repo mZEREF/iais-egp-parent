@@ -29,9 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -363,7 +361,7 @@ public class MasterCodeDelegator {
         MultipartFile file = mulReq.getFile("selectedFile");
         File toFile = FileUtils.multipartFileToFile(file);
         Map<String, String> errorMap = validationFile(request, file);
-        if (errorMap != null && !errorMap.isEmpty()){
+        if (errorMap == null && errorMap.isEmpty()){
             return;
         }
         List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
