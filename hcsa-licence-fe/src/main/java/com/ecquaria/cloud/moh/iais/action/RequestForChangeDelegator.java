@@ -468,6 +468,7 @@ public class RequestForChangeDelegator {
             ParamUtil.setRequestAttr(bpc.request,"errorMsg" , WebValidationHelper.generateJsonStr(error));
             ParamUtil.setRequestAttr(bpc.request,"UEN",uen);
             ParamUtil.setRequestAttr(bpc.request,"email",email);
+            ParamUtil.setRequestAttr(bpc.request,"reason",reason);
             if(file != null && file.getSize() != 0){
                 ParamUtil.setRequestAttr(bpc.request,"fileName",file.getOriginalFilename());
                 ParamUtil.setSessionAttr(bpc.request,"file",file);

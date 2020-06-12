@@ -53,7 +53,7 @@
             <iais:field value="Reason for licence transfer"></iais:field>
             <iais:value width="10">
               <p>
-                <textarea  name="reason" maxlength="300" cols="45"></textarea>
+                <textarea  name="reason" maxlength="300" cols="45" >${reason}</textarea>
                 <span  class="error-msg" name="iaisErrorMsg" id="error_reasonError"></span>
               </p>
             </iais:value>
@@ -88,20 +88,18 @@
               </c:choose>
                 <input class="selectedFile" id="selectedFile"  name = "selectedFile" type="file" style="display: none;" aria-label="selectedFile" >
                 <a class="btn btn-file-upload btn-secondary" >Upload</a>
-                <span name="iaisErrorMsg" class="error-msg" id="error_selectedFileError"></span>
               </div>
               </p>
+              <span name="iaisErrorMsg" class="error-msg" id="error_selectedFileError"></span>
             </iais:value>
           </iais:row>
           <iais:row>
            <iais:message key="<%=MessageCodeKey.TRANSFER_REASION001%>"></iais:message>
           </iais:row>
           <div class="form-check">
-            <p>
             <input class="form-check-input" id="confirm" type="checkbox" name="confirm" aria-invalid="false" value="1">
             <label class="form-check-label" for="confirm"><span class="check-square"></span>I declare that the information that I have submitted is true</label>
-            <span name="iaisErrorMsg" class="error-msg" id="error_confirmError"></span>
-            </p>
+            <p><span name="iaisErrorMsg" class="error-msg" id="error_confirmError"></span></p>
           </div>
         </iais:section>
       </div>
