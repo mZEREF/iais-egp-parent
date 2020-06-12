@@ -145,6 +145,21 @@ public class BackendInboxDelegator {
         SearchParam searchParamGroup = getSearchParam(bpc.request,false);
         ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);
 
+        String hci_name = (String) searchParamGroup.getFilters().get("hci_name");
+        String address = (String) searchParamGroup.getFilters().get("address");
+        String application_no = (String) searchParamGroup.getFilters().get("application_no");
+        if(!StringUtil.isEmpty(hci_name)){
+            hci_name = hci_name.substring(1,hci_name.length()-1);
+        }
+        if(!StringUtil.isEmpty(address)){
+            address = address.substring(1,address.length()-1);
+        }
+        if(!StringUtil.isEmpty(application_no)){
+            application_no = application_no.substring(1,application_no.length()-1);
+        }
+        ParamUtil.setRequestAttr(bpc.request, "hci_name", hci_name);
+        ParamUtil.setRequestAttr(bpc.request, "address", address);
+        ParamUtil.setRequestAttr(bpc.request, "application_no", application_no);
         ParamUtil.setRequestAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
         ParamUtil.setRequestAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setRequestAttr(bpc.request, "workGroupIds", (Serializable) workGroupIds);
