@@ -34,13 +34,11 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.SendEmailClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,16 +70,10 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private LicenceClient licenceClient;
 
     @Autowired
-    private SendEmailClient sendEmailClient;
-
-    @Autowired
     private OrgEicClient orgEicClient;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
-
-    @Autowired
-    private AppSubmissionService appSubmissionService;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
@@ -253,7 +245,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         appEicClient.updateStatus(eicRequestTrackingDtos);
         //create task
-        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+        apptFeConfirmDateDto.setEmailDto(null);
+        createApptDateTaskEmail(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
@@ -459,7 +452,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         appEicClient.updateStatus(eicRequestTrackingDtos);
 
-        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+        apptFeConfirmDateDto.setEmailDto(null);
+        createApptDateTaskEmail(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
@@ -498,7 +492,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         appEicClient.updateStatus(eicRequestTrackingDtos);
 
-        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+        apptFeConfirmDateDto.setEmailDto(null);
+        createApptDateTaskEmail(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
     }
 
     private void setCreateInspectionStatus(ApptInspectionDateDto apptInspectionDateDto, String status) {
@@ -579,7 +574,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         }
     }
 
-    private void createApptDateTask(ApptFeConfirmDateDto apptFeConfirmDateDto, String processUrl) {
+    private void createApptDateTaskEmail(ApptFeConfirmDateDto apptFeConfirmDateDto, String processUrl) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         TaskDto taskDto = new TaskDto();
@@ -677,8 +672,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         emailDto.setSender(mailSender);
         emailDto.setClientQueryCode(apptFeConfirmDateDto.getAppPremCorrId());
         apptFeConfirmDateDto.setEmailDto(emailDto);
-        sendEmailClient.sendEmailByRefNo(apptFeConfirmDateDto);
-        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
+        createApptDateTaskEmail(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
@@ -816,7 +810,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         appEicClient.updateStatus(eicRequestTrackingDtos);
 
-        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
+        apptFeConfirmDateDto.setEmailDto(null);
+        createApptDateTaskEmail(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
