@@ -208,6 +208,8 @@ public class InspectionPreDelegator {
             }
         } else if(InspectionConstants.SWITCH_ACTION_REQUEST_INFORMATION.equals(actionValue)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"prerfi");
+            //choose rfi app and don't check app pop-up windows, is error
+            validationResult = validateAppRfiCheck(validationResult, preInspRfiCheck, bpc);
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -234,6 +236,21 @@ public class InspectionPreDelegator {
 
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "actionValue", actionValue);
+    }
+
+    private ValidationResult validateAppRfiCheck(ValidationResult validationResult, List<String> preInspRfiCheck, BaseProcessClass bpc) {
+        if(!IaisCommonUtils.isEmpty(preInspRfiCheck)){
+            if(preInspRfiCheck.contains("Application")){
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                //rfiSelectValue
+                String rfiSelectValue = ParamUtil.getRequestString(bpc.request, "rfiSelectValue");
+                if(StringUtil.isEmpty(rfiSelectValue)){
+                    errorMap.put("nextStage", "Please select at least 1 section to unlock");
+                    validationResult.setHasErrors(true);
+                }
+            }
+        }
+        return validationResult;
     }
 
     private InspectionPreTaskDto setValidateValue(String processDec, String checkRbStage, InspectionPreTaskDto inspectionPreTaskDto, String preInspecComments) {

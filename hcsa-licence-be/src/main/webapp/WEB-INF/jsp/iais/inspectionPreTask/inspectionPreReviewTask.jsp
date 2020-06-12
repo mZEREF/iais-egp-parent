@@ -26,6 +26,7 @@
     <input type="hidden" name="inspectorPreType" value="">
     <input type="hidden" id="actionValue" name="actionValue" value="<c:out value="${actionValue}"/>">
     <input type="hidden" id="processDec" name="processDec" value="<c:out value="${inspectionPreTaskDto.selectValue}"/>">
+    <input type="hidden" id="rfiSelectValue" name="rfiSelectValue" value="" />
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
@@ -316,6 +317,10 @@
 
 
     function inspectionPreTaskSubmit(action){
+        var selectDetail = $("#selectDetail").val();
+        if(selectDetail != null && selectDetail != ''){
+            $('#rfiSelectValue').val(selectDetail);
+        }
         $("[name='inspectorPreType']").val(action);
         var mainPoolForm = document.getElementById('mainReviewForm');
         mainPoolForm.submit();
