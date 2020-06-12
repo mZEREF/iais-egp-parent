@@ -459,11 +459,13 @@
                             </div>
                         </c:otherwise>
                     </c:choose>
+                    <c:if test="${!readOnly}">
                     <div class="form-group">
                         <div class="col-xs-9 col-sm-5 col-md-4">
                             <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
                         </div>
                     </div>
+                    </c:if>
                 </div>
             </div>
 
@@ -679,11 +681,13 @@
                             </div>
                         </c:otherwise>
                     </c:choose>
-                    <div class="form-group">
-                        <div class="col-xs-9 col-sm-5 col-md-4">
-                            <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
+                    <c:if test="${!readOnly}">
+                        <div class="form-group">
+                            <div class="col-xs-9 col-sm-5 col-md-4">
+                                <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
+                            </div>
                         </div>
-                    </div>
+                    </c:if>
                 </div>
             </div>
 
@@ -892,11 +896,13 @@
                             </div>
                         </c:otherwise>
                     </c:choose>
+                    <c:if test="${!readOnly}">
                     <div class="form-group">
                         <div class="col-xs-9 col-sm-5 col-md-4">
                             <button class="addPubHolDay btn btn-primary" type="button">Add Public Holiday</button>
                         </div>
                     </div>
+                    </c:if>
                 </div>
             </div>
 
