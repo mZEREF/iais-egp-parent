@@ -257,15 +257,12 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     }
 
 
-    private void callFeEicAppPremisesSelfDeclChkl(List<AppPremisesSelfDeclChklDto> appPremisesSelfDeclChklDtos) {
+    private void callFeEicAppPremisesSelfDeclChkl(FeSelfAssessmentSyncDataDto data) {
         //route to be
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
-        FeSelfAssessmentSyncDataDto selfDeclSyncDataDto = new FeSelfAssessmentSyncDataDto();
-        selfDeclSyncDataDto.setFeSyncData(appPremisesSelfDeclChklDtos);
-
-        gatewayClient.routeSelfAssessment(selfDeclSyncDataDto, signature.date(), signature.authorization(),
+        gatewayClient.routeSelfAssessment(data, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getStatusCode();
     }
 
@@ -283,17 +280,20 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 log.info(StringUtil.changeForLog("encounter failure when self decl send notification" + e.getMessage()));
             }
 
+
+            FeSelfAssessmentSyncDataDto include = new FeSelfAssessmentSyncDataDto();
+            include.setFeSyncData(result.getEntity());
             EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
                     SelfAssessmentServiceImpl.class.getName(),
                     "callFeEicAppPremisesSelfDeclChkl", currentApp + "-" + currentDomain,
-                    AppPremisesSelfDeclChklDto.class.getName(), JsonUtil.parseToJson(result.getEntity()));
+                    FeSelfAssessmentSyncDataDto.class.getName(), JsonUtil.parseToJson(include));
 
             try {
                 FeignResponseEntity<EicRequestTrackingDto> fetchResult =  eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
                 if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
                     EicRequestTrackingDto preEicRequest = fetchResult.getEntity();
                     if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(preEicRequest.getStatus())){
-                        callFeEicAppPremisesSelfDeclChkl(result.getEntity());
+                        callFeEicAppPremisesSelfDeclChkl(include);
                         preEicRequest.setProcessNum(1);
                         Date now = new Date();
                         preEicRequest.setFirstActionAt(now);
