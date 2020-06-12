@@ -180,6 +180,11 @@ public class InspTeamNonWorkingDayDelegator {
 			for (ApptNonWorkingDateDto workingDateDto : nonWorkingDateList){
 				String recursivceDate = workingDateDto.getRecursivceDate();
 				if (wkrDays.get(i).equals(recursivceDate)){
+					if(prohibitlist.contains(weekend)){
+						workingDateDto.setProhibit(true);
+					}else{
+						workingDateDto.setProhibit(false);
+					}
 					map.put(wkrDays.get(i), workingDateDto);
 				}
 			}

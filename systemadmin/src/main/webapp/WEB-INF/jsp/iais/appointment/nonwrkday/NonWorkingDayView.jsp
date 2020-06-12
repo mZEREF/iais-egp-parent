@@ -35,6 +35,7 @@
   </c:when>
   <c:otherwise>
 
+
     <div class="bg-title"><h2>Inspection Team's Weekly Non-Working Days</h2></div>
     <div class="col-md-3">
       <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" value="${currentGroupId}" ></iais:select>
@@ -45,6 +46,7 @@
         <div class="tab-content">
           <div class="row">
             <br><br>
+            <span id="error_nonworking" name="iaisErrorMsg" class="error-msg" hidden>There is an inspection scheduled on that date. This appointment must be rescheduled before this action may be performed.</span>
             <div class="col-xs-12">
               <div class="components">
                 <div class="table-gp">
@@ -78,16 +80,16 @@
                             <td>${nonwkrDay.recursivceDate}</td>
                             <td>
                               <c:if test="${nonwkrDay.nonWkrDay == false}">
-                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" checked <c:if test="${nonwkrDay.prohibit}">disabled</c:if>>&nbsp;Yes
-                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" <c:if test="${nonwkrDay.prohibit}">disabled</c:if>>&nbsp;No
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" checked <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;Yes
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;No
                               </c:if>
                               <c:if test="${nonwkrDay.nonWkrDay == true}">
-                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" <c:if test="${nonwkrDay.prohibit}">disabled</c:if>>&nbsp;Yes
-                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" checked <c:if test="${nonwkrDay.prohibit}">disabled</c:if>>&nbsp;No
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="yradio${status.index + 1}" value="Y" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;Yes
+                                <input type="radio" name="nonWkrDay${status.index + 1}" id="nradio${status.index + 1}" value="N" checked <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>>&nbsp;No
                               </c:if>
                             </td>
                             <td>
-                              <input class="form-check-input" type="checkbox"  aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">disabled</c:if>
+                              <input class="form-check-input" type="checkbox"  aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>
                               <c:if test="${nonwkrDay.am == true}">
                               checked="checked"
                               </c:if>
@@ -95,8 +97,8 @@
                                       value="<iais:mask name="nonWkrDayId" value="${nonwkrDay.id}"/>">
                             </td>
                             <td>
-                              <input class="form-check-input" type="checkbox"  aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">disabled</c:if>
-                              <c:if test="${nonwkrDay.pm == true}">
+                              <input class="form-check-input" type="checkbox"  aria-invalid="false" <c:if test="${nonwkrDay.prohibit}">data-prohibit = "1"</c:if> <c:if test="${!nonwkrDay.prohibit}">data-prohibit = "0"</c:if>
+                                      <c:if test="${nonwkrDay.pm == true}">
                                       checked="checked"
                               </c:if>
                                       id="pm${status.index + 1}" />
@@ -148,28 +150,51 @@
     }
 
     $("input[type=radio]").click(function(){
-      var action = $(this).val();
       var id = $(this).attr('id').substring(6);
-      console.log(action == 'N')
-      if(action == 'N'){
-        $('#am'+id).prop('checked',true);
-        $('#pm'+id).prop('checked',true);
-      }else{
-        $('#am'+id).prop("checked",false);
-        $('#pm'+id).prop("checked",false);
+      console.log($(this).data("disabled") == 1)
+      if($(this).data("prohibit") == 1){
+        $("#error_nonworking").show()
+        if ($('#am' + id).attr('checked') && $('#pm' + id).attr('checked')) {
+          $('#nradio' + id).prop('checked', true);
+        } else {
+          $('#yradio' + id).prop('checked', true);
+        }
+
+      }else {
+        $("#error_nonworking").hide()
+        var action = $(this).val();
+
+        console.log(action == 'N')
+        if (action == 'N') {
+          $('#am' + id).prop('checked', true);
+          $('#pm' + id).prop('checked', true);
+        } else {
+          $('#am' + id).prop("checked", false);
+          $('#pm' + id).prop("checked", false);
+        }
+        change(id);
       }
-      change(id);
     });
 
     $("input[type=checkbox]").click(function(){
-      var action = $(this).val();
-      var id = $(this).attr('id').substring(2);
-      if($('#am'+id).attr('checked') && $('#pm'+id).attr('checked')){
-        $('#nradio'+id).prop('checked',true);
-      }else{
-        $('#yradio'+id).prop('checked',true);
+      if($(this).data("prohibit") == 1){
+        $("#error_nonworking").show()
+        if($(this).attr('checked')){
+          $(this).prop('checked', false);
+        }else{
+          $(this).prop('checked', true);
+        }
+      }else {
+        $("#error_nonworking").hide()
+        var action = $(this).val();
+        var id = $(this).attr('id').substring(2);
+        if ($('#am' + id).attr('checked') && $('#pm' + id).attr('checked')) {
+          $('#nradio' + id).prop('checked', true);
+        } else {
+          $('#yradio' + id).prop('checked', true);
+        }
+        change(id);
       }
-      change(id);
     });
 
     function change(id) {
