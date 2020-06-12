@@ -1166,12 +1166,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         boolean clickEdit = appGrpPremisesDto.isClickEdit();
                         boolean hciFlag = StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:"+hciFlag));
-                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag && !rfi){
+                        boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
+                        if(newTypeFlag && hciFlag && !rfi){
                             //new
                             if(!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)){
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
                             }
-                        }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag && rfi && clickEdit){
+                        }else if(newTypeFlag && hciFlag && rfi && clickEdit){
                             //new rfi
                             if(!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHci.equals(currentHci) && premisesHciList.contains(currentHci)){
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
