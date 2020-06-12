@@ -289,6 +289,7 @@ public class HcsaApplicationDelegator {
             String decisionValues = ParamUtil.getString(bpc.request, "decisionValues");
             String withdrawalDecisionValue = ParamUtil.getString(bpc.request, "withdrawalDecisionValues");
             boolean isRejectDMS = "decisionReject".equals(decisionValues);
+            boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType);
             boolean isRejectWithdrawal = "decisionReject".equals(withdrawalDecisionValue);
             if (isWithdrwal){
                 if(isRejectWithdrawal){
@@ -368,6 +369,9 @@ public class HcsaApplicationDelegator {
                         }
                     }
                 }else{
+                    if(isRequestForChange){
+                        recommendationStr = "6 DTPE002";
+                    }
                     String[] strs=recommendationStr.split("\\s+");
                     appPremisesRecommendationDto.setRecomInNumber( Integer.valueOf(strs[0]));
                     appPremisesRecommendationDto.setChronoUnit(strs[1]);
@@ -1229,6 +1233,7 @@ public class HcsaApplicationDelegator {
         listRiskAcceptiionDto.add(riskAcceptiionDto);
         List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
         boolean flag = true;
+        boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType());
         if(listRiskResultDto!=null && !listRiskResultDto.isEmpty()) {
             for (RiskResultDto riskResultDto : listRiskResultDto) {
                 String dateType = riskResultDto.getDateType();
@@ -1236,6 +1241,9 @@ public class HcsaApplicationDelegator {
                 String recommTime = count + " " + dateType;
                 if(recommTime.equals(recomInNumber + " "+ chronoUnit)){
                     ParamUtil.setRequestAttr(bpc.request,"recommendationStr",recommTime);
+                    if(isRequestForChange){
+                        ParamUtil.setRequestAttr(bpc.request,"recommendationStr","approve");
+                    }
                     flag = false;
                 }
             }
@@ -1264,7 +1272,10 @@ public class HcsaApplicationDelegator {
         List<RiskAcceptiionDto> listRiskAcceptiionDto = IaisCommonUtils.genNewArrayList();
         listRiskAcceptiionDto.add(riskAcceptiionDto);
         List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
-        if(listRiskResultDto!=null && !listRiskResultDto.isEmpty()) {
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        //request for change application type recommendation only has 'reject' and 'approve'
+        boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType);
+        if(listRiskResultDto!=null && !listRiskResultDto.isEmpty() && !isRequestForChange) {
             for (RiskResultDto riskResultDto : listRiskResultDto) {
                 String dateType = riskResultDto.getDateType();
 //                String codeDesc = MasterCodeUtil.getCodeDesc(dateType);
@@ -1277,7 +1288,12 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
-        recommendationSelectOption.add(new SelectOption("other","Others"));
+        if(!isRequestForChange){
+            recommendationSelectOption.add(new SelectOption("other","Others"));
+        }
+        if(isRequestForChange){
+            recommendationSelectOption.add(new SelectOption("approve","Approve"));
+        }
         if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
             recommendationSelectOption.add(new SelectOption("reject","Reject"));
         }
@@ -1861,6 +1877,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"broadcastAsoPso",broadcastAsoPso);
         ParamUtil.setSessionAttr(bpc.request,"broadcastAso",broadcastAso);
 
+        boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationViewDto.getApplicationDto().getApplicationType());
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
         if(appPremisesRecommendationDto != null){
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
@@ -1877,6 +1894,9 @@ public class HcsaApplicationDelegator {
 //                codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
 //                recommendationOnlyShow = recomInNumber + " " + codeDesc;
                 recommendationOnlyShow = getRecommendationOnlyShowStr(recomInNumber);
+                if(isRequestForChange){
+                    recommendationOnlyShow = "Approve";
+                }
                 //set DMS decision value
 //                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
 //                    ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionApproval");
