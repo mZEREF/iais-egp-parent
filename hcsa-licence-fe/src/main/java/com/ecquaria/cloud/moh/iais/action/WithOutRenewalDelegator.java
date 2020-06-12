@@ -154,8 +154,10 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(draftNo)){
             appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
+            ParamUtil.setSessionAttr(bpc.request,"backUrl","initLic");
         }else{
             appSubmissionDtoList.add(serviceConfigService.getAppSubmissionDtoDraft(draftNo));
+            ParamUtil.setSessionAttr(bpc.request,"backUrl","initApp");
         }
 
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
