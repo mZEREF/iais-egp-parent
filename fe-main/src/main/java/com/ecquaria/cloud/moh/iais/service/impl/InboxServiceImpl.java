@@ -23,10 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDt
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
@@ -110,20 +107,7 @@ public class InboxServiceImpl implements InboxService {
                 ApplicationDraftDto applicationDraftDto = appInboxClient.getDraftInfo(inboxAppQueryDto.getId()).getEntity();
                 String draftServiceCode = applicationDraftDto.getServiceCode();
                 if (!draftServiceCode.isEmpty()){
-                    String[] serviceName = draftServiceCode.split("@");
-                    StringBuilder draftServiceName = new StringBuilder();
-                    for (int i=0;i<serviceName.length;i++){
-                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceName[i]);
-                        if (hcsaServiceDto != null){
-                            if (i>0){
-                                draftServiceName.append("<br/>")
-                                        .append(hcsaServiceDto.getSvcName());
-                            }else{
-                                draftServiceName.append(hcsaServiceDto.getSvcName());
-                            }
-                        }
-                    }
-                    inboxAppQueryDto.setServiceId(draftServiceName.toString());
+                    inboxAppQueryDto.setServiceId(HalpStringUtils.splitServiceName(draftServiceCode));
                 }else{
                     inboxAppQueryDto.setServiceId("N/A");
                 }

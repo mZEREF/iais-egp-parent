@@ -6,7 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
@@ -14,13 +13,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
+import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
-import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
-import com.ecquaria.cloud.moh.iais.service.client.AssessmentSchematicsClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -45,19 +41,24 @@ public class SelfAssessmentSchematicsDelegator {
     private static final String SPECIFIED_SERVICE = "SVTP003";
 
     List<HcsaServiceDto> allbaseService;
+
     List<HcsaServiceDto> allspecifiedService;
+
     @Autowired
-    private ServiceConfigService serviceConfigService;
+    private InboxService inboxService;
+
     @Autowired
     RequestForChangeService requestForChangeService;
+
     @Autowired
-    AssessmentSchematicsClient assessmentSchematicsClient;
+    AssessmentGuideService assessmentGuideService;
 
     private final FilterParameter premiseFilterParameter = new FilterParameter.Builder()
             .clz(PremisesListQueryDto.class)
             .searchAttr("PremisesSearchParam")
             .resultAttr("PremisesSearchResult")
             .sortField("PREMISES_TYPE").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(10).build();
+
     private FilterParameter appParameter = new FilterParameter.Builder()
             .clz(InboxAppQueryDto.class)
             .searchAttr("appParam")
@@ -75,9 +76,8 @@ public class SelfAssessmentSchematicsDelegator {
 
     public void perDate(BaseProcessClass bpc){
 
-        List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getServicesInActive();
+        List<HcsaServiceDto> hcsaServiceDtoList = assessmentGuideService.getServicesInActive();
         if (IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
-            log.debug("can not find hcsa service list in service menu delegator!");
             return;
         }
 
@@ -99,40 +99,14 @@ public class SelfAssessmentSchematicsDelegator {
         appParam.addFilter("appStatus", ApplicationConsts.APPLICATION_STATUS_DRAFT,true);
 
         QueryHelp.setMainSql("assessmentSchematicsQuery","applicationQuery", appParam);
-        SearchResult<InboxAppQueryDto> appResult = assessmentSchematicsClient.searchResultFromApp(appParam).getEntity();
-        List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
-        for (InboxAppQueryDto inboxAppQueryDto:inboxAppQueryDtoList) {
-            if (ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(inboxAppQueryDto.getStatus())){
-                ApplicationDraftDto applicationDraftDto = assessmentSchematicsClient.getDraftInfo(inboxAppQueryDto.getId()).getEntity();
-                String draftServiceCode = applicationDraftDto.getServiceCode();
-                if (!draftServiceCode.isEmpty()){
-                    String[] serviceName = draftServiceCode.split("@");
-                    StringBuilder draftServiceName = new StringBuilder();
-                    for (int i=0;i<serviceName.length;i++){
-                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceName[i]);
-                        if (hcsaServiceDto != null){
-                            if (i>0){
-                                draftServiceName.append("<br/>")
-                                        .append(hcsaServiceDto.getSvcName());
-                            }else{
-                                draftServiceName.append(hcsaServiceDto.getSvcName());
-                            }
-                        }
-                    }
-                    inboxAppQueryDto.setServiceId(draftServiceName.toString());
-                }else{
-                    inboxAppQueryDto.setServiceId("N/A");
-                }
-            }
-        }
+        SearchResult<InboxAppQueryDto> appResult = inboxService.appDoQuery(appParam);
+
         if(!StringUtil.isEmpty(appResult)){
             ParamUtil.setSessionAttr(bpc.request,"appParam", appParam);
             ParamUtil.setRequestAttr(bpc.request,"appResult", appResult);
         }
-
         SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, premiseFilterParameter, true);
         searchParam.addFilter("licenseeId", licenseeId, true);
-
         QueryHelp.setMainSql("applicationPersonnelQuery", "queryPremises", searchParam);
         SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
         if (!StringUtil.isEmpty(searchResult)) {
@@ -151,7 +125,6 @@ public class SelfAssessmentSchematicsDelegator {
         SearchResultHelper.doSort(bpc.request, premiseFilterParameter);
     }
 
-
     public void doSearch(BaseProcessClass bpc){
 
     }
@@ -165,7 +138,7 @@ public class SelfAssessmentSchematicsDelegator {
 
     }
     public void renewLic(BaseProcessClass bpc){
-        String[] renewLics = ParamUtil.getStrings(bpc.request,"renew1LicId");
+        String[] renewLics = ParamUtil.getStrings(bpc.request,"renewLicenId");
         if(renewLics != null){
             List<String> licIdValue = IaisCommonUtils.genNewArrayList();
             for(String item:renewLics){

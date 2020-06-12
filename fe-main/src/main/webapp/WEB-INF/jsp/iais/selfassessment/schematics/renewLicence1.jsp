@@ -7,7 +7,7 @@
         <table class="table">
             <thead>
             <tr align="center">
-
+                <th></th>
                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name"/>
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."/>
@@ -28,10 +28,16 @@
                     <c:forEach var="pool" items="${PremisesSearchResult.rows}" varStatus="status">
                         <tr>
                             <td>
-                                <label>
-                                    <input id="licence${status.index + 1}" type="checkbox" name="renew1LicId" value="${pool.licenceId}">${pool.hciName}
-                                </label>
+                                <div class="form-check">
+                                    <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
+                                           name="renewLicenId" value="renew1LicenId${status.index}" aria-invalid="false"/>
+                                    <label class="form-check-label" for="licence1"><span
+                                            class="check-square"></span>
+                                    </label>
+                                    <input type="hidden" name="renew1LicenId${status.index}" value="<iais:mask name= "renew1LicenId${status.index}" value="${pool.licenceId}"/>"/>
+                                </div>
                             </td>
+                            <td>${pool.hciName}</td>
                             <td>${pool.addrType}</td>
                             <td>${pool.licenceNo}</td>
                             <td>${pool.premisesType}</td>

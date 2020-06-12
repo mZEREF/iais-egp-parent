@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
@@ -55,6 +57,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public String getApplicationGroupNumber(String appType) {
         return systemAdminClient.applicationNumber(appType).getEntity();
+    }
+
+    @Override
+    public SearchResult<PremisesListQueryDto> searchPreInfo(SearchParam searchParam) {
+        return licenceClient.searchResultPremises(searchParam).getEntity();
     }
 
 }
