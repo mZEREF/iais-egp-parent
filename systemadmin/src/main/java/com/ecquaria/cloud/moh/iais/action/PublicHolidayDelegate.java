@@ -206,12 +206,12 @@ public class PublicHolidayDelegate {
                     String[] start = list.get(count).split(":");
                     count ++;
                     String[] end = list.get(count).split(":");
-                    count = count +6;
+                    count = count + 6;
                     String[] name = list.get(count).split(":");
                     publicHolidayDto.setDescription(name[1]);
                     publicHolidayDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     publicHolidayDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                    count = count ++;
+                    count ++;
                     int startInt = Integer.parseInt(start[1]);
                     int endInt = Integer.parseInt(end[1]);
                     String nextDay = start[1];
