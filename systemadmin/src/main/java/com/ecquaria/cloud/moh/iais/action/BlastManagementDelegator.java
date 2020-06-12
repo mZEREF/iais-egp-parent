@@ -485,7 +485,8 @@ public class BlastManagementDelegator {
     }
 
     private String getDate(String date){
-        int index=date.lastIndexOf(".");
+        char indexChar = ".".charAt(0);
+        int index=date.lastIndexOf(indexChar);
         return date.substring(0,index);
     }
 
