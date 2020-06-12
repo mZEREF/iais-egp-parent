@@ -275,24 +275,6 @@
                             color = "#DD9C00";
                         }
                         var address = res[i].address;
-                        // if(res[i].blkNo != null && res[i].blkNo != ""){
-                        //     address = res[i].blkNo;
-                        // }
-                        // if(res[i].streetName != null && res[i].streetName != ""){
-                        //     address +=" " + res[i].streetName;
-                        // }
-                        // if(res[i].buildingName != null && res[i].buildingName != ""){
-                        //     address +=" " + res[i].buildingName;
-                        // }
-                        // if(res[i].floorNo != null && res[i].floorNo != ""){
-                        //     address +=" # " + res[i].floorNo;
-                        // }
-                        // if(res[i].unitNo != null && res[i].unitNo != ""){
-                        //     address += "-" + res[i].unitNo;
-                        // }
-                        // if(res[i].postalCode != null && res[i].postalCode != ""){
-                        //     address += "," + res[i].postalCode;
-                        // }
                         html += '<tr style = "color : ' + color + ';">';
                         if (hastaskList == "true") {
                             html += '<td><input type="checkbox" name="taskId" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
