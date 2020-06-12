@@ -240,7 +240,7 @@
                             <span  id="error_postalCode${status.index}" class="error-msg" name="iaisErrorMsg"></span>
                         </iais:value>
                         <div class="col-xs-7 col-sm-6 col-md-3">
-                            <p><a class="retrieveAddr <c:if test="${!canEdit}">hidden</c:if>" id="onSite" >Retrieve your address</a></p>
+                            <p><a class="retrieveAddr <c:if test="${!canEdit || readOnly}">hidden</c:if>" id="onSite" >Retrieve your address</a></p>
                         </div>
 
                     </iais:row>
@@ -483,7 +483,7 @@
                             <span  class="error-msg" name="iaisErrorMsg" id="error_conveyancePostalCode${status.index}"></span>
                         </iais:value>
                         <div class="col-xs-7 col-sm-6 col-md-3">
-                            <p><a class="retrieveAddr <c:if test="${!canEdit}">hidden</c:if>" id="conveyance">Retrieve your address</a></p>
+                            <p><a class="retrieveAddr <c:if test="${!canEdit || readOnly}">hidden</c:if>" id="conveyance">Retrieve your address</a></p>
                         </div>
 
                     </iais:row>
@@ -696,7 +696,7 @@
                             <span  class="error-msg" name="iaisErrorMsg" id="error_offSitePostalCode${status.index}"></span>
                         </iais:value>
                         <div class="col-xs-7 col-sm-6 col-md-3">
-                            <p><a class="retrieveAddr <c:if test="${!canEdit}">hidden</c:if>" id="offSite">Retrieve your address</a></p>
+                            <p><a class="retrieveAddr <c:if test="${!canEdit || readOnly}">hidden</c:if>" id="offSite">Retrieve your address</a></p>
                         </div>
 
                     </iais:row>

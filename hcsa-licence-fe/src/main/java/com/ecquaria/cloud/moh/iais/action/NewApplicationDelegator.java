@@ -2474,22 +2474,25 @@ public class NewApplicationDelegator {
     //todo:move to NewApplicationHelper
     public static List<AppGrpPremisesDto> genAppGrpPremisesDtoList(HttpServletRequest request){
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,APPSUBMISSIONDTO);
+        boolean onlySpecifiedSvc = false;
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || !StringUtil.isEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())){
+                    onlySpecifiedSvc = true;
+                    break;
+                }
+            }
+        }
+        if(onlySpecifiedSvc){
+            return appSubmissionDto.getAppGrpPremisesDtoList();
+        }
+
         List<AppGrpPremisesDto> appGrpPremisesDtoList = IaisCommonUtils.genNewArrayList();
         Object requestInformationConfig = ParamUtil.getSessionAttr(request,REQUESTINFORMATIONCONFIG);
         int count = 0;
         String [] premisesType = ParamUtil.getStrings(request, "premType");
         String [] hciName = ParamUtil.getStrings(request, "onSiteHciName");
-        /*if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-            int i = 0;
-            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
-                    premisesType[i] =  appGrpPremisesDto.getPremisesType();
-
-                }
-            }
-            //todo:Grandfather Rights(RFC)
-        }*/
         if(premisesType != null){
             count = premisesType.length;
         }
