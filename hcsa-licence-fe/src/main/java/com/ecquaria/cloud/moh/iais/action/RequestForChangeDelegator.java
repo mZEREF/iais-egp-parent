@@ -351,6 +351,8 @@ public class RequestForChangeDelegator {
                    error.put("selectedFileError","UC_CHKLMD001_ERR007");
                }
            }
+        }else{
+            error.put("selectedFileError","UC_CHKLMD001_ERR001");
         }
         if(!isEmail){
             error.put("emailError","RFC_ERR003");
