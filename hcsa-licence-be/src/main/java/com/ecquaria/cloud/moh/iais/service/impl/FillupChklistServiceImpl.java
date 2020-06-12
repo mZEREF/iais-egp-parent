@@ -397,9 +397,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         AdCheckListShowDto adShowDto = new AdCheckListShowDto();
         List<AdhocNcCheckItemDto> adhocNcCheckItemDtoList = IaisCommonUtils.genNewArrayList();
         if(adhocItemList!=null&&!adhocItemList.isEmpty()){
-            AdhocNcCheckItemDto addto = null;
             for(AdhocChecklistItemDto temp:adhocItemList){
-                addto = transfertoadNcItemDto(temp);
+                AdhocNcCheckItemDto addto = transfertoadNcItemDto(temp);
                 adhocNcCheckItemDtoList.add(addto);
             }
             adShowDto.setAdItemList(adhocNcCheckItemDtoList);
@@ -904,7 +903,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         for(AppPremisesPreInspectChklDto temp:chkList){
             String configId  = temp.getChkLstConfId();
             ChecklistConfigDto dto = hcsaChklClient.getChecklistConfigById(configId).getEntity();
-            InspectionFillCheckListDto fDto =null;
+            InspectionFillCheckListDto fDto;
             if("common".equals(conifgType)&&dto.isCommon()){
                 fDto = transferToInspectionCheckListDto(dto,appPremCorrId);
                 fDto.setConfigId(temp.getChkLstConfId());

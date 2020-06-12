@@ -167,4 +167,8 @@ public interface FillUpCheckListGetAppClient {
     FeignResponseEntity<String> deleteAppPremisesSpecialDocByPremId(@RequestParam(name = "premId") String premId);
     @PostMapping(value = "/iais-appPremisesdoc/save-appPremisesSpecialDoc",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> saveAppPremisesSpecialDoc(@RequestBody AppPremisesSpecialDocDto appIntranetDocDto);
+    @PostMapping(value = "/iais-pre-ins-chkl-be/app-premises/pre-inspect-chkl/draft-answers", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity <List<AppPremInsDraftDto>> getInspDraftAnswer(@RequestBody List<String> preChklIds);
+    @PostMapping(value = "/iais-application-be/adhoc-draft-item/all-results",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AdhocDraftDto>> getAdhocChecklistDraftsByAdhocItemIdIn(@RequestBody List<String> itemList);
 }
