@@ -35,6 +35,12 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    <c:set var="readOnly" value="false"/>
+                                    <c:forEach var="appSvcDto" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
+                                        <c:if test="${!empty appSvcDto.relLicenceNo || !empty appSvcDto.alignLicenceNo }">
+                                            <c:set var="readOnly" value="true"/>
+                                        </c:if>
+                                    </c:forEach>
                                     <c:choose>
                                         <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
                                             <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
@@ -54,6 +60,11 @@
                                                 </tr>
                                             </c:forEach>
                                         </c:when>
+
+                                        <%--<c:when test="${'APTY002' == AppSubmissionDto.appType && readOnly}">--%>
+                                            <%----%>
+
+                                        <%--</c:when>--%>
 
                                         <%--<c:when test="${AppSubmissionDto.groupLic && 'APTY002' == AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
                                         <c:when test="${AppSubmissionDto.groupLic && 'APTY002' == AppSubmissionDto.appType }">

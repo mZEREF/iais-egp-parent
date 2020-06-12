@@ -136,9 +136,6 @@
                                 <c:if test="${appGrpPremisesDto.premisesType==premisesType}">
                                     <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" checked="checked" value = "${premisesType}"  aria-invalid="false">
                                 </c:if>
-                                <c:if test="${appGrpPremisesDto.premisesType==premisesType}">
-                                    <input class="form-check-input premTypeRadio ${className}"  type="radio" name="premType${status.index}" checked="checked" value = "${premisesType}"  aria-invalid="false">
-                                </c:if>
                                 <label class="form-check-label" ><span class="check-circle"></span>
                                     <c:if test="${premisesType == onSite}">
                                         <c:out value="On-site" /><br/>

@@ -485,7 +485,19 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST);
-        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+        //todo:wait task complete remove this
+        boolean ableGrpLic = true;
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo() ) || !StringUtil.isEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())){
+                    ableGrpLic = false;
+                    break;
+                }
+            }
+        }
+
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos) && !IaisCommonUtils.isEmpty(hcsaServiceDtos) && ableGrpLic){
             int premCount = appGrpPremisesDtos.size();
             int svcCount = hcsaServiceDtos.size();
             log.info(StringUtil.changeForLog("premises count:"+premCount+" ,service count:"+svcCount));
@@ -4837,11 +4849,12 @@ public class NewApplicationDelegator {
             if(appSubmissionDto != null){
                 //deal with premises page load
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-                if(IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                     for(AppGrpPremisesDto appGrpPremisesDtos1:appGrpPremisesDtos){
                         appGrpPremisesDtos1.setPremisesSelect(NewApplicationConstant.NEW_PREMISES);
                     }
                 }
+                appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
                 for(String specifiedServiceId:specifiedServiceIds){
                     HcsaServiceDto spcService = HcsaServiceCacheHelper.getServiceById(specifiedServiceId);

@@ -278,9 +278,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         FeeDto entity ;
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appTYpe)){
             entity = appConfigClient.renewFee(linenceFeeQuaryDtos).getEntity();
-        }else if(onlySpecifiedSvc){
-            entity = appConfigClient.renewFee(linenceFeeQuaryDtos).getEntity();
-        } else{
+        }else{
             entity = appConfigClient.newFee(linenceFeeQuaryDtos).getEntity();
         }
         //Double amount = entity.getTotal();
