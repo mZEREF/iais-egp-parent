@@ -131,7 +131,7 @@ public class ExcelWriter {
     private void initSheetProperty(){
         ExcelSheetProperty property = clz.getAnnotation(ExcelSheetProperty.class);
         if (property == null){
-            System.out.println("can not find sheet property!");
+            throw new IaisRuntimeException("can not find sheet property!");
         }
 
         startCellIndex = property.startRowIndex();
