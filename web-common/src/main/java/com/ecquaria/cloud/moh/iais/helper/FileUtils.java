@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
+import com.ecquaria.sz.commons.util.Calculator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -109,11 +110,11 @@ public final class FileUtils {
     }
 
     public static boolean outFileSize(long fileSize){
-        long size = (fileSize / 0x400) / 0x400;
-        if (Math.ceil(size) > 0x10) {
+        double sizeDbl = Calculator.div(fileSize, Calculator.mul(0x400, 0x400), 1);
+        sizeDbl = Math.ceil(sizeDbl);
+        if (sizeDbl > 0x10) {
             return true;
         }
-
         return false;
     }
 
