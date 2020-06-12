@@ -999,6 +999,7 @@ public class NewApplicationDelegator {
                 //send email
                 try{
                     sendNewApplicationPaymentOnlineSuccesedEmail(appSubmissionDto,pmtMethod,pmtRefNo);
+                    //requestForChangeService.sendEmail(appSubmissionDto.getAppGrpId(),null,appSubmissionDto.getApplicationDtos().get(0).getApplicationNo(),null,null,appSubmissionDto.getAmount(),null,null,appSubmissionDto.getLicenseeId(),"RfcAndOnPay",null);
                 }catch(Exception e){
                     log.error(StringUtil.changeForLog("send email error ...."));
                 }

@@ -755,7 +755,7 @@ public class RequestForChangeMenuDelegator {
         }
         PersonnelListDto personnelEditDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "personnelEditDto");
         //update
-        String salutation = ParamUtil.getString(bpc.request, "salutation");
+        //String salutation = ParamUtil.getString(bpc.request, "salutation");
         String email = ParamUtil.getString(bpc.request, "emailAddr");
         String mobile = ParamUtil.getString(bpc.request, "mobileNo");
         String designation = ParamUtil.getString(bpc.request, "designation");
@@ -879,12 +879,12 @@ public class RequestForChangeMenuDelegator {
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(professionType)) {
                 errMap.put("professionType", "UC_CHKLMD001_ERR001");
             }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(salutation)) {
-                errMap.put("salutation", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("PO") && StringUtil.isEmpty(salutation)) {
-                errMap.put("salutation", "UC_CHKLMD001_ERR001");
-            }
+//            if (psnTypes.contains("CGO") && StringUtil.isEmpty(salutation)) {
+//                errMap.put("salutation", "UC_CHKLMD001_ERR001");
+//            }
+//            if (psnTypes.contains("PO") && StringUtil.isEmpty(salutation)) {
+//                errMap.put("salutation", "UC_CHKLMD001_ERR001");
+//            }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", "UC_CHKLMD001_ERR001");
             }

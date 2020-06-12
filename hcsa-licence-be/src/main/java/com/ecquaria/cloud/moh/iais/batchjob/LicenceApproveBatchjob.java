@@ -1714,6 +1714,10 @@ public class LicenceApproveBatchjob {
             //send sms
             try {
                 sendSMS(msgId, licenceDto.getLicenseeId(), msgInfoMap);
+                //send message
+                String mesContext = "renew Approved message";
+                HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+                sendMessage(subject,licenceDto.getLicenseeId(),mesContext,maskParams,serviceId);
             } catch (IOException | TemplateException e) {
                 log.error(StringUtil.changeForLog("send sms error"));
             }
@@ -1778,5 +1782,21 @@ public class LicenceApproveBatchjob {
             eventApplicationGroupDto.setAuditTrailDto(auditTrailDto);
             applicationGroupService.updateEventApplicationGroupDto(eventApplicationGroupDto);
         }
+    }
+
+    private void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId){
+        InterMessageDto interMessageDto = new InterMessageDto();
+        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+        interMessageDto.setSubject(subject);
+        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+        String refNo = inboxMsgService.getMessageNo();
+        interMessageDto.setRefNo(refNo);
+        interMessageDto.setService_id(serviceId);
+        interMessageDto.setUserId(licenseeId);
+        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        interMessageDto.setMsgContent(templateMessageByContent);
+        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        interMessageDto.setMaskParams(maskParams);
+        inboxMsgService.saveInterMessage(interMessageDto);
     }
 }

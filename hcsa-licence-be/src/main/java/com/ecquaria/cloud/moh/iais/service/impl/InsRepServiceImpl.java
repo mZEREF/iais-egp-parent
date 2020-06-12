@@ -60,6 +60,7 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -599,6 +600,8 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws FeignException {
         String serviceId = applicationDto.getServiceId();
+        List<String> list = IaisCommonUtils.genNewArrayList();
+        list.add(serviceId);
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
         String taskKey = taskDto.getTaskKey();
@@ -608,14 +611,21 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
         String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
         String subStage = getSubStage(appPremisesCorrelationId, taskKey);
-//        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-//            HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
-//            hcsaRiskScoreDto.setAppType(applicationType);
-//            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-//                hcsaRiskScoreDto.setLicId();
-//            }
-//            hcsaRiskScoreDto.setServiceCode();
-//        }
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)||ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)){
+            HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+            hcsaRiskScoreDto.setAppType(applicationType);
+            if( !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+                AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
+                hcsaRiskScoreDto.setLicId(appInsRepDto.getLicenceId());
+            }else {
+                List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+                applicationDtos.add(applicationDto);
+                hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+            }
+            hcsaRiskScoreDto.setServiceCode(serviceId);
+            HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+            Double riskScore = entity.getRiskScore();
+        }
         if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) || ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK.equals(applicationType)) {
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_APPEAL_APPROVE);
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());

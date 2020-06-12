@@ -122,17 +122,117 @@
                                     <a class="cancel" id="cancel">Cancel</a>
                                 </div>
                                 <br/><br/>
-                                <div id="update" class="form-horizontal">
+                                <div id="show" class="form-horizontal">
                                     <iais:row>
                                         <iais:field value="Name " width="12"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
-                                            <iais:select cssClass="salutationSel" name="salutation"
+                                            <iais:select name="salutationShow"
                                                          codeCategory="CATE_ID_SALUTATION"
                                                          value="${personnelEditDto.salutation}"
-                                                         firstOption="Please Select"></iais:select>
+                                                         firstOption="Please Select" disabled="true"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
-                                            <iais:input cssClass="needDisabled" maxLength="66" type="text"
+                                            <iais:input cssClass="needDisableI" maxLength="66" type="text"
+                                                        needDisabled="true"
+                                                        name="psnNameShow"
+                                                        value="${personnelEditDto.psnName}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="ID No. " width="12"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
+                                            <iais:select name="idTypeShow"
+                                                         value="${personnelEditDto.idType}"
+                                                         options="IdTypeSelect" disabled="true"></iais:select>
+                                        </iais:value>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
+                                            <iais:input cssClass="needDisableI" maxLength="66" needDisabled="true"
+                                                        type="text"
+                                                        name="idNoShow" value="${personnelEditDto.idNo}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Designation " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                            <iais:select cssClass="designationSel" name="designationShow"
+                                                         codeCategory="CATE_ID_DESIGNATION"
+                                                         value="${personnelEditDto.designation}"
+                                                         firstOption="Please Select" disabled="true"></iais:select>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Professional Type " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                            <iais:select cssClass="professionTypeSel" name="professionTypeShow"
+                                                         codeCategory="CATE_ID_PROFESSIONAL_TYPE"
+                                                         value="${personnelEditDto.professionType}"
+                                                         firstOption="Please Select" disabled="true"></iais:select>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:input cssClass="needDisableI" maxLength="20" type="text" name="professionRegnNoShow"
+                                                        value="${personnelEditDto.professionRegnNo}"
+                                                        needDisabled="true"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Specialty " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:select cssClass="specialty" name="specialtyShow"
+                                                         firstOption="Please Select" options="SpecialtySelectList"
+                                                         value="${personnelEditDto.speciality}"
+                                                         disabled="true"></iais:select>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Subspeciality or relevant qualification " width="12"
+                                                    mandatory="false"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:input cssClass="needDisableI" maxLength="100" type="text" name="subspecialityShow"
+                                                        value="${personnelEditDto.subSpeciality}"
+                                                        needDisabled="true"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Mobile No. " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:input cssClass="needDisableI" maxLength="8" type="text" name="mobileNoShow"
+                                                        value="${personnelEditDto.mobileNo}"
+                                                        needDisabled="true"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <c:if test="${personnelEditDto.officeTelNo!=null}">
+                                        <iais:row>
+                                            <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input cssClass="needDisableI" maxLength="8" type="text" name="officeTelNoShow"
+                                                            value="${personnelEditDto.officeTelNo}"
+                                                            needDisabled="true"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
+                                    <iais:row>
+                                        <iais:field value="Email Address " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:input cssClass="needDisableI" maxLength="66" type="text" name="emailAddrShow"
+                                                        value="${personnelEditDto.emailAddr}"
+                                                        needDisabled="true"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                </div>
+                                <div id="update" class="form-horizontal" hidden>
+                                    <iais:row>
+                                        <iais:field value="Name " width="12"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
+                                            <iais:select name="salutation"
+                                                         codeCategory="CATE_ID_SALUTATION"
+                                                         value="${personnelEditDto.salutation}"
+                                                         firstOption="Please Select" disabled="true"></iais:select>
+                                        </iais:value>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
+                                            <iais:input cssClass="needDisableI" maxLength="66" type="text"
                                                         needDisabled="true"
                                                         name="psnName"
                                                         value="${personnelEditDto.psnName}"></iais:input>
@@ -141,12 +241,12 @@
                                     <iais:row>
                                         <iais:field value="ID No. " width="12"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
-                                            <iais:select cssClass="idTypeSel" name="idType"
+                                            <iais:select name="idType"
                                                          value="${personnelEditDto.idType}"
-                                                         options="IdTypeSelect"></iais:select>
+                                                         options="IdTypeSelect" disabled="true"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
-                                            <iais:input cssClass="needDisabled" maxLength="66" needDisabled="true"
+                                            <iais:input cssClass="needDisableI" maxLength="66" needDisabled="true"
                                                         type="text"
                                                         name="idNo" value="${personnelEditDto.idNo}"></iais:input>
                                         </iais:value>
@@ -201,13 +301,15 @@
                                                         value="${personnelEditDto.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="8" type="text" name="officeTelNo"
-                                                        value="${personnelEditDto.officeTelNo}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${personnelEditDto.officeTelNo!=null}">
+                                        <iais:row>
+                                            <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input maxLength="8" type="text" name="officeTelNo"
+                                                            value="${personnelEditDto.officeTelNo}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <iais:row>
                                         <iais:field value="Email Address " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -297,13 +399,15 @@
                                                         value="${newPerson.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="8" type="text" name="officeTelNo1"
-                                                        value="${newPerson.officeTelNo}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${personnelEditDto.officeTelNo!=null}">
+                                        <iais:row>
+                                            <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input maxLength="8" type="text" name="officeTelNo1"
+                                                            value="${newPerson.officeTelNo}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <iais:row>
                                         <iais:field value="Email Address " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -333,6 +437,10 @@
     </div>
 </form>
 <script>
+
+    $('.needDisableI').css('border-color', '#ededed');
+    $('.needDisableI').css('color', '#999');
+
     $(document).ready(function () {
         $('#previewAndSub').click(function () {
             $("#menuListForm").submit();
@@ -341,11 +449,6 @@
             $("[name='actionType']").val("back");
             $("#menuListForm").submit();
         });
-        $('.idTypeSel').addClass('disabled');
-        $('.salutationSel').addClass('disabled');
-
-        $('.needDisable').css('border-color', '#ededed');
-        $('.needDisabled').css('color', '#999');
 
         $('#edit').click(function () {
             $("#editSelect").show();
@@ -359,34 +462,41 @@
             $("#update").show();
             $('#replace').hide();
             $('#newPerson').hide();
+            $('#show').hide();
         });
         $('#checkitem2').click(function () {
             $("#update").hide();
+            $('#show').hide();
             $('#replace').show();
         });
 
         $('#cancel').click(function () {
-            $("#update").show();
+            $("#update").hide();
             $('#replace').hide();
             $('#newPerson').hide();
+            $('#show').show();
         });
         if ($('#replaceOptionsId').val() == 'new') {
             $("#update").hide();
+            $('#show').hide();
             $('#replace').show();
             $('#newPerson').show();
         }
 
         $('#replaceOptionsId').click(function () {
             $("#update").hide();
+            $('#show').hide();
             $('#newPerson').show();
         });
 
-        if($("input[type='radio']:checked").val()=='update'){
+        if ($("input[type='radio']:checked").val() == 'update') {
             $("#update").show();
+            $('#show').hide();
             $('#replace').hide();
             $('#newPerson').hide();
-        }else if ($("input[type='radio']:checked").val()=='replace'){
+        } else if ($("input[type='radio']:checked").val() == 'replace') {
             $("#update").hide();
+            $('#show').hide();
             $('#replace').show();
             $('#newPerson').show();
         }
@@ -396,9 +506,11 @@
         if ($('#replaceOptionsId').val() == 'new') {
             $("#update").hide();
             $('#newPerson').show();
+            $('#show').hide();
         } else {
             $("#update").hide();
             $('#newPerson').hide();
+            $('#show').show();
         }
     }
 </script>
