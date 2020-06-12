@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.action;
 
-import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
@@ -683,7 +682,7 @@ public class MohIntranetUserDelegator {
             results.get(0).append("Contains duplicate user information");
         }
 
-        if (!"".equals(results.get(0))) {
+        if (!StringUtil.isEmpty(results.get(0))) {
             bpc.request.setAttribute("results", results);
             return;
         }
