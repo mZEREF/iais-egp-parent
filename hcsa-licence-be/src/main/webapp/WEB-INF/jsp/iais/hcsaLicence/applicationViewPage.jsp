@@ -359,7 +359,7 @@
                                                     <%--</table>--%>
                                                 </iais:section>
                                                 <div align="right">
-                                                    <button id="submitButton" type="button" class="btn btn-primary">
+                                                    <button name="submitBtn" id="submitButton" type="button" class="btn btn-primary">
                                                         Submit
                                                     </button>
                                                 </div>
