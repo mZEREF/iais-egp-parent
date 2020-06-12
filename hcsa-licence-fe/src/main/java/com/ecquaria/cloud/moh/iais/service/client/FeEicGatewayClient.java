@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -69,7 +68,7 @@ public interface FeEicGatewayClient {
 
 
     @PostMapping(value = "/v1/self-decl-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<IaisApiResult<AppPremisesSelfDeclChklDto>> routeSelfAssessment(@RequestBody FeSelfAssessmentSyncDataDto selfDeclSyncDataDto,
+    FeignResponseEntity<IaisApiResult> routeSelfAssessment(@RequestBody FeSelfAssessmentSyncDataDto selfDeclSyncDataDto,
                                                                                      @RequestHeader("date") String date,
                                                                                      @RequestHeader("authorization") String authorization,
                                                                                      @RequestHeader("date-Secondary") String dateSec,

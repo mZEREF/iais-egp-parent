@@ -2,11 +2,13 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.IaisApiStatusCode;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
@@ -257,13 +259,19 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     }
 
 
-    private void callFeEicAppPremisesSelfDeclChkl(FeSelfAssessmentSyncDataDto data) {
+    private boolean callFeEicAppPremisesSelfDeclChkl(FeSelfAssessmentSyncDataDto data) {
         //route to be
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
-        gatewayClient.routeSelfAssessment(data, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getStatusCode();
+        IaisApiResult apiResult = gatewayClient.routeSelfAssessment(data, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+
+        if (IaisApiStatusCode.PROCESS_SUCCESS.getStatusCode() == apiResult.getErrorCode()){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     @Override
@@ -293,13 +301,15 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
                     EicRequestTrackingDto preEicRequest = fetchResult.getEntity();
                     if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(preEicRequest.getStatus())){
-                        callFeEicAppPremisesSelfDeclChkl(include);
-                        preEicRequest.setProcessNum(1);
-                        Date now = new Date();
-                        preEicRequest.setFirstActionAt(now);
-                        preEicRequest.setLastActionAt(now);
-                        preEicRequest.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        eicRequestTrackingHelper.getAppEicClient().saveEicTrack(preEicRequest);
+                        boolean success = callFeEicAppPremisesSelfDeclChkl(include);
+                        if (success){
+                            preEicRequest.setProcessNum(1);
+                            Date now = new Date();
+                            preEicRequest.setFirstActionAt(now);
+                            preEicRequest.setLastActionAt(now);
+                            preEicRequest.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                            eicRequestTrackingHelper.getAppEicClient().saveEicTrack(preEicRequest);
+                        }
                     }
                 }
             }catch (Exception e){

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="11" minorVersion="0" name="MohChecklistConfiguration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="12" minorVersion="0" name="MohChecklistConfiguration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
@@ -127,7 +127,7 @@
     <JavaCode defClass="" executor="" methodName="doView_OnStepProcess_0" name="doView_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="cloneConfig" x="490" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="cloneConfig" x="530" y="200">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -176,6 +176,17 @@
     <JavaCode defClass="" executor="" methodName="createUploadConfig_OnStepProcess_0" name="createUploadConfig_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="exportConfigTemplate" x="360" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="invokeDownloadTemplate" processname="PostDownloadFile" project="INTRANET" version="-1" x="370" y="400">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ConfigDataPage" stageIndicator="" x="380" y="100">
@@ -392,7 +403,7 @@
    <position>{(740,220)(840,460)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/cloneConfig" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(730,120)(510,220)}</position>
+   <position>{(730,120)(550,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareConfigSectionInfo" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge8" style="oblique">
    <position>{(840,460)(560,700)}</position>
@@ -410,7 +421,7 @@
    <position>{(1620,460)(1620,50)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/cloneConfig" style="oblique">
-   <position>{(510,220)(660,310)}</position>
+   <position>{(550,220)(660,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(730,120)(1470,130)}</position>
@@ -457,6 +468,18 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ack" style="oblique">
    <position>{(1340,630)(1410,1280)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/exportConfigTemplate" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(730,120)(380,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond6" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/exportConfigTemplate" style="oblique">
+   <position>{(380,220)(430,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond6" style="oblique">
+   <position>{(430,320)(274,318)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/invokeDownloadTemplate" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond6" style="oblique">
+   <position>{(430,320)(390,420)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/prepareAddConfig" componentIfTrue="/Steps/AutomaticStep/prepareConfigSectionInfo" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="590" y="580">
@@ -474,6 +497,9 @@
   <Condition componentIfFalse="/Steps/AutomaticStep/preUploadData" componentIfTrue="/Pages/WebPage/ack" defClass="" executor="" icon="" leftOperand="isValid" name="Cond5" operator="=" rightOperand="&quot;Y&quot;" x="1180" y="530">
    <Description/>
   </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/prepare" componentIfTrue="/Steps/InvokeStep/invokeDownloadTemplate" defClass="" executor="" icon="" leftOperand="isValid" name="Cond6" operator="=" rightOperand="&quot;Y&quot;" x="410" y="300">
+   <Description/>
+  </Condition>
  </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="710" y="100">
@@ -487,6 +513,7 @@
    <SwitchCase component="/Steps/AutomaticStep/doPage" value="&quot;doPage&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSort" value="&quot;doSort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preUploadData" value="&quot;createUploadConfig&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/exportConfigTemplate" value="&quot;exportConfigTemplate&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="680" y="490">
    <Description/>
@@ -507,6 +534,7 @@
    <SwitchCase component="/Steps/AutomaticStep/submitConfig" value="&quot;submitConfig&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge7" value="&quot;doBack&quot;"/>
   </Switch>
+
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch5" x="1090" y="310">
    <Description/>
    <SwitchCase component="/Merges/Merge/Merge3" value="&quot;doBack&quot;"/>
