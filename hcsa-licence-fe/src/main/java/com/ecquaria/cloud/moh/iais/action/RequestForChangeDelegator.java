@@ -328,6 +328,7 @@ public class RequestForChangeDelegator {
             log.info(StringUtil.changeForLog("The doTransfer premisesIndexNo is -->:"+premisesIndexNo));
         }
         String email = ParamUtil.getString(mulReq,"email");
+        String reason = ParamUtil.getString(mulReq,"reason");
         CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         if(file ==  null || file.getSize() == 0){
           String commDelFlag = (String) ParamUtil.getString(mulReq, "commDelFlag");
@@ -338,24 +339,24 @@ public class RequestForChangeDelegator {
         String[] confirms = ParamUtil.getStrings(mulReq, "confirm");
         log.info(StringUtil.changeForLog("The compareChangePercentage licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The compareChangePercentage uen is -->:"+uen));
-        Map<String,String> error = doValidateEmpty(uen,selectCheakboxs);
+        Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,email);
         boolean isEmail = ValidationUtils.isEmail(email);
         if(file != null && file.getSize() != 0){
            Map<String,Boolean> fileValidate =  ValidationUtils.validateFile(file);
            if(fileValidate != null && fileValidate.size() >0){
                if(!fileValidate.get("fileType")){
-                   error.put("selectedFileError","Please check the file type ... ");
+                   error.put("selectedFileError","Wrong file type");
                }
                if(!fileValidate.get("fileSize")){
-                   error.put("selectedFileError","Please check the file size ... ");
+                   error.put("selectedFileError","UC_CHKLMD001_ERR007");
                }
            }
         }
         if(!isEmail){
-            error.put("emailError","UC_CHKLMD001_ERR001");
+            error.put("emailError","RFC_ERR003");
         }
         if(confirms == null || confirms.length == 0){
-            error.put("confirmError","UC_CHKLMD001_ERR001");
+            error.put("confirmError","RFC_ERR004");
         }
         if(error.isEmpty()){
             LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
@@ -432,15 +433,23 @@ public class RequestForChangeDelegator {
                         appSubmissionDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtoList);
                     }
                     //save the email to the app_group_misc
+                    List<AppGroupMiscDto> appGroupMiscDtoList = IaisCommonUtils.genNewArrayList();
                     if(!StringUtil.isEmpty(email)){
-                        List<AppGroupMiscDto> appGroupMiscDtoList = IaisCommonUtils.genNewArrayList();
                         AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
                         appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_TRANSFER_EMAIL);
                         appGroupMiscDto.setMiscValue(email);
                         appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         appGroupMiscDtoList.add(appGroupMiscDto);
-                        appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
                     }
+                    if(!StringUtil.isEmpty(reason)){
+                        AppGroupMiscDto appGroupMiscDto = new AppGroupMiscDto();
+                        appGroupMiscDto.setMiscType(ApplicationConsts.APP_GROUP_MISC_TYPE_TRANSFER_REASON);
+                        appGroupMiscDto.setMiscValue(reason);
+                        appGroupMiscDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                        appGroupMiscDtoList.add(appGroupMiscDto);
+                    }
+                    appSubmissionDto.setAppGroupMiscDtos(appGroupMiscDtoList);
+
                     AppSubmissionDto tranferSub = requestForChangeService.submitChange(appSubmissionDto);
                     LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                     sendRFCNotification(loginContext,licenceDto,licenseeDto,appSubmissionDto.getLicenseeId(),newLicenseeId,tranferSub);
@@ -489,7 +498,7 @@ public class RequestForChangeDelegator {
         log.info(StringUtil.changeForLog("The doValidate licenceId is -->:"+licenceId));
         log.info(StringUtil.changeForLog("The doValidate uen is -->:"+uen));
 
-        Map<String,String> error = doValidateEmpty(uen,selectCheakboxs);
+        Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,"Email");
         if(error.isEmpty()){
             LicenceDto licenceDto = requestForChangeService.getLicenceDtoByLicenceId(licenceId);
             LicenseeDto licenseeDto = requestForChangeService.getLicenseeByUenNo(uen);
@@ -650,13 +659,16 @@ public class RequestForChangeDelegator {
         return isSelect;
     }
 
-    private Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs){
+    private Map<String,String> doValidateEmpty(String uen,String[] selectCheakboxs,String email){
         Map<String,String> error = IaisCommonUtils.genNewHashMap();
         if(selectCheakboxs == null || selectCheakboxs.length == 0){
-            error.put("premisesError","Please select at least a premises to transfer");
+            error.put("premisesError","RFC_ERR005");
         }
         if(StringUtil.isEmpty(uen) || uen.length() > 10){
             error.put("uenError","UC_CHKLMD001_ERR001");
+        }
+        if(StringUtil.isEmpty(email)){
+            error.put("emailError","UC_CHKLMD001_ERR001");
         }
         return error;
     }
@@ -665,7 +677,7 @@ public class RequestForChangeDelegator {
             error.put("uenError","Licence Error!!!");
         }else{
             if(licenseeDto == null){
-                error.put("uenError","uen error !!!");
+                error.put("uenError","RFC_ERR002");
             }else{
                 List<LicenseeKeyApptPersonDto> oldLicenseeKeyApptPersonDtos = requestForChangeService.
                         getLicenseeKeyApptPersonDtoListByLicenseeId(licenceDto.getLicenseeId());
@@ -677,7 +689,7 @@ public class RequestForChangeDelegator {
                         error.put("uenError","can not transfer to self");
                     }
                 }else{
-                    error.put("uenError","Please kindly submit a Cessation application and advise next Licensee to submit a new licence application.");
+                    error.put("uenError","RFC_ERR007");
                 }
             }
         }

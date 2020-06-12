@@ -50,16 +50,25 @@
           </iais:value>
         </iais:row>
          <iais:row>
-            <iais:field value="Email address of transferee"></iais:field>
+            <iais:field value="Reason for licence transfer"></iais:field>
             <iais:value width="10">
               <p>
-                <input type="text" name="email" value="${email}" >
-                <span  class="error-msg" name="iaisErrorMsg" id="error_emailError"></span>
+                <textarea  name="reason" maxlength="300" cols="45"></textarea>
+                <span  class="error-msg" name="iaisErrorMsg" id="error_reasonError"></span>
               </p>
             </iais:value>
          </iais:row>
           <iais:row>
-            <iais:field value="Letter of Undertaking"></iais:field>
+            <iais:field value="Email address of transferee" mandatory="true"></iais:field>
+            <iais:value width="10">
+              <p>
+                <input type="text" name="email" value="${email}" maxlength="66">
+                <span  class="error-msg" name="iaisErrorMsg" id="error_emailError"></span>
+              </p>
+            </iais:value>
+          </iais:row>
+          <iais:row>
+            <iais:field value="Letter of Undertaking" mandatory="true"></iais:field>
             <iais:value width="10">
               <p>
               <div class="file-upload-gp">
@@ -88,9 +97,11 @@
            <iais:message key="<%=MessageCodeKey.TRANSFER_REASION001%>"></iais:message>
           </iais:row>
           <div class="form-check">
+            <p>
             <input class="form-check-input" id="confirm" type="checkbox" name="confirm" aria-invalid="false" value="1">
             <label class="form-check-label" for="confirm"><span class="check-square"></span>I declare that the information that I have submitted is true</label>
             <span name="iaisErrorMsg" class="error-msg" id="error_confirmError"></span>
+            </p>
           </div>
         </iais:section>
       </div>

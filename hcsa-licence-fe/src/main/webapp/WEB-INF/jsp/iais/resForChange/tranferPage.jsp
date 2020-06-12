@@ -25,7 +25,7 @@
                                  </iais:row>
                            <c:if test="${prepareTranfer.groupLic}">
                              <iais:row>
-                               <iais:field value="Select Premises"></iais:field>
+                               <iais:field value="Select Premises" mandatory="true"></iais:field>
                                <iais:value width="10">
                                  <p>
                                  <c:forEach items="${prepareTranfer.appGrpPremisesDtoList}" var="premises">
@@ -40,7 +40,7 @@
                              </iais:row>
                            </c:if>
                                  <iais:row>
-                                     <iais:field value="UEN of Licence to transfer licence to"></iais:field>
+                                     <iais:field value="UEN of Licence to transfer licence to" mandatory="true"></iais:field>
                                      <iais:value width="10">
                                        <p>
                                         <input type="text" name="UEN" value="${UEN}" maxlength="10">
