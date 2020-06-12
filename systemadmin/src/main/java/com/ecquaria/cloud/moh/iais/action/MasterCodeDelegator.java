@@ -361,9 +361,6 @@ public class MasterCodeDelegator {
         MultipartFile file = mulReq.getFile("selectedFile");
         File toFile = FileUtils.multipartFileToFile(file);
         Map<String, String> errorMap = validationFile(request, file);
-        if (errorMap == null && errorMap.isEmpty()){
-            return;
-        }
         List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
         List<String> duplicateCode = IaisCommonUtils.genNewArrayList();
         List<String> emptyCode = IaisCommonUtils.genNewArrayList();
