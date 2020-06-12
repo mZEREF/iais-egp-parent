@@ -997,7 +997,6 @@
       </div>
     </div>
   </div>
-    <iais:confirm msg="" cancelFunc="rfiPopUpSubmit()" callBack="rfiPopUpCancel()" popupOrder="rfiConfirm"  title=" " cancelBtnDesc="Yes" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"></iais:confirm>
 </form>
 <style>
 
@@ -1011,8 +1010,7 @@
         //Binding method
         $('#previewNext').click(function () {
             var mainForm = document.getElementById("mainForm");
-            $('#rfiConfirm').modal('show');
-            //mainForm.submit();
+            mainForm.submit();
         });
 
         $('.svc-pannel-collapse').click(function () {
@@ -1038,15 +1036,6 @@
                 }
             }
         });
-    }
-
-    function rfiPopUpSubmit() {
-        $('#rfiConfirm').modal('hide');
-        alert('submit');
-    }
-
-    function rfiPopUpCancel() {
-        $('#rfiConfirm').modal('hide');
     }
 
 
