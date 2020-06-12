@@ -63,32 +63,65 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td><c:out value="${AppSubmissionDto.appGrpNo}"/></td>
-                                        <c:if test="${'Credit'==AppSubmissionDto.paymentMethod}">
-                                            <td><c:out value="${txnRefNo}"/></td>
-                                        </c:if>
-                                        <td><c:out value="${txnDt}"/></td>
-                                        <td><c:if test="${AppSubmissionDto.amountStr==null}">N/A</c:if>
-                                            <c:if test="${AppSubmissionDto.amountStr!=null}">
-                                                <c:out value="${AppSubmissionDto.amountStr}"/>
-                                            </c:if>
-                                         </td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
-                                                    Credit Card
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <c:if test="${AppSubmissionDto.paymentMethod==null}">N/A</c:if>
-                                                    <c:if test="${AppSubmissionDto.paymentMethod!=null}">
-                                                        <c:out value="${AppSubmissionDto.paymentMethod}"/>
+                                    <c:choose>
+                                        <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
+                                            <c:forEach items="${appSubmissionDtos}" var="appSub">
+                                                <tr>
+                                                    <td><c:out value="${appSub.appGrpNo}"/></td>
+                                                    <c:if test="${'Credit'==AppSubmissionDto.paymentMethod}">
+                                                        <td><c:out value="${txnRefNo}"/></td>
                                                     </c:if>
+                                                    <td><c:out value="${txnDt}"/></td>
+                                                    <td><c:if test="${AppSubmissionDto.amountStr==null}">N/A</c:if>
+                                                        <c:if test="${AppSubmissionDto.amountStr!=null}">
+                                                            <c:out value="${AppSubmissionDto.amountStr}"/>
+                                                        </c:if>
+                                                    </td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
+                                                                Credit Card
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <c:if test="${AppSubmissionDto.paymentMethod==null}">N/A</c:if>
+                                                                <c:if test="${AppSubmissionDto.paymentMethod!=null}">
+                                                                    <c:out value="${AppSubmissionDto.paymentMethod}"/>
+                                                                </c:if>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td><c:out value="${AppSubmissionDto.appGrpNo}"/></td>
+                                                <c:if test="${'Credit'==AppSubmissionDto.paymentMethod}">
+                                                    <td><c:out value="${txnRefNo}"/></td>
+                                                </c:if>
+                                                <td><c:out value="${txnDt}"/></td>
+                                                <td><c:if test="${AppSubmissionDto.amountStr==null}">N/A</c:if>
+                                                    <c:if test="${AppSubmissionDto.amountStr!=null}">
+                                                        <c:out value="${AppSubmissionDto.amountStr}"/>
+                                                    </c:if>
+                                                </td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
+                                                            Credit Card
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:if test="${AppSubmissionDto.paymentMethod==null}">N/A</c:if>
+                                                            <c:if test="${AppSubmissionDto.paymentMethod!=null}">
+                                                                <c:out value="${AppSubmissionDto.paymentMethod}"/>
+                                                            </c:if>
 
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                    </tr>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
                                     </tbody>
                                 </table>
                             </div>

@@ -434,6 +434,9 @@ public class WithOutRenewalDelegator {
               if(StringUtil.isEmpty(appGrpPremisesDto.getOffTelNo())){
                   appGrpPremisesDto.setOffTelNo(null);
               }
+              if(StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())){
+                  appGrpPremisesDto.setCertIssuedDtStr(null);
+              }
             }
             if(appGrpPremisesDtoList.equals(oldAppSubmissionDtoAppGrpPremisesDtoList)){
                 premiseChange=true;

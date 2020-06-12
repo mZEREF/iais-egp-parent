@@ -1880,7 +1880,7 @@ public class ClinicalLaboratoryDelegator {
                             Integer docSize = appSvcDocDtoLit.get(i).getDocSize();
                             String docName = appSvcDocDtoLit.get(i).getDocName();
                             String id = appSvcDocDtoLit.get(i).getSvcDocId();
-                            if (docSize > 4 * 1024 * 1024) {
+                            if (docSize > 4 * 1024) {
                                 errorMap.put(id + "selectedFile", "UC_CHKLMD001_ERR007");
                             }
                             Boolean flag = Boolean.FALSE;

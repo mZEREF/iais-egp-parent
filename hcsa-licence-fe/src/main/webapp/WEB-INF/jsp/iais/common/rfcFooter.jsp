@@ -24,6 +24,8 @@
 <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
 <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
 <iais:confirm msg="The HCI name you have keyed in is currently in used" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" ></iais:confirm>
+<input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
+<input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
 <script>
     $(document).ready(function() {
         if($('#saveDraftSuccess').val()=='success'){
@@ -72,7 +74,7 @@
     function Continue() {
         $('#hciNameUsed').modal('hide');
         $("[name='crud_action_type_continue']").val("continue");
-        doSubmitForm('preview','','rfcSaveDraft');
+        doSubmitForm($('#continueStep').val(),'',$('#crudActionTypeContinue').val());
     }
 </script>
 

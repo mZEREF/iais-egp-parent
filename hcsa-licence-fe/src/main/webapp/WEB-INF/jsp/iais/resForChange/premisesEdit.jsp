@@ -73,6 +73,8 @@
     <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="cancel()"  needCancel="false" popupOrder="ackMessageConfim"></iais:confirm>
     <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
     <iais:confirm msg="The HCI name you have keyed in is currently in used" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" ></iais:confirm>
+    <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
+    <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
     <%--Validation Field--%>
       <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
       <%@include file="../common/premFun.jsp"%>
@@ -159,7 +161,7 @@
     function Continue() {
         $('#hciNameUsed').modal('hide');
         $("[name='crud_action_type_continue']").val("continue");
-        doSubmitForm('prePayment','','rfcSaveDraft');
+        doSubmitForm($('#continueStep').val(),'',$('#crudActionTypeContinue').val());
     }
 
 

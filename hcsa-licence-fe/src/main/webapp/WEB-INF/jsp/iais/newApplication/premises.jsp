@@ -121,7 +121,8 @@
   <iais:confirm msg="There is a pending application for a licence associated to this premises" callBack="" popupOrder="ackMessageConfim"></iais:confirm>
   <input type="text" style="display:none;" value="${hciNameUsed}" name="hciNameUsedInput" id="hciNameUsedInput">
   <iais:confirm msg="The HCI name you have keyed in is currently in used" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" ></iais:confirm>
-
+  <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
+  <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
 </form>
 <script type="text/javascript">
     var init;
@@ -234,7 +235,7 @@
   function Continue() {
       $('#hciNameUsed').modal('hide');
       $("[name='crud_action_type_continue']").val("continue");
-      submit('documents',null,'rfcSaveDraft');
+      submit($('#continueStep').val(),null,$('#crudActionTypeContinue').val());
   }
 
 </script>

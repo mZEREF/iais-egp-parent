@@ -103,6 +103,8 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     private FeEicGatewayClient feEicGatewayClient;
     @Autowired
     private FeMessageClient feMessageClient;
+    @Autowired
+    private AppSubmissionService appSubmissionService;
 
 
     @Override
@@ -515,6 +517,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         appSubmissionDto.setLicenseeId(licenseeId);
         appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
         appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+        String draftNo = appSubmissionDto.getDraftNo();
+        if(draftNo==null){
+            draftNo = appSubmissionService.getDraftNo(appSubmissionDto.getAppType());
+            appSubmissionDto.setDraftNo(draftNo);
+        }
         appSubmissionDto.setAppGrpId(null);
         setRiskToDto(appSubmissionDto);
     }
