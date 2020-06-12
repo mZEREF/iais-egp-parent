@@ -349,6 +349,7 @@ public class RequestForInformationDelegator {
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
         mesContext=mesContext.replace("Comments : -","");
+        mesContext=mesContext.replace("Sections Allowed for Change :","");
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licenseeId);
 
