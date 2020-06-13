@@ -175,7 +175,8 @@ public class PublicHolidayDelegate {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
         String filename = file.getOriginalFilename();
-        String suffix = filename.substring(filename.lastIndexOf(".") + 1);
+        char fileIndex = ".".charAt(0);
+        String suffix = filename.substring(filename.lastIndexOf(fileIndex) + 1);
         long size = file.getSize()/1024;
         if(size>5*1024){
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
