@@ -356,7 +356,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         try {
             if(!StringUtil.isEmpty(inLeftMod)){
                 inLeftModNum = Integer.parseInt(inLeftMod);
-                if(inLeftModNum -1 != inRightLowNum  && inLeftModNum  !=  inRightLowNum){
+                if(inLeftModNum -1 != inRightLowNum  && inLeftModNum.equals(inRightLowNum)){
                     if("C".equals(level)){
                         if(caRightLowNumFlag){
                             errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0015");
