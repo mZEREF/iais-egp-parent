@@ -6,10 +6,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import sop.util.DateUtil;
 
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * @Author: jiahao
@@ -50,7 +49,7 @@ public class AduitSystemGenerateValidate implements CustomizeValidator {
                isDateE = false;
            }
 
-           if(isDateS && isDateE && !IaisEGPHelper.isAfterDateSecondByStringDate(inspectionStartDate,inspectionEndDate,true)){
+           if(isDateS && isDateE && !IaisEGPHelper.isAfterDateSecondByStringDate(inspectionStartDate,inspectionEndDate,Boolean.TRUE)){
                errMap.put("inspectionStartDate","Last Inspection done before(Start) cannot be later than Last Inspection done before(End)");
            }
         }
