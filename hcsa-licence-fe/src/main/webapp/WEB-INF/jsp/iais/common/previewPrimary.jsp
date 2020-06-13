@@ -8,7 +8,7 @@
     <div class="panel-collapse collapse " id="collapseOne${documentIndex}" role="tabpanel" aria-labelledby="headingOne">
         <div class="panel-body">
             <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.docEdit}">
-                <p class="text-right mb-0"><a href="#" id="docEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                <p class="mb-0"><div class="text-right app-font-size-16"><a href="#" id="docEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
             </c:if>
             <div class="elemClass-1561088919456">
                 <div id="control--runtime--34" class="page section control  container-s-1" style="margin: 10px 0px">

@@ -11,6 +11,11 @@
 <webui:setLayout name="iais-internet"/>
 <br/>
 <%@include file="../common/dashboard.jsp" %>
+<style>
+    .app-font-size-16{
+        font-size: 16px;
+    }
+</style>
 <form class="" method="post" id="LicenceReviewForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="switch_value" value=""/>
     <input type="hidden" id="checkSingle" value="${isSingle}"/>
@@ -73,7 +78,7 @@
                                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${documentIndex}" role="tabpanel" aria-labelledby="headingServiceInfo">
                                                                             <div class="panel-body">
                                                                                 <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit}">
-                                                                                    <p class="text-right"><a href="#" id="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></p>
+                                                                                    <p class="text-right"><div class="text-right app-font-size-16"><a href="#" id="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
                                                                                 </c:if>
                                                                                 <div class="panel-main-content">
                                                                                     <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}"></c:set>

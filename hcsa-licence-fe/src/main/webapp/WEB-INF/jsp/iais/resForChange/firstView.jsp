@@ -11,6 +11,9 @@
     .font-size-14{
         font-size: 14px;
     }
+    .app-font-size-16{
+        font-size: 16px;
+    }
 </style>
 <div class="tab-pane" id="tabApp" role="tabpanel">
     <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
@@ -44,8 +47,10 @@
 
                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo" role="tabpanel" aria-labelledby="headingServiceInfo">
                                                             <div class="panel-body">
-                                                                <p class="text-right mb-0">
-                                                                    <a href="#" id="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>
+                                                                <p class="mb-0">
+                                                                    <div class="text-right app-font-size-16">
+                                                                        <a href="#" id="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>
+                                                                    </div>
                                                                 </p>
                                                                 <div class="panel-main-content">
                                                                     <%@include file="../common/previewSvcInfo.jsp"%>

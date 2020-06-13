@@ -46,9 +46,11 @@
                                                         <div class=" panel-collapse collapse" id="collapseServiceInfo${status.index}" role="tabpanel" aria-labelledby="headingServiceInfo${status.index}" >
                                                             <div class="panel-body">
                                                                 <c:if test="${AppSubmissionDto.appEditSelectDto==null||AppSubmissionDto.appEditSelectDto.serviceEdit}">
-                                                                    <p class="text-right mb-0">
-                                                                        <a href="#" class="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>
-                                                                        <input type="hidden" value="${hcsaServiceDto.svcCode}" name="svcCode" />
+                                                                    <p class="mb-0">
+                                                                        <div class="text-right app-font-size-16">
+                                                                            <a href="#" class="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>
+                                                                            <input type="hidden" value="${hcsaServiceDto.svcCode}" name="svcCode" />
+                                                                        </div>
                                                                     </p>
                                                                 </c:if>
                                                                 <input type="hidden" value="0" name="svcCount" />

@@ -66,7 +66,7 @@
                             <c:when test="${(requestInformationConfig != null || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType) && '1' != appGrpPremisesDto.existingData }">
                                 <c:set var="canEdit" value="false"/>
                                 <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
-                                    <a class="premises-summary-preview premisesEdit ack-font-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
+                                    <a class="premises-summary-preview premisesEdit app-font-size-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
                                 </c:if>
                             </c:when>
                         </c:choose>

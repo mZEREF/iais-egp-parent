@@ -44,5 +44,7 @@
     .mandatory{
         color: rgb(255,0,0);
     }
-
+    .app-font-size-16{
+        font-size: 16px;
+    }
 </style>

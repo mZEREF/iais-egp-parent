@@ -51,7 +51,7 @@
                               </c:otherwise>
                             </c:choose>
                             <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && requestInformationConfig == null}">
-                              <div class="ack-font-16">
+                              <div class="app-font-size-16">
                                 <a class="back" id="RfcSkip">Skip<span style="display: inline-block;">&nbsp;</span><em class="fa fa-angle-right"></em></a>
                               </div>
                             </c:if>
@@ -122,7 +122,7 @@
                                   <div class="col-sm-2" style="margin-top:3%;">
                                     <div class="edit-content">
                                       <c:if test="${'true' == canEdit}">
-                                        <p class="text-right"><a class="edit"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a></p>
+                                        <p><div class="text-right app-font-size-16"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>
                                       </c:if>
                                     </div>
                                   </div>

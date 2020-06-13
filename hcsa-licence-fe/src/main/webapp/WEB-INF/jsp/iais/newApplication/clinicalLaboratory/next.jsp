@@ -123,7 +123,14 @@
     var nextFun = function () {
         if(${serviceStepDto.isStepEnd()}){
             if(${serviceStepDto.isServiceEnd()}){
-                submit('preview',null,null);
+                <c:choose>
+                  <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
+                    submit('jump',null,null);
+                  </c:when>
+                  <c:otherwise>
+                    submit('preview',null,null);
+                  </c:otherwise>
+                </c:choose>
             }else{
                 submitFormTabs('${serviceStepDto.nextStep.stepCode}');
             }
