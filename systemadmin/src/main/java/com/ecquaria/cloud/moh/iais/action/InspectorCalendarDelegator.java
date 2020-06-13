@@ -4,20 +4,23 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.InspectorCalendarQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.ApptHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -29,10 +32,11 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author: yichen
@@ -75,6 +79,7 @@ public class InspectorCalendarDelegator {
 
 		ParamUtil.setSessionAttr(request, AppointmentConstants.IS_NEW_VIEW_DATA, AppConsts.TRUE);
 		ParamUtil.setSessionAttr(request, AppointmentConstants.SHORT_NAME_ATTR, null);
+		ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, null);
 		AuditTrailHelper.auditFunction("InspectorCalendar", "View function");
 	}
 
@@ -97,19 +102,6 @@ public class InspectorCalendarDelegator {
 		}
 	}
 
-	private void preSelectOpt(HttpServletRequest request){
-		List<SelectOption> dropYear = IaisCommonUtils.genNewArrayList();
-
-
-		Calendar date = Calendar.getInstance();
-		int currentYear = date.get(Calendar.YEAR);
-		for (int i = currentYear; i > currentYear - 10; i--){
-			dropYear.add(new SelectOption(String.valueOf(i), String.valueOf(i)));
-		}
-
-		ParamUtil.setRequestAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, dropYear);
-	}
-
 	/**
 	 * StartStep: preLoad
 	 * @param bpc
@@ -118,7 +110,7 @@ public class InspectorCalendarDelegator {
 	public void preLoad(BaseProcessClass bpc){
 		HttpServletRequest request = bpc.request;
 
-		preSelectOpt(request);
+
 
 		LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request,
 				AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -199,6 +191,20 @@ public class InspectorCalendarDelegator {
 		SearchResult<InspectorCalendarQueryDto> calendarSearchResult =
 				appointmentService.queryInspectorCalendar(searchParam);
 
+
+		List<SelectOption> dropYear = (List<SelectOption>) ParamUtil.getSessionAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT);
+		ParamUtil.setRequestAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, dropYear);
+		if (IaisCommonUtils.isEmpty(dropYear)){
+			if (calendarSearchResult != null && !IaisCommonUtils.isEmpty(calendarSearchResult.getRows())){
+				List<InspectorCalendarQueryDto> queryDto = calendarSearchResult.getRows();
+				List<Date> dateList = queryDto.stream().map(InspectorCalendarQueryDto::getUserBlockDateEnd).collect(Collectors.toList());
+
+				Date start = Collections.min(dateList);
+				Date end = Collections.max(dateList);
+				ApptHelper.preYearOption(request, start, end);
+			}
+		}
+
 		ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
 		ParamUtil.setSessionAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_QUERY_ATTR, searchParam);
 		ParamUtil.setRequestAttr(request, AppointmentConstants.INSPECTOR_CALENDAR_RESULT_ATTR, calendarSearchResult);
@@ -224,6 +230,7 @@ public class InspectorCalendarDelegator {
 		InspectorCalendarQueryDto queryDto = new InspectorCalendarQueryDto();
 		queryDto.setGroupName(groupName);
 		queryDto.setUserName(userName);
+		queryDto.setYearVal(yearVal);
 		queryDto.setDescription(userBlockDateDescription);
 		ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
 		if(validationResult != null && validationResult.isHasErrors()) {
@@ -246,11 +253,13 @@ public class InspectorCalendarDelegator {
 			}
 
 			if(!StringUtil.isEmpty(userBlockDateStart)){
-				searchParam.addFilter(AppointmentConstants.USER_BLOCK_DATE_START_ATTR, userBlockDateStart, true);
+				String convertStartDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(userBlockDateStart), SystemAdminBaseConstants.DATE_FORMAT);
+				searchParam.addFilter(AppointmentConstants.USER_BLOCK_DATE_START_ATTR, convertStartDate, true);
 			}
 
 			if(!StringUtil.isEmpty(userBlockDateEnd)){
-				searchParam.addFilter(AppointmentConstants.USER_BLOCK_DATE_END_ATTR, userBlockDateEnd, true);
+				String convertEndDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(userBlockDateEnd), SystemAdminBaseConstants.DATE_FORMAT);
+				searchParam.addFilter(AppointmentConstants.USER_BLOCK_DATE_END_ATTR, convertEndDate, true);
 			}
 
 			if(!StringUtil.isEmpty(userBlockDateDescription)){
@@ -262,7 +271,8 @@ public class InspectorCalendarDelegator {
 			}
 
 			if(!StringUtil.isEmpty(recurrenceEndDate)){
-				searchParam.addFilter(AppointmentConstants.RECURRENCE_END_DATE_ATTR, recurrenceEndDate, true);
+				String convertRecurrenceEndDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(recurrenceEndDate), SystemAdminBaseConstants.DATE_FORMAT);
+				searchParam.addFilter(AppointmentConstants.RECURRENCE_END_DATE_ATTR, convertRecurrenceEndDate, true);
 			}
 
 		}

@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.ApptHelper;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -33,10 +34,12 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author: yichen
@@ -77,7 +80,7 @@ public class BlackedOutDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, null);
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_QUERY, null);
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT, null);
-
+        ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, null);
     }
 
     /**
@@ -120,15 +123,6 @@ public class BlackedOutDateDelegator {
             wrlGrpNameOpt.add(new SelectOption(groupName, groupName));
         });
 
-        List<SelectOption> dropYear = IaisCommonUtils.genNewArrayList();
-        Calendar date = Calendar.getInstance();
-        int currentYear = date.get(Calendar.YEAR);
-        for (int i = currentYear; i > currentYear - 10; i--){
-            dropYear.add(new SelectOption(String.valueOf(i), String.valueOf(i)));
-        }
-
-        ParamUtil.setRequestAttr(bpc.request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, dropYear);
-
         SearchParam blackQuery = IaisEGPHelper.getSearchParam(request, filterParameter);
 
         String isNew = (String) ParamUtil.getSessionAttr(request, "isNewViewData");
@@ -142,6 +136,21 @@ public class BlackedOutDateDelegator {
         QueryHelp.setMainSql("systemAdmin", "getBlackedOutDateList", blackQuery);
 
         SearchResult<ApptBlackoutDateQueryDto> blackoutDateQueryList  = appointmentService.doQuery(blackQuery);
+
+        List<SelectOption> dropYear = (List<SelectOption>) ParamUtil.getSessionAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT);
+        ParamUtil.setRequestAttr(bpc.request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, dropYear);
+        if (IaisCommonUtils.isEmpty(dropYear)){
+            if (blackoutDateQueryList != null && !IaisCommonUtils.isEmpty(blackoutDateQueryList.getRows())){
+                List<ApptBlackoutDateQueryDto> queryDto = blackoutDateQueryList.getRows();
+                List<Date> dateList = queryDto.stream().map(ApptBlackoutDateQueryDto::getEndDate).collect(Collectors.toList());
+
+                Date start = Collections.min(dateList);
+                Date end = Collections.max(dateList);
+                ApptHelper.preYearOption(request, start, end);
+            }
+        }
+
+
 
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
         ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_QUERY, blackQuery);
@@ -221,9 +230,8 @@ public class BlackedOutDateDelegator {
         }
 
         if (!StringUtils.isEmpty(dropYear)){
-            blackQuery.addFilter("startDate", dropYear + "-01-01", true);
-            blackQuery.addFilter("endDate", dropYear + "-12-31", true);
-            ParamUtil.setRequestAttr(request, "dropYear", dropYear);
+            blackQuery.addFilter("year", dropYear, true);
+            ParamUtil.setRequestAttr(request, "dropYearOpt", dropYear);
         }
 
 
@@ -234,7 +242,7 @@ public class BlackedOutDateDelegator {
         }
 
         if (!StringUtils.isEmpty(endDate)){
-            String convertEndDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(endDate), SystemAdminBaseConstants.DATE_FORMAT + SystemAdminBaseConstants.TIME_FORMAT);
+            String convertEndDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(endDate), SystemAdminBaseConstants.DATE_FORMAT);
             blackQuery.addFilter("endDate", convertEndDate, true);
             ParamUtil.setRequestAttr(request, "endDate", endDate);
         }

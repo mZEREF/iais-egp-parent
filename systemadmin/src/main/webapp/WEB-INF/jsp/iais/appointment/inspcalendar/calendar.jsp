@@ -50,7 +50,7 @@
               <iais:value width="18">
                 <iais:select name="dropYearOpt" id="dropYearOpt"
                              options = "dropYearOpt" firstOption="Please Select" value="${param.dropYearOpt}" ></iais:select>
-                <span id="error_year" name="iaisErrorMsg" class="error-msg"></span>
+                <span id="error_yearVal" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>
 
@@ -90,7 +90,6 @@
               <iais:field value="Recurrence End Date:"/>
               <iais:value width="18">
                 <iais:datePicker id = "recurrenceEndDate" name = "recurrenceEndDate"  value="${param.recurrenceEndDate}"></iais:datePicker>
-                <span id="error_year" name="iaisErrorMsg" class="error-msg"></span>
               </iais:value>
             </iais:row>
 
@@ -148,7 +147,7 @@
                             <td><c:out value="${calendar.userName}"></c:out></td>
                             <td><fmt:formatDate value="${calendar.userBlockDateStart}" pattern="yyyy"/></td>
                             <td><fmt:formatDate value="${calendar.userBlockDateStart}" pattern="dd/MM/yyyy"/></td>
-                            <td><fmt:formatDate value="${calendar.userBlockDateEnd}" pattern="dd/MMyyyy"/></td>
+                            <td><fmt:formatDate value="${calendar.userBlockDateEnd}" pattern="dd/MM/yyyy"/></td>
 
                             <td><c:out value="${calendar.description}"></c:out></td>
                             <td><iais:code code="${calendar.recurrence}"></iais:code></td>
