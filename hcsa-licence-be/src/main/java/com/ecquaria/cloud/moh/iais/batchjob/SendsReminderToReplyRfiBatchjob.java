@@ -68,6 +68,13 @@ public class SendsReminderToReplyRfiBatchjob {
     HcsaConfigClient hcsaConfigClient;
     @Value("${iais.email.sender}")
     private String mailSender;
+    @Value("${iais.system.adhoc.rfi.due.day}")
+    private int rfiDueDay;
+    @Value("${iais.system.adhoc.rfi.reminder.maxday}")
+    private int maxReminderDay;
+    @Value("${iais.system.adhoc.rfi.reminder}")
+    private int maxReminderNum;
+
     @Autowired
     OrganizationClient organizationClient;
     public void start(BaseProcessClass bpc){
@@ -115,7 +122,8 @@ public class SendsReminderToReplyRfiBatchjob {
         map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
         map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
         String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
-        String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",applicationDto.getApplicationNo());
+        mesContext=mesContext.replace("Application Number",licenceViewDto.getLicenceDto().getLicenceNo());
+        String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",licenceViewDto.getLicenceDto().getLicenceNo());
         try{
             EmailDto emailDto=new EmailDto();
             emailDto.setContent(mesContext);
@@ -146,12 +154,12 @@ public class SendsReminderToReplyRfiBatchjob {
         licPremisesReqForInfoDto.setReminder(licPremisesReqForInfoDto.getReminder()+1);
         Calendar cal = Calendar.getInstance();
         cal.setTime(licPremisesReqForInfoDto.getDueDateSubmission());
-        cal.add(Calendar.DAY_OF_MONTH, RequestForInformationConstants.REMIND_INTERVAL_DAY);
+        cal.add(Calendar.DAY_OF_MONTH, rfiDueDay);
         Calendar calendar=Calendar.getInstance();
-        calendar.add(Calendar.DATE,-RequestForInformationConstants.REMINDER_DAYS_LIMIT);
+        calendar.add(Calendar.DATE,-maxReminderDay);
         Date outDate=calendar.getTime();
         licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_RETRIGGER);
-        if(licPremisesReqForInfoDto.getReminder()>RequestForInformationConstants.MAX_REMINDERS_NUMBER && licPremisesReqForInfoDto.getRequestDate().after(outDate)){
+        if(licPremisesReqForInfoDto.getReminder()>maxReminderNum && licPremisesReqForInfoDto.getRequestDate().after(outDate)){
             licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_CLOSE);
         }
         licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());

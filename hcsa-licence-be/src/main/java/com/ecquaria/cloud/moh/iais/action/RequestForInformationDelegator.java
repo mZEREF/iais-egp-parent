@@ -92,6 +92,8 @@ public class RequestForInformationDelegator {
     EmailClient emailClient;
     @Value("${iais.email.sender}")
     private String mailSender;
+    @Value("${iais.system.adhoc.rfi.due.day}")
+    private int rfiDueDay;
 
 
     public void start(BaseProcessClass bpc) {
@@ -203,6 +205,12 @@ public class RequestForInformationDelegator {
         String rfiStatus=ParamUtil.getString(request,"status");
         NewRfiPageListDto newRfiPageListDto=new NewRfiPageListDto();
         newRfiPageListDto.setDate(date);
+        if(date==null){
+            Calendar calendar=Calendar.getInstance();
+            calendar.add(Calendar.DATE, rfiDueDay);
+            String dueDay=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(calendar.getTime());
+            newRfiPageListDto.setDate(dueDay);
+        }
         newRfiPageListDto.setDecision(decision);
         newRfiPageListDto.setLicenceNo(licenceNo);
         newRfiPageListDto.setRfiTitle(rfiTitle);
@@ -401,9 +409,7 @@ public class RequestForInformationDelegator {
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
-        HashMap msg=IaisCommonUtils.genNewHashMap();
-        msg.put("<Date>",IaisEGPHelper.parseToString(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
-        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.getMessageDesc("ACKRFI001",msg));
+        ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage("ACKRFI001", AppConsts.DEFAULT_DATE_FORMAT));
 
 
 
@@ -413,11 +419,12 @@ public class RequestForInformationDelegator {
     public void doCancel(BaseProcessClass bpc) {
         log.info("=======>>>>>doCancel>>>>>>>>>>>>>>>>requestForInformation");
         String reqInfoId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        requestForInformationService.deleteLicPremisesReqForInfo(reqInfoId);
+        String status=ParamUtil.getString(bpc.request,"status");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
         licPremisesReqForInfoDto.setId(reqInfoId);
-        licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_CLOSE);
-        licPremisesReqForInfoDto.setAction("delete");
+        licPremisesReqForInfoDto.setStatus(status);
+        licPremisesReqForInfoDto.setAction("update");
+        requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
         eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         Date now = new Date();
@@ -438,12 +445,17 @@ public class RequestForInformationDelegator {
     }
 
 
-    public void preViewRfi(BaseProcessClass bpc) {
+    public void preViewRfi(BaseProcessClass bpc) throws ParseException {
         log.info("=======>>>>>preViewRfi>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
         String id = (String) ParamUtil.getSessionAttr(bpc.request, "reqInfoId");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(id);
         licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks());
+        String date=ParamUtil.getString(request, "Due_date");
+        if(date!=null){
+            licPremisesReqForInfoDto.setDueDateSubmission(Formatter.parseDate(date));
+        }
+
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
 
         String[] status=new String[]{RequestForInformationConstants.RFI_RETRIGGER,RequestForInformationConstants.RFI_CLOSE};
@@ -484,7 +496,7 @@ public class RequestForInformationDelegator {
             dueDate= Formatter.parseDate(date);
         }
         else {
-            calendar.add(Calendar.DATE,RequestForInformationConstants.REMIND_INTERVAL_DAY);
+            calendar.add(Calendar.DATE,rfiDueDay);
             dueDate =calendar.getTime();
         }
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
@@ -567,7 +579,7 @@ public class RequestForInformationDelegator {
                 for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
                 ) {
                     if(licPreRfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||licPreRfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER)){
-                        errMap.put("LicencePending","Licence is still pending Applicant's input. Please do not submit any new Requset For Information.");
+                        errMap.put("LicencePending","Licence is still pending for Applicant's input. Please do not submit any new Request For Information.");
                     }
                 }
             }

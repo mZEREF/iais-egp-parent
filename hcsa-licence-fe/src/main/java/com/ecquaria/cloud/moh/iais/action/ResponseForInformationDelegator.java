@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,13 +55,18 @@ public class ResponseForInformationDelegator {
     OrganizationLienceseeClient organizationLienceseeClient;
     @Autowired
     LicenceViewService licenceViewService;
+   @Autowired
+    FeMessageClient messageClient;
 
     public void Start(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         HttpServletRequest request=bpc.request;
         String licenseeId = ParamUtil.getMaskedString(request,"licenseeId");
+        String messageId=ParamUtil.getMaskedString(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        messageClient.updateMsgStatus(messageId,"Response");
 
         ParamUtil.setSessionAttr(request,"licenseeId",licenseeId);
+        ParamUtil.setSessionAttr(request,"messageId",messageId);
         // 		Start->OnStepProcess
     }
 

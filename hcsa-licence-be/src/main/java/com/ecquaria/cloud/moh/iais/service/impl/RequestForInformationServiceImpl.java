@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
@@ -43,11 +42,14 @@ import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -163,7 +165,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_REJECTED,
             ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
             ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
-            ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO
+            ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS
     };
     private final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,
@@ -504,42 +506,40 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     } catch (IOException e) {
                         log.error(e.getMessage(),e);
                     }
-//                    try ( InputStream input = new FileInputStream(f);){
-//                        if(fileItem!=null){
-//                            OutputStream os = fileItem.getOutputStream();
-//                            IOUtils.copy(input, os);
-//                        }
-//                    } catch (IOException ex) {
-//                        log.error(ex.getMessage(),ex);
-//                    }
-//                    MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
 
-                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
-                    FileRepoDto fileRepoDto = new FileRepoDto();
-                    List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
-                    fileRepoDto.setId(split[0]);
-                    fileRepoDto.setAuditTrailDto(intranet);
-                    fileRepoDto.setFileName(fileName.toString());
-                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"rfiRecFile"+File.separator+"files");
-                    fileRepoDtos.add(fileRepoDto);
-                    FileRepoEventDto eventDto = new FileRepoEventDto();
-                    eventDto.setFileRepoList(fileRepoDtos);
-                    eventDto.setEventRefNo(eventRefNo);
-                    eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
-                            EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventRefNo, null);
 
 //                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
 //                    FileRepoDto fileRepoDto = new FileRepoDto();
+//                    List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
 //                    fileRepoDto.setId(split[0]);
 //                    fileRepoDto.setAuditTrailDto(intranet);
 //                    fileRepoDto.setFileName(fileName.toString());
 //                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"rfiRecFile"+File.separator+"files");
-//                    //eventBus
-//                    aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
+//                    fileRepoDtos.add(fileRepoDto);
+//                    FileRepoEventDto eventDto = new FileRepoEventDto();
+//                    eventDto.setFileRepoList(fileRepoDtos);
+//                    eventDto.setEventRefNo(eventRefNo);
+//                    eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
+//                            EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventRefNo, null);
 
-                    if(aBoolean){
-                        /*   removeFilePath(f);*/
+                    try ( InputStream input = new FileInputStream(f);){
+                        if(fileItem!=null){
+                            OutputStream os = fileItem.getOutputStream();
+                            IOUtils.copy(input, os);
+                        }
+                    } catch (IOException ex) {
+                        log.error(ex.getMessage(),ex);
                     }
+                    MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
+                    FileRepoDto fileRepoDto = new FileRepoDto();
+                    fileRepoDto.setId(split[0]);
+                    fileRepoDto.setAuditTrailDto(intranet);
+                    fileRepoDto.setFileName(fileName.toString());
+                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"rfiRecFile"+File.separator+"files");
+                    //eventBus
+                    aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
+
                 }catch (Exception e){
                     continue;
                 }

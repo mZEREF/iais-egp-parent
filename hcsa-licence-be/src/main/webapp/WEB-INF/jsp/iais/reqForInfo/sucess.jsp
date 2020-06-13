@@ -22,7 +22,7 @@
                     <br><br><br><br>
                     <div class="bg-title">
                         <h2>
-                            <span><iais:message key="${ackMsg}" escape="true"></iais:message></span>
+                            <span>${ackMsg}</span>
                         </h2>
                     </div>
                     <div class="panel panel-default">

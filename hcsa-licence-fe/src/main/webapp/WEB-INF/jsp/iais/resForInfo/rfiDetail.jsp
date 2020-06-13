@@ -88,7 +88,7 @@
                                                        var="rfiDoc" varStatus="docStatus">
                                                 <iais:row>
                                                     <div class="col-sm-7 col-md-11 col-xs-10">
-                                                        <h3>${rfiDoc.title}</h3>
+                                                        ${rfiDoc.title}
                                                     </div>
                                                 </iais:row>
                                                 <iais:row>

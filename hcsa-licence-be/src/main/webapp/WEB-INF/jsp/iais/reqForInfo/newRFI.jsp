@@ -30,7 +30,7 @@
                                 <label class="col-xs-9 col-md-3 control-label" >Title<strong style="color:#ff0000;">*</strong></label>
                                 <label class="col-xs-9 col-md-6 control-label">
                                     <textarea id="rfiTitle" class="textarea" style=" font-weight:normal;" maxlength="500" rows="8" cols="64"   name="rfiTitle" >${newRfi.rfiTitle}</textarea>
-                                    <div><span id="error_rfiTitle" name="iaisErrorMsg" class="error-msg" ></span></div>
+                                    <div><span style="font-weight:normal;" id="error_rfiTitle" name="iaisErrorMsg" class="error-msg" ></span></div>
                                 </label>
                             </div>
                             <br>
@@ -38,15 +38,15 @@
                                 <label class="col-xs-9 col-md-3 control-label" > Licence No.<strong style="color:#ff0000;">*</strong></label>
                                 <label class="col-xs-9 col-md-5 control-label">
                                     <input type="text" maxlength="24" style=" font-weight:normal;" name="licenceNo" value="${newRfi.licenceNo}"/>
-                                    <div><span id="error_licenceNo" name="iaisErrorMsg" class="error-msg" ></span></div>
+                                    <div><span style="font-weight:normal;" id="error_licenceNo" name="iaisErrorMsg" class="error-msg" ></span></div>
                                 </label>
                             </div>
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label" >Due Date<strong style="color:#ff0000;">*</strong></label>
-                                <label class="col-xs-9 col-md-5 control-label">
-                                        <iais:datePicker value="${newRfi.date}"  cssClass="font-weight:normal;" name="Due_date"></iais:datePicker>
+                                <label class="col-xs-9 col-md-5 control-label" style="font-weight:normal;">
+                                        <iais:datePicker value="${newRfi.date}"   name="Due_date"></iais:datePicker>
                                 </label>
-                                <span id="error_Due_date" name="iaisErrorMsg" class="error-msg" ></span>
+                                <span  style="font-weight:normal;" id="error_Due_date" name="iaisErrorMsg" class="error-msg" ></span>
                             </div>
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label" > Status</label>
@@ -65,7 +65,7 @@
                                 </label>
                             </div>
                             <div class="row">
-                                <label class="col-xs-9 col-md-3 control-label" ></label><span class="error-msg" name="iaisErrorMsg" id="error_rfiSelect"></span>
+                                <label class="col-xs-9 col-md-6 control-label" ><span class="error-msg" name="iaisErrorMsg" style="font-weight:normal;" id="error_rfiSelect"></span></label>
                             </div>
 
 
@@ -83,19 +83,18 @@
                                                     </div>
                                                     <div class="row" >
                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                        <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> <div class="infoTitIndex"><c:if test="${ newRfi.infoChk!=null}">1</c:if> Title of Information Required </div></label>
+                                                        <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> <div class="infoTitIndex"><c:if test="${ newRfi.infoChk!=null}">1</c:if> Title of Information Required <strong style="color:#ff0000;">*</strong></div></label>
                                                     </div>
                                                     <div class="row" >
                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
                                                         <label class="col-xs-9 col-md-6 control-label">
                                                             <textarea  name="infoTitle0" rows="8" style=" font-weight:normal;" maxlength="500" cols="64">${newRfi.infoTitle[0]}</textarea>
                                                         </label>
-                                                        <label class="col-xs-9 col-md-1 control-label" ><strong style="color:#ff0000;">*</strong></label>
                                                     </div>
                                                     <div class="row" >
                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
                                                         <label class="col-xs-9 col-md-6 control-label">
-                                                            <span id="error_infoTitle0" name="iaisErrorMsg" class="error-msg" ></span>
+                                                            <span style="font-weight:normal;" id="error_infoTitle0" name="iaisErrorMsg" class="error-msg" ></span>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -123,19 +122,18 @@
                                                                 </div>
                                                                 <div class="row" >
                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                                    <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> ${statusInfo.index+1} Title of Information Required </label>
+                                                                    <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> ${statusInfo.index+1} Title of Information Required <strong style="color:#ff0000;">*</strong></label>
                                                                 </div>
                                                                 <div class="row" >
                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                                                     <label class="col-xs-9 col-md-6 control-label">
                                                                         <textarea  name="infoTitle${statusInfo.index}" maxlength="500" rows="8" style=" font-weight:normal;" cols="64">${newRfiInfo}</textarea>
                                                                     </label>
-                                                                    <label class="col-xs-9 col-md-1 control-label" ><strong style="color:#ff0000;">*</strong></label>
                                                                 </div>
                                                                 <div class="row" >
                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                                                     <label class="col-xs-9 col-md-6 control-label">
-                                                                        <span id="error_infoTitle${statusInfo.index}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                                        <span style="font-weight:normal;" id="error_infoTitle${statusInfo.index}" name="iaisErrorMsg" class="error-msg" ></span>
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -165,19 +163,18 @@
                                                     </div>
                                                     <div class="row" >
                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                        <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> <div class="docTitIndex"><c:if test="${ newRfi.docChk!=null}">1</c:if> Title of Supporting Documents </div></label>
+                                                        <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> <div class="docTitIndex"><c:if test="${ newRfi.docChk!=null}">1</c:if> Title of Supporting Documents <strong style="color:#ff0000;">*</strong></div></label>
                                                     </div>
                                                     <div class="row" >
                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
                                                         <label class="col-xs-9 col-md-6 control-label">
                                                             <textarea  name="docTitle0" rows="8" style=" font-weight:normal;" maxlength="500" cols="64">${newRfi.docTitle[0]}</textarea>
                                                         </label>
-                                                        <label class="col-xs-9 col-md-1 control-label" ><strong style="color:#ff0000;">*</strong></label>
                                                     </div>
                                                     <div class="row" >
                                                         <label class="col-xs-9 col-md-3 control-label" ></label>
                                                         <label class="col-xs-9 col-md-6 control-label">
-                                                            <span id="error_docTitle0" name="iaisErrorMsg" class="error-msg" ></span>
+                                                            <span style="font-weight:normal;" id="error_docTitle0" name="iaisErrorMsg" class="error-msg" ></span>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -206,19 +203,18 @@
                                                                 </div>
                                                                 <div class="row" >
                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
-                                                                    <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> ${statusDoc.index+1} Title of Supporting Documents </label>
+                                                                    <label class="col-xs-9 col-md-6 control-label" style="text-align:center;"> ${statusDoc.index+1} Title of Supporting Documents <strong style="color:#ff0000;">*</strong></label>
                                                                 </div>
                                                                 <div class="row" >
                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                                                     <label  class="col-xs-9 col-md-6 control-label">
                                                                         <textarea  name="docTitle${statusDoc.index}" maxlength="500" rows="8" style=" font-weight:normal;" cols="64">${newRfiDoc}</textarea>
                                                                     </label>
-                                                                    <label class="col-xs-9 col-md-1 control-label" ><strong style="color:#ff0000;">*</strong></label>
                                                                 </div>
                                                                 <div class="row" >
                                                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                                                     <label class="col-xs-9 col-md-6 control-label">
-                                                                        <span id="error_docTitle${statusDoc.index}" name="iaisErrorMsg" class="error-msg" ></span>
+                                                                        <span style="font-weight:normal;" id="error_docTitle${statusDoc.index}" name="iaisErrorMsg" class="error-msg" ></span>
                                                                     </label>
                                                                 </div>
                                                             </div>
@@ -242,7 +238,7 @@
                     </iais:action>
                 </div>
                 <iais:row >
-                    <span id="error_LicencePending" name="iaisErrorMsg" class="error-msg" ></span>
+                    <span style="font-weight:normal;" id="error_LicencePending" name="iaisErrorMsg" class="error-msg" ></span>
                 </iais:row>
             </div>
         </div>
@@ -308,7 +304,8 @@
                             format:"dd/mm/yyyy"
                         });
                         length=length+1;
-                        $('.docTitIndex').text('1 Title of Supporting Documents ');
+                        var text=$('.docTitIndex');
+                        text.html('1 Title of Supporting Documents <strong style="color:#ff0000;">*</strong>');
                     },
                     'error':function () {
                     }
@@ -323,7 +320,8 @@
             $rfiContentEle.remove();
             length=length-1;
             if(length===1){
-                $('.docTitIndex').text('Title of Supporting Documents ');
+                var text=$('.docTitIndex');
+                text.html('Title of Supporting Documents <strong style="color:#ff0000;">*</strong>');
             }
         });
     }
@@ -372,7 +370,8 @@
                             format:"dd/mm/yyyy"
                         });
                         lengthInfo=lengthInfo+1;
-                        $('.infoTitIndex').text('1 Title of Information Required ');
+                        var text=$('.infoTitIndex');
+                        text.html('1 Title of Information Required <strong style="color:#ff0000;">*</strong>');
                     },
                     'error':function () {
                     }
@@ -389,7 +388,8 @@
             $rfiContentEle.remove();
             lengthInfo=lengthInfo-1;
             if(lengthInfo===1){
-                $('.infoTitIndex').text('Title of Information Required ');
+                var text=$('.infoTitIndex');
+                text.html('Title of Information Required <strong style="color:#ff0000;">*</strong>');
             }
         });
     }

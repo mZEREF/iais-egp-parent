@@ -83,18 +83,14 @@
                                         <c:if test="${not empty licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}">
                                             <c:forEach items="${licPreReqForInfoDto.licPremisesReqForInfoReplyDtos}"
                                                        var="rfiReply" varStatus="rfiReplyStatus">
-                                                <iais:row style="text-align:center;">
-                                                    <div class="col-sm-7 col-md-10 col-xs-10">
-                                                        <span>${rfiReply.title}</span>
+                                                <iais:row >
+                                                    <div class="field col-sm-11 control-label formtext">
+                                                        <label>${rfiReply.title}</label>
                                                     </div>
-                                                </iais:row>
-                                                <iais:row style="text-align:center;">
-                                                    <iais:value width="18">
-                                                        <label>
-                                                            <textarea id="userReply" disabled rows="10"
+                                                    <label class="control-label">
+                                                            <textarea id="userReply" disabled rows="10" style=" font-weight:normal;"
                                                                       cols="100">${rfiReply.userReply}</textarea>
-                                                        </label>
-                                                    </iais:value>
+                                                    </label>
                                                 </iais:row>
                                             </c:forEach>
                                         </c:if>
@@ -108,7 +104,8 @@
                                                             <div class="pop-up-body">
 
                                                                 <div class="field col-sm-11 control-label formtext">
-                                                                    <label>${rfiDoc.title}</label></div>
+                                                                    <label>${rfiDoc.title}</label>
+                                                                </div>
                                                                 <span class="fileType"
                                                                       style="display:none">Document1</span><span
                                                                     class="fileFilter"
@@ -136,7 +133,10 @@
 
                                         <iais:action style="text-align:right;">
                                             <button class="btn btn-secondary" type="button"
-                                                    onclick="javascript:doBack('${licPreReqForInfoDto.id}')">Cancel
+                                                    onclick="javascript:doBack()">Cancel
+                                            </button>
+                                            <button class="btn btn-primary" type="button"
+                                                    onclick="javascript:doSubmit('${licPreReqForInfoDto.id}')">Submit
                                             </button>
                                         </iais:action>
                                     </iais:section>
@@ -152,16 +152,15 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
-    function doBack(reqInfoId) {
-        var status = $('.rfiViewStatus').val();
-        if (status === "RFI002") {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "cancel", reqInfoId);
-        } else {
-            showWaiting();
-            SOP.Crud.cfxSubmit("mainForm", "back");
-        }
+    function doBack() {
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "back");
 
+    }
+
+    function doSubmit(reqInfoId) {
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "cancel", reqInfoId);
     }
 
     function doExtends(reqInfoId) {
