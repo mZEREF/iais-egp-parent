@@ -164,6 +164,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"isSaveRfiSelect",null);
         ParamUtil.setSessionAttr(bpc.request, "nextStages", null);
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", null);
+        ParamUtil.setSessionAttr(bpc.request, "premiseMiscDto", null);
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
 
         initData(bpc);
@@ -2030,6 +2031,7 @@ public class HcsaApplicationDelegator {
                 if(oldApplication != null){
                     ParamUtil.setSessionAttr(request, "oldApplicationNo", oldApplication.getApplicationNo());
                 }
+                ParamUtil.setSessionAttr(request, "premiseMiscDto", premiseMiscDto);
             }
             //first ASO have no recommendation
             if(appPremisesRecommendationDto != null){
