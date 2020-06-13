@@ -354,6 +354,7 @@
    <SwitchCase component="/Steps/AutomaticStep/toAppPage" value="&quot;initApp&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareDate" value=""/>
    <SwitchCase component="/Steps/AutomaticStep/toLicencePage" value="&quot;initLic&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/msgToViewStep" value="&quot;initMsgView&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
@@ -634,6 +635,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/appDoAppView" style="rectanular">
    <position>{(440,860)(0,1030)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/msgToViewStep" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
+   <position>{(90,90)(1100,120)}</position>
   </SynchronousLink>
  </Links>
 </Application>

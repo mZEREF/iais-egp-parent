@@ -68,13 +68,13 @@
                                                    var="infoReply" varStatus="infoStatus">
                                             <iais:row style="text-align:center;">
                                                 <div class="col-sm-7 col-md-10 col-xs-10">
-                                                    <span>${infoReply.title}</span>
+                                                    <strong>${infoReply.title}</strong>
                                                 </div>
                                             </iais:row>
                                             <iais:row style="text-align:center;">
                                                 <iais:value width="18">
                                                     <label>
-                                                        <textarea maxlength="1000" name="userReply${infoReply.id}"
+                                                        <textarea  maxlength="1000" name="userReply${infoReply.id}"
                                                                   rows="8" style=" font-weight:normal;"
                                                                   cols="130">${infoReply.userReply}</textarea>
                                                     </label>
@@ -88,37 +88,35 @@
                                                        var="rfiDoc" varStatus="docStatus">
                                                 <iais:row>
                                                     <div class="col-sm-7 col-md-11 col-xs-10">
-                                                        ${rfiDoc.title}
+                                                        <strong>${rfiDoc.title}</strong>
                                                     </div>
                                                 </iais:row>
                                                 <iais:row>
                                                     <iais:value width="18">
                                                         <div class="file-upload-gp">
-                                                            <div class="file-upload-gp">
-                                                                <span><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}">${rfiDoc.docName}</a></span>
-                                                                <c:choose>
-                                                                    <c:when test="${rfiDoc.docName == '' || rfiDoc.docName == null }">
-                                                                    </c:when>
-                                                                    <c:otherwise>
-                                                                        <%--<span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">--%>
-                                                                        <span class="existFile delBtn ">
+                                                            <span><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${docStatus.index}&fileRo${docStatus.index}=<iais:mask name="fileRo${docStatus.index}" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}">${rfiDoc.docName}</a></span>
+                                                            <c:choose>
+                                                                <c:when test="${rfiDoc.docName == '' || rfiDoc.docName == null }">
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <%--<span class="existFile delBtn <c:if test="${!isClickEdit || AppSubmissionDto.onlySpecifiedSvc}">hidden</c:if>">--%>
+                                                                    <span class="existFile delBtn ">
                                                                         &nbsp;&nbsp;<button type="button"
                                                                                             class="btn btn-danger btn-sm"><em
-                                                                                class="fa fa-times"></em></button>
+                                                                            class="fa fa-times"></em></button>
                                                                         </span>
-                                                                    </c:otherwise>
-                                                                </c:choose>
-                                                                <br/>
-                                                                <input class="selectedFile commDoc" id="commonDoc${rfiDoc.id}"
-                                                                       name="UploadFile${rfiDoc.id}" type="file"
-                                                                       style="display: none;"
-                                                                       aria-label="selectedFile">
-                                                                <span name="iaisErrorMsg" class="error-msg"
-                                                                      id="error_UploadFile${rfiDoc.id}"></span><br>
-                                                                <a class="btn btn-file-upload btn-secondary">Attachment</a><br/>
-                                                            </div>
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                             <br/>
+                                                            <input class="selectedFile commDoc" id="commonDoc${rfiDoc.id}"
+                                                                   name="UploadFile${rfiDoc.id}" type="file"
+                                                                   style="display: none;"
+                                                                   aria-label="selectedFile">
+                                                            <span name="iaisErrorMsg" class="error-msg"
+                                                                  id="error_UploadFile${rfiDoc.id}"></span><br>
+                                                            <a class="btn btn-file-upload btn-secondary">Attachment</a><br/>
                                                         </div>
+                                                        <br/>
                                                     </iais:value>
                                                 </iais:row>
                                             </c:forEach>
