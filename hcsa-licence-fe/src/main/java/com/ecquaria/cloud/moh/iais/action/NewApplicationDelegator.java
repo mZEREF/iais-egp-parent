@@ -4207,7 +4207,8 @@ public class NewApplicationDelegator {
                         String unitNoErr =errorMap.get("unitNo"+i);
                         boolean hciFlag =  StringUtil.isEmpty(hciNameErr) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:"+hciFlag));
-                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag){
+                        boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
+                        if(newTypeFlag && hciFlag){
                             if(!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)){
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
                             }
@@ -4428,7 +4429,8 @@ public class NewApplicationDelegator {
                         String unitNoErr =errorMap.get("conveyanceUnitNo"+i);
                         boolean hciFlag =  StringUtil.isEmpty(vehicleNo) && StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:"+hciFlag));
-                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag){
+                        boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
+                        if(newTypeFlag && hciFlag){
                             if(!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)){
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
                             }
@@ -4651,7 +4653,8 @@ public class NewApplicationDelegator {
                         String unitNoErr =errorMap.get("offSiteUnitNo"+i);
                         boolean hciFlag = StringUtil.isEmpty(postalCodeErr) && StringUtil.isEmpty(blkNoErr) && StringUtil.isEmpty(floorNoErr) && StringUtil.isEmpty(unitNoErr);
                         log.info(StringUtil.changeForLog("hciFlag:"+hciFlag));
-                        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && hciFlag){
+                        boolean newTypeFlag = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
+                        if(newTypeFlag && hciFlag){
                             if(!IaisCommonUtils.isEmpty(premisesHciList) && premisesHciList.contains(currentHci)){
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
                             }
