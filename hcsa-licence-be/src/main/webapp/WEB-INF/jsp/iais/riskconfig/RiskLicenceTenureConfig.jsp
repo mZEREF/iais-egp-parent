@@ -164,17 +164,17 @@
                                                             <div style="width: 100px;height:50px;margin-bottom:15px;padding-top: 5px;">
                                                                 <c:if test="${ten.maxSubOrderNum>=0}">
                                                                     <c:set var="tenName" value="${ten.svcCode}${sub.orderNum}"> </c:set>
-                                                                    <span class="removeBtn" onclick="removeColum(<c:out value="'${tenName}'"/>)"><i class="fa fa-minus-circle"></i></span>
+                                                                    <span class="removeBtn" onclick="removeColum(<c:out value="'${tenName}'"/>)"><em class="fa fa-minus-circle"></em></span>
                                                             </c:if>
                                                                 <c:if test="${status.index == 0}">
-                                                                    <span class="removeBtn" onclick="addColum(<c:out value="'${ten.svcCode}'"/>)"><i class="fa fa-plus-circle"></i></span>
+                                                                    <span class="removeBtn" onclick="addColum(<c:out value="'${ten.svcCode}'"/>)"><em class="fa fa-plus-circle"></em></span>
                                                                 </c:if>
                                                             </div>
                                                         </c:forEach>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <div style="width: 100px;height:50px;margin-bottom:15px;padding-top: 5px;">
-                                                            <span class="removeBtn" onclick="addColum(<c:out value="'${ten.svcCode}'"/>)"><i class="fa fa-plus-circle"></i></span>
+                                                            <span class="removeBtn" onclick="addColum(<c:out value="'${ten.svcCode}'"/>)"><em class="fa fa-plus-circle"></em></span>
                                                         </div>
                                                     </c:otherwise>
                                                 </c:choose>
