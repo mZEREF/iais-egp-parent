@@ -27,7 +27,6 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -258,7 +257,7 @@ public class TaskServiceImpl implements TaskService {
         int result = 0;
         //todo: wait count kpi
         String  resultStr = DurationFormatUtils.formatPeriod(taskDto.getDateAssigned().getTime(),taskDto.getSlaDateCompleted().getTime(), "d");
-        log.debug(StringUtil.changeForLog("The resultStr is -->:")+resultStr);
+        log.debug(StringUtil.changeForLog("The resultStr is -->:" + resultStr));
         return  result;
     }
 
