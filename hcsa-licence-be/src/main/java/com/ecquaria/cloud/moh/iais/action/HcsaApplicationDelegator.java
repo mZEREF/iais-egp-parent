@@ -1857,6 +1857,7 @@ public class HcsaApplicationDelegator {
         //set recommendation dropdown value
         setRecommendationDropdownValue(bpc.request,applicationViewDto);
 
+        //check broadcast role id
         AppPremisesRoutingHistoryDto userHistory = appPremisesRoutingHistoryService.getAppHistoryByAppNoAndActionBy(applicationViewDto.getApplicationDto().getApplicationNo(), taskDto.getUserId());
         String currentRoleId = "";
         if(userHistory != null){
