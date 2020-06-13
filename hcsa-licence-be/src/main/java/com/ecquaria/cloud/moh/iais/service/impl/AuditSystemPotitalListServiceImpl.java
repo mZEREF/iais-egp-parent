@@ -289,7 +289,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             if (endDate != null && dtoEndDate.getTime() < endDate.getTime()) {
                 return Boolean.TRUE;
             }
-        } else if ( dtoEndDate != null) {
+        } else {
             if (startDate != null && endDate != null && dtoEndDate.getTime() < endDate.getTime() && dtostartDate.getTime() > startDate.getTime()) {
                 return Boolean.TRUE;
             }
