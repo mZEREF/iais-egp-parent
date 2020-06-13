@@ -1097,7 +1097,7 @@ public class NewApplicationDelegator {
         String appNo = ParamUtil.getMaskedString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)) {
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
-            if(!IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())){
+            if(appSubmissionDto != null && !IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())){
                 for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 }
