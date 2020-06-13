@@ -192,7 +192,7 @@ public class ExcelWriter {
         File out;
         final String localFileName = fileName;
         Sheet sheet;
-        log.info(StringUtil.changeForLog("current workspace ") + sheetName);
+        log.info(StringUtil.changeForLog("current workspace " + sheetName));
         log.info("current filename " + localFileName);
         if (newModule){
             out = new File(localFileName);
