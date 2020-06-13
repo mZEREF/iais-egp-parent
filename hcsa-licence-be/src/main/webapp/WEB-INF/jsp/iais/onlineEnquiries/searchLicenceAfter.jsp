@@ -39,10 +39,10 @@
                             <h4>
                                 <span>
                                     Search By Application&nbsp;
-                                    <b >&nbsp;
+                                    <strong>&nbsp;
                                         <input  id="applicationChk" type="radio"
                                                checked name="searchChk"  value="2"/>
-                                    </b>
+                                    </strong>
                                 </span>
                             </h4>
 
