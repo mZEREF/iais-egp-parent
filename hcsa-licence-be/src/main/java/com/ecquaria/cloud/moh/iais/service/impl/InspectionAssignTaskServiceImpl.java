@@ -492,6 +492,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : appPremisesRoutingHistoryDtos){
                 if(HcsaConsts.ROUTING_STAGE_INS.equals(appPremisesRoutingHistoryDto.getStageId())){
                     stageId = HcsaConsts.ROUTING_STAGE_INS;
+                    return stageId;
                 }
             }
         }
