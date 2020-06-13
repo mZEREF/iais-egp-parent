@@ -24,7 +24,7 @@
                         <label class="col-xs-4 col-md-4" for="licType" style="text-align:left;margin-top: 1.5%">Service
                             Type:</label>
                         <div class="col-xs-8 col-md-8">
-                            <iais:select name="licType" id="licType" options="licType" value="${param.licType}"/>
+                            <iais:select name="licType" id="licType" options="licType" value="${param.licType}" cssClass="serviceType"/>
                         </div>
                     </iais:value>
                 </div>
@@ -35,7 +35,7 @@
                         <label class="col-xs-4 col-md-4" for="licStatus" style="text-align:left;margin-top: 1.5%">Licence
                             Status:</label>
                         <div class="col-xs-8 col-md-8">
-                            <iais:select name="licStatus" id="licStatus" options="licStatus" value="${param.licStatus}"/>
+                            <iais:select name="licStatus" id="licStatus" options="licStatus" value="${param.licStatus}" cssClass="licStatus"/>
                         </div>
                     </iais:value>
                 </div>
