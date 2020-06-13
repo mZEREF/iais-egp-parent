@@ -1252,6 +1252,13 @@ public class ClinicalLaboratoryDelegator {
                 }
                 Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
                 Map<String, String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap);
+                HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+                Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
+                if (errorMap.isEmpty() && allChecked.isEmpty()) {
+                    coMap.put("information", "information");
+                } else {
+                    coMap.put("information", "");
+                }
                 if (!errorMap.isEmpty()) {
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.MEDALERT_PERSON);

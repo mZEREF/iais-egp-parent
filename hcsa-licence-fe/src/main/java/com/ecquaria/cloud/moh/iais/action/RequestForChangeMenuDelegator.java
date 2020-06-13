@@ -125,12 +125,17 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG, null);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
+        removeSession(bpc);
         requestForInformation(bpc, appNo);
 
 
         log.debug(StringUtil.changeForLog("the do start end ...."));
     }
 
+    private void removeSession(BaseProcessClass bpc){
+        bpc.getSession().removeAttribute("dAmount");
+        bpc.getSession().removeAttribute("payMethod");
+    }
     /**
      * @param bpc
      * @Decription personnleListStart
@@ -271,7 +276,7 @@ public class RequestForChangeMenuDelegator {
      * @Decription preparePremisesEdit
      *//*
      */
-    public void preparePremisesEdit(BaseProcessClass bpc) {
+    public void preparePremisesEdit(BaseProcessClass bpc) throws  Exception{
         log.debug(StringUtil.changeForLog("the do preparePremisesEdit start ...."));
         NewApplicationHelper.setTimeList(bpc.request);
         List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
@@ -337,7 +342,11 @@ public class RequestForChangeMenuDelegator {
         }
         String hciCode = premisesListQueryDto.getHciCode();
         AppSubmissionDto oldAppSubmissionDto = new AppSubmissionDto();
-        oldAppSubmissionDto = appSubmissionDto;
+        oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
+        AppSubmissionDto appSubmissionDto1=( AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
+       if(appSubmissionDto1!=null){
+           oldAppSubmissionDto=appSubmissionDto1;
+       }
         List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode);
         bpc.request.getSession().setAttribute("licenceDtoList", licenceDtoList);
         appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
@@ -442,8 +451,11 @@ public class RequestForChangeMenuDelegator {
 
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         Map<String, String> errorMap = requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,keyWord,isRfi);
-        String crud_action_additional = bpc.request.getParameter("crud_action_additional");
-        if("continue".equals(crud_action_additional)){
+        String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
+        String crud_action_type_form_value = bpc.request.getParameter("crud_action_type_form_value");
+        bpc.request.setAttribute("continueStep",crud_action_type_form_value);
+        bpc.request.setAttribute("crudActionTypeContinue",crud_action_type_continue);
+        if("continue".equals(crud_action_type_continue)){
             errorMap.remove("hciNameUsed");
         }
         String string = errorMap.get("hciNameUsed");

@@ -12,7 +12,6 @@
   <input type="hidden" name="crud_action_type_form_value" value="">
   <input type="hidden" name="crud_action_type_value" value="">
   <input type="hidden" name="crud_action_additional" value="">
-
   <%@include file="dashboard.jsp" %>
   <%@include file="../common/dashboard.jsp" %>
   <%--Validation fields Start--%>

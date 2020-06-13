@@ -607,7 +607,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if(StringUtil.isEmpty(hciName)){
                             errorMap.put("hciName"+i,"UC_CHKLMD001_ERR001");
-                        } {
+                        } else {
 
                             if(masterCodeDto!=null){
                                 String[] s = masterCodeDto.split(" ");

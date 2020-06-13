@@ -59,6 +59,7 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -425,7 +426,7 @@ public class WithOutRenewalDelegator {
             appEditSelectDto.setDocEdit(false);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-            boolean premiseChange=false;
+            boolean premiseChange;
             String appType = appSubmissionDto.getAppType();
             String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -438,9 +439,8 @@ public class WithOutRenewalDelegator {
                   appGrpPremisesDto.setCertIssuedDtStr(null);
               }
             }
-            if(appGrpPremisesDtoList.equals(oldAppSubmissionDtoAppGrpPremisesDtoList)){
-                premiseChange=true;
-            }
+            boolean eqGrpPremisesResult = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+            premiseChange=!eqGrpPremisesResult;
 
             if(!premiseChange){
                 if(appGrpPremisesDtoList!=null){
@@ -677,6 +677,28 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request,"hasAppSubmit","Y");
     }
 
+    private boolean eqGrpPremises( List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) throws  Exception{
+        List<AppGrpPremisesDto> appGrpPremisesDtos = copyAppGrpPremises(appGrpPremisesDtoList);
+        List<AppGrpPremisesDto> oldAppGrpPremisesDtos = copyAppGrpPremises(oldAppGrpPremisesDtoList);
+        if(!appGrpPremisesDtos.equals(oldAppGrpPremisesDtos)){
+            return true;
+        }
+        return false;
+    }
+
+    private List<AppGrpPremisesDto> copyAppGrpPremises( List<AppGrpPremisesDto> appGrpPremisesDtoList) throws Exception{
+        List<AppGrpPremisesDto> n=( List<AppGrpPremisesDto>)CopyUtil.copyMutableObject(appGrpPremisesDtoList);
+        for(AppGrpPremisesDto appGrpPremisesDto : n){
+            appGrpPremisesDto.setLicenceDtos(null);
+            if(StringUtil.isEmpty(appGrpPremisesDto.getOffTelNo())){
+                appGrpPremisesDto.setOffTelNo(null);
+            }
+            if(StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())){
+                appGrpPremisesDto.setCertIssuedDtStr(null);
+            }
+        }
+        return n;
+    }
     //prepareAcknowledgement
     public void prepareAcknowledgement(BaseProcessClass bpc)throws Exception{
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto)ParamUtil.getSessionAttr(bpc.request,"INTER_INBOX_USER_INFO");
@@ -718,10 +740,7 @@ public class WithOutRenewalDelegator {
                     ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
                     return;
                 }
-                boolean flag=false;
-                if(!oldAppSubmissionDtoAppGrpPremisesDtoList.equals(appGrpPremisesDtoList)){
-                    flag=true;
-                }
+                boolean flag= eqGrpPremises(appGrpPremisesDtoList,oldAppSubmissionDtoAppGrpPremisesDtoList);
                 if(flag){
                     List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
                     if(!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)){

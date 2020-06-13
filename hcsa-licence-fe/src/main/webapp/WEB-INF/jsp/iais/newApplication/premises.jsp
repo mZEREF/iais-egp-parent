@@ -123,6 +123,7 @@
   <iais:confirm msg="The HCI name you have keyed in is currently in used" needCancel="false" callBack="Continue()" popupOrder="hciNameUsed" yesBtnDesc="Continue" ></iais:confirm>
   <input type="text" style="display:none;" name="continueStep" id="continueStep" value="${continueStep}">
   <input type="text" style="display: none" name="crudActionTypeContinue" id="crudActionTypeContinue" value="${crudActionTypeContinue}">
+  <input type="text" style="display: none" name="errorMapIs" id="errorMapIs" value="${errormapIs}">
 </form>
 <script type="text/javascript">
     var init;
@@ -185,6 +186,11 @@
         <c:if test="${AppSubmissionDto.needEditController}">
         readonlyPartPage($('div.premises-content'));
         </c:if>
+        if($("#errorMapIs").val()=='error'){
+            unreadonlyPartPage($('div.premises-content'));
+         /*   $('.premises-summary-preview+premisesEdit+ack-font-16').attr("style","display:none");*/
+        }
+
 
         <%--<c:if test="${PageCanEdit}">--%>
         <%--var $PremEle = $('.premises-content');--%>

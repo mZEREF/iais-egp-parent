@@ -544,7 +544,7 @@ public class NewApplicationDelegator {
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
             if(!appSvcRelatedInfoDtos.isEmpty()){
                 appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-            }else {
+            }else if(appSubmissionDto.getAppSvcRelatedInfoDtoList()!=null&&!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()){
                 appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setScore(total);
             }
         }
@@ -643,6 +643,7 @@ public class NewApplicationDelegator {
             if(errorMap.size()>0){
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
+                bpc.request.setAttribute("errormapIs","error");
                 HashMap<String,String> coMap=(HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 coMap.put("premises","");
                 coMap.put("serviceConfig",sB.toString());
@@ -1334,37 +1335,10 @@ public class NewApplicationDelegator {
         }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
-        oldAppSvcRelatedInfoDtoList.get(0).setHcsaServiceStepSchemeDtos(appSvcRelatedInfoDtoList.get(0).getHcsaServiceStepSchemeDtos());
-        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDtoList.get(0).getAppSvcDisciplineAllocationDtoList();
-        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList1 = oldAppSvcRelatedInfoDtoList.get(0).getAppSvcDisciplineAllocationDtoList();
-        if(appSvcDisciplineAllocationDtoList!=null&&appSvcDisciplineAllocationDtoList1!=null){
-            for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
-                String idNo = appSvcDisciplineAllocationDto.getIdNo();
-                String premiseVal = appSvcDisciplineAllocationDto.getPremiseVal();
-                String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
-                String cgoSelName = appSvcDisciplineAllocationDto.getCgoSelName();
-                String chkLstName = appSvcDisciplineAllocationDto.getChkLstName();
-                for(AppSvcDisciplineAllocationDto allocationDto : appSvcDisciplineAllocationDtoList1){
-                    String idNo1 = allocationDto.getIdNo();
-                    String premiseVal1 = allocationDto.getPremiseVal();
-                    String chkLstConfId1 = allocationDto.getChkLstConfId();
-                    try {
-                        if(idNo.equals(idNo1)&&premiseVal.equals(premiseVal1)&&chkLstConfId.equals(chkLstConfId1)){
-                            allocationDto.setCgoSelName(cgoSelName);
-                            allocationDto.setChkLstName(chkLstName);
-                        }
-                    }catch (NullPointerException e){
-                        log.error("error " ,e);
-                    }
 
+        boolean eqServiceResult = eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
 
-                }
-            }
-
-        }
-        if(!appSvcRelatedInfoDtoList.equals(oldAppSvcRelatedInfoDtoList)){
-            serviceIsChange=true;
-        }
+        serviceIsChange=eqServiceResult;
         appEditSelectDto.setServiceEdit(serviceIsChange);
         appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
@@ -1646,6 +1620,52 @@ public class NewApplicationDelegator {
     private boolean eqServiceChange(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) throws  Exception{
         List<AppSvcRelatedInfoDto> n=(List<AppSvcRelatedInfoDto>)CopyUtil.copyMutableObject(appSvcRelatedInfoDtoList);
         List<AppSvcRelatedInfoDto> o=(List<AppSvcRelatedInfoDto>)CopyUtil.copyMutableObject(oldAppSvcRelatedInfoDtoList);
+        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = n.get(0).getAppSvcDisciplineAllocationDtoList();
+        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList1 = o.get(0).getAppSvcDisciplineAllocationDtoList();
+        if(appSvcDisciplineAllocationDtoList!=null&&appSvcDisciplineAllocationDtoList1!=null){
+            for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
+                String idNo = appSvcDisciplineAllocationDto.getIdNo();
+                String premiseVal = appSvcDisciplineAllocationDto.getPremiseVal();
+                String chkLstConfId = appSvcDisciplineAllocationDto.getChkLstConfId();
+                String cgoSelName = appSvcDisciplineAllocationDto.getCgoSelName();
+                String chkLstName = appSvcDisciplineAllocationDto.getChkLstName();
+                for(AppSvcDisciplineAllocationDto allocationDto : appSvcDisciplineAllocationDtoList1){
+                    String idNo1 = allocationDto.getIdNo();
+                    String premiseVal1 = allocationDto.getPremiseVal();
+                    String chkLstConfId1 = allocationDto.getChkLstConfId();
+                    try {
+                        if(idNo.equals(idNo1)&&premiseVal.equals(premiseVal1)&&chkLstConfId.equals(chkLstConfId1)){
+                            allocationDto.setCgoSelName(cgoSelName);
+                            allocationDto.setChkLstName(chkLstName);
+                        }
+                    }catch (NullPointerException e){
+                        log.error("error " ,e);
+                    }
+
+                }
+            }
+        }
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = n.get(0).getAppSvcPrincipalOfficersDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = o.get(0).getAppSvcPrincipalOfficersDtoList();
+        if(appSvcPrincipalOfficersDtoList!=null&&oldAppSvcPrincipalOfficersDtoList!=null){
+            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = copyAppSvcPo(appSvcPrincipalOfficersDtoList);
+            List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtos = copyAppSvcPo(oldAppSvcPrincipalOfficersDtoList);
+            n.get(0).setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtos);
+            o.get(0).setAppSvcPrincipalOfficersDtoList(oldAppSvcPrincipalOfficersDtos);
+        }
+        List<AppSvcCgoDto> appSvcCgoDtoList = n.get(0).getAppSvcCgoDtoList();
+        List<AppSvcCgoDto> oldAppSvcCgoDtoList = n.get(0).getAppSvcCgoDtoList();
+        if(appSvcCgoDtoList!=null&&oldAppSvcCgoDtoList!=null){
+            List<AppSvcCgoDto> appSvcCgoDtos = copyAppSvcCgo(appSvcCgoDtoList);
+            List<AppSvcCgoDto> oldAppSvcCgoDtos = copyAppSvcCgo(oldAppSvcCgoDtoList);
+            n.get(0).setAppSvcCgoDtoList(appSvcCgoDtos);
+            o.get(0).setAppSvcCgoDtoList(oldAppSvcCgoDtos);
+        }
+
+        if(!n.equals(n)){
+
+           return true;
+        }
         return false;
     }
 
@@ -1778,78 +1798,40 @@ public class NewApplicationDelegator {
     }
     private boolean eqCgo( List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList) throws  Exception{
        if(appSvcCgoDtoList!=null&&oldAppSvcCgoDtoList!=null){
-           List<AppSvcCgoDto> n =(List<AppSvcCgoDto>)CopyUtil.copyMutableObject(appSvcCgoDtoList);
-           List<AppSvcCgoDto> o =(List<AppSvcCgoDto>)CopyUtil.copyMutableObject(oldAppSvcCgoDtoList);
-           for(AppSvcCgoDto appSvcCgoDto : n){
-               appSvcCgoDto.setCgoPsn(false);
-               appSvcCgoDto.setPoPsn(false);
-               appSvcCgoDto.setDpoPsn(false);
-               appSvcCgoDto.setMapPsn(false);
-               appSvcCgoDto.setLicPerson(false);
-               appSvcCgoDto.setSelectDropDown(false);
-               appSvcCgoDto.setNeedSpcOptList(false);
-               appSvcCgoDto.setPreferredMode(null);
-               appSvcCgoDto.setSpcOptList(null);
-               appSvcCgoDto.setSpecialityHtml(null);
-               appSvcCgoDto.setCgoIndexNo(null);
-               appSvcCgoDto.setAssignSelect(null);
-           }
-           for(AppSvcCgoDto appSvcCgoDto : o){
-               appSvcCgoDto.setCgoPsn(false);
-               appSvcCgoDto.setPoPsn(false);
-               appSvcCgoDto.setDpoPsn(false);
-               appSvcCgoDto.setMapPsn(false);
-               appSvcCgoDto.setLicPerson(false);
-               appSvcCgoDto.setSelectDropDown(false);
-               appSvcCgoDto.setNeedSpcOptList(false);
-               appSvcCgoDto.setPreferredMode(null);
-               appSvcCgoDto.setSpcOptList(null);
-               appSvcCgoDto.setSpecialityHtml(null);
-               appSvcCgoDto.setCgoIndexNo(null);
-               appSvcCgoDto.setAssignSelect(null);
-           }
+           List<AppSvcCgoDto> n = copyAppSvcCgo(appSvcCgoDtoList);
+           List<AppSvcCgoDto> o =copyAppSvcCgo(oldAppSvcCgoDtoList);
             if(!n.equals(o)){
                 return true;
             }
-
        }else if(appSvcCgoDtoList!=null&&oldAppSvcCgoDtoList==null||appSvcCgoDtoList==null&&oldAppSvcCgoDtoList!=null){
            return true;
        }
         return false;
     }
 
+    private  List<AppSvcCgoDto> copyAppSvcCgo( List<AppSvcCgoDto> appSvcCgoDtoList) throws  Exception{
+        List<AppSvcCgoDto> n =(List<AppSvcCgoDto>)CopyUtil.copyMutableObject(appSvcCgoDtoList);
+        for(AppSvcCgoDto appSvcCgoDto : n){
+            appSvcCgoDto.setCgoPsn(false);
+            appSvcCgoDto.setPoPsn(false);
+            appSvcCgoDto.setDpoPsn(false);
+            appSvcCgoDto.setMapPsn(false);
+            appSvcCgoDto.setLicPerson(false);
+            appSvcCgoDto.setSelectDropDown(false);
+            appSvcCgoDto.setNeedSpcOptList(false);
+            appSvcCgoDto.setPreferredMode(null);
+            appSvcCgoDto.setSpcOptList(null);
+            appSvcCgoDto.setSpecialityHtml(null);
+            appSvcCgoDto.setCgoIndexNo(null);
+            appSvcCgoDto.setAssignSelect(null);
+        }
+        return n;
+    }
     private boolean eqMeadrter(  List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList,  List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList1) throws  Exception{
         if(appSvcMedAlertPersonList!=null&&oldAppSvcMedAlertPersonList1!=null){
-            List<AppSvcPrincipalOfficersDto> n=(List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(appSvcMedAlertPersonList);
-            List<AppSvcPrincipalOfficersDto> o=(List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(oldAppSvcMedAlertPersonList1);
-            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : n){
-                appSvcPrincipalOfficersDto.setCgoPsn(false);
-                appSvcPrincipalOfficersDto.setPoPsn(false);
-                appSvcPrincipalOfficersDto.setDpoPsn(false);
-                appSvcPrincipalOfficersDto.setMapPsn(false);
-                appSvcPrincipalOfficersDto.setLicPerson(false);
-                appSvcPrincipalOfficersDto.setSelectDropDown(false);
-                appSvcPrincipalOfficersDto.setNeedSpcOptList(false);
-                appSvcPrincipalOfficersDto.setSpcOptList(null);
-                appSvcPrincipalOfficersDto.setPreferredMode(null);
-                appSvcPrincipalOfficersDto.setSpecialityHtml(null);
-                appSvcPrincipalOfficersDto.setCgoIndexNo(null);
-                appSvcPrincipalOfficersDto.setAssignSelect(null);
-            }
-            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : o){
-                appSvcPrincipalOfficersDto.setCgoPsn(false);
-                appSvcPrincipalOfficersDto.setPoPsn(false);
-                appSvcPrincipalOfficersDto.setDpoPsn(false);
-                appSvcPrincipalOfficersDto.setMapPsn(false);
-                appSvcPrincipalOfficersDto.setLicPerson(false);
-                appSvcPrincipalOfficersDto.setSelectDropDown(false);
-                appSvcPrincipalOfficersDto.setNeedSpcOptList(false);
-                appSvcPrincipalOfficersDto.setSpcOptList(null);
-                appSvcPrincipalOfficersDto.setPreferredMode(null);
-                appSvcPrincipalOfficersDto.setSpecialityHtml(null);
-                appSvcPrincipalOfficersDto.setCgoIndexNo(null);
-                appSvcPrincipalOfficersDto.setAssignSelect(null);
-            }
+            List<AppSvcPrincipalOfficersDto> n=copyAppSvcPo(appSvcMedAlertPersonList);
+            List<AppSvcPrincipalOfficersDto> o=copyAppSvcPo(oldAppSvcMedAlertPersonList1);
+
             if(!n.equals(o)){
                 return true;
             }
@@ -1858,38 +1840,11 @@ public class NewApplicationDelegator {
         }
         return false;
     }
+
     private boolean eqSvcPrincipalOfficers( List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList , List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList) throws  Exception{
         if(appSvcPrincipalOfficersDtoList!=null&&oldAppSvcPrincipalOfficersDtoList!=null){
-            List<AppSvcPrincipalOfficersDto> n=(List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(appSvcPrincipalOfficersDtoList);
-            List<AppSvcPrincipalOfficersDto> o=(List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(oldAppSvcPrincipalOfficersDtoList);
-            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : n){
-                appSvcPrincipalOfficersDto.setCgoPsn(false);
-                appSvcPrincipalOfficersDto.setPoPsn(false);
-                appSvcPrincipalOfficersDto.setDpoPsn(false);
-                appSvcPrincipalOfficersDto.setMapPsn(false);
-                appSvcPrincipalOfficersDto.setLicPerson(false);
-                appSvcPrincipalOfficersDto.setSelectDropDown(false);
-                appSvcPrincipalOfficersDto.setNeedSpcOptList(false);
-                appSvcPrincipalOfficersDto.setSpecialityHtml(null);
-                appSvcPrincipalOfficersDto.setPreferredMode(null);
-                appSvcPrincipalOfficersDto.setSpcOptList(null);
-                appSvcPrincipalOfficersDto.setCgoIndexNo(null);
-                appSvcPrincipalOfficersDto.setAssignSelect(null);
-            }
-            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : o){
-                appSvcPrincipalOfficersDto.setCgoPsn(false);
-                appSvcPrincipalOfficersDto.setPoPsn(false);
-                appSvcPrincipalOfficersDto.setDpoPsn(false);
-                appSvcPrincipalOfficersDto.setMapPsn(false);
-                appSvcPrincipalOfficersDto.setLicPerson(false);
-                appSvcPrincipalOfficersDto.setSelectDropDown(false);
-                appSvcPrincipalOfficersDto.setNeedSpcOptList(false);
-                appSvcPrincipalOfficersDto.setSpecialityHtml(null);
-                appSvcPrincipalOfficersDto.setPreferredMode(null);
-                appSvcPrincipalOfficersDto.setSpcOptList(null);
-                appSvcPrincipalOfficersDto.setCgoIndexNo(null);
-                appSvcPrincipalOfficersDto.setAssignSelect(null);
-            }
+            List<AppSvcPrincipalOfficersDto> n= copyAppSvcPo(appSvcPrincipalOfficersDtoList);
+            List<AppSvcPrincipalOfficersDto> o=copyAppSvcPo(oldAppSvcPrincipalOfficersDtoList);
             if(!n.equals(o)){
                 return true;
             }
@@ -1897,6 +1852,24 @@ public class NewApplicationDelegator {
             return true;
         }
         return false;
+    }
+    private List<AppSvcPrincipalOfficersDto>  copyAppSvcPo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList) throws  Exception{
+        List<AppSvcPrincipalOfficersDto> n=(List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(appSvcPrincipalOfficersDtoList);
+        for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : n){
+            appSvcPrincipalOfficersDto.setCgoPsn(false);
+            appSvcPrincipalOfficersDto.setPoPsn(false);
+            appSvcPrincipalOfficersDto.setDpoPsn(false);
+            appSvcPrincipalOfficersDto.setMapPsn(false);
+            appSvcPrincipalOfficersDto.setLicPerson(false);
+            appSvcPrincipalOfficersDto.setSelectDropDown(false);
+            appSvcPrincipalOfficersDto.setNeedSpcOptList(false);
+            appSvcPrincipalOfficersDto.setSpecialityHtml(null);
+            appSvcPrincipalOfficersDto.setPreferredMode(null);
+            appSvcPrincipalOfficersDto.setSpcOptList(null);
+            appSvcPrincipalOfficersDto.setCgoIndexNo(null);
+            appSvcPrincipalOfficersDto.setAssignSelect(null);
+        }
+        return n;
     }
     public static boolean compareHciName(AppGrpPremisesDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto){
 
@@ -1918,10 +1891,11 @@ public class NewApplicationDelegator {
 
         return true;
     }
-    private AppSubmissionDto  getPersonAppsubmit( AppSubmissionDto oldAppSubmissionDto,AppSubmissionDto appSubmissionDto ,BaseProcessClass bpc){
+    private AppSubmissionDto  getPersonAppsubmit( AppSubmissionDto oldAppSubmissionDto,AppSubmissionDto appSubmissionDto ,BaseProcessClass bpc) throws  Exception{
         AppEditSelectDto appEditSelectDto=new AppEditSelectDto();
-        AppSubmissionDto changePerson=oldAppSubmissionDto;
+        AppSubmissionDto changePerson=(AppSubmissionDto)CopyUtil.copyMutableObject(oldAppSubmissionDto);
         changePerson.setAppSvcRelatedInfoDtoList(appSubmissionDto.getAppSvcRelatedInfoDtoList());
+        boolean b = changePersonAuto(oldAppSubmissionDto, appSubmissionDto);
         changePerson.setAutoRfc(true);
         String changePersonDraftNo = changePerson.getDraftNo();
         if(StringUtil.isEmpty(changePersonDraftNo)){
@@ -1955,6 +1929,72 @@ public class NewApplicationDelegator {
         return changePerson;
     }
 
+    private boolean changePersonAuto(AppSubmissionDto oldAppSubmissionDto,AppSubmissionDto appSubmissionDto){
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        if(oldAppSvcCgoDtoList!=null){
+            if(oldAppSvcCgoDtoList.size()!=appSvcCgoDtoList.size()){
+                return true;
+            }else if(oldAppSvcCgoDtoList.size()==appSvcCgoDtoList.size()){
+                int i=0;
+                for(AppSvcCgoDto appSvcCgoDto : oldAppSvcCgoDtoList){
+                    for(AppSvcCgoDto appSvcCgoDto1 : appSvcCgoDtoList){
+                        if(appSvcCgoDto.getIdNo().equals(appSvcCgoDto1.getIdNo())){
+                            i++;
+                            break;
+                        }
+                    }
+                }
+                if(i!=appSvcCgoDtoList.size()){
+                    return true;
+                }
+            }
+        }
+        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = oldAppSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+        if(oldAppSvcMedAlertPersonList!=null){
+            if(oldAppSvcMedAlertPersonList.size()!=appSvcMedAlertPersonList.size()){
+                return true;
+            }else if(oldAppSvcMedAlertPersonList.size()==appSvcMedAlertPersonList.size()){
+                int i=0;
+                for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList){
+                    for( AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto1 : oldAppSvcMedAlertPersonList){
+                        if(appSvcPrincipalOfficersDto.getIdNo().equals(appSvcPrincipalOfficersDto1.getIdNo())){
+                            i++;
+                            break;
+                        }
+                    }
+                }
+                if(i!=oldAppSvcMedAlertPersonList.size()){
+                    return true;
+                }
+            }
+        }
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = oldAppSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+        if(oldAppSvcPrincipalOfficersDtoList!=null){
+            if(oldAppSvcPrincipalOfficersDtoList.size()!=appSvcPrincipalOfficersDtoList.size()){
+                return true;
+            }else if(oldAppSvcPrincipalOfficersDtoList.size()==appSvcPrincipalOfficersDtoList.size()){
+                int i=0;
+                for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList){
+                    for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto1 : oldAppSvcPrincipalOfficersDtoList){
+                        if(appSvcPrincipalOfficersDto.getIdNo().equals(appSvcPrincipalOfficersDto1.getIdNo())){
+                            i++;
+                            break;
+                        }
+                    }
+                }
+                if(i!=oldAppSvcPrincipalOfficersDtoList.size()){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
     /**
      * StartStep: doSubmit
      *
@@ -3125,6 +3165,7 @@ public class NewApplicationDelegator {
         log.info(sB.toString());
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
         doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
+        doSvcDisdolabory(errorMap,appSvcDisciplineAllocationDtoList,appSvcLaboratoryDisciplinesDtoList,serviceId,sB);
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
         Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList(),licPersonMap);
        log.info(JsonUtil.parseToJson(govenMap));
@@ -3334,10 +3375,40 @@ public class NewApplicationDelegator {
 
     private static void doSvcDis( Map map ,List<AppSvcDisciplineAllocationDto> list,String serviceId,StringBuilder sB){
         if(list==null){
-
+            return;
+        }else {
+            for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : list){
+                String idNo = appSvcDisciplineAllocationDto.getIdNo();
+                if(StringUtil.isEmpty(idNo)){
+                    map.put("error","error");
+                    sB.append(serviceId);
+                    return;
+                }
+            }
         }
     }
 
+    private static void doSvcDisdolabory(Map map ,List<AppSvcDisciplineAllocationDto> appSvcDislist,List<AppSvcLaboratoryDisciplinesDto> appSvclaborlist,String serviceId,StringBuilder sB){
+        if(appSvclaborlist==null||appSvclaborlist.isEmpty()){
+            return;
+        }else if(appSvclaborlist!=null&&!appSvclaborlist.isEmpty()){
+            List<AppSvcChckListDto> appSvcChckListDtoList = appSvclaborlist.get(0).getAppSvcChckListDtoList();
+            if(appSvcChckListDtoList!=null){
+                if(appSvcDislist==null){
+                    map.put("error","error");
+                    sB.append(serviceId);
+                    return;
+                }else {
+                    if( appSvcChckListDtoList.size()!=appSvcDislist.size()){
+                        map.put("error","error");
+                        sB.append(serviceId);
+                        return;
+                    }
+
+                }
+            }
+        }
+    }
     private static void doPO( List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap ,List<AppSvcPrincipalOfficersDto> poDto,String serviceId,StringBuilder sB){
         if(poDto==null){
             if(hcsaSvcPersonnelDtos!=null){
