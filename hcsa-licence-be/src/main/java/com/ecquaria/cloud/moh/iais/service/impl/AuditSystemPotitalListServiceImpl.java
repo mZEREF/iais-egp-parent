@@ -107,7 +107,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         if(isNeedInsp &&!StringUtil.isEmpty(auditTaskDataFillterDto.getInspectorId()) && !StringUtil.isEmpty(auditTaskDataFillterDto.getAuditId())){
             OrgUserDto user = applicationViewService.getUserById(auditTaskDataFillterDto.getInspectorId());
             auditTaskDataFillterDto.setInspector(user.getDisplayName());
-            auditTaskDataFillterDto.setAudited(Boolean.TRUE);
+            auditTaskDataFillterDto.setAudited(true);
         }
         return auditTaskDataFillterDto;
     }
@@ -179,11 +179,11 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         if(ncFdtoList != null){
             List<AuditTaskDataFillterDto> list = new ArrayList<>(ncFdtoList.size());
             for(AuditTaskDataFillterDto auditTaskDataFillterDto : ncFdtoList){
-                boolean exist = Boolean.FALSE;
+                boolean exist = false;
                 for(AuditTaskDataFillterDto taskDataFillterDto :  list){
                     if(auditTaskDataFillterDto.getLicId().equalsIgnoreCase(taskDataFillterDto.getLicId())
                             && auditTaskDataFillterDto.getId().equalsIgnoreCase(taskDataFillterDto.getId())){
-                        exist = Boolean.TRUE;
+                        exist = true;
                         break;
                     }
                 }
@@ -199,11 +199,11 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
 
     private boolean doNcFitter(AuditTaskDataFillterDto temp, String resultLastCompliance) {
         if (HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_FULL_CODE.equals(resultLastCompliance) && HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_FULL_NAME.equalsIgnoreCase(temp.getResultComplicance())) {
-            return Boolean.TRUE;
+            return true;
         } else if (HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_PARTIAL_CODE.equals(resultLastCompliance) && HcsaLicenceBeConstant.RESULT_LAST_COMPLIANCE_PARTIAL_NAME.equalsIgnoreCase(temp.getResultComplicance())){
-            return Boolean.TRUE;
+            return true;
         } else {
-            return Boolean.FALSE;
+            return false;
         }
     }
 
