@@ -316,7 +316,6 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         boolean caRightLowNumFlag = true;
         boolean miRightLowNumFlag = true;
         boolean mjRightLowNumFlag = true;
-        Integer inLeftModNum = 0;
         try {
             if(!StringUtil.isEmpty(inRightLow)){
                 inRightLowNum = Integer.valueOf(inRightLow);
@@ -355,8 +354,8 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         }
         try {
             if(!StringUtil.isEmpty(inLeftMod)){
-                inLeftModNum = Integer.parseInt(inLeftMod);
-                if(inLeftModNum -1 != inRightLowNum  && inLeftModNum.equals(inRightLowNum)){
+                int inLeftModNum = Integer.parseInt(inLeftMod);
+                if(inLeftModNum -1 != inRightLowNum  && inLeftModNum != (inRightLowNum)){
                     if("C".equals(level)){
                         if(caRightLowNumFlag){
                             errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0015");
