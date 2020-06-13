@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -46,10 +47,12 @@ public class ApptConfirmSpecificDateDelegator {
     public void userConfirmSpecificDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateStart start ...."));
         String appPremCorrId = ParamUtil.getMaskedString(bpc.request, "appPremCorrId");
+        String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
         inspSetMaskValueDto.setAppPremCorrId(appPremCorrId);
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
         AuditTrailHelper.auditFunction("Appointment Confirm Specific Date", "Appointment Confirm Specific Date");
+        ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, messageId);
     }
 
     /**
@@ -115,6 +118,8 @@ public class ApptConfirmSpecificDateDelegator {
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateAcc start ...."));
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
         applicantConfirmInspDateService.saveAccSpecificDate(apptFeConfirmDateDto);
+        String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 
@@ -128,6 +133,8 @@ public class ApptConfirmSpecificDateDelegator {
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateReject start ...."));
         ApptFeConfirmDateDto apptFeConfirmDateDto = (ApptFeConfirmDateDto) ParamUtil.getSessionAttr(bpc.request, "apptFeConfirmDateDto");
         applicantConfirmInspDateService.rejectSpecificDate(apptFeConfirmDateDto);
+        String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         ParamUtil.setSessionAttr(bpc.request, "apptFeConfirmDateDto", apptFeConfirmDateDto);
     }
 }
