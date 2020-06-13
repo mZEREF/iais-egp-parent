@@ -37,7 +37,7 @@
         <iais:row>
           <iais:field value="Year."/>
           <iais:value width="18">
-            <iais:select name="dropYearOpt" id="dropYearOpt"  options = "dropYearOpt" firstOption="Please Select" value="${dropYearOpt}" ></iais:select>
+            <iais:select name="dropYearOpt" id="dropYearOpt"  options = "dropYearOpt" firstOption="Please Select" value="${param.dropYearOpt}" ></iais:select>
           </iais:value>
         </iais:row>
 

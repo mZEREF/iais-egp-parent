@@ -226,12 +226,10 @@ public class BlackedOutDateDelegator {
 
         if (!StringUtils.isEmpty(groupName)){
             blackQuery.addFilter("shortName", groupName, true);
-            ParamUtil.setRequestAttr(request, "shortName", groupName);
         }
 
         if (!StringUtils.isEmpty(dropYear)){
             blackQuery.addFilter("year", dropYear, true);
-            ParamUtil.setRequestAttr(request, "dropYearOpt", dropYear);
         }
 
 
