@@ -642,9 +642,9 @@ public class RequestForChangeDelegator {
 
     private FeeDto getTransferFee(){
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
-        amendmentFeeDto.setChangeInHCIName(false);
-        amendmentFeeDto.setChangeInLicensee(true);
-        amendmentFeeDto.setChangeInLocation(false);
+        amendmentFeeDto.setChangeInHCIName(Boolean.FALSE);
+        amendmentFeeDto.setChangeInLicensee(Boolean.TRUE);
+        amendmentFeeDto.setChangeInLocation(Boolean.FALSE);
         FeeDto feeDto = appSubmissionService.getGroupAmendAmount(amendmentFeeDto);
         return feeDto;
     }
