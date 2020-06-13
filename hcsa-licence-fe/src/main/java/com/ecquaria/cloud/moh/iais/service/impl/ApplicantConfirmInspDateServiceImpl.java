@@ -199,6 +199,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         for(AppPremisesInspecApptDto apptDto : apptFeConfirmDateDto.getAppPremisesInspecApptDtoList()){
             if(apptDto.getId().equals(checkDate)){
                 apptRefNo = apptDto.getApptRefNo();
+                break;
             }
         }
         for(AppPremisesInspecApptDto apptDto : apptFeConfirmDateDto.getAppPremisesInspecApptDtoList()){
