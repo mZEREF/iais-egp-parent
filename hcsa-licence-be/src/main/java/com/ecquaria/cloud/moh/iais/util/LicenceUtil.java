@@ -7,11 +7,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * LicenceUtil
@@ -52,8 +53,7 @@ public class LicenceUtil {
         calendar.setTime(startDate);
         calendar.add(Calendar.DATE,-1);
         if(appPremisesRecommendationDto != null){
-            log.info(StringUtil.changeForLog("The getExpiryDateappPremisesRecommendationDto.getChronoUnit() is -->:")
-                    + appPremisesRecommendationDto.getChronoUnit());
+            log.info(StringUtil.changeForLog("The getExpiryDateappPremisesRecommendationDto.getChronoUnit() is -->:" + appPremisesRecommendationDto.getChronoUnit()));
             switch (appPremisesRecommendationDto.getChronoUnit()){
                 case RiskConsts.YEAR :
                     calendar.add(Calendar.YEAR,appPremisesRecommendationDto.getRecomInNumber());
