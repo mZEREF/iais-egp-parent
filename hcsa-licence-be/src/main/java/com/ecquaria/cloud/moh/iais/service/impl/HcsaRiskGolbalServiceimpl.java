@@ -18,10 +18,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskGolbalService;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-
-import java.util.Date;
-import java.util.List;
-
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,7 +145,9 @@ public class HcsaRiskGolbalServiceimpl implements HcsaRiskGolbalService {
         supportDto.setGolbalRiskShowDto(golbalShowDto);
         supportDto.setGolbalFlag(true);
         supportDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        hcsaRiskSupportBeService.sysnRiskSaveEic(responseEntity.getStatusCode(),supportDto);
+        if(responseEntity != null) {
+            hcsaRiskSupportBeService.sysnRiskSaveEic(responseEntity.getStatusCode(), supportDto);
+        }
     }
 
     private FeignResponseEntity<List<HcsaRiskGolbalExtDto>> dosave(GobalRiskTotalDto temp) {
