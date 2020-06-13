@@ -25,10 +25,10 @@
                     <h4>
                         <span >
                             Search By Application
-                            <b >&nbsp;
+                            <strong>&nbsp;
                                 <input  id="applicationChk" type="radio"
                                        <c:if test="${count=='3'||count=='2'}">checked</c:if>   value="2"   name="searchChk"  />
-                            </b>
+                            </strong>
                         </span>
                     </h4>
 
