@@ -824,10 +824,10 @@ public class LicenceApproveBatchjob {
             result = licenceService.getLicenceDto(organizationId);
             if (result != null) {
                 result.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
-                log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> active: "+organizationId));
+                log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> active: " + organizationId));
             }else {
                 result = licenceService.getCeasedGroupLicDto(organizationId);
-                log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> ceased:")+organizationId);
+                log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> ceased:" + organizationId));
             }
         }
         return result;
