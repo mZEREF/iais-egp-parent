@@ -485,6 +485,7 @@ public class InspectionServiceImpl implements InspectionService {
         for(TaskDto tDto:commPools){
             if(tDto.getId().equals(inspectionTaskPoolListDto.getTaskId())){
                 taskDto = tDto;
+                return taskDto;
             }
         }
         return taskDto;
