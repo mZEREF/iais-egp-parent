@@ -649,18 +649,20 @@ public class LicenceApproveBatchjob {
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
                 //create licence
-                String licenceNo = null;
-                if (firstApplicationDto.isNeedNewLicNo()) {
-                    licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto, originLicenceId, applicationDtos.size());
-                }
-                log.debug(StringUtil.changeForLog("The licenceNo is -->;" + licenceNo));
-                if (StringUtil.isEmpty(licenceNo) && firstApplicationDto.isNeedNewLicNo()) {
-                    errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size();
-                    break;
-                }
+//                String licenceNo = null;
+//                if (firstApplicationDto.isNeedNewLicNo()) {
+//                    licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto, originLicenceId, applicationDtos.size());
+//                }
+//                log.debug(StringUtil.changeForLog("The licenceNo is -->;" + licenceNo));
+//                if (StringUtil.isEmpty(licenceNo) && firstApplicationDto.isNeedNewLicNo()) {
+//                    errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size();
+//                    break;
+//                }
 
-                LicenceDto licenceDto = getLicenceDto(licenceNo, hcsaServiceDto.getSvcName(), null, applicationGroupDto, appPremisesRecommendationDto,
+                LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), null, applicationGroupDto, appPremisesRecommendationDto,
                         originLicenceDto, firstApplicationDto, applicationDtos, true);
+                licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
+                licenceDto.setPremiseSize(applicationDtos.size());
                 superLicDto.setLicenceDto(licenceDto);
                 //if PostInspNeeded send email
                 if (isPostInspNeeded == Integer.parseInt(AppConsts.YES)) {
@@ -902,7 +904,7 @@ public class LicenceApproveBatchjob {
 
                 List<PremisesGroupDto> premisesGroupDtos = getPremisesGroupDto(applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos, appSvcPremisesScopeDtos,
                         appSvcPremisesScopeAllocationDtos, hcsaServiceDto, organizationId, isPostInspNeeded);
-                String licenceNo = null;
+                //String licenceNo = null;
                 //get the yearLenth.
 //                int yearLength = getYearLength(appPremisesRecommendationDto);
                 if (!IaisCommonUtils.isEmpty(premisesGroupDtos)) {
@@ -913,21 +915,22 @@ public class LicenceApproveBatchjob {
                     }
                     superLicDto.setPremisesGroupDtos(premisesGroupDtos);
 
-                    //create licence
-                    if (applicationDto.isNeedNewLicNo()) {
-                        licenceNo = licenceService.getLicenceNo(premisesGroupDto.getPremisesDto().getHciCode(), hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto);
-                    }
-                    log.debug(StringUtil.changeForLog("The licenceNo is -->;" + licenceNo));
-                    if (StringUtil.isEmpty(licenceNo) && applicationDto.isNeedNewLicNo()) {
-                        errorMessage = "The licenceNo is null .-->:" + premisesGroupDto.getPremisesDto().getHciCode() + ":" + hcsaServiceDto.getSvcCode();
-                        break;
-                    }
+//                    //create licence
+//                    if (applicationDto.isNeedNewLicNo()) {
+//                        licenceNo = licenceService.getLicenceNo(premisesGroupDto.getPremisesDto().getHciCode(), hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto);
+//                    }
+//                    log.debug(StringUtil.changeForLog("The licenceNo is -->;" + licenceNo));
+//                    if (StringUtil.isEmpty(licenceNo) && applicationDto.isNeedNewLicNo()) {
+//                        errorMessage = "The licenceNo is null .-->:" + premisesGroupDto.getPremisesDto().getHciCode() + ":" + hcsaServiceDto.getSvcCode();
+//                        break;
+//                    }
                 }
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
                 superLicDto.setOriginLicenceDto(originLicenceDto);
-                LicenceDto licenceDto = getLicenceDto(licenceNo, hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
+                LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
                         originLicenceDto, applicationDto, null, false);
+                licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
                 superLicDto.setLicenceDto(licenceDto);
 
                 //create the lic_app_correlation
@@ -1378,7 +1381,7 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-    private LicenceDto getLicenceDto(String licenceNo, String svcName, String svcType, ApplicationGroupDto applicationGroupDto,
+    private LicenceDto getLicenceDto(String svcName, String svcType, ApplicationGroupDto applicationGroupDto,
                                      AppPremisesRecommendationDto appPremisesRecommendationDto,
                                      LicenceDto originLicenceDto,
                                      ApplicationDto applicationDto,
@@ -1390,7 +1393,9 @@ public class LicenceApproveBatchjob {
         if (!StringUtil.isEmpty(svcType)) {
             licenceDto.setSvcType(svcType);
         }
-        if (applicationDto != null && originLicenceDto != null && (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
+        if (applicationDto != null && originLicenceDto != null &&
+                (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
+                || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
             log.info(StringUtil.changeForLog("The  getLicenceDto APPType is RFC ..."));
             licenceDto.setStartDate(originLicenceDto.getStartDate());
             licenceDto.setExpiryDate(originLicenceDto.getExpiryDate());
@@ -1398,16 +1403,16 @@ public class LicenceApproveBatchjob {
             licenceDto.setGrpLic(originLicenceDto.isGrpLic());
             licenceDto.setOriginLicenceId(originLicenceDto.getId());
             licenceDto.setMigrated(originLicenceDto.isMigrated());
-            licenceDto.setLicenceNo(originLicenceDto.getLicenceNo());
+            if (!applicationDto.isNeedNewLicNo()) {
+                licenceDto.setLicenceNo(originLicenceDto.getLicenceNo());
+                licenceDto.setVersion(originLicenceDto.getVersion() + 1);
+            }else{
+                licenceDto.setVersion(1);
+            }
             licenceDto.setFeeRetroNeeded(originLicenceDto.isFeeRetroNeeded());
-            licenceDto.setVersion(originLicenceDto.getVersion() + 1);
             licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
             if (applicationGroupDto != null) {
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
-            }
-            if (!StringUtil.isEmpty(licenceNo)) {
-                licenceDto.setLicenceNo(licenceNo);
-                licenceDto.setVersion(1);
             }
         } else {
             if (applicationGroupDto != null) {
@@ -1503,7 +1508,7 @@ public class LicenceApproveBatchjob {
             } else {
                 licenceDto.setMigrated(false);
             }
-            licenceDto.setLicenceNo(licenceNo);
+            //licenceDto.setLicenceNo(licenceNo);
             licenceDto.setVersion(version);
             licenceDto.setFeeRetroNeeded(false);
             licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
