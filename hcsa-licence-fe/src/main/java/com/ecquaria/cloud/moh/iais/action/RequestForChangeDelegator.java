@@ -345,7 +345,7 @@ public class RequestForChangeDelegator {
            Map<String,Boolean> fileValidate =  ValidationUtils.validateFile(file);
            if(fileValidate != null && fileValidate.size() >0){
                if(!fileValidate.get("fileType")){
-                   error.put("selectedFileError","Wrong file type");
+                   error.put("selectedFileError","GENERAL_ERR0018");
                }
                if(!fileValidate.get("fileSize")){
                    error.put("selectedFileError","UC_CHKLMD001_ERR007");
