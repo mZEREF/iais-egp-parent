@@ -11,16 +11,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.CommonValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import java.util.Map;
-import java.util.regex.Pattern;
-import javax.servlet.http.HttpServletRequest;
-
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.impl.ApplicationServiceImpl;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 
 @Slf4j
@@ -128,7 +125,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     }
                 }
                 //appeal if route back to ASO or PSO
-                if(isRouteBackStatus(status) && isAppealType){
+                boolean rbStatusFlag = isRouteBackStatus(status);
+                if(rbStatusFlag && isAppealType){
                     appealTypeValidate(errMap,request,applicationType,roleId);
                 }
                 //ASO PSO broadcast
