@@ -60,7 +60,7 @@ public class CommonActionAjax {
                 if (handler.getCheckType() == PaginationHandler.CHECK_TYPE_CHECKBOX) {
                     sb.append("<td><input type=\"checkbox\" id=\"").append(pageDiv).append("Check").append(i);
                     sb.append("\" name=\"").append(pageDiv).append("Check").append("\" value=\"");
-                    sb.append(pr.getId()).append("\"");
+                    sb.append(pr.getId()).append('"');
                     sb.append(" onclick=\"javascript:memoryCheckBoxChange('").append(pageDiv);
                     sb.append("', this);\"");
                     if (pr.isChecked()) {
@@ -75,7 +75,7 @@ public class CommonActionAjax {
                 } else if (handler.getCheckType() == PaginationHandler.CHECK_TYPE_RADIO) {
                     sb.append("<td><input type=\"radio\" id=\"").append(pageDiv).append("Check").append(i);
                     sb.append("\" name=\"").append(pageDiv).append("Check").append("\" value=\"");
-                    sb.append(pr.getId()).append("\"");
+                    sb.append(pr.getId()).append('"');
                     if (pr.isChecked()) {
                         sb.append(" checked");
                     }
