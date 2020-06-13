@@ -415,7 +415,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         try {
             GobalRiskAccpetDto entity = hcsaConfigClient.getGobalRiskAccpetDtoByGobalRiskAccpetDto(gobalRiskAccpetDtos).getEntity();
             String isPreInspect = entity.getIsPreInspect();
-            log.info(isPreInspect+"isPreInspect");
+            log.info(StringUtil.changeForLog(isPreInspect + "isPreInspect"));
             for(ApplicationGroupDto applicationGroupDto : applicationListDto.getApplicationGroup()){
                 if(HcsaConsts.HCSA_REQUIRED_PRE_LICENSING_INSPECTION.equals(isPreInspect)){
                     applicationGroupDto.setIsPreInspection(1);
@@ -445,7 +445,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     try {
                         HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
                         appPremisesCorrelationDto.setRiskScore(entity.getRiskScore());
-                        log.info(" getHcsaRiskScoreDtoByHcsaRiskScoreDto ok",+entity.getRiskScore());
+                        log.info(StringUtil.changeForLog(" getHcsaRiskScoreDtoByHcsaRiskScoreDto ok" + entity.getRiskScore()));
                     }catch (Exception e){
                         log.error("getHcsaRiskScoreDtoByHcsaRiskScoreDto is error ",e);
                     }
