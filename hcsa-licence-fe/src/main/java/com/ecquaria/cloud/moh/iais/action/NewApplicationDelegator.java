@@ -3677,6 +3677,8 @@ public class NewApplicationDelegator {
         String currentEdit = (String) ParamUtil.getRequestAttr(bpc.request,RfcConst.RFC_CURRENT_EDIT);
         if((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType))
                 && appSubmissionDto!= null && !StringUtil.isEmpty(currentEdit)){
+            ParamUtil.setSessionAttr(bpc.request,"hasDetail","Y");
+            ParamUtil.setSessionAttr(bpc.request,"isSingle","Y");
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
             if(RfcConst.EDIT_PREMISES.equals(currentEdit)){
                 appEditSelectDto.setPremisesEdit(true);

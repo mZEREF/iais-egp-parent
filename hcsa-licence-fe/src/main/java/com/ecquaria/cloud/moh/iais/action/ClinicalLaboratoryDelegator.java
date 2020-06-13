@@ -460,7 +460,8 @@ public class ClinicalLaboratoryDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
 
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
             if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
                     || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 return;
@@ -599,7 +600,8 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do doGovernanceOfficers start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
             if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action) || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 return;
             }
@@ -670,7 +672,8 @@ public class ClinicalLaboratoryDelegator {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
             if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
                     || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 return;
@@ -779,7 +782,8 @@ public class ClinicalLaboratoryDelegator {
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         String action = ParamUtil.getRequestString(bpc.request, "nextStep");
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
             if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
                     || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 return;
@@ -897,7 +901,8 @@ public class ClinicalLaboratoryDelegator {
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String action = mulReq.getParameter("nextStep");
-        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
+        ParamUtil.setRequestAttr(bpc.request,"nextStep",action);
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType()) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
             if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
                     || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
                 //clear
@@ -1046,6 +1051,15 @@ public class ClinicalLaboratoryDelegator {
         } else {
             ParamUtil.setRequestAttr(bpc.request, "Switch2", "jumPage");
         }
+//        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+//        String appType = appSubmissionDto.getAppType();
+//        if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+//            ServiceStepDto serviceStepDto = (ServiceStepDto) ParamUtil.getSessionAttr(bpc.request, ShowServiceFormsDelegator.SERVICESTEPDTO);
+//            if(serviceStepDto.isServiceEnd()){
+//                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "jump");
+//            }
+//
+//        }
         log.debug(StringUtil.changeForLog("the do prepareResult end ...."));
     }
 
@@ -1097,6 +1111,14 @@ public class ClinicalLaboratoryDelegator {
     public void doServicePersonnel(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doServicePersonnel start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String action = ParamUtil.getRequestString(bpc.request, "nextStep");
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+            if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
+                return;
+            }
+        }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         boolean isRfi = false;
@@ -1195,6 +1217,14 @@ public class ClinicalLaboratoryDelegator {
     public void doMedAlertPerson(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doMedAlertPerson start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        String action = ParamUtil.getRequestString(bpc.request, "nextStep");
+        String appType = appSubmissionDto.getAppType();
+        if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
+            if (RfcConst.RFC_BTN_OPTION_UNDO_ALL_CHANGES.equals(action)
+                    || RfcConst.RFC_BTN_OPTION_SKIP.equals(action)) {
+                return;
+            }
+        }
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         boolean isRfi = false;
