@@ -725,7 +725,8 @@ public class LicenceApproveBatchjob {
                     //part premises
                     boolean isPartPremises = applicationDto.isPartPremises();
                     log.info(StringUtil.changeForLog("The generateGroupLicence isPartPremises is -->:" + isPartPremises));
-                    if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && isPartPremises) {
+                    boolean rfcTypeFlag = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
+                    if (rfcTypeFlag && isPartPremises) {
                         String everyOriginLicenceId = applicationDto.getOriginLicenceId();
                         log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is -->:" + everyOriginLicenceId));
                         if (!StringUtil.isEmpty(everyOriginLicenceId)) {
@@ -823,10 +824,10 @@ public class LicenceApproveBatchjob {
             result = licenceService.getLicenceDto(organizationId);
             if (result != null) {
                 result.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
-                log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> active: "+organizationId));
+                log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> active: " + organizationId));
             }else {
                 result = licenceService.getCeasedGroupLicDto(organizationId);
-                log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> ceased:")+organizationId);
+                log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> ceased:" + organizationId));
             }
         }
         return result;

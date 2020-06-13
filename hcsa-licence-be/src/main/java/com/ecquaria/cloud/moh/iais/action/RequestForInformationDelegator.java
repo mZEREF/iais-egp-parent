@@ -606,7 +606,7 @@ public class RequestForInformationDelegator {
         if(length==null){
             length="0";
         }
-        Integer len=Integer.parseInt(length);
+        int len = Integer.parseInt(length);
         String sql = SqlMap.INSTANCE.getSql("ReqForInfoQuery", "rfi-new").getSqlStr();
 
 
@@ -624,7 +624,7 @@ public class RequestForInformationDelegator {
         if(length==null){
             length="0";
         }
-        Integer len=Integer.parseInt(length);
+        int len = Integer.parseInt(length);
         String sql = SqlMap.INSTANCE.getSql("ReqForInfoQuery", "rfi-info-new").getSqlStr();
 
         sql=sql.replaceAll("indexTitleRfi",String.valueOf((len+1)));
