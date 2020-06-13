@@ -57,7 +57,7 @@ public class FeEicGatewayClientFallback implements FeEicGatewayClient{
     }
 
     @Override
-    public FeignResponseEntity<IaisApiResult<AppPremisesSelfDeclChklDto>> routeSelfAssessment(FeSelfAssessmentSyncDataDto selfDeclSyncDataDto, String date, String authorization, String dateSec, String authorizationSec) {
+    public FeignResponseEntity<IaisApiResult> routeSelfAssessment(FeSelfAssessmentSyncDataDto selfDeclSyncDataDto, String date, String authorization, String dateSec, String authorizationSec) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
