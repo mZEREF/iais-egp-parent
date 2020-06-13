@@ -21,15 +21,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HcsaFinancialRiskValidate
@@ -248,7 +248,6 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         Integer inRightLowNum = 0;
         boolean inRightLowNumFlag = true;
         boolean prRightLowNumFlag = true;
-        Integer inLeftModNum = 0;
         try {
             if(!StringUtil.isEmpty(inRightLow)){
                 inRightLowNum = Integer.valueOf(inRightLow);
@@ -280,7 +279,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }
         try {
             if(!StringUtil.isEmpty(inLeftMod)){
-                inLeftModNum = Integer.valueOf(inLeftMod);
+                int inLeftModNum = Integer.valueOf(inLeftMod);
                 if(inLeftModNum -1 != inRightLowNum && inLeftModNum != inRightLowNum){
                     if(isIn){
                         if(inRightLowNumFlag){
