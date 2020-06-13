@@ -284,8 +284,8 @@
             <#if startDate??> AND T1.START_DATE >= :startDate</#if>
             <#if endDate??> AND T1.END_DATE <= :endDate</#if>
             <#if status??> AND T1.STATUS = :status</#if>
-            <#if bkStartDate??> AND T1.START_DATE >= CONVERT(datetime, :bkStartDate, 103)</#if>
-            <#if bkEndDate??> AND T1.END_DATE >= CONVERT(datetime, :bkEndDate, 103)</#if>
+
+
         ]]>
     </sql>
 

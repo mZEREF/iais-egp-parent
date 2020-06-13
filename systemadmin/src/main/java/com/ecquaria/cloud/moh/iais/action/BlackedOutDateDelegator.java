@@ -4,12 +4,14 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptBlackoutDateQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -224,13 +226,16 @@ public class BlackedOutDateDelegator {
             ParamUtil.setRequestAttr(request, "dropYear", dropYear);
         }
 
+
         if (!StringUtils.isEmpty(startDate)){
-            blackQuery.addFilter("bkStartDate", startDate, true);
+            String convertStartDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(startDate), SystemAdminBaseConstants.DATE_FORMAT);
+            blackQuery.addFilter("startDate", convertStartDate, true);
             ParamUtil.setRequestAttr(request, "startDate", startDate);
         }
 
         if (!StringUtils.isEmpty(endDate)){
-            blackQuery.addFilter("bkEndDate", endDate, true);
+            String convertEndDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(endDate), SystemAdminBaseConstants.DATE_FORMAT + SystemAdminBaseConstants.TIME_FORMAT);
+            blackQuery.addFilter("endDate", convertEndDate, true);
             ParamUtil.setRequestAttr(request, "endDate", endDate);
         }
 
