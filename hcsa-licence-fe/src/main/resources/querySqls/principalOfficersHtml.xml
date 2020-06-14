@@ -4,6 +4,7 @@
         <![CDATA[
             <div class="po-content">
                 <input type="hidden" name="poLicPerson" value="0"/>
+                <input type="hidden" name="poExistingPsn" value="0"/>
                 <div class="row">
                   <div class="control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
@@ -140,6 +141,7 @@
         <![CDATA[
         <div class="dpo-content">
             <input type="hidden" name="dpoLicPerson" value="0"/>
+            <input type="hidden" name="dpoExistingPsn" value="0"/>
             <div class="row">
               <div class="control control-caption-horizontal">
                 <div class=" form-group form-horizontal formgap">

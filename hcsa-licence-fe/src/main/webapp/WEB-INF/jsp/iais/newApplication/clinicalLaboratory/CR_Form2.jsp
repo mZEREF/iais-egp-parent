@@ -85,6 +85,7 @@
                   <table class="assignContent control-grid" style="width:100%;">
                     <input type="hidden" name="isPartEdit" value="0"/>
                     <input type="hidden" name="cgoIndexNo" value="${currentCgo.cgoIndexNo}"/>
+                    <input type="hidden" name="existingPsn" value="0"/>
                     <c:choose>
                       <c:when test="${currentCgo.licPerson}">
                         <input type="hidden" name="licPerson" value="1"/>
@@ -470,6 +471,7 @@
                     fillPsnForm($CurrentPsnEle,emptyData, 'CGO');
                     showSpecialty();
                     $CurrentPsnEle.find('input[name="licPerson"]').val('0');
+                    $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
                 }
             } else if('-1' == $(this).val()) {
                 $parentEle.find('> .profile-info-gp').removeClass('hidden');
@@ -480,6 +482,7 @@
                     fillPsnForm($CurrentPsnEle,emptyData, 'CGO');
                     showSpecialty();
                     $CurrentPsnEle.find('input[name="licPerson"]').val('0');
+                    $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
                 }
             } else{
                 $parentEle.find('> .new-officer-form').removeClass('hidden');
@@ -560,6 +563,7 @@
             $contentEle.find('div.nice-select').removeClass('disabled');
             $contentEle.find('input[type="text"]').css('border-color','');
             $contentEle.find('input[type="text"]').css('color','');
+            $contentEle.find('input[name=""existingPsn]').val('0');
             $('#isEditHiddenVal').val('1');
         });
     }

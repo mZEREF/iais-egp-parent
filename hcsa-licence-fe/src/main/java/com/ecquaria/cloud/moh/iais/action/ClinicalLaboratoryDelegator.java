@@ -829,14 +829,14 @@ public class ClinicalLaboratoryDelegator {
                 Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
                 map = NewApplicationHelper.doValidatePo(poDto, licPersonMap);
                 if (appSubmissionDto.isNeedEditController()) {
-                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
-                    if (isGetDataFromPagePo) {
-                        clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS);
-                    }
-                    if (isGetDataFromPageDpo) {
-                        clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS);
-                    }
-                    appSubmissionDto.setClickEditPage(clickEditPages);
+//                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
+//                    if (isGetDataFromPagePo) {
+//                        clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_PRINCIPAL_OFFICERS);
+//                    }
+//                    if (isGetDataFromPageDpo) {
+//                        clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_DEPUTY_PRINCIPAL_OFFICERS);
+//                    }
+//                    appSubmissionDto.setClickEditPage(clickEditPages);
                     AppEditSelectDto appEditSelectDto = appSubmissionDto.getChangeSelectDto();
                     appEditSelectDto.setServiceEdit(true);
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
@@ -1553,6 +1553,7 @@ public class ClinicalLaboratoryDelegator {
         if (needEdit) {
             size = cgoIndexNos.length;
         }
+        String[] existingPsn = ParamUtil.getStrings(request,"existingPsn");
         String[] licPerson = ParamUtil.getStrings(request, "licPerson");
         String[] isPartEdit = ParamUtil.getStrings(request, "isPartEdit");
         String[] salutation = ParamUtil.getStrings(request, "salutation");
@@ -1634,7 +1635,7 @@ public class ClinicalLaboratoryDelegator {
                         designation = removeArrIndex(designation, i);
                         professionType = removeArrIndex(professionType, i);
                         specialty = removeArrIndex(specialty, i);
-
+                        existingPsn = removeArrIndex(existingPsn,i);
                         //change arr index
                         --i;
                         --size;
@@ -1642,13 +1643,20 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }
             }
-            if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1") && editRenew) {
-                if (AppConsts.YES.equals(licPerson[i])) {
+            String assign = assignSelect[i];
+            if (assign != null && !NewApplicationConstant.NEW_PSN.equals(assign) && !assign.equals("-1")) {
+                boolean newGetData = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && AppConsts.YES.equals(licPerson[i]);
+                //edit,first submit,
+                boolean editGetData = needEdit && (AppConsts.NO.equals(isPartEdit[i]) || AppConsts.YES.equals(isPartEdit[i]) && AppConsts.YES.equals(existingPsn[i]));
+                if (newGetData || editGetData) {
                     AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
                     appSvcCgoDto = MiscUtil.transferEntityDto(appSvcPrincipalOfficersDto, AppSvcCgoDto.class);
                     appSvcCgoDto.setAssignSelect(assignSelect[i]);
                     appSvcCgoDto.setLicPerson(true);
                     appSvcCgoDto.setSelectDropDown(true);
+                    if(StringUtil.isEmpty(appSvcPrincipalOfficersDto.getCgoIndexNo())){
+                        appSvcCgoDto.setCgoIndexNo(UUID.randomUUID().toString());
+                    }
                     appSvcCgoDtoList.add(appSvcCgoDto);
                     //change arr
                     cgoIndexNos = removeArrIndex(cgoIndexNos, i);
@@ -1661,12 +1669,11 @@ public class ClinicalLaboratoryDelegator {
                     designation = removeArrIndex(designation, i);
                     professionType = removeArrIndex(professionType, i);
                     specialty = removeArrIndex(specialty, i);
+                    existingPsn = removeArrIndex(existingPsn,i);
                     //change arr index
                     --i;
                     --size;
                     continue;
-                } else {
-                    appSvcCgoDto.setSelectDropDown(true);
                 }
             }
             if (StringUtil.isEmpty(cgoIndexNo)) {
@@ -1698,6 +1705,9 @@ public class ClinicalLaboratoryDelegator {
                     appSvcCgoDto.setLicPerson(true);
                 }
             }
+            if(needEdit && AppConsts.YES.equals(licPerson[i])){
+                appSvcCgoDto.setLicPerson(true);
+            }
             appSvcCgoDtoList.add(appSvcCgoDto);
         }
         ParamUtil.setSessionAttr(request, GOVERNANCEOFFICERSDTOLIST, (Serializable) appSvcCgoDtoList);
@@ -1710,6 +1720,7 @@ public class ClinicalLaboratoryDelegator {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
         if (isGetDataFromPagePo) {
+            String[] poExistingPsn = ParamUtil.getStrings(request,"poExistingPsn");
             String[] poLicPerson = ParamUtil.getStrings(request, "poLicPerson");
             String[] assignSelect = ParamUtil.getStrings(request, "poSelect");
             String[] salutation = ParamUtil.getStrings(request, "salutation");
@@ -1753,8 +1764,9 @@ public class ClinicalLaboratoryDelegator {
                             }
                         }
                     }
-                    if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1") && editRenew) {
-                        if (AppConsts.YES.equals(poLicPerson[i])) {
+
+                    if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")) {
+                        if (AppConsts.YES.equals(poLicPerson[i]) && AppConsts.YES.equals(poExistingPsn[i])) {
                             poDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
                             poDto.setAssignSelect(assignSelect[i]);
                             poDto.setLicPerson(true);
@@ -1767,6 +1779,7 @@ public class ClinicalLaboratoryDelegator {
                             salutation = removeArrIndex(salutation, i);
                             idType = removeArrIndex(idType, i);
                             designation = removeArrIndex(designation, i);
+                            assignSelect = removeArrIndex(assignSelect,i);
                             //change arr index
                             --i;
                             --length;
@@ -1798,6 +1811,7 @@ public class ClinicalLaboratoryDelegator {
         }
         //depo
         if ("1".equals(deputySelect) && isGetDataFromPageDpo) {
+            String[] dpoExistingPsn = ParamUtil.getStrings(request,"dpoExistingPsn");
             String[] dpoLicPerson = ParamUtil.getStrings(request, "dpoLicPerson");
             String[] assignSelect = ParamUtil.getStrings(request, "deputyPoSelect");
             String[] deputySalutation = ParamUtil.getStrings(request, "deputySalutation");
@@ -1826,6 +1840,7 @@ public class ClinicalLaboratoryDelegator {
                             deputySalutation = removeArrIndex(deputySalutation, i);
                             deputyIdType = removeArrIndex(deputyIdType, i);
                             deputyDesignation = removeArrIndex(deputyDesignation, i);
+                            assignSelect = removeArrIndex(assignSelect,i);
                             //change arr index
                             --i;
                             continue;

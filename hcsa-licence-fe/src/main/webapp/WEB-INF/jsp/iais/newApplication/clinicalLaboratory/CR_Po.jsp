@@ -66,6 +66,7 @@
                         <input type="hidden" name="poLicPerson" value="0"/>
                       </c:otherwise>
                     </c:choose>
+                    <input type="hidden" name="poExistingPsn" value="0"/>
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -318,6 +319,7 @@
                         <input type="hidden" name="dpoLicPerson" value="0"/>
                       </c:otherwise>
                     </c:choose>
+                    <input type="hidden" name="dpoExistingPsn" value="0"/>
                     <div class="row" <c:if test="${status.first}">style="margin-top:-4%;"</c:if> >
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -613,12 +615,14 @@
                     fillPoData($poContentEle, data);
                 }
                 $poContentEle.find('input[name="poLicPerson"]').val('0');
+                $poContentEle.find('input[name="poExistingPsn"]').val('0');
             }else if('-1' == selectVal){
                 $poContentEle.find('div.principalOfficers').addClass('hidden');
                 if(0 != init) {
                     fillPoData($poContentEle, data);
                 }
                 $poContentEle.find('input[name="poLicPerson"]').val('0');
+                $poContentEle.find('input[name="poExistingPsn"]').val('0');
             }else{
                 $poContentEle.find('div.principalOfficers').removeClass('hidden');
                 if(init == 0){
@@ -641,12 +645,14 @@
                     fillDpoData($dpoContentEle, data);
                 }
                 $dpoContentEle.find('input[name="poLicPerson"]').val('0');
+                $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
             }else if('-1' == selectVal){
                 $dpoContentEle.find('div.deputyPrincipalOfficers').addClass('hidden');
                 if(0 != init) {
                     fillDpoData($dpoContentEle, data);
                 }
                 $dpoContentEle.find('input[name="poLicPerson"]').val('0');
+                $dpoContentEle.find('input[name="dpoExistingPsn"]').val('0');
             }else{
                 $dpoContentEle.find('div.deputyPrincipalOfficers').removeClass('hidden');
                 if(init == 0){
@@ -756,6 +762,7 @@
             $('#addPoBtn').removeClass('hidden');
             addPo();
             $('#edit').addClass('hidden');
+            $('input[name="poExistingPsn"]').val('0');
         });
     }
 
@@ -770,6 +777,7 @@
             $('#isEditDpoHiddenVal').val('1');
             addDpo();
             $('#edit-dpo').addClass('hidden');
+            $('input[name="dpoExistingPsn"]').val('0');
         });
     }
     var fillPoData = function ($poContentEle,data) {
@@ -807,9 +815,11 @@
         if('1' == isLicPerson){
             disabledPartPage($poContentEle.find('div.principalOfficers'));
             $poContentEle.find('input[name="poLicPerson"]').val('1');
+            $poContentEle.find('input[name="poExistingPsn"]').val('1');
         }else{
             unDisabledPartPage($poContentEle.find('div.principalOfficers'));
             $poContentEle.find('input[name="poLicPerson"]').val('0');
+            $poContentEle.find('input[name="poExistingPsn"]').val('0');
         }
     }
 
@@ -848,9 +858,11 @@
         if('1' == isLicPerson){
             disabledPartPage($poContentEle.find('div.deputyPrincipalOfficers'));
             $poContentEle.find('input[name="dpoLicPerson"]').val('1');
+            $poContentEle.find('input[name="dpoExistingPsn"]').val('1');
         }else{
             unDisabledPartPage($poContentEle.find('div.deputyPrincipalOfficers'));
             $poContentEle.find('input[name="dpoLicPerson"]').val('0');
+            $poContentEle.find('input[name="dpoExistingPsn"]').val('0');
         }
     }
 
