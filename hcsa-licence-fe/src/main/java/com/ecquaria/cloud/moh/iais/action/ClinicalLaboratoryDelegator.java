@@ -1717,8 +1717,11 @@ public class ClinicalLaboratoryDelegator {
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcPrincipalOfficersDto(HttpServletRequest request, Boolean isGetDataFromPagePo, Boolean isGetDataFromPageDpo) {
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
-        AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        AppSubmissionDto appSubmissionDto =getAppSubmissionDto(request);
         String deputySelect = ParamUtil.getString(request, "deputyPrincipalOfficer");
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
+        String appType = appSubmissionDto.getAppType();
+        boolean needEdit = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || isRfi;
         if (isGetDataFromPagePo) {
             String[] poExistingPsn = ParamUtil.getStrings(request,"poExistingPsn");
             String[] poLicPerson = ParamUtil.getStrings(request, "poLicPerson");
@@ -1764,9 +1767,11 @@ public class ClinicalLaboratoryDelegator {
                             }
                         }
                     }
-
                     if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")) {
-                        if (AppConsts.YES.equals(poLicPerson[i]) && AppConsts.YES.equals(poExistingPsn[i])) {
+                        boolean newGetData = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && AppConsts.YES.equals(poLicPerson[i]);
+                        //edit,first submit,
+                        boolean editGetData = needEdit && AppConsts.YES.equals(poExistingPsn[i]);
+                        if (newGetData || editGetData) {
                             poDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
                             poDto.setAssignSelect(assignSelect[i]);
                             poDto.setLicPerson(true);
@@ -1780,6 +1785,7 @@ public class ClinicalLaboratoryDelegator {
                             idType = removeArrIndex(idType, i);
                             designation = removeArrIndex(designation, i);
                             assignSelect = removeArrIndex(assignSelect,i);
+                            poExistingPsn = removeArrIndex(poExistingPsn,i);
                             //change arr index
                             --i;
                             --length;
@@ -1805,6 +1811,9 @@ public class ClinicalLaboratoryDelegator {
                             poDto.setLicPerson(true);
                         }
                     }
+                    if(needEdit && AppConsts.YES.equals(poLicPerson[i])){
+                        poDto.setLicPerson(true);
+                    }
                     appSvcPrincipalOfficersDtos.add(poDto);
                 }
             }
@@ -1822,11 +1831,14 @@ public class ClinicalLaboratoryDelegator {
             String[] deputyMobileNo = ParamUtil.getStrings(request, "deputyMobileNo");
             String[] deputyOfficeTelNo = ParamUtil.getStrings(request, "deputyOfficeTelNo");
             String[] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
-            if (assignSelect != null && assignSelect.length > 0) {
+            if (assignSelect != null && assignSelect.length > 0 ) {
                 for (int i = 0; i < assignSelect.length; i++) {
                     AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
                     if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")) {
-                        if (AppConsts.YES.equals(dpoLicPerson[i])) {
+                        boolean newGetData = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && AppConsts.YES.equals(dpoLicPerson[i]);
+                        //edit,first submit,
+                        boolean editGetData = needEdit && AppConsts.YES.equals(dpoExistingPsn[i]);
+                        if (newGetData || editGetData) {
                             dpoDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
                             dpoDto.setAssignSelect(assignSelect[i]);
                             dpoDto.setLicPerson(true);
@@ -1840,7 +1852,7 @@ public class ClinicalLaboratoryDelegator {
                             deputySalutation = removeArrIndex(deputySalutation, i);
                             deputyIdType = removeArrIndex(deputyIdType, i);
                             deputyDesignation = removeArrIndex(deputyDesignation, i);
-                            assignSelect = removeArrIndex(assignSelect,i);
+                            dpoExistingPsn = removeArrIndex(dpoExistingPsn,i);
                             //change arr index
                             --i;
                             continue;
@@ -1858,6 +1870,9 @@ public class ClinicalLaboratoryDelegator {
                     dpoDto.setIdNo(deputyIdNo[i]);
                     dpoDto.setOfficeTelNo(deputyOfficeTelNo[i]);
                     dpoDto.setMobileNo(deputyMobileNo[i]);
+                    if(needEdit && AppConsts.YES.equals(dpoLicPerson[i])){
+                        dpoDto.setLicPerson(true);
+                    }
                     appSvcPrincipalOfficersDtos.add(dpoDto);
                 }
             }
