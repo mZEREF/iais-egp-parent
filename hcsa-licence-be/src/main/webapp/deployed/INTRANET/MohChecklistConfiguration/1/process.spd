@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="12" minorVersion="0" name="MohChecklistConfiguration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="2" minorVersion="0" name="MohChecklistConfiguration" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
@@ -179,7 +179,9 @@
   <AutomaticStep defClass="" executor="" icon="" name="exportConfigTemplate" x="360" y="200">
    <Description/>
    <probepoint type="none"/>
-   <OnStepProcess/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="exportConfigTemplate_OnStepProcess_0" name="exportConfigTemplate_OnStepProcess_0"/>
+   </OnStepProcess>
   </AutomaticStep>
   <InvokeStep defClass="" executor="" icon="" name="invokeDownloadTemplate" processname="PostDownloadFile" project="INTRANET" version="-1" x="370" y="400">
    <Description/>
@@ -534,7 +536,6 @@
    <SwitchCase component="/Steps/AutomaticStep/submitConfig" value="&quot;submitConfig&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge7" value="&quot;doBack&quot;"/>
   </Switch>
-
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch5" x="1090" y="310">
    <Description/>
    <SwitchCase component="/Merges/Merge/Merge3" value="&quot;doBack&quot;"/>

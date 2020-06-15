@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -139,7 +140,7 @@ public class ExcelWriter {
         sheetAt = property.sheetAt();
     }
 
-    private  void setFieldName(final Class<?> clz, final Sheet sheet) {
+    private void setFieldName(final Class<?> clz, final Sheet sheet) {
         Row sheetRow = sheet.createRow(startCellIndex);
         Cell firstCell = sheetRow.createCell(0);
         firstCell.setCellValue("SN");
@@ -228,6 +229,56 @@ public class ExcelWriter {
         return out;
     }
 
+    /**
+     * For special requirements, the method can be ignored
+     * @Author yichen
+     * @Date: 11:49 2020/6/15
+     **/
+    public File writerToExcelByIndex(final File file, int sheetAt, List<String> val, Map<Integer, List<Integer>> excelConfigIndex) throws Exception {
+        if (file == null){
+            throw new IaisRuntimeException("can not find file when writerToExcelByIndex");
+        }
+
+        File out;
+        final String localFileName = generationFileName();
+        Sheet sheet;
+        log.info("current filename " + localFileName);
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
+
+            sheet  = workbook.getSheetAt(sheetAt);
+
+            int count = 0;
+            for (Map.Entry<Integer, List<Integer>> entry : excelConfigIndex.entrySet()){
+                int row = entry.getKey();
+                Row sheetRow = sheet.getRow(row);
+
+                if (sheetRow == null){
+                    continue;
+                }
+
+                List<Integer> cellIndex = entry.getValue();
+                for (Integer i : cellIndex){
+                    Cell cell = sheetRow.createCell(i);
+                    String value = val.get(count);
+                    cell.setCellValue(value);
+                    count++;
+                }
+            }
+
+            OutputStream outputStream = new FileOutputStream(localFileName);
+            workbook.write(outputStream);
+            out = new File(localFileName);
+            workbook.close();
+        } catch (Exception e) {
+            throw new Exception("has error when when export excel, may be is resource corrupted");
+        }finally {
+            workbook.close();
+        }
+
+        return out;
+    }
+
     private void doParse(List<?> source, Sheet sheet){
         initLockStyle();
 
@@ -277,8 +328,8 @@ public class ExcelWriter {
             for (Field field : fields) {
                 if (field.isAnnotationPresent(ExcelProperty.class)) {
                     ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-                    int rowIndex = annotation.cellIndex();
-                    Cell cell = sheetRow.createCell(rowIndex);
+                    int index = annotation.cellIndex();
+                    Cell cell = sheetRow.createCell(index);
                     boolean readOnly = annotation.readOnly();
                     boolean hidden = annotation.hidden();
 
@@ -289,7 +340,7 @@ public class ExcelWriter {
                     }
 
                     if (hidden){
-                        sheet.setColumnHidden(rowIndex, true);
+                        sheet.setColumnHidden(index, true);
                     }
 
                     cell.setCellValue(setValue(clz.getDeclaredMethod("get" +
@@ -308,8 +359,8 @@ public class ExcelWriter {
     private  String generationFileName() {
         long currentTimeMillis = System.currentTimeMillis();
         String jointText = currentTimeMillis + "." + EXCEL_TYPE_XSSF;
-        if (StringUtils.isEmpty(fileName)){
-            fileName = clz.getSimpleName();
+        if (StringUtils.isEmpty(fileName) && clz != null){
+                fileName = clz.getSimpleName();
         }
 
         return fileName + "-" + jointText;

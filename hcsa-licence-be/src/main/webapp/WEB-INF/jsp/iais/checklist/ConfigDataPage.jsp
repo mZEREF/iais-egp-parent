@@ -98,17 +98,17 @@
           <table class="table">
             <thead>
             <tr>
-              <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
+              <iais:sortableHeader needSort="false" style="width:1%" field="" value="No."></iais:sortableHeader>
               <td></td>
-              <iais:sortableHeader needSort="true"   field="is_common" value="Common"></iais:sortableHeader>
+              <iais:sortableHeader  style="width:8%" needSort="true"   field="is_common" value="Common"></iais:sortableHeader>
               <iais:sortableHeader needSort="true"   field="type" value="Type"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="service" value="Service"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="subtype_name" value="Service Sub-Type"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="START_DATE" value="Effective Start Date"></iais:sortableHeader>
-              <iais:sortableHeader needSort="true"   field="END_DATE" value="Effective End Date"></iais:sortableHeader>
-              <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
+              <iais:sortableHeader  needSort="true"   field="module" value="Module"></iais:sortableHeader>
+              <iais:sortableHeader  needSort="true"   field="service" value="Service"></iais:sortableHeader>
+              <iais:sortableHeader  style="width:13%" needSort="true"   field="subtype_name" value="Service Sub-Type"></iais:sortableHeader>
+              <iais:sortableHeader  style="width:8%" needSort="true"   field="HCI_CODE" value="HCI Code"></iais:sortableHeader>
+              <iais:sortableHeader  needSort="true"   field="START_DATE" value="Effective Start Date"></iais:sortableHeader>
+              <iais:sortableHeader  needSort="true"   field="END_DATE" value="Effective End Date"></iais:sortableHeader>
+              <iais:sortableHeader  needSort="false"  style="width:10%"  field="action" value="Action"></iais:sortableHeader>
 
             </tr>
             </thead>
@@ -147,6 +147,7 @@
                       <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:loadEditData('<iais:mask name="currentMaskId" value="${config.id}"/>')" >Edit</button>
                       <button type="button" onclick="javascript:cloneConfig('<iais:mask name="currentMaskId" value="${config.id}"/>')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >Clone</button>
                       <button type="button" onclick="javascript:doView('<iais:mask name="currentMaskId" value="${config.id}"/>')" class="btn btn-default btn-sm" data-toggle="modal" data-target="#deleteModal" >View</button>
+                      <button type="button" onclick="javascript:exportTemplate('<iais:mask name="currentMaskId" value="${config.id}"/>')" class="btn btn-default btn-sm">Export</button>
                       <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="javascript:deleteRecord('<iais:mask name="currentMaskId" value="${config.id}"/>')" >Delete</button>
 
 
@@ -186,6 +187,10 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
+  function exportTemplate(id) {
+    $('#currentMaskId').val(id);
+    SOP.Crud.cfxSubmit("mainForm", "exportConfigTemplate", id);
+  }
 
   function doSearch(){
     SOP.Crud.cfxSubmit("mainForm", "doSearch");

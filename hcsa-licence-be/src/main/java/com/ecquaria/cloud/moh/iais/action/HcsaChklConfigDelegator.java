@@ -38,10 +38,12 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import sop.servlet.webflow.HttpHandler;
@@ -49,6 +51,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -63,6 +66,14 @@ import java.util.stream.Collectors;
 @Delegator(value = "hcsaChklConfigDelegator")
 @Slf4j
 public class HcsaChklConfigDelegator {
+    private static Map<Integer, List<Integer>> excelConfigIndex = new HashMap<>();
+
+    static {
+        excelConfigIndex.put(1, Arrays.asList(2));
+        excelConfigIndex.put(3, Arrays.asList(2, 5));
+        excelConfigIndex.put(5, Arrays.asList(2,5));
+        excelConfigIndex.put(7, Arrays.asList(2,5,7));
+    }
 
     private HcsaChklService hcsaChklService;
 
@@ -806,6 +817,58 @@ public class HcsaChklConfigDelegator {
     }
 
 
+
+    /**
+     * AutoStep: exportConfigTemplate
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void exportConfigTemplate(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        String configId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
+
+        if (!StringUtils.isEmpty(configId)){
+            ChecklistConfigDto config = hcsaChklService.getChecklistConfigById(configId);
+            try {
+                List<String> val = IaisCommonUtils.genNewArrayList();
+                val.add(config.isCommon() ? "Yes" : "No");
+                val.add(config.getModule());
+                val.add(config.getType());
+                val.add(config.getSvcName());
+                val.add(config.getSvcSubType());
+                val.add(config.getHciCode());
+                val.add(config.getEftStartDate());
+                val.add(config.getEftEndDate());
+
+                List<ConfigExcelItemDto> updateItem = hcsaChklService.convertToUploadTemplateByConfig(config);
+
+                File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Update_Template.xlsx");
+                ExcelWriter excelWriter = new ExcelWriter();
+                excelWriter.setFileName("Checklist_Config_Update_Template");
+                File fir = excelWriter.writerToExcelByIndex(inputFile, 1, val, excelConfigIndex);
+
+                ExcelWriter itemWriter = new ExcelWriter();
+                itemWriter.setClz(ConfigExcelItemDto.class);
+                itemWriter.setFile(fir);
+                itemWriter.setNewModule(false);
+                itemWriter.setNeedBlock(true);
+                itemWriter.setHasNeedCellName(false);
+                itemWriter.setFileName("Checklist_Config_Update_Template");
+                File outputFile = itemWriter.writerToExcel(updateItem);
+                FileUtils.writeFileResponseProcessContent(request, outputFile);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+
+
+
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+        }else {
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+        }
+    }
+
+
     /**
      * AutoStep: createUploadConfig
      * @param bpc
@@ -826,15 +889,10 @@ public class HcsaChklConfigDelegator {
         List<ConfigExcelItemDto> excelItemDtos;
         List<String> configInfo;
         try {
-            Map<Integer, List<Integer>> map = new HashMap<>();
-            map.put(1, Arrays.asList(2));
-            map.put(3, Arrays.asList(2, 5));
-            map.put(5, Arrays.asList(2,5));
-            map.put(7, Arrays.asList(2,5,7));
 
             File toFile = FileUtils.multipartFileToFile(file);
             excelItemDtos = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
-            configInfo = FileUtils.transformToList(toFile, ConfigExcelItemDto.class, map);
+            configInfo = FileUtils.transformToList(toFile, ConfigExcelItemDto.class, excelConfigIndex);
             FileUtils.deleteTempFile(toFile);
 
 

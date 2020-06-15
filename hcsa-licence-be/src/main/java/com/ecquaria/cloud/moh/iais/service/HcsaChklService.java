@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import org.springframework.stereotype.Service;
 
@@ -105,4 +106,6 @@ public interface HcsaChklService {
     Boolean inActiveItem(String itemId);
 
     List<ErrorMsgContent> submitUploadItems(List<ChecklistItemDto> uploadItems);
+
+    List<ConfigExcelItemDto> convertToUploadTemplateByConfig(ChecklistConfigDto config);
 }

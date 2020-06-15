@@ -14,7 +14,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
@@ -111,6 +114,27 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     public List<ErrorMsgContent> submitUploadItems(List<ChecklistItemDto> uploadItems) {
         IaisApiResult<List<ErrorMsgContent>> iaisApiResult = chklClient.saveUploadItems(uploadItems).getEntity();
         return iaisApiResult.getEntity();
+    }
+
+    @Override
+    public List<ConfigExcelItemDto> convertToUploadTemplateByConfig(ChecklistConfigDto config) {
+        List<ConfigExcelItemDto> ret = IaisCommonUtils.genNewArrayList();
+        if (config != null){
+            List<ChecklistSectionDto> section = config.getSectionDtos();
+            for (ChecklistSectionDto i : section){
+                List<ChecklistItemDto> item = i.getChecklistItemDtos();
+                for (ChecklistItemDto j : item){
+                    ConfigExcelItemDto excelItemDto = new ConfigExcelItemDto();
+                    excelItemDto.setChecklistItem(j.getChecklistItem());
+                    excelItemDto.setItemDisplayOrder(j.getSectionItemOrder().toString());
+                    excelItemDto.setItemId(j.getItemId());
+                    excelItemDto.setSectionDisplayOrder(i.getOrder().toString());
+                    excelItemDto.setSectionName(i.getSection());
+                    ret.add(excelItemDto);
+                }
+            }
+        }
+        return ret;
     }
 
 
