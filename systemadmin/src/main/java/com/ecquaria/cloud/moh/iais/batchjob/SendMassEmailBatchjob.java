@@ -36,9 +36,11 @@ public class SendMassEmailBatchjob {
 
     @Autowired
     BlastManagementListService blastManagementListService;
+
     @Value("${iais.email.sender}")
     private String mailSender;
-
+    private static final String EMAIL = "Email";
+    private static final String SMS = "SMS";
     public void start(BaseProcessClass bpc){
 
     }
@@ -52,25 +54,29 @@ public class SendMassEmailBatchjob {
         //foreach get recipient and send
         for (BlastManagementDto item:blastManagementDto
              ) {
-            EmailDto email = new EmailDto();
+            if(EMAIL.equals(item.getMode())){
+                EmailDto email = new EmailDto();
+//                List<String> roleEmail = blastManagementListService.getEmailByRoleId(item.get)
+                email.setContent(item.getMsgContent());
+                email.setSender(mailSender);
+                email.setSubject(item.getSubject());
+                email.setClientQueryCode(item.getId());
+                email.setReceipts(item.getEmailAddress());
+                email.setReqRefNum(item.getId());
 
-            email.setContent(item.getMsgContent());
-            email.setSender(mailSender);
-            email.setSubject(item.getSubject());
-            email.setClientQueryCode(item.getId());
-            email.setReceipts(item.getEmailAddress());
-            email.setReqRefNum(item.getId());
-
-            if(item.getDocName() != null){
-                Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
-                emailMap.put(item.getDocName(),item.getFileDate());
-                blastManagementListService.sendEmail(email,emailMap);
+                if(item.getDocName() != null){
+                    Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
+                    emailMap.put(item.getDocName(),item.getFileDate());
+                    blastManagementListService.sendEmail(email,emailMap);
+                }else{
+                    blastManagementListService.sendEmail(email,null);
+                }
+                if(item.getEmailAddress().size() != 0){
+                    //update mass email actual time
+                    blastManagementListService.setActual(item.getId());
+                }
             }else{
-                blastManagementListService.sendEmail(email,null);
-            }
-            if(item.getEmailAddress().size() != 0){
-                //update mass email actual time
-                blastManagementListService.setActual(item.getId());
+//                sendSMS();
             }
 
         }
@@ -93,5 +99,22 @@ public class SendMassEmailBatchjob {
             log.error(e.getMessage(), e);
         }
         return item;
+    }
+
+    private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap,String content) throws IOException, TemplateException {
+//        String templateMessageByContent = "send sms";
+//        SmsDto smsDto = new SmsDto();
+//        smsDto.setSender(mailSender);
+//        smsDto.setContent(templateMessageByContent);
+//        smsDto.setOnlyOfficeHour(true);
+//        String refNo = inboxMsgService.getMessageNo();
+//        try{
+//            List<String> recipts = IaisEGPHelper.getLicenseeMobiles(licenseeId);
+//            if (!IaisCommonUtils.isEmpty(recipts)) {
+//                blastManagementListService.sendSMS(recipts,smsDto,refNo);
+//            }
+//        }catch (Exception e){
+//            log.error(StringUtil.changeForLog("error"));
+//        }
     }
 }

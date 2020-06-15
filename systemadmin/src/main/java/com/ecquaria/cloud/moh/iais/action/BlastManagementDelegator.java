@@ -321,28 +321,32 @@ public class BlastManagementDelegator {
         HttpServletRequest request = bpc.request;
         //setfile
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        MultipartFile file = mulReq.getFile("selectedFile");
+        List<MultipartFile> files = mulReq.getFiles("selectedFile");
         String subject = mulReq.getParameter("subject");
         String messageContent = mulReq.getParameter( "messageContent");
         blastManagementDto.setSubject(subject);
         blastManagementDto.setMsgContent(messageContent);
 
-        Map<String, String> errorMap = validationFile(request, file);
-        if (!(errorMap != null && !errorMap.isEmpty())){
-            String json = "";
-            File toFile = FileUtils.multipartFileToFile(file);
-            errorMap = new HashMap<>(1);
-            try {
-                byte[] fileToByteArray = FileUtils.readFileToByteArray(toFile);
-                blastManagementDto.setFileDate(fileToByteArray);
-                blastManagementDto.setDocName(file.getOriginalFilename());
-                blastManagementDto.setDocSize(Long.toString(file.getSize()));
-            }catch (Exception e){
-                errorMap.put(FILE_UPLOAD_ERROR, MessageCodeKey.CHKL_ERR011);
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                log.info(e.getMessage());
+        for (MultipartFile file:files
+             ) {
+            Map<String, String> errorMap = validationFile(request, file);
+            if (!(errorMap != null && !errorMap.isEmpty())){
+                String json = "";
+                File toFile = FileUtils.multipartFileToFile(file);
+                errorMap = new HashMap<>(1);
+                try {
+                    byte[] fileToByteArray = FileUtils.readFileToByteArray(toFile);
+                    blastManagementDto.setFileDate(fileToByteArray);
+                    blastManagementDto.setDocName(file.getOriginalFilename());
+                    blastManagementDto.setDocSize(Long.toString(file.getSize()));
+                }catch (Exception e){
+                    errorMap.put(FILE_UPLOAD_ERROR, MessageCodeKey.CHKL_ERR011);
+                    ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                    log.info(e.getMessage());
+                }
             }
         }
+
         ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDto);
         ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page2");
         if(validationResult != null && validationResult.isHasErrors()) {

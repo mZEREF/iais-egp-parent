@@ -46,12 +46,16 @@
 
                         <div class="form-group">
                             <label class="col-xs-4 col-md-4 control-label">Attachments</label>
-                            <div class="document-upload-gp">
+                            <div class="document-upload-gp col-xs-8 col-md-8">
                                 <div class="document-upload-list">
                                     <div class="file-upload-gp">
-                                        <div class="fileNameDisplay">${edit.getDocName()}</div>
-                                        <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                                        <div class=" col-md-4  filename"></div>
+                                        <div class="text-right filecontent">
+                                            <input id="selectedFile" name="selectedFile" type="file" multiple="multiple" style="display: none;" aria-label="selectedFile1">
+                                            <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -88,11 +92,16 @@
 
     });
 
-    $('#selectedFile').change(function () {
-        var file = $(this).val();
-        var fileName = Utils.getFileName(file);
-        $(".fileNameDisplay").text(fileName);
+    $('#selectedFile').change(function (event) {
+        var files = event.target.files;
+        console.log(files)
+        $(".filename").html("");
+        for(var i=0;i<files.length;i++){
+            $(".filename").append("<div class='fileNameDisplay'>"+files[i].name+"</div>");
+        }
+
     });
+
 
     $(window).on("load", function(){
         $("#htmlEditroAreaWriteMessage").hide();

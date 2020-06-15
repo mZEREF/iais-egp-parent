@@ -22,7 +22,7 @@
                         <div class="form-group">
                             <label class="col-xs-4 col-md-4 control-label">Use a distribution list</label>
                             <iais:value width="10">
-                                <iais:select name="distribution" options="distribution" firstOption="Please Select" value=""></iais:select>
+                                <iais:select name="distribution" options="distribution" firstOption="Please Select" value="${edit.distributionId}"></iais:select>
                                 <span class="error-distribution" name="iaisErrorMsg" id="error_distribution"></span>
                             </iais:value>
                         </div>
