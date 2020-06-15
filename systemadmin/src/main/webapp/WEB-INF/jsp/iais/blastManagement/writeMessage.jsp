@@ -49,7 +49,9 @@
                             <div class="document-upload-gp col-xs-8 col-md-8">
                                 <div class="document-upload-list">
                                     <div class="file-upload-gp">
-                                        <div class=" col-md-4  filename"></div>
+                                        <div class=" col-md-4  filename">
+                                           <c:out value="${fileName}"/>
+                                        </div>
                                         <div class="text-right filecontent">
                                             <input id="selectedFile" name="selectedFile" type="file" multiple="multiple" style="display: none;" aria-label="selectedFile1">
                                             <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
@@ -75,6 +77,7 @@
         </div>
         <input hidden value="${id}" id="blastId" >
         <input hidden value="" id="action" name="action">
+        <input hidden value="0" id="fileChange" name="fileChange">
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 </div>
@@ -99,7 +102,7 @@
         for(var i=0;i<files.length;i++){
             $(".filename").append("<div class='fileNameDisplay'>"+files[i].name+"</div>");
         }
-
+        $("#fileChange").val("1")
     });
 
 

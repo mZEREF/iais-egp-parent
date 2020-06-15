@@ -33,8 +33,8 @@ public interface BlastManagementListService {
     List<OrgUserDto> retrieveOrgUserAccount(List<String> ids);
     Boolean checkUse(List<String> disList);
     void sendSMS(List<String> recipts, SmsDto sms, String reqRefNum);
-    List<String> getEmailByRoleId(String roleId);
-    List<String> getSmsByRoleId(String roleId);
     EmailAttachMentDto getEmailById(String id);
     void setEmailResend(String id);
+    List<String> getEmailByRole(String role);
+    List<String> getMobileByRole(String role);
 }

@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.AttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -56,27 +58,37 @@ public class SendMassEmailBatchjob {
              ) {
             if(EMAIL.equals(item.getMode())){
                 EmailDto email = new EmailDto();
-//                List<String> roleEmail = blastManagementListService.getEmailByRoleId(item.get)
+                List<String> roleEmail = blastManagementListService.getEmailByRole(item.getRecipientsRole());
                 email.setContent(item.getMsgContent());
                 email.setSender(mailSender);
                 email.setSubject(item.getSubject());
                 email.setClientQueryCode(item.getId());
-                email.setReceipts(item.getEmailAddress());
+                List<String> allemail = IaisCommonUtils.genNewArrayList();
+                allemail.addAll(roleEmail);
+                allemail.addAll(item.getEmailAddress());
+                email.setReceipts(allemail);
                 email.setReqRefNum(item.getId());
-
-                if(item.getDocName() != null){
-                    Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
-                    emailMap.put(item.getDocName(),item.getFileDate());
-                    blastManagementListService.sendEmail(email,emailMap);
-                }else{
-                    blastManagementListService.sendEmail(email,null);
-                }
-                if(item.getEmailAddress().size() != 0){
-                    //update mass email actual time
-                    blastManagementListService.setActual(item.getId());
+                try{
+                    if(item.getAttachmentDtos() != null){
+                        Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
+                        for (AttachmentDto att: item.getAttachmentDtos()
+                             ) {
+                            emailMap.put(att.getDocName(),att.getData());
+                        }
+                        blastManagementListService.sendEmail(email,emailMap);
+                    }else{
+                        blastManagementListService.sendEmail(email,null);
+                    }
+                    if(item.getEmailAddress().size() != 0){
+                        //update mass email actual time
+                        blastManagementListService.setActual(item.getId());
+                    }
+                }catch (Exception e){
+                    log.error(StringUtil.changeForLog("error"));
                 }
             }else{
-//                sendSMS();
+                List<String> mobile = blastManagementListService.getMobileByRole(item.getRecipientsRole());
+                sendSMS(item.getMessageId(), mobile,item.getMsgContent());
             }
 
         }
@@ -101,20 +113,19 @@ public class SendMassEmailBatchjob {
         return item;
     }
 
-    private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap,String content) throws IOException, TemplateException {
-//        String templateMessageByContent = "send sms";
-//        SmsDto smsDto = new SmsDto();
-//        smsDto.setSender(mailSender);
-//        smsDto.setContent(templateMessageByContent);
-//        smsDto.setOnlyOfficeHour(true);
-//        String refNo = inboxMsgService.getMessageNo();
-//        try{
-//            List<String> recipts = IaisEGPHelper.getLicenseeMobiles(licenseeId);
-//            if (!IaisCommonUtils.isEmpty(recipts)) {
-//                blastManagementListService.sendSMS(recipts,smsDto,refNo);
-//            }
-//        }catch (Exception e){
-//            log.error(StringUtil.changeForLog("error"));
-//        }
+    private void sendSMS(String msgId,List<String> recipts,String content) throws IOException, TemplateException {
+        try{
+            String templateMessageByContent = content;
+            SmsDto smsDto = new SmsDto();
+            smsDto.setSender(mailSender);
+            smsDto.setContent(templateMessageByContent);
+            smsDto.setOnlyOfficeHour(true);
+            String refNo = msgId;
+            if (!IaisCommonUtils.isEmpty(recipts)) {
+                blastManagementListService.sendSMS(recipts,smsDto,refNo);
+            }
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("error"));
+        }
     }
 }

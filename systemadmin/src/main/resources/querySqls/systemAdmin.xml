@@ -417,12 +417,17 @@
 
     <sql key="queryBlastManagementList"  remarks="blast management list">
         <![CDATA[
-            SELECT
-            T1.ID,T1.MSG_CONTENT,T1.SUBJECT,T1.MSG_NAME,T2.DISTRIBUTION_NAME,T1.DELIVERY_MODE,T1.SCHEDULE_SEND_DATE,
-            T1.ACTUAL_SEND_DATE,T1.STATUS,T3.DOC_NAME,T1.CREATED_BY,T1.CREATED_DT
+            SELECT T1.ID,T1.MSG_CONTENT,T1.SUBJECT,T1.MSG_NAME,T2.DISTRIBUTION_NAME,T1.DELIVERY_MODE,T1.SCHEDULE_SEND_DATE,
+            T1.ACTUAL_SEND_DATE,T1.STATUS,SUBSTRING(DOC_NAME,1, LEN(DOC_NAME) - 1) DOC_NAME,T1.CREATED_BY,T1.CREATED_DT
             FROM email_sms_blast T1
             LEFT JOIN distribution T2 ON T1.DISTRIBUTION_ID = T2.ID
-            LEFT JOIN email_sms_blast_attachment T3 ON T1.ID = T3.BLAST_ID
+             CROSS APPLY
+			(
+				SELECT DOC_NAME + ', '
+				FROM email_sms_blast_attachment
+				WHERE T1.ID = email_sms_blast_attachment.BLAST_ID
+				FOR XML PATH('')
+			) D (DOC_NAME)
             WHERE 1 = 1
             <#if id??> AND T1.ID =:id</#if>
             <#if description??> AND DISTRIBUTION_NAME like :description</#if>

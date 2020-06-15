@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.system.AttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -20,11 +21,11 @@ import java.util.Map;
  **/
 @Component
 public class BlastValidate implements CustomizeValidator {
-
+    private static final String FILE_UPLOAD_ERROR = "fileUploadError";
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request, "edit");
+        BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request, "blastManagementDto");
         if(blastManagementDto.getEmailAddress() != null){
             for (String item :blastManagementDto.getEmailAddress()
                  ) {
@@ -52,13 +53,27 @@ public class BlastValidate implements CustomizeValidator {
             SimpleDateFormat newformat = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
             Date schedule = new Date();
             schedule = blastManagementDto.getSchedule();
-            long time = schedule.getTime() + Long.parseLong(HH) * 60 * 60 * 1000 + Long.parseLong(MM) * 60 * 1000;
-            schedule.setTime(time);
             Date now = new Date();
             if (schedule.compareTo(now) < 0) {
                 errMap.put("date", "Send date and time cannot be earlier than now");
             }
         }
+        if(blastManagementDto.getAttachmentDtos() != null){
+            double filesSize = 0;
+            for (AttachmentDto item:blastManagementDto.getAttachmentDtos()
+            ) {
+                if (Double.parseDouble(item.getDocSize()) <= 0){
+                    errMap.put(FILE_UPLOAD_ERROR, "GENERAL_ERR0004");
+                }
+                filesSize += Double.parseDouble(item.getDocSize());
+            }
+
+            double size = (double)(filesSize / 0x400) / (double) 0x400;
+            if (Math.ceil(size) > 0x05){
+                errMap.put(FILE_UPLOAD_ERROR, "GENERAL_ERR0004");
+            }
+        }
+
         return errMap;
     }
 }

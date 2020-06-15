@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.client.BlastManagementListClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,8 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     private SystemClient systemClient;
     @Autowired
     private OrganizationClient organizationClient;
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
     @Override
     public SearchResult<BlastManagementListDto> blastList(SearchParam searchParam) {
         return blastManagementListClient.getBlastManagementList(searchParam).getEntity();
@@ -114,16 +117,6 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     }
 
     @Override
-    public List<String> getEmailByRoleId(String roleId){
-        return organizationClient.getEmailByRoleId(roleId).getEntity();
-    }
-
-    @Override
-    public List<String> getSmsByRoleId(String roleId){
-        return organizationClient.getSmsByRoleId(roleId).getEntity();
-    }
-
-    @Override
     public EmailAttachMentDto getEmailById(String id){
         return emailHistoryClient.getEmailById(id).getEntity();
     }
@@ -131,5 +124,15 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     @Override
     public void setEmailResend(String id){
         emailHistoryClient.setEmailResend(id);
+    }
+
+    @Override
+    public List<String> getEmailByRole(String role){
+        return hcsaLicenceClient.getEmailByRole(role).getEntity();
+    }
+
+    @Override
+    public List<String> getMobileByRole(String role){
+        return hcsaLicenceClient.getMobileByRole(role).getEntity();
     }
 }
