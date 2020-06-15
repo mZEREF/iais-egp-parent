@@ -160,7 +160,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
             ApplicationConsts.APPLICATION_STATUS_REJECTED,
             ApplicationConsts.APPLICATION_STATUS_WITHDRAWN,
             ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
-            ApplicationConsts.PAYMENT_STATUS_PENDING_GIRO
+            ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS
     };
     private final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,
