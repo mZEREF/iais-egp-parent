@@ -483,12 +483,14 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     private void saveFileRepo(String fileNames,String submissionId,String eventRefNo){
-        boolean aBoolean=false;
+        Boolean flag=Boolean.FALSE;
         File file =new File(downZip+File.separator+fileNames+File.separator+eventRefNo+File.separator+"rfiRecFile"+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
         }
         File[] files = file.listFiles();
+        List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
+        FileRepoEventDto eventDto = new FileRepoEventDto();
         for(File f:files){
             if(f.isFile()){
                 try {
@@ -516,17 +518,12 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
                     AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
                     FileRepoDto fileRepoDto = new FileRepoDto();
-                    List<FileRepoDto> fileRepoDtos = IaisCommonUtils.genNewArrayList();
                     fileRepoDto.setId(split[0]);
                     fileRepoDto.setAuditTrailDto(intranet);
                     fileRepoDto.setFileName(fileName.toString());
                     fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+eventRefNo+File.separator+"rfiRecFile"+File.separator+"files");
                     fileRepoDtos.add(fileRepoDto);
-                    FileRepoEventDto eventDto = new FileRepoEventDto();
-                    eventDto.setFileRepoList(fileRepoDtos);
-                    eventDto.setEventRefNo(eventRefNo);
-                    eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
-                            EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventRefNo, null);
+
 
 //                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
 //                    FileRepoDto fileRepoDto = new FileRepoDto();
@@ -537,14 +534,21 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 //                    //eventBus
 //                    aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
 
-                    if(aBoolean){
-                        /*   removeFilePath(f);*/
-                    }
+                    eventDto.setFileRepoList(fileRepoDtos);
+                    flag=Boolean.TRUE;
+                    log.info(StringUtil.changeForLog(f.getPath()+"file path"));
                 }catch (Exception e){
                     continue;
                 }
             }
         }
+        if(flag){
+            eventDto.setFileRepoList(fileRepoDtos);
+            eventDto.setEventRefNo(eventRefNo);
+            eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
+                    EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventRefNo, null);
+        }
+
     }
 
     @Override
