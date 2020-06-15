@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
@@ -104,6 +105,9 @@ public class WithOutRenewalDelegator {
 
     @Autowired
     ServiceConfigService serviceConfigService;
+
+    @Autowired
+    NewApplicationDelegator newApplicationDelegator;
 
     @Autowired
     RequestForChangeService requestForChangeService;
@@ -284,6 +288,10 @@ public class WithOutRenewalDelegator {
         }
 
         renewDto.setAppSubmissionDtos(appSubmissionDtoList);
+
+        List<AppSubmissionDto> cloneAppsbumissionDtos = IaisCommonUtils.genNewArrayList();
+        CopyUtil.copyMutableObjectList(appSubmissionDtoList, cloneAppsbumissionDtos);
+        ParamUtil.setSessionAttr(bpc.request, "oldSubmissionDtos", (Serializable) cloneAppsbumissionDtos);
         ParamUtil.setSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         ParamUtil.setSessionAttr(bpc.request,"serviceNameTitleList", (Serializable)serviceNameTitleList);
         //serviceNameList
@@ -380,7 +388,20 @@ public class WithOutRenewalDelegator {
     //prepareLicenceReview
     public void prepareLicenceReview(BaseProcessClass bpc)throws Exception{
         ParamUtil.setRequestAttr(bpc.request,"hasDetail","Y");
-
+        List<AppSubmissionDto> oldSubmissionDtos = (List<AppSubmissionDto>)ParamUtil.getSessionAttr(bpc.request, "oldSubmissionDtos");
+        RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+        List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
+        if(!IaisCommonUtils.isEmpty(oldSubmissionDtos)&&!IaisCommonUtils.isEmpty(appSubmissionDtos)){
+            List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldSubmissionDtos.get(0).getAppGrpPremisesDtoList();
+            List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldSubmissionDtos.get(0).getAppGrpPrimaryDocDtos();
+            List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
+            List<AppGrpPremisesDto> newAppGrpPremisesDtoList = appSubmissionDtos.get(0).getAppGrpPremisesDtoList();
+            List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtos = appSubmissionDtos.get(0).getAppGrpPrimaryDocDtos();
+            if(!oldAppSvcRelatedInfoDtoList.equals(newAppSvcRelatedInfoDtoList) ||!oldAppGrpPremisesDtoList.equals(newAppGrpPremisesDtoList) ||!oldAppGrpPrimaryDocDtos.equals(newAppGrpPrimaryDocDtos)){
+                ParamUtil.setRequestAttr(bpc.request,"changeRenew","Y");
+            }
+        }
     }
 
     //preparePayment
@@ -725,6 +746,11 @@ public class WithOutRenewalDelegator {
         AppSubmissionDto oldAppSubmissionDto  =(AppSubmissionDto)bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
+        Map<String, String> stringStringMap = newApplicationDelegator.doPreviewAndSumbit(bpc);
+        if(stringStringMap!=null){
+            ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
+            return;
+        }
         String renewEffectiveDate = ParamUtil.getDate(bpc.request, "renewEffectiveDate");
         if(!StringUtil.isEmpty(renewEffectiveDate)){
             Date date = Formatter.parseDate(renewEffectiveDate);

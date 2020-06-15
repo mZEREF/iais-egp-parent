@@ -15,11 +15,9 @@
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type_form_value" value="">
     <input type="hidden" name="crud_action_type_value" value="">
-
     <div class="main-content">
         <div class="container">
             <div class="row">
-
                 <c:choose>
                     <c:when test="${AckMessage != null}">
                         ${AckMessage}

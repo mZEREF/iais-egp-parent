@@ -2990,7 +2990,7 @@ public class NewApplicationDelegator {
         return  appGrpPremisesDtoList;
     }
 
-    private Map<String,String> doPreviewAndSumbit( BaseProcessClass bpc){
+    public Map<String,String> doPreviewAndSumbit( BaseProcessClass bpc){
         StringBuilder sB=new StringBuilder();
         Map<String,String> previewAndSubmitMap=IaisCommonUtils.genNewHashMap();
         //

@@ -24,12 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPsnTypeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
@@ -632,7 +627,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel List");
         List<SelectOption> specialtySelectList = genSpecialtySelectList("CLB");
-        List<SelectOption> replaceOptions = genReplacePersonnel();
+        List<SelectOption> replaceOptions = genReplacePersonnel(licenseeId);
         ParamUtil.setSessionAttr(bpc.request, "SpecialtySelectList", (Serializable) specialtySelectList);
         ParamUtil.setSessionAttr(bpc.request, "replaceOptions", (Serializable) replaceOptions);
 
@@ -651,10 +646,20 @@ public class RequestForChangeMenuDelegator {
         return specialtySelectList;
     }
 
-    private List<SelectOption> genReplacePersonnel() {
+    private List<SelectOption> genReplacePersonnel(String licenseeId) {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         SelectOption s1 = new SelectOption("new", "I'd like to add a new personnel");
         selectOptions.add(s1);
+        List<LicenseeKeyApptPersonDto> persons = requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeId);
+        if(!IaisCommonUtils.isEmpty(persons)){
+            for(LicenseeKeyApptPersonDto dto :persons){
+                String idNo = dto.getIdNo();
+                String name = dto.getName();
+                String idType = dto.getIdType();
+                SelectOption s = new SelectOption(idType+","+idNo, name+","+idNo+","+idType);
+                selectOptions.add(s);
+            }
+        }
         return selectOptions;
     }
 
@@ -891,12 +896,6 @@ public class RequestForChangeMenuDelegator {
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(professionType)) {
                 errMap.put("professionType", "UC_CHKLMD001_ERR001");
             }
-//            if (psnTypes.contains("CGO") && StringUtil.isEmpty(salutation)) {
-//                errMap.put("salutation", "UC_CHKLMD001_ERR001");
-//            }
-//            if (psnTypes.contains("PO") && StringUtil.isEmpty(salutation)) {
-//                errMap.put("salutation", "UC_CHKLMD001_ERR001");
-//            }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation)) {
                 errMap.put("designation", "UC_CHKLMD001_ERR001");
             }
@@ -956,7 +955,6 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
             appSubmissionDto.setAppGrpNo(appGroupNo);
             appSubmissionDto.setAmount(0.0);
-            appSubmissionDto.setAutoRfc(true);
             String draftNo = appSubmissionDto.getDraftNo();
             if (StringUtil.isEmpty(draftNo)) {
                 appSubmissionService.setDraftNo(appSubmissionDto);
@@ -981,9 +979,11 @@ public class RequestForChangeMenuDelegator {
             appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             if ("replace".equals(editSelect)) {
                 AppSubmissionDto appSubmissionDto2 = replacePersonnelDate(appSubmissionDto, newPerson);
+                appSubmissionDto.setAutoRfc(false);
                 appSubmissionDtos1.add(appSubmissionDto2);
             } else {
                 AppSubmissionDto appSubmissionDto1 = setPersonnelDate(appSubmissionDto, personnelEditDto);
+                appSubmissionDto.setAutoRfc(true);
                 appSubmissionDtos1.add(appSubmissionDto1);
             }
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
@@ -997,6 +997,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setRequestAttr(bpc.request, "createDate", new Date());
         ParamUtil.setRequestAttr(bpc.request, "dAmount", "N/A");
         ParamUtil.setRequestAttr(bpc.request, "payMethod", "N/A");
+        ParamUtil.setRequestAttr(bpc.request,"AppSubmissionDto",appSubmissionDtos1.get(0));
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
     }
 

@@ -92,6 +92,7 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                    <c:if test="${changeRenew eq 'Y'}">
                                                                     <div class="row">
                                                                         <div class="col-xs-5">
                                                                             Please indicate an effective date of change for your licence information to be updated.The date of change will be effected on the indicated date or approval date, whichever is the later date
@@ -107,6 +108,7 @@
                                                                             <span class="error-msg" name="iaisErrorMsg" id="error_rfcEffectiveDate"></span>
                                                                         </div>
                                                                     </div>
+                                                                    </c:if>
                                                                 </div>
                                                             </div>
                                                         </div>

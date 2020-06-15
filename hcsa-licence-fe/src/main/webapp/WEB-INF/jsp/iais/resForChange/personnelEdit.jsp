@@ -14,6 +14,7 @@
     <input type="hidden" name="crud_action_type_value" value="">
     <%@include file="dashboard.jsp" %>
     <%@include file="../common/dashboard.jsp" %>
+
     <input type="hidden" name="paramController" id="paramController"
            value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
     <input type="hidden" name="valEntity" id="valEntity"
@@ -347,7 +348,7 @@
                                                          options="IdTypeSelect"></iais:select>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
-                                            <iais:input maxLength="66" type="text"
+                                            <iais:input maxLength="9" type="text"
                                                         name="idNo1" value="${newPerson.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
@@ -443,7 +444,10 @@
 
     $(document).ready(function () {
         $('#previewAndSub').click(function () {
-            $("#menuListForm").submit();
+            var val = $("#replaceOptionsId").val();
+            if(val!=""){
+                $("#menuListForm").submit();
+            }
         });
         $('#back').click(function () {
             $("[name='actionType']").val("back");
@@ -476,7 +480,7 @@
             $('#newPerson').hide();
             $('#show').show();
         });
-        if ($('#replaceOptionsId').val() == 'new') {
+        if ($('#replaceOptionsId').val() !="") {
             $("#update").hide();
             $('#show').hide();
             $('#replace').show();
@@ -503,7 +507,7 @@
     });
 
     function addNew() {
-        if ($('#replaceOptionsId').val() == 'new') {
+        if ($('#replaceOptionsId').val() !="") {
             $("#update").hide();
             $('#newPerson').show();
             $('#show').hide();
@@ -513,4 +517,141 @@
             $('#show').show();
         }
     }
+
+
+    var rfcPersonForm = function ($CurrentPsnEle,data,psnTYpe) {
+    <!--salutation-->
+    var salutation  = data.salutation;
+    if( salutation == null || salutation =='undefined' || salutation == ''){
+        salutation = '';
+    }
+    $CurrentPsnEle.find('select[name="salutation"]').val(salutation);
+    var salutationVal = $CurrentPsnEle.find('option[value="' + salutation + '"]').html();
+    $CurrentPsnEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
+    <!--name-->
+    $CurrentPsnEle.find('input[name="name"]').val(data.name);
+
+    <!-- idType-->
+    var idType  = data.idType;
+    if(idType == null || idType =='undefined' || idType == ''){
+        idType = '';
+    }
+    $CurrentPsnEle.find('select[name="idType"]').val(idType);
+    var idTypeVal = $CurrentPsnEle.find('option[value="' + idType + '"]').html();
+    $CurrentPsnEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
+    <!-- idNo-->
+    $CurrentPsnEle.find('input[name="idNo"]').val(data.idNo);
+
+    $CurrentPsnEle.find('input[name="mobileNo"]').val(data.mobileNo);
+    $CurrentPsnEle.find('input[name="emailAddress"]').val(data.emailAddr);
+
+
+    <!--     ====================    -->
+    <!--       diff page column      -->
+    <!--     ====================    -->
+
+    <!-- officeTelNo-->
+    var officeTelNo = data.officeTelNo;
+    if(officeTelNo != null && officeTelNo != ''){
+        $CurrentPsnEle.find('input[name="officeTelNo"]').val(officeTelNo);
+    }else{
+        $CurrentPsnEle.find('input[name="officeTelNo"]').val('');
+    }
+    <!--Designation  -->
+    var designation = data.designation;
+    if(designation == null || designation == ''){
+        designation = '';
+    }
+    $CurrentPsnEle.find('select[name="designation"]').val(designation);
+    var designationVal = $CurrentPsnEle.find('option[value="' + designation + '"]').html();
+    $CurrentPsnEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+
+
+    <!-- professionType-->
+    var professionType = data.professionType;
+    if(professionType == null || professionType =='undefined' || professionType == ''){
+        professionType = '';
+    }
+    $CurrentPsnEle.find('select[name="professionType"]').val(professionType);
+    var professionTypeVal = $CurrentPsnEle.find('option[value="' + professionType + '"]').html();
+    $CurrentPsnEle.find('select[name="professionType"]').next().find('.current').html(professionTypeVal);
+    <!-- professionRegoNo-->
+    var professionRegoNo = data.profRegNo;
+    if(professionRegoNo != null && professionRegoNo != ''){
+        $CurrentPsnEle.find('input[name="professionRegoNo"]').val(professionRegoNo);
+    }else{
+        $CurrentPsnEle.find('input[name="professionRegoNo"]').val('');
+    }
+    <!-- speciality-->
+    var speciality = data.speciality;
+    if('CGO' == psnTYpe){
+        $CurrentPsnEle.find('div.specialtyDiv').html(data.specialityHtml);
+        showSpecialty();
+    }else{
+        if(speciality == null || speciality =='undefined' || speciality == ''){
+            speciality = '-1';
+        }
+        var specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
+        if(specialityVal =='undefined'){
+            speciality = '';
+            specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
+        }
+        $CurrentPsnEle.find('select[name="specialty"]').val(speciality);
+        $CurrentPsnEle.find('select[name="specialty"]').next().find('.current').html(specialityVal);
+    }
+    if('other' == speciality){
+        $CurrentPsnEle.find('input[name="specialtyOther"]').removeClass('hidden');
+        var specialityOther = data.specialityOther;
+        if(specialityOther != null && specialityOther != ''){
+            $CurrentPsnEle.find('input[name="specialtyOther"]').val(specialityOther);
+        }else{
+            $CurrentPsnEle.find('input[name="specialtyOther"]').val('');
+        }
+    }else{
+        $CurrentPsnEle.find('input[name="specialtyOther"]').addClass('hidden');
+    }
+    <!--Subspeciality or relevant qualification -->
+    var qualification = data.subSpeciality;
+    if(qualification != null && qualification != ''){
+        $CurrentPsnEle.find('input[name="qualification"]').val(qualification);
+    }else{
+        $CurrentPsnEle.find('input[name="qualification"]').val('');
+    }
+    <!--preferredMode -->
+    var preferredMode = data.preferredMode;
+    if(preferredMode != null && preferredMode !='undefined' && preferredMode != ''){
+        if('3' == preferredMode){
+            $CurrentPsnEle.find('input.preferredMode').prop('checked',true);
+        }else{
+            $CurrentPsnEle.find('input.preferredMode').each(function () {
+                if(preferredMode == $(this).val()){
+                    $(this).prop('checked',true);
+                }
+            });
+        }
+    }else{
+        $CurrentPsnEle.find('input.preferredMode').prop('checked',false);
+    }
+
+    var isLicPerson = data.licPerson;
+    if('1' == isLicPerson){
+        if('CGO' == psnTYpe){
+            disabledPartPage($CurrentPsnEle.find('.new-officer-form'));
+        }else{
+            disabledPartPage($CurrentPsnEle.find('.medAlertPerson'));
+        }
+        $CurrentPsnEle.find('input[name="licPerson"]').val('1');
+        $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
+    }else{
+        if('CGO' == psnTYpe){
+            unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
+        }else{
+            unDisabledPartPage($CurrentPsnEle.find('.medAlertPerson'));
+        }
+        $CurrentPsnEle.find('input[name="licPerson"]').val('0');
+        $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
+    }
+
+    }
+
 </script>

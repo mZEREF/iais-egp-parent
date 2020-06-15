@@ -2131,9 +2131,6 @@ public class ClinicalLaboratoryDelegator {
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
         int length = assignSelect.length;
-        List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
-        List<AppSubmissionDto> appSubmissionDtos;
-        List<AppSvcPrincipalOfficersDto> oldMatList = IaisCommonUtils.genNewArrayList();
         List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < length; i++) {
             AppSvcPrincipalOfficersDto medAlertPerson = new AppSvcPrincipalOfficersDto();
