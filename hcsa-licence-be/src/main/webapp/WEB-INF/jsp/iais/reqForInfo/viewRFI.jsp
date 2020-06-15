@@ -87,7 +87,7 @@
                                                     <div class="field col-sm-11 control-label formtext">
                                                         <label>${rfiReply.title}</label>
                                                     </div>
-                                                    <label class="control-label">
+                                                    <label class="field col-sm-11 control-label formtext">
                                                             <textarea id="userReply" disabled rows="10" style=" font-weight:normal;"
                                                                       cols="100">${rfiReply.userReply}</textarea>
                                                     </label>
@@ -103,7 +103,7 @@
                                                         <div class="pop-up">
                                                             <div class="pop-up-body">
 
-                                                                <div class="field col-sm-11 control-label formtext">
+                                                                <div class="field control-label formtext">
                                                                     <label>${rfiDoc.title}</label>
                                                                 </div>
                                                                 <span class="fileType"
@@ -112,7 +112,7 @@
                                                                     style="display:none">png</span><span
                                                                     class="fileMandatory"
                                                                     style="display:none">Yes</span>
-                                                                <div class="control col-sm-5">
+                                                                <div class="control ">
                                                                     <div class="fileList ">
                                                                     <span class="filename server-site" id="130">
                                                                         <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo1&fileRo1=<iais:mask name="fileRo1" value="${rfiDoc.fileRepoId}"/>&fileRepoName=${rfiDoc.docName}"

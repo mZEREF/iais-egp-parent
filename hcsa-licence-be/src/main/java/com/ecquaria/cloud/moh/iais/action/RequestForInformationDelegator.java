@@ -459,6 +459,9 @@ public class RequestForInformationDelegator {
         ParamUtil.setRequestAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
 
         String[] status=new String[]{RequestForInformationConstants.RFI_RETRIGGER,RequestForInformationConstants.RFI_CLOSE};
+        if(licPremisesReqForInfoDto.getStatus().equals(RequestForInformationConstants.RFI_CLOSE)){
+            status=new String[]{RequestForInformationConstants.RFI_RETRIGGER};
+        }
         List<SelectOption> salutationStatusList= MasterCodeUtil.retrieveOptionsByCodes(status);
         ParamUtil.setSessionAttr(bpc.request, "salutationStatusList", (Serializable) salutationStatusList);
         // 		preViewRfi->OnStepProcess
