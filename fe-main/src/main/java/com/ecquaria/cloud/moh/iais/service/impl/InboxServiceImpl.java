@@ -125,7 +125,16 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public SearchResult<InboxQueryDto> inboxDoQuery(SearchParam searchParam) {
-        return inboxClient.searchInbox(searchParam).getEntity();
+        SearchResult<InboxQueryDto> inboxQueryDtoSearchResult = inboxClient.searchInbox(searchParam).getEntity();
+        List<InboxQueryDto> inboxAppQueryDtoListRows = inboxQueryDtoSearchResult.getRows();
+        for (InboxQueryDto inboxQueryDto:inboxAppQueryDtoListRows) {
+            if (inboxQueryDto.getServiceCodes().isEmpty()){
+                inboxQueryDto.setServiceCodes("N/A");
+            }else{
+                inboxQueryDto.setServiceCodes(HalpStringUtils.splitServiceName(inboxQueryDto.getServiceCodes()));
+            }
+        }
+        return inboxQueryDtoSearchResult;
     }
 
     @Override

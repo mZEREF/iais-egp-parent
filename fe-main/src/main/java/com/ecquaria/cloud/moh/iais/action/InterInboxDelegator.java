@@ -154,8 +154,12 @@ public class InterInboxDelegator {
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxQueryDtoList
                 ) {
-            String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
-            inboxQueryDto.setServiceId(serviceName);
+            List<InboxMsgMaskDto> inboxMsgMaskDtoList = inboxService.getInboxMaskEntity(inboxQueryDto.getId());
+            for (InboxMsgMaskDto inboxMsgMaskDto:inboxMsgMaskDtoList){
+
+                inboxQueryDto.setMsgContent(inboxQueryDto.getMsgContent().replaceAll("="+inboxMsgMaskDto.getParamValue(),
+                        "="+MaskUtil.maskValue(inboxMsgMaskDto.getParamName(),inboxMsgMaskDto.getParamValue())));
+            }
         }
         if(!StringUtil.isEmpty(inboxResult)){
             clearParameter("IIMT");
@@ -244,8 +248,6 @@ public class InterInboxDelegator {
                 inboxQueryDto.setMsgContent(inboxQueryDto.getMsgContent().replaceAll("="+inboxMsgMaskDto.getParamValue(),
                         "="+MaskUtil.maskValue(inboxMsgMaskDto.getParamName(),inboxMsgMaskDto.getParamValue())));
             }
-            String serviceName = inboxService.getServiceNameById(inboxQueryDto.getServiceId());
-            inboxQueryDto.setServiceId(serviceName);
         }
         if(!StringUtil.isEmpty(inboxResult)){
             clearParameter("IIMT");

@@ -102,7 +102,7 @@
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Service</p>
-                                    <p>${inboxQuery.serviceId}</p>
+                                    <p>${inboxQuery.serviceCodes}</p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Date</p>

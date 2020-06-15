@@ -8,7 +8,7 @@
                 inbox.subject,
                 inbox.message_type,
                 inbox.ref_no,
-                inbox.service_id,
+                inbox.service_codes,
                 inbox.msg_content,
                 inbox.status,
                 inbox.user_id,
@@ -20,7 +20,7 @@
             <#if userId??> AND inbox.user_id = :userId</#if>
             <#if msgStatus??> AND inbox.status in :msgStatus</#if>
             <#if messageType??> AND inbox.message_type = :messageType</#if>
-            <#if interService??> AND inbox.service_id = :interService</#if>
+            <#if interService??> AND inbox.service_codes = :interService</#if>
         ]]>
     </sql>
 
