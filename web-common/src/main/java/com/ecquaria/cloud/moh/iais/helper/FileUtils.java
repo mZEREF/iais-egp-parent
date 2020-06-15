@@ -96,8 +96,7 @@ public final class FileUtils {
 
     public static List<String> transformToList(final File file, final Class<?> clz, Map<Integer, List<Integer>> specifyReadMap) throws Exception {
         ExcelReader excelReader = new ExcelReader();
-        excelReader.setSpecifyReadMap(specifyReadMap);
-        return excelReader.readerToList(file, clz);
+        return excelReader.readerToList(file, clz, specifyReadMap);
     }
 
     public static byte[] readFileToByteArray(final File file){
