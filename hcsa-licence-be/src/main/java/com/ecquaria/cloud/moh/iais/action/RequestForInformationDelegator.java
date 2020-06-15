@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -383,14 +382,13 @@ public class RequestForInformationDelegator {
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setMaskParams(mapPrem);
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
         String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",StringUtil.viewHtml(licenceNo));
         interMessageDto.setSubject(subject);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
         String messageNo = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(messageNo);
         HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
-        interMessageDto.setService_id(svcDto.getId());
+        interMessageDto.setService_id(svcDto.getSvcCode()+'@');
         interMessageDto.setMsgContent(mesContext);
         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
         interMessageDto.setUserId(licenseeId);

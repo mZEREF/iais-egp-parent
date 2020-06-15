@@ -6,8 +6,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -97,8 +95,6 @@ public class SendsReminderToReplyRfiBatchjob {
         String templateId="BEFC2AF0-250C-EA11-BE78-000C29D29DB0";
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         LicenceViewDto licenceViewDto=licInspNcEmailService.getLicenceDtoByLicPremCorrId(rfiEmailTemplateDto.getLicPremCorrId());
-        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
-        ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         String applicantName=licenseeDto.getName();
@@ -144,7 +140,7 @@ public class SendsReminderToReplyRfiBatchjob {
         String messageNo = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(messageNo);
         HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
-        interMessageDto.setService_id(svcDto.getId());
+        interMessageDto.setService_id(svcDto.getSvcCode()+'@');
         interMessageDto.setMsgContent(mesContext);
         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
         interMessageDto.setUserId(licenseeId);
