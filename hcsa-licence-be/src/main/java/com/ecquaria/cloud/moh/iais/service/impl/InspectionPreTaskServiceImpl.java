@@ -281,7 +281,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 maskParams.put("selfDeclRfiCorrId", taskDto.getRefNo());
             }
             MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
-            Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
+            Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
             map.put("APPLICANT_NAME",licenseeDto.getName());
             map.put("APPLICATION_NUMBER",StringUtil.viewHtml(applicationNo));
             map.put("DETAILS","");
