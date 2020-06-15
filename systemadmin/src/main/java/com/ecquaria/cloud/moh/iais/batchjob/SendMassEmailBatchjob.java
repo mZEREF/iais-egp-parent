@@ -64,8 +64,13 @@ public class SendMassEmailBatchjob {
                 email.setSubject(item.getSubject());
                 email.setClientQueryCode(item.getId());
                 List<String> allemail = IaisCommonUtils.genNewArrayList();
-                allemail.addAll(roleEmail);
-                allemail.addAll(item.getEmailAddress());
+                if(!IaisCommonUtils.isEmpty(roleEmail)){
+                    allemail.addAll(roleEmail);
+                }
+                if(!IaisCommonUtils.isEmpty(item.getEmailAddress())){
+                    allemail.addAll(item.getEmailAddress());
+                }
+
                 email.setReceipts(allemail);
                 email.setReqRefNum(item.getId());
                 try{
@@ -79,7 +84,7 @@ public class SendMassEmailBatchjob {
                     }else{
                         blastManagementListService.sendEmail(email,null);
                     }
-                    if(item.getEmailAddress().size() != 0){
+                    if(item.getId() != null){
                         //update mass email actual time
                         blastManagementListService.setActual(item.getId());
                     }
