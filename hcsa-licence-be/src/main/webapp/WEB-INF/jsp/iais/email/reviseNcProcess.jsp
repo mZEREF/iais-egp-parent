@@ -142,7 +142,7 @@
                                                 <iais:row>
                                                     <iais:field value="Fast Tracking?" />
 
-                                                    <iais:value width="7">
+                                                    <iais:value width="7" cssClass="control-label">
                                                         <input disabled type="checkbox" <c:if test="${applicationViewDto.applicationDto.fastTracking}">checked="checked"</c:if>/>
                                                     </iais:value >
                                                 </iais:row>
