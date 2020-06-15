@@ -99,7 +99,7 @@
                                   <c:choose>
                                     <c:when test="${empty inspectionHistoryShowDtos}">
                                       <tr>
-                                        <td colspan="12">
+                                        <td colspan="12" align="center">
                                           <iais:message key="ACK018" escape="true"></iais:message>
                                           <!--No Record!!-->
                                         </td>
@@ -180,7 +180,8 @@
                             <iais:row>
                               <iais:field value="Processing Decision" required="true"/>
                               <iais:value width="7">
-                                <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
+                                <iais:select name="selectValue" cssClass="nextStage" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectionPreTaskChange(this.value)"></iais:select>
+                                <span class="error-msg" name="iaisErrorMsg" id="error_nextStage"></span>
                               </iais:value>
                             </iais:row>
                             <iais:row id="rbCheckStage">
@@ -209,20 +210,33 @@
                             </iais:row>
                             <div id="preInspRfiComments" class="hidden">
                               <iais:row>
-                                <iais:field value="Comments" required="false"  width="12"/>
+                                <iais:field value="Comments to applicant" required="false"  width="12"/>
                                 <iais:value width="10">
                                   <textarea maxlength="300" id="preInspecComments" name="preInspecComments" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.reMarks}"></c:out></textarea>
                                 </iais:value>
                               </iais:row>
-                              <div id="rfiSelect">
-                                <iais:row>
-                                  <iais:field value="Sections Allowed for Change"
-                                              required="false"/>
-                                  <iais:value width="10">
-                                    <p id="selectDetail"></p>
-                                  </iais:value>
-                                </iais:row>
+                            </div>
+                            <div id="rfiSelect" class="hidden">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <label style="font-size: 16px">Sections Allowed for Change</label>
+                                </div>
+                                <div class="col-md-6">
+                                  <div id="selectDetail">
+                                    <ul>
+                                      <c:if test="${not empty rfiUpWindowsCheck}">
+                                        <c:forEach items="${rfiUpWindowsCheck}" var="name">
+                                          <li style="padding-left: 0px;"><c:out value="${name}"/></li>
+                                        </c:forEach>
+                                      </c:if>
+                                    </ul>
+                                    <c:if test="${empty rfiUpWindowsCheck}">
+                                      <span style="font-size: 16px">-</span>
+                                    </c:if>
+                                  </div>
+                                </div>
                               </div>
+                              <p></p><br><br>
                             </div>
                             <c:if test="${'APTY002' eq applicationViewDto.applicationDto.applicationType}">
                               <div class="row">
@@ -249,7 +263,7 @@
                               </div>
                             </div>
                             <iais:action>
-                              <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
+                              <button class="btn btn-primary" style="float:right" name="submitBtn" type="button" onclick="javascript:doInspectionPreTaskSubmit()">Submit</button>
                             </iais:action>
                             <br><br><br>
                           </iais:section>
@@ -282,6 +296,14 @@
         if("REDECI001" == selectValue){
             $("#rfiCheckBox").show();
             $("#rbCheckStage").hide();
+            var check = $("#appPreInspRfiCheck").prop("checked");
+            if(check){
+                $("#preInspRfiComments").removeClass('hidden');
+                $("#rfiSelect").removeClass('hidden');
+            } else {
+                $("#preInspRfiComments").addClass('hidden');
+                $("#rfiSelect").addClass('hidden');
+            }
         } else if("REDECI021" == selectValue){
             $("#rfiCheckBox").hide();
             $("#rbCheckStage").show();
@@ -310,8 +332,10 @@
         if(check){
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
             $("#preInspRfiComments").removeClass('hidden');
+            $("#rfiSelect").removeClass('hidden');
         } else {
             $("#preInspRfiComments").addClass('hidden');
+            $("#rfiSelect").addClass('hidden');
         }
     });
 
@@ -348,12 +372,24 @@
         if("REDECI001" == value){
             $("#rfiCheckBox").show();
             $("#rbCheckStage").hide();
+            var check = $("#appPreInspRfiCheck").prop("checked");
+            if(check){
+                $("#preInspRfiComments").removeClass('hidden');
+                $("#rfiSelect").removeClass('hidden');
+            } else {
+                $("#preInspRfiComments").addClass('hidden');
+                $("#rfiSelect").addClass('hidden');
+            }
         } else if("REDECI021" == value){
             $("#rfiCheckBox").hide();
             $("#rbCheckStage").show();
+            $("#preInspRfiComments").addClass('hidden');
+            $("#rfiSelect").addClass('hidden');
         } else {
             $("#rfiCheckBox").hide();
             $("#rbCheckStage").hide();
+            $("#preInspRfiComments").addClass('hidden');
+            $("#rfiSelect").addClass('hidden');
         }
     }
 
