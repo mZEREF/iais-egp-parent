@@ -699,9 +699,7 @@ public class HcsaChklItemDelegator {
                     checkItemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getStatus()));
                 }
 
-                ExcelWriter excelWriter = new ExcelWriter();
-                excelWriter.setClz(CheckItemQueryDto.class);
-                excelWriter.setFileName("Checklist_Items_Upload_Template");
+                ExcelWriter excelWriter = new ExcelWriter(CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
                 try {
                     file = excelWriter.writerToExcel(checkItemQueryDtoList);
                 } catch (Exception e) {
@@ -756,15 +754,12 @@ public class HcsaChklItemDelegator {
                     uploadTemplate.add(template);
                 }
 
-                ExcelWriter excelWriter = new ExcelWriter();
-                int[][] unlockCell = new int[8][8];
-                excelWriter.setClz(ConfigExcelItemDto.class);
-                excelWriter.setFile(inputFile);
-                excelWriter.setUnlockCell(unlockCell);
+                ExcelWriter excelWriter = new ExcelWriter(inputFile, "Checklist_Config_Upload_Template", ConfigExcelItemDto.class);
+                excelWriter.setHasNeedCellName(false);
                 excelWriter.setNewModule(false);
                 excelWriter.setNeedBlock(true);
-                excelWriter.setHasNeedCellName(false);
-                excelWriter.setFileName("Checklist_Config_Upload_Template");
+                int[][] unlockCell = new int[8][8];
+                excelWriter.setUnlockCell(unlockCell);
                 File outputFile = excelWriter.writerToExcel(uploadTemplate);
 
                 FileUtils.writeFileResponseProcessContent(request, outputFile);

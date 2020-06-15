@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.excel.EspecialExcelWriterUtil;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +52,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -843,17 +843,12 @@ public class HcsaChklConfigDelegator {
                 List<ConfigExcelItemDto> updateItem = hcsaChklService.convertToUploadTemplateByConfig(config);
 
                 File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Update_Template.xlsx");
-                ExcelWriter excelWriter = new ExcelWriter();
-                excelWriter.setFileName("Checklist_Config_Update_Template");
-                File fir = excelWriter.writerToExcelByIndex(inputFile, 1, val, excelConfigIndex);
+                File temp = EspecialExcelWriterUtil.writerToExcelByIndex(inputFile, 1, val, excelConfigIndex);
 
-                ExcelWriter itemWriter = new ExcelWriter();
-                itemWriter.setClz(ConfigExcelItemDto.class);
-                itemWriter.setFile(fir);
+                ExcelWriter itemWriter = new ExcelWriter(temp, "Checklist_Config_Update_Template", ConfigExcelItemDto.class);
+                itemWriter.setHasNeedCellName(false);
                 itemWriter.setNewModule(false);
                 itemWriter.setNeedBlock(true);
-                itemWriter.setHasNeedCellName(false);
-                itemWriter.setFileName("Checklist_Config_Update_Template");
                 File outputFile = itemWriter.writerToExcel(updateItem);
                 FileUtils.writeFileResponseProcessContent(request, outputFile);
             } catch (Exception e) {

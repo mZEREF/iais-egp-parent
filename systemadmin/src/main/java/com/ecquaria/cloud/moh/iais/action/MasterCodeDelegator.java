@@ -299,9 +299,7 @@ public class MasterCodeDelegator {
 
         List<MasterCodeToExcelDto> masterCodeToExcelDtoList = masterCodeService.findAllMasterCode();
         if (masterCodeToExcelDtoList != null) {
-            ExcelWriter excelWriter = new ExcelWriter();
-            excelWriter.setClz(MasterCodeToExcelDto.class);
-            excelWriter.setFileName("Master_Code_File");
+            ExcelWriter excelWriter = new ExcelWriter(MasterCodeToExcelDto.class, "Master_Code_File");
             try {
                 File file = excelWriter.writerToExcel(masterCodeToExcelDtoList);
                 FileUtils.writeFileResponseContent(response, file);

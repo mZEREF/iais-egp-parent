@@ -176,9 +176,7 @@ public class AuditTrailDelegator {
         }
 
 
-        ExcelWriter excelWriter = new ExcelWriter();
-        excelWriter.setClz(AuditTrailQueryDto.class);
-        excelWriter.setFileName("Audit Trail Logging");
+        ExcelWriter excelWriter = new ExcelWriter(AuditTrailQueryDto.class, "Audit Trail Logging");
         try {
             File file = excelWriter.writerToExcel(searchResult.getRows());
             FileUtils.writeFileResponseContent(response, file);

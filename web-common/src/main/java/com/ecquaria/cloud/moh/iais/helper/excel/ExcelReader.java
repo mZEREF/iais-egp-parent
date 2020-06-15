@@ -38,21 +38,9 @@ public class ExcelReader {
 
     private Sheet sheet = null;
 
-    private boolean sequentialParse = true;
-
     protected int startCellIndex = 1;
 
     protected int sheetAt = 0;
-
-    private Map<Integer, List<Integer>> specifyReadMap = null;
-
-    public void setSequentialParse(boolean sequentialParse) {
-        this.sequentialParse = sequentialParse;
-    }
-
-    public void setSpecifyReadMap(Map<Integer, List<Integer>> specifyReadMap) {
-        this.specifyReadMap = specifyReadMap;
-    }
 
     private void initSheetProperty(final File file, final Class<?> clz) throws Exception {
 
@@ -83,12 +71,7 @@ public class ExcelReader {
 
     }
 
-
     public <T> List<T> readerToBean(final File file, final Class<?> clz) throws Exception {
-        if (!sequentialParse) {
-            throw new Exception("excel read error when  read resource to dto!");
-        }
-
         initSheetProperty(file, clz);
 
         List<List<String>> result = sequentialParse();
@@ -96,22 +79,8 @@ public class ExcelReader {
         return (List<T>) result.stream().map(x -> setField(clz, x)).collect(Collectors.toList());
     }
 
-    public List<String> readerToList(final File file, final Class<?> clazz) throws Exception {
-        if (sequentialParse) {
-            throw new Exception("excel read error when read resource to list!");
-        }
-
+    public List<String> readerToList(final File file, final Class<?> clazz, Map<Integer, List<Integer>> specifyReadMap) throws Exception {
         initSheetProperty(file, clazz);
-
-
-        return specifyParse();
-    }
-
-
-    private List<String> specifyParse() throws Exception {
-        if (specifyReadMap == null || specifyReadMap.isEmpty()){
-            throw new Exception("specifyReadMap is null when read resource to list!");
-        }
 
         return parseByMapValue(specifyReadMap);
     }

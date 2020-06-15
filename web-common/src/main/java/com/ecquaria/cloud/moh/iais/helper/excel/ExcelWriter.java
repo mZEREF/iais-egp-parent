@@ -89,37 +89,41 @@ public class ExcelWriter {
 
     private boolean needBlock = false;
 
-    public void setNeedBlock(boolean needBlock) {
-        this.needBlock = needBlock;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public void setNewModule(boolean newModule) {
-        this.newModule = newModule;
+    public void setZheshigaisidemima(String zheshigaisidemima) {
+        this.zheshigaisidemima = zheshigaisidemima;
     }
 
     public void setUnlockCellMap(Map<Integer, List<Integer>> unlockCellMap) {
         this.unlockCellMap = unlockCellMap;
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    public void setHasNeedCellName(boolean hasNeedCellName) {
+        this.hasNeedCellName = hasNeedCellName;
     }
 
-    public void setClz(Class<?> clz) {
+    public void setNewModule(boolean newModule) {
+        this.newModule = newModule;
+    }
+
+    public void setNeedBlock(boolean needBlock) {
+        this.needBlock = needBlock;
+    }
+
+    public ExcelWriter(File file, String fileName, Class<?> clz) {
+        this.fileName = fileName;
+        this.file = file;
         this.clz = clz;
+    }
+
+    public ExcelWriter(Class<?> clz, String fileName) {
+        this.clz = clz;
+        this.fileName = fileName;
     }
 
     public void setUnlockCell(int[][] unlockCell) {
         this.unlockCell = unlockCell;
     }
 
-    public void setHasNeedCellName(boolean hasNeedCellName) {
-        this.hasNeedCellName = hasNeedCellName;
-    }
 
     private void initCheck() throws ClassNotFoundException {
         if (clz == null){
@@ -229,55 +233,7 @@ public class ExcelWriter {
         return out;
     }
 
-    /**
-     * For special requirements, the method can be ignored
-     * @Author yichen
-     * @Date: 11:49 2020/6/15
-     **/
-    public File writerToExcelByIndex(final File file, int sheetAt, List<String> val, Map<Integer, List<Integer>> excelConfigIndex) throws Exception {
-        if (file == null){
-            throw new IaisRuntimeException("can not find file when writerToExcelByIndex");
-        }
 
-        File out;
-        final String localFileName = generationFileName();
-        Sheet sheet;
-        log.info("current filename " + localFileName);
-        try (FileInputStream fileInputStream = new FileInputStream(file)) {
-            workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
-
-            sheet  = workbook.getSheetAt(sheetAt);
-
-            int count = 0;
-            for (Map.Entry<Integer, List<Integer>> entry : excelConfigIndex.entrySet()){
-                int row = entry.getKey();
-                Row sheetRow = sheet.getRow(row);
-
-                if (sheetRow == null){
-                    continue;
-                }
-
-                List<Integer> cellIndex = entry.getValue();
-                for (Integer i : cellIndex){
-                    Cell cell = sheetRow.createCell(i);
-                    String value = val.get(count);
-                    cell.setCellValue(value);
-                    count++;
-                }
-            }
-
-            OutputStream outputStream = new FileOutputStream(localFileName);
-            workbook.write(outputStream);
-            out = new File(localFileName);
-            workbook.close();
-        } catch (Exception e) {
-            throw new Exception("has error when when export excel, may be is resource corrupted");
-        }finally {
-            workbook.close();
-        }
-
-        return out;
-    }
 
     private void doParse(List<?> source, Sheet sheet){
         initLockStyle();

@@ -423,9 +423,7 @@ public class BlastManagementDelegator {
         File file = null;
         QueryHelp.setMainSql("systemAdmin", "queryBlastManagementList",searchParam);
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
-        ExcelWriter excelWriter = new ExcelWriter();
-        excelWriter.setClz(BlastManagementListDto.class);
-        excelWriter.setFileName("Blast_Management_Upload_Template");
+        ExcelWriter excelWriter = new ExcelWriter(BlastManagementListDto.class, "Blast_Management_Upload_Template");
         if (!searchResult.getRows().isEmpty()){
             //master code to description
             List<BlastManagementListDto> blastManagementListDtos = searchResult.getRows();

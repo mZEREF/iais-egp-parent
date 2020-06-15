@@ -151,9 +151,7 @@ public class ProfessionalInformationDelegator {
 			List<ProfessionalInformationQueryDto> queryList = results.getRows();
 			queryList.forEach(i -> i.setDesignation(MasterCodeUtil.getCodeDesc(i.getDesignation())));
 
-			ExcelWriter excelWriter = new ExcelWriter();
-			excelWriter.setClz(ProfessionalInformationQueryDto.class);
-			excelWriter.setFileName("Professional Information_Search_Template");
+			ExcelWriter excelWriter = new ExcelWriter(ProfessionalInformationQueryDto.class, "Professional Information_Search_Template");
 			try {
 				file = excelWriter.writerToExcel(queryList);
 			} catch (Exception e) {

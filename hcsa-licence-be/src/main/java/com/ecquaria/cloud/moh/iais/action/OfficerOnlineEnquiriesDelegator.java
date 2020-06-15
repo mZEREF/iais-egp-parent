@@ -959,9 +959,7 @@ public class OfficerOnlineEnquiriesDelegator {
              queryList = results.getRows();
         }
 
-        ExcelWriter excelWriter = new ExcelWriter();
-        excelWriter.setClz(ReqForInfoSearchListDto.class);
-        excelWriter.setFileName("Officer Online Enquiries Information_Search_Template");
+        ExcelWriter excelWriter = new ExcelWriter(ReqForInfoSearchListDto.class, "Officer Online Enquiries Information_Search_Template");
 
         try {
             file = excelWriter.writerToExcel(queryList);

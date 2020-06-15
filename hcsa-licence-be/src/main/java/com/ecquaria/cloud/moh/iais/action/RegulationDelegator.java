@@ -398,9 +398,7 @@ public class RegulationDelegator {
         if (searchResult != null){
             List<RegulationQueryDto> regulationResult = searchResult.getRows();
 
-            ExcelWriter excelWriter = new ExcelWriter();
-            excelWriter.setFileName("Checklist_Regulations_Upload_Template");
-            excelWriter.setClz(RegulationQueryDto.class);
+            ExcelWriter excelWriter = new ExcelWriter(RegulationQueryDto.class, "Checklist_Regulations_Upload_Template");
             try {
                 file = excelWriter.writerToExcel(regulationResult);
             } catch (Exception  e) {
