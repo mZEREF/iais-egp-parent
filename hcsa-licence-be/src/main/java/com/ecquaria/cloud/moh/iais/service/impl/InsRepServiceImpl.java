@@ -747,7 +747,7 @@ public class InsRepServiceImpl implements InsRepService {
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
                 String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
                 createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, ApplicationConsts.PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-                createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, historyRemarks, null, roleId, groupId2, subStage);
+                createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, roleId, groupId2, subStage);
             }
         }
     }

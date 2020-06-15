@@ -487,6 +487,8 @@
                 $('#error_nextStage').html("");
                 return true;
             }
+        }else{
+            return true;
         }
     }
 
