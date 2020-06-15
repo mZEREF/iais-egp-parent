@@ -647,7 +647,10 @@ public class LicenceApproveBatchjob {
                 }
                 String originLicenceId = firstApplicationDto.getOriginLicenceId();
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
-                superLicDto.setOriginLicenceDto(originLicenceDto);
+                log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
+                if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(firstApplicationDto.getApplicationType())){
+                    superLicDto.setOriginLicenceDto(originLicenceDto);
+                }
                 //create licence
 //                String licenceNo = null;
 //                if (firstApplicationDto.isNeedNewLicNo()) {
@@ -927,7 +930,10 @@ public class LicenceApproveBatchjob {
                 }
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
-                superLicDto.setOriginLicenceDto(originLicenceDto);
+                log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
+                if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
+                    superLicDto.setOriginLicenceDto(originLicenceDto);
+                }
                 LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
                         originLicenceDto, applicationDto, null, false);
                 licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
