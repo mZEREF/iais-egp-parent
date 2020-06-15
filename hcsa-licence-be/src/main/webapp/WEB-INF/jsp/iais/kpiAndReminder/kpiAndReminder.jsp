@@ -66,10 +66,10 @@
       <tr>
         <td rowspan="9" width="20%" style="text-align:center;vertical-align:middle;" >Processing Time for different stages</td>
         <td style="text-align:center;vertical-align:middle;">Reminder Threshold</td>
-        <td style="text-align:center;vertical-align:middle;">
-          <input name="reminderThreshold" type="text" value="${reminderThreshold}" placeholder="Enter required man-days" maxlength="5" style="width: 50% ;height: 10%"/>
+        <td style="vertical-align:middle;">
+          <input name="reminderThreshold" style="margin-left: 20%;width: 50%" type="text" value="${reminderThreshold}" placeholder="Enter required man-days" maxlength="5" style="width: 50% ;height: 10%"/>
           man-days<br>
-          <span name="iaisErrorMsg" id="error_reminderThreshold" class="error-msg"></span>
+          <span style="margin-left: 20%;width: 50%" name="iaisErrorMsg" id="error_reminderThreshold" class="error-msg"></span>
          </td>
 
       </tr>
@@ -77,9 +77,9 @@
   <c:forEach items="${hcsaSvcRoutingStageDtos}" var="hcsaSvcRoutingStageDto">
       <tr>
         <td style="text-align:center;vertical-align:middle;">${hcsaSvcRoutingStageDto.stageName}</td>
-        <td style="text-align:center;vertical-align:middle;">
+        <td style="vertical-align:middle;">
 
-            <input name="${hcsaSvcRoutingStageDto.stageCode}" type="text"  placeholder="Enter required man-days"
+            <input style="margin-left: 20%;width: 50%" name="${hcsaSvcRoutingStageDto.stageCode}" type="text"  placeholder="Enter required man-days"
                     <c:choose>
                       <c:when test="${hcsaSvcRoutingStageDto.stageCode=='PSO'}"> value="${PSO}" </c:when>
                       <c:when test="${hcsaSvcRoutingStageDto.stageCode=='ASO'}">value="${ASO}" </c:when>
@@ -92,7 +92,7 @@
                     </c:choose>
                    maxlength="5" style="width: 50% ;height: 10%"/>
             man-days<br>
-            <span name="iaisErrorMsg" id="error_${hcsaSvcRoutingStageDto.stageCode}" class="error-msg"></span>
+            <span style="margin-left: 20%;width: 50%" name="iaisErrorMsg" id="error_${hcsaSvcRoutingStageDto.stageCode}" class="error-msg"></span>
 
         </td>
       </tr>
