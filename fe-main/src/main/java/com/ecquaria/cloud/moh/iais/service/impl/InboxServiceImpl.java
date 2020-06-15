@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.InboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -128,7 +129,7 @@ public class InboxServiceImpl implements InboxService {
         SearchResult<InboxQueryDto> inboxQueryDtoSearchResult = inboxClient.searchInbox(searchParam).getEntity();
         List<InboxQueryDto> inboxAppQueryDtoListRows = inboxQueryDtoSearchResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxAppQueryDtoListRows) {
-            if (inboxQueryDto.getServiceCodes().isEmpty()){
+            if (StringUtils.isEmpty(inboxQueryDto.getServiceCodes())){
                 inboxQueryDto.setServiceCodes("N/A");
             }else{
                 inboxQueryDto.setServiceCodes(HalpStringUtils.splitServiceName(inboxQueryDto.getServiceCodes()));
