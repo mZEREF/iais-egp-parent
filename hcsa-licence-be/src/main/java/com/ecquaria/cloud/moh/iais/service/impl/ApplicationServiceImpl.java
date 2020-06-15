@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformatio
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
@@ -30,14 +31,14 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import ecq.commons.exception.BaseRuntimeException;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -70,13 +72,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private MsgTemplateClient msgTemplateClient;
 
     @Autowired
-    private SystemBeLicClient systemBeLicClient;
-
-    @Autowired
     private EmailClient emailClient;
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
@@ -92,6 +88,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private EicClient eicClient;
+
+    @Autowired
+    private LicenseeService licenseeService;
 
     @Value("${spring.application.name}")
     private String currentApp;
@@ -152,7 +151,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationClient.getAppCountByGroupIdAndStatus(appGroupId,status).getEntity();
     }
 
-
     public ApplicationDto callEicInterApplication(ApplicationDto applicationDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -212,31 +210,53 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public void alertSelfDeclNotification() {
         log.info("===>>>>alertSelfDeclNotification start");
-        List<ApplicationGroupDto> userAccountList = applicationClient.getUserAccountByNotSubmittedSelfDecl().getEntity();
-        try {
-            Map<String,Object> map = new HashMap(1);
-            map.put("APPLICANT_NAME", StringUtil.viewHtml("Yi chen"));
-            map.put("DETAILS", StringUtil.viewHtml("test"));
-            map.put("A_HREF", StringUtil.viewHtml(""));
-            map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-            MsgTemplateDto entity = emailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID);
-            String messageContent = entity.getMessageContent();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
 
-            List<String> licenseeIdList =  userAccountList.stream().map(ApplicationGroupDto::getLicenseeId).collect(Collectors.toList());
-            List<String> emailAddress = emailHelper.getEmailAddressListByLicenseeId(licenseeIdList);
+        List<Integer> selfAssMtFlag = Arrays.asList(ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT, ApplicationConsts.SUBMITTED_RFI_SELF_ASSESSMENT);
 
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(templateMessageByContent);
-            emailDto.setSubject("Self-Assessment submission for Application Number");
-            emailDto.setSender(mailSender);
-            emailDto.setReceipts(emailAddress);
+        List<ApplicationGroupDto> groupDtoList = applicationClient.getPendingSubmitSelfAssGroup(selfAssMtFlag).getEntity();
 
-            emailClient.sendNotification(emailDto);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        } catch (TemplateException e) {
-            log.error(e.getMessage());
+        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
+
+        if (autoEntity == null){
+            log.info("===>>>>alertSelfDeclNotification can not find message template ");
+            return;
+        }
+
+        Map<String,Object> param = new HashMap(1);
+        param.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+        param.put("DETAILS", "test");
+
+        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+        String serviceName = systemParamConfig.getInterServerName();
+        StringBuilder hrefLink = new StringBuilder();
+        hrefLink.append("https://").append(serviceName).append("/hcsa-licence-web/eservice/INTERNET/MohSelfAssessmentSubmit").append("?").append("appGroupId=");
+        for (ApplicationGroupDto app : groupDtoList){
+            String id = app.getId();
+            String licId = app.getLicenseeId();
+            LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licId);
+            if (licenseeDto != null){
+                hrefLink.append(id);
+
+                param.put("APPLICANT_NAME",  StringUtil.viewHtml(licenseeDto.getName()));
+                param.put("A_HREF", StringUtil.viewHtml(hrefLink.toString()));
+                InterMessageDto interMessageDto = new InterMessageDto();
+                interMessageDto.setSubject(autoEntity.getTemplateName());
+                interMessageDto.setMsgContent(autoEntity.getMessageContent());
+                interMessageDto.setUserId(licId);
+                //interMessageDto.setService_id();
+                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+                String refNo = inboxMsgService.getMessageNo();
+                interMessageDto.setRefNo(refNo);
+                interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+                interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+
+                try {
+                    inboxMsgService.saveInterMessage(interMessageDto);
+                }catch (IaisRuntimeException | BaseRuntimeException e){
+                    throw new IaisRuntimeException(StringUtil.changeForLog("create self assessment notification has error , group id " + id), e);
+                }
+            }
         }
 
         log.info("===>>>>alertSelfDeclNotification end");

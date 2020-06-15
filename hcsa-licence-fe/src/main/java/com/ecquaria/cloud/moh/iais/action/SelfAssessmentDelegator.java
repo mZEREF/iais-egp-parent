@@ -95,7 +95,10 @@ public class SelfAssessmentDelegator {
 
             selfAssessmentList = selfAssessmentService.receiveSelfAssessmentRfiByCorrId(corrId);
         }else {
-            String groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
+            String groupId = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
+            if (StringUtil.isEmpty(groupId)) {
+                groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
+            }
 
             if (StringUtil.isEmpty(groupId)) {
                 log.debug("the group id is null");

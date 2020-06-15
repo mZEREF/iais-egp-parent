@@ -266,4 +266,7 @@ public interface ApplicationClient {
 
     @GetMapping(value = "/iais-application-be/application/grp-premises/{appPreId}")
     FeignResponseEntity<AppGrpPremisesEntityDto> getAppGrpPremise(@PathVariable(name = "appPreId")String appPreId);
+
+    @PostMapping(value = "iais-application-be/application/pending/self-assessment/group-id", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationGroupDto>> getPendingSubmitSelfAssGroup(@RequestBody List<Integer> selfAssMtFlag);
 }

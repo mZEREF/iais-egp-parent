@@ -9,4 +9,6 @@ package com.ecquaria.cloud.moh.iais.constant;
 public class ChecklistConstant {
     public static final String CHECKLIST_ITEM = "checklistItem";
     public static final String FILE_UPLOAD_ERROR = "fileUploadError";
+
+    public static final String SELF_ASS_MT_SUBMIT_URL = "";
 }
