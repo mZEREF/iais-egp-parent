@@ -1467,7 +1467,7 @@ public class NewApplicationDelegator {
                             }
                             appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
                             RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
-                          /*  premisesDocToSvcDoc(appSubmissionDtoByLicenceId);*/
+                            premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
                             appSubmissionDtoByLicenceId.setAuditTrailDto( IaisEGPHelper.getCurrentAuditTrailDto());
                             appSubmissionDtos.add(appSubmissionDtoByLicenceId);
 
@@ -1513,7 +1513,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         String isrfiSuccess = "N";
 
-      /*  premisesDocToSvcDoc(appSubmissionDto);*/
+        premisesDocToSvcDoc(appSubmissionDto);
         List<AppSubmissionDto> personAppSubmissionList = personContact(bpc,appSubmissionDto, oldAppSubmissionDto);
 
         appSubmissionDto.setPartPremise(appSubmissionDto.isGroupLic());
@@ -3878,6 +3878,7 @@ public class NewApplicationDelegator {
                         }
                     }
                     appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+                    requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 }
             }
             InterMessageDto interMessageDto = appSubmissionService.getInterMessageById(msgId);
@@ -4982,7 +4983,6 @@ public class NewApplicationDelegator {
                     appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 }
             }
-
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);

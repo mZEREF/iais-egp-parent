@@ -78,20 +78,22 @@
       <tr>
         <td style="text-align:center;vertical-align:middle;">${hcsaSvcRoutingStageDto.stageName}</td>
         <td style="text-align:center;vertical-align:middle;">
-          <input name="${hcsaSvcRoutingStageDto.stageCode}" type="text"  placeholder="Enter required man-days"
-                  <c:choose>
-                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='PSO'}"> value="${PSO}" </c:when>
-                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='ASO'}">value="${ASO}" </c:when>
-                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='AO1'}">value="${AO1}" </c:when>
-                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='AO2'}">value="${AO2}" </c:when>
-                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='AO3'}">value="${AO3}" </c:when>
-                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='PRE'}">value="${PRE}" </c:when>
-                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='INP'}">value="${INP}" </c:when>
-                    <c:when test="${hcsaSvcRoutingStageDto.stageCode=='POT'}">value="${POT}" </c:when>
-                  </c:choose>
-                maxlength="5" style="width: 50% ;height: 10%"/>
-          man-days<br>
-          <span name="iaisErrorMsg" id="error_${hcsaSvcRoutingStageDto.stageCode}" class="error-msg"></span>
+
+            <input name="${hcsaSvcRoutingStageDto.stageCode}" type="text"  placeholder="Enter required man-days"
+                    <c:choose>
+                      <c:when test="${hcsaSvcRoutingStageDto.stageCode=='PSO'}"> value="${PSO}" </c:when>
+                      <c:when test="${hcsaSvcRoutingStageDto.stageCode=='ASO'}">value="${ASO}" </c:when>
+                      <c:when test="${hcsaSvcRoutingStageDto.stageCode=='AO1'}">value="${AO1}" </c:when>
+                      <c:when test="${hcsaSvcRoutingStageDto.stageCode=='AO2'}">value="${AO2}" </c:when>
+                      <c:when test="${hcsaSvcRoutingStageDto.stageCode=='AO3'}">value="${AO3}" </c:when>
+                      <c:when test="${hcsaSvcRoutingStageDto.stageCode=='PRE'}">value="${PRE}" </c:when>
+                      <c:when test="${hcsaSvcRoutingStageDto.stageCode=='INP'}">value="${INP}" </c:when>
+                      <c:when test="${hcsaSvcRoutingStageDto.stageCode=='POT'}">value="${POT}" </c:when>
+                    </c:choose>
+                   maxlength="5" style="width: 50% ;height: 10%"/>
+            man-days<br>
+            <span name="iaisErrorMsg" id="error_${hcsaSvcRoutingStageDto.stageCode}" class="error-msg"></span>
+
         </td>
       </tr>
 

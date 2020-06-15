@@ -191,4 +191,6 @@ public interface AppConfigClient {
 
     @GetMapping (value = "/iais-regulation/regulation/{id}")
     FeignResponseEntity<HcsaChklSvcRegulationDto> getRegulationById(@PathVariable(value = "id") String id);
+    @GetMapping(value = "/iais-hcsa-service/hcsa-svc-doc-config-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaSvcDocConfigDto> getHcsaSvcDocConfigDtoById(@RequestParam("id") String id);
 }

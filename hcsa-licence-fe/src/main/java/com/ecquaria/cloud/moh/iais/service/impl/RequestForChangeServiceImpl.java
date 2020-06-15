@@ -8,8 +8,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -20,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -29,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
@@ -68,10 +73,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
-    private SystemParamConfig systemParamConfig;
-    @Autowired
-    private SubmissionClient client;
-    @Autowired
     private SystemAdminClient systemAdminClient;
     @Autowired
     private OrganizationLienceseeClient organizationLienceseeClient;
@@ -81,6 +82,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     private FeEicGatewayClient feEicGatewayClient;
     @Autowired
     private FeEmailClient feEmailClient;
+    @Autowired
+    private AppConfigClient appConfigClient;
     @Autowired
     private FeMessageClient feMessageClient;
     @Value("${iais.hmac.keyId}")
@@ -1197,6 +1200,44 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
         return errorMap;
     }
+
+    @Override
+    public void svcDocToPresmise(AppSubmissionDto appSubmissionDto) {
+        if(appSubmissionDto==null){
+            return;
+        }
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=IaisCommonUtils.genNewArrayList();
+        List<AppSvcDocDto> appSvcDocDtos=IaisCommonUtils.genNewArrayList();
+        if(appSvcDocDtoLit!=null){
+            for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
+                String svcDocId = appSvcDocDto.getSvcDocId();
+                HcsaSvcDocConfigDto entity = appConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                if(entity!=null){
+                    String serviceId = entity.getServiceId();
+                    if(StringUtil.isEmpty(serviceId)){
+                        AppGrpPrimaryDocDto appGrpPrimaryDocDto= new  AppGrpPrimaryDocDto();
+                        appGrpPrimaryDocDto.setSvcDocId(svcDocId);
+                        appGrpPrimaryDocDto.setSvcComDocId(svcDocId);
+                        appGrpPrimaryDocDto.setSvcComDocName(entity.getDocTitle());
+                        appGrpPrimaryDocDto.setDocName(appSvcDocDto.getDocName());
+                        appGrpPrimaryDocDto.setAppGrpId(appSubmissionDto.getAppGrpId());
+                        appGrpPrimaryDocDto.setDocSize(appSvcDocDto.getDocSize());
+                        appGrpPrimaryDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
+                        appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
+                        appSvcDocDtos.add(appSvcDocDto);
+                    }
+                }
+            }
+            appSvcDocDtoLit.removeAll(appSvcDocDtos);
+        }
+
+        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
+
+
+    }
+
     private  void validateVehicleNo(Map<String, String> errorMap, Set<String> distinctVehicleNo, int numberCount, String conveyanceVehicleNo){
         if(StringUtil.isEmpty(conveyanceVehicleNo)){
             errorMap.put("conveyanceVehicleNo"+numberCount,"UC_CHKLMD001_ERR001");
