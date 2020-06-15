@@ -2273,14 +2273,30 @@ public class NewApplicationDelegator {
 
             //send message
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+            List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(appSvcRelatedInfoDtoList != null){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
                     String serviceId = appSvcRelatedInfoDto.getServiceId();
-                    sendMessageHelper(subject,MessageConstants.MESSAGE_TYPE_NOTIFICATION,AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY,serviceId,licenseeId,mesContext,maskParams);
+                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                    if(serviceDto != null){
+                        serviceCodeList.add(serviceDto.getSvcCode());
+                    }
+                }
+                String serviceCodeString = getServiceCodeString(serviceCodeList);
+                if(!StringUtil.isEmpty(serviceCodeString)){
+                    sendMessageHelper(subject,MessageConstants.MESSAGE_TYPE_NOTIFICATION,AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY,serviceCodeString,licenseeId,mesContext,maskParams);
                 }
             }
         }
+    }
+
+    private String getServiceCodeString(List<String> serviceCodeList){
+        StringBuffer serviceCodeString = new StringBuffer();
+        for(String code : serviceCodeList){
+            serviceCodeString.append(code + "@");
+        }
+        return serviceCodeString.toString();
     }
 
     private void sendMessageHelper(String subject, String messageType, String srcSystemId,String serviceId, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams){
@@ -2329,13 +2345,21 @@ public class NewApplicationDelegator {
 
             //send message
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+            List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
             MsgTemplateDto msgTemplateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_PAYMENT_ID);
             subject = " " + msgTemplateDto.getTemplateName() + " " + appGrpNo;
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(appSvcRelatedInfoDtoList != null){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
                     String serviceId = appSvcRelatedInfoDto.getServiceId();
-                    sendMessageHelper(subject,MessageConstants.MESSAGE_TYPE_NOTIFICATION,AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY,serviceId,licenseeId,mesContext,maskParams);
+                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                    if(serviceDto != null){
+                        serviceCodeList.add(serviceDto.getSvcCode());
+                    }
+                }
+                String serviceCodeString = getServiceCodeString(serviceCodeList);
+                if(!StringUtil.isEmpty(serviceCodeString)){
+                    sendMessageHelper(subject,MessageConstants.MESSAGE_TYPE_NOTIFICATION,AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY,serviceCodeString,licenseeId,mesContext,maskParams);
                 }
             }
         }
@@ -2407,11 +2431,19 @@ public class NewApplicationDelegator {
 
             //send message
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+            List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(appSvcRelatedInfoDtoList != null){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
                     String serviceId = appSvcRelatedInfoDto.getServiceId();
-                    sendMessageHelper(subject,MessageConstants.MESSAGE_TYPE_NOTIFICATION,AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY,serviceId,licenseeId,mesContext,maskParams);
+                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+                    if(serviceDto != null){
+                        serviceCodeList.add(serviceDto.getSvcCode());
+                    }
+                }
+                String serviceCodeString = getServiceCodeString(serviceCodeList);
+                if(!StringUtil.isEmpty(serviceCodeString)){
+                    sendMessageHelper(subject,MessageConstants.MESSAGE_TYPE_NOTIFICATION,AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY,serviceCodeString,licenseeId,mesContext,maskParams);
                 }
             }
         }
