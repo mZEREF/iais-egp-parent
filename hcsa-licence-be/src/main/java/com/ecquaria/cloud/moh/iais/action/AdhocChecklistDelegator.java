@@ -10,6 +10,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.AdhocChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
@@ -168,6 +169,9 @@ public class AdhocChecklistDelegator {
 
             // Waiting for the event bus save
              ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
+
+            ParamUtil.setRequestAttr(bpc.request, "preInspInitFlag", InspectionConstants.SWITCH_ACTION_BACK);
+
             /*adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);*/
         }
     }
