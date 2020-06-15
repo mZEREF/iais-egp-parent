@@ -111,31 +111,13 @@ public class InspectionCreTaskByInspDateDelegator {
                     applicationDtos.add(applicationDto);
                     List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
                     hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-                    String userId = getPreInspActionByHistory(applicationDto.getApplicationNo());
                     log.debug(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
-                    log.debug(StringUtil.changeForLog("Current User Id = " + userId));
-                    List<TaskDto> taskDtos = getTaskByHistoryTasks(aRecoDto.getAppPremCorreId(), userId);
+                    List<TaskDto> taskDtos = getTaskByHistoryTasks(aRecoDto.getAppPremCorreId());
                     createTasksByHistory(taskDtos, intranet, hcsaSvcStageWorkingGroupDtos.get(0).getCount(), aRecoDto.getAppPremCorreId());
                     updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY, intranet);
                 }
             }
         }
-    }
-
-    private String getPreInspActionByHistory(String applicationNo) {
-        String userId = "";
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setApplicationNo(applicationNo);
-        appPremisesRoutingHistoryDto.setSubStage(HcsaConsts.ROUTING_STAGE_PRE);
-        appPremisesRoutingHistoryDto.setProcessDecision(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY);
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = applicationClient.getSubmitPreInspHistory(appPremisesRoutingHistoryDto).getEntity();
-        if(!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtos)){
-            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1 = appPremisesRoutingHistoryDtos.get(0);
-            if(appPremisesRoutingHistoryDto1 != null){
-                userId = appPremisesRoutingHistoryDto1.getActionby();
-            }
-        }
-        return userId;
     }
 
     private void updateInspectionStatus(String appPremCorreId, String status, AuditTrailDto intranet) {
@@ -187,17 +169,15 @@ public class InspectionCreTaskByInspDateDelegator {
         taskService.createTasks(taskDtoList);
     }
 
-    private List<TaskDto> getTaskByHistoryTasks(String appCorrId, String userId) {
+    private List<TaskDto> getTaskByHistoryTasks(String appCorrId) {
         List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(appCorrId, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
         if(taskDtos == null || taskDtos.isEmpty()){
             return null;
         }
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         for(TaskDto tDto:taskDtos){
-            if(tDto.getUserId().equals(userId)){
-                taskDtoList.add(tDto);
-                return taskDtoList;
-            }
+            taskDtoList.add(tDto);
+            return taskDtoList;
         }
         return taskDtoList;
     }
