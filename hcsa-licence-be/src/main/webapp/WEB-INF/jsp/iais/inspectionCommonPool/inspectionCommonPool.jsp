@@ -83,7 +83,7 @@
                     </iais:value>
                   </iais:row>
                   <iais:row>
-                    <iais:field value="Application Date"/>
+                    <iais:field value="Application Date From"/>
                     <iais:value width="18">
                       <iais:datePicker id = "sub_date" name = "sub_date" value="${sub_date2}"></iais:datePicker>
                     </iais:value>
