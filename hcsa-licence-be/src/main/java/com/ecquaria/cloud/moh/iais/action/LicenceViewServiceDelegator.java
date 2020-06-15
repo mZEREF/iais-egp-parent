@@ -603,6 +603,11 @@ public class LicenceViewServiceDelegator {
         appEditSelectDto.setParentMsg(parentMsg);
         appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
         appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        if(IaisCommonUtils.isEmpty(rfiUpWindowsCheck)){
+            appEditSelectDto.setRfiUpWindowsCheck(null);
+        } else {
+            appEditSelectDto.setRfiUpWindowsCheck(rfiUpWindowsCheck);
+        }
         return appEditSelectDto;
     }
 
