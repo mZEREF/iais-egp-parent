@@ -568,29 +568,36 @@ public class LicenceViewServiceDelegator {
             serviceName = hcsaServiceDto.getSvcName();
         }
         String parentMsg = "";
+        List<String> rfiUpWindowsCheck = IaisCommonUtils.genNewArrayList();
         if (selectsList.contains("premises")) {
             appEditSelectDto.setPremisesEdit(true);
             parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Premises</li>";
+            rfiUpWindowsCheck.add("Premises");
         }
         if (selectsList.contains("primary")) {
             appEditSelectDto.setDocEdit(true);
             parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Primary Documents</li>";
+            rfiUpWindowsCheck.add("Primary Documents");
         }
         if (selectsList.contains("service")) {
             appEditSelectDto.setServiceEdit(true);
             parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">Service Related Information - " + serviceName+ "</li>";
+            rfiUpWindowsCheck.add("Service Related Information - " + serviceName);
         }
         if (selectsList.contains("po")) {
             appEditSelectDto.setPoEdit(true);
             parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">PO</li>";
+            rfiUpWindowsCheck.add("PO");
         }
         if (selectsList.contains("dpo")) {
             appEditSelectDto.setDpoEdit(true);
             parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">DPO</li>";
+            rfiUpWindowsCheck.add("DPO");
         }
         if (selectsList.contains("medAlert")) {
             appEditSelectDto.setMedAlertEdit(true);
             parentMsg = parentMsg + "<li style=\"padding-left: 0px;\">medAlert</li>";
+            rfiUpWindowsCheck.add("medAlert");
         }
         appEditSelectDto.setParentMsg(parentMsg);
         appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
