@@ -569,7 +569,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }
     }
 
-    private void saveAdhocChecklist(AdhocCheckListConifgDto adhocConfig) {
+    public void saveAdhocChecklist(AdhocCheckListConifgDto adhocConfig) {
             EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
                     InsepctionNcCheckListImpl.class.getName(),
                     "callEicGatewaySaveItem", currentApp + "-" + currentDomain,
@@ -593,7 +593,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             }
     }
 
-    private void callEicGatewaySaveItem(AdhocCheckListConifgDto data) {
+    public void callEicGatewaySaveItem(AdhocCheckListConifgDto data) {
         //route to fe
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
