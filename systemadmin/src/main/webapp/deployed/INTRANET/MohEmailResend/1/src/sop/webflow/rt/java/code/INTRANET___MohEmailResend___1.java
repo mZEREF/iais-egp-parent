@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohEmailResend___1 extends BaseProcessClass {
@@ -33,12 +34,12 @@ public class INTRANET___MohEmailResend___1 extends BaseProcessClass {
 
 	public void edit_OnStepProcess_0() throws Exception {
 	// 		edit->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "edit", this); 
+		EngineHelper.delegate(DELEGATOR, "resend", this); 
 	}
 
-	public void save_OnStepProcess_0() throws Exception {
-	// 		save->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "save", this); 
+	public void doPage_OnStepProcess_0() throws Exception {
+	// 		doPage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doPage", this); 
 	}
 
 }

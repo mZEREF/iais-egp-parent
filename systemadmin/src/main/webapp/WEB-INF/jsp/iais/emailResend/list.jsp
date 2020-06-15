@@ -91,16 +91,16 @@
                                             </td>
                                             <td>
                                                 <p><fmt:formatDate value="${item.sentTime}"
-                                                                   pattern="MM/dd/yyyy HH:mm"/></p>
+                                                                   pattern="dd/MM/yyyy HH:mm"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.status}"/></p>
+                                                <p><c:out value="Failure"/></p>
                                             </td>
                                             <td>
                                                 <p><c:out value="${item.logMsg}"/></p>
                                             </td>
                                             <td>
-                                                <p><a onclick="edit('${item.requestRefNum}')">Edit</a></p>
+                                                <p><a onclick="edit('<iais:mask name="emailId" value="${item.notificationId}" />')">Resend</a></p>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -112,19 +112,23 @@
                 </div>
             </div>
         </div>
-        <input hidden id="editBlast" name="editBlast" value="">
+        <input hidden id="emailId" name="emailId" value="">
 
     </form>
 </div>
-<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function edit(id) {
-        $("#editBlast").val(id);
-        SOP.Crud.cfxSubmit("mainForm", "edit");
+        $("#emailId").val(id);
+        SOP.Crud.cfxSubmit("mainForm", "resend");
     }
 
     function jumpToPagechangePage() {
         SOP.Crud.cfxSubmit("mainForm", "search");
+    }
+
+    function jumpToPagechangePage() {
+        showWaiting();
+        SOP.Crud.cfxSubmit("mainForm", "page");
     }
 
     function searchResult() {

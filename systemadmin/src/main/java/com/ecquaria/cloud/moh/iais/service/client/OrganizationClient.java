@@ -9,9 +9,11 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -39,4 +41,10 @@ public interface OrganizationClient {
 
     @GetMapping(value = "/iais-workgroup/workGrop/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<WorkingGroupDto> getWrkGrpById(@PathVariable(name = "id") String workGroupId);
+
+    @PostMapping(value = "/iais-orgUserRole/getEmailByRoleId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getEmailByRoleId(@RequestParam("roleId") String roleId);
+
+    @PostMapping(value = "/iais-orgUserRole/getSmsByRoleId", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getSmsByRoleId(@RequestParam("roleId") String roleId);
 }

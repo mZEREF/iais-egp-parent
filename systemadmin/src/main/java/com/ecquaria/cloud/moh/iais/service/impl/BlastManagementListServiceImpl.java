@@ -2,7 +2,9 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailAttachMentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
@@ -84,6 +86,10 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     }
 
     @Override
+    public void sendSMS(List<String> recipts,SmsDto sms,String reqRefNum){
+        emailHistoryClient.sendSMS(recipts,sms,reqRefNum);
+    }
+    @Override
     public void sendEmail(EmailDto emailDto, Map<String, byte[]> attachments) {
         try {
             emailSmsClient.sendEmail(emailDto,attachments);
@@ -105,5 +111,25 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     @Override
     public Boolean checkUse(List<String> disList){
         return blastManagementListClient.checkUse(disList).getEntity();
+    }
+
+    @Override
+    public List<String> getEmailByRoleId(String roleId){
+        return organizationClient.getEmailByRoleId(roleId).getEntity();
+    }
+
+    @Override
+    public List<String> getSmsByRoleId(String roleId){
+        return organizationClient.getSmsByRoleId(roleId).getEntity();
+    }
+
+    @Override
+    public EmailAttachMentDto getEmailById(String id){
+        return emailHistoryClient.getEmailById(id).getEntity();
+    }
+
+    @Override
+    public void setEmailResend(String id){
+        emailHistoryClient.setEmailResend(id);
     }
 }

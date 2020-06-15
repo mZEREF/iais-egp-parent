@@ -5,9 +5,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.AnnexDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailAttachMentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ResendListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -25,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -39,7 +44,8 @@ import java.util.Map;
 @Slf4j
 public class EmailResendDelegator {
 
-    private SearchParam searchParam;
+//    private SearchParam searchParam;
+
     @Autowired
     BlastManagementListService blastManagementListService;
 
@@ -47,10 +53,6 @@ public class EmailResendDelegator {
     DistributionListService distributionListService;
 
     public void start(BaseProcessClass bpc){
-        searchParam = new SearchParam(ResendListDto.class.getName());
-        searchParam.setPageSize(10);
-        searchParam.setPageNo(1);
-        searchParam.setSort("sent_time", SearchParam.ASCENDING);
         AuditTrailHelper.auditFunction("EmailResendDelegator", "EmailResendDelegator");
     }
     /**
@@ -58,12 +60,23 @@ public class EmailResendDelegator {
      * @param bpc
      */
     public void prepare(BaseProcessClass bpc){
-        CrudHelper.doPaging(searchParam,bpc.request);
-        QueryHelp.setMainSql("systemAdmin", "resend",searchParam);
+        SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request,"resendSearchParam");
+        if(searchParam == null){
+            searchParam = new SearchParam(ResendListDto.class.getName());
+            searchParam.setPageSize(10);
+            searchParam.setPageNo(1);
+            searchParam.setSort("sent_time", SearchParam.ASCENDING);
+        }
+        QueryHelp.setMainSql("systemAdmin", "failEmail",searchParam);
         SearchResult<ResendListDto> searchResult = blastManagementListService.resendList(searchParam);
         ParamUtil.setRequestAttr(bpc.request,"resendSearchResult",searchResult);
-        ParamUtil.setRequestAttr(bpc.request,"resendSearchParam",searchParam);
+        ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",searchParam);
 
+    }
+
+    public void doPage(BaseProcessClass bpc){
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request,"resendSearchParam");
+        CrudHelper.doPaging(searchParam,bpc.request);
     }
 
     /**
@@ -71,10 +84,12 @@ public class EmailResendDelegator {
      * @param bpc
      */
     public void search(BaseProcessClass bpc){
+        SearchParam searchParam = new SearchParam(ResendListDto.class.getName());
+        searchParam.setPageSize(10);
+        searchParam.setPageNo(1);
+        searchParam.setSort("sent_time", SearchParam.ASCENDING);
         String start = ParamUtil.getRequestString(bpc.request,"start");
         String end = ParamUtil.getRequestString(bpc.request,"end");
-        searchParam.getParams().clear();
-        searchParam.getFilters().clear();
         if(!StringUtil.isEmpty(start)){
             searchParam.addFilter("start", start,true);
         }
@@ -95,9 +110,40 @@ public class EmailResendDelegator {
                 log.error(e.getMessage(), e);
             }
         }
-
+        ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",searchParam);
         ParamUtil.setRequestAttr(bpc.request,"start",start);
         ParamUtil.setRequestAttr(bpc.request,"end",end);
+    }
+
+    public void resend(BaseProcessClass bpc){
+        String id =  ParamUtil.getMaskedString(bpc.request, "emailId");
+        EmailAttachMentDto emailAttachMentDto = blastManagementListService.getEmailById(id);
+        EmailDto email = new EmailDto();
+        email.setContent(emailAttachMentDto.getContent());
+        email.setSender(emailAttachMentDto.getSender());
+        email.setSubject(emailAttachMentDto.getSubject());
+        email.setClientQueryCode(emailAttachMentDto.getClientQueryCode());
+        String[] recipient = emailAttachMentDto.getRecipient().split("&");
+        List<String> recipientList = IaisCommonUtils.genNewArrayList();
+        for (String item:recipient
+             ) {
+            recipientList.add(item);
+        }
+        email.setReceipts(recipientList);
+        email.setReqRefNum(emailAttachMentDto.getRequestRefNum());
+
+        if(emailAttachMentDto.getAnnexDtos() != null){
+            Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
+            for (AnnexDto item:emailAttachMentDto.getAnnexDtos()
+                 ) {
+                emailMap.put(item.getFileName(),item.getContent());
+            }
+
+            blastManagementListService.sendEmail(email,emailMap);
+        }else{
+            blastManagementListService.sendEmail(email,null);
+        }
+        blastManagementListService.setEmailResend(id);
     }
 
     /**
