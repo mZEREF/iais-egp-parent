@@ -1707,7 +1707,7 @@ public class LicenceApproveBatchjob {
                 newApplicationApproveSendEmail(licenceDto, applicationNo, licenceDto.getLicenceNo(), loginUrl, isNew, uenNo);
 
                 sendSMS(msgId, licenceDto.getLicenseeId(), msgInfoMap);
-            } catch (IOException | TemplateException e) {
+            } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send sms error"));
             }
          //huachong
@@ -1724,7 +1724,7 @@ public class LicenceApproveBatchjob {
                 String mesContext = "renew Approved message";
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                 sendMessage(subject,licenceDto.getLicenseeId(),mesContext,maskParams,serviceId);
-            } catch (IOException | TemplateException e) {
+            } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send sms error"));
             }
          //guying
@@ -1746,7 +1746,7 @@ public class LicenceApproveBatchjob {
                 sendSMS(msgId, licenceDto.getLicenseeId(), notifyMap);
                 //transfor
                 sendSMS(msgId, originLicenceDto.getLicenseeId(), notifyMap);
-            } catch (IOException | TemplateException e) {
+            } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send sms error"));
             }
         }
