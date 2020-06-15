@@ -324,6 +324,8 @@ public class LicenceViewServiceDelegator {
                 if (selects != null && selects.length > 0) {
                     List<String> selectsList = Arrays.asList(selects);
                     AppEditSelectDto appEditSelectDto = setAppEditSelectDto(newAppPremisesCorrelationDto, selectsList,appSubmissionDto);
+                    //pre-inspection show, The following method(licenceViewService.saveAppEditSelect) will clear the field. Please do not move it
+                    ParamUtil.setSessionAttr(bpc.request, "rfiUpWindowsCheck", (Serializable) appEditSelectDto.getRfiUpWindowsCheck());
                     parentMsg = "<ul>";
                     parentMsg = parentMsg + appEditSelectDto.getParentMsg();
                     parentMsg = parentMsg + "</ul>";
@@ -332,7 +334,6 @@ public class LicenceViewServiceDelegator {
                     licenceViewService.saveAppEditSelectToFe(appEditSelectDto);
                     successMsg = "save success";
                     ParamUtil.setSessionAttr(bpc.request, "isSaveRfiSelect", AppConsts.YES);
-                    ParamUtil.setSessionAttr(bpc.request, "rfiUpWindowsCheck", (Serializable) appEditSelectDto.getRfiUpWindowsCheck());
                 } else {
                     errorMsg = "Please select at least a section";
                 }
