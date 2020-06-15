@@ -46,7 +46,7 @@
             from
                 app_grp_submission_draft AS A
             where  A.status = 'CMSTAT001') AS B
-         WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009' AND B.STATUS !='APST051'
+         WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009' AND B.STATUS !='APST051' AND B.APP_TYPE != 'APTY007'
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>
             <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
@@ -101,5 +101,19 @@
                 <#if roleid??>AND role.ROLE_ID = :roleid</#if>
 
         ]]>
+    </sql>
+    <sql remarks="Query" key="queryPremises">
+        <![CDATA[
+                SELECT li.ID as LICENCE_ID,li.LICENCE_NO as LICENCE_NO,li.STATUS as LICENCE_STATUS, li.SVC_NAME as SVC_NAME,
+                p.ID as PREMISES_ID, p.HCI_CODE , p.HCI_NAME, p.HCI_CONTACT_NO, p.SCDF_REF_NO,
+                 p.CERT_ISSUED_DT, p.VEHICLE_NO, p.PREMISES_TYPE, p.POSTAL_CODE, p.ADDR_TYPE,
+                  p.BLK_NO, p.FLOOR_NO, p.UNIT_NO, p.STREET_NAME, p.BUILDING_NAME, p.VERSION,
+                   p.STATUS, p.ORGANIZATION_ID FROM
+                   licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
+                   join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1
+                   <#if licenseeId??> and li.LICENSEE_ID =:licenseeId </#if>
+                   <#if type??> and p.PREMISES_TYPE=:type </#if> and
+                   li.STATUS ='LICEST001' and p.ID in (select max(p.ID) from premises as p group by p.HCI_CODE)
+            ]]>
     </sql>
 </sqls>
