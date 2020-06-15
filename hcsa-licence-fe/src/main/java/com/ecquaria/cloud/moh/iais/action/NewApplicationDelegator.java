@@ -1662,7 +1662,7 @@ public class NewApplicationDelegator {
             o.get(0).setAppSvcCgoDtoList(oldAppSvcCgoDtos);
         }
 
-        if(!n.equals(n)){
+        if(!o.equals(n)){
 
            return true;
         }
