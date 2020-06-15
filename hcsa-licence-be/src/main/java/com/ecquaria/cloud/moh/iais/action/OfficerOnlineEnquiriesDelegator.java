@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -480,7 +481,11 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("appType", applicationType);
                 }
                 if(!StringUtil.isEmpty(status)){
-                    filters.put("appStatus", status);
+                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                        filters.put("appGrpPmtStatus", status);
+                    }else {
+                        filters.put("appStatus", status);
+                    }
                 }
                 if(!StringUtil.isEmpty(appSubDate)){
                     filters.put("subDate", appSubDate);

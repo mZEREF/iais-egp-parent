@@ -22,6 +22,7 @@
             <#if appType??> AND app.app_type = :appType</#if>
             <#if appNo??> AND charindex(:appNo, app.application_no)>0</#if>
             <#if appStatus??> AND app.status = :appStatus</#if>
+            <#if appGrpPmtStatus??> AND T4.PMT_STATUS = :appGrpPmtStatus</#if>
             <#if subDate??> AND T4.submit_dt >= convert(datetime,:subDate)</#if>
             <#if toDate??> AND T4.submit_dt <= convert(datetime,:toDate)</#if>
             <#if licenseeId??>AND T4.licensee_id = :licenseeId</#if>
@@ -96,6 +97,7 @@
             <#if appType??>AND :appType = :appType</#if>
             <#if appNo??>AND :appNo = :appNo</#if>
             <#if appStatus??>AND :appStatus = :appStatus</#if>
+            <#if appGrpPmtStatus??> AND :appGrpPmtStatus = :appGrpPmtStatus</#if>
             <#if subDate??>AND :subDate = :subDate</#if>
             <#if toDate??>AND :toDate = :toDate</#if>
             <#if personnelName??> AND :personnelName = :personnelName</#if>
@@ -127,6 +129,7 @@
             <#if appType??>AND :appType = :appType</#if>
             <#if appNo??>AND :appNo = :appNo</#if>
             <#if appStatus??>AND :appStatus = :appStatus</#if>
+            <#if appGrpPmtStatus??> AND :appGrpPmtStatus = :appGrpPmtStatus</#if>
             <#if subDate??>AND :subDate = :subDate</#if>
             <#if toDate??>AND :toDate = :toDate</#if>
             <#if licence_status??>AND :licence_status = :licence_status</#if>
@@ -165,6 +168,7 @@
             <#if appType??>AND :appType = :appType</#if>
             <#if appNo??>AND :appNo = :appNo</#if>
             <#if appStatus??>AND :appStatus = :appStatus</#if>
+            <#if appGrpPmtStatus??> AND :appGrpPmtStatus = :appGrpPmtStatus</#if>
             <#if subDate??>AND :subDate = :subDate</#if>
             <#if toDate??>AND :toDate = :toDate</#if>
             <#if licence_status??>AND :licence_status = :licence_status</#if>
