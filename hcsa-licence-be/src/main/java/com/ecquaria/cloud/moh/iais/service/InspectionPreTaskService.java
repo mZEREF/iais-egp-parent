@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -52,11 +53,11 @@ public interface InspectionPreTaskService {
     /**
       * @author: shicheng
       * @Date 2020/1/7
-      * @Param: taskDto, inspectionPreTaskDto
+      * @Param: taskDto, inspectionPreTaskDto, loginContext, premCheckItems
       * @return: void
       * @Descripation: routing back
       */
-    void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext) throws IOException, TemplateException;
+    void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext, List<PremCheckItem> premCheckItems) throws IOException, TemplateException;
 
 
     /**

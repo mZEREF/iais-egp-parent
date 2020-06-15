@@ -328,12 +328,13 @@ public class InspectionPreDelegator {
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorRouteB start ...."));
         InspectionPreTaskDto inspectionPreTaskDto = (InspectionPreTaskDto)ParamUtil.getSessionAttr(bpc.request, "inspectionPreTaskDto");
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<PremCheckItem> premCheckItems = (List<PremCheckItem>)ParamUtil.getSessionAttr(bpc.request, "commonDto");
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, "taskDto");
         AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
         if(adhocCheckListConifgDto != null){
             adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
         }
-        inspectionPreTaskService.routingBack(taskDto, inspectionPreTaskDto, loginContext);
+        inspectionPreTaskService.routingBack(taskDto, inspectionPreTaskDto, loginContext, premCheckItems);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
     }

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -200,7 +201,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     @Override
-    public void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext) throws IOException, TemplateException {
+    public void routingBack(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, LoginContext loginContext, List<PremCheckItem> premCheckItems) throws IOException, TemplateException {
         String reMarks = inspectionPreTaskDto.getReMarks();
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -266,11 +267,19 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             String mesNO = inboxMsgService.getMessageNo();
             interMessageDto.setRefNo(mesNO);
             interMessageDto.setService_id(applicationDto1.getServiceId());
-            String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                    MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST + taskDto.getRefNo() +
-                    "&selfDeclAction=rfi";
+            String url;
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-            maskParams.put("selfDeclRfiCorrId", taskDto.getRefNo());
+            //Have you completed a self-assessment checklist?
+            if(IaisCommonUtils.isEmpty(premCheckItems)) {
+                url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
+                        MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST_GROUP + applicationDto.getAppGrpId();
+                maskParams.put("appGroupId", applicationDto.getAppGrpId());
+            } else {
+                url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
+                        MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST + taskDto.getRefNo() +
+                        "&selfDeclAction=rfi";
+                maskParams.put("selfDeclRfiCorrId", taskDto.getRefNo());
+            }
             MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
             Map<String ,Object> map=IaisCommonUtils.genNewHashMap();
             map.put("APPLICANT_NAME",licenseeDto.getName());
