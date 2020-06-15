@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -278,14 +279,15 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
             eicRequestTrackingDtos.add(eicRequestTrackingDto);
             appEicClient.updateStatus(eicRequestTrackingDtos);
-
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+            String serviceCode = hcsaServiceDto.getSvcCode();
             InterMessageDto interMessageDto = new InterMessageDto();
             interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
             interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
             interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
             String mesNO = inboxMsgService.getMessageNo();
             interMessageDto.setRefNo(mesNO);
-            interMessageDto.setService_id(applicationDto1.getServiceId());
+            interMessageDto.setService_id(serviceCode);
             String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                     MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION +
                     taskDto.getRefNo() + "&recVersion=" + version;

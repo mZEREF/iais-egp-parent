@@ -44,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -205,6 +206,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         String reMarks = inspectionPreTaskDto.getReMarks();
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+        String serviceCode = hcsaServiceDto.getSvcCode();
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
         String licenseeId = applicationGroupDto.getLicenseeId();
         LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
@@ -266,7 +269,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
             String mesNO = inboxMsgService.getMessageNo();
             interMessageDto.setRefNo(mesNO);
-            interMessageDto.setService_id(applicationDto1.getServiceId());
+            interMessageDto.setService_id(serviceCode);
             String url;
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
             //Have you completed a self-assessment checklist?

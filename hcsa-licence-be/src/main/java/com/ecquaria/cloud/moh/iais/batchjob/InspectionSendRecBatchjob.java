@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
@@ -129,13 +130,15 @@ public class InspectionSendRecBatchjob {
             String appPremCorrId = dto.getAppPremisesCorrelationId();
             JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(aDto.getId(), MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE).getEntity();
             if(jobRemindMsgTrackingDto2 == null) {
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(aDto.getServiceId());
+                String serviceCode = hcsaServiceDto.getSvcCode();
                 InterMessageDto interMessageDto = new InterMessageDto();
                 interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
                 interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_APPLICANT_RECTIFIES_NC);
                 interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
                 String mesNO = inboxMsgService.getMessageNo();
                 interMessageDto.setRefNo(mesNO);
-                interMessageDto.setService_id(aDto.getServiceId());
+                interMessageDto.setService_id(serviceCode);
                 interMessageDto.setUserId(applicationGroupDto.getLicenseeId());
                 String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
                         MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appPremCorrId;

@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspec
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -44,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -525,8 +527,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         maskParams.put("appPremCorrId", urlId);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+        //send email
         inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
-        createMessage(url, serviceId, submitDt, licenseeId, maskParams);
+        //get service code to send message
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+        String serviceCode = hcsaServiceDto.getSvcCode();
+        createMessage(url, serviceCode, submitDt, licenseeId, maskParams);
+        //update app Info and insp Info
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
     }
 
@@ -598,8 +605,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
         Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+        //send email
         inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
-        createMessage(url, serviceId, submitDt, licenseeId, maskParams);
+        //get service code to send message
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+        String serviceCode = hcsaServiceDto.getSvcCode();
+        createMessage(url, serviceCode, submitDt, licenseeId, maskParams);
         //save data to app table
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
     }
@@ -986,7 +997,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         }
     }
 
-    private void createMessage(String url, String serviceId, Date submitDt, String licenseeId, HashMap<String, String> maskParams) {
+    private void createMessage(String url, String serviceCode, Date submitDt, String licenseeId, HashMap<String, String> maskParams) {
         MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST).getEntity();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
@@ -1005,7 +1016,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
         String mesNO = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(mesNO);
-        interMessageDto.setService_id(serviceId);
+        interMessageDto.setService_id(serviceCode);
         interMessageDto.setUserId(licenseeId);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         interMessageDto.setMsgContent(templateMessageByContent);
