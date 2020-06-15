@@ -22,6 +22,7 @@
             <#if appType??> AND app.app_type = :appType</#if>
             <#if appNo??> AND charindex(:appNo, app.application_no)>0</#if>
             <#if appStatus??> AND app.status = :appStatus</#if>
+            <#if appStatus_APPROVED??>AND ${appStatus_APPROVED}</#if>
             <#if appGrpPmtStatus??> AND T4.PMT_STATUS = :appGrpPmtStatus</#if>
             <#if subDate??> AND T4.submit_dt >= convert(datetime,:subDate)</#if>
             <#if toDate??> AND T4.submit_dt <= convert(datetime,:toDate)</#if>

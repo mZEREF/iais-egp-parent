@@ -483,9 +483,10 @@ public class OfficerOnlineEnquiriesDelegator {
                 if(!StringUtil.isEmpty(status)){
                     if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
                         filters.put("appGrpPmtStatus", status);
-                    }else {
-                        filters.put("appStatus", status);
-                    }
+                    }else
+                        if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                            filters.put("appStatus", status);
+                        }
                 }
                 if(!StringUtil.isEmpty(appSubDate)){
                     filters.put("subDate", appSubDate);
@@ -601,6 +602,9 @@ public class OfficerOnlineEnquiriesDelegator {
             SearchResultHelper.doPage(request,applicationParameter);
             applicationParameter.setFilters(filters);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
+            if(status!=null && status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                appParam.addParam("appStatus_APPROVED", "(app.status = 'APST005' OR app.status = 'APST050')");
+            }
             CrudHelper.doPaging(appParam,bpc.request);
             QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
             if (appParam != null) {
@@ -698,6 +702,9 @@ public class OfficerOnlineEnquiriesDelegator {
                         applicationParameter.setFilters(filters);
 
                         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
+                        if(status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                            appParam.addParam("appStatus_APPROVED", "(app.status = 'APST005' OR app.status = 'APST050')");
+                        }
                         appParam.setPageNo(0);
                         QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
                         SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
@@ -772,6 +779,10 @@ public class OfficerOnlineEnquiriesDelegator {
                     licParam.setPageSize(0);
                 }
             }
+        }
+        String appStatus=ParamUtil.getString(request, "application_status");
+        if(!StringUtil.isEmpty(appStatus)&&appStatus.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+            licParam.getFilters().put("appStatus",appStatus);
         }
         ParamUtil.setSessionAttr(request,"SearchParam", licParam);
     }
