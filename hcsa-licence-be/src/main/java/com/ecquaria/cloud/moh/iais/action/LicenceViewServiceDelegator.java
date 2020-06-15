@@ -324,6 +324,9 @@ public class LicenceViewServiceDelegator {
                 if (selects != null && selects.length > 0) {
                     List<String> selectsList = Arrays.asList(selects);
                     AppEditSelectDto appEditSelectDto = setAppEditSelectDto(newAppPremisesCorrelationDto, selectsList,appSubmissionDto);
+                    parentMsg = "<ul>";
+                    parentMsg = parentMsg + appEditSelectDto.getParentMsg();
+                    parentMsg = parentMsg + "</ul>";
                     appEditSelectDto = licenceViewService.saveAppEditSelect(appEditSelectDto);
                     applicationViewDto.setAppEditSelectDto(appEditSelectDto);
                     licenceViewService.saveAppEditSelectToFe(appEditSelectDto);
@@ -345,6 +348,7 @@ public class LicenceViewServiceDelegator {
         ParamUtil.setRequestAttr(bpc.request, "successMsg", successMsg);
         ParamUtil.setRequestAttr(bpc.request, "isSuccess", isSuccess);
         ParamUtil.setRequestAttr(bpc.request, "errorMsg", errorMsg);
+        ParamUtil.setSessionAttr(bpc.request, "parentMsg", parentMsg);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator doSaveSelect end ..."));
     }
