@@ -43,8 +43,6 @@ import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -58,7 +56,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -499,22 +496,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     for(int i=1;i<split.length;i++){
                         fileName.append(split[i]);
                     }
-                    FileItem fileItem = null;
-                    try {
-                        fileItem = new DiskFileItem("selectedFile", Files.probeContentType(f.toPath()),
-                                false, fileName.toString(), (int) f.length(), f.getParentFile());
-                    } catch (IOException e) {
-                        log.error(e.getMessage(),e);
-                    }
-//                    try ( InputStream input = new FileInputStream(f);){
-//                        if(fileItem!=null){
-//                            OutputStream os = fileItem.getOutputStream();
-//                            IOUtils.copy(input, os);
-//                        }
-//                    } catch (IOException ex) {
-//                        log.error(ex.getMessage(),ex);
-//                    }
-//                    MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
 
                     AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
                     FileRepoDto fileRepoDto = new FileRepoDto();
@@ -524,15 +505,6 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+eventRefNo+File.separator+"rfiRecFile"+File.separator+"files");
                     fileRepoDtos.add(fileRepoDto);
 
-
-//                    AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("intranet");
-//                    FileRepoDto fileRepoDto = new FileRepoDto();
-//                    fileRepoDto.setId(split[0]);
-//                    fileRepoDto.setAuditTrailDto(intranet);
-//                    fileRepoDto.setFileName(fileName.toString());
-//                    fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+"rfiRecFile"+File.separator+"files");
-//                    //eventBus
-//                    aBoolean = fileRepoClient.saveFiles(multipartFile, JsonUtil.parseToJson(fileRepoDto)).hasErrors();
 
                     eventDto.setFileRepoList(fileRepoDtos);
                     flag=Boolean.TRUE;
