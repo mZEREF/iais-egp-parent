@@ -89,6 +89,9 @@
                                         <c:when test="${'other' == cgo.speciality}">
                                             <c:out value="Others"/>
                                         </c:when>
+                                        <c:when test="${'-1' == cgo.speciality}">
+                                            <c:out value=""/>
+                                        </c:when>
                                         <c:otherwise>
                                             ${cgo.speciality }
                                         </c:otherwise>

@@ -290,7 +290,7 @@ public class NewApplicationHelper {
                         List<SelectOption> specialtyList = genSpecialtySelectList(appSvcRelatedInfoDto.getServiceCode(),true);
                         List<String> specialtyKeyList = IaisCommonUtils.genNewArrayList();
                         for(SelectOption sp:specialtyList){
-                            specialtyKeyList.add(sp.getText());
+                            specialtyKeyList.add(sp.getValue());
                         }
                         List<SelectOption> allSpecialtyList = getAllSpecialtySelList();
                         for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
@@ -1047,6 +1047,9 @@ public class NewApplicationHelper {
         }
         Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         for(AppSvcPrincipalOfficersDto psnDto:psnDtos){
+            if(StringUtil.isEmpty(psnDto.getIdNo()) || StringUtil.isEmpty(psnDto.getIdType())){
+                continue;
+            }
             String personMapKey = psnDto.getIdType()+","+psnDto.getIdNo();
             AppSvcPrincipalOfficersDto person = personMap.get(personMapKey);
             Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
