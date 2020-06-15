@@ -480,7 +480,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     }
 
     private void saveFileRepo(String fileNames,String submissionId,String eventRefNo){
-        Boolean flag=Boolean.FALSE;
+        boolean flag=false;
         File file =new File(downZip+File.separator+fileNames+File.separator+eventRefNo+File.separator+"rfiRecFile"+File.separator+"files");
         if(!file.exists()){
             file.mkdirs();
@@ -507,7 +507,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
 
                     eventDto.setFileRepoList(fileRepoDtos);
-                    flag=Boolean.TRUE;
+                    flag=true;
                     log.info(StringUtil.changeForLog(f.getPath()+"file path"));
                 }catch (Exception e){
                     continue;
