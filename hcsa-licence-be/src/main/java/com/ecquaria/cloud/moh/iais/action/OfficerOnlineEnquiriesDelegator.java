@@ -702,7 +702,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         applicationParameter.setFilters(filters);
 
                         SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
-                        if(status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                        if(status!=null&&status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
                             appParam.addParam("appStatus_APPROVED", "(app.status = 'APST005' OR app.status = 'APST050')");
                         }
                         appParam.setPageNo(0);
