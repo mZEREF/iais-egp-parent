@@ -39,8 +39,7 @@
                             <iais:field value="Content" required="true"/>
                             <div class="col-xs-7 col-sm-7 col-md-7">
                                 <textarea maxlength="4000" rows="30" name="messageContent" class="textarea" id="htmlEditroAreaWriteMessage" title="content">${edit.getMsgContent()}</textarea>
-                                <label class="col-xs-4 col-md-4 control-label"></label>
-                                <span id="error_msgContent" name="iaisErrorMsg" class="error-msg"></span>
+                                <span id="error_content" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
 

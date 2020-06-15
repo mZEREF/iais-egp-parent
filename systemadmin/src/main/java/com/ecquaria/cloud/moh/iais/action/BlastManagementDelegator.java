@@ -334,14 +334,21 @@ public class BlastManagementDelegator {
         List<MultipartFile> files = mulReq.getFiles("selectedFile");
         String subject = mulReq.getParameter("subject");
         String messageContent = mulReq.getParameter( "messageContent");
-        blastManagementDto.setSubject(subject);
-        blastManagementDto.setMsgContent(messageContent);
-        List<AttachmentDto> attachmentDtos = IaisCommonUtils.genNewArrayList();
-        String fileChange = mulReq.getParameter("fileChange");
-        if("1".equals(fileChange)){
-            for (MultipartFile file:files
-                 ) {
-                AttachmentDto attachmentDto = new AttachmentDto();
+        String content = messageContent.replaceAll("\\&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "").replaceAll("\\r", "").replaceAll("\\n", "");
+        if(StringUtil.isEmpty(content)){
+            Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+            errMap.put("content","The field is mandatory.");
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
+        }else{
+            blastManagementDto.setSubject(subject);
+            blastManagementDto.setMsgContent(messageContent);
+            List<AttachmentDto> attachmentDtos = IaisCommonUtils.genNewArrayList();
+            String fileChange = mulReq.getParameter("fileChange");
+            if("1".equals(fileChange)){
+                for (MultipartFile file:files
+                ) {
+                    AttachmentDto attachmentDto = new AttachmentDto();
                     String json = "";
                     File toFile = FileUtils.multipartFileToFile(file);
                     try {
@@ -354,26 +361,41 @@ public class BlastManagementDelegator {
                         log.info(e.getMessage());
                     }
                 }
-            blastManagementDto.setAttachmentDtos(attachmentDtos);
+                blastManagementDto.setAttachmentDtos(attachmentDtos);
+            }
+            ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
+            ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page2");
+            if(validationResult != null && validationResult.isHasErrors()) {
+                Map<String, String> err = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
+                ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
+            }else{
+                getDistribution(bpc,blastManagementDto.getMode());
+                String emailAddress = StringUtils.join(blastManagementDto.getEmailAddress(),"\n");
+                ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
+                ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
+            }
+            ParamUtil.setSessionAttr(bpc.request,"blastManagementDto",blastManagementDto);
+
         }
-        ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
-        ValidationResult validationResult =WebValidationHelper.validateProperty(blastManagementDto, "page2");
-        if(validationResult != null && validationResult.isHasErrors()) {
-            Map<String, String> err = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
-            ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
-        }else{
-            getDistribution(bpc,blastManagementDto.getMode());
-            String emailAddress = StringUtils.join(blastManagementDto.getEmailAddress(),"\n");
-            ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
-            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
-        }
-        ParamUtil.setSessionAttr(bpc.request,"blastManagementDto",blastManagementDto);
 
     }
 
     public void writeMessageSuccess(BaseProcessClass bpc){
         BlastManagementDto blastManagementDto = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"blastManagementDto");
+        String fileName = "";
+        if(blastManagementDto.getAttachmentDtos() != null){
+            for (AttachmentDto item: blastManagementDto.getAttachmentDtos()
+            ) {
+                fileName = fileName + item.getDocName() + ",";
+            }
+            fileName = fileName.substring(0,fileName.length()-1);
+        }
+        if(StringUtil.isEmpty(fileName)){
+            ParamUtil.setRequestAttr(bpc.request, "fileName", "");
+        }else{
+            ParamUtil.setRequestAttr(bpc.request, "fileName", fileName);
+        }
         ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
     }
     /**
