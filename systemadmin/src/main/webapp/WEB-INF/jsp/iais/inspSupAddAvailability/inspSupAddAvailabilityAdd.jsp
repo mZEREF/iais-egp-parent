@@ -59,17 +59,21 @@
                       </c:if>
                       <c:if test="${curRole ne 'lead'}">
                         <div class="form-group" style="margin-bottom: 0px;">
-                          <iais:field value="Name"/>
+                          <iais:field value="Inspector ID"/>
                           <iais:value width="7">
                             <p><span style="font-size: 16px"><c:out value="${userName}"/></span></p>
                           </iais:value>
                         </div>
                       </c:if>
                       <div class="form-group">
-                        <iais:field value="Non-Available Date" required="true"/>
+                        <iais:field value="Non-Available Date Start" required="true"/>
                         <iais:value width="7">
                           <iais:datePicker id = "blockOutStart" name = "blockOutStart" dateVal="${inspNonAvailabilityDto.blockOutStart}"></iais:datePicker>
-                          <br><span style="font-size: 16px">To</span><br><br>
+                        </iais:value>
+                      </div>
+                      <div class="form-group">
+                        <iais:field value="Non-Available Date End" required="true"/>
+                        <iais:value width="7">
                           <iais:datePicker id = "blockOutEnd" name = "blockOutEnd" dateVal="${inspNonAvailabilityDto.blockOutEnd}"></iais:datePicker>
                           <span class="error-msg" name="iaisErrorMsg" id="error_nonAvaDate"></span>
                         </iais:value>

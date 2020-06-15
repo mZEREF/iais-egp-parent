@@ -48,10 +48,19 @@
                       </div>
                       <div class="row">
                         <div class="col-md-2">
-                          <label style="font-size: 16px">Non-Available Date</label>
+                          <label style="font-size: 16px">Non-Available Date Start</label>
                         </div>
                         <div class="col-md-6">
-                          <span style="font-size: 16px"><fmt:formatDate value='${inspNonAvailabilityDto.blockOutStart}' pattern='dd/MM/yyyy'/> To <fmt:formatDate value='${inspNonAvailabilityDto.blockOutEnd}' pattern='dd/MM/yyyy' /></span>
+                          <span style="font-size: 16px"><fmt:formatDate value='${inspNonAvailabilityDto.blockOutStart}' pattern='dd/MM/yyyy'/></span>
+                        </div>
+                      </div>
+                      <p></p>
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label style="font-size: 16px">Non-Available Date End</label>
+                        </div>
+                        <div class="col-md-6">
+                          <span style="font-size: 16px"><fmt:formatDate value='${inspNonAvailabilityDto.blockOutEnd}' pattern='dd/MM/yyyy' /></span>
                           <c:if test="${'true' eq containDate}">
                             <br><span class="error-msg"><iais:message key="ACK027" escape="false"></iais:message></span>
                           </c:if>

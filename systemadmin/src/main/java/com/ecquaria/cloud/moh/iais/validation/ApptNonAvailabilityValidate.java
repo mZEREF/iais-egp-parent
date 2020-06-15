@@ -45,7 +45,7 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
             return null;
         }
         if(apptNonAvailabilityDateDto.getBlockOutStart().after(apptNonAvailabilityDateDto.getBlockOutEnd())){
-            errMap.put("nonAvaDate", "UC_INSP_ERR0007");
+            errMap.put("nonAvaDate", "APPT_ERROR0002");
             return errMap;
         }
         if(!IaisCommonUtils.isEmpty(inspectionDate)) {
@@ -53,7 +53,7 @@ public class ApptNonAvailabilityValidate implements CustomizeValidator {
                 for (String inspDate : inspectionDate) {
                     String nonDate = sdf2.format(date);
                     if (nonDate.equals(inspDate)) {
-                        errMap.put("nonAvaDate", "UC_INSP_ERR0004");
+                        errMap.put("nonAvaDate", "APPT_ERROR0001");
                     }
                 }
             }
