@@ -593,7 +593,11 @@ public class InsRepServiceImpl implements InsRepService {
         String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
         List<TaskDto> taskDtos = prepareTaskToAo1(taskDto, applicationDto, hcsaSvcStageWorkingGroupDto2);
         taskService.createTasks(taskDtos);
-        createAppPremisesRoutingHistory(applicationNo, status, taskKey, appPremisesRecommendationDto.getProcessRemarks(), InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT.equals(status)){
+            createAppPremisesRoutingHistory(applicationNo, status, taskKey, appPremisesRecommendationDto.getProcessRemarks(), InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
+        }else {
+            createAppPremisesRoutingHistory(applicationNo, status, taskKey, appPremisesRecommendationDto.getProcessRemarks(), InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
+        }
         createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId1, subStage);
     }
 
@@ -611,21 +615,21 @@ public class InsRepServiceImpl implements InsRepService {
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
         String groupId = hcsaSvcStageWorkingGroupDto1.getGroupId();
         String subStage = getSubStage(appPremisesCorrelationId, taskKey);
-        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)||ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)){
-            HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
-            hcsaRiskScoreDto.setAppType(applicationType);
-            if( !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-                AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
-                hcsaRiskScoreDto.setLicId(appInsRepDto.getLicenceId());
-            }else {
-                List<ApplicationDto> applicationDtos = new ArrayList<>(1);
-                applicationDtos.add(applicationDto);
-                hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
-            }
-            hcsaRiskScoreDto.setServiceCode(serviceId);
-            HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
-            Double riskScore = entity.getRiskScore();
-        }
+//        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)||ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)){
+//            HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+//            hcsaRiskScoreDto.setAppType(applicationType);
+//            if( !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+//                AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
+//                hcsaRiskScoreDto.setLicId(appInsRepDto.getLicenceId());
+//            }else {
+//                List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+//                applicationDtos.add(applicationDto);
+//                hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+//            }
+//            hcsaRiskScoreDto.setServiceId(serviceId);
+//            HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+//            Double riskScore = entity.getRiskScore();
+//        }
         if(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION.equals(applicationType) || ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK.equals(applicationType)) {
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_APPEAL_APPROVE);
             List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
@@ -643,14 +647,13 @@ public class InsRepServiceImpl implements InsRepService {
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             List<TaskDto> taskDtos = prepareTaskToAo2(taskDto, serviceId, applicationDto);
             taskService.createTasks(taskDtos);
-            createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
+            createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
             createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO2, groupId, null);
         }
-
     }
 
     @Override
-    public void routBackTaskToInspector(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws FeignException {
+    public void routBackTaskToInspector(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) {
         String serviceId = applicationDto.getServiceId();
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
@@ -664,7 +667,7 @@ public class InsRepServiceImpl implements InsRepService {
         String userId = getRobackUserId(applicationNo, taskKey);
         List<TaskDto> taskDtos = prepareBackTaskList(taskDto, userId);
         taskService.createTasks(taskDtos);
-        createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId, subStage);
+        createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVISE_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId, subStage);
         createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId, subStage);
     }
 
@@ -707,7 +710,6 @@ public class InsRepServiceImpl implements InsRepService {
             ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
             updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
             completedTask(taskDto);
-
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
             String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
             List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
@@ -738,14 +740,13 @@ public class InsRepServiceImpl implements InsRepService {
                 ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
                 updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
                 completedTask(taskDto);
-
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
                 String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
                 List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
                 taskService.createTasks(taskDtos);
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
                 String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
-                createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
+                createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, ApplicationConsts.PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
                 createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, historyRemarks, null, roleId, groupId2, subStage);
             }
         }
