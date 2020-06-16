@@ -252,6 +252,7 @@ public class InspectEmailAo1Delegator {
             hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDto.setOrder(1);
             TaskDto taskDto1=new TaskDto();
+            taskDto1.setApplicationNo(applicationViewDto.getApplicationDto().getApplicationNo());
             taskDto1.setRefNo(taskDto.getRefNo());
             taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto1.setUserId(appPremisesRoutingHistoryDto.getActionby());

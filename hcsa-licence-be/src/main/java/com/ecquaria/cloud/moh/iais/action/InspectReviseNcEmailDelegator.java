@@ -240,6 +240,7 @@ public class InspectReviseNcEmailDelegator {
             hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
             hcsaSvcStageWorkingGroupDto.setOrder(2);
             TaskDto taskDto1=new TaskDto();
+            taskDto1.setApplicationNo(applicationViewDto.getApplicationDto().getApplicationNo());
             taskDto1.setRefNo(taskDto.getRefNo());
             taskDto1.setTaskType(taskDto.getTaskType());
             taskDto1.setRoleId(RoleConsts.USER_ROLE_AO1);

@@ -388,6 +388,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
                     hcsaSvcStageWorkingGroupDto.setOrder(1);
                     TaskDto taskDto2=new TaskDto();
+                    taskDto2.setApplicationNo(applicationViewDto1.getApplicationDto().getApplicationNo());
                     taskDto2.setRefNo(appPremCorrIdsNoNc.get(i));
                     taskDto2.setTaskType(taskDto.getTaskType());
                     taskDto2.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
