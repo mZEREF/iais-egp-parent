@@ -94,4 +94,13 @@ public class INTRANET___MohChecklistConfiguration___1 extends BaseProcessClass {
 	public void exportConfigTemplate_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "exportConfigTemplate", this);
 	}
+	public void preUploadTemplate_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preUploadTemplate", this);
+	}
+	public void setMultipart_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "setMultipart", this);
+	}
+	public void updateTemplate_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "updateTemplate", this);
+	}
 }

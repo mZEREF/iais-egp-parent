@@ -89,14 +89,12 @@ public final class FileUtils {
     }
 
     public static <T> List<T> transformToJavaBean(final File file, final Class<?> clz) throws Exception {
-        ExcelReader excelReader = new ExcelReader();
-        List<?> objects = excelReader.readerToBean(file, clz);
+        List<?> objects = ExcelReader.readerToBean(file, clz);
         return (List<T>) objects;
     }
 
-    public static List<String> transformToList(final File file, final Class<?> clz, Map<Integer, List<Integer>> specifyReadMap) throws Exception {
-        ExcelReader excelReader = new ExcelReader();
-        return excelReader.readerToList(file, clz, specifyReadMap);
+    public static List<String> transformToList(final File file, int sheetAt, Map<Integer, List<Integer>> map) throws Exception {
+        return ExcelReader.readerToList(file,sheetAt, map);
     }
 
     public static byte[] readFileToByteArray(final File file){

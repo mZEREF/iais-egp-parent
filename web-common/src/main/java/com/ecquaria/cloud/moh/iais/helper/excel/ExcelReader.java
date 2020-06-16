@@ -32,18 +32,13 @@ import static org.apache.poi.ss.usermodel.CellType.STRING;
  **/
 
 @Slf4j
-public class ExcelReader {
+public final class ExcelReader {
     private static final String pattern = "yyyy-MM-dd HH:mm:ss";
     public static final String EXCEL_TYPE_XSSF			= "xlsx";
 
-    private Sheet sheet = null;
+    private ExcelReader(){}
 
-    protected int startCellIndex = 1;
-
-    protected int sheetAt = 0;
-
-    private void initSheetProperty(final File file, final Class<?> clz) throws Exception {
-
+    public static <T> List<T> readerToBean(final File file, final Class<?> clz) throws Exception {
         if (file == null || !file.exists()){
             throw new IaisRuntimeException("Please check excel source is exists");
         }
@@ -57,11 +52,12 @@ public class ExcelReader {
             throw new IaisRuntimeException("excel bean class error");
         }
 
-        startCellIndex = property.startRowIndex();
-        sheetAt = property.sheetAt();
+        int startCellIndex = property.startRowIndex();
+        int sheetAt = property.sheetAt();
+        Sheet sheet = parseFile(file, sheetAt);
 
         if (sheet == null){
-            sheet = parseFile(file);
+            throw new IaisRuntimeException("excel sheet name error");
         }
 
         String sheetName = sheet.getSheetName();
@@ -69,25 +65,25 @@ public class ExcelReader {
             throw new IaisRuntimeException("excel sheet name error");
         }
 
-    }
 
-    public <T> List<T> readerToBean(final File file, final Class<?> clz) throws Exception {
-        initSheetProperty(file, clz);
-
-        List<List<String>> result = sequentialParse();
+        List<List<String>> result = sequentialParse(sheet, startCellIndex);
 
         return (List<T>) result.stream().map(x -> setField(clz, x)).collect(Collectors.toList());
     }
 
-    public List<String> readerToList(final File file, final Class<?> clazz, Map<Integer, List<Integer>> specifyReadMap) throws Exception {
-        initSheetProperty(file, clazz);
+    public static List<String> readerToList(final File file, int sheetAt, Map<Integer, List<Integer>> matrix) throws Exception {
+        if (file == null || !file.exists()){
+            throw new IaisRuntimeException("Please check excel source is exists");
+        }
 
-        return parseByMapValue(specifyReadMap);
+        Sheet sheet = parseFile(file, sheetAt);
+
+        return parseByMapValue(sheet, matrix);
     }
 
-    private List<String> parseByMapValue(Map<Integer, List<Integer>> specifyReadMap){
+    private static List<String> parseByMapValue(Sheet sheet, Map<Integer, List<Integer>> matrix){
         List<String> values = new ArrayList<>();
-        for (Map.Entry<Integer, List<Integer>> entry : specifyReadMap.entrySet()){
+        for (Map.Entry<Integer, List<Integer>> entry : matrix.entrySet()){
             Integer rowIndex = entry.getKey();
             List<Integer> cellList = entry.getValue();
             for (Integer cellIndex : cellList){
@@ -98,7 +94,7 @@ public class ExcelReader {
         return values;
     }
 
-    private List<List<String>> sequentialParse() {
+    private static List<List<String>> sequentialParse(final Sheet sheet, final int startCellIndex) {
         int rowCount = sheet.getLastRowNum();
         //int realRowCount = sheet.getPhysicalNumberOfRows();
         int realCellCount = sheet.getRow(startCellIndex).getLastCellNum();
@@ -120,7 +116,7 @@ public class ExcelReader {
     }
 
     @SuppressWarnings("resource")
-    private Sheet parseFile(final File file) throws Exception {
+    private static Sheet parseFile(final File file, int sheetAt) throws Exception {
         Workbook workBook = null;
         try (FileInputStream in = new FileInputStream(file)){
             char indexChar = ".".charAt(0);

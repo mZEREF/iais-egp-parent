@@ -25,19 +25,23 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.sqlite.date.FastDateFormat;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
+import sop.servlet.webflow.HttpHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,6 +55,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.eclipse.jdt.internal.compiler.util.Util.UTF_8;
 
@@ -451,6 +456,26 @@ public final class IaisEGPHelper extends EGPHelper {
                 log.error(ex.getMessage(), ex);
             }
         });
+    }
+
+    public static void setMultipartAction(HttpServletRequest request){
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        String currentAction = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
+        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
+    }
+
+    public static Map<Integer, List<Integer>> generateUnlockMap(int row, int cell){
+        Map<Integer, List<Integer>> unlockCellMap = IaisCommonUtils.genNewHashMap();
+        List<Integer> list = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i <= cell; i++){
+            list.add(i);
+        }
+
+        for (int i = 0; i <= row; i++){
+            unlockCellMap.put(i, list);
+        }
+
+        return unlockCellMap;
     }
 
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}

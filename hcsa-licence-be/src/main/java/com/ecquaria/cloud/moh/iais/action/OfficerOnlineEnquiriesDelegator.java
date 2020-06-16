@@ -970,10 +970,8 @@ public class OfficerOnlineEnquiriesDelegator {
              queryList = results.getRows();
         }
 
-        ExcelWriter excelWriter = new ExcelWriter(ReqForInfoSearchListDto.class, "Officer Online Enquiries Information_Search_Template");
-
         try {
-            file = excelWriter.writerToExcel(queryList);
+            file = ExcelWriter.writerToExcel(queryList, ReqForInfoSearchListDto.class, "Officer Online Enquiries Information_Search_Template");
         } catch (Exception e) {
             log.error("=======>fileHandler error >>>>>", e);
         }

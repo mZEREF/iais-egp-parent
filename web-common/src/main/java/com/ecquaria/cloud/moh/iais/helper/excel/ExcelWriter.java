@@ -4,7 +4,6 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -23,7 +22,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,116 +33,235 @@ import java.util.Map;
  * @Date:2020/6/5
  **/
 @Slf4j
-public class ExcelWriter {
+public final class ExcelWriter {
     private static String EXCEL_TYPE_XSSF = "xlsx";
-
-    /**
-     * Applies to the current makefile,
-     * if not set, it will be generated according to the {@code Class<?> clz} by simple name
-     * */
-    private String fileName;
-
-    /**
-     * When creating new file instead of adding data to old file, you do not need set value.
-     * by default, {@code newModule is true}, always create new file.
-     */
-    private File file;
-
-    /** {code unlockCell} is a matrix, such as [3][3].
-     * It will unlock the data of the first row and cell, first row and the second cell and so on,  until the end of the third row.
-     */
-    private int[][] unlockCell = null;
-
-    /**
-     * Same as ${@code unlockCell}, This key is row, values store the coordinates of columns
-     */
-    private Map<Integer, List<Integer>> unlockCellMap;
 
     /**
      * Cell color, locked status, hidden or not
      */
-    private  XSSFCellStyle lockStyle = null;
+    private static XSSFCellStyle lockStyle = null;
 
     /**
      * If without this value, the generated data will be locked
      */
-    private  XSSFCellStyle unlockStyle = null;
-
-    /** setting source data format through a {@code Class<?>} */
-    private Class<?> clz;
-
-    private boolean hasNeedCellName = true;
-
-    private boolean newModule = true;
-
-    protected int startCellIndex = 0;
-
-    protected String sheetName;
-
-    protected int sheetAt = 0;
+    private static XSSFCellStyle unlockStyle = null;
 
     private static XSSFWorkbook workbook;
 
-    protected String zheshigaisidemima = "password$1";
+    private static String zheshigaisidemima = "password$1";
 
-    private boolean needBlock = false;
+    private ExcelWriter(){}
 
-    public void setZheshigaisidemima(String zheshigaisidemima) {
-        this.zheshigaisidemima = zheshigaisidemima;
+    /**
+     * default model
+     * @Author yichen
+     **/
+    public static File writerToExcel(final List<?> source, Class<?> sourceClz, String fileName) throws Exception {
+        return writerToExcel(source, sourceClz, null, fileName, false, true, null, null);
+    }
+    public static File writerToExcel(final List<?> source, Class<?> sourceClz, final File file, String fileName, boolean block, boolean headName) throws Exception {
+        return writerToExcel(source, sourceClz, file, fileName, block, headName, null, null);
     }
 
-    public void setUnlockCellMap(Map<Integer, List<Integer>> unlockCellMap) {
-        this.unlockCellMap = unlockCellMap;
+    public static File writerToExcel(final List<?> source, Class<?> sourceClz, final File file, String fileName, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap) throws Exception {
+        return writerToExcel(source, sourceClz, file, fileName, block, headName, unlockCellMap, null);
     }
 
-    public void setHasNeedCellName(boolean hasNeedCellName) {
-        this.hasNeedCellName = hasNeedCellName;
-    }
-
-    public void setNewModule(boolean newModule) {
-        this.newModule = newModule;
-    }
-
-    public void setNeedBlock(boolean needBlock) {
-        this.needBlock = needBlock;
-    }
-
-    public ExcelWriter(File file, String fileName, Class<?> clz) {
-        this.fileName = fileName;
-        this.file = file;
-        this.clz = clz;
-    }
-
-    public ExcelWriter(Class<?> clz, String fileName) {
-        this.clz = clz;
-        this.fileName = fileName;
-    }
-
-    public void setUnlockCell(int[][] unlockCell) {
-        this.unlockCell = unlockCell;
-    }
-
-
-    private void initCheck() throws ClassNotFoundException {
-        if (clz == null){
-            throw new ClassNotFoundException("can not find excel source class");
+    public static File writerToExcel(final List<?> source, Class<?> sourceClz, final File file, String fileName, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap, String pwd) throws Exception {
+        if (source == null || sourceClz == null) {
+            log.info("don't have source when writer to excel!!!!");
+            throw new IaisRuntimeException("Please check the export excel parameters.");
         }
 
-        fileName = generationFileName();
+        ExcelSheetProperty property = getSheetPropertyByClz(sourceClz);
+        int startCellIndex = property.startRowIndex();
+        int sheetAt = property.sheetAt();
+        String sheetName = property.sheetName();
+
+        File out;
+        final String localFileName = generationFileName(fileName);
+        if (file == null){
+            out = new File(localFileName);
+            try (FileOutputStream fileOutputStream = new FileOutputStream(out)) {
+                workbook = XSSFWorkbookFactory.createWorkbook();
+
+                startInternal();
+
+                Sheet sheet = workbook.createSheet(sheetName);
+
+                parseSheet(source, sourceClz, block, headName, unlockCellMap, startCellIndex, sheet, pwd);
+
+                workbook.write(fileOutputStream);
+            } catch (Exception e) {
+                throw new Exception("has IO error when when export excel");
+            }finally {
+                workbook.close();
+            }
+        }else {
+            try (FileInputStream fileInputStream = new FileInputStream(file)) {
+                workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
+
+                startInternal();
+
+                Sheet sheet = workbook.getSheetAt(sheetAt);
+                parseSheet(source, sourceClz, block, headName, unlockCellMap, startCellIndex, sheet, pwd);
+                OutputStream outputStream = new FileOutputStream(localFileName);
+                workbook.write(outputStream);
+                out = new File(localFileName);
+
+                return out;
+            } catch (Exception e) {
+                throw new Exception("has error when when export excel, may be is resource corrupted");
+            }finally {
+                workbook.close();
+            }
+        }
+
+        return out;
     }
 
-    private void initSheetProperty(){
-        ExcelSheetProperty property = clz.getAnnotation(ExcelSheetProperty.class);
+    private static void startInternal() {
+        initLockStyle();
+
+        initUnlockStyle();
+    }
+
+    private static ExcelSheetProperty getSheetPropertyByClz(Class<?> sourceClz){
+        ExcelSheetProperty property = sourceClz.getAnnotation(ExcelSheetProperty.class);
         if (property == null){
             throw new IaisRuntimeException("can not find sheet property!");
         }
-
-        startCellIndex = property.startRowIndex();
-        sheetName = property.sheetName();
-        sheetAt = property.sheetAt();
+        return property;
     }
 
-    private void setFieldName(final Class<?> clz, final Sheet sheet) {
+    private static void parseSheet(List<?> source, Class<?> sourceClz, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap, int startCellIndex, Sheet sheet, String password) {
+        if (unlockCellMap != null && !unlockCellMap.isEmpty()){
+            unlockCellByMap(sheet, unlockCellMap);
+        }
+
+        if (headName){
+            setFieldName(sourceClz, sheet, startCellIndex);
+        }
+
+        parseCell(source, sourceClz, sheet, startCellIndex);
+
+        if (block){
+            lockSheetWorkspace(sheet, password);
+        }
+    }
+
+    private static void parseCell(List<?> source, Class<?> sourceClz, Sheet sheet, int startCellIndex){
+        try {
+            createCellValue(sheet, source, sourceClz, startCellIndex);
+        } catch (NoSuchMethodException e) {
+            log.error("========NoSuchMethodException=>>>>>>>>>>>>>>", e);
+        } catch (IllegalAccessException e) {
+            log.error("========IllegalAccessException=>>>>>>>>>>>>>>", e);
+        } catch (InvocationTargetException e) {
+            log.error("========InvocationTargetException=>>>>>>>>>>>>>>", e);
+        }
+
+
+    }
+
+    private static void lockSheetWorkspace(Sheet sheet, String pwd){
+        if (StringUtils.isEmpty(pwd)){
+            sheet.protectSheet(zheshigaisidemima);
+        }else {
+            sheet.protectSheet(pwd);
+        }
+    }
+
+    private static void createCellValue(final Sheet sheet, final List<?> source, final Class<?> sourceClz, int startCellIndex) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        //sequence number
+        int cellIndex = startCellIndex + 1;
+        int sequence = 1;
+        for (Object t : source) {
+            Row sheetRow = sheet.createRow(cellIndex);
+            Cell firstCell = sheetRow.createCell(0);
+            firstCell.setCellStyle(lockStyle);
+            firstCell.setCellValue(sequence);
+
+            sequence++;
+            cellIndex++;
+
+            Field[] fields = sourceClz.getDeclaredFields();
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(ExcelProperty.class)) {
+                    ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
+                    int index = annotation.cellIndex();
+                    Cell cell = sheetRow.createCell(index);
+                    boolean readOnly = annotation.readOnly();
+                    boolean hidden = annotation.hidden();
+
+                    if (readOnly){
+                        cell.setCellStyle(lockStyle);
+                    }else {
+                        cell.setCellStyle(unlockStyle);
+                    }
+
+                    if (hidden){
+                        sheet.setColumnHidden(index, true);
+                    }
+
+                    cell.setCellValue(setValue(sourceClz.getDeclaredMethod("get" +
+                            StringUtils.capitalize(field.getName())).invoke(t)));
+                }
+            }
+
+        }
+
+    }
+
+    private static String setValue(final Object obj) {
+        return obj == null ? "" : obj.toString();
+    }
+
+    private static String generationFileName(String fileName) {
+        long currentTimeMillis = System.currentTimeMillis();
+        String jointText = currentTimeMillis + "." + EXCEL_TYPE_XSSF;
+        return fileName + "-" + jointText;
+    }
+
+    private static void unlockCellByMap(Sheet sheet, Map<Integer, List<Integer>> unlockCellMap){
+        for (Map.Entry<Integer, List<Integer>> ent : unlockCellMap.entrySet()){
+            Integer rowIndex = ent.getKey();
+            List<Integer> cellIndex = ent.getValue();
+            for (Integer i : cellIndex){
+                Row row = sheet.getRow(rowIndex);
+                if (row != null){
+                    Cell cell = row.getCell(i);
+                    if (cell != null){
+                        cell.setCellStyle(unlockStyle);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void initUnlockStyle(){
+        if (workbook != null) {
+            XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
+            xssfCellStyle.setLocked(false);
+            xssfCellStyle.setHidden(false);
+            xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
+            unlockStyle = xssfCellStyle;
+        }
+    }
+
+    private static void initLockStyle() {
+        if (workbook!= null) {
+            XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
+            xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
+            xssfCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            xssfCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
+            xssfCellStyle.setLocked(true);
+            xssfCellStyle.setHidden(true);
+            lockStyle = xssfCellStyle;
+        }
+    }
+
+    private static void setFieldName(final Class<?> clz, final Sheet sheet, int startCellIndex) {
         Row sheetRow = sheet.createRow(startCellIndex);
         Cell firstCell = sheetRow.createCell(0);
         firstCell.setCellValue("SN");
@@ -170,209 +287,13 @@ public class ExcelWriter {
         autoSizeCell(sheet, autoSizeCell);
     }
 
-    private void autoSizeCell(Sheet sheet, List<Integer> cell){
+    private static void autoSizeCell(Sheet sheet, List<Integer> cell){
         if (sheet != null && !IaisCommonUtils.isEmpty(cell)){
             for (Integer i : cell){
                 int columnWidth = sheet.getColumnWidth(i) / 256;
                 sheet.setColumnWidth(i, columnWidth * 512);
                 sheet.autoSizeColumn(i);
             }
-        }
-    }
-
-    private void startInternal() throws ClassNotFoundException {
-        initCheck();
-
-        initSheetProperty();
-    }
-
-    public File writerToExcel(final List<?> source) throws Exception {
-        startInternal();
-
-        if (source == null) {
-            log.info("don't have source when writer to excel!!!!");
-            throw new IaisRuntimeException("Please check the export excel parameters.");
-        }
-
-        File out;
-        final String localFileName = fileName;
-        Sheet sheet;
-        log.info(StringUtil.changeForLog("current workspace " + sheetName));
-        log.info("current filename " + localFileName);
-        if (newModule){
-            out = new File(localFileName);
-            try (FileOutputStream fileOutputStream = new FileOutputStream(out)) {
-                workbook = XSSFWorkbookFactory.createWorkbook();
-                sheet  = workbook.createSheet(sheetName);
-                doParse(source, sheet);
-                workbook.write(fileOutputStream);
-
-            } catch (Exception e) {
-                throw new Exception("has IO error when when export excel");
-            }finally {
-                workbook.close();
-            }
-        }else {
-            try (FileInputStream fileInputStream = new FileInputStream(file)) {
-                workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
-                sheet = workbook.getSheetAt(sheetAt);
-
-                doParse(source, sheet);
-
-                OutputStream outputStream = new FileOutputStream(localFileName);
-                workbook.write(outputStream);
-                out = new File(localFileName);
-                workbook.close();
-            } catch (Exception e) {
-                throw new Exception("has error when when export excel, may be is resource corrupted");
-            }finally {
-                workbook.close();
-            }
-        }
-
-        return out;
-    }
-
-
-
-    private void doParse(List<?> source, Sheet sheet){
-        initLockStyle();
-
-        initUnlockStyle();
-
-        if (unlockCell != null && unlockCell.length > 0){
-            unlockCell(sheet);
-        }
-
-        if (unlockCellMap != null && !unlockCellMap.isEmpty()){
-            unlockCellByMap(sheet);
-        }
-
-        if (hasNeedCellName){
-            setFieldName(clz, sheet);
-        }
-
-        try {
-            createCellValue(sheet, source);
-        } catch (NoSuchMethodException e) {
-            log.error("========NoSuchMethodException=>>>>>>>>>>>>>>", e);
-        } catch (IllegalAccessException e) {
-            log.error("========IllegalAccessException=>>>>>>>>>>>>>>", e);
-        } catch (InvocationTargetException e) {
-            log.error("========InvocationTargetException=>>>>>>>>>>>>>>", e);
-        }
-
-        if (needBlock){
-            sheet.protectSheet(zheshigaisidemima);
-        }
-    }
-
-    private void createCellValue(final Sheet sheet, final List<?> source) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        //sequence number
-        int cellIndex = startCellIndex + 1;
-        int sequence = 1;
-        for (Object t : source) {
-            Row sheetRow = sheet.createRow(cellIndex);
-            Cell firstCell = sheetRow.createCell(0);
-            firstCell.setCellStyle(lockStyle);
-            firstCell.setCellValue(sequence);
-
-            sequence++;
-            cellIndex++;
-
-            Field[] fields = clz.getDeclaredFields();
-            for (Field field : fields) {
-                if (field.isAnnotationPresent(ExcelProperty.class)) {
-                    ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
-                    int index = annotation.cellIndex();
-                    Cell cell = sheetRow.createCell(index);
-                    boolean readOnly = annotation.readOnly();
-                    boolean hidden = annotation.hidden();
-
-                    if (readOnly){
-                        cell.setCellStyle(lockStyle);
-                    }else {
-                        cell.setCellStyle(unlockStyle);
-                    }
-
-                    if (hidden){
-                        sheet.setColumnHidden(index, true);
-                    }
-
-                    cell.setCellValue(setValue(clz.getDeclaredMethod("get" +
-                            StringUtils.capitalize(field.getName())).invoke(t)));
-                }
-            }
-
-        }
-
-    }
-
-    private String setValue(final Object obj) {
-        return obj == null ? "" : obj.toString();
-    }
-
-    private  String generationFileName() {
-        long currentTimeMillis = System.currentTimeMillis();
-        String jointText = currentTimeMillis + "." + EXCEL_TYPE_XSSF;
-        if (StringUtils.isEmpty(fileName) && clz != null){
-                fileName = clz.getSimpleName();
-        }
-
-        return fileName + "-" + jointText;
-    }
-
-    private void unlockCell(Sheet sheet){
-        int[][] val = unlockCell;
-        for (int i = 0; i < val.length; i++){
-            for (int j = 0; j < val[i].length; j++){
-                Row row = sheet.getRow(i);
-                if (row != null){
-                    Cell cell = row.getCell(j);
-                    if (cell != null){
-                        cell.setCellStyle(unlockStyle);
-                    }
-                }
-            }
-        }
-    }
-
-    private void unlockCellByMap(Sheet sheet){
-        Map<Integer, List<Integer>> val = unlockCellMap;
-        for (Map.Entry<Integer, List<Integer>> ent : val.entrySet()){
-            Integer rowIndex = ent.getKey();
-            List<Integer> cellIndex = ent.getValue();
-            for (Integer i : cellIndex){
-                Row row = sheet.getRow(rowIndex);
-                if (row != null){
-                    Cell cell = row.getCell(i);
-                    if (cell != null){
-                        cell.setCellStyle(unlockStyle);
-                    }
-                }
-            }
-        }
-    }
-
-    private  void initUnlockStyle(){
-        if (workbook != null) {
-            XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
-            xssfCellStyle.setLocked(false);
-            xssfCellStyle.setHidden(false);
-            xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
-            unlockStyle = xssfCellStyle;
-        }
-    }
-
-    private void initLockStyle() {
-        if (workbook!= null) {
-            XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
-            xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
-            xssfCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            xssfCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
-            xssfCellStyle.setLocked(true);
-            xssfCellStyle.setHidden(true);
-            lockStyle = xssfCellStyle;
         }
     }
 }

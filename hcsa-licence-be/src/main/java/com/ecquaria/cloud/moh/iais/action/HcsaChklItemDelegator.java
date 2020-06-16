@@ -131,7 +131,7 @@ public class HcsaChklItemDelegator {
      */
     public void preUploadData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        ParamUtil.setSessionAttr(request, "switchUploadPage", "checklistItem");
+        ParamUtil.setSessionAttr(request, "switchUploadPage", "Checklist Item Upload");
     }
 
     /**
@@ -162,7 +162,7 @@ public class HcsaChklItemDelegator {
         MultipartFile file = mulReq.getFile("selectedFile");
 
         Map<String, String> errorMap = ChecklistHelper.validateFile(request, file);
-        if (errorMap != null && !errorMap.isEmpty()){
+        if (!errorMap.isEmpty()){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
@@ -699,9 +699,8 @@ public class HcsaChklItemDelegator {
                     checkItemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getStatus()));
                 }
 
-                ExcelWriter excelWriter = new ExcelWriter(CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
                 try {
-                    file = excelWriter.writerToExcel(checkItemQueryDtoList);
+                    file = ExcelWriter.writerToExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
                 } catch (Exception e) {
                     log.error("=======>fileHandler error >>>>>", e);
                 }
@@ -721,6 +720,7 @@ public class HcsaChklItemDelegator {
 
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
+
 
 
     /**
@@ -754,13 +754,10 @@ public class HcsaChklItemDelegator {
                     uploadTemplate.add(template);
                 }
 
-                ExcelWriter excelWriter = new ExcelWriter(inputFile, "Checklist_Config_Upload_Template", ConfigExcelItemDto.class);
-                excelWriter.setHasNeedCellName(false);
-                excelWriter.setNewModule(false);
-                excelWriter.setNeedBlock(true);
-                int[][] unlockCell = new int[8][8];
-                excelWriter.setUnlockCell(unlockCell);
-                File outputFile = excelWriter.writerToExcel(uploadTemplate);
+
+                Map<Integer, List<Integer>> unlockMap = IaisEGPHelper.generateUnlockMap(8, 8);
+
+                File outputFile = ExcelWriter.writerToExcel(uploadTemplate, ConfigExcelItemDto.class, inputFile, "Checklist_Config_Upload_Template", true, false, unlockMap);
 
                 FileUtils.writeFileResponseProcessContent(request, outputFile);
 

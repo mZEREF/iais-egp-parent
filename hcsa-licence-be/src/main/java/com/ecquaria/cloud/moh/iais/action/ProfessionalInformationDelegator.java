@@ -13,10 +13,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -151,9 +151,8 @@ public class ProfessionalInformationDelegator {
 			List<ProfessionalInformationQueryDto> queryList = results.getRows();
 			queryList.forEach(i -> i.setDesignation(MasterCodeUtil.getCodeDesc(i.getDesignation())));
 
-			ExcelWriter excelWriter = new ExcelWriter(ProfessionalInformationQueryDto.class, "Professional Information_Search_Template");
 			try {
-				file = excelWriter.writerToExcel(queryList);
+				file = ExcelWriter.writerToExcel(queryList, ProfessionalInformationQueryDto.class, "Professional Information_Search_Template");
 			} catch (Exception e) {
 				log.error("=======>fileHandler error >>>>>", e);
 			}

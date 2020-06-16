@@ -437,7 +437,6 @@ public class BlastManagementDelegator {
         File file = null;
         QueryHelp.setMainSql("systemAdmin", "queryBlastManagementList",searchParam);
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
-        ExcelWriter excelWriter = new ExcelWriter(BlastManagementListDto.class, "Blast_Management_Upload_Template");
         if (!searchResult.getRows().isEmpty()){
             //master code to description
             List<BlastManagementListDto> blastManagementListDtos = searchResult.getRows();
@@ -468,9 +467,8 @@ public class BlastManagementDelegator {
                 }
             }
 
-
             try {
-                file = excelWriter.writerToExcel(blastManagementListDtos);
+                file = ExcelWriter.writerToExcel(searchResult.getRows(), BlastManagementListDto.class, "Blast_Management_Upload_Template");
             } catch (Exception e) {
                 log.error("=======>fileDownload error >>>>>", e);
             }
@@ -481,7 +479,7 @@ public class BlastManagementDelegator {
             blastManagementListDto.setCreateDt("");
 
             try {
-                file = excelWriter.writerToExcel(blastManagementListDtos);
+                file = ExcelWriter.writerToExcel(blastManagementListDtos, BlastManagementListDto.class, "Blast_Management_Upload_Template");
             } catch (Exception e) {
                 log.error("=======>fileDownload error >>>>>", e);
             }

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
@@ -12,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +59,8 @@ public final class ChecklistHelper {
     }
 
     public static boolean validateTemplate(HttpServletRequest request, ChecklistConfigDto excelTemplate){
+        int action = excelTemplate.getWebAction();
+        String configId = excelTemplate.getId();
         boolean isCommon = excelTemplate.isCommon();
         String type = excelTemplate.getType();
         String module = excelTemplate.getModule();
@@ -66,26 +70,39 @@ public final class ChecklistHelper {
         String effectiveStartDate = excelTemplate.getEftStartDate();
         String effectiveEndDate = excelTemplate.getEftEndDate();
 
+
+        if (HcsaChecklistConstants.UPDATE == action){
+            if (StringUtils.isEmpty(configId)){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
+                return true;
+            }
+        }
+
         if (StringUtils.isEmpty(effectiveStartDate) || StringUtils.isEmpty(effectiveEndDate)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "Effective Start Date and end date is mandatory , format should be DD/MM/YYYY"));
             return true;
         }else {
             try {
-                IaisEGPHelper.parseToDate(effectiveStartDate);
-                IaisEGPHelper.parseToDate(effectiveEndDate);
+                Date sDate = IaisEGPHelper.parseToDate(effectiveStartDate);
+                Date eDate = IaisEGPHelper.parseToDate(effectiveEndDate);
+
+                if (IaisEGPHelper.isAfterDate(eDate, sDate)){
+                    ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR013"));
+                    return true;
+                }
+
             }catch (IaisRuntimeException e){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "Effective Start Date and end date is mandatory , format should be DD/MM/YYYY"));
                 return true;
             }
         }
 
+
+
+
         boolean order = uploadType(type, service, module, subType, hciCode);
 
-        if (isCommon && order){
-
-        }else if (!isCommon && !order){
-
-        }else {
+        if (isCommon != order){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "Only common or service can be created"));
             return true;
         }

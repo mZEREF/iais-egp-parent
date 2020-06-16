@@ -175,10 +175,8 @@ public class AuditTrailDelegator {
             return;
         }
 
-
-        ExcelWriter excelWriter = new ExcelWriter(AuditTrailQueryDto.class, "Audit Trail Logging");
         try {
-            File file = excelWriter.writerToExcel(searchResult.getRows());
+            File file = ExcelWriter.writerToExcel(searchResult.getRows(), AuditTrailQueryDto.class, "Audit Trail Logging");
             FileUtils.writeFileResponseContent(response, file);
             FileUtils.deleteTempFile(file);
         } catch (Exception e) {

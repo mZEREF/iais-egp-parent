@@ -54,6 +54,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -66,14 +67,21 @@ import java.util.stream.Collectors;
 @Delegator(value = "hcsaChklConfigDelegator")
 @Slf4j
 public class HcsaChklConfigDelegator {
-    private static Map<Integer, List<Integer>> excelConfigIndex = new HashMap<>();
 
-    static {
-        excelConfigIndex.put(1, Arrays.asList(2));
-        excelConfigIndex.put(3, Arrays.asList(2, 5));
-        excelConfigIndex.put(5, Arrays.asList(2,5));
-        excelConfigIndex.put(7, Arrays.asList(2,5,7));
-    }
+    private static Map<Integer, List<Integer>> excelConfigIndex = new HashMap<Integer, List<Integer>>(){
+        {
+            put(1, Collections.singletonList(2));
+            put(3, Arrays.asList(2, 5));
+            put(5, Arrays.asList(2,5));
+            put(7, Arrays.asList(2,5,7));
+        }
+    };
+
+    private static Map<Integer, List<Integer>> excelHiddenIndexMap = new HashMap<Integer, List<Integer>>(){
+        {
+            put(1, Arrays.asList(9));
+        }
+    };
 
     private HcsaChklService hcsaChklService;
 
@@ -698,14 +706,14 @@ public class HcsaChklConfigDelegator {
             String section = sec.getSection();
             String orderStr = ParamUtil.getString(request, section);
             int order =Integer.parseInt(orderStr);
-            sec.setOrder(order);
+            sec.setOrder(order + 1);
 
             List<ChecklistItemDto> checklistItemDtos = sec.getChecklistItemDtos();
             if (!IaisCommonUtils.isEmpty(checklistItemDtos)){
                 for (ChecklistItemDto item : checklistItemDtos){
                     String itemId = item.getItemId() + orderStr;
-                    String itemOrder = ParamUtil.getString(request, itemId);
-                    item.setSectionItemOrder(Integer.valueOf(itemOrder));
+                    int itemOrder = Integer.valueOf(ParamUtil.getString(request, itemId));
+                    item.setSectionItemOrder(itemOrder + 1);
                 }
                 checklistItemDtos.sort(Comparator.comparing(ChecklistItemDto::getSectionItemOrder));
             }
@@ -795,12 +803,8 @@ public class HcsaChklConfigDelegator {
     public void preUploadData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
 
-        ParamUtil.setSessionAttr(request, "switchUploadPage", "createConfigByTemplate");
-
-
+        ParamUtil.setSessionAttr(request, "switchUploadPage", "Checklist Config Upload");
     }
-
-
 
     /**
      * AutoStep: setRequest
@@ -809,13 +813,84 @@ public class HcsaChklConfigDelegator {
      */
     public void setRequest(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-
-        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-
-        String currentAction = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-        ParamUtil.setRequestAttr(request, IaisEGPConstant.CRUD_ACTION_TYPE, currentAction);
+        IaisEGPHelper.setMultipartAction(request);
     }
 
+    /**
+     * AutoStep: setMultipart
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void setMultipart(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        IaisEGPHelper.setMultipartAction(request);
+    }
+
+
+    /**
+     * AutoStep: preUploadTemplate
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void preUploadTemplate(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        ParamUtil.setSessionAttr(request, "switchUploadPage", "Checklist Config Upload");
+    }
+
+
+
+    /**
+     * AutoStep: updateTemplate
+     * @param bpc
+     * @throws IllegalAccessException
+     */
+    public void updateTemplate(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        MultipartFile file = mulReq.getFile("selectedFile");
+
+        Map<String, String> errorMap = ChecklistHelper.validateFile(request, file);
+        if (!errorMap.isEmpty()){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return;
+        }
+
+        try {
+            File toFile = FileUtils.multipartFileToFile(file);
+            List<ConfigExcelItemDto> item = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
+            List<String> configInfo = FileUtils.transformToList(toFile, 1, excelConfigIndex);
+
+
+            List<String> ids = FileUtils.transformToList(toFile, 1, excelHiddenIndexMap);
+            ChecklistConfigDto excelTemplate = convertToConfigByTemplate(configInfo);
+            excelTemplate.setWebAction(HcsaChecklistConstants.UPDATE);
+            excelTemplate.setId(ids.get(0));
+            excelTemplate.setExcelTemplate(item);
+            FileUtils.deleteTempFile(toFile);
+
+            boolean hasTemplateError = ChecklistHelper.validateTemplate(request, excelTemplate);
+            if (hasTemplateError){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                return;
+            }
+
+            List<ErrorMsgContent> errorMsgContentList = hcsaChklService.updateConfigTemplate(excelTemplate);
+            errorMsgContentList = errorMsgContentList.stream().filter(i -> !i.getErrorMsgList().isEmpty()).collect(Collectors.toList());
+            ChecklistHelper.replaceErrorMsgContentMasterCode(request, errorMsgContentList);
+            ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+        } catch (Exception e) {
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            log.error(e.getMessage(), e);
+        }
+
+
+    }
 
 
     /**
@@ -830,26 +905,20 @@ public class HcsaChklConfigDelegator {
         if (!StringUtils.isEmpty(configId)){
             ChecklistConfigDto config = hcsaChklService.getChecklistConfigById(configId);
             try {
-                List<String> val = IaisCommonUtils.genNewArrayList();
-                val.add(config.isCommon() ? "Yes" : "No");
-                val.add(config.getModule());
-                val.add(config.getType());
-                val.add(config.getSvcName());
-                val.add(config.getSvcSubType());
-                val.add(config.getHciCode());
-                val.add(config.getEftStartDate());
-                val.add(config.getEftEndDate());
+                String[] val = {config.isCommon() ? "Yes" : "No", config.getModule(), config.getType(), config.getSvcName(), config.getSvcSubType(), config.getHciCode(), config.getEftStartDate(), config.getEftEndDate()};
 
                 List<ConfigExcelItemDto> updateItem = hcsaChklService.convertToUploadTemplateByConfig(config);
 
                 File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Update_Template.xlsx");
+
                 File temp = EspecialExcelWriterUtil.writerToExcelByIndex(inputFile, 1, val, excelConfigIndex);
 
-                ExcelWriter itemWriter = new ExcelWriter(temp, "Checklist_Config_Update_Template", ConfigExcelItemDto.class);
-                itemWriter.setHasNeedCellName(false);
-                itemWriter.setNewModule(false);
-                itemWriter.setNeedBlock(true);
-                File outputFile = itemWriter.writerToExcel(updateItem);
+                String[] hiddenVal = {config.getId()};
+
+                temp = EspecialExcelWriterUtil.writerToExcelByIndex(temp, 1, hiddenVal, excelHiddenIndexMap, true);
+
+                File outputFile = ExcelWriter.writerToExcel(updateItem, ConfigExcelItemDto.class, temp,  "Checklist_Config_Update_Template", true, false);
+
                 FileUtils.writeFileResponseProcessContent(request, outputFile);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -863,6 +932,24 @@ public class HcsaChklConfigDelegator {
         }
     }
 
+    private ChecklistConfigDto convertToConfigByTemplate(List<String> data){
+        ChecklistConfigDto excelTemplate = new ChecklistConfigDto();
+        excelTemplate.setCommon("Yes".equals(data.get(0)) ? true : false);
+        excelTemplate.setModule(data.get(1));
+        excelTemplate.setType(data.get(2));
+        excelTemplate.setSvcName(data.get(3));
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(data.get(3));
+
+        if (hcsaServiceDto != null){
+            excelTemplate.setSvcCode(hcsaServiceDto.getSvcCode());
+        }
+
+        excelTemplate.setSvcSubType(data.get(4));
+        excelTemplate.setHciCode(data.get(5));
+        excelTemplate.setEftStartDate(data.get(6));
+        excelTemplate.setEftEndDate(data.get(7));
+        return excelTemplate;
+    }
 
     /**
      * AutoStep: createUploadConfig
@@ -881,30 +968,16 @@ public class HcsaChklConfigDelegator {
             return;
         }
 
-        List<ConfigExcelItemDto> excelItemDtos;
-        List<String> configInfo;
         try {
-
             File toFile = FileUtils.multipartFileToFile(file);
-            excelItemDtos = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
-            configInfo = FileUtils.transformToList(toFile, ConfigExcelItemDto.class, excelConfigIndex);
+            List<ConfigExcelItemDto> excelItemDtos = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
+            List<String> configInfo = FileUtils.transformToList(toFile, 1, excelConfigIndex);
             FileUtils.deleteTempFile(toFile);
 
-
             //uncheck ArrayIndexOutOfBoundsException
-            ChecklistConfigDto excelTemplate = new ChecklistConfigDto();
-            excelTemplate.setCommon("Yes".equals(configInfo.get(0)) ? true : false);
-            excelTemplate.setModule(configInfo.get(1));
-            excelTemplate.setType(configInfo.get(2));
-            excelTemplate.setSvcName(configInfo.get(3));
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(configInfo.get(3));
-            excelTemplate.setSvcCode(hcsaServiceDto.getSvcCode());
-            excelTemplate.setSvcSubType(configInfo.get(4));
-            excelTemplate.setHciCode(configInfo.get(5));
-            excelTemplate.setEftStartDate(configInfo.get(6));
-            excelTemplate.setEftEndDate(configInfo.get(7));
-            excelTemplate.setWebAction(HcsaChecklistConstants.CREATE);
+            ChecklistConfigDto excelTemplate = convertToConfigByTemplate(configInfo);
             excelTemplate.setExcelTemplate(excelItemDtos);
+            excelTemplate.setWebAction(HcsaChecklistConstants.CREATE);
 
             boolean hasTemplateError = ChecklistHelper.validateTemplate(request, excelTemplate);
             if (hasTemplateError){
@@ -930,7 +1003,6 @@ public class HcsaChklConfigDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             log.error(e.getMessage(), e);
-            return;
         }
     }
 

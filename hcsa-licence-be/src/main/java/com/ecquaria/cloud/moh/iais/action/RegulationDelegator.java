@@ -197,7 +197,7 @@ public class RegulationDelegator {
      * @author: yichen
      */
     public void preUpload(BaseProcessClass bpc){
-        ParamUtil.setSessionAttr(bpc.request, "switchUploadPage", "regulation");
+        ParamUtil.setSessionAttr(bpc.request, "switchUploadPage", "Checklist Regulation Upload");
     }
 
     /**
@@ -398,9 +398,8 @@ public class RegulationDelegator {
         if (searchResult != null){
             List<RegulationQueryDto> regulationResult = searchResult.getRows();
 
-            ExcelWriter excelWriter = new ExcelWriter(RegulationQueryDto.class, "Checklist_Regulations_Upload_Template");
             try {
-                file = excelWriter.writerToExcel(regulationResult);
+                file = ExcelWriter.writerToExcel(regulationResult, RegulationQueryDto.class, "Checklist_Regulations_Upload_Template");
             } catch (Exception  e) {
                 log.error("=======>fileHandler error >>>>>", e);
             }

@@ -168,6 +168,7 @@
 
                 <div class="text-right text-center-mobile">
                   <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.submit('mainForm', 'createUploadConfig')">Upload Config Template</a>
+                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.submit('mainForm', 'updateTemplate')">Update Config Template</a>
                   <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareAddConfig();">Add Configuration</a>
                 </div>
               </td>
