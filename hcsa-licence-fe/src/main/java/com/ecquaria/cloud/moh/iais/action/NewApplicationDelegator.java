@@ -4871,11 +4871,25 @@ public class NewApplicationDelegator {
 
             //set premises info
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
             if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                 for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
                     appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                    List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                    if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)){
+                        for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto:appPremPhOpenPeriodDtos){
+                            String dayName = appPremPhOpenPeriodDto.getDayName();
+                            String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
+                            if(StringUtil.isEmpty(dayName) && !StringUtil.isEmpty(phDateStr)){
+                                dayName = getPhName(publicHolidayList,phDateStr);
+                                appPremPhOpenPeriodDto.setDayName(dayName);
+                            }
+                        }
+                    }
+                    appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
                 }
             }
+
             //set licseeId and psn drop down
             setLicseeAndPsnDropDown(appSubmissionDto,bpc);
 
