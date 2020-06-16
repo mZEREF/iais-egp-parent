@@ -260,6 +260,7 @@ public class KpiColourByWorkDaysBatchJob {
             tDto.setWkGrpId(taskDto.getWkGrpId());
             tDto.setTaskKey(taskDto.getTaskKey());
             inspecTaskCreAndAssDto.setTaskDto(tDto);
+            inspecTaskCreAndAssDto.setApplicationNo(applicationDto.getApplicationNo());
             if(HcsaConsts.ROUTING_STAGE_PRE.equals(subStage)){
                 processUrls.add(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
             } else if(HcsaConsts.ROUTING_STAGE_POT.equals(subStage)) {
