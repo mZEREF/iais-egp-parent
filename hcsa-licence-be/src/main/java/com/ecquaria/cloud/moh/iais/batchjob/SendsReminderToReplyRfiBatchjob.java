@@ -135,7 +135,7 @@ public class SendsReminderToReplyRfiBatchjob {
         interMessageDto.setMaskParams(mapPrem);
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         interMessageDto.setSubject(subject);
-        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
         String messageNo = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(messageNo);
         HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();

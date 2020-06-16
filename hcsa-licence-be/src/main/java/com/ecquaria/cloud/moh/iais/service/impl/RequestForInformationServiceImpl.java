@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -471,7 +472,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
     private void changeStatus( ProcessFileTrackDto processFileTrackDto){
         /*  applicationClient.updateStatus().getEntity();*/
-        processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
+        processFileTrackDto.setProcessType(RequestForInformationConstants.RFI_CLOSE);
         AuditTrailDto batchJobDto = AuditTrailHelper.getBatchJobDto("INTRANET");
         processFileTrackDto.setAuditTrailDto(batchJobDto);
         processFileTrackDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_COMPLETE);
