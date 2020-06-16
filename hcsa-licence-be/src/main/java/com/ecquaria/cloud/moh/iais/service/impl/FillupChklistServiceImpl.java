@@ -726,7 +726,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         String svcId = applicationDto.getServiceId();
         String appType = applicationDto.getApplicationType();
         String stgId = taskDto.getTaskKey();
-        List<TaskDto> dtos = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
+        List<TaskDto> dtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
         removeOtherTask(dtos,taskDto.getId());
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_EMAIL);
         HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
@@ -767,7 +767,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     public void routingForToReport(TaskDto taskDto, String preInspecRemarks,LoginContext loginContext){
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        List<TaskDto> dtos = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
+        List<TaskDto> dtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
         removeOtherTask(dtos,taskDto.getId());
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT );
         updateInspectionStatus(applicationDto,InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);

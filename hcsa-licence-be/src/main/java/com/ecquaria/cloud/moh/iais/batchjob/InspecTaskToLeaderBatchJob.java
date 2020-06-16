@@ -155,7 +155,7 @@ public class InspecTaskToLeaderBatchJob {
                 hcsaSvcStageWorkingGroupDto.setType(applicationViewDto.getApplicationDto().getApplicationType());
                 hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
                 hcsaSvcStageWorkingGroupDto.setOrder(3);
-                List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(appInsStatusDto.getAppPremCorreId()).getEntity();
+                List<TaskDto> taskDtoList = organizationClient.getTasksByRefNo(appInsStatusDto.getAppPremCorreId()).getEntity();
                 if(!IaisCommonUtils.isEmpty(taskDtoList)){
                     TaskDto taskDto = taskDtoList.get(0);
                     TaskDto taskDto1 = new TaskDto();

@@ -191,7 +191,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             corrAppMap.put(taskDto.getRefNo(), applicationDto);
             apptInspectionDateDto.setRefNo(premCorrIds);
             taskDtoList = IaisCommonUtils.genNewArrayList();
-            List<TaskDto> taskDtos = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
+            List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
             for(TaskDto tDto : taskDtos){
                 if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING) || tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)) {
                     taskDtoList.add(tDto);

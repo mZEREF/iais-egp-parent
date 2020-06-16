@@ -174,7 +174,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         applicationService.updateFEApplicaiton(applicationDto1);
         applicationViewDto.setApplicationDto(applicationDto1);
-        List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
+        List<TaskDto> taskDtoList = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
         for(TaskDto tDto : taskDtoList){
             if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING) || tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)) {
                 tDto.setSlaDateCompleted(new Date());
@@ -214,7 +214,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         String applicationNo = applicationDto.getApplicationNo();
         createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskDto.getTaskKey(), reMarks, InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), null);
 
-        List<TaskDto> taskDtoList = organizationClient.getTaskByAppNo(taskDto.getRefNo()).getEntity();
+        List<TaskDto> taskDtoList = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
         for(TaskDto tDto : taskDtoList){
             if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING) || tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)) {
                 tDto.setSlaDateCompleted(new Date());

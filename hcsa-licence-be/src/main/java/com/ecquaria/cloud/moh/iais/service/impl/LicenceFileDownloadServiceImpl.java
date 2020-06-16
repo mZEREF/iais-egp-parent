@@ -239,7 +239,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
     @Override
     public List<TaskDto> getTasksByRefNo(String refNo) {
-        return organizationClient.getTaskByAppNo(refNo).getEntity();
+        return organizationClient.getTasksByRefNo(refNo).getEntity();
 
     }
 
