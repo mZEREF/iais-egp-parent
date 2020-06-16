@@ -13,11 +13,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,6 @@ import java.util.Map;
 @Slf4j
 public class InspectionCheckListValidation implements CustomizeValidator {
     private static final String ERR0010 = "ERR0010";
-    private static final String UC_CHKLMD001_ERR007 = "UC_CHKLMD001_ERR007";
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -45,11 +46,28 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         fillUpVad(request,errMap);
         otherinfoVad(serListDto,errMap);
         // validate file
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
+        long maxFile = applicationViewDto.getSystemMaxFileSize()*1024l;
+        List<String> fileTypes = Arrays.asList(applicationViewDto.getSystemFileType().split(","));
         if(serListDto!=null){
             if(serListDto.getAppPremisesSpecialDocDto() != null){
-                if(10240 < serListDto.getAppPremisesSpecialDocDto().getDocSize())
-                    errMap.put("litterFile",UC_CHKLMD001_ERR007);
-
+                if( maxFile < serListDto.getAppPremisesSpecialDocDto().getDocSize()){
+                    errMap.put("litterFile",MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxFile),"sizeMax"));
+                }
+                String docName = serListDto.getAppPremisesSpecialDocDto().getDocName();
+                if( !StringUtil.isEmpty(docName)){
+                    String  docNameType = serListDto.getAppPremisesSpecialDocDto().getDocName().split(".")[1];
+                    boolean noType = false;
+                    for(String s : fileTypes){
+                        if( s.equalsIgnoreCase(docNameType)){
+                            noType = true;
+                            break;
+                        }
+                    }
+                    if( !noType){
+                        errMap.put("litterFile",MessageUtil.replaceMessage("GENERAL_ERR0018", applicationViewDto.getSystemFileType(),"fileType"));
+                    }
+                }
             }
         }
         auditVad( request,errMap);

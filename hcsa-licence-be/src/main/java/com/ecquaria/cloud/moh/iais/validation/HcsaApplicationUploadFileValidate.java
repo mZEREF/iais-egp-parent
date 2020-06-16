@@ -39,7 +39,10 @@ public class HcsaApplicationUploadFileValidate implements CustomizeValidator {
             if(!fileSize){
                 errMap.put("selectedFile",MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxFile),"sizeMax"));
             }
-
+            //type
+            if(!fileType){
+                errMap.put("selectedFile",MessageUtil.replaceMessage("GENERAL_ERR0018", applicationViewDto.getSystemFileType(),"fileType"));
+            }
         }
         return errMap;
     }
