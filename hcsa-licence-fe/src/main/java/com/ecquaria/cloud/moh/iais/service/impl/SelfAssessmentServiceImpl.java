@@ -387,12 +387,15 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             //get application No.
             ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(value).getEntity();
             ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
+            List<String> appNoList = IaisCommonUtils.genNewArrayList();
+            appNoList.add(applicationDto.getApplicationNo());
             TaskDto taskDto = new TaskDto();
             taskDto.setRefNo(value);
             taskDto.setApplicationNo(applicationDto.getApplicationNo());
             taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
             taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             apptFeConfirmDateDto.setTaskDto(taskDto);
+            apptFeConfirmDateDto.setAppNoList(appNoList);
 
             log.info("create fe reply task start");
             gatewayClient.createFeReplyTask(apptFeConfirmDateDto, signature.date(), signature.authorization(),
