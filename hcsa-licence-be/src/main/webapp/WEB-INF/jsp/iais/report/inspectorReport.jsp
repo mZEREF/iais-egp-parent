@@ -297,7 +297,7 @@
                                 <p>Risk Level <strong style="color:#ff0000;"> *</strong></p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select name="riskLevel" options="riskLevelOptions" firstOption="Please Select"
+                                <iais:select cssClass="nice-select riskLevel" name="riskLevel" options="riskLevelOptions" firstOption="Please Select"
                                              value="${appPremisesRecommendationDto.riskLevel}"/>
                                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
@@ -395,7 +395,7 @@
                             <p>Recommendation <strong style="color:#ff0000;"> *</strong></p>
                         </td>
                         <td class="col-xs-4">
-                            <iais:select id="recommendation" name="recommendation" options="recommendationOption"
+                            <iais:select cssClass="nice-select recommendation" id="recommendation" name="recommendation" options="recommendationOption"
                                          firstOption="Please Select"
                                          value="${appPremisesRecommendationDto.recommendation}"
                                          onchange="javascirpt:changeRecommendation(this.value);"/>
@@ -407,7 +407,7 @@
                             <p>Period <strong style="color:#ff0000;"> *</strong></p>
                         </td>
                         <td class="col-xs-4">
-                            <iais:select name="periods" options="riskOption" firstOption="${periodDefault}"
+                            <iais:select cssClass="nice-select periods" name="periods" options="riskOption" firstOption="${periodDefault}"
                                          onchange="javascirpt:changePeriod();"
                                          value="${appPremisesRecommendationDto.period}"/>
                             <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
@@ -420,7 +420,7 @@
                         </td>
                         <td class="col-xs-4">
                             <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="2" value="${appPremisesRecommendationDto.recomInNumber}">
-                            <iais:select id="chronoUnit" name="chrono" options="chronoOption"
+                            <iais:select cssClass="nice-select chronoUnit"  id="chronoUnit" name="chrono" options="chronoOption"
                                          value="${appPremisesRecommendationDto.chronoUnit}"/>
                             <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
                             <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
