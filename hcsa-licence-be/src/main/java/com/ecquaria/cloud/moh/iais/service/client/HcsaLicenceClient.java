@@ -27,7 +27,6 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -134,8 +133,8 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "hcsa-licence/audittculist",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AuditTaskDataFillterDto>> getAuditTcuList();
 
-    @GetMapping(value = "/hcsa-licence/licenceViewDto/{licPremCorrId}",produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<LicenceViewDto> getLicenceViewDtoByLicPremCorrId(@PathVariable("licPremCorrId") String licPremCorrId);
+    @GetMapping(value = "/hcsa-licence/licenceViewDto",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceViewDto> getLicenceViewDtoByLicPremCorrId(@RequestParam(value ="licPremCorrId") String licPremCorrId);
 
     @PostMapping(path = "/hcsa-licence/licinspectiongroup-result", consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<LicInspectionGroupDto> createLicInspectionGroup(@RequestBody LicInspectionGroupDto licInspectionGroupDto);

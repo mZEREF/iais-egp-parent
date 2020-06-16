@@ -17,8 +17,8 @@ public interface LicenceClient {
     @GetMapping(value = "/licence-app-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto>  getLicenceByAppId(@RequestParam("appId") String appId);
 
-    @GetMapping(value = "/hcsa-licence/licenceViewDto/{licPremCorrId}",produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<LicenceViewDto> getLicenceViewDtoByLicPremCorrId(@PathVariable("licPremCorrId") String licPremCorrId);
+    @GetMapping(value = "/hcsa-licence/licenceViewDto",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceViewDto> getLicenceViewDtoByLicPremCorrId(@RequestParam(value ="licPremCorrId") String licPremCorrId);
 
     @GetMapping(value = "/hcsa-licence/licence/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicBylicId(@PathVariable(name="licenceId") String licenceId);

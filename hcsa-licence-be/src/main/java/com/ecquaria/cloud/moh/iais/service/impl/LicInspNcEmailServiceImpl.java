@@ -15,12 +15,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class LicInspNcEmailServiceImpl implements LicInspNcEmailService {
 
-
-
-
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
-
 
     @Override
     public LicenceViewDto getLicenceDtoByLicPremCorrId(String licPremCorrId) {

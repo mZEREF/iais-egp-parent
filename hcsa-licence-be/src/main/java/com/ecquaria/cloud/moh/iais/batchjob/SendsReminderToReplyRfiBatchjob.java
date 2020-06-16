@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -57,8 +56,6 @@ public class SendsReminderToReplyRfiBatchjob {
     @Autowired
     HcsaLicenceClient hcsaLicenceClient;
     @Autowired
-    private ApplicationClient applicationClient;
-    @Autowired
     EmailClient emailClient;
     @Autowired
     private InboxMsgService inboxMsgService;
@@ -68,10 +65,6 @@ public class SendsReminderToReplyRfiBatchjob {
     private String mailSender;
     @Value("${iais.system.adhoc.rfi.due.day}")
     private int rfiDueDay;
-    @Value("${iais.system.adhoc.rfi.reminder.maxday}")
-    private int maxReminderDay;
-    @Value("${iais.system.adhoc.rfi.reminder}")
-    private int maxReminderNum;
 
     @Autowired
     OrganizationClient organizationClient;
@@ -79,22 +72,27 @@ public class SendsReminderToReplyRfiBatchjob {
         logAbout("start");
     }
 
-    public void sendMsg(BaseProcessClass bpc) throws IOException, TemplateException {
+    public void sendMsg(BaseProcessClass bpc)  {
         logAbout("sendMsg");
         List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtos= requestForInformationService.getAllReqForInfo();
-        for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
-             ) {
-            if(rfi.getDueDateSubmission().compareTo(new Date())>0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
-                reminder(rfi);
+        try{
+            for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
+            ) {
+                if(rfi.getDueDateSubmission().compareTo(new Date())<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
+                    reminder(rfi);
+                }
             }
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
         }
+
 
     }
 
     private void reminder(LicPremisesReqForInfoDto licPremisesReqForInfoDto) throws IOException, TemplateException {
         String templateId="BEFC2AF0-250C-EA11-BE78-000C29D29DB0";
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
-        LicenceViewDto licenceViewDto=licInspNcEmailService.getLicenceDtoByLicPremCorrId(rfiEmailTemplateDto.getLicPremCorrId());
+        LicenceViewDto licenceViewDto=licInspNcEmailService.getLicenceDtoByLicPremCorrId(licPremisesReqForInfoDto.getLicPremId());
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         String applicantName=licenseeDto.getName();
@@ -102,6 +100,7 @@ public class SendsReminderToReplyRfiBatchjob {
         mapPrem.put("licenseeId",licenseeId);
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         map.put("APPLICANT_NAME",StringUtil.viewHtml(applicantName));
+        map.put("APPLICATION_NUMBER",StringUtil.viewHtml(licPremisesReqForInfoDto.getLicenceNo()));
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;
         if(!IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
@@ -111,7 +110,7 @@ public class SendsReminderToReplyRfiBatchjob {
         }
         if(licPremisesReqForInfoDto.isNeedDocument()){
             for (int j=0;j<licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().size();j++) {
-                stringBuilder.append("<p>   ").append(j+i+1).append(". ").append("Documentations  ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(i).getTitle()).append("</p>");
+                stringBuilder.append("<p>   ").append(j+i+1).append(". ").append("Documentations  ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
             }
         }
 
@@ -151,13 +150,7 @@ public class SendsReminderToReplyRfiBatchjob {
         Calendar cal = Calendar.getInstance();
         cal.setTime(licPremisesReqForInfoDto.getDueDateSubmission());
         cal.add(Calendar.DAY_OF_MONTH, rfiDueDay);
-        Calendar calendar=Calendar.getInstance();
-        calendar.add(Calendar.DATE,-maxReminderDay);
-        Date outDate=calendar.getTime();
         licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_RETRIGGER);
-        if(licPremisesReqForInfoDto.getReminder()>maxReminderNum && licPremisesReqForInfoDto.getRequestDate().after(outDate)){
-            licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_CLOSE);
-        }
         licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         licPremisesReqForInfoDto1.setAction("update");
@@ -169,15 +162,15 @@ public class SendsReminderToReplyRfiBatchjob {
         eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
         eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
         eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
-        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto));
+        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto1));
         eicRequestTrackingDto.setProcessNum(1);
         eicRequestTrackingDto.setFirstActionAt(now);
         eicRequestTrackingDto.setLastActionAt(now);
         eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
         eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
-        licPremisesReqForInfoDto.setEventRefNo(eicRequestTrackingDto.getRefNo());
+        licPremisesReqForInfoDto1.setEventRefNo(eicRequestTrackingDto.getRefNo());
         requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
-        requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto);
+        requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto1);
 
     }
     private void logAbout(String methodName){
