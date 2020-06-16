@@ -578,8 +578,10 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     private void createApptDateTaskEmail(ApptFeConfirmDateDto apptFeConfirmDateDto, String processUrl) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        String applicationNo = getApplicationByCorrId(apptFeConfirmDateDto.getAppPremCorrId());
         TaskDto taskDto = new TaskDto();
         taskDto.setRefNo(apptFeConfirmDateDto.getAppPremCorrId());
+        taskDto.setApplicationNo(applicationNo);
         taskDto.setProcessUrl(processUrl);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         apptFeConfirmDateDto.setTaskDto(taskDto);
@@ -597,6 +599,15 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         orgEicClient.updateStatus(eicRequestTrackingDtos);
+    }
+
+    private String getApplicationByCorrId(String appPremCorrId) {
+        String appNo = "";
+        if(!StringUtil.isEmpty(appPremCorrId)){
+            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            appNo = applicationDto.getApplicationNo();
+        }
+        return appNo;
     }
 
     @Override
