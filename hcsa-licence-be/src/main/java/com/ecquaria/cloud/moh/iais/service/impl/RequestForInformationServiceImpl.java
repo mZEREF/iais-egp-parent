@@ -502,7 +502,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                     FileRepoDto fileRepoDto = new FileRepoDto();
                     fileRepoDto.setId(split[0]);
                     fileRepoDto.setAuditTrailDto(intranet);
-                    fileRepoDto.setFileName(fileName.toString());
+                    fileRepoDto.setFileName(f.getName());
                     fileRepoDto.setRelativePath("compress"+File.separator+fileNames+File.separator+eventRefNo+File.separator+"rfiRecFile"+File.separator+"files");
                     fileRepoDtos.add(fileRepoDto);
 
