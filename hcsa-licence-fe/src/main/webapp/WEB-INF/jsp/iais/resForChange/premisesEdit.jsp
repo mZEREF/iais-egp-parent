@@ -102,7 +102,6 @@
           var $PremEle = $('#mainPrem');
           unreadonlyPartPage($PremEle);
         </c:if>
-
         <!-- init end-->
         init = 1;
     });

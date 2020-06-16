@@ -72,9 +72,9 @@
                                                         <td><c:out value="${txnRefNo}"/></td>
                                                     </c:if>
                                                     <td><c:out value="${txnDt}"/></td>
-                                                    <td><c:if test="${AppSubmissionDto.amountStr==null}">N/A</c:if>
-                                                        <c:if test="${AppSubmissionDto.amountStr!=null}">
-                                                            <c:out value="${AppSubmissionDto.amountStr}"/>
+                                                    <td><c:if test="${appSub.amount==null}">N/A</c:if>
+                                                        <c:if test="${appSub.amount!=null}">
+                                                            <c:out value="${appSub.amount}"/>
                                                         </c:if>
                                                     </td>
                                                     <td>

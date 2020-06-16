@@ -1311,10 +1311,10 @@ public class NewApplicationDelegator {
         //is need to pay ?
         String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
-          /*  ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
+            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
-            return ;*/
+            return ;
         }
 
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1366,10 +1366,10 @@ public class NewApplicationDelegator {
                         if(grpPremiseIsChange){
                             List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
                             if(!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)){
-                              /*  ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
+                                ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
                                 ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
                                 ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
-                                return ;*/
+                                return ;
                             }
                         }
                     }
@@ -1534,7 +1534,9 @@ public class NewApplicationDelegator {
             Long l = System.currentTimeMillis();
             List<AppSubmissionDto> appSubmissionDtos1=  requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos);
             //rfc not save grpPrimaryDoc
+            double t=0.0;
             for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos1){
+                t+=appSubmissionDto1.getAmount();
                 appSubmissionDto1.setAppGrpPrimaryDocDtos(null);
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList1 = appSubmissionDto1.getAppSvcRelatedInfoDtoList();
                 if(appSvcRelatedInfoDtoList1!=null){
@@ -1568,6 +1570,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setGroupNo(appSubmissionDtos1.get(0).getAppGrpNo());
             appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setScore(0.0);
             appSvcRelatedInfoDtos.addAll(appSubmissionDto.getAppSvcRelatedInfoDtoList());
+            appSubmissionDtos1.get(0).setAmount(t);
             appSubmissionDtoList.add(appSubmissionDtos1.get(0));
 
         }
@@ -1593,8 +1596,9 @@ public class NewApplicationDelegator {
             appSubmissionListDto1.setAppSubmissionDtos(personAppSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(appSubmissionListDto1,submissionId1, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                     EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,l1.toString(),bpc.process);
-
+            double t=0.0;
             for(AppSubmissionDto changePersonAppSubmissionDto :personAppSubmissionDtos1){
+                t+= changePersonAppSubmissionDto.getAmount();
                 String grpId = changePersonAppSubmissionDto.getAppGrpId();
                 String grpId1 = appSubmissionDto.getAppGrpId();
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList1 = changePersonAppSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -1618,6 +1622,7 @@ public class NewApplicationDelegator {
             personAppsubmit.getAppSvcRelatedInfoDtoList().get(0).setGroupNo(personAppSubmissionDtos1.get(0).getAppGrpNo());
             personAppsubmit.getAppSvcRelatedInfoDtoList().get(0).setScore(0.0);
             appSvcRelatedInfoDtos.addAll(personAppsubmit.getAppSvcRelatedInfoDtoList());
+            personAppSubmissionDtos1.get(0).setAmount(t);
             appSubmissionDtoList.add(personAppSubmissionDtos1.get(0));
         }
         bpc.request.getSession().setAttribute("appSubmissionDtos",appSubmissionDtoList);

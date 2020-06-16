@@ -187,8 +187,20 @@
         readonlyPartPage($('div.premises-content'));
         </c:if>
         if($("#errorMapIs").val()=='error'){
-         /*   unreadonlyPartPage($('div.premises-content'));
-            $('.premises-summary-preview,.premisesEdit,.ack-font-16').attr("style","display:none");*/
+            var premContent =$('#mainPrem');
+            <!--hidden edit btn -->
+            premContent.find('.premises-summary-preview').addClass('hidden');
+            <!--unDisabled -->
+            unDisabledPartPage(premContent);
+            unreadonlyPartPage(premContent);
+            premContent.find('.retrieveAddr').removeClass('hidden');
+            $('#isEditHiddenVal').val('1');
+            premContent.find('input[name="isPartEdit"]').val('1');
+            <!--replace fire issued date -->
+            var fireIssueDate = premContent.find('.fireIssuedDate').val();
+            replaceFireIssueDateHtml(premContent,fireIssueDate);
+            <!--remove ph hidden-->
+            premContent.find('.addPubHolDay').removeClass('hidden');
         }
 
 
