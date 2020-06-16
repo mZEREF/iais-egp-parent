@@ -54,8 +54,8 @@ public interface TaskOrganizationClient {
     @PostMapping(value = "/iais-task/allWorkGroupMembers", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity <Map<String, List<String>>> getAllWorkGroupMembers(@RequestBody List<String> groupId);
 
-    @GetMapping(path = "/iais-task/inspector-task/{appCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<String>> getInspectorByAppCorrId(@PathVariable(name = "appCorrId") String appCorrId);
+    @GetMapping(value = "/iais-task/inspector-task/{applicationNo}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getInspectorByAppNo(@PathVariable(name = "applicationNo") String applicationNo);
 
     @GetMapping(value = "/iais-task/corrid-inspectors",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Set<String>> getInspectors(@RequestParam(name = "corrId") String corrId, @RequestParam(name = "processUrl") String processUrl, @RequestParam(name = "roleId") String roleId);

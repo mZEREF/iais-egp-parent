@@ -4,11 +4,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import org.springframework.http.HttpHeaders;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.springframework.http.HttpHeaders;
 
 /**
  * TaskOrganizationClientFallback
@@ -83,7 +83,7 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
     }
 
     @Override
-    public FeignResponseEntity<List<String>> getInspectorByAppCorrId(String appCorrId) {
+    public FeignResponseEntity<List<String>> getInspectorByAppNo(String applicationNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
