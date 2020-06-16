@@ -435,6 +435,18 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
+    public List<ApplicationDto> getApplicationDtosByApplicationNo(String applicationNo) {
+        List<ApplicationDto> entity = applicationClient.getApplicationDtosByApplicationNo(applicationNo).getEntity();
+        return entity;
+    }
+
+    @Override
+    public List<AppEditSelectDto> getAppEditSelectDtosByAppIds(List<String> applicationIds) {
+        List<AppEditSelectDto> entity = applicationClient.getAppEditSelectDtosByAppIds(applicationIds).getEntity();
+        return entity;
+    }
+
+    @Override
     public ApplicationDto getApplicationDtoByGroupIdAndStatus(String appGroupId, String status) {
         log.info(StringUtil.changeForLog("The containStatus is start ..."));
         log.info(StringUtil.changeForLog("The containStatus appGrpId is -->:"+appGroupId));

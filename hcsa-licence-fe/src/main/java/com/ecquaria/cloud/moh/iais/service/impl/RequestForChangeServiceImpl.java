@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -1237,6 +1238,43 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
 
     }
+
+    @Override
+    public void premisesDocToSvcDoc(AppSubmissionDto appSubmissionDtoByLicenceId) {
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDtoByLicenceId.getAppGrpPrimaryDocDtos();
+        List<AppSvcDocDto> appSvcDocDtoLits = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
+        List<AppSvcDocDto> removeList=IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(appSvcDocDtoLits)){
+            for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLits){
+                String svcDocId = appSvcDocDto.getSvcDocId();
+                if(StringUtil.isEmpty(svcDocId)){
+                    continue;
+                }
+                HcsaSvcDocConfigDto entity = appConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                if(StringUtil.isEmpty(entity.getServiceId())){
+                    removeList.add(appSvcDocDto);
+                }
+            }
+            appSvcDocDtoLits.removeAll(removeList);
+        }
+
+        List<AppSvcDocDto> appSvcDocDtoList=IaisCommonUtils.genNewArrayList();
+        if(appGrpPrimaryDocDtos!=null){
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
+                AppSvcDocDto appSvcDocDto = MiscUtil.transferEntityDto(appGrpPrimaryDocDto, AppSvcDocDto.class);
+                appSvcDocDto.setSvcDocId(appGrpPrimaryDocDto.getSvcComDocId());
+                appSvcDocDto.setDocName(appGrpPrimaryDocDto.getDocName());
+                appSvcDocDtoList.add(appSvcDocDto);
+            }
+            appSubmissionDtoByLicenceId.setAppGrpPrimaryDocDtos(null);
+        }
+        List<AppSvcDocDto> appSvcDocDtoLit = appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
+        if(appSvcDocDtoLit!=null){
+            appSvcDocDtoList.addAll(appSvcDocDtoLit);
+        }
+        appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).setAppSvcDocDtoLit(appSvcDocDtoList);
+    }
+
 
     private  void validateVehicleNo(Map<String, String> errorMap, Set<String> distinctVehicleNo, int numberCount, String conveyanceVehicleNo){
         if(StringUtil.isEmpty(conveyanceVehicleNo)){

@@ -198,12 +198,24 @@ public class HcsaApplicationDelegator {
         if(applicationDto != null){
             if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()) ){
                 //RFC
-                if (!StringUtil.isEmpty(applicationDto.getId())) {
+                String applicationNo = applicationDto.getApplicationNo();
+                List<ApplicationDto> applicationDtosByApplicationNo = applicationService.getApplicationDtosByApplicationNo(applicationNo);
+                List<String> list =IaisCommonUtils.genNewArrayList();
+                if(applicationDtosByApplicationNo!=null){
+                    for(ApplicationDto applicationDto1 : applicationDtosByApplicationNo){
+                        list.add(applicationDto1.getId());
+                    }
+                }
+                List<AppEditSelectDto> appEditSelectDtosByAppIds = applicationService.getAppEditSelectDtosByAppIds(list);
+                if(!appEditSelectDtosByAppIds.isEmpty()){
+                    applicationViewDto.setAppEditSelectDto(appEditSelectDtosByAppIds.get(0));
+                }
+               /* if (!StringUtil.isEmpty(applicationDto.getId())) {
                     List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
                     if (!IaisCommonUtils.isEmpty(appEditSelectDtos)) {
                         applicationViewDto.setAppEditSelectDto(appEditSelectDtos.get(0));
                     }
-                }
+                }*/
             }else{
                 AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
                 appEditSelectDto.setPremisesEdit(true);

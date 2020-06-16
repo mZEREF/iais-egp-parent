@@ -269,4 +269,8 @@ public interface ApplicationClient {
 
     @PostMapping(value = "iais-application-be/application/pending/self-assessment/group-id", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationGroupDto>> getPendingSubmitSelfAssGroup(@RequestBody List<Integer> selfAssMtFlag);
+    @GetMapping(value = "/iais-application-be/application-list-by-application-no",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getApplicationDtosByApplicationNo(@RequestParam("applicationNo")String applicationNo);
+    @PostMapping(value = "/iais-licence-view/app-edit-selsect-by-application-ids",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDtosByAppIds(@RequestBody List<String> applicationIds);
 }

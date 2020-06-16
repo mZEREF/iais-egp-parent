@@ -268,13 +268,15 @@ public class LicenceViewServiceDelegator {
             return;
         }
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-        List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=IaisCommonUtils.genNewArrayList();
         List<AppSvcDocDto> appSvcDocDtos=IaisCommonUtils.genNewArrayList();
         if(appSvcDocDtoLit!=null){
             for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
                 String svcDocId = appSvcDocDto.getSvcDocId();
+                if(StringUtil.isEmpty(svcDocId)){
+                    continue;
+                }
                 HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
                 if(entity!=null){
                     String serviceId = entity.getServiceId();
@@ -488,6 +490,9 @@ public class LicenceViewServiceDelegator {
         if (appSvcDocDtoLit != null) {
             for (AppSvcDocDto appSvcDocDto : appSvcDocDtoLit) {
                 String svcDocId = appSvcDocDto.getSvcDocId();
+                if(StringUtil.isEmpty(svcDocId)){
+                    continue;
+                }
                 HcsaSvcDocConfigDto entity = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
                 if (entity != null) {
                     appSvcDocDto.setUpFileName(entity.getDocTitle());

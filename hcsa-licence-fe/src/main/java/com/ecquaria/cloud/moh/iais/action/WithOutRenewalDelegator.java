@@ -538,7 +538,7 @@ public class WithOutRenewalDelegator {
                                 }
                                 appSubmissionDtoByLicenceId.setAppGrpPrimaryDocDtos(null);
                                 RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
-                                NewApplicationDelegator.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
+                                requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
                                 rfcAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
                             }
                         }
@@ -574,7 +574,7 @@ public class WithOutRenewalDelegator {
                 String amountStr = Formatter.formatterMoney(amount);
                 appSubmissionDto.setAmountStr(amountStr);
             }
-            NewApplicationDelegator.premisesDocToSvcDoc(appSubmissionDto);
+           requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
         }
         //get licIds under the idNo that not renew
         List<String> notReNewLicIds = IaisCommonUtils.genNewArrayList();

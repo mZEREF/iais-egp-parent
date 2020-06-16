@@ -88,4 +88,5 @@ public interface RequestForChangeService {
     // need delete
      Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, String  masterCodeDto ,boolean isRfi);
      void svcDocToPresmise(AppSubmissionDto appSubmissionDto);
+    void premisesDocToSvcDoc( AppSubmissionDto appSubmissionDtoByLicenceId);
     }

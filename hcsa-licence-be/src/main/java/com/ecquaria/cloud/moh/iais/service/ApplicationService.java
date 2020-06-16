@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformatio
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import freemarker.template.TemplateException;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,4 +55,6 @@ public interface ApplicationService {
     AppFeeDetailsDto getAppFeeDetailsDtoByApplicationNo(String applicationNo);
 
     AppReturnFeeDto saveAppReturnFee(AppReturnFeeDto appReturnFeeDto);
+    List<ApplicationDto> getApplicationDtosByApplicationNo(String applicationNo);
+    List<AppEditSelectDto>  getAppEditSelectDtosByAppIds( List<String> applicationIds);
 }

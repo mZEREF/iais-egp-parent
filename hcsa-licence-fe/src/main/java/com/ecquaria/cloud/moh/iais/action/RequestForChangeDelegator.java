@@ -114,7 +114,6 @@ public class RequestForChangeDelegator {
         log.debug(StringUtil.changeForLog("the do prepare start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,RfcConst.RFCAPPSUBMISSIONDTO);
         ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
-        requestForChangeService.svcDocToPresmise(appSubmissionDto);
         String amendTypeValue = ParamUtil.getString(bpc.request,"AmendTypeValue");
         if(!StringUtil.isEmpty(amendTypeValue)){
             ParamUtil.setSessionAttr(bpc.request,"AmendTypeValue",amendTypeValue);
@@ -590,6 +589,7 @@ public class RequestForChangeDelegator {
                         }
                     }
                 }
+                requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 appSubmissionDto.setOldAppSubmissionDto(oldAppSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request,"SvcName",svcName);
