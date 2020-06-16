@@ -10,10 +10,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.CheckListDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Guyin
@@ -41,7 +43,6 @@ public interface FillupChklistService {
     void saveAdhocDto(AdCheckListShowDto showDto,String appPremId);
     void saveDraft(InspectionFillCheckListDto comDto,AdCheckListShowDto adDto,InspectionFDtosDto serListDto,String refNo);
     CheckListDraftDto getDraftByTaskId(String taskId,String svcType);
-    List<AdhocDraftDto> getAdhocDraftByAppPremId(String appPremId);
     AdCheckListShowDto getAdhocDraftByappCorrId(String appremCorrId);
     void routingTask(TaskDto taskDto, String preInspecRemarks, LoginContext loginContext, boolean flag);
     List<InspectionFillCheckListDto> getInspectionFillCheckListDtoList(String taskId,String configType);
@@ -78,4 +79,16 @@ public interface FillupChklistService {
     AppIntranetDocDto getCopyAppPremisesSpecialDocDtoByAppPremisesSpecialDocDto(AppPremisesSpecialDocDto appPremisesSpecialDocDto);
     InspectionFDtosDto getInspectionFDtosDtoOnlyForChecklistLetter(String refNo);
     AppPremisesSpecialDocDto getAppPremisesSpecialDocDtoByRefNo(String RefNo);
+
+    AdCheckListShowDto getAdCheckListShowDtoByAdCheckListShowDto(AdCheckListShowDto adCheckListShowDto, Map<String,String> orgUserDtos);
+
+    List<TaskDto> getCurrTaskByRefNo(TaskDto taskDto);
+
+    void saveOtherTasks(List<TaskDto> taskDtos,TaskDto taskDto);
+
+    List<OrgUserDto> getOrgUserDtosByTaskDatos(List<TaskDto> taskDtos);
+
+    Map<String,String> userIdNameMapByOrgUserDtos(List<OrgUserDto> orgUserDtos);
+
+    InspectionFillCheckListDto getInspectionFillCheckListDtoByInspectionFillCheckListDto(InspectionFillCheckListDto inspectionFillCheckListDto, Map<String,String> orgUserDtos);
 }

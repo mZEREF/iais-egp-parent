@@ -62,6 +62,7 @@ public class InspectionNcCheckListDelegator {
     private static final String TASKDTO="taskDto";
     private static final String APPLICATIONVIEWDTO = "applicationViewDto";
     private static final String CHECKLISTFILEDTO = "checkListFileDto";
+    private static final String TASKDTOLIST = "InspectionNcCheckListDelegator_taskDtoList";
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
     }
@@ -74,6 +75,7 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,TASKDTO,null);
         ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,null);
         ParamUtil.setSessionAttr(request,CHECKLISTFILEDTO,null);
+        ParamUtil.setSessionAttr(request,TASKDTOLIST ,null);
     }
 
     public void successViewPre(BaseProcessClass bpc){
@@ -98,8 +100,8 @@ public class InspectionNcCheckListDelegator {
         TaskDto taskDto = taskService.getTaskById(taskId);
         if( taskDto == null) return;
         String appPremCorrId = taskDto.getRefNo();
-        //fillupChklistService.getDraftByTaskId(taskId,serviceType);
-        //fillupChklistService.getAllAppChklDraftList(appPremCorrId);
+        List<TaskDto> taskDtos = fillupChklistService.getCurrTaskByRefNo(taskDto);
+        ParamUtil.setSessionAttr(request,TASKDTOLIST ,(Serializable) taskDtos);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
         //draft start
         InspectionFillCheckListDto maxComChkDto = fillupChklistService.getMaxVersionComAppChklDraft(appPremCorrId);
@@ -125,6 +127,9 @@ public class InspectionNcCheckListDelegator {
             adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
         }
 
+        Map<String,String> orgUserDtos = fillupChklistService. userIdNameMapByOrgUserDtos(fillupChklistService.getOrgUserDtosByTaskDatos(taskDtos));
+        // get ah draft
+        adchklDto = fillupChklistService.getAdCheckListShowDtoByAdCheckListShowDto(adchklDto,orgUserDtos);
         ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
         ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
         ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
@@ -134,7 +139,8 @@ public class InspectionNcCheckListDelegator {
                 commonDto = coms.get(0);
             }
         }
-
+        //get  commonDto draft
+        fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(commonDto,orgUserDtos);
         // change common data;
         insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(commonDto);
         ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
@@ -147,8 +153,11 @@ public class InspectionNcCheckListDelegator {
        if(serListDto != null){
            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
             if(fdtoList != null && fdtoList.size() >0){
-              for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList)
+              for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList){
+                  //get Service draft
+                  fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(inspectionFillCheckListDto,orgUserDtos);
                   insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
+              }
             }
        }
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
@@ -225,6 +234,8 @@ public class InspectionNcCheckListDelegator {
                 }
                 ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
                 LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+                // SAVE OTHER TASKS
+                fillupChklistService.saveOtherTasks((List<TaskDto>)ParamUtil.getSessionAttr(request,TASKDTOLIST),taskDto);
                 fillupChklistService.routingTask(taskDto,ParamUtil.getString(request,"remarksForHistory"),loginContext,flag);
             }
        }

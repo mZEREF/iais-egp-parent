@@ -64,6 +64,9 @@
                                                     <th>N/A</th>
                                                     <th>Remark</th>
                                                     <th>Rectified</th>
+                                                    <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status && commonDto.moreOneDraft}">
+                                                        <th>Difference</th>
+                                                    </c:if>
                                                     <th></th>
                                                 </tr>
                                                 </thead>
@@ -105,16 +108,12 @@
                                                                 <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrec" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comrec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                             </div>
                                                         </td>
+                                                        <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status && commonDto.moreOneDraft}">
+                                                            <td> </td>
+                                                        </c:if>
                                                         <td>
                                                             <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}com" var = "err"/>
                                                             <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
-                                                                <%--     <c:set var="fir" value="${one.index}"></c:set>
-                                                              <c:set var="sec" value="${two.index}"></c:set>
-                                                              <c:forEach var="oldcom" items="${allComChkDtoList}">
-                                                                  <wrms:value width="7">
-                                                                      <span class="oldVal compareTdStyle" attr="${oldcom.sectionDtoList[fir].itemDtoList[sec].incqDto.chkanswer}"><label><c:out value="${oldcom.sectionDtoList[fir].itemDtoList[sec].incqDto.chkanswer}"/></label></span>
-                                                                  </wrms:value>
-                                                              </c:forEach> --%>
                                                           </td>
                                                       </tr>
                                                   </c:forEach>
@@ -145,6 +144,9 @@
                                                           <th>N/A</th>
                                                           <th>Remark</th>
                                                           <th>Rectified</th>
+                                                          <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status && cdto.moreOneDraft}">
+                                                              <th>Difference</th>
+                                                          </c:if>
                                                           <th></th>
                                                       </tr>
                                                       </thead>
@@ -186,16 +188,12 @@
                                                                       <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${cdto.subName}${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                                   </div>
                                                               </td>
+                                                              <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status  && cdto.moreOneDraft}">
+                                                                  <td> </td>
+                                                              </c:if>
                                                               <td>
                                                                   <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "err"/>
                                                                   <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
-                                                                      <%--  <c:set var="fir" value="${one.index}"></c:set>
-                                                                        <c:set var="sec" value="${two.index}"></c:set>
-                                                                        <c:set var="thr" value="${status.index}"></c:set>
-                                                                        <c:forEach var="oldser" items="${otherVersionfdtos}">
-                                                                                <span class="oldVal compareTdStyle" attr="${oldser.fdtoList[fir].sectionDtoList[sec].itemDtoList[thr].incqDto.chkanswer}"><label><c:out value="${oldser.fdtoList[fir].sectionDtoList[sec].itemDtoList[thr].incqDto.chkanswer}"/></label></span>
-                                                                        </c:forEach>
-                                                                         --%>
                                                                   </td>
                                                               </tr>
                                                           </c:forEach>
@@ -221,6 +219,9 @@
                                                           <th>N/A</th>
                                                           <th>Remark</th>
                                                           <th>Rectified</th>
+                                                          <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status && adchklDto.moreOneDraft}">
+                                                          <th>Difference</th>
+                                                          </c:if>
                                                           <th></th>
                                                       </tr>
                                                       </thead>
@@ -231,7 +232,7 @@
                                                               <td class="row_no">${(status.index + 1) }</td>
                                                               <td><c:out value="${item.question}"/></td>
                                                               <c:set value = "${item.id}" var = "ckkId"/>
-                                                              <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes"/></td>
+                                                               <td><input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxYes" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'Yes'}">checked</c:if> value="Yes"/></td>
                                                               <td>
                                                                   <input name="<c:out value="${item.id}"/>adhocrad" id="<c:out value="${item.id}"/>adhocitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.adAnswer eq'No'}">checked</c:if> value="No"/>
                                                               </td>
@@ -244,16 +245,13 @@
                                                                       <input name="<c:out value="${item.id}"/>adhocrec" id="<c:out value="${item.id}"/>adhocrec" type="checkbox" <c:if test="${item.rectified}">checked</c:if> value="rec"/>
                                                                   </div>
                                                               </td>
+                                                              <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status && adchklDto.moreOneDraft}">
+                                                                  <td> </td>
+                                                              </c:if>
                                                               <td>
                                                                   <c:set value = "error_${item.id}adhoc" var = "err"/>
                                                                   <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
-                                                                  <%--<c:set var="fir" value="${status.index}"></c:set>
-                                                                  <c:forEach var="adhocdraft" items="${otherVersionAdhocDraftList}">
-                                                                      <wrms:value width="7">
-                                                                          <span class="oldVal compareTdStyle" attr="${adhocdraft.adItemList[fir].adAnswer}"><label><c:out value="${adhocdraft.adItemList[fir].adAnswer}"/></label></span>
-                                                                      </wrms:value>
-                                                                  </c:forEach>--%>
-                                                        </td>
+                                                             </td>
                                                     </tr>
                                                 </c:forEach>
 
