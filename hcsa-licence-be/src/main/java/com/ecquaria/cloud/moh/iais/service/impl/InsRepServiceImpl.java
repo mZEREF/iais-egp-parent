@@ -771,7 +771,6 @@ public class InsRepServiceImpl implements InsRepService {
         List<String> listUserId = IaisCommonUtils.genNewArrayList();
         String userId = loginContext.getUserId();
         String wkGrpId = taskDto.getWkGrpId();
-        String correlationId = taskDto.getRefNo();
         listUserId.add(userId);
         List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
         String reportBy = userList.get(0).getDisplayName();
@@ -785,7 +784,7 @@ public class InsRepServiceImpl implements InsRepService {
         String leadName = leadList.get(0).getDisplayName();
         reportDtoForInspector.setReportedBy(reportBy);
         reportDtoForInspector.setReportNoteBy(leadName);
-        Set<String> inspectiors = taskService.getInspectiors(correlationId, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
+        Set<String> inspectiors = taskService.getInspectiors(taskDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
         List<String> inspectors = IaisCommonUtils.genNewArrayList();
         for (String inspector : inspectiors) {
             inspectors.add(inspector);
@@ -803,7 +802,6 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public InspectionReportDto getInspectorAo(TaskDto taskDto, ApplicationViewDto applicationViewDto) {
         List<String> listUserId = IaisCommonUtils.genNewArrayList();
-        String correlationId = taskDto.getRefNo();
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
         InspectionReportDto reportDtoForAo = new InspectionReportDto();
         String userId = getRobackUserId(applicationNo, HcsaConsts.ROUTING_STAGE_INS);
@@ -831,7 +829,7 @@ public class InsRepServiceImpl implements InsRepService {
             String leadName = leadList.get(0).getDisplayName();
             reportDtoForAo.setReportedBy(reportBy);
             reportDtoForAo.setReportNoteBy(leadName);
-            Set<String> inspectiors = taskService.getInspectiors(correlationId, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
+            Set<String> inspectiors = taskService.getInspectiors(applicationNo, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
             List<String> inspectors = IaisCommonUtils.genNewArrayList();
             for (String inspector : inspectiors) {
                 inspectors.add(inspector);
@@ -850,9 +848,9 @@ public class InsRepServiceImpl implements InsRepService {
     @Override
     public InspectionReportDto getInspectorAo2(TaskDto taskDto, ApplicationViewDto applicationViewDto) {
         List<String> listUserId = IaisCommonUtils.genNewArrayList();
-        String correlationId = taskDto.getRefNo();
+        String appNo = applicationViewDto.getApplicationDto().getApplicationNo();
         InspectionReportDto reportDtoForAo = new InspectionReportDto();
-        Set<String> inspectorReportS = taskService.getInspectiors(correlationId, TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR);
+        Set<String> inspectorReportS = taskService.getInspectiors(appNo, TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR);
         List<String> inspectorReportList = IaisCommonUtils.genNewArrayList();
         for (String inspector : inspectorReportS) {
             inspectorReportList.add(inspector);
@@ -889,7 +887,7 @@ public class InsRepServiceImpl implements InsRepService {
             List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
             String leadName = leadList.get(0).getDisplayName();
             reportDtoForAo.setReportNoteBy(leadName);
-            Set<String> inspectiors = taskService.getInspectiors(correlationId, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
+            Set<String> inspectiors = taskService.getInspectiors(appNo, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
             List<String> inspectors = IaisCommonUtils.genNewArrayList();
             for (String inspector : inspectiors) {
                 inspectors.add(inspector);
@@ -1005,9 +1003,9 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     private List<TaskDto> prepareTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, HcsaSvcStageWorkingGroupDto dto) throws FeignException {
-        String refNo = taskDto.getRefNo();
+        String appNo = applicationDto.getApplicationNo();
         String userId = null;
-        Set<String> inspectors = taskService.getInspectiors(refNo, TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1, RoleConsts.USER_ROLE_AO1);
+        Set<String> inspectors = taskService.getInspectiors(appNo, TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1, RoleConsts.USER_ROLE_AO1);
         if (!inspectors.isEmpty()) {
             userId = inspectors.iterator().next();
             taskDto.setUserId(userId);

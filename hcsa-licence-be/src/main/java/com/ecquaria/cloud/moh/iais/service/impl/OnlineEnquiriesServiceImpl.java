@@ -285,7 +285,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     }
 
     @Override
-    public EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto,String licenceId) {
+    public EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto,String licenceId)  {
         EnquiryInspectionReportDto inspectionReportDto = new EnquiryInspectionReportDto();
         List<PremisesDto> licPremisesDto=hcsaLicenceClient.getPremisess(licenceId).getEntity();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
@@ -500,7 +500,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String leadName = leadList.get(0).getDisplayName();
         inspectionReportDto.setReportedBy(reportBy);
         inspectionReportDto.setReportNoteBy(leadName);
-        Set<String> inspectiors = taskService.getInspectiors(appPremisesCorrelationId, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, "INSPECTOR");
+        Set<String> inspectiors = taskService.getInspectiors(applicationDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, "INSPECTOR");
         //get inspectiors
         List<String> inspectors = IaisCommonUtils.genNewArrayList();
         for (String inspector : inspectiors) {

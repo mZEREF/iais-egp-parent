@@ -91,7 +91,7 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
     }
 
     @Override
-    public FeignResponseEntity<Set<String>> getInspectors(String corrId, String processUrl, String roleId) {
+    public FeignResponseEntity<Set<String>> getInspectors(String appNo, String processUrl, String roleId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

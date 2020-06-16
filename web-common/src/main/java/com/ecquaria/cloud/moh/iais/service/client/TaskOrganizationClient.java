@@ -58,7 +58,7 @@ public interface TaskOrganizationClient {
     FeignResponseEntity<List<String>> getInspectorByAppNo(@PathVariable(name = "applicationNo") String applicationNo);
 
     @GetMapping(value = "/iais-task/corrid-inspectors",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Set<String>> getInspectors(@RequestParam(name = "corrId") String corrId, @RequestParam(name = "processUrl") String processUrl, @RequestParam(name = "roleId") String roleId);
+    FeignResponseEntity<Set<String>> getInspectors(@RequestParam(name = "appNo") String appNo, @RequestParam(name = "processUrl") String processUrl, @RequestParam(name = "roleId") String roleId);
 
     @RequestMapping(path = "/iais-task/Tasks/date",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(@RequestParam(name ="date") String date);

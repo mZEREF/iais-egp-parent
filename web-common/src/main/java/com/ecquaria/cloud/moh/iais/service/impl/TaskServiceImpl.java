@@ -294,8 +294,8 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public Set<String> getInspectiors(String corrId , String processUrl, String roleId) {
-        Set<String> entity = taskOrganizationClient.getInspectors(corrId, processUrl, roleId).getEntity();
+    public Set<String> getInspectiors(String appNo , String processUrl, String roleId) {
+        Set<String> entity = taskOrganizationClient.getInspectors(appNo, processUrl, roleId).getEntity();
         return entity;
     }
 
