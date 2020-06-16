@@ -98,7 +98,6 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
         return entity;
     }
 
-
     @Override
     public FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(String date) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
