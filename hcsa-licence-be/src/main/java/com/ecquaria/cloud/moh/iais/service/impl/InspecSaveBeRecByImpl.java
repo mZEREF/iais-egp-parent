@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
@@ -248,17 +249,17 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     }
 
     private EventInspRecItemNcDto setAppNoListByCorrIds(EventInspRecItemNcDto eventInspRecItemNcDto) {
-        List<String> appNoList = IaisCommonUtils.genNewArrayList();
+        Map<String, String> appNoCorrMap = IaisCommonUtils.genNewHashMap();
         List<String> refNoList = eventInspRecItemNcDto.getAppPremCorrIds();
         if(!IaisCommonUtils.isEmpty(refNoList)){
             Set<String> refNoSet = new HashSet<>(refNoList);
             refNoList = new ArrayList<>(refNoSet);
             for(String refNo : refNoList){
                 ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(refNo).getEntity();
-                appNoList.add(applicationDto.getApplicationNo());
+                appNoCorrMap.put(applicationDto.getApplicationNo(), refNo);
             }
         }
-        eventInspRecItemNcDto.setAppNoList(appNoList);
+        eventInspRecItemNcDto.setAppNoCorrMap(appNoCorrMap);
         return eventInspRecItemNcDto;
     }
 
