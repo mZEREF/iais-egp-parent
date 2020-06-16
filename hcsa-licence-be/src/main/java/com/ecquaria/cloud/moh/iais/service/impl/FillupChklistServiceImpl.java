@@ -1494,7 +1494,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         for(AdhocNcCheckItemDto adhocNcCheckItemDto : adItemList){
             itemList.add(adhocNcCheckItemDto.getId());
         }
-        List<AdhocDraftDto>  adhocDraftDtos = fillUpCheckListGetAppClient.getAdhocDraftItems(itemList).getEntity();
+        List<AdhocDraftDto>  adhocDraftDtos = fillUpCheckListGetAppClient.getAdhocChecklistDraftsByAdhocItemIdIn(itemList).getEntity();
 
         if(IaisCommonUtils.isEmpty(adhocDraftDtos)){
             return  adCheckListShowDto;

@@ -144,14 +144,6 @@ public class FillUpCheckListGetAppClientFallBack implements FillUpCheckListGetAp
         return entity;
     }
 
-    @Override
-    public FeignResponseEntity<List<AdhocDraftDto>> getAdhocDraftItems(List<String> itemList) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
-
     @GetMapping(path = "/iais-apppreinsncitem-be/ncitemappdto", produces = {MediaType.APPLICATION_JSON_VALUE}, consumes = {MediaType.APPLICATION_JSON_VALUE})
     @Override
     public FeignResponseEntity<List<ApplicationViewDto>> getApplicationDtoByNcItem() {
