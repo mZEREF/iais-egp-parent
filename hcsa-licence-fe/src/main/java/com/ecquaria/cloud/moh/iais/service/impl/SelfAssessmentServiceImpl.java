@@ -384,10 +384,12 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         if (rfiSolution && appSubmitToBeNotYet){
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
+            //get application No.
+            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(value).getEntity();
             ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
             TaskDto taskDto = new TaskDto();
             taskDto.setRefNo(value);
+            taskDto.setApplicationNo(applicationDto.getApplicationNo());
             taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
             taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             apptFeConfirmDateDto.setTaskDto(taskDto);
