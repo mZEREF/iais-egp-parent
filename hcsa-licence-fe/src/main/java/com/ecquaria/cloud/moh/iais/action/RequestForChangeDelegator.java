@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
@@ -35,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
@@ -42,6 +44,11 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,12 +58,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /****
  *
@@ -78,6 +79,9 @@ public class RequestForChangeDelegator {
 
     @Value("${iais.email.sender}")
     private String mailSender;
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     /**
      *
@@ -345,15 +349,19 @@ public class RequestForChangeDelegator {
         if(file != null && file.getSize() != 0){
            Map<String,Boolean> fileValidate =  ValidationUtils.validateFile(file);
            if(fileValidate != null && fileValidate.size() >0){
+               int maxFile = systemParamConfig.getUploadFileLimit();
+               String fileType = systemParamConfig.getUploadFileType();
+               log.info(StringUtil.changeForLog("The maxFile is -->:"+maxFile));
+               log.info(StringUtil.changeForLog("The fileType is -->:"+fileType));
                if(!fileValidate.get("fileType")){
-                   error.put("selectedFileError","GENERAL_ERR0018");
+                   error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0018",fileType,"fileType"));
                }
                if(!fileValidate.get("fileSize")){
-                   error.put("selectedFileError","UC_CHKLMD001_ERR007");
+                   error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxFile),"sizeMax"));
                }
            }
         }else{
-            error.put("selectedFileError","UC_CHKLMD001_ERR001");
+            error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
         }
         if(!isEmail){
             error.put("emailError","RFC_ERR003");
