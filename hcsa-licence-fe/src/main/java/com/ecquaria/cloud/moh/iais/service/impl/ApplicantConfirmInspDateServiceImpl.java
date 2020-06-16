@@ -585,6 +585,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         taskDto.setProcessUrl(processUrl);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         apptFeConfirmDateDto.setTaskDto(taskDto);
+        //set list and map
         apptFeConfirmDateDto = setAppNoListByCorrIds(apptFeConfirmDateDto);
         //save eic record
         EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "createApptDateTask",
@@ -604,6 +605,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     private ApptFeConfirmDateDto setAppNoListByCorrIds(ApptFeConfirmDateDto apptFeConfirmDateDto) {
         List<String> appNoList = IaisCommonUtils.genNewArrayList();
+        Map<String, String> appNoCorrIdMap = IaisCommonUtils.genNewHashMap();
         List<String> refNoList = apptFeConfirmDateDto.getTaskRefNo();
         if(!IaisCommonUtils.isEmpty(refNoList)){
             Set<String> refNoSet = new HashSet<>(refNoList);
@@ -611,9 +613,11 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             for(String refNo : refNoList){
                 String appNo = getApplicationByCorrId(refNo);
                 appNoList.add(appNo);
+                appNoCorrIdMap.put(appNo, refNo);
             }
         }
         apptFeConfirmDateDto.setAppNoList(appNoList);
+        apptFeConfirmDateDto.setAppNoCorrIdMap(appNoCorrIdMap);
         return apptFeConfirmDateDto;
     }
 
