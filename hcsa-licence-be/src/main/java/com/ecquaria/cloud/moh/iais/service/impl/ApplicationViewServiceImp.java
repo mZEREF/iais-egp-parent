@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -53,6 +54,8 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
     @Override
     public ApplicationViewDto searchByCorrelationIdo(String correlationId) {
         //return applicationClient.getAppViewByNo(appNo).getEntity();
@@ -224,6 +227,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
                 applicationViewDto.setLicPremisesAuditDto(licPremisesAuditDto);
             }
         }
+        //setMaxFileSize
+        applicationViewDto.setSystemMaxFileSize(systemParamConfig.getUploadFileLimit());
+        applicationViewDto.setSystemFileType(systemParamConfig.getUploadFileType());
         return applicationViewDto;
     }
 

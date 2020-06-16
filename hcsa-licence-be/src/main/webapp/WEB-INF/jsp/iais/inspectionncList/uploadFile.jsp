@@ -1,6 +1,8 @@
 
 
 <div class="modal fade" id="uploadDoc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <input type="hidden" id="fileMaxSize" name="fileMaxSize" value="${applicationViewDto.systemMaxFileSize}">
+    <input type="hidden" id="fileUploadType" name="fileUploadType" value="${applicationViewDto.systemFileType}">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -27,10 +29,11 @@
                             </div>
                             <div style="margin-left: -15px" class="col-md-8">
                                 <input  id = "selectedFileShowTextName" name = "selectedFileShowTextName"  type="text"   readonly>
+                                <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
                             </div>
                             <div hidden><input class = "inputtext-required" id = "selectedFile" name = "selectedFile" type="file"></div>
-                          <small class="error"><span id="selectedFileShow" style="color: #D22727; font-size: 1.6rem"></span></small>
                         </div>
+
                     </div>
                     </div>
                 </form>
@@ -148,6 +151,8 @@
     }
 
     function validateUploadInternal(){
+        var maxSize = $("#fileMaxSize").val();
+        var fileType = $("#fileUploadType").val();
         var flag = true;
         $('#selectedFileShow').html('')
         $('#fileRemarkShow').html('')
@@ -155,15 +160,29 @@
 
         var file = $('#selectedFile').get(0).files[0];
         if(selectedFile == null || selectedFile== "" ||file==null|| file==undefined){
-            $('#selectedFileShow').html('The file cannot be empty.');
+            $('#selectedFileShow').html('Document is mandatory.');
             $('#uploadFileButton').attr("disabled", false);
             return false;
         }else {
+            if(maxSize == null ||  maxSize == "")
+                maxSize = 4;
             var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-            if(fileSize> 4){
-                $('#selectedFileShow').html('The file size must less than 4M.');
+            if(fileSize> maxSize){
+                $('#selectedFileShow').html('The file has exceeded the maximum upload size of '+ maxSize + 'M.');
                 $('#uploadFileButton').attr("disabled", false);
                 return false;
+            }
+            if(fileType == null || fileType == ""){
+                fileType = "PDF,JPG,PNG,DOCX,DOC";
+            }
+
+            try {
+                var fileName =  getFileName($("#selectedFile").val());
+                fileName = fileName.split(".")[1];
+                if(fileType.indexOf(fileName.toUpperCase()) == -1){
+                    $('#selectedFileShow').html('Only files with the following extensions are allowed:'+ fileType +'. Please re-upload the file.');
+                }
+            }catch (e){
             }
         }
         var fileRemarkMaxLength = 50;
