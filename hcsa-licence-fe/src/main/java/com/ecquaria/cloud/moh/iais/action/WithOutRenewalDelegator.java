@@ -398,7 +398,13 @@ public class WithOutRenewalDelegator {
             List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
             List<AppGrpPremisesDto> newAppGrpPremisesDtoList = appSubmissionDtos.get(0).getAppGrpPremisesDtoList();
             List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtos = appSubmissionDtos.get(0).getAppGrpPrimaryDocDtos();
-            if(!oldAppSvcRelatedInfoDtoList.equals(newAppSvcRelatedInfoDtoList) ||!oldAppGrpPremisesDtoList.equals(newAppGrpPremisesDtoList) ||!oldAppGrpPrimaryDocDtos.equals(newAppGrpPrimaryDocDtos)){
+            if(!oldAppSvcRelatedInfoDtoList.equals(newAppSvcRelatedInfoDtoList)){
+                ParamUtil.setRequestAttr(bpc.request,"changeRenew","Y");
+            }
+            if(!oldAppGrpPremisesDtoList.equals(newAppGrpPremisesDtoList)){
+                ParamUtil.setRequestAttr(bpc.request,"changeRenew","Y");
+            }
+            if(!oldAppGrpPrimaryDocDtos.equals(newAppGrpPrimaryDocDtos)){
                 ParamUtil.setRequestAttr(bpc.request,"changeRenew","Y");
             }
         }
@@ -628,6 +634,7 @@ public class WithOutRenewalDelegator {
                 appSubmissionService.setRiskToDto(appSubmissionDto);
                 appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
                 rfcPersonnelAppSubmissionDtos.add(appSubmissionDto);
             }
             //rfc personnel

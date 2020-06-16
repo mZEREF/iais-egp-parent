@@ -444,8 +444,9 @@
 
     $(document).ready(function () {
         $('#previewAndSub').click(function () {
-            var val = $("#replaceOptionsId").val();
-            if(val!=""){
+            const val = $('input:radio[name="editSelect"]:checked').val();
+            const val1 = $('#replaceOptionsId').val();
+            if(val=="update" || (val=="replace"&&val1!="")){
                 $("#menuListForm").submit();
             }
         });

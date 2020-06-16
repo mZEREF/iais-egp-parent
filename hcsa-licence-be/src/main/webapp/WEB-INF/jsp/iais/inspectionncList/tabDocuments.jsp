@@ -19,40 +19,51 @@
                     <th width="20%">Date Submitted</th>
                 </tr>
                 </thead>
-
                 <tbody>
-                <c:if test="${empty applicationViewDto.appSupDocDtoList}">
+                <c:if test="${applicationViewDto.applicationDto.applicationType =='APTY008'}">
                     <tr>
-                        <td colspan="5" align="center" >
+                        <td colspan="5" align="center">
                             <iais:message key="ACK018"
                                           escape="true"/>
                         </td>
                     </tr>
                 </c:if>
-                <c:forEach items="${applicationViewDto.appSupDocDtoList}"
-                           var="appSupDocDto">
-                    <tr>
-                        <td width="30%">
-                            <p><c:out value="${appSupDocDto.file}"></c:out></p>
-                        </td>
-                        <td width="20%">
-                            <p>
-                                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${appSupDocDto.document}" title="Download" class="downloadFile">
-                                    <c:out value="${appSupDocDto.document}"></c:out>
-                                </a>
-                            </p>
-                        </td>
-                        <td width="10%">
-                            <p><c:out value="${appSupDocDto.size}"></c:out></p>
-                        </td>
-                        <td width="20%">
-                            <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
-                        </td>
-                        <td width="20%">
-                            <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
-                        </td>
-                    </tr>
-                </c:forEach>
+
+                <c:if test="${applicationViewDto.applicationDto.applicationType !='APTY008'}">
+                    <c:if test="${empty applicationViewDto.appSupDocDtoList}">
+                        <tr>
+                            <td colspan="5" align="center">
+                                <iais:message key="ACK018"
+                                              escape="true"/>
+                            </td>
+                        </tr>
+                    </c:if>
+                    <c:forEach items="${applicationViewDto.appSupDocDtoList}"
+                               var="appSupDocDto">
+                        <tr>
+                            <td width="30%">
+                                <p><c:out value="${appSupDocDto.file}"></c:out></p>
+                            </td>
+                            <td width="20%">
+                                <p>
+                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${appSupDocDto.document}"
+                                       title="Download" class="downloadFile">
+                                        <c:out value="${appSupDocDto.document}"></c:out>
+                                    </a>
+                                </p>
+                            </td>
+                            <td width="10%">
+                                <p><c:out value="${appSupDocDto.size}"></c:out></p>
+                            </td>
+                            <td width="20%">
+                                <p><c:out value="${appSupDocDto.submittedBy}"></c:out></p>
+                            </td>
+                            <td width="20%">
+                                <p><c:out value="${appSupDocDto.dateSubmitted}"></c:out></p>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </c:if>
                 </tbody>
 
             </table>
@@ -66,52 +77,70 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th  width="30%">Document</th>
+                    <th width="30%">Document</th>
                     <th width="20%">File</th>
-                    <th  width="10%">Size</th>
+                    <th width="10%">Size</th>
                     <th width="20%">Submitted By</th>
                     <th width="15%">Date Submitted</th>
                     <th width="5%">Action</th>
                 </tr>
                 </thead>
                 <tbody id="tbodyFileListId">
-                <c:choose>
-                    <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
-                        <tr>
-                            <td colspan="6"  align="center" >
-                                <iais:message key="ACK018"
-                                              escape="true"/>
-                            </td>
-                        </tr>
-                    </c:when>
-                    <c:otherwise>
-                        <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}" varStatus="status">
+                <c:if test="${applicationViewDto.applicationDto.applicationType =='APTY008'}">
+                    <tr>
+                        <td colspan="5" align="center">
+                            <iais:message key="ACK018"
+                                          escape="true"/>
+                        </td>
+                    </tr>
+                </c:if>
+                <c:if test="${applicationViewDto.applicationDto.applicationType !='APTY008'}">
+                    <c:choose>
+                        <c:when test="${empty applicationViewDto.appIntranetDocDtoList}">
                             <tr>
-                                <td  width="30%">
-                                    <p><c:out value="${interalFile.docDesc}"></c:out></p>
-                                </td>
-                                <td  width="20%">
-                                    <p><a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}.${interalFile.docType}" title="Download" class="downloadFile"><c:out
-                                            value="${interalFile.docName}.${interalFile.docType}"></c:out></a></p>
-                                </td>
-                                <td  width="10%">
-                                    <p><c:out value="${interalFile.docSize}"></c:out></p>
-                                </td>
-                                <td  width="20%">
-                                    <p><c:out value="${interalFile.submitByName}"></c:out></p>
-                                </td>
-                                <td  width="15%">
-                                    <p>${interalFile.submitDtString}</p>
-                                </td>
-                                <td width="5%">
-                                    <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM}">
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId" value="${interalFile.id}"/>');"><em class="fa fa-times"></em></button>
-                                    </c:if>
+                                <td colspan="6" align="center">
+                                    <iais:message key="ACK018"
+                                                  escape="true"/>
                                 </td>
                             </tr>
-                        </c:forEach>
-                    </c:otherwise>
-                </c:choose>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="interalFile" items="${applicationViewDto.appIntranetDocDtoList}"
+                                       varStatus="status">
+                                <tr>
+                                    <td width="30%">
+                                        <p><c:out value="${interalFile.docDesc}"></c:out></p>
+                                    </td>
+                                    <td width="20%">
+                                        <p>
+                                            <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}.${interalFile.docType}"
+                                               title="Download" class="downloadFile"><c:out
+                                                    value="${interalFile.docName}.${interalFile.docType}"></c:out></a>
+                                        </p>
+                                    </td>
+                                    <td width="10%">
+                                        <p><c:out value="${interalFile.docSize}"></c:out></p>
+                                    </td>
+                                    <td width="20%">
+                                        <p><c:out value="${interalFile.submitByName}"></c:out></p>
+                                    </td>
+                                    <td width="15%">
+                                        <p>${interalFile.submitDtString}</p>
+                                    </td>
+                                    <td width="5%">
+                                        <c:if test="${interalFile.appDocType == ApplicationConsts.APP_DOC_TYPE_COM}">
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                    onclick="javascript:deleteFile(this,'<iais:mask name="interalFileId"
+                                                                                                    value="${interalFile.id}"/>');">
+                                                <em class="fa fa-times"></em></button>
+                                        </c:if>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+                </c:if>
+
 
                 </tbody>
             </table>

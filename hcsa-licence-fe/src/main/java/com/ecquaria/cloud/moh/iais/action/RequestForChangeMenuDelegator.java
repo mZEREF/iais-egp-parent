@@ -980,6 +980,7 @@ public class RequestForChangeMenuDelegator {
             if ("replace".equals(editSelect)) {
                 AppSubmissionDto appSubmissionDto2 = replacePersonnelDate(appSubmissionDto, newPerson);
                 appSubmissionDto.setAutoRfc(false);
+                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                 appSubmissionDtos1.add(appSubmissionDto2);
             } else {
                 AppSubmissionDto appSubmissionDto1 = setPersonnelDate(appSubmissionDto, personnelEditDto);

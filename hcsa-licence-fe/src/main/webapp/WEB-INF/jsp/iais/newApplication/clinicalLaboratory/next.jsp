@@ -104,7 +104,7 @@
         });
 
         $('#RfcSkip').click(function () {
-            $("[name='nextStep']").val('skip');
+            $("[name='nextStep']").val('next');
             nextFun();
         });
 
@@ -146,7 +146,6 @@
     function cancelSaveDraft() {
         submit('premises','saveDraft','cancelSaveDraft');
     }
-
 
     function cancel() {
         $('#saveDraft').modal('hide');
