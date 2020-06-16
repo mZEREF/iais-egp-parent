@@ -51,7 +51,7 @@
                             <div class="row">
                                 <label class="col-xs-9 col-md-3 control-label" > Status</label>
                                 <div class="col-xs-9 col-md-5 control-label" >
-                                    <iais:select id="rfiStatus" name="status" options="salutationStatusList"  cssClass="readonly" ></iais:select>
+                                    <iais:select id="rfiStatus" name="status" options="salutationStatusList"  disabled="true" ></iais:select>
                                 </div>
                             </div>
                             <div class="row">

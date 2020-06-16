@@ -136,7 +136,7 @@
                                                     onclick="javascript:doBack()">Cancel
                                             </button>
                                             <button class="btn btn-primary" type="button"
-                                                    onclick="javascript:doSubmit('${licPreReqForInfoDto.id}')">Submit
+                                                    onclick="javascript:doSubmit('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.id)}')">Submit
                                             </button>
                                         </iais:action>
                                     </iais:section>

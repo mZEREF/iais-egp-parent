@@ -99,7 +99,7 @@ public class SelectTag extends DivTagSupport {
             }
 
             if (disabled){
-                html.append(" disabled=\"").append("disabled").append('\"');
+                html.append(" disabled=\"").append(disabled).append('\"');
             }
 
             if (!StringUtil.isEmpty(hidden)){
