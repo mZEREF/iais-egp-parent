@@ -650,32 +650,10 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             }else{
                 return null;
             }
-            List<AdhocDraftDto> adhocDraftDtoList = fillUpCheckListGetAppClient.getAdhocDraftItems(itemIdList).getEntity();
-            if(adhocDraftDtoList!=null && !adhocDraftDtoList.isEmpty()){
-                for(AdhocNcCheckItemDto temp:adhocItemList){
-                    if(adhocDraftDtoList!=null&& !adhocDraftDtoList.isEmpty()){
-                        for(AdhocDraftDto draft:adhocDraftDtoList){
-                            if(draft.getAdhocItemId().equals(temp.getId())){
-                                getAdhocDraft(temp,draft);
-                            }
-                        }
-                    }
-                }
-            }
         }
         return adShowDto;
     }
 
-    private void getAdhocDraft(AdhocNcCheckItemDto itemDto,AdhocDraftDto draftDto){
-        String answerStr = draftDto.getAnswer();
-        AdhocSaveAnswerDto answerDto = JsonUtil.parseToObject(answerStr,AdhocSaveAnswerDto.class);
-        itemDto.setAdAnswer(answerDto.getAnswer());
-        if(answerDto.getIsRec()==1){
-            itemDto.setRectified(Boolean.TRUE);
-        }else{
-            itemDto.setRectified(Boolean.FALSE);
-        }
-    }
     public boolean isHaveNc(InspectionFillCheckListDto dto){
         List<InspectionCheckQuestionDto> dtoList = dto.getCheckList();
         for(InspectionCheckQuestionDto temp:dtoList){
