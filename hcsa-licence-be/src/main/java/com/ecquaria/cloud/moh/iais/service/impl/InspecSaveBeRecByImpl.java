@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -218,6 +219,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             EventInspRecItemNcDto eventInspRecItemNcDto = new EventInspRecItemNcDto();
             //get Task
             eventInspRecItemNcDto.setAppPremCorrIds(appPremCorrIds);
+            eventInspRecItemNcDto = setAppNoListByCorrIds(eventInspRecItemNcDto);
             eventInspRecItemNcDto.setAuditTrailDto(intranet);
             eventInspRecItemNcDto = organizationClient.getEventInspRecItemNcTaskByCorrIds(eventInspRecItemNcDto).getEntity();
 
@@ -243,6 +245,21 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         }
 
         return saveFlag;
+    }
+
+    private EventInspRecItemNcDto setAppNoListByCorrIds(EventInspRecItemNcDto eventInspRecItemNcDto) {
+        List<String> appNoList = IaisCommonUtils.genNewArrayList();
+        List<String> refNoList = eventInspRecItemNcDto.getAppPremCorrIds();
+        if(!IaisCommonUtils.isEmpty(refNoList)){
+            Set<String> refNoSet = new HashSet<>(refNoList);
+            refNoList = new ArrayList<>(refNoSet);
+            for(String refNo : refNoList){
+                ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(refNo).getEntity();
+                appNoList.add(applicationDto.getApplicationNo());
+            }
+        }
+        eventInspRecItemNcDto.setAppNoList(appNoList);
+        return eventInspRecItemNcDto;
     }
 
     private void saveDataDtoAndFile(File file2, AuditTrailDto intranet, String submissionId, List<String> reportIds) {
