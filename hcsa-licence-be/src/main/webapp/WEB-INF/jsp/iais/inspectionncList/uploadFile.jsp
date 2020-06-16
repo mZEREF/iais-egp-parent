@@ -147,7 +147,25 @@
         $("#tbodyFileListId").append(tr);
     }
     function removeNoData() {
-        $("#tbodyFileListId").find("tr")[0].remove();
+        if(isIE()||isIE11()){
+            $("#tbodyFileListId").find("tr")[0].removeNode(true);
+        }else{
+            $("#tbodyFileListId").find("tr")[0].remove();
+        }
+    }
+    function isIE(){
+        if(!!window.ActiveXObject||"ActiveXObject" in window){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    function isIE11(){
+        if((/Trident\/7\./).test(navigator.userAgent)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     function validateUploadInternal(){
