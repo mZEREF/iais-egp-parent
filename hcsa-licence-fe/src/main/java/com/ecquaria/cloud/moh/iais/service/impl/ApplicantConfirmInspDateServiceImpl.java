@@ -585,6 +585,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         taskDto.setProcessUrl(processUrl);
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         apptFeConfirmDateDto.setTaskDto(taskDto);
+        apptFeConfirmDateDto = setAppNoListByCorrIds(apptFeConfirmDateDto);
         //save eic record
         EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "createApptDateTask",
                 "hcsa-licence-web-internet", ApptFeConfirmDateDto.class.getName(), JsonUtil.parseToJson(apptFeConfirmDateDto));
@@ -599,6 +600,21 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         orgEicClient.updateStatus(eicRequestTrackingDtos);
+    }
+
+    private ApptFeConfirmDateDto setAppNoListByCorrIds(ApptFeConfirmDateDto apptFeConfirmDateDto) {
+        List<String> appNoList = IaisCommonUtils.genNewArrayList();
+        List<String> refNoList = apptFeConfirmDateDto.getTaskRefNo();
+        if(!IaisCommonUtils.isEmpty(refNoList)){
+            Set<String> refNoSet = new HashSet<>(refNoList);
+            refNoList = new ArrayList<>(refNoSet);
+            for(String refNo : refNoList){
+                String appNo = getApplicationByCorrId(refNo);
+                appNoList.add(appNo);
+            }
+        }
+        apptFeConfirmDateDto.setAppNoList(appNoList);
+        return apptFeConfirmDateDto;
     }
 
     private String getApplicationByCorrId(String appPremCorrId) {
