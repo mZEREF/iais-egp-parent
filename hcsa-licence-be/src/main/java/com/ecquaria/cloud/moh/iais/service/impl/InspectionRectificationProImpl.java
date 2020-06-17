@@ -558,6 +558,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
         taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+        taskDto.setApplicationNo(td.getApplicationNo());
         taskDtos.add(taskDto);
         taskService.createTasks(taskDtos);
     }
