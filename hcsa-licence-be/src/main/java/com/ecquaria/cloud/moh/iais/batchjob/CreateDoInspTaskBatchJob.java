@@ -156,7 +156,7 @@ public class CreateDoInspTaskBatchJob {
                 taskDto.setId(null);
                 taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
                 taskDto.setPriority(td.getPriority());
-                taskDto.setRefNo(td.getRefNo());
+                taskDto.setRefNo(appPremCorrId);
                 taskDto.setSlaAlertInDays(td.getSlaAlertInDays());
                 taskDto.setSlaDateCompleted(null);
                 taskDto.setSlaInDays(td.getSlaInDays());
@@ -168,6 +168,7 @@ public class CreateDoInspTaskBatchJob {
                 taskDto.setDateAssigned(new Date());
                 taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
                 taskDto.setAuditTrailDto(intranet);
+                taskDto.setApplicationNo(td.getApplicationNo());
                 taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY);
                 taskDto.setScore(score);
                 taskDtoList.add(taskDto);
