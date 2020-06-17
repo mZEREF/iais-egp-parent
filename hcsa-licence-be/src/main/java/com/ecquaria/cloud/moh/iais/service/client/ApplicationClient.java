@@ -212,6 +212,10 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/prem-corr-list/{appGroupId}")
     FeignResponseEntity<List<AppPremisesCorrelationDto>> getPremCorrDtoByAppGroupId(@PathVariable(name = "appGroupId") String appGroupId);
 
+    @GetMapping(value = "/iais-apppremisescorrelation-be/app-prem-corrone/{appNo}", produces = MediaType.APPLICATION_JSON_VALUE ,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesCorrelationDto> getAppPremCorrByAppNo(@PathVariable("appNo") String appNo);
+
     @GetMapping(value = "/iais-application-be/application-post",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getPostApplication(@RequestParam(name = "appType") String appType,@RequestParam(name = "appStatus") String appStatus);
 
