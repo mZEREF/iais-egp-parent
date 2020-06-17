@@ -105,7 +105,7 @@ public class TaskServiceImpl implements TaskService {
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
                 taskType = TaskConsts.TASK_TYPE_INSPECTION;
             }
-            result = TaskUtil.getTaskDto(statgId,taskType,
+            result = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),statgId,taskType,
                     correlationId,workGroupId,
                     taskScoreDto.getUserId(),assignDate,score,TaskUrl,roleId,
                     IaisEGPHelper.getCurrentAuditTrailDto());
@@ -148,7 +148,7 @@ public class TaskServiceImpl implements TaskService {
                     List<AppPremisesCorrelationDto> appPremisesCorrelations = getAppPremisesCorrelationId(applicationDto.getId());
                     if(!IaisCommonUtils.isEmpty(appPremisesCorrelations)){
                         for (AppPremisesCorrelationDto appPremisesCorrelationDto :appPremisesCorrelations ){
-                            TaskDto taskDto = TaskUtil.getUserTaskDto(stageId,
+                            TaskDto taskDto = TaskUtil.getUserTaskDto(applicationDto.getApplicationNo(),stageId,
                                     appPremisesCorrelationDto.getId(),workGroupId,
                                     taskScoreDto.getUserId(),score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
                                     auditTrailDto);

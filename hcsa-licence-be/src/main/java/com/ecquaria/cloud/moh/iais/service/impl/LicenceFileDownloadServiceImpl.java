@@ -583,7 +583,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         List<TaskDto> taskDtos =  licenceFileDownloadService.getTasksByRefNo(oldAppPremisesCorrelationDtos.get(0).getId());
                         if(!IaisCommonUtils.isEmpty(taskDtos)){
                             TaskDto taskDto = taskDtos.get(0);
-                            TaskDto newTaskDto = TaskUtil.getUserTaskDto(taskDto.getTaskKey(),newAppPremisesCorrelationDtos.get(0).getId(),taskDto.getWkGrpId(),
+                            TaskDto newTaskDto = TaskUtil.getUserTaskDto(applicationDto.getApplicationNo(),taskDto.getTaskKey(),newAppPremisesCorrelationDtos.get(0).getId(),taskDto.getWkGrpId(),
                                     taskDto.getUserId(),0,taskDto.getProcessUrl(),taskDto.getRoleId(),auditTrailDto);
                             taskDtoList.add(newTaskDto);
                             //create history
