@@ -582,7 +582,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     private InspectionHistoryShowDto getInspectorAndLeadByAppNo(String appNo, String taskRefNo, InspectionHistoryShowDto inspectionHistoryShowDto) {
-        List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(appNo, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY).getEntity();
+        List<TaskDto> taskDtos = organizationClient.getTaskByAppNoStatus(appNo, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY).getEntity();
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             List<String> inspectorNames = IaisCommonUtils.genNewArrayList();
             List<String> inspectorIds = IaisCommonUtils.genNewArrayList();
@@ -620,7 +620,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     private TaskDto getCompletedTaskByHistory(TaskDto taskDto, String userId) {
-        List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(taskDto.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_MAIN_FLOW).getEntity();
+        List<TaskDto> taskDtos = organizationClient.getTaskByAppNoStatus(taskDto.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_MAIN_FLOW).getEntity();
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             for(TaskDto tDto : taskDtos){
                 if(tDto.getUserId().equals(userId)){

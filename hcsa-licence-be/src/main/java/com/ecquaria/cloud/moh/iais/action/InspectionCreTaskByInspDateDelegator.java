@@ -170,7 +170,7 @@ public class InspectionCreTaskByInspDateDelegator {
     }
 
     private List<TaskDto> getTaskByHistoryTasks(String appCorrId) {
-        List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(appCorrId, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+        List<TaskDto> taskDtos = organizationClient.getTaskByAppNoStatus(appCorrId, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
         if(taskDtos == null || taskDtos.isEmpty()){
             return null;
         }

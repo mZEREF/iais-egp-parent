@@ -938,7 +938,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     @Override
     public List<String> getInspectiors(TaskDto taskDto) {
         List<String> inspectiors = IaisCommonUtils.genNewArrayList();
-        List<TaskDto> taskDtos  = organizationClient.getTaskByRefNoStatus(taskDto.getRefNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+        List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getRefNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             List<String> userIds = new ArrayList<>(taskDtos.size());
             for(TaskDto taskDto1 : taskDtos){
@@ -958,7 +958,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public String getInspectionLeader(TaskDto taskDto) {
-        List<TaskDto> taskDtos  = organizationClient.getTaskByRefNoStatus(taskDto.getRefNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+        List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getRefNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
         String workGrpId = "";
         if( taskDtos  != null && taskDtos.size() >0)
          workGrpId = taskDtos.get(0).getWkGrpId();
@@ -1333,11 +1333,12 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             copyAppPremisesSpecialDocDto.setDocName(docNameSpec[0]);
             copyAppPremisesSpecialDocDto.setDocDesc(docNameSpec[0]);
             copyAppPremisesSpecialDocDto.setDocType(docNameSpec[1]);
-        }else
+        } else {
             return null;
+        }
         copyAppPremisesSpecialDocDto.setId(appPremisesSpecialDocDto.getId());
         copyAppPremisesSpecialDocDto.setFileRepoId(appPremisesSpecialDocDto.getFileRepoId());
-        copyAppPremisesSpecialDocDto.setDocSize(String.valueOf(appPremisesSpecialDocDto.getDocSize()+"KB"));
+        copyAppPremisesSpecialDocDto.setDocSize(appPremisesSpecialDocDto.getDocSize()+"KB");
         OrgUserDto user = applicationViewService.getUserById(appPremisesSpecialDocDto.getSubmitBy());
         copyAppPremisesSpecialDocDto.setSubmitByName(user.getDisplayName());
         copyAppPremisesSpecialDocDto.setSubmitDtString(Formatter.formatDateTime(appPremisesSpecialDocDto.getSubmitDt(), "dd/MM/yyyy HH:mm:ss"));

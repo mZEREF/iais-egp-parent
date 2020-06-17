@@ -146,7 +146,7 @@ public interface OrganizationClient {
     FeignResponseEntity<SearchResult<SuperPoolTaskQueryDto>> supervisorSecondSearch(@RequestBody SearchParam searchParam);
 
     @GetMapping(value = "/iais-task/stage-task-status",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<TaskDto>> getTaskByRefNoStatus(@RequestParam("refNo") String refNo, @RequestParam("taskStatus") String taskStatus, @RequestParam("processUrl") String processUrl);
+    FeignResponseEntity<List<TaskDto>> getTaskByAppNoStatus(@RequestParam("appNo") String appNo, @RequestParam("taskStatus") String taskStatus, @RequestParam("processUrl") String processUrl);
 
     @GetMapping(value = "/iais-licensee-be/licenseeKeyApptPersonByLicId/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonDtoListByLicenseeId(@PathVariable("licenseeId") String licenseeId);
