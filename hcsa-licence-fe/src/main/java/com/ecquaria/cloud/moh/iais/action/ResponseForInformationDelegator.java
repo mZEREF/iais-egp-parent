@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -65,7 +66,7 @@ public class ResponseForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String licenseeId = ParamUtil.getMaskedString(request,"licenseeId");
         String messageId= (String) ParamUtil.getSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
-        messageClient.updateMsgStatus(messageId,"Response");
+        messageClient.updateMsgStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         InterMessageDto messageDto=messageClient.getInterMessageById(messageId).getEntity();
         ParamUtil.setSessionAttr(request,"msg_action_id",MaskUtil.maskValue("msg_action_id",messageId));
         ParamUtil.setSessionAttr(request,"msg_action_type",MaskUtil.maskValue("msg_action_type",messageDto.getMessageType()));
