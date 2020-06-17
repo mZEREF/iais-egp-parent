@@ -106,6 +106,22 @@
                                                         <iais:row>
                                                             <td class="col-xs-2">
                                                                 <strong>
+                                                                    Internal Remarks
+                                                                </strong>
+                                                            </td>
+                                                            <td>
+                                                                <iais:value width="4000">
+                                                                    <textarea name="remarks" cols="60" rows="7"
+                                                                              maxlength="300"
+                                                                    >${insEmailDto.remarks}</textarea>
+                                                                </iais:value>
+                                                            </td>
+                                                        </iais:row>
+                                                    </tr>
+                                                    <tr height="1">
+                                                        <iais:row>
+                                                            <td class="col-xs-2">
+                                                                <strong>
                                                                     Processing Decision<strong style="color:#ff0000;"> *</strong>
                                                                 </strong>
                                                             </td>

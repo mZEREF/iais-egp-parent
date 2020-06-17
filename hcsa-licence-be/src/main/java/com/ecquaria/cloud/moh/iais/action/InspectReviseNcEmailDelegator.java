@@ -659,7 +659,7 @@ public class InspectReviseNcEmailDelegator {
         getAuditData(request);
         return serListDto;
     }
-    private void  getAuditData(MultipartHttpServletRequest request)throws IOException {
+    private void  getAuditData(MultipartHttpServletRequest request) {
         ApplicationViewDto appViewDto =(ApplicationViewDto) ParamUtil.getSessionAttr(request,APP_VIEW_DTO);
         if (appViewDto != null && appViewDto.getLicPremisesAuditDto() != null){
             LicPremisesAuditDto licPremisesAuditDto =  appViewDto.getLicPremisesAuditDto();
