@@ -523,7 +523,16 @@ public class NewApplicationDelegator {
 
         AppSubmissionDto tranferSub = (AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"app-rfc-tranfer");
         if(tranferSub!=null){
-            appSubmissionDto=tranferSub;
+            if(appSubmissionDtos==null){
+                appSubmissionDtos=new ArrayList<>(1);
+                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = tranferSub.getAppSvcRelatedInfoDtoList();
+                if(appSvcRelatedInfoDtoList!=null){
+                    for(AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtoList){
+                        appSvcRelatedInfoDto.setGroupNo(tranferSub.getAppGrpNo());
+                    }
+                }
+                appSubmissionDtos.add(tranferSub);
+            }
         }
         Double total=0.0;
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=IaisCommonUtils.genNewArrayList();
@@ -554,6 +563,10 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAmountStr(amountStr);
         }
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
+        if(appSubmissionDtos!=null){
+            bpc.request.getSession().setAttribute("appSubmissionDtos",appSubmissionDtos);
+        }
+
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));
     }
 
