@@ -31,31 +31,34 @@
                         <p>
                             We will review your application and notify you if any changes are required.
                             An inspection date will be arranged if necessary.</p>
-                        <p>Transactional details:</p>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Transactional No.</th>
-                                <th>Date & Time</th>
-                                <th>Amount Deducted</th>
-                                <th>Payment Method</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <th>${pmtRefNo}</th>
-                                <th><fmt:formatDate value="${createDate}" pattern="dd/MM/yyyy"></fmt:formatDate></th>
-                                <th>${dAmount}</th>
-                                <th>${payMethod}</th>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <c:if test="${dAmount!='$0.0'}">
+                            <p>Transactional details:</p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Transactional No.</th>
+                                    <th>Date & Time</th>
+                                    <th>Amount Deducted</th>
+                                    <th>Payment Method</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <th>${pmtRefNo}</th>
+                                    <th><fmt:formatDate value="${createDate}" pattern="dd/MM/yyyy"></fmt:formatDate></th>
+                                    <th>${dAmount}</th>
+                                    <th>${payMethod}</th>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </c:if>
+
                         <div class="col-xs-12 col-sm-12">
                             <div class="button-group col-xs-12 col-sm-6">
                                 <a class="btn btn-secondary next" id="Acknowledgement">Print this Acknowledgement</a>
                             </div>
                             <div class="button-group col-xs-12 col-sm-6 ">
-                                <a class="btn btn-secondary next" id="GotoDashboard" >Go to Dashboard</a>
+                                <a class="btn btn-primary aMarginleft col-md-6 pull-right" id="GotoDashboard" >Go to Dashboard</a>
                             </div>
                         </div>
                     </c:otherwise>

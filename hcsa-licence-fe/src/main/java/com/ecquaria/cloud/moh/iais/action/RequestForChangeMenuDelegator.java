@@ -1403,7 +1403,7 @@ public class RequestForChangeMenuDelegator {
         }
 
         if (isSame) {
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
         } else {
             ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
         }

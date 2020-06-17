@@ -1308,7 +1308,7 @@ public class NewApplicationDelegator {
         }
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
         //is need to pay ?
-        String appGroupNo = appSubmissionService.getGroupNo(appSubmissionDto.getAppType());
+        String appGroupNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
@@ -1942,7 +1942,7 @@ public class NewApplicationDelegator {
         changePerson.setAmount(0.0);
         changePerson.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         changePerson.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-        String appGrpNo = requestForChangeService.getApplicationGroupNumber(changePerson.getAppType());
+        String appGrpNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         changePerson.setAppGrpNo(appGrpNo);
         changePerson.setIsNeedNewLicNo(AppConsts.YES);
         appSubmissionService.transform(changePerson,appSubmissionDto.getLicenseeId());
@@ -3210,12 +3210,12 @@ public class NewApplicationDelegator {
                     if(mandatoryCount>0) {
                         errorMap.put("error", "error");
                         sB.append(serviceId);
-                        log.info("CGO null");
+                        log.info("MAP null");
                     }
                 }else if(appSvcMedAlertPersonList.size()<mandatoryCount){
                     errorMap.put("error", "error");
                     sB.append(serviceId);
-                    log.info("CGO mandatoryCount");
+                    log.info("MAP mandatoryCount");
                 }
             }
         }
@@ -3242,6 +3242,7 @@ public class NewApplicationDelegator {
        log.info(JsonUtil.parseToJson(govenMap));
         if(!govenMap.isEmpty()){
             sB.append(serviceId);
+            log.info("govenMap is error");
         }
         doPO(hcsaSvcPersonnelDtos,errorMap,appSvcPrincipalOfficersDtoList,serviceId,sB);
         log.info(sB.toString());
@@ -3463,7 +3464,11 @@ public class NewApplicationDelegator {
         if(appSvclaborlist==null||appSvclaborlist.isEmpty()){
             return;
         }else if(appSvclaborlist!=null&&!appSvclaborlist.isEmpty()){
-            List<AppSvcChckListDto> appSvcChckListDtoList = appSvclaborlist.get(0).getAppSvcChckListDtoList();
+            List<AppSvcChckListDto> appSvcChckListDtoList =IaisCommonUtils.genNewArrayList();
+            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto :appSvclaborlist ){
+                appSvcChckListDtoList.addAll(appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList());
+            }
+
             if(appSvcChckListDtoList!=null){
                 if(appSvcDislist==null){
                     map.put("error","error");

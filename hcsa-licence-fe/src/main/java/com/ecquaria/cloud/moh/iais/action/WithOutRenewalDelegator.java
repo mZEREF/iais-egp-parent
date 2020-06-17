@@ -70,6 +70,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -130,40 +131,47 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request,"totalStr",null);
         ParamUtil.setSessionAttr(bpc.request,"totalAmount",null);
         ParamUtil.setSessionAttr(bpc.request,"userAgreement",null);ParamUtil.setSessionAttr(bpc.request,PREFIXTITLE,"renewing");
-
+        HashMap<String,String> coMap=new HashMap<>(4);
+        coMap.put("premises","");
+        coMap.put("document","");
+        coMap.put("information","");
+        coMap.put("previewli","");
+        bpc.request.getSession().setAttribute("coMap",coMap);
         //inbox draft number
-        String oldDraftNumber= ParamUtil.getMaskedString(bpc.request, "DraftNumber");
+
         //init page value
         //instructions
         ParamUtil.setRequestAttr(bpc.request,"page_value",PAGE1);
         String licenceId= ParamUtil.getMaskedString(bpc.request,"licenceId");
-
         //init data
         List<String> licenceIDList = (List<String>) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR);
-        if(licenceIDList==null&&licenceId!=null){
+        if(licenceIDList==null){
+            licenceIDList=IaisCommonUtils.genNewArrayList();
+        }
+        if(licenceId!=null){
             licenceIDList=new ArrayList<>(1);
             licenceIDList.add(licenceId);
         }
-        /*        licenceIDList = IaisCommonUtils.genNewArrayList();
-        licenceIDList.add("B1DC1835-E161-EA11-BE7F-000C29F371DC");*/
-        if (licenceIDList == null || IaisCommonUtils.isEmpty(licenceIDList)){
+        List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
+        if(StringUtil.isEmpty(draftNo)){
+            appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
             log.info("can not find licence id for without renewal");
-            return;
+            ParamUtil.setSessionAttr(bpc.request,"backUrl","initLic");
+        }else{
+            AppSubmissionDto appSubmissionDtoDraft = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            appSubmissionDtoList.add(appSubmissionDtoDraft);
+            licenceIDList=new ArrayList<>(1);
+            licenceIDList.add(appSubmissionDtoDraft.getLicenceId());
+            ParamUtil.setSessionAttr(bpc.request,"backUrl","initApp");
+            loadCoMap(bpc,appSubmissionDtoDraft);
         }
+
         //get licensee ID
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(bpc.request,"INTER_INBOX_USER_INFO");
         int index = 0;
         String firstSvcName = "";
         List<String> serviceNameTitleList = IaisCommonUtils.genNewArrayList();
         List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
-        List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
-        if(StringUtil.isEmpty(draftNo)){
-            appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
-            ParamUtil.setSessionAttr(bpc.request,"backUrl","initLic");
-        }else{
-            appSubmissionDtoList.add(serviceConfigService.getAppSubmissionDtoDraft(draftNo));
-            ParamUtil.setSessionAttr(bpc.request,"backUrl","initApp");
-        }
 
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = IaisCommonUtils.genNewArrayList();
         List<Map<String,List<AppSvcDisciplineAllocationDto>>> reloadDisciplineAllocationMapList = IaisCommonUtils.genNewArrayList();
@@ -257,12 +265,12 @@ public class WithOutRenewalDelegator {
             String groupNumber =  appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
 
             log.info(StringUtil.changeForLog("without renewal group number =====>" + groupNumber));
-            if(StringUtil.isEmpty(oldDraftNumber)){
+            if(StringUtil.isEmpty(draftNo)){
                 String draftNumber = appSubmissionService.getDraftNo(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
                 appSubmissionDto.setDraftNo(draftNumber);
                 log.info(StringUtil.changeForLog("without renewal deafrt number =====>" + draftNumber));
             }else {
-                appSubmissionDto.setDraftNo(oldDraftNumber);
+                appSubmissionDto.setDraftNo(draftNo);
             }
 
             appSubmissionDto.setAppGrpNo(groupNumber);
@@ -310,6 +318,32 @@ public class WithOutRenewalDelegator {
         log.info("**** the non auto renwal  end ******");
     }
 
+    private void loadCoMap(BaseProcessClass bpc,AppSubmissionDto appSubmissionDto){
+        List<String> stepColor = appSubmissionDto.getStepColor();
+        if(stepColor!=null){
+            HashMap<String,String> coMap=new HashMap<>(4);
+            coMap.put("premises","");
+            coMap.put("document","");
+            coMap.put("information","");
+            coMap.put("previewli","");
+            if(!stepColor.isEmpty()){
+                for(String str : stepColor){
+                    if("premises".equals(str)){
+                        coMap.put("premises",str);
+                    }else if("document".equals(str)){
+                        coMap.put("document",str);
+                    }else if("information".equals(str)){
+                        coMap.put("information",str);
+                    }else if("previewli".equals(str)){
+                        coMap.put("previewli",str);
+                    }else {
+                        bpc.request.getSession().setAttribute("serviceConfig",str);
+                    }
+                }
+            }
+            bpc.getSession().setAttribute("coMap",coMap);
+        }
+    }
     /**
      * AutoStep: prepare
      *
@@ -755,7 +789,7 @@ public class WithOutRenewalDelegator {
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         Map<String, String> stringStringMap = newApplicationDelegator.doPreviewAndSumbit(bpc);
-        if(stringStringMap!=null){
+        if(stringStringMap!=null&&!stringStringMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
             return;
         }

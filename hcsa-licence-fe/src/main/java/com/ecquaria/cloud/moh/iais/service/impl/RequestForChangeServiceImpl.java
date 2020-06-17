@@ -28,8 +28,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
@@ -621,7 +623,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     }
                                 }
                             }
-                            List<AppGrpPremisesDto> entity = applicationClient.getAppGrpPremisesDtoByHciName(hciName).getEntity();
+                            String licenseeId = appSubmissionDto.getLicenseeId();
+                            if(StringUtil.isEmpty(licenseeId)){
+                                licenseeId="9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
+                            }
+                            List<AppGrpPremisesDto> entity = applicationClient.getAppGrpPremisesDtoByHciName(hciName,licenseeId).getEntity();
                             if(!entity.isEmpty()){
                                 errorMap.put("hciNameUsed","The HCI name you have keyed in is currently in used");
                             }

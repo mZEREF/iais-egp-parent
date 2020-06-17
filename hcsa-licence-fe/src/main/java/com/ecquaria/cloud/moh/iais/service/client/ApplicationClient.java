@@ -280,7 +280,7 @@ public interface ApplicationClient  {
     FeignResponseEntity<AppFeeDetailsDto> getAppFeeDetailsDtoByApplicationNo(@RequestParam("applicationNo") String applicationNo);
 
     @GetMapping(value = "/iais-application/app-grp-premises-by-hci-name",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByHciName(@RequestParam("hciName") String hciName);
+    FeignResponseEntity<List<AppGrpPremisesDto>> getAppGrpPremisesDtoByHciName(@RequestParam("hciName") String hciName,@RequestParam("licencessId") String licencessId);
     @GetMapping(value = "/iais-application/application-dto-by-appNo",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationDtoByAppNo(@RequestParam("appNo") String appNo);
 
