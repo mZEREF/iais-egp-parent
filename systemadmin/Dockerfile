@@ -1,4 +1,4 @@
-FROM tomcat:9.0.31-jdk8-adoptopenjdk-hotspot
+FROM tomcat:9.0.36-jdk8-adoptopenjdk-hotspot
 
 ENV TZ=Asia/Singapore
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone

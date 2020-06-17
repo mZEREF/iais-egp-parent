@@ -1,4 +1,4 @@
-FROM 192.168.7.88/library/tomcat:8.5.34-jre8-alpine
+FROM tomcat:9.0.36-jdk8-adoptopenjdk-hotspot
 
 COPY target/web.war /usr/local/tomcat/webapps/web.war
 
