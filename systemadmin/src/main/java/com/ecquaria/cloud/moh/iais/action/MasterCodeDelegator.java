@@ -43,6 +43,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author Hua_Chong
@@ -380,11 +381,12 @@ public class MasterCodeDelegator {
         List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
         List<String> duplicateCode = IaisCommonUtils.genNewArrayList();
         List<String> emptyCode = IaisCommonUtils.genNewArrayList();
+        List<String> filterCode = IaisCommonUtils.genNewArrayList();
+        List<MasterCodeToExcelDto> masterCodeAllList = masterCodeService.findAllMasterCode();
+        boolean result = false;
         for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
-
             String masterCodeKey = masterCodeToExcelDto.getMasterCodeKey();
             masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
-            boolean result = false;
             if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())
                     ||StringUtil.isEmpty(masterCodeToExcelDto.getStatus())
                     ||StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom()))
@@ -396,17 +398,26 @@ public class MasterCodeDelegator {
                 result = true;
                 duplicateCode.add(masterCodeToExcelDto.getCodeValue());
             }
-            if (result){
-                errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "There is an error in the file contents");
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-                ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
-                ParamUtil.setRequestAttr(request,"ERR_DUPLICATE_CODE",duplicateCode);
-                ParamUtil.setRequestAttr(request,"ERR_EMPTY_CODE",emptyCode);
-            }else{
-                masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+            for(MasterCodeToExcelDto masterCodeToExcelDto1:masterCodeAllList){
+                if (masterCodeToExcelDto.getFilterValue().equals(masterCodeToExcelDto1.getCodeValue())){
+                    filterCode.add(masterCodeToExcelDto.getCodeValue());
+                }
             }
+            if (filterCode.size() == 0){
+                emptyCode.add(masterCodeToExcelDto.getCodeValue());
+                result = true;
+            }
+        }
+        if (result){
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "There is an error in the file contents");
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
+            ParamUtil.setRequestAttr(request,"ERR_DUPLICATE_CODE",duplicateCode);
+            ParamUtil.setRequestAttr(request,"ERR_EMPTY_CODE",emptyCode);
+        }else{
+            masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }
     }
 
