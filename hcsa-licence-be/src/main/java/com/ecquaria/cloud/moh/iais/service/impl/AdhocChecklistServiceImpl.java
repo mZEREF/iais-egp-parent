@@ -33,7 +33,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -148,11 +147,21 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
                 }
 
                 ChecklistConfigDto svcConfig;
-                if (StringUtils.isEmpty(hciCode)){
+                // issue 65522
+                if (StringUtil.isEmpty(hciCode)){
                     svcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule, "", "").getEntity();
                 }else {
                     svcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule, "", hciCode).getEntity();
+                    if (svcConfig == null){
+                        svcConfig = hcsaChklClient.getMaxVersionServiceConfigByParams(svcCode, type, chklModule, "", "").getEntity();
+                    }
                 }
+
+                log.info(StringUtil.changeForLog("inspection pick up service config service code ====>>>>" + svcCode));
+                log.info(StringUtil.changeForLog("inspection pick up service config module ====>>>>" + chklModule));
+                log.info(StringUtil.changeForLog("inspection pick up service config type ====>>>>" + type));
+                log.info(StringUtil.changeForLog("inspection pick up service config hci code ====>>>>" + hciCode));
+                log.info(StringUtil.changeForLog("inspection pick up service config ====>>>>" + svcConfig));
 
                 if (svcConfig != null){
                     inspChecklist.add(svcConfig);
