@@ -352,12 +352,16 @@ public class MasterCodeDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String actionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         if (!"doUpload".equals(actionType)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
         MultipartFile file = mulReq.getFile("selectedFile");
         File toFile = FileUtils.multipartFileToFile(file);
         Map<String, String> errorMap = validationFile(request, file);
+        if (errorMap != null && errorMap.size()>0) {
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+            return;
+        }
         List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
         List<String> duplicateCode = IaisCommonUtils.genNewArrayList();
         List<String> emptyCode = IaisCommonUtils.genNewArrayList();
@@ -623,7 +627,6 @@ public class MasterCodeDelegator {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;
         }
-
         return errorMap;
     }
 }
