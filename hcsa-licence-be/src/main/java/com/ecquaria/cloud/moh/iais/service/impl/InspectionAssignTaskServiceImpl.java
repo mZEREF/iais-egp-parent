@@ -426,6 +426,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         Map<String, String> stageRoleMap = MiscUtil.getStageRoleByBroadcast(roleIds);
         if(stageRoleMap != null){
             for(Map.Entry<String, String> map : stageRoleMap.entrySet()){
+                td.setSlaDateCompleted(new Date());
                 td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
                 td.setAuditTrailDto(auditTrailDto);
                 taskService.updateTask(td);
@@ -466,6 +467,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 taskDto.setAuditTrailDto(auditTrailDto);
                 taskDto.setProcessUrl(processUrl);
                 taskDto.setScore(score);
+                taskDto.setApplicationNo(td.getApplicationNo());
                 taskDtoList.add(taskDto);
                 taskService.createTasks(taskDtoList);
                 createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null, null, td.getRoleId(), subStage, td.getWkGrpId());
