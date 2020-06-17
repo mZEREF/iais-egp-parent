@@ -63,12 +63,19 @@ public class ResponseForInformationDelegator {
     public void Start(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
         HttpServletRequest request=bpc.request;
-        String licenseeId = ParamUtil.getMaskedString(request,"licenseeId");
+        String licenseeId;
+        try {
+            licenseeId = ParamUtil.getMaskedString(request,"licenseeId");
+
+        }catch (Exception e){
+            licenseeId= (String) ParamUtil.getSessionAttr(request,"licenseeId");
+        }
         String messageId= (String) ParamUtil.getSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         messageClient.updateMsgStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         InterMessageDto messageDto=messageClient.getInterMessageById(messageId).getEntity();
         ParamUtil.setSessionAttr(request,"msg_action_id",messageId);
         ParamUtil.setSessionAttr(request,"msg_action_type",messageDto.getMessageType());
+        ParamUtil.setSessionAttr(request,"IAIS_MSG_CONTENT",messageDto.getMsgContent());
         ParamUtil.setSessionAttr(request,"licenseeId",licenseeId);
         // 		Start->OnStepProcess
     }

@@ -201,6 +201,9 @@ public class InterInboxDelegator {
             inboxService.updateMsgStatusTo(msgId,MessageConstants.MESSAGE_STATUS_UNRESPONSE);
         }
         String msgContent = ParamUtil.getMaskedString(request,InboxConst.CRUD_ACTION_VALUE);
+        if(msgContent==null){
+            msgContent= (String) ParamUtil.getSessionAttr(request,InboxConst.MESSAGE_CONTENT);
+        }
         ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_CONTENT, msgContent);
         ParamUtil.setSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,msgId);
         ParamUtil.setSessionAttr(request,"msgPageType",msgType);
