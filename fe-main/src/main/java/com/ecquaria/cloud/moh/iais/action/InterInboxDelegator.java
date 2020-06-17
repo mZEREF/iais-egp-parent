@@ -905,7 +905,13 @@ public class InterInboxDelegator {
         ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO, null);
         inboxParameter.setFilters(null);
+        inboxParameter.setPageNo(1);
+        inboxParameter.setPageSize(10);
         appParameter.setFilters(null);
+        appParameter.setPageNo(1);
+        appParameter.setPageSize(10);
         licenceParameter.setFilters(null);
+        licenceParameter.setPageNo(1);
+        licenceParameter.setPageSize(10);
     }
 }

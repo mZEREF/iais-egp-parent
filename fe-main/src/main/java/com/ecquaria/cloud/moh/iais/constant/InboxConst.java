@@ -92,5 +92,5 @@ public class InboxConst {
     public static final String URL_HTTPS                      = "https://";
     public static final String URL_LICENCE_WEB_MODULE         = "/hcsa-licence-web/eservice/INTERNET/";
 
-
+    public static final String GUIDE_ACTION_TYPE            = "guide_action_type";
 }
