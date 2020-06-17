@@ -5,9 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -24,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -36,27 +39,18 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.EventClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.kafka.model.Submission;
+import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: jiahao
@@ -97,6 +91,12 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private String currentDomain;
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
+    @Autowired
+    private MsgTemplateClient msgTemplateClient;
+    @Value("${iais.email.sender}")
+    private String mailSender;
+    @Autowired
+    private EmailClient emailClient;
 
     static String[] category = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
     @Override
@@ -160,13 +160,16 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private void getinspectorOp(List<OrgUserDto> orgDtos, AuditTaskDataFillterDto temp) {
         List<SelectOption> ops = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(orgDtos)) {
+            Map<String,String> userIdToEmails = new HashMap<>(orgDtos.size());
             for (OrgUserDto ou : orgDtos) {
                 SelectOption op = new SelectOption();
                 op.setText(ou.getDisplayName());
                 op.setValue(ou.getId());
                 ops.add(op);
+                userIdToEmails.put(ou.getDisplayName(),ou.getEmail());
             }
             temp.setInspectors(ops);
+            temp.setUserIdToEmails(userIdToEmails);
         }
     }
 
@@ -204,8 +207,12 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             createAuditTaskApp(licIds,submitId,auditCombinationDto);
         }
 
-        //create task
-        //createTask(temp,submitId,auditCombinationDto);
+       // send email
+        if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
+            sendEmailToIns(temp.getInspector(),MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK,auditCombinationDto.getEventRefNo(),temp.getUserIdToEmails().get(temp.getInspector()));
+        }else {
+            log.info("-----------Inspector id is null or UserIdToEmails is null");
+        }
     }
 
     public void createTaskCallBack(String eventRefNum,String submissionId)throws FeignException {
@@ -316,9 +323,54 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(groupNo).getEntity();
         appSubmissionForAuditDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         saveAppForAuditToFe(appSubmissionForAuditDto,true);
+
+        //send email to insp
+        if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
+            sendEmailToIns(temp.getInspector(),MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK,groupNo,temp.getUserIdToEmails().get(temp.getInspector()));
+        }else {
+            log.info("-----------Inspector id is null or UserIdToEmails is null");
+        }
+
     }
 
-    public  void saveAppForAuditToFe(AppSubmissionForAuditDto appSubmissionForAuditDto,boolean isCancel){
+    @Override
+    public void sendEmailToIns(String ins, String emailKey, String appGroupNo,String email) {
+        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(emailKey).getEntity();
+        if (autoEntity == null){
+            log.info("===>>>>sendEmailToIns can not find message template. " + "key is" + emailKey);
+            return;
+        }
+
+        Map<String,Object> param;
+        boolean needAppGNo = true;
+        if(StringUtil.isEmpty(appGroupNo)){
+          param = new HashMap(2);
+            needAppGNo  = false;
+        }else {
+            param =  new HashMap(3);
+        }
+        param.put("userName",ins);
+        if(needAppGNo){
+            param.put("appno",appGroupNo);
+        }
+        param.put("syName",AppConsts.MOH_AGENCY_NAME);
+        try {
+            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), param);
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(templateMessageByContent);
+            emailDto.setSubject(autoEntity.getTemplateName());
+            emailDto.setSender(mailSender);
+            List<String> emailAdresss = new ArrayList<>(1);
+            emailAdresss.add(email);
+            emailDto.setReceipts(emailAdresss);
+            //send
+            emailClient.sendNotification(emailDto).getEntity();
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+    }
+
+    public  void saveAppForAuditToFe(AppSubmissionForAuditDto appSubmissionForAuditDto, boolean isCancel){
         log.info("========================>>>>>sysn fe app start!!!!");
         appSubmissionForAuditDto.setIsCancel(isCancel);
         EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.LICENCE_CLIENT, AuditSystemListServiceImpl.class.getName(),

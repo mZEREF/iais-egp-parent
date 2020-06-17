@@ -27,4 +27,6 @@ public interface AuditSystemListService {
     List<SelectOption> getActiveHCICode();
     void doRejectCancelTask(List<AuditTaskDataFillterDto> auditTaskDataDtos);
     void doCanceledTask(List<AuditTaskDataFillterDto> auditTaskDataDtos);
+
+    void sendEmailToIns(String ins,String emailKey,String appGroupNo,String email);
 }
