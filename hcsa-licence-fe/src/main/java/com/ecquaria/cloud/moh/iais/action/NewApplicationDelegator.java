@@ -1078,9 +1078,8 @@ public class NewApplicationDelegator {
         bpc.request.getSession().removeAttribute(SELECT_DRAFT_NO);
         appSubmissionDto.setOldDraftNo(oldDraftNo);
         appSubmissionDto.setStepColor(strList);
-        Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
-        String personMapStr = JsonUtil.parseToJson(personMap);
-        appSubmissionDto.setDropDownPsnMapStr(personMapStr);
+        //set psn dropdown
+        setPsnDroTo(appSubmissionDto,bpc);
         appSubmissionDto = appSubmissionService.doSaveDraft(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         bpc.request.setAttribute("saveDraftSuccess","success");
@@ -2083,6 +2082,9 @@ public class NewApplicationDelegator {
 
         //set Risk Score
         appSubmissionService.setRiskToDto(appSubmissionDto);
+
+        //set psn dropdown
+        setPsnDroTo(appSubmissionDto,bpc);
 
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -5229,6 +5231,12 @@ public class NewApplicationDelegator {
             appSubmissionDto.setLicenseeId("");
             log.info(StringUtil.changeForLog("user info is empty....."));
         }
+    }
+
+    private void setPsnDroTo(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc){
+        Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
+        String personMapStr = JsonUtil.parseToJson(personMap);
+        appSubmissionDto.setDropDownPsnMapStr(personMapStr);
     }
 }
 
