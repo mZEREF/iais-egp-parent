@@ -351,7 +351,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
         param.put("userName",ins);
         if(needAppGNo){
-            param.put("appno",appGroupNo);
+            param.put("appno",appGroupNo+"-01");
         }
         param.put("syName",AppConsts.MOH_AGENCY_NAME);
         try {
