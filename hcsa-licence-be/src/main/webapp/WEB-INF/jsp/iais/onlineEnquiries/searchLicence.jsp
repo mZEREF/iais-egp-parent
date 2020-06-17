@@ -344,8 +344,9 @@
         {
             $('input[name="pageJumpNoTextchangePage"]').val(1);
             SOP.Crud.cfxSubmit("mainForm", "search");
+        }else {
+            dismissWaiting();
         }
-        dismissWaiting();
     }
     function doLicBack(){
         showWaiting(); SOP.Crud.cfxSubmit("mainForm", "back");
