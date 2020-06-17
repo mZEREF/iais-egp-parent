@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelReader;
 import com.ecquaria.sz.commons.util.Calculator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +16,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author: yichen
@@ -26,6 +30,9 @@ import java.util.Objects;
  */
 @Slf4j
 public final class FileUtils {
+    private static String DATE_FORMATTER = "yyyymmddhhmmsssss";
+    public static final String EXCEL_TYPE_XSSF			= "xlsx";
+
     private FileUtils(){
         throw new IaisRuntimeException("FileUtils structure error.");
     }
@@ -82,10 +89,18 @@ public final class FileUtils {
             if (success){
                 log.info("delete temp file success");
             }else {
-                log.info("delete temp file failure");
+                file.deleteOnExit();
+                log.info("delete temp file failure, will be deleted after vm exits normally");
             }
         }
 
+    }
+
+    public static String generationFileName(String fileName, String suffix) {
+        long currentTimeMillis = System.currentTimeMillis();
+        Date date = new Date(currentTimeMillis);
+        String jointText = IaisEGPHelper.parseToString(date, DATE_FORMATTER) + "." + suffix;
+        return fileName + "-" + jointText;
     }
 
     public static <T> List<T> transformToJavaBean(final File file, final Class<?> clz) throws Exception {
@@ -114,15 +129,27 @@ public final class FileUtils {
         return false;
     }
 
-
     public static boolean isExcel(String originalFileName){
-        if (originalFileName.endsWith("." + ExcelReader.EXCEL_TYPE_XSSF)){
+        if (originalFileName.endsWith("." + EXCEL_TYPE_XSSF)){
             return true;
         }
 
         return false;
     }
 
+    public static String[] fileTypeToArray(String str){
+        if (StringUtils.isEmpty(str)){
+            return null;
+        }
 
+        String regex = "\\{([^}]*)\\}";
+        Pattern pattern= Pattern.compile(regex);
+        Matcher matcher= pattern.matcher(str);
+        if(!matcher.find()){
+            return null;
+        }
 
+        String fileTypeStr = matcher.group(1);
+        return fileTypeStr.split("\\,");
+    }
 }

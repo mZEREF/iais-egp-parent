@@ -108,4 +108,6 @@ public interface HcsaChklService {
     List<ErrorMsgContent> submitUploadItems(List<ChecklistItemDto> uploadItems);
 
     List<ConfigExcelItemDto> convertToUploadTemplateByConfig(ChecklistConfigDto config);
+
+    String callProceduresGenUUID();
 }

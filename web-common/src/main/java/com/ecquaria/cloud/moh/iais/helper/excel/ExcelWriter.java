@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -79,7 +80,7 @@ public final class ExcelWriter {
         String sheetName = property.sheetName();
 
         File out;
-        final String localFileName = generationFileName(fileName);
+        final String localFileName = FileUtils.generationFileName(fileName, EXCEL_TYPE_XSSF);
         if (file == null){
             out = new File(localFileName);
             try (FileOutputStream fileOutputStream = new FileOutputStream(out)) {
@@ -217,11 +218,7 @@ public final class ExcelWriter {
         return obj == null ? "" : obj.toString();
     }
 
-    private static String generationFileName(String fileName) {
-        long currentTimeMillis = System.currentTimeMillis();
-        String jointText = currentTimeMillis + "." + EXCEL_TYPE_XSSF;
-        return fileName + "-" + jointText;
-    }
+
 
     private static void unlockCellByMap(Sheet sheet, Map<Integer, List<Integer>> unlockCellMap){
         for (Map.Entry<Integer, List<Integer>> ent : unlockCellMap.entrySet()){

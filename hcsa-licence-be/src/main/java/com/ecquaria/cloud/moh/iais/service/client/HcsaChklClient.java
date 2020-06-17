@@ -52,8 +52,11 @@ public interface HcsaChklClient {
     @PostMapping(path = "/iais-hcsa-checklist/item/items-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ChecklistItemDto>>  listChklItemByItemId(List<String> itemIds);
 
-    @GetMapping(path = "/iais-hcsa-checklist/item/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/iais-hcsa-checklist/item/{id}")
     FeignResponseEntity<ChecklistItemDto> getChklItemById(@PathVariable(value = "id") String id);
+
+    @GetMapping(path = "/iais-hcsa-checklist/procedures/gen/config-id")
+    FeignResponseEntity<String> callProceduresGenUUID();
 
     @PostMapping(path = "/iais-hcsa-checklist/item", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<IaisApiResult<ChecklistItemDto>> saveChklItem(ChecklistItemDto itemDto);

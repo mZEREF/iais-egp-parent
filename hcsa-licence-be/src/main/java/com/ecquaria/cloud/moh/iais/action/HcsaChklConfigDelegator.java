@@ -68,7 +68,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HcsaChklConfigDelegator {
 
-    private static Map<Integer, List<Integer>> excelConfigIndex = new HashMap<Integer, List<Integer>>(){
+    private static Map<Integer, List<Integer>> excelConfigValueIndex = new HashMap<Integer, List<Integer>>(){
         {
             put(1, Collections.singletonList(2));
             put(3, Arrays.asList(2, 5));
@@ -77,9 +77,9 @@ public class HcsaChklConfigDelegator {
         }
     };
 
-    private static Map<Integer, List<Integer>> excelHiddenIndexMap = new HashMap<Integer, List<Integer>>(){
+    private static Map<Integer, List<Integer>> excelHiddenValueIndex = new HashMap<Integer, List<Integer>>(){
         {
-            put(1, Arrays.asList(9));
+            put(1, Arrays.asList(15, 16, 17));
         }
     };
 
@@ -215,7 +215,7 @@ public class HcsaChklConfigDelegator {
 
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, configDto);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-        }catch (NullPointerException e){
+        }catch (IaisRuntimeException e){
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);
         }
@@ -695,7 +695,7 @@ public class HcsaChklConfigDelegator {
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.SELECTED_ITEM_IN_CONFIG, (Serializable) selectedItemIdToConfig);
             ParamUtil.setSessionAttr(request, HcsaChecklistConstants.CHECKLIST_CONFIG_SESSION_ATTR, disposition);
 
-        }catch (NullPointerException e){
+        }catch (IaisRuntimeException e){
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException(e);
         }
@@ -851,22 +851,36 @@ public class HcsaChklConfigDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
 
-        Map<String, String> errorMap = ChecklistHelper.validateFile(request, file);
-        if (!errorMap.isEmpty()){
+        boolean fileHasError = ChecklistHelper.validateFile(request, file);
+        if (fileHasError){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
 
         try {
             File toFile = FileUtils.multipartFileToFile(file);
+            List<String> ids = FileUtils.transformToList(toFile, 1, excelHiddenValueIndex);
+            String prevId = ids.get(0);
+            String nextId = ids.get(1);
+            String version = ids.get(2);
+
+            ChecklistConfigDto configInSystem = hcsaChklService.getChecklistConfigById(nextId);
+            if (configInSystem != null){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR019"));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                return;
+            }
+
             List<ConfigExcelItemDto> item = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
-            List<String> configInfo = FileUtils.transformToList(toFile, 1, excelConfigIndex);
+            List<String> configInfo = FileUtils.transformToList(toFile, 1, excelConfigValueIndex);
 
+            log.info(StringUtil.changeForLog("update config template ids" + ids));
 
-            List<String> ids = FileUtils.transformToList(toFile, 1, excelHiddenIndexMap);
             ChecklistConfigDto excelTemplate = convertToConfigByTemplate(configInfo);
+            excelTemplate.setNextId(nextId);
+            excelTemplate.setVersion(Integer.valueOf(version));
             excelTemplate.setWebAction(HcsaChecklistConstants.UPDATE);
-            excelTemplate.setId(ids.get(0));
+            excelTemplate.setId(prevId);
             excelTemplate.setExcelTemplate(item);
             FileUtils.deleteTempFile(toFile);
 
@@ -878,7 +892,7 @@ public class HcsaChklConfigDelegator {
 
             List<ErrorMsgContent> errorMsgContentList = hcsaChklService.updateConfigTemplate(excelTemplate);
             errorMsgContentList = errorMsgContentList.stream().filter(i -> !i.getErrorMsgList().isEmpty()).collect(Collectors.toList());
-            ChecklistHelper.replaceErrorMsgContentMasterCode(request, errorMsgContentList);
+            ChecklistHelper.replaceErrorMsgContentMasterCode(errorMsgContentList);
             ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
 
@@ -911,22 +925,25 @@ public class HcsaChklConfigDelegator {
 
                 File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Update_Template.xlsx");
 
-                File temp = EspecialExcelWriterUtil.writerToExcelByIndex(inputFile, 1, val, excelConfigIndex);
+                File temp = EspecialExcelWriterUtil.writerToExcelByIndex(inputFile, 1, val, excelConfigValueIndex);
 
-                String[] hiddenVal = {config.getId()};
+                String prevConfigId = config.getId();
+                String nextConfigId = hcsaChklService.callProceduresGenUUID();
+                String currentVersion = config.getVersion().toString();
+                String[] hiddenVal = {prevConfigId, nextConfigId, currentVersion};
 
-                temp = EspecialExcelWriterUtil.writerToExcelByIndex(temp, 1, hiddenVal, excelHiddenIndexMap, true);
+                temp = EspecialExcelWriterUtil.writerToExcelByIndex(temp, 1, hiddenVal, excelHiddenValueIndex, true);
 
-                File outputFile = ExcelWriter.writerToExcel(updateItem, ConfigExcelItemDto.class, temp,  "Checklist_Config_Update_Template", true, false);
+                File latest = ExcelWriter.writerToExcel(updateItem, ConfigExcelItemDto.class, temp,  "Checklist_Config_Update_Template", true, false);
+                FileUtils.writeFileResponseProcessContent(request, latest);
 
-                FileUtils.writeFileResponseProcessContent(request, outputFile);
+                FileUtils.deleteTempFile(temp);
+                FileUtils.deleteTempFile(latest);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }
-
-
-
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }else {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }
@@ -934,18 +951,22 @@ public class HcsaChklConfigDelegator {
 
     private ChecklistConfigDto convertToConfigByTemplate(List<String> data){
         ChecklistConfigDto excelTemplate = new ChecklistConfigDto();
-        excelTemplate.setCommon("Yes".equals(data.get(0)) ? true : false);
-        excelTemplate.setModule(data.get(1));
-        excelTemplate.setType(data.get(2));
-        excelTemplate.setSvcName(data.get(3));
-        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(data.get(3));
 
-        if (hcsaServiceDto != null){
-            excelTemplate.setSvcCode(hcsaServiceDto.getSvcCode());
+        boolean isCommon = "Yes".equals(data.get(0)) ? true : false;
+        if (isCommon){
+            excelTemplate.setCommon(true);
+        }else {
+            excelTemplate.setModule(data.get(1));
+            excelTemplate.setType(data.get(2));
+            excelTemplate.setSvcName(data.get(3));
+            excelTemplate.setSvcSubType(data.get(4));
+            excelTemplate.setHciCode(data.get(5));
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(data.get(3));
+            if (hcsaServiceDto != null){
+                excelTemplate.setSvcCode(hcsaServiceDto.getSvcCode());
+            }
         }
 
-        excelTemplate.setSvcSubType(data.get(4));
-        excelTemplate.setHciCode(data.get(5));
         excelTemplate.setEftStartDate(data.get(6));
         excelTemplate.setEftEndDate(data.get(7));
         return excelTemplate;
@@ -962,8 +983,8 @@ public class HcsaChklConfigDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
 
-        Map<String, String> errorMap = ChecklistHelper.validateFile(request, file);
-        if (errorMap != null && !errorMap.isEmpty()){
+        boolean fileHasError = ChecklistHelper.validateFile(request, file);
+        if (fileHasError){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
@@ -971,7 +992,7 @@ public class HcsaChklConfigDelegator {
         try {
             File toFile = FileUtils.multipartFileToFile(file);
             List<ConfigExcelItemDto> excelItemDtos = FileUtils.transformToJavaBean(toFile, ConfigExcelItemDto.class);
-            List<String> configInfo = FileUtils.transformToList(toFile, 1, excelConfigIndex);
+            List<String> configInfo = FileUtils.transformToList(toFile, 1, excelConfigValueIndex);
             FileUtils.deleteTempFile(toFile);
 
             //uncheck ArrayIndexOutOfBoundsException
@@ -995,7 +1016,7 @@ public class HcsaChklConfigDelegator {
 
             List<ErrorMsgContent> errorMsgContentList = hcsaChklService.createConfigTemplate(excelTemplate);
             errorMsgContentList = errorMsgContentList.stream().filter(i -> !i.getErrorMsgList().isEmpty()).collect(Collectors.toList());
-            ChecklistHelper.replaceErrorMsgContentMasterCode(request, errorMsgContentList);
+            ChecklistHelper.replaceErrorMsgContentMasterCode(errorMsgContentList);
             ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
 

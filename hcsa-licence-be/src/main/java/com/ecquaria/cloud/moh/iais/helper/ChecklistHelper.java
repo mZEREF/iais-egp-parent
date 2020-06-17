@@ -1,8 +1,8 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author yi chen
@@ -26,28 +25,24 @@ public final class ChecklistHelper {
 
     private ChecklistHelper(){}
 
-    public static Map<String, String> validateFile(HttpServletRequest request, MultipartFile file){
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
+    public static boolean validateFile(HttpServletRequest request, MultipartFile file){
         if (file == null){
-            errorMap.put(ChecklistConstant.FILE_UPLOAD_ERROR, MessageCodeKey.GENERAL_ERR0004);
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            return errorMap;
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0004"));
+            return true;
         }
 
         String originalFileName = file.getOriginalFilename();
         if (!FileUtils.isExcel(originalFileName)){
-            errorMap.put(ChecklistConstant.FILE_UPLOAD_ERROR, MessageCodeKey.GENERAL_ERR0005);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            return errorMap;
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0005"));
+            return true;
         }
 
         if (FileUtils.outFileSize(file.getSize())){
-            errorMap.put(ChecklistConstant.FILE_UPLOAD_ERROR, MessageCodeKey.GENERAL_ERR0004);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            return errorMap;
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0004"));
+            return true;
         }
 
-        return errorMap;
+        return false;
     }
 
     private static boolean uploadType(String type, String service, String module, String subType, String hciCode){
@@ -70,6 +65,13 @@ public final class ChecklistHelper {
         String effectiveStartDate = excelTemplate.getEftStartDate();
         String effectiveEndDate = excelTemplate.getEftEndDate();
 
+        List<ConfigExcelItemDto> allItem = excelTemplate.getExcelTemplate();
+
+        if (IaisCommonUtils.isEmpty(allItem)){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR017"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            return true;
+        }
 
         if (HcsaChecklistConstants.UPDATE == action){
             if (StringUtils.isEmpty(configId)){
@@ -97,9 +99,6 @@ public final class ChecklistHelper {
             }
         }
 
-
-
-
         boolean order = uploadType(type, service, module, subType, hciCode);
 
         if (isCommon != order){
@@ -110,7 +109,7 @@ public final class ChecklistHelper {
         return false;
     }
 
-    public static void replaceErrorMsgContentMasterCode(HttpServletRequest request, List<ErrorMsgContent> errorMsgContentList) {
+    public static void replaceErrorMsgContentMasterCode(List<ErrorMsgContent> errorMsgContentList) {
         for (ErrorMsgContent errorMsgContent : errorMsgContentList){
             int idx = 0;
             for(String error : errorMsgContent.getErrorMsgList()){

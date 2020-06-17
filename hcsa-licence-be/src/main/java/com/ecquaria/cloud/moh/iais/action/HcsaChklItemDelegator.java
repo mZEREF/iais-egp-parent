@@ -161,8 +161,8 @@ public class HcsaChklItemDelegator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         MultipartFile file = mulReq.getFile("selectedFile");
 
-        Map<String, String> errorMap = ChecklistHelper.validateFile(request, file);
-        if (!errorMap.isEmpty()){
+        boolean fileHasError = ChecklistHelper.validateFile(request, file);
+        if (fileHasError){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
@@ -171,7 +171,7 @@ public class HcsaChklItemDelegator {
         try {
             List<ChecklistItemDto> checklistItemDtoList = FileUtils.transformToJavaBean(toFile, ChecklistItemDto.class);
             List<ErrorMsgContent> errorMsgContentList  = hcsaChklService.submitUploadItems(checklistItemDtoList);
-            ChecklistHelper.replaceErrorMsgContentMasterCode(request, errorMsgContentList);
+            ChecklistHelper.replaceErrorMsgContentMasterCode(errorMsgContentList);
             FileUtils.deleteTempFile(toFile);
             ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);

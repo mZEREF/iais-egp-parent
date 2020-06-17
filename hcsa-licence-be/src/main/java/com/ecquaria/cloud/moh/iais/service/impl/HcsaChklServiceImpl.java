@@ -147,4 +147,9 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     public List<ErrorMsgContent> updateConfigTemplate(ChecklistConfigDto excelTemplate) {
         return chklClient.saveConfigByTemplate(excelTemplate).getEntity();
     }
+
+    @Override
+    public String callProceduresGenUUID() {
+        return chklClient.callProceduresGenUUID().getEntity();
+    }
 }

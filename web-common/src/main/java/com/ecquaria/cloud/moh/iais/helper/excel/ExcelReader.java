@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -34,7 +35,6 @@ import static org.apache.poi.ss.usermodel.CellType.STRING;
 @Slf4j
 public final class ExcelReader {
     private static final String pattern = "yyyy-MM-dd HH:mm:ss";
-    public static final String EXCEL_TYPE_XSSF			= "xlsx";
 
     private ExcelReader(){}
 
@@ -121,7 +121,7 @@ public final class ExcelReader {
         try (FileInputStream in = new FileInputStream(file)){
             char indexChar = ".".charAt(0);
             String suffix = file.getName().substring(file.getName().indexOf(indexChar) + 1);
-            workBook = suffix.equals(EXCEL_TYPE_XSSF) ? new XSSFWorkbook(in) : new HSSFWorkbook(in);
+            workBook = suffix.equals(FileUtils.EXCEL_TYPE_XSSF) ? new XSSFWorkbook(in) : new HSSFWorkbook(in);
             return workBook.getSheetAt(sheetAt);
         } catch (Exception e) {
             throw new Exception(e.getMessage(),e);
