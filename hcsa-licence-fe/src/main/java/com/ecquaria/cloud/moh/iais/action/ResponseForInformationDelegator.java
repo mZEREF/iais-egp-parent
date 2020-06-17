@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
@@ -68,8 +67,8 @@ public class ResponseForInformationDelegator {
         String messageId= (String) ParamUtil.getSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         messageClient.updateMsgStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
         InterMessageDto messageDto=messageClient.getInterMessageById(messageId).getEntity();
-        ParamUtil.setSessionAttr(request,"msg_action_id",MaskUtil.maskValue("msg_action_id",messageId));
-        ParamUtil.setSessionAttr(request,"msg_action_type",MaskUtil.maskValue("msg_action_type",messageDto.getMessageType()));
+        ParamUtil.setSessionAttr(request,"msg_action_id",messageId);
+        ParamUtil.setSessionAttr(request,"msg_action_type",messageDto.getMessageType());
         ParamUtil.setSessionAttr(request,"licenseeId",licenseeId);
         // 		Start->OnStepProcess
     }

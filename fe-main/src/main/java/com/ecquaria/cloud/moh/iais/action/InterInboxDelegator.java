@@ -189,6 +189,12 @@ public class InterInboxDelegator {
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
         String msgId = ParamUtil.getMaskedString(request,InboxConst.MSG_ACTION_ID);
         String msgType = ParamUtil.getMaskedString(request,InboxConst.MSG_PAGE_TYPE);
+        if(msgId==null){
+            msgId= (String) ParamUtil.getSessionAttr(request,InboxConst.MSG_ACTION_ID);
+        }
+        if(msgType==null){
+            msgType= (String) ParamUtil.getSessionAttr(request,InboxConst.MSG_PAGE_TYPE);
+        }
         if (MessageConstants.MESSAGE_TYPE_NOTIFICATION.equals(msgType)){
             inboxService.updateMsgStatusTo(msgId,MessageConstants.MESSAGE_STATUS_READ);
         }else{
