@@ -119,7 +119,7 @@ public class CreateDoInspTaskBatchJob {
                         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
                         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
                         log.debug(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
-                        List<TaskDto> taskDtos = getTaskByHistoryTasks(aRecoDto.getAppPremCorreId());
+                        List<TaskDto> taskDtos = getTaskByHistoryTasks(applicationDto.getApplicationNo());
                         createTasksByHistory(taskDtos, intranet, hcsaSvcStageWorkingGroupDtos.get(0).getCount(), aRecoDto.getAppPremCorreId());
                         updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY, intranet);
                     }
@@ -179,8 +179,8 @@ public class CreateDoInspTaskBatchJob {
         }
     }
 
-    private List<TaskDto> getTaskByHistoryTasks(String appCorrId)  {
-        List<TaskDto> taskDtos = organizationClient.getTaskByAppNoStatus(appCorrId, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+    private List<TaskDto> getTaskByHistoryTasks(String appNo)  {
+        List<TaskDto> taskDtos = organizationClient.getTaskByAppNoStatus(appNo, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
         if(taskDtos == null || taskDtos.isEmpty()){
             return null;
         }
