@@ -919,6 +919,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         tDto.setRoleId(taskDto.getRoleId());
         tDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
         tDto.setScore(score);
+        tDto.setApplicationNo(taskDto.getApplicationNo());
         tDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         return tDto;
     }
