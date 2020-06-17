@@ -56,7 +56,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                 }
                 String docName = serListDto.getAppPremisesSpecialDocDto().getDocName();
                 if( !StringUtil.isEmpty(docName)){
-                    String  docNameType = serListDto.getAppPremisesSpecialDocDto().getDocName().split(".")[1];
+                    String  docNameType = serListDto.getAppPremisesSpecialDocDto().getDocName().split("\\.")[1];
                     boolean noType = false;
                     for(String s : fileTypes){
                         if( s.equalsIgnoreCase(docNameType)){
