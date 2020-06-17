@@ -465,7 +465,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                             inspectionHistoryShowDto.setHciNameAddress(hciNameAddress);
                         }
                         //get inspectors and leads
-                        inspectionHistoryShowDto = getInspectorAndLeadByRefNo(taskRefNo, inspectionHistoryShowDto);
+                        inspectionHistoryShowDto = getInspectorAndLeadByAppNo(applicationDto.getApplicationNo(), taskRefNo, inspectionHistoryShowDto);
                         //get risk lvl
                         HcsaRiskInspectionComplianceDto hcsaRiskInspectionComplianceDto = getRiskLevelByRefNo(taskRefNo, hcsaServiceDto.getSvcCode());
                         String riskLvl = "-";
@@ -581,8 +581,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         return hcsaRiskInspectionComplianceDto;
     }
 
-    private InspectionHistoryShowDto getInspectorAndLeadByRefNo(String taskRefNo, InspectionHistoryShowDto inspectionHistoryShowDto) {
-        List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(taskRefNo, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY).getEntity();
+    private InspectionHistoryShowDto getInspectorAndLeadByAppNo(String appNo, String taskRefNo, InspectionHistoryShowDto inspectionHistoryShowDto) {
+        List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(appNo, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY).getEntity();
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             List<String> inspectorNames = IaisCommonUtils.genNewArrayList();
             List<String> inspectorIds = IaisCommonUtils.genNewArrayList();
