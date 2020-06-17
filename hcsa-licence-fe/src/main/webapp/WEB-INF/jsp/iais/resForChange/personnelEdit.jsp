@@ -173,7 +173,8 @@
                                     <iais:row>
                                         <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="20" type="text" name="professionRegnNoShow"
+                                            <iais:input cssClass="needDisableI" maxLength="20" type="text"
+                                                        name="professionRegnNoShow"
                                                         value="${personnelEditDto.professionRegnNo}"
                                                         needDisabled="true"></iais:input>
                                         </iais:value>
@@ -191,7 +192,8 @@
                                         <iais:field value="Subspeciality or relevant qualification " width="12"
                                                     mandatory="false"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="100" type="text" name="subspecialityShow"
+                                            <iais:input cssClass="needDisableI" maxLength="100" type="text"
+                                                        name="subspecialityShow"
                                                         value="${personnelEditDto.subSpeciality}"
                                                         needDisabled="true"></iais:input>
                                         </iais:value>
@@ -199,7 +201,8 @@
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="8" type="text" name="mobileNoShow"
+                                            <iais:input cssClass="needDisableI" maxLength="8" type="text"
+                                                        name="mobileNoShow"
                                                         value="${personnelEditDto.mobileNo}"
                                                         needDisabled="true"></iais:input>
                                         </iais:value>
@@ -208,7 +211,8 @@
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:input cssClass="needDisableI" maxLength="8" type="text" name="officeTelNoShow"
+                                                <iais:input cssClass="needDisableI" maxLength="8" type="text"
+                                                            name="officeTelNoShow"
                                                             value="${personnelEditDto.officeTelNo}"
                                                             needDisabled="true"></iais:input>
                                             </iais:value>
@@ -217,7 +221,8 @@
                                     <iais:row>
                                         <iais:field value="Email Address " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="66" type="text" name="emailAddrShow"
+                                            <iais:input cssClass="needDisableI" maxLength="66" type="text"
+                                                        name="emailAddrShow"
                                                         value="${personnelEditDto.emailAddr}"
                                                         needDisabled="true"></iais:input>
                                         </iais:value>
@@ -417,6 +422,98 @@
                                         </iais:value>
                                     </iais:row>
                                 </div>
+                                <div id="newPersonExist" hidden class="form-horizontal">
+                                    <iais:row>
+                                        <iais:field value="Name " width="12"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
+                                            <iais:select disabled="true" name="salutation2"
+                                                         codeCategory="CATE_ID_SALUTATION"
+                                                         value="${newPerson.salutation}"
+                                                         firstOption="Please Select"></iais:select>
+                                        </iais:value>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
+                                            <iais:input cssClass="needDisableI" maxLength="66" type="text"
+                                                        name="psnName2"
+                                                        value="${newPerson.psnName}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="ID No. " width="12"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-3">
+                                            <iais:select disabled="true" name="idType2"
+                                                         value="${newPerson.idType}"
+                                                         options="IdTypeSelect"></iais:select>
+                                        </iais:value>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
+                                            <iais:input cssClass="needDisableI" maxLength="9" type="text"
+                                                        name="idNo2" value="${newPerson.idNo}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Designation " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                            <iais:select disabled="true" cssClass="designationSel" name="designation2"
+                                                         codeCategory="CATE_ID_DESIGNATION"
+                                                         value="${newPerson.designation}"
+                                                         firstOption="Please Select"></iais:select>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Professional Type " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                            <iais:select disabled="true" cssClass="professionTypeSel" name="professionType2"
+                                                         codeCategory="CATE_ID_PROFESSIONAL_TYPE"
+                                                         value="${newPerson.professionType}"
+                                                         firstOption="Please Select"></iais:select>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:input cssClass="needDisableI" maxLength="20" type="text" name="professionRegnNo2"
+                                                        value="${newPerson.professionRegnNo}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Specialty " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:select disabled="true" cssClass="specialty" name="specialty2"
+                                                         firstOption="Please Select" options="SpecialtySelectList"
+                                                         value="${newPerson.speciality}"></iais:select>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Subspeciality or relevant qualification " width="12"
+                                                    mandatory="false"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:input cssClass="needDisableI" maxLength="100" type="text" name="qualification2"
+                                                        value="${newPerson.subSpeciality}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <iais:row>
+                                        <iais:field value="Mobile No. " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:input cssClass="needDisableI" maxLength="8" type="text" name="mobileNo2"
+                                                        value="${newPerson.mobileNo}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                    <c:if test="${personnelEditDto.officeTelNo!=null}">
+                                        <iais:row>
+                                            <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input cssClass="needDisableI" maxLength="8" type="text" name="officeTelNo2"
+                                                            value="${newPerson.officeTelNo}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
+                                    <iais:row>
+                                        <iais:field value="Email Address " width="12" mandatory="true"/>
+                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:input cssClass="needDisableI" maxLength="66" type="text" name="emailAddr2"
+                                                        value="${newPerson.emailAddr}"></iais:input>
+                                        </iais:value>
+                                    </iais:row>
+                                </div>
                             </div>
                         </div>
                         <br/>
@@ -444,11 +541,7 @@
 
     $(document).ready(function () {
         $('#previewAndSub').click(function () {
-            const val = $('input:radio[name="editSelect"]:checked').val();
-            const val1 = $('#replaceOptionsId').val();
-            if(val=="update" || (val=="replace"&&val1!="")){
-                $("#menuListForm").submit();
-            }
+            $("#menuListForm").submit();
         });
         $('#back').click(function () {
             $("[name='actionType']").val("back");
@@ -481,7 +574,7 @@
             $('#newPerson').hide();
             $('#show').show();
         });
-        if ($('#replaceOptionsId').val() !="") {
+        if ($('#replaceOptionsId').val() != "") {
             $("#update").hide();
             $('#show').hide();
             $('#replace').show();
@@ -499,160 +592,172 @@
             $('#show').hide();
             $('#replace').hide();
             $('#newPerson').hide();
+            $("#editSelect").show();
         } else if ($("input[type='radio']:checked").val() == 'replace') {
             $("#update").hide();
             $('#show').hide();
             $('#replace').show();
             $('#newPerson').show();
+            $("#editSelect").show();
+        }
+
+        if ($("input[type='radio']:checked").val() == 'replace'&&$('#replaceOptionsId').val() == ""){
+            $("#update").hide();
+            $('#newPerson').hide();
+            $('#show').hide();
+            $('#newPersonExist').hide();
         }
     });
 
     function addNew() {
-        if ($('#replaceOptionsId').val() !="") {
+        const personSelect = $('#replaceOptionsId').val();
+        if (personSelect == 'new') {
             $("#update").hide();
             $('#newPerson').show();
             $('#show').hide();
-        } else {
+            $('#newPersonExist').hide();
+        } else if (personSelect == "") {
             $("#update").hide();
             $('#newPerson').hide();
-            $('#show').show();
+            $('#show').hide();
+            $('#newPersonExist').hide();
+        } else {
+            $('#newPersonExist').show();
+            $('#newPerson').hide();
+            var person = $('#newPersonExist');
+            var arr = personSelect.split(",");
+            var idType = arr[0];
+            var idNo = arr[1];
+            loadSelectPerson(person, idType, idNo);
         }
     }
 
 
-    var rfcPersonForm = function ($CurrentPsnEle,data,psnTYpe) {
-    <!--salutation-->
-    var salutation  = data.salutation;
-    if( salutation == null || salutation =='undefined' || salutation == ''){
-        salutation = '';
-    }
-    $CurrentPsnEle.find('select[name="salutation"]').val(salutation);
-    var salutationVal = $CurrentPsnEle.find('option[value="' + salutation + '"]').html();
-    $CurrentPsnEle.find('select[name="salutation"]').next().find('.current').html(salutationVal);
-    <!--name-->
-    $CurrentPsnEle.find('input[name="name"]').val(data.name);
+    var fillPersonForm = function ($CurrentPsnEle, data) {
+        <!--salutation-->
+        var salutation = data.salutation;
+        if (salutation == null || salutation == 'undefined' || salutation == '') {
+            salutation = '';
+        }
+        $CurrentPsnEle.find('select[name="salutation2"]').val(salutation);
+        var salutationVal = $CurrentPsnEle.find('option[value="' + salutation + '"]').html();
+        $CurrentPsnEle.find('select[name="salutation2"]').next().find('.current').html(salutationVal);
+        <!--name-->
+        $CurrentPsnEle.find('input[name="psnName2"]').val(data.name);
 
-    <!-- idType-->
-    var idType  = data.idType;
-    if(idType == null || idType =='undefined' || idType == ''){
-        idType = '';
-    }
-    $CurrentPsnEle.find('select[name="idType"]').val(idType);
-    var idTypeVal = $CurrentPsnEle.find('option[value="' + idType + '"]').html();
-    $CurrentPsnEle.find('select[name="idType"]').next().find('.current').html(idTypeVal);
-    <!-- idNo-->
-    $CurrentPsnEle.find('input[name="idNo"]').val(data.idNo);
-
-    $CurrentPsnEle.find('input[name="mobileNo"]').val(data.mobileNo);
-    $CurrentPsnEle.find('input[name="emailAddress"]').val(data.emailAddr);
-
-
-    <!--     ====================    -->
-    <!--       diff page column      -->
-    <!--     ====================    -->
-
-    <!-- officeTelNo-->
-    var officeTelNo = data.officeTelNo;
-    if(officeTelNo != null && officeTelNo != ''){
-        $CurrentPsnEle.find('input[name="officeTelNo"]').val(officeTelNo);
-    }else{
-        $CurrentPsnEle.find('input[name="officeTelNo"]').val('');
-    }
-    <!--Designation  -->
-    var designation = data.designation;
-    if(designation == null || designation == ''){
-        designation = '';
-    }
-    $CurrentPsnEle.find('select[name="designation"]').val(designation);
-    var designationVal = $CurrentPsnEle.find('option[value="' + designation + '"]').html();
-    $CurrentPsnEle.find('select[name="designation"]').next().find('.current').html(designationVal);
+        <!-- idType-->
+        var idType = data.idType;
+        if (idType == null || idType == 'undefined' || idType == '') {
+            idType = '';
+        }
+        $CurrentPsnEle.find('select[name="idType2"]').val(idType);
+        var idTypeVal = $CurrentPsnEle.find('option[value="' + idType + '"]').html();
+        $CurrentPsnEle.find('select[name="idType2"]').next().find('.current').html(idTypeVal);
+        <!-- idNo-->
+        $CurrentPsnEle.find('input[name="idNo2"]').val(data.idNo);
+        $CurrentPsnEle.find('input[name="mobileNo2"]').val(data.mobileNo);
+        $CurrentPsnEle.find('input[name="emailAddr2"]').val(data.emailAddr);
+        var officeTelNo = data.officeTelNo;
+        if (officeTelNo != null && officeTelNo != '') {
+            $CurrentPsnEle.find('input[name="officeTelNo2"]').val(officeTelNo);
+        } else {
+            $CurrentPsnEle.find('input[name="officeTelNo2"]').val('');
+        }
+        <!--Designation  -->
+        var designation = data.designation;
+        if (designation == null || designation == '') {
+            designation = '';
+        }
+        $CurrentPsnEle.find('select[name="designation2"]').val(designation);
+        var designationVal = $CurrentPsnEle.find('option[value="' + designation + '"]').html();
+        $CurrentPsnEle.find('select[name="designation2"]').next().find('.current').html(designationVal);
 
 
-    <!-- professionType-->
-    var professionType = data.professionType;
-    if(professionType == null || professionType =='undefined' || professionType == ''){
-        professionType = '';
-    }
-    $CurrentPsnEle.find('select[name="professionType"]').val(professionType);
-    var professionTypeVal = $CurrentPsnEle.find('option[value="' + professionType + '"]').html();
-    $CurrentPsnEle.find('select[name="professionType"]').next().find('.current').html(professionTypeVal);
-    <!-- professionRegoNo-->
-    var professionRegoNo = data.profRegNo;
-    if(professionRegoNo != null && professionRegoNo != ''){
-        $CurrentPsnEle.find('input[name="professionRegoNo"]').val(professionRegoNo);
-    }else{
-        $CurrentPsnEle.find('input[name="professionRegoNo"]').val('');
-    }
-    <!-- speciality-->
-    var speciality = data.speciality;
-    if('CGO' == psnTYpe){
-        $CurrentPsnEle.find('div.specialtyDiv').html(data.specialityHtml);
-        showSpecialty();
-    }else{
-        if(speciality == null || speciality =='undefined' || speciality == ''){
+        <!-- professionType-->
+        var professionType = data.professionType;
+        if (professionType == null || professionType == 'undefined' || professionType == '') {
+            professionType = '';
+        }
+        $CurrentPsnEle.find('select[name="professionType2"]').val(professionType);
+        var professionTypeVal = $CurrentPsnEle.find('option[value="' + professionType + '"]').html();
+        $CurrentPsnEle.find('select[name="professionType2"]').next().find('.current').html(professionTypeVal);
+        <!-- professionRegoNo-->
+        var professionRegoNo = data.profRegNo;
+        if (professionRegoNo != null && professionRegoNo != '') {
+            $CurrentPsnEle.find('input[name="professionRegnNo2"]').val(professionRegoNo);
+        } else {
+            $CurrentPsnEle.find('input[name="professionRegnNo2"]').val('');
+        }
+        <!-- speciality-->
+        var speciality = data.speciality;
+        if (speciality == null || speciality == 'undefined' || speciality == '') {
             speciality = '-1';
         }
         var specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
-        if(specialityVal =='undefined'){
+        if (specialityVal == 'undefined') {
             speciality = '';
             specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
         }
-        $CurrentPsnEle.find('select[name="specialty"]').val(speciality);
-        $CurrentPsnEle.find('select[name="specialty"]').next().find('.current').html(specialityVal);
-    }
-    if('other' == speciality){
-        $CurrentPsnEle.find('input[name="specialtyOther"]').removeClass('hidden');
-        var specialityOther = data.specialityOther;
-        if(specialityOther != null && specialityOther != ''){
-            $CurrentPsnEle.find('input[name="specialtyOther"]').val(specialityOther);
-        }else{
-            $CurrentPsnEle.find('input[name="specialtyOther"]').val('');
+        $CurrentPsnEle.find('select[name="specialty2"]').val(speciality);
+        $CurrentPsnEle.find('select[name="specialty2"]').next().find('.current').html(specialityVal);
+
+        if ('other' == speciality) {
+            $CurrentPsnEle.find('input[name="specialtyOther"]').removeClass('hidden');
+            var specialityOther = data.specialityOther;
+            if (specialityOther != null && specialityOther != '') {
+                $CurrentPsnEle.find('input[name="specialtyOther2"]').val(specialityOther);
+            } else {
+                $CurrentPsnEle.find('input[name="specialtyOther2"]').val('');
+            }
+        } else {
+            $CurrentPsnEle.find('input[name="specialtyOther2"]').addClass('hidden');
         }
-    }else{
-        $CurrentPsnEle.find('input[name="specialtyOther"]').addClass('hidden');
+        <!--Subspeciality or relevant qualification -->
+        var qualification = data.subSpeciality;
+        if (qualification != null && qualification != '') {
+            $CurrentPsnEle.find('input[name="qualification2"]').val(qualification);
+        } else {
+            $CurrentPsnEle.find('input[name="qualification2"]').val('');
+        }
+        <!--preferredMode -->
+        var preferredMode = data.preferredMode;
+        if (preferredMode != null && preferredMode != 'undefined' && preferredMode != '') {
+            if ('3' == preferredMode) {
+                $CurrentPsnEle.find('input.preferredMode').prop('checked', true);
+            } else {
+                $CurrentPsnEle.find('input.preferredMode').each(function () {
+                    if (preferredMode == $(this).val()) {
+                        $(this).prop('checked', true);
+                    }
+                });
+            }
+        } else {
+            $CurrentPsnEle.find('input.preferredMode').prop('checked', false);
+        }
     }
-    <!--Subspeciality or relevant qualification -->
-    var qualification = data.subSpeciality;
-    if(qualification != null && qualification != ''){
-        $CurrentPsnEle.find('input[name="qualification"]').val(qualification);
-    }else{
-        $CurrentPsnEle.find('input[name="qualification"]').val('');
-    }
-    <!--preferredMode -->
-    var preferredMode = data.preferredMode;
-    if(preferredMode != null && preferredMode !='undefined' && preferredMode != ''){
-        if('3' == preferredMode){
-            $CurrentPsnEle.find('input.preferredMode').prop('checked',true);
-        }else{
-            $CurrentPsnEle.find('input.preferredMode').each(function () {
-                if(preferredMode == $(this).val()){
-                    $(this).prop('checked',true);
+    <!--cgo,medAlert -->
+    var loadSelectPerson = function ($CurrentPsnEle, idType, idNo, psnType) {
+        var spcEle = $CurrentPsnEle.find('.specialty');
+        var jsonData = {
+            'idType': idType,
+            'idNo': idNo,
+            'psnType': psnType
+        };
+        $.ajax({
+            'url': '${pageContext.request.contextPath}/psn-select-info',
+            'dataType': 'json',
+            'data': jsonData,
+            'type': 'GET',
+            'success': function (data) {
+                if (data == null) {
+                    return;
                 }
-            });
-        }
-    }else{
-        $CurrentPsnEle.find('input.preferredMode').prop('checked',false);
+                fillPersonForm($CurrentPsnEle, data, psnType);
+            },
+            'error': function () {
+            }
+        });
     }
 
-    var isLicPerson = data.licPerson;
-    if('1' == isLicPerson){
-        if('CGO' == psnTYpe){
-            disabledPartPage($CurrentPsnEle.find('.new-officer-form'));
-        }else{
-            disabledPartPage($CurrentPsnEle.find('.medAlertPerson'));
-        }
-        $CurrentPsnEle.find('input[name="licPerson"]').val('1');
-        $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
-    }else{
-        if('CGO' == psnTYpe){
-            unDisabledPartPage($CurrentPsnEle.find('.new-officer-form'));
-        }else{
-            unDisabledPartPage($CurrentPsnEle.find('.medAlertPerson'));
-        }
-        $CurrentPsnEle.find('input[name="licPerson"]').val('0');
-        $CurrentPsnEle.find('input[name="existingPsn"]').val('0');
-    }
-
-    }
 
 </script>
