@@ -365,11 +365,15 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         String stageKey = inspectionPreTaskDto.getCheckRbStage();
         String checkUserId = inspectionPreTaskDto.getStageUserIdMap().get(stageKey);
         //update task
-        taskDto.setSlaDateCompleted(new Date());
-        taskDto.setSlaRemainInDays(taskService.remainDays(taskDto));
-        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
-        taskDto.setAuditTrailDto(auditTrailDto);
-        taskService.updateTask(taskDto);
+        List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
+        for(TaskDto tDto : taskDtos){
+            if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING) || tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)) {
+                tDto.setSlaDateCompleted(new Date());
+                tDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+                tDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                taskService.updateTask(tDto);
+            }
+        }
         //create task
         TaskDto compTask = getCompletedTaskByHistory(taskDto, checkUserId);
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
@@ -616,7 +620,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     private TaskDto getCompletedTaskByHistory(TaskDto taskDto, String userId) {
-        List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(taskDto.getRefNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_MAIN_FLOW).getEntity();
+        List<TaskDto> taskDtos = organizationClient.getTaskByRefNoStatus(taskDto.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_MAIN_FLOW).getEntity();
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             for(TaskDto tDto : taskDtos){
                 if(tDto.getUserId().equals(userId)){
