@@ -1,7 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.base.FileType;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
@@ -44,6 +45,9 @@ public class InspecUserRecUploadDelegator {
     @Autowired
     private InspecUserRecUploadService inspecUserRecUploadService;
 
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+
     /**
      * StartStep: inspecUserRectifiUploadStart
      *
@@ -52,15 +56,44 @@ public class InspecUserRecUploadDelegator {
      */
     public void inspecUserRectifiUploadStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadStart start ...."));
+        ParamUtil.setSessionAttr(bpc.request, "recFileTypeHint", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", null);
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         String appPremCorrId = ParamUtil.getMaskedString(bpc.request, "appPremCorrId");
         String versionStr = ParamUtil.getRequestString(bpc.request, "recVersion");
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
+        int sysFileSize = systemParamConfig.getUploadFileLimit();
+        String sysFileType = systemParamConfig.getUploadFileType();
+        String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
+        List<String> sysFileTypes = getSysFileTypeAndShowByArr(sysFileTypeArr, bpc);
         inspSetMaskValueDto.setAppPremCorrId(appPremCorrId);
         inspSetMaskValueDto.setVersion(versionStr);
+        inspSetMaskValueDto.setSqlFileSize(sysFileSize);
+        inspSetMaskValueDto.setSqlFileType(sysFileTypes);
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
         AuditTrailHelper.auditFunction("User Rectification Upload", "Upload Doc Rectification");
         ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, messageId);
+    }
+
+    private List<String> getSysFileTypeAndShowByArr(String[] sysFileTypeArr, BaseProcessClass bpc) {
+        List<String> sysFileTypes = null;
+        if(sysFileTypeArr != null && sysFileTypeArr.length > 0){
+            sysFileTypes = IaisCommonUtils.genNewArrayList();
+            StringBuffer recFileType = new StringBuffer();
+            for(int i = 0; i < sysFileTypeArr.length; i++){
+                sysFileTypes.add(sysFileTypeArr[i]);
+                if(i == 0){
+                    recFileType.append(sysFileTypeArr[i]);
+                } else if (i != sysFileTypeArr.length - 1) {
+                    recFileType.append(", " + sysFileTypeArr[i]);
+                } else {
+                    recFileType.append(" and " + sysFileTypeArr[i]);
+                }
+            }
+            String recFileTypeHint = recFileType.toString();
+            ParamUtil.setSessionAttr(bpc.request, "recFileTypeHint", recFileTypeHint);
+        }
+        return sysFileTypes;
     }
 
     /**
@@ -111,6 +144,7 @@ public class InspecUserRecUploadDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDtos", (Serializable) inspecUserRecUploadDtos);
         ParamUtil.setSessionAttr(bpc.request, "submitButtonFlag", submitButtonFlag);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"List of Rectifications");
+        ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
     }
 
     private String ncIsAllRectified(List<InspecUserRecUploadDto> inspecUserRecUploadDtos) {
@@ -136,6 +170,7 @@ public class InspecUserRecUploadDelegator {
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadVali start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
         InspecUserRecUploadDto inspecUserRecUploadDto = (InspecUserRecUploadDto)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDto");
+        InspSetMaskValueDto inspSetMaskValueDto = (InspSetMaskValueDto)ParamUtil.getSessionAttr(bpc.request, "inspSetMaskValueDto");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String actionValue = mulReq.getParameter("actionValue");
         //get file from page
@@ -144,7 +179,7 @@ public class InspecUserRecUploadDelegator {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         if(InspectionConstants.SWITCH_ACTION_ADD.equals(actionValue) || InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)){
             log.info(StringUtil.changeForLog("The dto we checked is null ===>" + (inspecUserRecUploadDto == null)));
-            errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue, file);
+            errorMap = doValidateByRecFile(inspecUserRecUploadDto, mulReq, errorMap, actionValue, file, inspSetMaskValueDto);
             if(errorMap != null && !(errorMap.isEmpty())){
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
@@ -177,7 +212,7 @@ public class InspecUserRecUploadDelegator {
     }
 
     private Map<String, String> doValidateByRecFile(InspecUserRecUploadDto inspecUserRecUploadDto, MultipartHttpServletRequest mulReq,
-                                                    Map<String, String> errorMap, String actionValue, CommonsMultipartFile file) {
+                                                    Map<String, String> errorMap, String actionValue, CommonsMultipartFile file, InspSetMaskValueDto inspSetMaskValueDto) {
         String uploadRemarks = mulReq.getParameter("uploadRemarks");
         inspecUserRecUploadDto.setUploadRemarks(uploadRemarks);
         int uploadRemarksLen = uploadRemarks.length();
@@ -192,20 +227,20 @@ public class InspecUserRecUploadDelegator {
                 errorMap.put("remarks", "The Remarks should not be more than 300 characters.");
             }
         } else {
+            int sysFileSize = inspSetMaskValueDto.getSqlFileSize();
+            List<String> sysFileTypes = inspSetMaskValueDto.getSqlFileType();
             Boolean flag = Boolean.FALSE;
             String fileName = file.getOriginalFilename();
             String substring = fileName.substring(fileName.lastIndexOf('.') + 1);
-            if (file.getSize() > 4 * 1024 * 1024) {
-                errorMap.put(errorKey, "The file has exceeded the maximum upload size of 4MB.");
+            if (file.getSize() > sysFileSize * 1024 * 1024) {
+                errorMap.put(errorKey, "The file has exceeded the maximum upload size of " + sysFileSize + "MB.");
                 return errorMap;
             }
-            FileType[] values = FileType.values();
-            for (FileType f : values) {
-                if (f.name().equalsIgnoreCase(substring)) {
+            if(!IaisCommonUtils.isEmpty(sysFileTypes)) {
+                if (sysFileTypes.contains(substring)) {
                     flag = Boolean.TRUE;
                 }
             }
-
             if (!flag) {
                 errorMap.put(errorKey, "The file type is incorrect.");
                 return errorMap;

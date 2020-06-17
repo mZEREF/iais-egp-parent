@@ -56,8 +56,8 @@
                           <label class="col-xs-0 col-md-6 control-label">Choose a file to attach<span style="color: red"> *</span></label>
                         </div>
                         <ul>
-                          <li><span>The maximum file size for each upload is 4MB.</span></li>
-                          <li><span>Acceptable file formats are PDF, JPG and PNG.</span></li>
+                          <li><span>The maximum file size for each upload is <c:out value="${inspSetMaskValueDto.sqlFileSize}"/>MB.</span></li>
+                          <li><span>Acceptable file formats are <c:out value="${recFileTypeHint}"/>.</span></li>
                         </ul>
                         <iais:row>
                           <iais:value width="7">
