@@ -166,7 +166,8 @@ public class InspecTaskToLeaderBatchJob {
                     taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
                     taskDto1.setWkGrpId(hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity().getGroupId());
                     taskDto1.setUserId(organizationClient.getInspectionLead(taskDto1.getWkGrpId()).getEntity().get(0));
-                    List<TaskDto> taskDtos = prepareTaskList(taskDto1,hcsaSvcStageWorkingGroupDto);
+                    taskDto1.setApplicationNo(taskDto.getApplicationNo());
+                    List<TaskDto> taskDtos = prepareTaskList(taskDto1, hcsaSvcStageWorkingGroupDto);
                     taskService.createTasks(taskDtos);
                 }
             }
