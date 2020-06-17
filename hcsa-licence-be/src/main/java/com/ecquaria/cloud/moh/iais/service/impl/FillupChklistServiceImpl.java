@@ -925,7 +925,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return inspectionDate;
     }
 
-
     @Override
     public String getStringByRecomType(String appPremCorrId,String recomType) {
         AppPremisesRecommendationDto dto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId,recomType).getEntity();
@@ -935,10 +934,11 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             return  dto == null ? null : dto.getRecomDecision();
         return null;
     }
+
     @Override
     public List<String> getInspectiors(TaskDto taskDto) {
         List<String> inspectiors = IaisCommonUtils.genNewArrayList();
-        List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getRefNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+        List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getApplicationNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             List<String> userIds = new ArrayList<>(taskDtos.size());
             for(TaskDto taskDto1 : taskDtos){
@@ -958,7 +958,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public String getInspectionLeader(TaskDto taskDto) {
-        List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getRefNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+        List<TaskDto> taskDtos  = organizationClient.getTaskByAppNoStatus(taskDto.getApplicationNo(),TaskConsts.TASK_STATUS_COMPLETED,TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
         String workGrpId = "";
         if( taskDtos  != null && taskDtos.size() >0)
          workGrpId = taskDtos.get(0).getWkGrpId();
