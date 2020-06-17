@@ -218,7 +218,7 @@
                                 <div class="row" >
                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                     <label class="col-xs-9 col-md-6 control-label">
-                                        <textarea  name="docTitleindexRfi" style=" font-weight:normal;" rows="8" style=" maxlength="500" font-weight:normal;" cols="64"></textarea>
+                                        <textarea  name="docTitleindexRfi" style=" font-weight:normal;" rows="8" maxlength="500" cols="64"></textarea>
                                     </label>
                                 </div>
                             </div>
@@ -253,7 +253,7 @@
                                 <div class="row" >
                                     <label class="col-xs-9 col-md-3 control-label" ></label>
                                     <label class="col-xs-9 col-md-6 control-label">
-                                        <textarea  name="infoTitleindexRfi" style=" font-weight:normal;" rows="8" style=" maxlength="500" font-weight:normal;" cols="64"></textarea>
+                                        <textarea  name="infoTitleindexRfi" style=" font-weight:normal;" rows="8" maxlength="500" cols="64"></textarea>
                                     </label>
                                 </div>
 
