@@ -261,6 +261,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setSlaInDays(5);
         taskDto.setPriority(0);
         taskDto.setDateAssigned(new Date());
+        taskDto.setApplicationNo(eventRefNum+"-01");
         List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         if(postApps != null && postApps.size() >0 ){
             String corrId = applicationClient.getCorrIdByAppId(postApps.get(0).getId()).getEntity();
