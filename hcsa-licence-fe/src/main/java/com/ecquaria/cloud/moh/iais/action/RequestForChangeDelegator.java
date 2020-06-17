@@ -324,13 +324,16 @@ public class RequestForChangeDelegator {
         String licenceId = (String) ParamUtil.getSessionAttr(bpc.request, RfcConst.LICENCEID);
         String uen = (String) ParamUtil.getSessionAttr(bpc.request, "UEN");
         String[] selectCheakboxs = null;
-        if(appSubmissionDto.isGroupLic()){
-            selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
-        }else {
-            String premisesIndexNo = (String)ParamUtil.getSessionAttr(bpc.request,"premisesIndexNo");
-            selectCheakboxs = new String[]{premisesIndexNo};
-            log.info(StringUtil.changeForLog("The doTransfer premisesIndexNo is -->:"+premisesIndexNo));
-        }
+//        if(appSubmissionDto.isGroupLic()){
+//            selectCheakboxs = ParamUtil.getStrings(bpc.request, "premisesInput");
+//        }else {
+//            String premisesIndexNo = (String)ParamUtil.getSessionAttr(bpc.request,"premisesIndexNo");
+//            selectCheakboxs = new String[]{premisesIndexNo};
+//            log.info(StringUtil.changeForLog("The doTransfer premisesIndexNo is -->:"+premisesIndexNo));
+//        }
+
+        selectCheakboxs =  (String[])ParamUtil.getSessionAttr(bpc.request,"premisesInput");
+
         String email = ParamUtil.getString(mulReq,"email");
         String reason = ParamUtil.getString(mulReq,"reason");
         CommonsMultipartFile file = (CommonsMultipartFile) mulReq.getFile("selectedFile");
