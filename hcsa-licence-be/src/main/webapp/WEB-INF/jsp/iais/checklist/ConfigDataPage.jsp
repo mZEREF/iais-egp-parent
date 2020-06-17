@@ -31,10 +31,11 @@
 }
 
 </style>
+<div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
   <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
   <input type="hidden" id="currentMaskId" name="currentMaskId" value="">
-  <div class="main-content">
+
     <div class="">
       <div class="form-horizontal">
         <span id="error_configCustomValidation" name="iaisErrorMsg" class="error-msg"></span>
@@ -67,14 +68,14 @@
 
         <br><br>
         <div class="form-group">
-          <label class="col-md-2">Service Name &nbsp;</label>
+          <label class="col-md-2" style="padding-top: 15px">Service Name &nbsp;</label>
           <div class="col-md-5">
             <iais:select name="svcName" id="svcName" options = "svcNameSelect" firstOption="Please Select" value="${param.svcName}"></iais:select>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-md-2">Service Sub-Type &nbsp;</label>
+          <label class="col-md-2" style="padding-top: 15px" >Service Sub-Type &nbsp;</label>
           <div class="col-md-5">
             <iais:select name="svcSubType" id="svcSubType"   options = "subtypeSelect" firstOption="Please Select" value="${param.svcSubType}"></iais:select>
           </div>
@@ -175,12 +176,10 @@
 
       </div>
     </div>
-  </div>
-
-
 
 </form>
 
+</div>
 
 
 
