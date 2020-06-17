@@ -396,6 +396,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             createTask.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
             createTask.setDateAssigned(new Date());
             createTask.setRoleId(stageKey);
+            createTask.setApplicationNo(applicationNo);
             createTask.setAuditTrailDto(auditTrailDto);
             createTask.setProcessUrl(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW);
             taskDtoList.add(createTask);
