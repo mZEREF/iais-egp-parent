@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -203,6 +204,7 @@ public class InterInboxDelegator {
         String msgContent = ParamUtil.getMaskedString(request,InboxConst.CRUD_ACTION_VALUE);
         if(msgContent==null){
             msgContent= (String) ParamUtil.getSessionAttr(request,InboxConst.MESSAGE_CONTENT);
+            msgContent = StringEscapeUtils.unescapeHtml4(msgContent.replaceAll("<.span*?>", ""));
         }
         ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_CONTENT, msgContent);
         ParamUtil.setSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,msgId);
