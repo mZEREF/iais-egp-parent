@@ -743,7 +743,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         Map<String, Integer> appPremScoreMap = getAppPremTaskScore(taskDtoList);
         for (TaskDto taskDto2 : taskDtoList) {
             int score = appPremScoreMap.get(taskDto2.getRefNo());
-            TaskDto tDto = createTaskDto(taskDto2, loginContext.getUserId(), score);
+            TaskDto tDto = createTaskDto(taskDto2, taskDto2.getUserId(), score);
             taskDtos.add(tDto);
         }
         taskService.createTasks(taskDtos);
