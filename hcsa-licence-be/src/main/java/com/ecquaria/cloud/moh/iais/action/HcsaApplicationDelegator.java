@@ -1354,6 +1354,10 @@ public class HcsaApplicationDelegator {
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         String externalRemarks = ParamUtil.getString(bpc.request,"comments");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
+        String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
+        if(!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)){
+            processDecision = nextStageReplys;
+        }
         log.info(StringUtil.changeForLog("The processDecision is -- >:"+processDecision));
         //judge the final status is Approve or Reject.
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
