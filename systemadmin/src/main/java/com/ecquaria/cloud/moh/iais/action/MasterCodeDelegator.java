@@ -296,9 +296,25 @@ public class MasterCodeDelegator {
     public @ResponseBody
     void fileHandler(HttpServletRequest request, HttpServletResponse response) {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
-
-        List<MasterCodeToExcelDto> masterCodeToExcelDtoList = masterCodeService.findAllMasterCode();
-        if (masterCodeToExcelDtoList != null) {
+        List<MasterCodeToExcelDto> masterCodeToExcelDtoList = IaisCommonUtils.genNewArrayList();
+        SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(request, MasterCodeConstants.SEARCH_PARAM);
+        SearchResult<MasterCodeQueryDto> searchResult = masterCodeService.doQuery(searchParam);
+        searchResult.getRows().forEach(h ->{
+            MasterCodeToExcelDto masterCodeToExcelDto = new MasterCodeToExcelDto();
+            masterCodeToExcelDto.setCodeCategory(h.getCodeCategory());
+            masterCodeToExcelDto.setSequence(String.valueOf(h.getSequence()));
+            masterCodeToExcelDto.setVersion(h.getVersion());
+            masterCodeToExcelDto.setCodeDescription(h.getCodeDescription());
+            masterCodeToExcelDto.setCodeValue(h.getCodeValue());
+            masterCodeToExcelDto.setEffectiveFrom(Formatter.formatDateTime(h.getEffectiveStartDate(), SystemAdminBaseConstants.DATE_FORMAT));
+            masterCodeToExcelDto.setEffectiveTo(Formatter.formatDateTime(h.getEffectiveEndDate(), SystemAdminBaseConstants.DATE_FORMAT));
+            masterCodeToExcelDto.setFilterValue(h.getFilterValue());
+            masterCodeToExcelDto.setRemakes(h.getRemarks());
+            masterCodeToExcelDto.setMasterCodeKey(h.getMasterCodeKey());
+            masterCodeToExcelDto.setStatus(MasterCodeUtil.getCodeDesc(h.getStatus()));
+            masterCodeToExcelDtoList.add(masterCodeToExcelDto);
+        });
+        if (masterCodeToExcelDtoList.size()>0) {
             try {
                 File file =  ExcelWriter.writerToExcel(masterCodeToExcelDtoList, MasterCodeToExcelDto.class, "Master_Code_File");
                 FileUtils.writeFileResponseContent(response, file);
@@ -308,7 +324,6 @@ public class MasterCodeDelegator {
                 log.error("=======>fileHandler error >>>>>", e);
             }
         }
-
     }
 
 
@@ -366,11 +381,13 @@ public class MasterCodeDelegator {
         List<String> duplicateCode = IaisCommonUtils.genNewArrayList();
         List<String> emptyCode = IaisCommonUtils.genNewArrayList();
         for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
+
             String masterCodeKey = masterCodeToExcelDto.getMasterCodeKey();
+            masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
             boolean result = false;
-            if (masterCodeToExcelDto.getCodeCategory().isEmpty()
-                    ||masterCodeToExcelDto.getStatus().isEmpty()
-                    ||masterCodeToExcelDto.getEffectiveFrom().isEmpty())
+            if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())
+                    ||StringUtil.isEmpty(masterCodeToExcelDto.getStatus())
+                    ||StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom()))
                     {
                 emptyCode.add(masterCodeToExcelDto.getCodeValue());
                 result = true;
@@ -573,6 +590,7 @@ public class MasterCodeDelegator {
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_CMC)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO_CMC)));
         masterCodeDto.setIsEditable(0);
+        masterCodeDto.setIsCentrallyManage(0);
         masterCodeDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
     }
 
