@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -229,7 +230,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         }
         //setMaxFileSize
         applicationViewDto.setSystemMaxFileSize(systemParamConfig.getUploadFileLimit());
-        applicationViewDto.setSystemFileType(systemParamConfig.getUploadFileType());
+        applicationViewDto.setSystemFileType( FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType()));
         return applicationViewDto;
     }
 

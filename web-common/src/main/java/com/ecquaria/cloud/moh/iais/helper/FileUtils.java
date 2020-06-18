@@ -152,4 +152,22 @@ public final class FileUtils {
         String fileTypeStr = matcher.group(1);
         return fileTypeStr.split("\\,");
     }
+
+    public static  String getStringFromSystemConfigString(String configString){
+        return getStringFromStrings(fileTypeToArray(configString));
+    }
+    public static String getStringFromStrings( String[] strings){
+        if( strings == null) {
+            return "";
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+        for(String s : strings){
+            if( StringUtil.isEmpty(stringBuffer.toString())) {
+                stringBuffer.append(s);
+            }else {
+                stringBuffer.append(","+s);
+            }
+        }
+        return stringBuffer.toString();
+    }
 }
