@@ -774,6 +774,16 @@ public class RequestForChangeMenuDelegator {
         if (StringUtil.isEmpty(replaceName)) {
             ParamUtil.setRequestAttr(bpc.request, "replaceName", replaceName);
         }
+        Map<String, LicPsnTypeDto> licPsnTypeDtoMaps = personnelEditDto.getLicPsnTypeDtoMaps();
+        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
+        for (LicPsnTypeDto dto : licPsnTypeDtoMaps.values()) {
+            psnTypes.addAll(dto.getPsnTypes());
+        }
+        if(psnTypes.contains("PO")){
+            ParamUtil.setRequestAttr(bpc.request, "containsPO", Boolean.TRUE);
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, "containsPO", Boolean.FALSE);
+        }
         ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
@@ -803,6 +813,7 @@ public class RequestForChangeMenuDelegator {
         String professionType = ParamUtil.getString(bpc.request, "professionType");
         String professionRegnNo = ParamUtil.getString(bpc.request, "professionRegnNo");
         String specialty = ParamUtil.getString(bpc.request, "specialty");
+        String specialityOther = ParamUtil.getString(bpc.request, "specialityOther");
         String officeTelNo = ParamUtil.getString(bpc.request, "officeTelNo");
         String subspecialize = ParamUtil.getString(bpc.request, "subspecialize");
         //new
@@ -816,19 +827,22 @@ public class RequestForChangeMenuDelegator {
         String professionType1 = ParamUtil.getString(bpc.request, "professionType1");
         String professionRegnNo1 = ParamUtil.getString(bpc.request, "professionRegnNo1");
         String specialty1 = ParamUtil.getString(bpc.request, "specialty1");
+        String specialityOther1 = ParamUtil.getString(bpc.request, "specialityOther1");
         String officeTelNo1 = ParamUtil.getString(bpc.request, "officeTelNo1");
         String subspecialize1 = ParamUtil.getString(bpc.request, "subspecialize1");
         String replaceName = ParamUtil.getString(bpc.request, "replaceName");
         String editSelect = ParamUtil.getString(bpc.request, "editSelect");
         ParamUtil.setRequestAttr(bpc.request, "editSelectResult", editSelect);
-        String licenceNo = personnelEditDto.getLicenceNo();
         Map<String, LicPsnTypeDto> licPsnTypeDtoMaps = personnelEditDto.getLicPsnTypeDtoMaps();
-        LicPsnTypeDto licPsnTypeDto = licPsnTypeDtoMaps.get(licenceNo);
-        List<String> psnTypes = licPsnTypeDto.getPsnTypes();
+        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
+        for (LicPsnTypeDto dto : licPsnTypeDtoMaps.values()) {
+            psnTypes.addAll(dto.getPsnTypes());
+        }
         personnelEditDto.setEmailAddr(email);
         personnelEditDto.setMobileNo(mobile);
         if (psnTypes.contains("CGO")) {
             personnelEditDto.setSpeciality(specialty);
+            personnelEditDto.setSpecialityOther(specialityOther);
             personnelEditDto.setSubSpeciality(subspecialize);
             personnelEditDto.setProfessionType(professionType);
             personnelEditDto.setProfessionRegnNo(professionRegnNo);
@@ -846,6 +860,7 @@ public class RequestForChangeMenuDelegator {
             newPerson.setPsnName(psnName1);
             newPerson.setSalutation(salutation1);
             newPerson.setSpeciality(specialty1);
+            newPerson.setSpecialityOther(specialityOther1);
             newPerson.setSubSpeciality(subspecialize1);
             newPerson.setProfessionType(professionType1);
             newPerson.setProfessionRegnNo(professionRegnNo1);
@@ -913,8 +928,14 @@ public class RequestForChangeMenuDelegator {
             if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo1)) {
                 errMap.put("officeTelNo1", "UC_CHKLMD001_ERR001");
             }
+            if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo1)&&!officeTelNo1.matches("^[6][0-9]{7}$")) {
+                errMap.put("officeTelNo1", "CHKLMD001_ERR007");
+            }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(specialty1)) {
                 errMap.put("specialty1", "UC_CHKLMD001_ERR001");
+            }
+            if (psnTypes.contains("CGO") && !StringUtil.isEmpty(specialty1)&&StringUtil.isEmpty(specialityOther1)) {
+                errMap.put("specialityOther1", "UC_CHKLMD001_ERR001");
             }
         }
         if ("update".equals(editSelect)) {
@@ -947,11 +968,20 @@ public class RequestForChangeMenuDelegator {
             if (StringUtil.isEmpty(editSelect)) {
                 errMap.put("editSelect", "UC_CHKLMD001_ERR001");
             }
+            if (StringUtil.isEmpty(specialityOther)) {
+                errMap.put("specialityOther", "UC_CHKLMD001_ERR001");
+            }
             if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo)) {
                 errMap.put("officeTelNo", "UC_CHKLMD001_ERR001");
             }
+            if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo)&&!officeTelNo.matches("^[6][0-9]{7}$")) {
+                errMap.put("officeTelNo", "CHKLMD001_ERR007");
+            }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(specialty)) {
                 errMap.put("specialty", "UC_CHKLMD001_ERR001");
+            }
+            if (psnTypes.contains("CGO") && !StringUtil.isEmpty(specialty)&&StringUtil.isEmpty(specialityOther)) {
+                errMap.put("specialityOther", "UC_CHKLMD001_ERR001");
             }
         }
         if ("replace".equals(editSelect) && !"new".equals(replaceName)) {
@@ -1025,10 +1055,19 @@ public class RequestForChangeMenuDelegator {
                 if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
                     errMap.put("officeTelNo2", "UC_CHKLMD001_ERR001");
                 }
+                if (psnTypes.contains("PO") && !StringUtil.isEmpty(newPerson.getOfficeTelNo())&&!newPerson.getOfficeTelNo().matches("^[6][0-9]{7}$")) {
+                    errMap.put("officeTelNo", "CHKLMD001_ERR007");
+                }
                 if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSpeciality())) {
                     errMap.put("specialty2", "UC_CHKLMD001_ERR001");
                 }
+                if (psnTypes.contains("CGO") &&!StringUtil.isEmpty(newPerson.getSalutation())&&StringUtil.isEmpty(newPerson.getSpecialityOther())) {
+                    errMap.put("specialityOther2", "UC_CHKLMD001_ERR001");
+                }
             }
+        }
+        if(StringUtil.isEmpty(editSelect)){
+            errMap.put("editSelect", "UC_CHKLMD001_ERR001");
         }
         if (!errMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");

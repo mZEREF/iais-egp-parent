@@ -207,7 +207,7 @@
                                                         needDisabled="true"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${personnelEditDto.officeTelNo!=null}">
+                                    <c:if test="${containsPO}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -289,7 +289,11 @@
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                             <iais:select cssClass="specialty" name="specialty"
                                                          firstOption="Please Select" options="SpecialtySelectList"
-                                                         value="${personnelEditDto.speciality}"></iais:select>
+                                                         value="${personnelEditDto.speciality}" onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
+                                            <div hidden id="specialityOtherId">
+                                                <input maxlength="20" type="text" name="specialityOther" value="${personnelEditDto.specialityOther}">
+                                                <span id="error_specialityOther" name="iaisErrorMsg" class="error-msg"></span>
+                                            </div>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
@@ -307,7 +311,7 @@
                                                         value="${personnelEditDto.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${personnelEditDto.officeTelNo!=null}">
+                                    <c:if test="${containsPO}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -387,7 +391,11 @@
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                             <iais:select cssClass="specialty" name="specialty1"
                                                          firstOption="Please Select" options="SpecialtySelectList"
-                                                         value="${newPerson.speciality}"></iais:select>
+                                                         value="${newPerson.speciality}" onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
+                                            <div hidden id="specialityOtherNewId">
+                                                <input maxlength="20" type="text" name="specialityOther1" value="${newPerson.specialityOther}">
+                                                <span id="error_specialityOther1" name="iaisErrorMsg" class="error-msg"></span>
+                                            </div>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
@@ -405,7 +413,7 @@
                                                         value="${newPerson.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${personnelEditDto.officeTelNo!=null}">
+                                    <c:if test="${containsPO}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -479,7 +487,11 @@
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                             <iais:select disabled="true" cssClass="specialty" name="specialty2"
                                                          firstOption="Please Select" options="SpecialtySelectList"
-                                                         value="${newPerson.speciality}"></iais:select>
+                                                         value="${newPerson.speciality}" onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
+                                            <div hidden id="specialityOtherExistId">
+                                                <input type="text" name="specialityOther2" value="${newPerson.specialityOther}">
+                                                <span id="error_specialityOther2" name="iaisErrorMsg" class="error-msg"></span>
+                                            </div>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
@@ -497,7 +509,7 @@
                                                         value="${newPerson.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${personnelEditDto.officeTelNo!=null}">
+                                    <c:if test="${containsPO}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -593,20 +605,71 @@
             $('#replace').hide();
             $('#newPerson').hide();
             $("#editSelect").show();
+            $('#edit').hide();
         } else if ($("input[type='radio']:checked").val() == 'replace') {
             $("#update").hide();
             $('#show').hide();
             $('#replace').show();
             $('#newPerson').show();
             $("#editSelect").show();
+            $('#edit').hide();
         }
 
-        if ($("input[type='radio']:checked").val() == 'replace'&&$('#replaceOptionsId').val() == ""){
+        if ($("input[type='radio']:checked").val() == 'replace'&&$('#replaceOptionsId').val() != ""){
             $("#update").hide();
             $('#newPerson').hide();
             $('#show').hide();
             $('#newPersonExist').hide();
+            $('#edit').hide();
         }
+        var val1 = $('#specialty').val();
+        if(val1=='other'){
+            $('#specialityOtherId').show();
+        }else {
+            $('#specialityOtherId').hide();
+        }
+        var val2 = $('#specialty1').val();
+        if(val2=='other'){
+            $('#specialityOtherNewId').show();
+        }else {
+            $('#specialityOtherNewId').hide();
+        }
+
+        const personSelect = $('#replaceOptionsId').val();
+        if (personSelect == 'new'&&$("input[type='radio']:checked").val() == 'replace') {
+            $("#update").hide();
+            $('#newPerson').show();
+            $('#show').hide();
+            $('#newPersonExist').hide();
+        }
+        if (personSelect == ''&&$("input[type='radio']:checked").val() == 'replace') {
+            $('#newPerson').hide();
+        }
+
+        var val1 = $('#specialty').val();
+        if(val1=='other'){
+            $('#specialityOtherId').show();
+        }else {
+            $('#specialityOtherId').hide();
+        }
+        var val2 = $('#specialty1').val();
+        if(val2=='other'){
+            $('#specialityOtherNewId').show();
+        }else {
+            $('#specialityOtherNewId').hide();
+        }
+
+        if (personSelect != ''&&personSelect != 'new') {
+            $('#newPersonExist').show();
+            $('#newPerson').hide();
+            var person = $('#newPersonExist');
+            var arr = personSelect.split(",");
+            var idType = arr[0];
+            var idNo = arr[1];
+            loadSelectPerson(person, idType, idNo);
+        }
+
+
     });
 
     function addNew() {
@@ -629,6 +692,21 @@
             var idType = arr[0];
             var idNo = arr[1];
             loadSelectPerson(person, idType, idNo);
+        }
+    }
+    
+    function specialtyOthers() {
+        var val1 = $('#specialty').val();
+        if(val1=='other'){
+            $('#specialityOtherId').show();
+        }else {
+            $('#specialityOtherId').hide();
+        }
+        var val2 = $('#specialty1').val();
+        if(val2=='other'){
+            $('#specialityOtherNewId').show();
+        }else {
+            $('#specialityOtherNewId').hide();
         }
     }
 

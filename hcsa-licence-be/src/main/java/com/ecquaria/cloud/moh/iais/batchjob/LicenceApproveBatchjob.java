@@ -1727,9 +1727,10 @@ public class LicenceApproveBatchjob {
             try {
                 sendSMS(msgId, licenceDto.getLicenseeId(), msgInfoMap);
                 //send message
+                String subject1 = "MOH IAIS – Renewal "+ applicationNo +" – Approved";
                 String mesContext = "renew Approved message";
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-                sendMessage(subject,licenceDto.getLicenseeId(),mesContext,maskParams,serviceId);
+                sendMessage(subject1,licenceDto.getLicenseeId(),mesContext,maskParams,serviceId);
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send sms error"));
             }

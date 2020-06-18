@@ -993,7 +993,7 @@ public class HcsaApplicationDelegator {
             //send sms
             sendSMS(msgId,licenseeId,msgInfoMap);
             //send message
-            String subject = "Renew" + applicationNo + " - Rejected ";
+            String subject = "MOH IAIS – Renew" + applicationNo + " - Rejected ";
             String mesContext = "renew reject message";
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
             sendMessage(subject,licenseeId,mesContext,maskParams,applicationViewDto.getApplicationDto().getServiceId());
