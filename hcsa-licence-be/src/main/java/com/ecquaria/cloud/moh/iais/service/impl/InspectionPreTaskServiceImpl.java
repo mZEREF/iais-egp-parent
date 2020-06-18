@@ -239,36 +239,32 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         }
         ApplicationDto applicationDto1;
         //app rfi
+        int selfAssMtFlag = 0;
+        if(!StringUtil.isEmpty(selfRfiDecision)){
+            if(IaisCommonUtils.isEmpty(premCheckItems)) {
+                selfAssMtFlag = 0;
+            } else {
+                selfAssMtFlag = 2;
+            }
+        }
         if(!StringUtil.isEmpty(appRfiDecision)){
             String preInspecComments = inspectionPreTaskDto.getPreInspecComments();
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId,
                     licenseeDto, loginContext, preInspecComments);
             if(!StringUtil.isEmpty(selfRfiDecision)){
-                if(IaisCommonUtils.isEmpty(premCheckItems)) {
-                    applicationDto.setSelfAssMtFlag(0);
-                } else {
-                    applicationDto.setSelfAssMtFlag(2);
-                }
+                applicationDto.setSelfAssMtFlag(selfAssMtFlag);
             }
             applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
             if(!StringUtil.isEmpty(selfRfiDecision)){
-                applicationDto1.setSelfAssMtFlag(2);
+                applicationDto1.setSelfAssMtFlag(selfAssMtFlag);
             }
             applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             applicationService.updateFEApplicaiton(applicationDto1);
             applicationViewDto.setApplicationDto(applicationDto1);
         } else {
-            if(IaisCommonUtils.isEmpty(premCheckItems)) {
-                applicationDto.setSelfAssMtFlag(0);
-            } else {
-                applicationDto.setSelfAssMtFlag(2);
-            }
+            applicationDto.setSelfAssMtFlag(selfAssMtFlag);
             applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-            if(IaisCommonUtils.isEmpty(premCheckItems)) {
-                applicationDto.setSelfAssMtFlag(0);
-            } else {
-                applicationDto.setSelfAssMtFlag(2);
-            }
+            applicationDto1.setSelfAssMtFlag(selfAssMtFlag);
             applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             applicationService.updateFEApplicaiton(applicationDto1);
             applicationViewDto.setApplicationDto(applicationDto1);
