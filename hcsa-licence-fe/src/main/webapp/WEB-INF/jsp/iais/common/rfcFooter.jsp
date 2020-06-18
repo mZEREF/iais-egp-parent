@@ -1,4 +1,5 @@
 <input type="hidden" name="crud_action_type_continue" value="">
+<input type="hidden" name="crud_action_additional" value="">
 <div class="row">
     <div class="col-xs-12 col-sm-3 ">
         <a id="RfcBack" class="back" href="#"><em class="fa fa-angle-left"></em> Back</a>

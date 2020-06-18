@@ -1046,6 +1046,10 @@ public class ClinicalLaboratoryDelegator {
         if (StringUtil.isEmpty(crudActionValue)) {
             crudActionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         }
+        Object errorMsg = bpc.request.getAttribute("errorMsg");
+        if(errorMsg!=null){
+            crudActionValue=null;
+        }
         if ("saveDraft".equals(crudActionValue)) {
             ParamUtil.setRequestAttr(bpc.request, "Switch2", "saveDraft");
         } else {

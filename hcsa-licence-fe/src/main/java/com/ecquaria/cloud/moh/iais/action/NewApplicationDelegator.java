@@ -533,6 +533,7 @@ public class NewApplicationDelegator {
                 }
                 appSubmissionDtos.add(tranferSub);
             }
+            appSubmissionDto=tranferSub;
         }
         Double total=0.0;
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=IaisCommonUtils.genNewArrayList();
@@ -1757,10 +1758,12 @@ public class NewApplicationDelegator {
         boolean b = eqCgo(appSvcCgoDtoList1, appSvcCgoDtoList);
         if(b){
             if(appSvcCgoDtoList!=null){
+                List<String> cgoIdNo=IaisCommonUtils.genNewArrayList();
                 for(int i=0;i< appSvcCgoDtoList.size();i++){
                     String idNo = appSvcCgoDtoList.get(i).getIdNo();
                     String idNo1 = appSvcCgoDtoList1.get(i).getIdNo();
                     if(idNo.equals(idNo1)){
+                        cgoIdNo.add(idNo);
                         set.add(idNo);
                     }
                 }
@@ -1842,6 +1845,104 @@ public class NewApplicationDelegator {
         }
 
         return appSubmissionDtoList;
+    }
+
+    private void changeCgoInfo( List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList, List<AppSubmissionDto> appSubmissionDtoList){
+        if(appSubmissionDtoList.isEmpty()){
+            return;
+        }
+        for(AppSvcCgoDto appSvcCgoDto : appSvcCgoDtoList){
+            for(AppSvcCgoDto oldAppSvcCgo : oldAppSvcCgoDtoList){
+                if(appSvcCgoDto.getIdNo().equals(oldAppSvcCgo.getIdNo())){
+                    for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
+                        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+                        List<AppSvcCgoDto> appSvcCgoDtoList1 = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+                        if(appSvcCgoDtoList1!=null){
+                            for(AppSvcCgoDto appSvcCgoDto1 : appSvcCgoDtoList1){
+                                if(appSvcCgoDto1.getIdNo().equals(appSvcCgoDto.getIdNo())){
+                                    appSvcCgoDto1= MiscUtil.transferEntityDto(appSvcCgoDto,AppSvcCgoDto.class);
+                                }
+                            }
+                        }
+                        if(appSvcPrincipalOfficersDtoList!=null){
+                           for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList){
+                               if(appSvcPrincipalOfficersDto.getIdNo().equals(appSvcCgoDto.getIdNo())){
+                                   appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(appSvcCgoDto, AppSvcPrincipalOfficersDto.class);
+                               }
+                           }
+                        }
+                        if(appSvcMedAlertPersonList!=null){
+                            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList){
+                                if(appSvcPrincipalOfficersDto.getIdNo().equals(appSvcCgoDto.getIdNo())){
+                                    appSvcPrincipalOfficersDto= MiscUtil.transferEntityDto(appSvcCgoDto,AppSvcPrincipalOfficersDto.class);
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+    private void changePo(  List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList,  List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList,List<AppSubmissionDto> appSubmissionDtoList){
+        if(appSubmissionDtoList==null){
+            return;
+        }
+        for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList){
+            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto1 : oldAppSvcPrincipalOfficersDtoList){
+                if(appSvcPrincipalOfficersDto.getIdNo().equals(appSvcPrincipalOfficersDto1.getIdNo())){
+                   for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
+                       AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+                       List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                       List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList1 = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                       List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+                       if(appSvcCgoDtoList!=null){
+                           for(AppSvcCgoDto appSvcCgoDto : appSvcCgoDtoList){
+                               if(appSvcCgoDto.getIdNo().equals(appSvcPrincipalOfficersDto.getIdNo())){
+                                   appSvcCgoDto=MiscUtil.transferEntityDto(appSvcPrincipalOfficersDto,AppSvcCgoDto.class,new HashMap<>(),appSvcCgoDto);
+                               }
+                           }
+                       }
+                       if(appSvcPrincipalOfficersDtoList1!=null){
+                           for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto2 : appSvcPrincipalOfficersDtoList1){
+                               if(appSvcPrincipalOfficersDto2.getIdNo().equals(appSvcPrincipalOfficersDto.getIdNo())){
+                                   appSvcPrincipalOfficersDto2= MiscUtil.transferEntityDto(appSvcPrincipalOfficersDto,AppSvcPrincipalOfficersDto.class,new HashMap<>(),appSvcPrincipalOfficersDto2);
+                               }
+                           }
+                       }
+                       if(appSvcMedAlertPersonList!=null){
+                           for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto2 : appSvcMedAlertPersonList){
+                               if(appSvcPrincipalOfficersDto2.getIdNo().equals(appSvcPrincipalOfficersDto.getIdNo())){
+                                   appSvcPrincipalOfficersDto2= MiscUtil.transferEntityDto(appSvcPrincipalOfficersDto,AppSvcPrincipalOfficersDto.class,new HashMap<>(),appSvcPrincipalOfficersDto2);
+                               }
+                           }
+                       }
+                   }
+
+                }
+            }
+        }
+    }
+
+    private void changeMerder( List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList,  List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList,List<AppSubmissionDto> appSubmissionDtoList){
+        if(appSubmissionDtoList.isEmpty()){
+            return;
+        }
+
+        for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList){
+            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto1 : oldAppSvcMedAlertPersonList){
+                if(appSvcPrincipalOfficersDto.getIdNo().equals(appSvcPrincipalOfficersDto1.getIdNo())){
+                    for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
+                        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+
+                    }
+                }
+            }
+        }
+
     }
     private boolean eqCgo( List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList) throws  Exception{
        if(appSvcCgoDtoList!=null&&oldAppSvcCgoDtoList!=null){

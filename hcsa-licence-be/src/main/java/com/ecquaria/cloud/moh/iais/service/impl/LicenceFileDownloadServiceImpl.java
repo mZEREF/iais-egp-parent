@@ -580,9 +580,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     List<AppPremisesCorrelationDto> oldAppPremisesCorrelationDtos =   requestInformationSubmitDto.getOldAppPremisesCorrelationDtos();
                     List<AppPremisesCorrelationDto> newAppPremisesCorrelationDtos =   requestInformationSubmitDto.getNewAppPremisesCorrelationDtos();
                     if(!IaisCommonUtils.isEmpty(oldAppPremisesCorrelationDtos)){
+                        log.info(oldAppPremisesCorrelationDtos.get(0).getId()+"old correlation id");
                         List<TaskDto> taskDtos =  licenceFileDownloadService.getTasksByRefNo(oldAppPremisesCorrelationDtos.get(0).getId());
+
                         if(!IaisCommonUtils.isEmpty(taskDtos)){
                             TaskDto taskDto = taskDtos.get(0);
+                            log.info(JsonUtil.parseToJson(taskDto)+"taskDto");
                             TaskDto newTaskDto = TaskUtil.getUserTaskDto(applicationDto.getApplicationNo(),taskDto.getTaskKey(),newAppPremisesCorrelationDtos.get(0).getId(),taskDto.getWkGrpId(),
                                     taskDto.getUserId(),0,taskDto.getProcessUrl(),taskDto.getRoleId(),auditTrailDto);
                             taskDtoList.add(newTaskDto);
