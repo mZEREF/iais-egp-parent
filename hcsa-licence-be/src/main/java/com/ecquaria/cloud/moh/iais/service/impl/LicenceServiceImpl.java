@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstant
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
@@ -243,5 +244,12 @@ public class LicenceServiceImpl implements LicenceService {
         return hcsaLicenceClient.getLicAppCorrelationDtosByApplicationIds(appIds).getEntity();
     }
 
-
+    @Override
+    public PremisesDto getHciCode(AppGrpPremisesEntityDto appGrpPremisesEntityDto) {
+        PremisesDto result = null;
+        if(appGrpPremisesEntityDto != null){
+            result =  hcsaLicenceClient.getHciCodePremises(appGrpPremisesEntityDto).getEntity();
+        }
+        return result;
+    }
 }

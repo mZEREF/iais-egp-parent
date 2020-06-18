@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
@@ -51,5 +52,7 @@ public interface LicenceService {
     List<PremisesGroupDto> getPremisesGroupDtoByOriginLicenceId (String originLicenceId);
 
     List<LicAppCorrelationDto> getLicAppCorrelationDtosByApplicationIds(List<String> appIds);
+
+    public PremisesDto getHciCode(AppGrpPremisesEntityDto appGrpPremisesEntityDto);
 
 }

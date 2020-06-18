@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
@@ -28,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * @author Wenkang
@@ -425,5 +427,11 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
         entity.setHeaders(headers);
         return entity;
     }
-
+    @Override
+    public FeignResponseEntity<PremisesDto> getHciCodePremises(@RequestBody AppGrpPremisesEntityDto appGrpPremisesEntityDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

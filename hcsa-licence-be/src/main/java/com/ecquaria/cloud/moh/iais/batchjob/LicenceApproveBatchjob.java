@@ -70,14 +70,6 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -85,6 +77,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * LicenceApproveBatchjob
@@ -1048,6 +1047,7 @@ public class LicenceApproveBatchjob {
 
     }
 
+
     private List<PremisesGroupDto> getPremisesGroupDto(ApplicationLicenceDto applicationLicenceDto,
                                                        List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos,
                                                        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,
@@ -1067,6 +1067,13 @@ public class LicenceApproveBatchjob {
             String hciCode = appGrpPremisesEntityDto.getHciCode();
             if (StringUtil.isEmpty(hciCode)) {
                 hciCode = getHciCodeFromSameApplicaitonGroup(applicationLicenceDto, appGrpPremisesEntityDto);
+                if (StringUtil.isEmpty(hciCode)) {
+                    PremisesDto hciCodePremisesDto = licenceService.getHciCode(appGrpPremisesEntityDto);
+                    if(hciCodePremisesDto != null){
+                        hciCode = hciCodePremisesDto.getHciCode();
+                    }
+                }
+
                 if (StringUtil.isEmpty(hciCode)) {
                     hciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
                 }
