@@ -1022,6 +1022,7 @@ public class LicenceApproveBatchjob {
     }
 
     private String getHciCodeFromSameApplicaitonGroup(ApplicationLicenceDto applicationLicenceDto, AppGrpPremisesEntityDto appGrpPremisesEntityDto) {
+        log.info(StringUtil.changeForLog("The getHciCodeFromSameApplicaitonGroup start ..."));
         String hciCode = null;
         if (applicationLicenceDto != null && appGrpPremisesEntityDto != null) {
             List<ApplicationListDto> applicationListDtoList = applicationLicenceDto.getApplicationListDtoList();
@@ -1043,6 +1044,8 @@ public class LicenceApproveBatchjob {
                 }
             }
         }
+        log.info(StringUtil.changeForLog("The licence Generate getHciCodeFromSameApplicaitonGroup hciCode is -->:"+hciCode));
+        log.info(StringUtil.changeForLog("The getHciCodeFromSameApplicaitonGroup end ..."));
         return hciCode;
 
     }
@@ -1056,6 +1059,7 @@ public class LicenceApproveBatchjob {
                                                        HcsaServiceDto hcsaServiceDto,
                                                        String organizationId,
                                                        Integer isPostInspNeeded) {
+        log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto start ..."));
         List<PremisesGroupDto> reuslt = IaisCommonUtils.genNewArrayList();
         if (IaisCommonUtils.isEmpty(appGrpPremisesEntityDtos)) {
             return reuslt;
@@ -1065,18 +1069,21 @@ public class LicenceApproveBatchjob {
             premisesGroupDto.setHasError(false);
             //premises
             String hciCode = appGrpPremisesEntityDto.getHciCode();
+            log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto hciCode is -->:"+hciCode));
             if (StringUtil.isEmpty(hciCode)) {
                 hciCode = getHciCodeFromSameApplicaitonGroup(applicationLicenceDto, appGrpPremisesEntityDto);
                 if (StringUtil.isEmpty(hciCode)) {
                     PremisesDto hciCodePremisesDto = licenceService.getHciCode(appGrpPremisesEntityDto);
                     if(hciCodePremisesDto != null){
                         hciCode = hciCodePremisesDto.getHciCode();
+                    }else {
+                        log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto do not get ou the hciCode from DB"));
                     }
                 }
-
                 if (StringUtil.isEmpty(hciCode)) {
                     hciCode = licenceService.getHciCode(hcsaServiceDto.getSvcCode());
                 }
+                log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto finale hciCode is -->:"+hciCode));
                 appGrpPremisesEntityDto.setHciCode(hciCode);
             }
             PremisesDto premisesDto = MiscUtil.transferEntityDto(appGrpPremisesEntityDto, PremisesDto.class);
@@ -1150,7 +1157,7 @@ public class LicenceApproveBatchjob {
             }
             reuslt.add(premisesGroupDto);
         }
-
+        log.info(StringUtil.changeForLog("The licence Generate getPremisesGroupDto end ..."));
         return reuslt;
     }
 

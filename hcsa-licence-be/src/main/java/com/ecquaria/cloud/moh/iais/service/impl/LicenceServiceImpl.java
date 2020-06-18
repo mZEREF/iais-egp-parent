@@ -106,6 +106,7 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public String getHciCode(String serviceCode) {
+        log.info(StringUtil.changeForLog("generate the hcicode"));
         return     systemClient.hclCodeByCode(serviceCode).getEntity();
     }
 
@@ -246,10 +247,12 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public PremisesDto getHciCode(AppGrpPremisesEntityDto appGrpPremisesEntityDto) {
+        log.info(StringUtil.changeForLog("The getHciCode start ..."));
         PremisesDto result = null;
         if(appGrpPremisesEntityDto != null){
             result =  hcsaLicenceClient.getHciCodePremises(appGrpPremisesEntityDto).getEntity();
         }
+        log.info(StringUtil.changeForLog("The getHciCode end ..."));
         return result;
     }
 }
