@@ -26,14 +26,74 @@ public class ApptConfirmReSchDateDelegator {
     }
 
     /**
-     * StartStep: userConfirmInspDateStart
+     * StartStep: apptUserChooseDateStart
      *
      * @param bpc
      * @throws
      */
-    public void userConfirmInspDateStart(BaseProcessClass bpc){
-        log.debug(StringUtil.changeForLog("the userConfirmInspDateStart start ...."));
+    public void apptUserChooseDateStart(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the apptUserChooseDateStart start ...."));
 
         AuditTrailHelper.auditFunction("Appointment Re-Scheduling Confirm date", "Appointment Re-Scheduling Confirm date");
+    }
+
+    /**
+     * StartStep: apptUserChooseDateInit
+     *
+     * @param bpc
+     * @throws
+     */
+    public void apptUserChooseDateInit(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the apptUserChooseDateInit start ...."));
+    }
+
+    /**
+     * StartStep: apptUserChooseDatePre
+     *
+     * @param bpc
+     * @throws
+     */
+    public void apptUserChooseDatePre(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the apptUserChooseDatePre start ...."));
+    }
+
+    /**
+     * StartStep: apptUserChooseDateVali
+     *
+     * @param bpc
+     * @throws
+     */
+    public void apptUserChooseDateVali(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the apptUserChooseDateVali start ...."));
+    }
+
+    /**
+     * StartStep: apptUserChooseDateStep1
+     *
+     * @param bpc
+     * @throws
+     */
+    public void apptUserChooseDateStep1(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the apptUserChooseDateStep1 start ...."));
+    }
+
+    /**
+     * StartStep: apptUserChooseDateSuccess
+     *
+     * @param bpc
+     * @throws
+     */
+    public void apptUserChooseDateSuccess(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the apptUserChooseDateSuccess start ...."));
+    }
+
+    /**
+     * StartStep: apptUserChooseDateReject
+     *
+     * @param bpc
+     * @throws
+     */
+    public void apptUserChooseDateReject(BaseProcessClass bpc){
+        log.debug(StringUtil.changeForLog("the apptUserChooseDateReject start ...."));
     }
 }
