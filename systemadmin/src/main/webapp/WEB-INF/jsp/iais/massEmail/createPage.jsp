@@ -66,7 +66,7 @@
                             <label class="col-xs-4 col-md-4 control-label" >Add Mobile</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <textarea cols="50" rows="10" name="mobile" class="textarea" id="mobile" title="content">${emailAddress}</textarea>
+                                    <textarea style="width: 100%" rows="10" name="mobile" class="textarea" id="mobile" title="content">${emailAddress}</textarea>
                                     <span id="error_mobile" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
@@ -118,7 +118,7 @@
                 </div>
             </div>
         </div>
-        <input hidden name="distributionId" value="<iais:mask name="distributionId" value="${distribution.getId()}"/> ">
+        <input hidden name="distributionId" value="<c:out value="${distribution.getId()}"/> ">
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 </div>

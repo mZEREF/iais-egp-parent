@@ -216,7 +216,7 @@ public class MassEmailDelegator {
             filelist.addAll(address);
         }
         if(filelist != null ){
-            String fileData = StringUtils.join(filelist, ",");
+            String fileData = StringUtils.join(filelist, "\r\n");
             ParamUtil.setRequestAttr(bpc.request,"emailAddress",fileData);
         }else{
             ParamUtil.setRequestAttr(bpc.request,"emailAddress","");
@@ -265,7 +265,7 @@ public class MassEmailDelegator {
             }
         }
         if(!StringUtil.isEmpty(mode) && SMS.equals(mode) && mobile != null){
-            List<String> rnmobilelist = Arrays.asList(mobile.split(" "));
+            List<String> rnmobilelist = Arrays.asList(mobile.split("\r\n"));
             List<String> commamobilelist = Arrays.asList(mobile.split(","));
             if(rnmobilelist.size() > commamobilelist.size() ){
                 distributionListDto.setEmailAddress(rnmobilelist);
