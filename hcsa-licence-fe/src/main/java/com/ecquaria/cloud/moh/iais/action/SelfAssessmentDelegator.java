@@ -51,6 +51,11 @@ public class SelfAssessmentDelegator {
         if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
             String corrId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
             ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, corrId);
+        }else {
+            String groupId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
+            if (!StringUtil.isEmpty(groupId)){
+                ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID, groupId);
+            }
         }
 
         AuditTrailHelper.auditFunction("Application", "Self assessment");
@@ -95,11 +100,7 @@ public class SelfAssessmentDelegator {
 
             selfAssessmentList = selfAssessmentService.receiveSelfAssessmentRfiByCorrId(corrId);
         }else {
-            String groupId = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
-            if (StringUtil.isEmpty(groupId)) {
-                groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
-            }
-
+            String groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
             if (StringUtil.isEmpty(groupId)) {
                 log.debug("the group id is null");
                 return;
