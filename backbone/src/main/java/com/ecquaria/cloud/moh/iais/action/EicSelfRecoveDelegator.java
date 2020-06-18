@@ -121,7 +121,7 @@ public class EicSelfRecoveDelegator {
             Object obj = JsonUtil.parseToObject(ert.getDtoObject(), dtoCls);
             Class actCls = Class.forName(ert.getActionClsName());
             Object actObj = SpringContextHelper.getContext().getBean(actCls);
-            Method method = actCls.getMethod(ert.getActionMethod(), actCls);
+            Method method = actCls.getMethod(ert.getActionMethod(), dtoCls);
             method.invoke(actObj, obj);
             ert.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
         } catch (Exception e) {
