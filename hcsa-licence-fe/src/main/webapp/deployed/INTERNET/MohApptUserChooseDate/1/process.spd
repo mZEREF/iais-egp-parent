@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/apptUserChooseDateStart" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohApptUserChooseDate" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="apptUserChooseDateStart" x="50" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="apptUserChooseDateStart_OnStepProcess_0" name="apptUserChooseDateStart_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="apptUserChooseDateInit" x="220" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="apptUserChooseDateInit_OnStepProcess_0" name="apptUserChooseDateInit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="apptUserChooseDatePre" x="380" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="apptUserChooseDatePre_OnStepProcess_0" name="apptUserChooseDatePre_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="apptUserChooseDateVali" x="550" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="apptUserChooseDateVali_OnStepProcess_0" name="apptUserChooseDateVali_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="apptUserChooseDateStep1" x="710" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="apptUserChooseDateStep1_OnStepProcess_0" name="apptUserChooseDateStep1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="apptUserChooseDateSuccess" x="860" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="apptUserChooseDateSuccess_OnStepProcess_0" name="apptUserChooseDateSuccess_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="apptUserChooseDateReject" x="1020" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="apptUserChooseDateReject_OnStepProcess_0" name="apptUserChooseDateReject_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="apptUserChooseDatePage" stageIndicator="" x="540" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="apptUserChooseDateAckSuc" stageIndicator="" x="860" y="370">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="apptUserChooseDateAckRej" stageIndicator="" x="1190" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptUserChooseDateInit" linkstyle="Rectangle" name="" sourceName="/Steps/StartStep/apptUserChooseDateStart" style="rectanular">
+   <position>{(70,120)(240,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptUserChooseDatePre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/apptUserChooseDateInit" style="rectanular">
+   <position>{(240,120)(400,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/apptUserChooseDatePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/apptUserChooseDatePre" style="rectanular">
+   <position>{(400,120)(560,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptUserChooseDateVali" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/apptUserChooseDatePage" style="rectanular">
+   <position>{(560,120)(570,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/apptUserChooseDateVali" style="rectanular">
+   <position>{(570,250)(620,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptUserChooseDatePre" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(620,390)(400,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptUserChooseDateStep1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(620,390)(730,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/apptUserChooseDateStep1" style="rectanular">
+   <position>{(730,120)(940,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptUserChooseDateReject" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(940,120)(1040,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/apptUserChooseDateSuccess" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(940,120)(880,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/apptUserChooseDateAckRej" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/apptUserChooseDateReject" style="rectanular">
+   <position>{(1040,120)(1210,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/apptUserChooseDateAckSuc" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/apptUserChooseDateSuccess" style="rectanular">
+   <position>{(880,250)(880,390)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/apptUserChooseDatePre" componentIfTrue="/Steps/AutomaticStep/apptUserChooseDateStep1" defClass="" executor="" icon="" leftOperand="flag" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="600" y="370">
+   <Description/>
+  </Condition>
+ </Conditions>
+ <Switches>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="apptUserChooseDateType" name="Switch1" x="920" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/apptUserChooseDateReject" value="&quot;reject&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/apptUserChooseDateSuccess" value="&quot;success&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>
