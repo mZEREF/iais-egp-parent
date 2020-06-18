@@ -267,10 +267,15 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         IaisApiResult apiResult = gatewayClient.routeSelfAssessment(data, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
 
-        if (IaisApiStatusCode.PROCESS_SUCCESS.getStatusCode() == apiResult.getErrorCode()){
-            return true;
-        }else {
+        if (apiResult == null){
             return false;
+        }
+
+        boolean hasError = apiResult.isHasError();
+        if (hasError){
+            return false;
+        }else {
+            return true;
         }
     }
 
