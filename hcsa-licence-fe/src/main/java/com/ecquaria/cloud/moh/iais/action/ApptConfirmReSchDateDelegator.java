@@ -1,7 +1,9 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +57,7 @@ public class ApptConfirmReSchDateDelegator {
      */
     public void apptUserChooseDatePre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptUserChooseDatePre start ...."));
+        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"System Proposes Alternate Dates");
     }
 
     /**
