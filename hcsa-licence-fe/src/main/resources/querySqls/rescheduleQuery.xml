@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls catalog="rescheduleQuery">
+
+
+    <sql remarks="Query" key="queryApptGrpPremises">
+        <![CDATA[
+                SELECT distinct
+                app.id,app.application_no,app.app_type,app.status,app.service_id,
+                T2.id APP_CORR_ID,
+                T3.HCI_CODE,T3.HCI_NAME,
+                T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,T3.POSTAL_CODE,
+                T4.LICENSEE_ID,T5.APPT_REF_NO
+            FROM APPLICATION AS app
+             LEFT JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = app.ID
+             LEFT JOIN APPLICATION_GROUP T4 ON T4.ID = app.APP_GRP_ID
+             LEFT JOIN APP_GRP_PREMISES T3 ON T4.ID = T3.APP_GRP_ID
+             LEFT JOIN app_premises_inspection_appt T5 ON T2.ID = T5.APP_PREM_CORRE_ID
+
+            WHERE 1=1
+            <#if licenseeId??>AND T4.licensee_id = :licenseeId</#if>
+            ]]>
+    </sql>
+</sqls>

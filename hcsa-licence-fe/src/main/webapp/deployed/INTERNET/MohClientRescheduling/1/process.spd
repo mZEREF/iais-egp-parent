@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application defaultStart="/Steps/StartStep/start" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohClientRescheduling" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+ <WebServices/>
+ <Steps>
+  <StartStep defClass="" executor="" icon="" name="start" x="100" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="start_OnStepProcess_0" name="start_OnStepProcess_0"/>
+   </OnStepProcess>
+  </StartStep>
+  <AutomaticStep defClass="" executor="" icon="" name="init" x="250" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doReschedule" x="550" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doReschedule_OnStepProcess_0" name="doReschedule_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preCommPool" x="850" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preCommPool_OnStepProcess_0" name="preCommPool_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preRoundRobin" x="830" y="240">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preRoundRobin_OnStepProcess_0" name="preRoundRobin_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+ </Steps>
+ <Pages>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="viewApptPage" stageIndicator="" x="400" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="rrMessagePage" stageIndicator="" x="980" y="240">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="cpMessagePage" stageIndicator="" x="1000" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+ </Pages>
+ <Forms/>
+ <Links>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Steps/StartStep/start" style="oblique">
+   <position>{(120,120)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/viewApptPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/init" style="oblique">
+   <position>{(270,120)(420,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doReschedule" linkstyle="Direct" name="" sourceName="/Pages/WebPage/viewApptPage" style="oblique">
+   <position>{(420,120)(570,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doReschedule" style="oblique">
+   <position>{(570,120)(720,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preCommPool" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(720,120)(870,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preRoundRobin" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(720,120)(850,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/rrMessagePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preRoundRobin" style="oblique">
+   <position>{(850,260)(1000,260)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/cpMessagePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preCommPool" style="oblique">
+   <position>{(870,120)(1020,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(720,120)(481,281)(270,120)}</position>
+  </SynchronousLink>
+ </Links>
+ <Conditions/>
+ <Switches>
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/init" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="700" y="100">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/preCommPool" value="&quot;comm&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preRoundRobin" value="&quot;round&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/init" value="&quot;sort&quot;"/>
+  </Switch>
+ </Switches>
+ <Branches/>
+ <Merges/>
+ <StudioLabels/>
+ <StageIndicator/>
+ <AuthenticationRequire agent="false" authentication="false" citizen="false" counterStaff="false" workingGroup=""/>
+</Application>

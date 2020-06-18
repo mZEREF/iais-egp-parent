@@ -1,11 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
@@ -288,6 +291,9 @@ public interface ApplicationClient  {
     FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcIdStr") String svcIdStr);
     @GetMapping(value = "/appeal/licence-appeal-or-cessation-by-licence-id")
     FeignResponseEntity<Boolean> isLiscenceAppealOrCessation(@RequestParam("licenceId") String licenceId);
+
+    @PostMapping (path = "/iais-application/appt-Resch-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<ReschApptGrpPremsQueryDto>> searchApptReschGrpPrems(@RequestBody SearchParam searchParam);
 
     @PostMapping(value = "/iais-application/fe-application-dto-list",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> saveApplicationDtos(@RequestBody List<ApplicationDto> applicationDtos);
