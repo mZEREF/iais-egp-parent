@@ -49,9 +49,11 @@ public class ApptInspectionDateValidate implements CustomizeValidator {
             appointmentClient.validateUserCalendar(specificApptDto).getStatusCode();
         } catch (Exception e){
             errMap.put("specificDate", "UC_INSP_ERR0007");
+            apptInspectionDateDto.setSpecificApptDto(specificApptDto);
             ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
             return errMap;
         }
+        apptInspectionDateDto.setSpecificApptDto(specificApptDto);
         ParamUtil.setSessionAttr(request, "apptInspectionDateDto", apptInspectionDateDto);
         return errMap;
     }

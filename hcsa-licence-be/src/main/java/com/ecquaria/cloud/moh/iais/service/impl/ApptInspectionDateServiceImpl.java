@@ -291,12 +291,21 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<TaskDto> taskDtos = apptInspectionDateDto.getTaskDtos();
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         Date saveDate = apptInspectionDateDto.getSpecificStartDate();
+        //confirm date and calendar
+        String apptRefNo = appointmentClient.saveManualUserCalendar(apptInspectionDateDto.getSpecificApptDto()).getEntity();
+        List<String> confirmRefNo = IaisCommonUtils.genNewArrayList();
+        confirmRefNo.add(apptRefNo);
+        ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+        apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
+        apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+        cancelOrConfirmApptDate(apptCalendarStatusDto);
+
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         for(TaskDto taskDto1 : taskDtos) {
             String appPremCorrId = taskDto1.getRefNo();
             AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
             appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
-            appPremisesInspecApptDto.setApptRefNo(null);
+            appPremisesInspecApptDto.setApptRefNo(apptRefNo);
             appPremisesInspecApptDto.setSpecificInspDate(apptInspectionDateDto.getSpecificDate());
             appPremisesInspecApptDto.setId(null);
             appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
