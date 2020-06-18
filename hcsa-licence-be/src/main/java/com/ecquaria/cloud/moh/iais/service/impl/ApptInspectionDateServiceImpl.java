@@ -290,7 +290,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         TaskDto taskDto = apptInspectionDateDto.getTaskDto();
         List<TaskDto> taskDtos = apptInspectionDateDto.getTaskDtos();
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
-        Date saveDate = apptInspectionDateDto.getSpecificDate();
+        Date saveDate = apptInspectionDateDto.getSpecificStartDate();
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         for(TaskDto taskDto1 : taskDtos) {
             String appPremCorrId = taskDto1.getRefNo();
