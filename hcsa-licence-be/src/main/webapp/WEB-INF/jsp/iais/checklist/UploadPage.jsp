@@ -62,7 +62,7 @@
 
       <div class="row">
         <div class="col-xs-6 col-md-4">
-          <p><a id = "docBack" class="back"><em class="fa fa-angle-left"></em> Back</a></p>
+          <a id = "docBack" class="back"><em class="fa fa-angle-left"></em> Back</a>
         </div>
         <div class="col-xs-50 col-md-10 text-right">
           <div class="nav">

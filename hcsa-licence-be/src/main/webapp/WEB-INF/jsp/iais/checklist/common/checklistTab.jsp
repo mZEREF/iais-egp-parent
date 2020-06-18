@@ -70,6 +70,9 @@
                                         <th width="50%">Checklist Item</th>
                                         <th width="40%">Answer Type</th>
                                         <th width="10%">Risk Level</th>
+                                        <c:if test="${adhocActionFlag == 'Y'}">
+                                            <th width="10%">Action</th>
+                                        </c:if>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -84,6 +87,16 @@
                                             <td>
                                                 <p><iais:code code="${adhocItem.riskLvl}"></iais:code></p>
                                             </td>
+
+                                            <c:if test="${adhocActionFlag == 'Y'}">
+                                                <td>
+                                                    <button id="removeAdhocItemId"
+                                                            onclick="removeAdhocItem()"
+                                                            value="${adhocItem.question}" type="button">
+                                                        Remove
+                                                    </button>
+                                                </td>
+                                            </c:if>
                                         </tr>
                                     </c:forEach>
                                     </tbody>

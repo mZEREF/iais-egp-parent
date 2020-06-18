@@ -36,7 +36,6 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -54,9 +53,6 @@ import java.util.stream.Collectors;
 @Delegator(value = "adhocChecklistDelegator")
 @Slf4j
 public class AdhocChecklistDelegator {
-
-    @Autowired
-    private TaskService taskService;
 
     @Autowired
     private ApplicationViewService applicationViewService;
@@ -82,6 +78,7 @@ public class AdhocChecklistDelegator {
     public void startStep(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
+        ParamUtil.setSessionAttr(request, "adhocActionFlag", "Y");
     }
 
     /**
@@ -172,6 +169,7 @@ public class AdhocChecklistDelegator {
 
             ParamUtil.setRequestAttr(bpc.request, "preInspInitFlag", InspectionConstants.SWITCH_ACTION_BACK);
 
+            ParamUtil.setSessionAttr(bpc.request, "adhocActionFlag", "N");
             /*adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);*/
         }
     }
@@ -212,7 +210,7 @@ public class AdhocChecklistDelegator {
      * @throws
      */
     public void doBack(BaseProcessClass bpc) {
-        log.debug("doBack");
+        ParamUtil.setSessionAttr(bpc.request, "adhocActionFlag", "N");
     }
 
     /**
