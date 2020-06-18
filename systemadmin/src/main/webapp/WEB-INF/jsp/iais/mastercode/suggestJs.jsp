@@ -737,7 +737,7 @@
             showHeader: FALSE, // 是否显示选择列表的 header。为 true 时，有效字段大于一列则显示表头
             showBtn: TRUE, // 是否显示下拉按钮
             inputBgColor: "", // 输入框背景色，当与容器背景色不同时，可能需要该项的配置
-            inputWarnColor: "rgba(255,0,0,.1)", // 输入框内容不是下拉列表选择时的警告色
+            inputWarnColor: "", // 输入框内容不是下拉列表选择时的警告色
             listStyle: {
                 "padding-top": 0,
                 "max-height": "375px",

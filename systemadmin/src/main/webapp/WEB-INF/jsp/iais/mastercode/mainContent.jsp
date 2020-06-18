@@ -16,16 +16,16 @@
                             <thead>
                             <tr>
                                 <th>SN</th>
-                                <th>Master Code Category</th>
-                                <th>Code Value</th>
-                                <th>Code Description</th>
-                                <th>Filter Value</th>
-                                <th>Sequence</th>
-                                <th>Version</th>
-                                <th>Centrally managed Flag</th>
-                                <th>Effective Start Date</th>
-                                <th>Effective End Date</th>
-                                <th>Status</th>
+                                <iais:sortableHeader needSort="true" field="code_category" value="Master Code Category" style="width:15%" />
+                                <iais:sortableHeader needSort="true" field="code_value" value="Code Value" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="code_category" value="Code Description" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="filter_value" value="Filter Value" style="width:10%"/>
+                                <iais:sortableHeader needSort="true" field="sequence" value="Sequence" style="width:7%" />
+                                <iais:sortableHeader needSort="false" field="Version" value="Version" />
+                                <iais:sortableHeader needSort="false" field="is_centrally_manage" value="Centrally managed Flag" />
+                                <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"  style="width:13%"/>
+                                <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"  style="width:13%"/>
+                                <iais:sortableHeader needSort="true" field="status" value="Status" style="width:6%"/>
                                 <th>Action</th>
                             </tr>
                             </thead>

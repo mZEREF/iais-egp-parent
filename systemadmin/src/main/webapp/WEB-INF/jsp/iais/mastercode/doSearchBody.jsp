@@ -27,8 +27,8 @@
                     <%String codeDescription = request.getParameter("codeDescription")==null?"":request.getParameter("codeDescription");%>
                     <label class="col-xs-4 col-md-4 control-label">Code Description</label>
                     <div class="col-xs-6 col-sm-6 col-md-6">
-                        <form><textarea cols="86" rows="6" id="suggestDescription" name="codeDescription"
-                                        maxlength="255"><%=codeDescription%></textarea>
+                        <form><input id="suggestDescription" type="text" name="codeDescription"
+                                        maxlength="255" value="<%=codeDescription%>"/>
                             <div class="input-group-btn">
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                             </div>
@@ -93,6 +93,5 @@
             </div>
         </div>
     </div>
-
     <iais:pagination param="MasterCodeSearchParam" result="MasterCodeSearchResult"/>
 </form>

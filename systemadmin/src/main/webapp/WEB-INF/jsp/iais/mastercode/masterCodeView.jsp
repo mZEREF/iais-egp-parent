@@ -39,7 +39,7 @@
     function sortRecords(sortFieldName, sortType) {
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
-        submit('appSort');
+        submit('sortRecords');
     }
 
     $("#MC_Clear").click(function () {
