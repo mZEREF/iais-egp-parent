@@ -49,7 +49,7 @@ and dependencies (minified).
 	var _rjs=typeof define==="function" && define.amd, /* RequireJS */
 		_njs=typeof module !== "undefined" && module.exports, /* NodeJS */
 		_dlp=("https:"==document.location.protocol) ? "https:" : "http:", /* location protocol */
-		_url="./jquery. .js";
+		_url="./jquery.mousewheel.js";
 	if(!_rjs){
 		if(_njs){
 			require("jquery-mousewheel")($);
