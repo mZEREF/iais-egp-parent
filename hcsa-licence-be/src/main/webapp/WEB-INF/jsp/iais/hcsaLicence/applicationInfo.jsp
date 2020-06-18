@@ -9,28 +9,28 @@
                         <tbody>
                         <tr>
                             <td align="right">Application Type</td>
-                            <td>${applicationViewDto.applicationType}</td>
+                            <td style="padding-left : 20px">${applicationViewDto.applicationType}</td>
                         </tr>
                         <tr>
                             <td class="col-xs-6" align="right">Application No. (Overall)
                             </td>
-                            <td class="col-xs-6">${applicationViewDto.applicationNoOverAll}</td>
+                            <td class="col-xs-6" style="padding-left : 20px">${applicationViewDto.applicationNoOverAll}</td>
                         </tr>
                         <tr>
                             <td align="right">Application No.</td>
-                            <td>${applicationViewDto.applicationDto.applicationNo}</td>
+                            <td style="padding-left : 20px">${applicationViewDto.applicationDto.applicationNo}</td>
                         </tr>
                         <tr>
                             <td align="right">Service Type</td>
-                            <td>${applicationViewDto.serviceType}</td>
+                            <td style="padding-left : 20px">${applicationViewDto.serviceType}</td>
                         </tr>
                         <tr>
                             <td align="right">Submission Date</td>
-                            <td>${applicationViewDto.submissionDate}</td>
+                            <td style="padding-left : 20px">${applicationViewDto.submissionDate}</td>
                         </tr>
                         <tr>
                             <td align="right">Current Status</td>
-                            <td>${applicationViewDto.currentStatus}</td>
+                            <td style="padding-left : 20px">${applicationViewDto.currentStatus}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -72,19 +72,19 @@
                         <tbody>
                         <tr>
                             <td class="col-xs-6" align="right">HCI Code</td>
-                            <td class="col-xs-6">${applicationViewDto.hciCode == null || applicationViewDto.hciCode == "" ? '-' : applicationViewDto.hciCode}</td>
+                            <td class="col-xs-6" style="padding-left : 20px">${applicationViewDto.hciCode == null || applicationViewDto.hciCode == "" ? '-' : applicationViewDto.hciCode}</td>
                         </tr>
                         <tr>
                             <td align="right">HCI Name</td>
-                            <td>${applicationViewDto.hciName == null || applicationViewDto.hciName == "" ? '-' : applicationViewDto.hciName}</td>
+                            <td style="padding-left : 20px">${applicationViewDto.hciName == null || applicationViewDto.hciName == "" ? '-' : applicationViewDto.hciName}</td>
                         </tr>
                         <tr>
                             <td align="right">HCI Address</td>
-                            <td>${applicationViewDto.hciAddress == null || applicationViewDto.hciAddress == "" ? '-' : applicationViewDto.hciAddress}</td>
+                            <td style="padding-left : 20px">${applicationViewDto.hciAddress == null || applicationViewDto.hciAddress == "" ? '-' : applicationViewDto.hciAddress}</td>
                         </tr>
                         <tr>
                             <td align="right">Telephone</td>
-                            <td>${applicationViewDto.telephone == null || applicationViewDto.telephone == "" ? '-' : applicationViewDto.telephone}</td>
+                            <td style="padding-left : 20px">${applicationViewDto.telephone == null || applicationViewDto.telephone == "" ? '-' : applicationViewDto.telephone}</td>
                         </tr>
                         <%--                                                    <tr>--%>
                         <%--                                                        <td align="right">Fax</td>--%>
