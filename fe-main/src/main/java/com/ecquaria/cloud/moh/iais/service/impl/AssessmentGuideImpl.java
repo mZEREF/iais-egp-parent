@@ -4,9 +4,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class AssessmentGuideImpl implements AssessmentGuideService {
 
     @Autowired

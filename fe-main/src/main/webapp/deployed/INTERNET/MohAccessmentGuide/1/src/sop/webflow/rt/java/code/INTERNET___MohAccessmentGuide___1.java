@@ -14,118 +14,121 @@ import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 
-public class INTERNET___SelfAssessmentSchematics___1 extends BaseProcessClass {
-	private static final String DELEGATOR ="selfAssessmentSchematicsDelegator";
+public class INTERNET___MohAccessmentGuide___1 extends BaseProcessClass {
+	private static final String DELEGATOR ="halpAssessmentGuideDelegator";
 
 
 	public void start_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "start", this);
-	// 		start->OnStepProcess
 	}
 
 	public void perDate_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "perDate", this);
-// 		perDate->OnStepProcess
-	}
-
-	public void doSearch_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "doSearch", this);
-// 		doSearch->OnStepProcess
 	}
 
 	public void newApp1_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "newApp1", this);
-// 		newApp1->OnStepProcess
 	}
 
 	public void newApp2_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "newApp2", this);
-// 		newApp2->OnStepProcess
 	}
 
 	public void newApp3_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "newApp3", this);
-// 		newApp3->OnStepProcess
 	}
 
 	public void renewLic_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "renewLic", this);
-// 		renewLic->OnStepProcess
 	}
 
 	public void renewLicUpdate_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "renewLicUpdate", this);
-// 		renewLicUpdate->OnStepProcess
 	}
 
 	public void amendLic1_1_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "amendLic1_1", this);
-// 		amendLic1_1->OnStepProcess
 	}
 
 	public void amendLic1_2_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "amendLic1_2", this);
-// 		amendLic1_2->OnStepProcess
 	}
 
 	public void amendLic2_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "amendLic2", this);
-// 		amendLic2->OnStepProcess
 	}
 
 	public void amendLic3_1_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "amendLic3_1", this);
-// 		amendLic3_1->OnStepProcess
 	}
 
 	public void amendLic3_2_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "amendLic3_2", this);
-// 		amendLic3_2->OnStepProcess
 	}
 
 	public void amendLic4_1_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "amendLic4_1", this);
-// 		amendLic4_1->OnStepProcess
 	}
 
 	public void amendLic4_2_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "amendLic4_2", this);
-// 		amendLic4_2->OnStepProcess
 	}
 
 	public void ceaseLic_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "ceaseLic", this);
-// 		ceaseLic->OnStepProcess
 	}
 
 	public void withdrawApp_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "withdrawApp", this);
-// 		withdrawApp->OnStepProcess
 	}
 
 	public void resumeDraftApp_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "resumeDraftApp", this);
-// 		resumeDraftApp->OnStepProcess
 	}
 
 	public void subDateMoh_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "subDateMoh", this);
-// 		subDateMoh->OnStepProcess
 	}
 
 	public void updateAdminPers_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "updateAdminPers", this);
-// 		updateAdminPers->OnStepProcess
 	}
 
-	public void page_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "page", this);
-// 		page->OnStepProcess
+	public void doWithdrawalStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doWithdrawalStep", this);
 	}
 
-	public void sort_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "sort", this);
-// 		sort->OnStepProcess
+	public void doRenewStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doRenewStep", this);
 	}
+
+	public void doCeasLicStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doCeasLicStep", this);
+	}
+
+	public void doNewAppStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doNewAppStep", this);
+	}
+
+	public void submitDateMohStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "submitDateMohStep", this);
+	}
+
+	public void doAmenfLicStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doAmenfLicStep", this);
+	}
+
+	public void resumeDraftAppStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "resumeDraftAppStep", this);
+	}
+
+	public void updateAdminPesStep_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "updateAdminPesStep", this);
+	}
+
+	public void prepareSwitch_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "prepareSwitch", this);
+	}
+	
 
 }
