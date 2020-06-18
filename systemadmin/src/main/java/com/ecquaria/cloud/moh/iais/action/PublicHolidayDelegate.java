@@ -289,23 +289,23 @@ public class PublicHolidayDelegate {
      */
     public void doSearch(BaseProcessClass bpc){
         initSearchParam();
-        String description = ParamUtil.getRequestString(bpc.request,"des");
-        String year = ParamUtil.getRequestString(bpc.request,"year");
-        String nonWorking = ParamUtil.getRequestString(bpc.request,"nonWorking");
-        String status = ParamUtil.getRequestString(bpc.request,"searchStatus");
-        if(description != null && !StringUtil.isEmpty(description)){
+        String description = ParamUtil.getString(bpc.request,"description");
+        String year = ParamUtil.getString(bpc.request,"year");
+        String nonWorking = ParamUtil.getString(bpc.request,"nonWorking");
+        String status = ParamUtil.getString(bpc.request,"searchStatus");
+        if(!StringUtil.isEmpty(description)){
             holidaySearchParam.addFilter("description", "%" + description + "%",true);
             ParamUtil.setSessionAttr(bpc.request,"description",description);
         }else{
             ParamUtil.setSessionAttr(bpc.request,"description",null);
         }
-        if(year != null && !StringUtil.isEmpty(year)){
+        if(!StringUtil.isEmpty(year)){
             holidaySearchParam.addFilter("year", "%" + year + "%",true);
             ParamUtil.setSessionAttr(bpc.request,"year",year);
         }else{
             ParamUtil.setSessionAttr(bpc.request,"year",null);
         }
-        if(nonWorking != null && !StringUtil.isEmpty(nonWorking)){
+        if(!StringUtil.isEmpty(nonWorking)){
             try {
                 Date work = Formatter.parseDate(nonWorking);
                 String workString = Formatter.formatDateTime(work,"yyyy-MM-dd");
@@ -317,7 +317,7 @@ public class PublicHolidayDelegate {
         }else{
             ParamUtil.setSessionAttr(bpc.request,"nonWorking",null);
         }
-        if(status != null && !StringUtil.isEmpty(status)){
+        if(!StringUtil.isEmpty(status)){
             holidaySearchParam.addFilter("status",  status,true);
             ParamUtil.setSessionAttr(bpc.request,"searchStatus",status);
         }else{

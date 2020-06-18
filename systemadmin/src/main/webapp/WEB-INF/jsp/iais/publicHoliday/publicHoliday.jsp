@@ -28,8 +28,8 @@
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">Description</label>
                                     <div class="col-md-4">
-                                        <input id="des" name="des" type="text" maxlength="255"
-                                               value="${des}">
+                                        <input id="description" name="description" type="text" maxlength="255"
+                                               value="${description}">
                                     </div>
                                     <label class="col-md-2 control-label">Year</label>
                                     <div class="col-md-4">
