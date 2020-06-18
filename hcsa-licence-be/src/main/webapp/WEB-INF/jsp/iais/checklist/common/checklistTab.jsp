@@ -88,15 +88,12 @@
                                                 <p><iais:code code="${adhocItem.riskLvl}"></iais:code></p>
                                             </td>
 
-                                            <c:if test="${adhocActionFlag == 'Y'}">
-                                                <td>
-                                                    <button id="removeAdhocItemId"
-                                                            onclick="removeAdhocItem()"
-                                                            value="${adhocItem.question}" type="button">
-                                                        Remove
-                                                    </button>
-                                                </td>
-                                            </c:if>
+                                            <td>
+                                                <c:if test="${adhocActionFlag == 'Y'}">
+                                                    <button onclick="removeAdhocItem('<iais:mask name="crud_action_value" value="${status.index}"/>')" type="button"> Remove </button>
+                                                </c:if>
+                                            </td>
+
                                         </tr>
                                     </c:forEach>
                                     </tbody>

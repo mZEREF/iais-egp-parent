@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.ChecklistConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
@@ -43,7 +44,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -78,7 +78,7 @@ public class AdhocChecklistDelegator {
     public void startStep(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
-        ParamUtil.setSessionAttr(request, "adhocActionFlag", "Y");
+        ParamUtil.setSessionAttr(request, ChecklistConstant.ADHOC_ITEM_ACTION_FLAG, "Y");
     }
 
     /**
@@ -169,7 +169,7 @@ public class AdhocChecklistDelegator {
 
             ParamUtil.setRequestAttr(bpc.request, "preInspInitFlag", InspectionConstants.SWITCH_ACTION_BACK);
 
-            ParamUtil.setSessionAttr(bpc.request, "adhocActionFlag", "N");
+            ParamUtil.setSessionAttr(bpc.request, ChecklistConstant.ADHOC_ITEM_ACTION_FLAG, "N");
             /*adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);*/
         }
     }
@@ -210,7 +210,7 @@ public class AdhocChecklistDelegator {
      * @throws
      */
     public void doBack(BaseProcessClass bpc) {
-        ParamUtil.setSessionAttr(bpc.request, "adhocActionFlag", "N");
+        ParamUtil.setSessionAttr(bpc.request, ChecklistConstant.ADHOC_ITEM_ACTION_FLAG, "N");
     }
 
     /**
@@ -232,19 +232,19 @@ public class AdhocChecklistDelegator {
      */
     public void removeAdhocItem(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-
-        String value = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String value = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
 
         AdhocCheckListConifgDto adhocCheckListConifgDto = getAdhocItemBySession(request);
         List<AdhocChecklistItemDto> allAdhocItem = adhocCheckListConifgDto.getAllAdhocItem();
-        Iterator<AdhocChecklistItemDto> iterator = allAdhocItem.iterator();
-        while (iterator.hasNext()){
-            AdhocChecklistItemDto adhodItem = iterator.next();
-            String question = adhodItem.getQuestion();
-            if (value.equals(question)){
-                iterator.remove();
+        int val = Integer.parseInt(value);
+        int index = 0;
+        for (AdhocChecklistItemDto i : allAdhocItem){
+            if (val == index){
+                allAdhocItem.remove(index);
                 break;
             }
+
+            index++;
         }
 
         if(allAdhocItem.isEmpty()){
@@ -308,6 +308,7 @@ public class AdhocChecklistDelegator {
 
         selectItemList.forEach(selectItem -> {
             AdhocChecklistItemDto adhocItem = new AdhocChecklistItemDto();
+
             String question = selectItem.getChecklistItem();
             String answerType = selectItem.getAnswerType();
             String riskLevel = selectItem.getRiskLevel();

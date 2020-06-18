@@ -68,9 +68,8 @@
         SOP.Crud.cfxSubmit("mainForm", "saveAdhocItem");
     }
 
-    function removeAdhocItem() {
-        var content = $("#removeAdhocItemId").val();
-        SOP.Crud.cfxSubmit("mainForm", "removeAdhocItem", content);
+    function removeAdhocItem(id) {
+        SOP.Crud.cfxSubmit("mainForm", "removeAdhocItem", id);
     }
 
 
