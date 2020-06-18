@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <p><a class="component-desc" style="color: black" href="javascript:void(0)" onclick="Utils.submit('mainForm', 'doBack')"><em class="fa fa-chevron-left"></em> Back to Home</a></p>
+    &nbsp;<p style="padding-right: 50%"><a class="component-desc" style="color: black" href="javascript:void(0)" onclick="Utils.submit('mainForm', 'doBack')"><em class="fa fa-chevron-left"></em> Back to Home</a></p>
       <div class="main-content">
         <div class="row">
           <div class="col-xs-12">
