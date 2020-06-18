@@ -34,11 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -46,6 +42,7 @@ import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -349,12 +346,12 @@ public class RequestForChangeDelegator {
         Map<String,String> error = doValidateEmpty(uen,selectCheakboxs,email);
         boolean isEmail = ValidationUtils.isEmail(email);
         if(file != null && file.getSize() != 0){
-           Map<String,Boolean> fileValidate =  ValidationUtils.validateFile(file);
+            int maxFile = systemParamConfig.getUploadFileLimit();
+            String fileType = systemParamConfig.getUploadFileType();
+            log.info(StringUtil.changeForLog("The maxFile is -->:"+maxFile));
+            log.info(StringUtil.changeForLog("The fileType is -->:"+fileType));
+            Map<String,Boolean> fileValidate =  ValidationUtils.validateFile(file,Arrays.asList(FileUtils.fileTypeToArray(fileType)),(maxFile * 1024 *1024L));
            if(fileValidate != null && fileValidate.size() >0){
-               int maxFile = systemParamConfig.getUploadFileLimit();
-               String fileType = systemParamConfig.getUploadFileType();
-               log.info(StringUtil.changeForLog("The maxFile is -->:"+maxFile));
-               log.info(StringUtil.changeForLog("The fileType is -->:"+fileType));
                if(!fileValidate.get("fileType")){
                    error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0018",fileType,"fileType"));
                }
