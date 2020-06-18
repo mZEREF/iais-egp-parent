@@ -155,8 +155,7 @@
                                         </c:if>
                                         <c:if test="${licenceQuery.status != 'LICEST001'}">
                                             <p href="#">${licenceQuery.licenceNo}</p>
-                                            <input type="hidden" name="licenId${status.index}"
-                                                   value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
+                                            <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                         </c:if>
 
                                     </td>
