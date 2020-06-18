@@ -95,7 +95,13 @@ public class FeAdminManageDelegate {
         FeUserDto accountDto = new FeUserDto();
         accountDto.setUenNo(organizationDto.getUenNo());
         accountDto.setOrgId(organizationId);
-
+        String isAdmin ;
+        if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)){
+            isAdmin = "1";
+        }else{
+            isAdmin = "0";
+        }
+        ParamUtil.setSessionAttr(bpc.request,"isAdmin",isAdmin);
         ParamUtil.setSessionAttr(bpc.request,"inter_user_attr", accountDto);
         ParamUtil.setSessionAttr(bpc.request,"canEditFlag", "Y");
     }
