@@ -12,7 +12,7 @@
                     data-toggle="tooltip" data-html="true"
                     title="" data-original-title=""
                     aria-describedby="tooltip883061">i</a></span>
-            <span>| Add/Remove subsumed service(s). service subcategory(ies)</span>
+            <span class="right-content">Add/Remove subsumed service(s). service subcategory(ies)</span>
         </label>
     </div>
     <div class="form-check progress-step-check" style="width: 900px">
@@ -26,7 +26,7 @@
                     data-toggle="tooltip" data-html="true"
                     title="" data-original-title=""
                     aria-describedby="tooltip883061">i</a></span>
-            <span>| For expiring licences</span>
+            <span class="right-content">Update a change in HCI name, premises address, contact information, operating hours</span>
         </label>
     </div>
     <div class="form-check progress-step-check" style="width: 900px">
@@ -35,8 +35,8 @@
                aria-invalid="false">
         <label class="form-check-label" for="amendLicence3">
             <span class="check-circle"></span>
-            <span class="left-content">Apply for a new licence</span>
-            <span>| For new services or premises</span>
+            <span class="left-content">Update licensee information</span>
+            <span class="right-content">Update a change in licensee, or licensee’s information </span>
         </label>
     </div>
     <div class="form-check progress-step-check" style="width: 900px">
@@ -45,12 +45,12 @@
                aria-invalid="false">
         <label class="form-check-label" for="amendLicence4">
             <span class="check-circle"></span>
-            <span class="left-content">Renew my licence<a
+            <span class="left-content">Update personnel information<a
                     class="btn-tooltip styleguide-tooltip"
                     data-toggle="tooltip" data-html="true"
                     title="" data-original-title=""
                     aria-describedby="tooltip883061">i</a></span>
-            <span>| For expiring licences</span>
+            <span class="right-content">Update a change in Principal Officer, Clinical Governance Officer, other Service Personnel and/or his/her contact information</span>
         </label>
     </div>
 </div>

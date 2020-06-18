@@ -13,7 +13,7 @@
                             data-toggle="tooltip" data-html="true"
                             title="" data-original-title=""
                             aria-describedby="tooltip883061">i</a></span>
-                    <span>| For new services or premises</span>
+                    <span class="right-content">For new services or premises</span>
                 </label>
             </div>
             <%--
@@ -27,7 +27,7 @@
                 <label class="form-check-label" for="renewLicence">
                     <span class="check-circle"></span>
                     <span class="left-content">Renew my licence</span>
-                    <span>| For expiring licences</span>
+                    <span class="right-content">For expiring licences</span>
                 </label>
             </div>
             <%--
@@ -45,7 +45,7 @@
                             data-toggle="tooltip" data-html="true"
                             title="" data-original-title=""
                             aria-describedby="tooltip883061">i</a></span>
-                    <span>| For changes in address, personnel, or subsumed services</span>
+                    <span class="right-content">For changes in address, personnel, or subsumed services</span>
                 </label>
             </div>
             <%--
@@ -63,7 +63,7 @@
                             data-toggle="tooltip" data-html="true"
                             title="" data-original-title=""
                             aria-describedby="tooltip883061">i</a></span>
-                    <span>| For service cessation and premises removal</span>
+                    <span class="right-content">For service cessation and premises removal</span>
                 </label>
             </div>
             <%--
@@ -78,7 +78,7 @@
                        for="withdrawApplication">
                     <span class="check-circle"></span>
                     <span class="left-content">Withdraw my application</span>
-                    <span>| For withdrawing my application</span>
+                    <span class="right-content">For withdrawing my application</span>
                 </label>
             </div>
             <%--
@@ -93,7 +93,7 @@
                        for="resumeDraftApplication">
                     <span class="check-circle"></span>
                     <span class="left-content">Resume my draft application</span>
-                    <span>| For resuming a draft application</span>
+                    <span class="right-content">For resuming a draft application</span>
                 </label>
             </div>
             <%--
@@ -107,7 +107,7 @@
                 <label class="form-check-label" for="submitDataMoh">
                     <span class="check-circle"></span>
                     <span class="left-content">Submit data to MOH</span>
-                    <span>| For submission of data to MOH (e.g. Lab Development Tests)</span>
+                    <span class="right-content">For submission of data to MOH (e.g. Lab Development Tests)</span>
                 </label>
             </div>
             <%--
@@ -122,7 +122,7 @@
                        for="updateAdminPersonnel">
                     <span class="check-circle"></span>
                     <span class="left-content">Update admin personnel</span>
-                    <span>| For licensee/authorised persons to add/remove admin personnel</span>
+                    <span class="right-content">For licensee/authorised persons to add/remove admin personnel</span>
                 </label>
             </div>
         </div>

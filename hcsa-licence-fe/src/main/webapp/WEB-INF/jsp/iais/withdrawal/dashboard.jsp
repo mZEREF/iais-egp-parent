@@ -12,7 +12,7 @@
         </div>
     </div>
     <div class="row">
-        <div style="margin-top: 20px;margin-left: 2%" >
+        <div style="margin-top: 20px;margin-left: 9%" >
             <h1>Withdrawal Form</h1>
         </div>
     </div>

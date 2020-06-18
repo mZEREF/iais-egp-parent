@@ -1,7 +1,6 @@
 <div class="form-check-gp">
     <p class="form-check-title">Do you wish to make any update to the existing licence(s) before renewing?
     </p>
-
     <div class="form-check progress-step-check" >
         <input class="form-check-input" id="renewLicence1"
                type="radio" name="renewType"
