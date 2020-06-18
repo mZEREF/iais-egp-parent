@@ -41,7 +41,7 @@
                       </iais:row>
                       <iais:action >
                         <p class="print">
-                          <a href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a>
+                          <span style="font-size: 16px;"><a href="" id="print-ack"> <em class="fa fa-print"></em>Print</a></span>
                           <a class="btn btn-primary" style="float:right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
                         </p>
                       </iais:action>
