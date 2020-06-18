@@ -52,5 +52,15 @@ public class INTRANET___MohMassEmailSMS___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "search", this); 
 	}
 
+	public void uploadfile_OnStepProcess_0() throws Exception {
+	// 		Uploadfile->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "insertFile", this); 
+	}
+
+	public void switchStep_OnStepProcess_0() throws Exception {
+	// 		SwitchStep->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "switchStep", this); 
+	}
+
 
 }

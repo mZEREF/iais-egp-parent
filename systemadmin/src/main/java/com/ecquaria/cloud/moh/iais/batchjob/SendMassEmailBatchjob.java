@@ -118,12 +118,11 @@ public class SendMassEmailBatchjob {
         return item;
     }
 
-    private void sendSMS(String msgId,List<String> recipts,String content) throws IOException, TemplateException {
+    private void sendSMS(String msgId,List<String> recipts,String content){
         try{
-            String templateMessageByContent = content;
             SmsDto smsDto = new SmsDto();
             smsDto.setSender(mailSender);
-            smsDto.setContent(templateMessageByContent);
+            smsDto.setContent(content);
             smsDto.setOnlyOfficeHour(true);
             String refNo = msgId;
             if (!IaisCommonUtils.isEmpty(recipts)) {

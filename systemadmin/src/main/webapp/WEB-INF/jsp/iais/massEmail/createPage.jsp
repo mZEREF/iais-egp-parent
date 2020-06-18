@@ -8,7 +8,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
-    <form class="form-horizontal" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
+    <form class="form-horizontal" method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="crud_action_type" value="">
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
@@ -52,7 +52,7 @@
                             </iais:value>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group" id="addEmail" <c:if test="${distribution.mode eq 'SMS'}">hidden</c:if>>
                             <label class="col-xs-4 col-md-4 control-label" >Add Email Addresses</label>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
@@ -62,12 +62,22 @@
                             </iais:value>
                         </div>
 
+                        <div class="form-group" id="addMobile" <c:if test="${empty distribution.mode or  distribution.mode eq 'Email'}">hidden</c:if>>
+                            <label class="col-xs-4 col-md-4 control-label" >Add Mobile</label>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <textarea cols="50" rows="10" name="mobile" class="textarea" id="mobile" title="content">${emailAddress}</textarea>
+                                    <span id="error_mobile" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
+                            </iais:value>
+                        </div>
+
                         <div class="form-group">
                             <iais:field value="Mode of Delivery" required="true"/>
                             <c:choose>
-                                <c:when test="${distribution.getId() == null}">
+                                <c:when test="${'1'.equals(distributionCanEdit)}">
                                     <iais:value width="10">
-                                        <iais:select firstOption="Please Select" name="mode" options="modeSelection" value="${distribution.getMode()}" ></iais:select>
+                                        <iais:select firstOption="Please Select" name="mode" id="mode" options="modeSelection" value="${distribution.getMode()}" ></iais:select>
                                     </iais:value>
                                 </c:when>
                                 <c:otherwise>
@@ -77,7 +87,23 @@
                                 </c:otherwise>
                             </c:choose>
                         </div>
+                        <div class="form-group">
+                            <label class="col-xs-4 col-md-4 control-label">Attachments</label>
+                            <div class="document-upload-gp col-xs-8 col-md-8">
+                                <div class="document-upload-list">
+                                    <div class="file-upload-gp">
+                                        <div class=" col-md-4  filename">
+                                            <c:out value="${fileName}"/>
+                                        </div>
+                                        <div class="text-right filecontent">
+                                            <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
+                                            <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                                        </div>
+                                    </div>
 
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
@@ -127,4 +153,23 @@
             }
         });
     })
+
+    $("#mode").change(function () {
+        if($(this).val() =="Email"){
+            $("#addEmail").show();
+            $("#addMobile").hide();
+        }else{
+            $("#addEmail").hide();
+            $("#addMobile").show();
+        }
+    })
+
+    $('#selectedFile').change(function (event) {
+        var files = event.target.files;
+        $(".filename").html("");
+        for(var i=0;i<files.length;i++){
+            $(".filename").append("<div class='fileNameDisplay'>"+files[i].name+"</div>");
+        }
+        SOP.Crud.cfxSubmit("mainForm","upload");
+    });
 </script>

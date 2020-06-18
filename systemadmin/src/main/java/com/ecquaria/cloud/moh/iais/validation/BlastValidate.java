@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -70,7 +71,7 @@ public class BlastValidate implements CustomizeValidator {
 
             double size = (double)(filesSize / 0x400) / (double) 0x400;
             if (Math.ceil(size) > 0x05){
-                errMap.put(FILE_UPLOAD_ERROR, "GENERAL_ERR0004");
+                errMap.put(FILE_UPLOAD_ERROR, MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(5),"sizeMax"));
             }
         }
 

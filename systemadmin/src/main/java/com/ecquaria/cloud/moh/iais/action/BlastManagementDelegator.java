@@ -300,12 +300,13 @@ public class BlastManagementDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, SMS);
             }else{
                 String fileName = "";
+                StringBuffer fileBuffer = new StringBuffer();
                 if(blastManagementDto.getAttachmentDtos() != null){
                     for (AttachmentDto item: blastManagementDto.getAttachmentDtos()
                     ) {
-                        fileName = fileName + item.getDocName() + ",";
+                        fileBuffer.append(item.getDocName()).append(',');
                     }
-                    fileName = fileName.substring(0,fileName.length()-1);
+                    fileName = fileBuffer.substring(0,fileBuffer.length()-1);
                 }
                 if(StringUtil.isEmpty(fileName)){
                     ParamUtil.setRequestAttr(bpc.request, "fileName", "");
@@ -384,12 +385,13 @@ public class BlastManagementDelegator {
     public void writeMessageSuccess(BaseProcessClass bpc){
         BlastManagementDto blastManagementDto = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"blastManagementDto");
         String fileName = "";
+        StringBuffer fileBuffer = new StringBuffer();
         if(blastManagementDto.getAttachmentDtos() != null){
             for (AttachmentDto item: blastManagementDto.getAttachmentDtos()
             ) {
-                fileName = fileName + item.getDocName() + ",";
+                fileBuffer.append(item.getDocName()).append(',');
             }
-            fileName = fileName.substring(0,fileName.length()-1);
+            fileName = fileBuffer.substring(0,fileBuffer.length()-1);
         }
         if(StringUtil.isEmpty(fileName)){
             ParamUtil.setRequestAttr(bpc.request, "fileName", "");

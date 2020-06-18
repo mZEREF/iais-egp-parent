@@ -16,18 +16,33 @@ import java.util.Map;
  **/
 public class DistributionListValidate implements CustomizeValidator {
 
+    private static final String EMAIL = "Email";
+    private static final String SMS = "SMS";
+
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         DistributionListWebDto distribution = (DistributionListWebDto) ParamUtil.getSessionAttr(request, "distribution");
-        if(distribution.getEmailAddress() != null){
-            for (String item :distribution.getEmailAddress()
-            ) {
-                if(!ValidationUtils.isEmail(item)){
-                    errMap.put("addr","Please key in a valid email address");
+        if(EMAIL.equals(distribution.getMode())){
+            if(distribution.getEmailAddress() != null){
+                for (String item :distribution.getEmailAddress()
+                ) {
+                    if(!ValidationUtils.isEmail(item)){
+                        errMap.put("addr","Please key in a valid email address");
+                    }
+                }
+            }
+        }else{
+            if(distribution.getEmailAddress() != null){
+                for (String item :distribution.getEmailAddress()
+                ) {
+                    if (!item.matches("^[8|9][0-9]{7}$")) {
+                        errMap.put("mobileNo", "Please key in a valid mobile number");
+                    }
                 }
             }
         }
+
         return errMap;
     }
 }

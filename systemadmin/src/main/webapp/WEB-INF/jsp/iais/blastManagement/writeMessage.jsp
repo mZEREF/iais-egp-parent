@@ -55,8 +55,8 @@
                                             <input id="selectedFile" name="selectedFile" type="file" multiple="multiple" style="display: none;" aria-label="selectedFile1">
                                             <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
                                         </div>
+                                        <span id="error_fileUploadError" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
