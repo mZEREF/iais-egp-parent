@@ -244,7 +244,11 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId,
                     licenseeDto, loginContext, preInspecComments);
             if(!StringUtil.isEmpty(selfRfiDecision)){
-                applicationDto.setSelfAssMtFlag(2);
+                if(IaisCommonUtils.isEmpty(premCheckItems)) {
+                    applicationDto.setSelfAssMtFlag(0);
+                } else {
+                    applicationDto.setSelfAssMtFlag(2);
+                }
             }
             applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
             if(!StringUtil.isEmpty(selfRfiDecision)){
@@ -254,9 +258,17 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             applicationService.updateFEApplicaiton(applicationDto1);
             applicationViewDto.setApplicationDto(applicationDto1);
         } else {
-            applicationDto.setSelfAssMtFlag(2);
+            if(IaisCommonUtils.isEmpty(premCheckItems)) {
+                applicationDto.setSelfAssMtFlag(0);
+            } else {
+                applicationDto.setSelfAssMtFlag(2);
+            }
             applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
-            applicationDto1.setSelfAssMtFlag(2);
+            if(IaisCommonUtils.isEmpty(premCheckItems)) {
+                applicationDto.setSelfAssMtFlag(0);
+            } else {
+                applicationDto.setSelfAssMtFlag(2);
+            }
             applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             applicationService.updateFEApplicaiton(applicationDto1);
             applicationViewDto.setApplicationDto(applicationDto1);
