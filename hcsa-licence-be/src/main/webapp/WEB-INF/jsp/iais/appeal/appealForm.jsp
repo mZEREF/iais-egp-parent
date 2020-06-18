@@ -1,20 +1,13 @@
-<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
-<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
-<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <webui:setLayout name="iais-internet"/>
-
-<%
-  sop.webflow.rt.api.BaseProcessClass process =
-          (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
-%>
 
 <div class="main-content">
   <form id="mainForm" enctype="multipart/form-data" style="margin-left: 15%" class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
+    <c:set value="${applicationViewDto.applicationDto}" var="applicationDto"/>
 
   <div class="form-group">
     <div class="col-xs-12 col-md-10" style="margin-left: 1%">
@@ -38,7 +31,7 @@
           <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
             <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
           </c:if>
-          <c:if test="${lateFee==true}">
+          <c:if test="${isLateFeeAppealType==true}">
             <option value="MS002" <c:if test="${appPremiseMiscDto.reason=='MS002'}">selected="selected"</c:if>>Appeal against late renewal fee</option>
           </c:if>
             <c:if test="${maxCGOnumber==true}">

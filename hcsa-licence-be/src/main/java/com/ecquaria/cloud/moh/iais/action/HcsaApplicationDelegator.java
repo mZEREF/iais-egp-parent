@@ -2058,6 +2058,7 @@ public class HcsaApplicationDelegator {
             String appId = applicationDto.getId();
             AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
             if(premiseMiscDto != null){
+                String appealNo = "";
                 String reason = premiseMiscDto.getReason();
                 isOtherAppealType = true;
                 if (ApplicationConsts.APPEAL_REASON_LICENCE_CHANGE_PERIOD.equals(reason)) {
@@ -2068,11 +2069,22 @@ public class HcsaApplicationDelegator {
                     isOtherAppealType = false;
                 }
                 String oldAppId = premiseMiscDto.getRelateRecId();
+                String type = "";
                 ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                 if(oldApplication != null){
+                    appealNo = oldApplication.getApplicationNo();
+                    type = "application";
                     ParamUtil.setSessionAttr(request, "oldApplicationNo", oldApplication.getApplicationNo());
                 }
+                String appealType = premiseMiscDto.getAppealType();
+                if(ApplicationConsts.APPEAL_TYPE_LICENCE.equals(appealType)){
+                    LicenceDto licenceDto = licenceService.getLicenceDto(premiseMiscDto.getRelateRecId());
+                    appealNo = licenceDto.getLicenceNo();
+                    type = "licence";
+                }
+                ParamUtil.setSessionAttr(request, "appealNo", appealNo);
                 ParamUtil.setSessionAttr(request, "premiseMiscDto", premiseMiscDto);
+                ParamUtil.setSessionAttr(request, "type", type);
             }
             //first ASO have no recommendation
             if(appPremisesRecommendationDto != null){
