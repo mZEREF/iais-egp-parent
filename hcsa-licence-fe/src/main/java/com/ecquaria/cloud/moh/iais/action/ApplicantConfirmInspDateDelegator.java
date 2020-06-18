@@ -61,6 +61,7 @@ public class ApplicantConfirmInspDateDelegator {
      */
     public void userConfirmInspDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmInspDateStart start ...."));
+        ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", null);
         String appPremCorrId = ParamUtil.getMaskedString(bpc.request, "appPremCorrId");
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();

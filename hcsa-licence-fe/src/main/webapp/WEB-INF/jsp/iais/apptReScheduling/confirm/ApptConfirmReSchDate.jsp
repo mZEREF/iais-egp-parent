@@ -21,7 +21,7 @@
     <br>
     <form method="post" id="mainConfirmForm" action=<%=process.runtime.continueURL()%>>
       <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-      <input type="hidden" name="userComfireInspDateType" value="">
+      <input type="hidden" name="apptUserChooseDateType" value="">
       <input type="hidden" id="actionValue" name="actionValue" value="">
       <div class="main-content">
         <div class="row">
@@ -65,6 +65,7 @@
                       </div>
                       <br>
                       <iais:action>
+                        <button class="btn btn-primary" style="float:right" data-target= "#rejectDate" type="button">Reject All</button>
                         <iais:confirm yesBtnCls="btn btn-primary" msg="APPT_ERROR0003" callBack="apptConfirmReSchDateRej()" popupOrder="rejectDate" title="Message from webpage" needCancel="false"></iais:confirm>
                         <span style="float:right">&nbsp;</span>
                         <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptConfirmReSchDateCon()">Accept</button>
@@ -88,7 +89,7 @@
     })
 
     function apptConfirmReSchDateSubmit(action){
-        $("[name='userComfireInspDateType']").val(action);
+        $("[name='apptUserChooseDateType']").val(action);
         var mainPoolForm = document.getElementById('mainConfirmForm');
         mainPoolForm.submit();
     }

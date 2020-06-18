@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
@@ -35,8 +37,14 @@ public class ApptConfirmReSchDateDelegator {
      */
     public void apptUserChooseDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptUserChooseDateStart start ...."));
-
+        ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", null);
+        String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+        String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+        InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
+        inspSetMaskValueDto.setApplicationNo(applicationNo);
         AuditTrailHelper.auditFunction("Appointment Re-Scheduling Confirm date", "Appointment Re-Scheduling Confirm date");
+        ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", inspSetMaskValueDto);
+        ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, messageId);
     }
 
     /**
@@ -57,7 +65,7 @@ public class ApptConfirmReSchDateDelegator {
      */
     public void apptUserChooseDatePre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptUserChooseDatePre start ...."));
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"System Proposes Alternate Dates");
+        ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"System Proposes Alternate Dates");
     }
 
     /**
@@ -68,6 +76,7 @@ public class ApptConfirmReSchDateDelegator {
      */
     public void apptUserChooseDateVali(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptUserChooseDateVali start ...."));
+        ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
     }
 
     /**
