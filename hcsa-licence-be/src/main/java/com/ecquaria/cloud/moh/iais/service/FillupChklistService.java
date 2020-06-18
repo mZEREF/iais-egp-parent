@@ -91,4 +91,6 @@ public interface FillupChklistService {
     Map<String,String> userIdNameMapByOrgUserDtos(List<OrgUserDto> orgUserDtos);
 
     InspectionFillCheckListDto getInspectionFillCheckListDtoByInspectionFillCheckListDto(InspectionFillCheckListDto inspectionFillCheckListDto, Map<String,String> orgUserDtos);
+
+    String getOtherOffGropByInspectionFillCheckListDtos(List<InspectionFillCheckListDto> inspectionFillCheckListDtos);
 }

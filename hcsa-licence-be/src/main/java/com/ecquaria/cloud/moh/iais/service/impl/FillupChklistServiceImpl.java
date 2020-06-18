@@ -1376,7 +1376,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(inspectionFillCheckListDto == null){
             return inspectionFillCheckListDto;
         }
-
         int userNum = orgUserDtos.size();
         if(userNum > 1){
             inspectionFillCheckListDto.setMoreOneDraft(true);
@@ -1392,6 +1391,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(IaisCommonUtils.isEmpty(appPremInsDraftDtos)){
             return inspectionFillCheckListDto;
         }else {
+            inspectionFillCheckListDto.setOtherInspectionOfficer(getOtherOffs(appPremInsDraftDtos));
             List<InspectionCheckListAnswerDto> answerDtos = getInspectionCheckListAnswerDtosByAppPremInsDraftDtos(appPremInsDraftDtos);
             for(InspectionCheckQuestionDto inspectionCheckQuestionDto :  inspectionCheckQuestionDtos ){
                  List<InspectionCheckListAnswerDto> answerDtosOne = new ArrayList<>(1);
@@ -1421,6 +1421,40 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return inspectionFillCheckListDto;
     }
 
+    @Override
+    public String getOtherOffGropByInspectionFillCheckListDtos(List<InspectionFillCheckListDto> inspectionFillCheckListDtos){
+        if( !IaisCommonUtils.isEmpty(inspectionFillCheckListDtos)){
+            List<String> otherInspectionOfficers = new ArrayList<>(inspectionFillCheckListDtos.size());
+            for(InspectionFillCheckListDto inspectionFillCheckListDto : inspectionFillCheckListDtos){
+                if( !IaisCommonUtils.isEmpty(inspectionFillCheckListDto.getOtherInspectionOfficer())){
+                    otherInspectionOfficers.addAll(inspectionFillCheckListDto.getOtherInspectionOfficer());
+                }
+            }
+            if( !IaisCommonUtils.isEmpty(otherInspectionOfficers)){
+                StringBuffer stringBuffer = new StringBuffer();
+                for(String otherOff : otherInspectionOfficers){
+                     String otherOffs =  stringBuffer.toString();
+                    if(StringUtil.isEmpty(otherOffs)){
+                        stringBuffer.append(otherOff);
+                    }else if((!StringUtil.isEmpty(otherOffs) && !otherOffs.contains(otherOff) )){
+                        stringBuffer.append(","+ otherOff);
+                    }
+                }
+                return stringBuffer.toString();
+            }
+        }
+        return null;
+    }
+    private  List<String> getOtherOffs(List<AppPremInsDraftDto> appPremInsDraftDtos ){
+        List<String> otherOffs = new ArrayList<>(appPremInsDraftDtos.size());
+        for(AppPremInsDraftDto appPremInsDraftDto : appPremInsDraftDtos){
+            String otherOff = appPremInsDraftDto.getOtherInspectors();
+            if( !StringUtil.isEmpty(otherOff) && !otherOffs.contains(otherOff)){
+                otherOffs.add(otherOff);
+           }
+        }
+        return  otherOffs;
+    }
     private  List<InspectionCheckListAnswerDto>  getInspectionCheckListAnswerDtosByAppPremInsDraftDtos(List<AppPremInsDraftDto> appPremInsDraftDtos){
         List<InspectionCheckListAnswerDto> answerDtos = new ArrayList<>(3);
         for(AppPremInsDraftDto appPremInsDraftDto : appPremInsDraftDtos){

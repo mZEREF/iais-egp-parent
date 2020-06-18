@@ -36,6 +36,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -149,17 +150,25 @@ public class InspectionNcCheckListDelegator {
             serListDto.setFdtoList(ftos);
         }
 
+        List<InspectionFillCheckListDto> inspectionFillCheckListDtos = new ArrayList<>(2);
+        if(commonDto != null){
+            inspectionFillCheckListDtos.add(commonDto);
+        }
         //  change service checklist data
        if(serListDto != null){
            List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
             if(fdtoList != null && fdtoList.size() >0){
+                inspectionFillCheckListDtos.addAll(fdtoList);
               for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList){
                   //get Service draft
                   fillupChklistService.getInspectionFillCheckListDtoByInspectionFillCheckListDto(inspectionFillCheckListDto,orgUserDtos);
                   insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
               }
             }
+           serListDto.setOtherinspectionofficer(fillupChklistService.getOtherOffGropByInspectionFillCheckListDtos(inspectionFillCheckListDtos));
        }
+
+
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
         //get selections dd hh
         ParamUtil.setSessionAttr(request,"hhSelections",(Serializable) IaisCommonUtils.getHHOrDDSelectOptions(true));
