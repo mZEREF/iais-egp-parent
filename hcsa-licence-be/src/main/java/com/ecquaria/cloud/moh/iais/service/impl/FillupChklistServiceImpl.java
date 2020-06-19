@@ -700,6 +700,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         //create
         TaskDto updatedtaskDto = taskService.updateTask(taskDto);
+        taskDto.setApplicationNo(applicationDto.getApplicationNo());
         updatedtaskDto.setId(null);
         updatedtaskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_NCEMAIL);
         updatedtaskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
@@ -743,6 +744,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         //create task
         TaskDto updatedtaskDto = taskService.updateTask(taskDto);
         updatedtaskDto.setId(null);
+        updatedtaskDto.setApplicationNo(applicationDto.getApplicationNo());
         updatedtaskDto.setUserId(loginContext.getUserId());
         updatedtaskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
         updatedtaskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);

@@ -99,8 +99,8 @@ public class BackendAjaxController {
                 }
             }
             List<InspectionAppInGroupQueryDto> lastestResultList = IaisCommonUtils.genNewArrayList();
-            for (String key : lastestResultMap.keySet()) {
-                lastestResultList.add(lastestResultMap.get(key));
+            for (Map.Entry<String, InspectionAppInGroupQueryDto> entry : lastestResultMap.entrySet()) {
+                lastestResultList.add(entry.getValue());
             }
             lastestResultList.sort(Comparator.comparing(InspectionAppInGroupQueryDto::getApplicationNo));
 

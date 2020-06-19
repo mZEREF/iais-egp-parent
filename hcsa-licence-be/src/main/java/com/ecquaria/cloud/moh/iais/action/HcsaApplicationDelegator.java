@@ -1018,7 +1018,12 @@ public class HcsaApplicationDelegator {
             //RFC Application - Send SMS to transferee when licence transfer application is rejected
             sendSMS(msgId,licenseeId,notifyMap);
             //RFC Application - Send SMS to transferor when licence transfer application is rejected
-            sendSMS(msgId,result.getLicenseeId(),notifyMap);
+            if(result != null){
+                sendSMS(msgId,result.getLicenseeId(),notifyMap);
+            }else {
+                log.info("-----RFC Application - Send SMS to transferor when licence transfer application is rejected. licenseeId is null---------");
+            }
+
             //send sms
             sendSMS(msgId,licenseeId,msgInfoMap);
         }

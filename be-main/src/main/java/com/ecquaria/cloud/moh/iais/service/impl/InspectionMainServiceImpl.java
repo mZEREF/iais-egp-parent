@@ -246,7 +246,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
                         applicationViewDto.setApplicationDto(applicationDto1);
                         createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
                         beInspectionStatusClient.createAppInspectionStatusByAppDto(applicationDto);
-                        if(inspectorCheckList != null && inspectorCheckList.size() > 0){
+                        if(!IaisCommonUtils.isEmpty(inspectorCheckList)){
                             inspectionTaskPoolListDto(inspectorCheckList, commPools, inspectionTaskPoolListDto);
                             for(int i = 0; i < inspectorCheckList.size(); i++){
                                 createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
