@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.InspectionShowDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -28,11 +27,8 @@ import java.util.Map;
 @Delegator(value = "hcsaRiskIndividualConfigDelegator")
 @Slf4j
 public class HcsaRiskIndividualConfigDelegator {
-    private HcsaRiskInspectionService hcsaRiskInspectionService;
     @Autowired
-    public HcsaRiskIndividualConfigDelegator(HcsaRiskInspectionService hcsaRiskInspectionService){
-        this.hcsaRiskInspectionService = hcsaRiskInspectionService;
-    }
+    private HcsaRiskInspectionService hcsaRiskInspectionService;
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;

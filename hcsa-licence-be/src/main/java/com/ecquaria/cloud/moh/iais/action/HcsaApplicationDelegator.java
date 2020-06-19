@@ -1370,8 +1370,7 @@ public class HcsaApplicationDelegator {
         //judge the final status is Approve or Reject.
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
         String applicationType = applicationDto.getApplicationType();
-        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
-            if(appPremisesRecommendationDto!=null){
+        if(appPremisesRecommendationDto!= null && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
                 if(!ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                     Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
                     if(null != recomInNumber && recomInNumber == 0){
@@ -1384,8 +1383,7 @@ public class HcsaApplicationDelegator {
                         appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
                     }
                 }
-            }
-        }
+         }
         //appeal save return fee
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
@@ -1394,7 +1392,7 @@ public class HcsaApplicationDelegator {
                     String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
                     AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                     appReturnFeeDto.setApplicationNo(oldApplicationNo);
-                    appReturnFeeDto.setReturnAmount(Double.valueOf(returnFee));
+                    appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
                     appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
                     applicationService.saveAppReturnFee(appReturnFeeDto);
                 }
@@ -1516,7 +1514,6 @@ public class HcsaApplicationDelegator {
         //appeal save return fee
 
 
-        if (broadcastApplicationDto != null){
             ApplicationDto withdrawApplicationDto = broadcastApplicationDto.getApplicationDto();
             if (withdrawApplicationDto != null){
                 /**
@@ -1558,7 +1555,7 @@ public class HcsaApplicationDelegator {
                     sendEmail("",msgInfoMap,applicationNo,taskDto.getUserId(),"");
                 }
             }
-        }
+
         log.info(StringUtil.changeForLog("The routingTask end ..."));
     }
 
@@ -1582,7 +1579,7 @@ public class HcsaApplicationDelegator {
         //ParamUtil.setSessionAttr(request,"isLateFeeAppealType",isLateFeeAppealType);
     }
 
-    private EmailDto sendEmail(String msgId, Map<String, Object> msgInfoMap, String applicationNo, String licenseeId,String subjectSuppInfo) throws IOException, TemplateException {
+    private EmailDto sendEmail(String msgId, Map<String, Object> msgInfoMap, String applicationNo, String licenseeId,String subjectSuppInfo) {
         EmailDto emailDto=new EmailDto();
             //        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
 //        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
@@ -1604,7 +1601,7 @@ public class HcsaApplicationDelegator {
             return emailDto;
     }
 
-    private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap) throws IOException, TemplateException {
+    private void sendSMS(String msgId,String licenseeId,Map<String, Object> msgInfoMap){
         //MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
         //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
         String templateMessageByContent = "send sms";

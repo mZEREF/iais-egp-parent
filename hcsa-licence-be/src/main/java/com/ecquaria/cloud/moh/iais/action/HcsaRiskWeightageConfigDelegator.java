@@ -28,10 +28,6 @@ public class HcsaRiskWeightageConfigDelegator {
     @Autowired
     HcsaRiskWeightageService hcsaRiskWeightageService;
     private static final String  HCSA_RISK_WEIGHTAGE_SHOW_DTO = "wightageDto";
-    public HcsaRiskWeightageConfigDelegator(HcsaRiskWeightageService hcsaRiskWeightageService){
-        this.hcsaRiskWeightageService = hcsaRiskWeightageService;
-
-    }
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));

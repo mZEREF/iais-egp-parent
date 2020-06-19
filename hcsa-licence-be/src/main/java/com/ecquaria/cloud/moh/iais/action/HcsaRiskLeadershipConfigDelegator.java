@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.dto.HcsaRiskLeaderShipVadlidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLeaderShipService;
-import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.HcsaLeadershipValidate;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +27,8 @@ import java.util.Map;
 @Delegator(value = "hcsaRiskLeadershipConfigDelegator")
 @Slf4j
 public class HcsaRiskLeadershipConfigDelegator {
-    private HcsaRiskLeaderShipService hcsaRiskLeaderShipService;
-    private HcsaRiskService hcsaRiskService;
     @Autowired
-    public HcsaRiskLeadershipConfigDelegator(HcsaRiskLeaderShipService hcsaRiskLeaderShipService){
-        this.hcsaRiskLeaderShipService = hcsaRiskLeaderShipService;
-    }
+    private HcsaRiskLeaderShipService hcsaRiskLeaderShipService;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));

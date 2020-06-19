@@ -712,7 +712,7 @@ public class HcsaChklConfigDelegator {
             if (!IaisCommonUtils.isEmpty(checklistItemDtos)){
                 for (ChecklistItemDto item : checklistItemDtos){
                     String itemId = item.getItemId() + orderStr;
-                    int itemOrder = Integer.valueOf(ParamUtil.getString(request, itemId));
+                    int itemOrder = Integer.parseInt(ParamUtil.getString(request, itemId));
                     item.setSectionItemOrder(itemOrder + 1);
                 }
                 checklistItemDtos.sort(Comparator.comparing(ChecklistItemDto::getSectionItemOrder));

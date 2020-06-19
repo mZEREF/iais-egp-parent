@@ -241,6 +241,7 @@ public class LicenceApproveBatchjob {
                 if(!StringUtil.isEmpty(svcType) && ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)
                         && baseApplicationNo.equals(applicationNo)){
                     result = licenceDto;
+                    break;
                 }
             }
         }
@@ -1414,8 +1415,8 @@ public class LicenceApproveBatchjob {
             licenceDto.setSvcType(svcType);
         }
         if (applicationDto != null && originLicenceDto != null &&
-                (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType()))
-                || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
+                (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationDto.getApplicationType()))
+                || ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType())) {
             log.info(StringUtil.changeForLog("The  getLicenceDto APPType is RFC ..."));
             licenceDto.setStartDate(originLicenceDto.getStartDate());
             licenceDto.setExpiryDate(originLicenceDto.getExpiryDate());

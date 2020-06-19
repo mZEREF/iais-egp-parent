@@ -9,10 +9,10 @@ import com.ecquaria.cloud.moh.iais.dto.HcsaRiskLegislativeValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLegislativeService;
-import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.HcsaLegislativeValidate;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,12 +27,8 @@ import java.util.Map;
 @Delegator(value = "hcsaRiskLegislativeConfigDelegator")
 @Slf4j
 public class HcsaRiskLegislativeConfigDelegator {
+    @Autowired
     private HcsaRiskLegislativeService hcsaRiskLegislativeService;
-    private HcsaRiskService hcsaRiskService;
-    public HcsaRiskLegislativeConfigDelegator(HcsaRiskLegislativeService hcsaRiskLegislativeService){
-        this.hcsaRiskLegislativeService = hcsaRiskLegislativeService;
-
-    }
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));

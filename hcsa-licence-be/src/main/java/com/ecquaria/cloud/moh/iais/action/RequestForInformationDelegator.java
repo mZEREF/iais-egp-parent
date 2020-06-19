@@ -448,7 +448,6 @@ public class RequestForInformationDelegator {
         HttpServletRequest request=bpc.request;
         String id = (String) ParamUtil.getSessionAttr(bpc.request, "reqInfoId");
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(id);
-        licPremisesReqForInfoDto.setOfficerRemarks(licPremisesReqForInfoDto.getOfficerRemarks());
         String date=ParamUtil.getString(request, "Due_date");
         if(date!=null){
             licPremisesReqForInfoDto.setDueDateSubmission(Formatter.parseDate(date));

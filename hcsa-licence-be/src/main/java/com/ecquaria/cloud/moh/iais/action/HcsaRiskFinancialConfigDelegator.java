@@ -28,12 +28,8 @@ import java.util.Map;
 @Delegator(value = "hcsaRiskFinancialConfigDelegator")
 @Slf4j
 public class HcsaRiskFinancialConfigDelegator {
-    private HcsaRiskService hcsaRiskService;
-
     @Autowired
-    public HcsaRiskFinancialConfigDelegator(HcsaRiskService hcsaRiskService) {
-        this.hcsaRiskService = hcsaRiskService;
-    }
+    private HcsaRiskService hcsaRiskService;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));

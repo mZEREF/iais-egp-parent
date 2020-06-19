@@ -229,6 +229,9 @@ public class LicenceViewServiceDelegator {
             HcsaServiceDto hcsaServiceDto = applicationViewService.getHcsaServiceDtoById(serviceId);
             ParamUtil.setRequestAttr(bpc.request, HCSASERVICEDTO, hcsaServiceDto);
         }
+        if(appSubmissionDto == null){
+            return;
+        }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<PublicHolidayDto> publicHolidayDtos = appointmentClient.getActiveHoliday().getEntity();
         formatDate(appGrpPremisesDtoList, publicHolidayDtos);
@@ -713,7 +716,7 @@ public class LicenceViewServiceDelegator {
         appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
-        if (appSvcCgoDtoList == null && oldAppSvcCgoDtoList != null || appSvcCgoDtoList.isEmpty() && oldAppSvcCgoDtoList != null) {
+        if (IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !IaisCommonUtils.isEmpty(oldAppSvcCgoDtoList)) {
             appSvcCgoDtoList = new ArrayList<>(oldAppSvcCgoDtoList.size());
             for (int i = 0; i < oldAppSvcCgoDtoList.size(); i++) {
                 AppSvcCgoDto appSvcCgoDto = new AppSvcCgoDto();

@@ -2,11 +2,9 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
-import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFinanceMatrixDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskLicenceTenureDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.LicenceTenShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskFinancialShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.SubLicenceTenureDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -32,13 +30,9 @@ import java.util.Map;
 @Delegator(value = "hcsaRiskLicenceTenureConfigDelegator")
 @Slf4j
 public class HcsaRiskLicenceTenureConfigDelegator {
+    @Autowired
     private HcsaRiskLicenceTenureSerice hcsaRiskLicenceTenureSerice;
     private static final String TEN_SHOW_DTO = "tenShowDto";
-
-    @Autowired
-    public HcsaRiskLicenceTenureConfigDelegator(HcsaRiskLicenceTenureSerice hcsaRiskLicenceTenureSerice) {
-        this.hcsaRiskLicenceTenureSerice = hcsaRiskLicenceTenureSerice;
-    }
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));

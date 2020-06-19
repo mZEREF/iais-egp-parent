@@ -3,9 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.service.HcsaRiskService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,12 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @Delegator(value = "hcsaRiskConfigDelegator")
 @Slf4j
 public class HcsaRiskConfigDelegator {
-    private HcsaRiskService hcsaRiskService;
 
-    @Autowired
-    public HcsaRiskConfigDelegator(HcsaRiskService hcsaRiskService){
-        this.hcsaRiskService = hcsaRiskService;
-    }
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;

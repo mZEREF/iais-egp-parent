@@ -29,11 +29,7 @@ import java.util.Map;
 @Slf4j
 public class HcsaRiskGolbalRiskConfigDelegator {
     @Autowired
-    HcsaRiskGolbalService hcsaRiskGolbalService;
-    public HcsaRiskGolbalRiskConfigDelegator(HcsaRiskGolbalService hcsaRiskGolbalService){
-        this.hcsaRiskGolbalService = hcsaRiskGolbalService;
-
-    }
+    private HcsaRiskGolbalService hcsaRiskGolbalService;
 
     public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
