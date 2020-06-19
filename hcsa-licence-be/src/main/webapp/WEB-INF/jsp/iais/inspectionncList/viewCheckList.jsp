@@ -109,7 +109,43 @@
                                                             </div>
                                                         </td>
                                                         <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status && commonDto.moreOneDraft}">
-                                                            <td> </td>
+                                                            <c:if test="${empty commonDto.stringInspectionCheckQuestionDtoMap[item.incqDto.itemId]}"><td>-</td></c:if>
+                                                            <c:if test="${not empty commonDto.stringInspectionCheckQuestionDtoMap[item.incqDto.itemId]}">
+                                                            <td>  <a data-toggle="modal" data-target="#DeleteTemplateModalDifference${item.incqDto.itemId}">Difference</a> </td>
+                                                            <div class="modal fade" id="DeleteTemplateModalDifference${item.incqDto.itemId}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                                                                <div class="modal-dialog" role="document">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                            <h5 class="modal-title">Difference</h5>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="row">
+                                                                                <table>
+                                                                                    <tr>
+                                                                                        <th width="20%">submitBy</th>
+                                                                                        <th width="20%">answer</th>
+                                                                                        <th width="40%">Remark</th>
+                                                                                        <th width="20%">Rectified</th>
+                                                                                    </tr>
+                                                                                    <c:forEach var = "itemAnswerForDifDto" items = "${commonDto.stringInspectionCheckQuestionDtoMap[item.incqDto.itemId].answerForDifDtos}" varStatus="difDtoStatus">
+                                                                                    <tr>
+                                                                                        <td>${itemAnswerForDifDto.submitName}</td>
+                                                                                        <td>${itemAnswerForDifDto.answer}</td>
+                                                                                        <td>${itemAnswerForDifDto.remark}</td>
+                                                                                        <td>${itemAnswerForDifDto.isRec}</td>
+                                                                                    </tr>
+                                                                                    </c:forEach>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                           </c:if>
                                                         </c:if>
                                                         <td>
                                                             <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}com" var = "err"/>
@@ -188,9 +224,45 @@
                                                                       <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rec" id="<c:out value="${cdto.subName}${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>rec" type="checkbox" <c:if test="${item.incqDto.rectified}">checked</c:if> value="rec"/>
                                                                   </div>
                                                               </td>
-                                                              <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status  && cdto.moreOneDraft}">
-                                                                  <td> </td>
-                                                              </c:if>
+                                                                  <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status && commonDto.moreOneDraft}">
+                                                                      <c:if test="${empty cdto.stringInspectionCheckQuestionDtoMap[item.incqDto.itemId]}"><td>-</td></c:if>
+                                                                      <c:if test="${not empty cdto.stringInspectionCheckQuestionDtoMap[item.incqDto.itemId]}">
+                                                                          <td>  <a data-toggle="modal" data-target="#DeleteTemplateModalDifference${item.incqDto.itemId}">Difference</a> </td>
+                                                                          <div class="modal fade" id="DeleteTemplateModalDifference${item.incqDto.itemId}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                                                                              <div class="modal-dialog" role="document">
+                                                                                  <div class="modal-content">
+                                                                                      <div class="modal-header">
+                                                                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                                          <h5 class="modal-title">Difference</h5>
+                                                                                      </div>
+                                                                                      <div class="modal-body">
+                                                                                          <div class="row">
+                                                                                              <table>
+                                                                                                  <tr>
+                                                                                                      <th width="20%">submitBy</th>
+                                                                                                      <th width="20%">answer</th>
+                                                                                                      <th width="40%">Remark</th>
+                                                                                                      <th width="20%">Rectified</th>
+                                                                                                  </tr>
+                                                                                                  <c:forEach var = "itemAnswerForDifDto" items = "${cdto.stringInspectionCheckQuestionDtoMap[item.incqDto.itemId].answerForDifDtos}" varStatus="difDtoStatus">
+                                                                                                      <tr>
+                                                                                                          <td>${itemAnswerForDifDto.submitName}</td>
+                                                                                                          <td>${itemAnswerForDifDto.answer}</td>
+                                                                                                          <td>${itemAnswerForDifDto.remark}</td>
+                                                                                                          <td>${itemAnswerForDifDto.isRec}</td>
+                                                                                                      </tr>
+                                                                                                  </c:forEach>
+                                                                                              </table>
+                                                                                          </div>
+                                                                                      </div>
+                                                                                      <div class="modal-footer">
+                                                                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                                      </div>
+                                                                                  </div>
+                                                                              </div>
+                                                                          </div>
+                                                                      </c:if>
+                                                                  </c:if>
                                                               <td>
                                                                   <c:set value = "error_${cdto.subName}${item.incqDto.sectionNameShow}${item.incqDto.itemId}" var = "err"/>
                                                                   <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
@@ -246,7 +318,43 @@
                                                                   </div>
                                                               </td>
                                                               <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status && adchklDto.moreOneDraft}">
-                                                                  <td> </td>
+                                                                 <c:if test="${empty item.adhocAnswerForDifDto}"> <td>-</td></c:if>
+                                                                  <c:if test="${not empty item.adhocAnswerForDifDto}">
+                                                                          <td>  <a data-toggle="modal" data-target="#DeleteTemplateModalDifference${item.id}">Difference</a> </td>
+                                                                          <div class="modal fade" id="DeleteTemplateModalDifference$${item.id}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                                                                              <div class="modal-dialog" role="document">
+                                                                                  <div class="modal-content">
+                                                                                      <div class="modal-header">
+                                                                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                                                          <h5 class="modal-title">Difference</h5>
+                                                                                      </div>
+                                                                                      <div class="modal-body">
+                                                                                          <div class="row">
+                                                                                              <table>
+                                                                                                  <tr>
+                                                                                                      <th width="20%">submitBy</th>
+                                                                                                      <th width="20%">answer</th>
+                                                                                                      <th width="40%">Remark</th>
+                                                                                                      <th width="20%">Rectified</th>
+                                                                                                  </tr>
+                                                                                                  <c:forEach var = "itemAnswerForDifDto" items = "${item.answerForDifDtos}" varStatus="difDtoStatus">
+                                                                                                      <tr>
+                                                                                                          <td>${itemAnswerForDifDto.submitName}</td>
+                                                                                                          <td>${itemAnswerForDifDto.answer}</td>
+                                                                                                          <td>${itemAnswerForDifDto.remark}</td>
+                                                                                                          <td>${itemAnswerForDifDto.isRec}</td>
+                                                                                                      </tr>
+                                                                                                  </c:forEach>
+                                                                                              </table>
+                                                                                          </div>
+                                                                                      </div>
+                                                                                      <div class="modal-footer">
+                                                                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                                      </div>
+                                                                                  </div>
+                                                                              </div>
+                                                                          </div>
+                                                                      </c:if>
                                                               </c:if>
                                                               <td>
                                                                   <c:set value = "error_${item.id}adhoc" var = "err"/>
