@@ -38,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import ecq.commons.exception.BaseRuntimeException;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * ApplicationServiceImpl
@@ -215,48 +213,54 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         List<ApplicationGroupDto> groupDtoList = applicationClient.getPendingSubmitSelfAssGroup(selfAssMtFlag).getEntity();
 
-        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
+        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID).getEntity();
 
         if (autoEntity == null){
             log.info("===>>>>alertSelfDeclNotification can not find message template ");
             return;
         }
 
+        String msgContent = autoEntity.getMessageContent();
         Map<String,Object> param = new HashMap(1);
         param.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         param.put("DETAILS", "test");
 
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         String serviceName = systemParamConfig.getInterServerName();
-        StringBuilder hrefLink = new StringBuilder();
-        hrefLink.append("https://").append(serviceName).append("/hcsa-licence-web/eservice/INTERNET/MohSelfAssessmentSubmit").append("?").append("appGroupId=");
         for (ApplicationGroupDto app : groupDtoList){
             String id = app.getId();
             String licId = app.getLicenseeId();
             LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licId);
             if (licenseeDto != null){
-                hrefLink.append(id);
-                maskParams.put("appGroupId", id);
-
-                param.put("APPLICANT_NAME",  StringUtil.viewHtml(licenseeDto.getName()));
-                param.put("A_HREF", StringUtil.viewHtml(hrefLink.toString()));
-                InterMessageDto interMessageDto = new InterMessageDto();
-                interMessageDto.setSubject(autoEntity.getTemplateName());
-                interMessageDto.setMsgContent(autoEntity.getMessageContent());
-                interMessageDto.setUserId(licId);
-                interMessageDto.setMaskParams(maskParams);
-                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-                String refNo = inboxMsgService.getMessageNo();
-                interMessageDto.setRefNo(refNo);
-                interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-                interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-
                 try {
+                    StringBuilder hrefLink = new StringBuilder();
+                    hrefLink.append("https://").append(serviceName).append("/hcsa-licence-web/eservice/INTERNET/MohSelfAssessmentSubmit?appGroupId=");
+                    hrefLink.append(id);
+
+                    param.put("APPLICANT_NAME",  StringUtil.viewHtml(licenseeDto.getName()));
+                    param.put("A_HREF", StringUtil.viewHtml(hrefLink.toString()));
+
+                    String mesContext= MsgUtil.getTemplateMessageByContent(msgContent, param);
+
+                    maskParams.put("appGroupId", id);
+                    InterMessageDto interMessageDto = new InterMessageDto();
+                    interMessageDto.setSubject(autoEntity.getTemplateName());
+                    interMessageDto.setMsgContent(autoEntity.getMessageContent());
+                    interMessageDto.setMsgContent(mesContext);
+                    interMessageDto.setUserId(licId);
+                    interMessageDto.setMaskParams(maskParams);
+                    interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+                    String refNo = inboxMsgService.getMessageNo();
+                    interMessageDto.setRefNo(refNo);
+                    interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+                    interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+                    interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+
                     inboxMsgService.saveInterMessage(interMessageDto);
-                }catch (IaisRuntimeException | BaseRuntimeException e){
+                } catch (Exception e) {
                     throw new IaisRuntimeException(StringUtil.changeForLog("create self assessment notification has error , group id " + id), e);
                 }
+
             }
         }
 
