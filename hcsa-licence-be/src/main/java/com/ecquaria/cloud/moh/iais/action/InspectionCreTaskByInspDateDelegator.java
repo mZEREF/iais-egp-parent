@@ -178,7 +178,6 @@ public class InspectionCreTaskByInspDateDelegator {
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         for(TaskDto tDto:taskDtos){
             taskDtoList.add(tDto);
-            return taskDtoList;
         }
         return taskDtoList;
     }
