@@ -1182,7 +1182,7 @@ public class HcsaApplicationDelegator {
         String status = applicationViewDto.getApplicationDto().getStatus();
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =  appPremisesRoutingHistoryService.
                             getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS);
-        if(appPremisesRoutingHistoryDto == null){
+        if(appPremisesRoutingHistoryDto == null || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
             ParamUtil.setRequestAttr(bpc.request,"isShowInspection","N");
         }else{
             if(ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK.equals(status)){
