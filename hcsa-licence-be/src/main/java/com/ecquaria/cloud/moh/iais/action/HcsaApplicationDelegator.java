@@ -211,12 +211,14 @@ public class HcsaApplicationDelegator {
             throw new IaisRuntimeException("The Task Id  is Error !!!");
         }
         log.debug(StringUtil.changeForLog("the do prepareData get the NewAppPremisesCorrelationDto"));
-        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
-        appPremisesCorrelationDto.setOldCorrelationId(correlationId);
-        String newCorrelationId = appPremisesCorrelationDto.getId();
-        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
-        applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
-
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        if(applicationViewDto == null){
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
+            appPremisesCorrelationDto.setOldCorrelationId(correlationId);
+            String newCorrelationId = appPremisesCorrelationDto.getId();
+            applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
+            applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+        }
         log.debug(StringUtil.changeForLog("the do prepareData get the appEditSelectDto"));
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         if(applicationDto != null){
@@ -1335,6 +1337,7 @@ public class HcsaApplicationDelegator {
         }
         if(isRequestForChange){
             recommendationSelectOption.add(new SelectOption("approve","Approve"));
+            ParamUtil.setSessionAttr(request,"isRequestForChange","Y");
         }
         if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
             recommendationSelectOption.add(new SelectOption("reject","Reject"));

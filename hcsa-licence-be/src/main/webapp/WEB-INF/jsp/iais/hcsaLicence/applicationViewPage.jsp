@@ -24,6 +24,7 @@
             <input type="hidden" id="isLateFeeAppealType" value="${isLateFeeAppealType}"/>
             <input type="hidden" id="appealRecommendationOtherOnlyShow" value="${appealRecommendationOtherOnlyShow}"/>
             <input type="hidden" id="returnFeeOnlyShow" value="${returnFeeOnlyShow}"/>
+            <input type="hidden" id="isRequestForChange" value="${isRequestForChange}"/>
             <c:set var="isAoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST062' || applicationViewDto.applicationDto.status == 'APST065' || applicationViewDto.applicationDto.status == 'APST066' || applicationViewDto.applicationDto.status == 'APST067'}"/>
             <c:set var="isPsoRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST063'}"/>
             <c:set var="isInspectorRouteBackStatus" value="${applicationViewDto.applicationDto.status == 'APST064'}"/>
@@ -460,7 +461,10 @@
 
     //check DMS decision value
     $("[name='decisionValues']").change(function selectChange() {
-        checkRecommendationDMS();
+        var isRequestForChange = $('#isRequestForChange').val();
+        if(isRequestForChange != 'Y'){
+            checkRecommendationDMS();
+        }
     });
 
     function checkRecommendationDMS(){
@@ -537,7 +541,13 @@
         if('${applicationViewDto.applicationDto.status}' == 'APST014'){
                 $('#recommendationFieldTrue').removeClass('hidden');
                 $('#recommendationFieldFalse').addClass('hidden');
-            checkRecommendationDMS();
+            var isRequestForChange = $('#isRequestForChange').val();
+            if(isRequestForChange != 'Y') {
+                checkRecommendationDMS();
+            }else{
+                $('#recommendationDropdown').addClass('hidden');
+                $('#recommendationOtherDropdown').addClass('hidden');
+            }
         }
     }
 

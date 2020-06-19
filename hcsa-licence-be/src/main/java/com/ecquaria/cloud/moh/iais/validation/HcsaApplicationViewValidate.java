@@ -43,6 +43,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         boolean isCessation = ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
+        boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType);
         String roleId = "";
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
         if(taskDto != null){
@@ -89,14 +90,16 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             if(StringUtil.isEmpty(decisionValue)){
                 errMap.put("decisionValues","The field is mandatory.");
             }else{
-                if(DECISION_APPROVAL.equals(decisionValue)){
-                    if(StringUtil.isEmpty(recommendationStr)){
-                        errMap.put("recommendation","The field is mandatory.");
-                    }else if(RECOMMENDATION_REJECT.equals(recommendationStr)){
-                        errMap.put("recommendation","The value of recommendation cannot be 'Reject'.");
-                    }
-                }else if(DECISION_REJECT.equals(decisionValue)){
+                if(!isRequestForChange){
+                    if(DECISION_APPROVAL.equals(decisionValue)){
+                        if(StringUtil.isEmpty(recommendationStr)){
+                            errMap.put("recommendation","The field is mandatory.");
+                        }else if(RECOMMENDATION_REJECT.equals(recommendationStr)){
+                            errMap.put("recommendation","The value of recommendation cannot be 'Reject'.");
+                        }
+                    }else if(DECISION_REJECT.equals(decisionValue)){
 
+                    }
                 }
                 ParamUtil.setRequestAttr(request,"selectDecisionValue",decisionValue);
             }
@@ -172,7 +175,6 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 }
             }
         }
-
         return errMap;
     }
 
