@@ -582,7 +582,6 @@
         }
         if(flag)
         {
-            $('input[name="pageJumpNoTextchangePage"]').val(1);
             SOP.Crud.cfxSubmit("mainForm", "search");
         }
         else {
