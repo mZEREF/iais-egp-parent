@@ -129,15 +129,19 @@ public class OnlineApptAjaxController {
                     appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
                     appointmentDto.setUsers(appointmentUserDtos);
                     apptInspectionDateDto.setAppointmentDto(appointmentDto);
-                    FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
-                    Map<String, Collection<String>> headers = result.getHeaders();
-                    //Has it been blown up
-                    if(headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
-                        Map<String, List<ApptUserCalendarDto>> inspectionDateMap = result.getEntity();
-                        apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
-                        map.put("buttonFlag", AppConsts.TRUE);
-                        map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
-                        apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
+                    try {
+                        FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
+                        Map<String, Collection<String>> headers = result.getHeaders();
+                        //Has it been blown up
+                        if(headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
+                            Map<String, List<ApptUserCalendarDto>> inspectionDateMap = result.getEntity();
+                            apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
+                            map.put("buttonFlag", AppConsts.TRUE);
+                            map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
+                            apptInspectionDateDto.setSysInspDateFlag(AppConsts.TRUE);
+                        }
+                    } catch (Exception e){
+                        log.error(e.getMessage(), e);
                     }
                     specificApptDto.setSubmitDt(appointmentDto.getSubmitDt());
                     specificApptDto.setUsers(appointmentDto.getUsers());
