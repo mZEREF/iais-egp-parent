@@ -155,6 +155,11 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         LicenceDto licenceDto=hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         OrganizationLicDto organizationLicDto= organizationClient.getOrganizationLicDtoByLicenseeId(licenceDto.getLicenseeId()).getEntity();
         try{
+            organizationLicDto.getLicenseeDto().setLicenseeType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{organizationLicDto.getLicenseeDto().getLicenseeType()}).get(0).getText());
+        }catch (NullPointerException e){
+            log.error(e.getMessage(), e);
+        }
+        try{
             organizationLicDto.getLicenseeIndividualDto().setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{organizationLicDto.getLicenseeIndividualDto().getSalutation()}).get(0).getText());
         }catch (NullPointerException e){
             log.error(e.getMessage(), e);

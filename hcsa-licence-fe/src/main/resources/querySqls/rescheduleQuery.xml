@@ -20,6 +20,7 @@
 
             WHERE 1=1
             AND appRec.STATUS = 'CMSTAT001'
+            AND appRec.RECOM_IN_DATE is not null
             AND T5.STATUS = 'CMSTAT001'
             <#if licenseeId??>AND T4.licensee_id = :licenseeId</#if>
             ]]>

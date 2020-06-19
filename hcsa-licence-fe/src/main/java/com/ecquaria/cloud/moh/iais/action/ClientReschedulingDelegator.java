@@ -81,12 +81,8 @@ public class ClientReschedulingDelegator {
                 apptViewDto.setAppCorrId(reschApptGrpPremsQueryDto.getAppCorrId());
                 apptViewDto.setLicenseeId(reschApptGrpPremsQueryDto.getLicenseeId());
                 apptViewDto.setAddress(MiscUtil.getAddress(reschApptGrpPremsQueryDto.getBlkNo(),reschApptGrpPremsQueryDto.getStreetName(),reschApptGrpPremsQueryDto.getBuildingName(),reschApptGrpPremsQueryDto.getFloorNo(),reschApptGrpPremsQueryDto.getUnitNo(),reschApptGrpPremsQueryDto.getPostalCode()));
-                try {
-                    apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
-                    apptViewDtos.add(apptViewDto);
-                }catch (NullPointerException e){
-                    log.info(e.getMessage(),e);
-                }
+                apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
+                apptViewDtos.add(apptViewDto);
             }
             ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos);
         }
@@ -100,7 +96,10 @@ public class ClientReschedulingDelegator {
 
     public void doReschedule(BaseProcessClass bpc)  {}
 
-    public void preCommPool(BaseProcessClass bpc)  {}
+    public void preCommPool(BaseProcessClass bpc)  {
+        String [] appIds=ParamUtil.getStrings(bpc.request,"appIds");
+        rescheduleService.updateAppStatusCommPool(appIds);
+    }
 
     public void preRoundRobin(BaseProcessClass bpc)  {}
 

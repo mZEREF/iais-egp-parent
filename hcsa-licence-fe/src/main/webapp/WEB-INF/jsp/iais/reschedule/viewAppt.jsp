@@ -47,7 +47,7 @@
                                             <tr>
                                                 <td class="form-check"  >
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                           name="appIds" value="${pool.appGrpId}"   >
+                                                           name="appIds" value="${pool.appId}"   >
                                                     <label class="form-check-label" for="licence${status.index + 1}"><span
                                                             class="check-square"></span>
                                                     </label>
@@ -68,22 +68,7 @@
                         <iais:action style="text-align:right;">
                             <button class="btn btn-secondary" type="button"  onclick="doReschedule()">Reschedule</button>
                         </iais:action>
-                        <div class="modal fade" id="apptReschedule" tabindex="-1" role="dialog" aria-labelledby="apptReschedule"
-                             style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                            <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
-                                    </div>
 
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" onclick="doCommonPool()">Common Pool</button>
-                                        <button type="button" class="btn btn-primary" onclick="doRoundRobin()">Round Robin</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                     </div>
                 </div>
@@ -93,15 +78,11 @@
 </form>
 <script type="text/javascript">
     function doReschedule(){
-        $('#apptReschedule').modal('show');
+        SOP.Crud.cfxSubmit("mainForm", "comm")
+
     }
     function sortRecords(sortFieldName, sortType) {
         SOP.Crud.cfxSubmit("mainForm", "sort", sortFieldName, sortType);
     }
-    function doCommonPool() {
-        SOP.Crud.cfxSubmit("mainForm", "comm")
-    }
-    function doRoundRobin() {
-        SOP.Crud.cfxSubmit("mainForm", "round")
-    }
+
 </script>
