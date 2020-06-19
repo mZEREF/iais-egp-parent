@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.ChecklistConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -105,6 +106,8 @@ public class InspectionPreDelegator {
         if(StringUtil.isEmpty(preInspInitFlag)) {
             ParamUtil.setSessionAttr(bpc.request, "rfiUpWindowsCheck", null);
         }
+        ParamUtil.setSessionAttr(bpc.request, ChecklistConstant.ADHOC_ITEM_ACTION_FLAG, "N");
+        ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
     }
 
     /**
