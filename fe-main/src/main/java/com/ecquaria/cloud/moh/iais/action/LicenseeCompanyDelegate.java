@@ -49,7 +49,12 @@ public class LicenseeCompanyDelegate {
         log.debug("****preparePage Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()));
+        if("Company".equals(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()))){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Company");
+        }else{
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Solo");
+        }
+
     }
 
     public void company(BaseProcessClass bpc) {
