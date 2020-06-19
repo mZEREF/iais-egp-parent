@@ -36,14 +36,9 @@
                     <%@ include file="../common/checklistTab.jsp" %>
                 </div>
                 <div class="row">
-
-                    <div class="col-xs-6 col-md-4">
-                        <a id = "docBack" class="back"><em class="fa fa-angle-left"></em> Back</a>
-                    </div>
-
                 <div class="col-xs-12 col-sm-12">
                     <div class="text-right text-center-mobile">
-                        <a id="nextAdhocItemBtn" class="btn btn-secondary" href="#">Draft</a>
+                        <a id="nextAdhocItemBtn" class="btn btn-secondary" href="#">Save</a>
                         <a id="addAdhocItemBtn" class="btn btn-primary" href="#">Add Adhoc Item</a>
                     </div>
                 </div>
@@ -55,11 +50,6 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script>
     "use strict"
-
-    $('#docBack').click(function () {
-        SOP.Crud.cfxSubmit("mainForm", "doBack");
-    });
-
     addAdhocItemBtn.onclick = function () {
         SOP.Crud.cfxSubmit("mainForm", "receiveItemPool");
     }
