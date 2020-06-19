@@ -49,6 +49,14 @@
         $("#resumeDraftApplication").click(function () {
             guideSubmit("resume","main");
         });
+
+        $("#renewLicence2").click(function () {
+            guideSubmit("renewUp","main");
+        });
+
+        $("#ceaseLicence").click(function(){
+            guideSubmit("cease","main");
+        });
     })
 </script>
 

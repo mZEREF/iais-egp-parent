@@ -30,7 +30,7 @@
     <div class="amendLicence1">
         <div class="form-check-gp">
             <%@include
-                    file="/WEB-INF/jsp/iais/assessmentGuide/renewLicence/remewLicenceContent.jsp" %>
+                    file="/WEB-INF/jsp/iais/assessmentGuide/renewLicence/renewLicenceWithUpdateContent.jsp" %>
         </div>
     </div>
     <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2_1.jsp" %>
@@ -48,6 +48,14 @@
 
         $("#resumeDraftApplication").click(function () {
             guideSubmit("resume","main");
+        });
+
+        $("#renewLicence1").click(function () {
+            guideSubmit("renew","main");
+        });
+
+        $("#ceaseLicence").click(function(){
+            guideSubmit("cease","main");
         });
     })
 </script>

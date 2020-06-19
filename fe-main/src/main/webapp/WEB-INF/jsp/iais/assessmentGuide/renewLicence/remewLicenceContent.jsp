@@ -6,11 +6,11 @@
             <thead>
             <tr align="center">
                 <th></th>
-                <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name"/>
-                <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type"/>
-                <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."/>
-                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises type"/>
-                <iais:sortableHeader needSort="false"  field="ADDRESS" value="Address"/>
+                <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name" style="width:15%"/>
+                <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type" style="width:15%"/>
+                <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." style="width:20%"/>
+                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises type" style="width:15%"/>
+                <iais:sortableHeader needSort="false"  field="ADDRESS" value="Address" style="width:30%"/>
             </tr>
             </thead>
             <tbody>
@@ -36,7 +36,7 @@
                                 </div>
                             </td>
                             <td>${pool.hciName}</td>
-                            <td>${pool.addrType}</td>
+                            <td><iais:code code="${pool.addrType}"/></td>
                             <td>${pool.licenceNo}</td>
                             <td>${pool.premisesType}</td>
                             <td>${pool.address}</td>

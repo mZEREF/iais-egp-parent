@@ -73,7 +73,7 @@ public class HalpAssessmentGuideDelegator {
             .sortType("DESC").build();
 
 
-    public void start(BaseProcessClass bpc){
+    public void start(BaseProcessClass bpc) {
         log.info("****start ******");
         AuditTrailHelper.auditFunction("HalpAssessmentGuideDelegator", "HalpAssessmentGuideDelegators");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -81,9 +81,9 @@ public class HalpAssessmentGuideDelegator {
     }
 
 
-    public void perDate(BaseProcessClass bpc){
+    public void perDate(BaseProcessClass bpc) {
         List<HcsaServiceDto> hcsaServiceDtoList = assessmentGuideService.getServicesInActive();
-        if (IaisCommonUtils.isEmpty(hcsaServiceDtoList)){
+        if (IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
             return;
         }
         allbaseService = hcsaServiceDtoList.stream()
@@ -98,60 +98,62 @@ public class HalpAssessmentGuideDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
 
-        SearchParam appParam = SearchResultHelper.getSearchParam(bpc.request,appParameter,true);
-        appParam.addFilter("licenseeId", licenseeId,true);
-        appParam.addFilter("appStatus", ApplicationConsts.APPLICATION_STATUS_DRAFT,true);
+        SearchParam appParam = SearchResultHelper.getSearchParam(bpc.request, appParameter, true);
+        appParam.addFilter("licenseeId", licenseeId, true);
+        appParam.addFilter("appStatus", ApplicationConsts.APPLICATION_STATUS_DRAFT, true);
 
-        QueryHelp.setMainSql("interInboxQuery","applicationQuery", appParam);
+        QueryHelp.setMainSql("interInboxQuery", "applicationQuery", appParam);
         SearchResult<InboxAppQueryDto> appResult = inboxService.appDoQuery(appParam);
 
-        if(!StringUtil.isEmpty(appResult)){
-            ParamUtil.setSessionAttr(bpc.request,"appParam", appParam);
-            ParamUtil.setRequestAttr(bpc.request,"appResult", appResult);
+        if (!StringUtil.isEmpty(appResult)) {
+            ParamUtil.setSessionAttr(bpc.request, "appParam", appParam);
+            ParamUtil.setRequestAttr(bpc.request, "appResult", appResult);
         }
 
 
     }
 
-    public void page(BaseProcessClass bpc){
+    public void page(BaseProcessClass bpc) {
         SearchResultHelper.doPage(bpc.request, premiseFilterParameter);
         SearchResultHelper.doPage(bpc.request, appParameter);
     }
 
-    public void sort(BaseProcessClass bpc){
+    public void sort(BaseProcessClass bpc) {
         SearchResultHelper.doSort(bpc.request, premiseFilterParameter);
     }
 
-    public void prepareSwitch(BaseProcessClass bpc){
+    public void prepareSwitch(BaseProcessClass bpc) {
 
     }
-    public void newApp1(BaseProcessClass bpc){
+
+    public void newApp1(BaseProcessClass bpc) {
 
     }
-    public void newApp2(BaseProcessClass bpc){
+
+    public void newApp2(BaseProcessClass bpc) {
 
     }
-    public void newApp3(BaseProcessClass bpc){
+
+    public void newApp3(BaseProcessClass bpc) {
 
     }
+
     public void renewLic(BaseProcessClass bpc) throws IOException {
-        String[] renewLics = ParamUtil.getStrings(bpc.request,"renewLicenId");
-        if(renewLics != null){
-            List<String> licIdValue = IaisCommonUtils.genNewArrayList();
-            for(String item:renewLics){
-                licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
-            }
-            ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
-
-            StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal");
-            ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = loginContext.getLicenseeId();
+        log.info("****start ******");
+        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, premiseFilterParameter, true);
+        searchParam.addFilter("licenseeId", licenseeId, true);
+        QueryHelp.setMainSql("interInboxQuery", "queryPremises", searchParam);
+        SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
+        if (!StringUtil.isEmpty(searchResult)) {
+            ParamUtil.setSessionAttr(bpc.request, "PremisesSearchParam", searchParam);
+            ParamUtil.setRequestAttr(bpc.request, "PremisesSearchResult", searchResult);
         }
+        log.info("****end ******");
     }
-    public void renewLicUpdate(BaseProcessClass bpc){
+
+    public void renewLicUpdate(BaseProcessClass bpc) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         log.info("****start ******");
         String licenseeId = loginContext.getLicenseeId();
@@ -165,30 +167,36 @@ public class HalpAssessmentGuideDelegator {
         }
         log.info("****end ******");
     }
-    public void amendLic1_1(BaseProcessClass bpc){
 
-    }
-    public void amendLic1_2(BaseProcessClass bpc){
-
-    }
-    public void amendLic2(BaseProcessClass bpc){
-
-    }
-    public void amendLic3_1(BaseProcessClass bpc){
-
-    }
-    public void amendLic3_2(BaseProcessClass bpc){
+    public void amendLic1_1(BaseProcessClass bpc) {
 
     }
 
-    public void amendLic4_1(BaseProcessClass bpc){
-
-    }
-    public void amendLic4_2(BaseProcessClass bpc){
+    public void amendLic1_2(BaseProcessClass bpc) {
 
     }
 
-    public void ceaseLic(BaseProcessClass bpc){
+    public void amendLic2(BaseProcessClass bpc) {
+
+    }
+
+    public void amendLic3_1(BaseProcessClass bpc) {
+
+    }
+
+    public void amendLic3_2(BaseProcessClass bpc) {
+
+    }
+
+    public void amendLic4_1(BaseProcessClass bpc) {
+
+    }
+
+    public void amendLic4_2(BaseProcessClass bpc) {
+
+    }
+
+    public void ceaseLic(BaseProcessClass bpc) {
         log.info("****start ******");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
@@ -205,44 +213,44 @@ public class HalpAssessmentGuideDelegator {
 
     public void doCeasLicStep(BaseProcessClass bpc) throws IOException {
         List<String> licIdValue = IaisCommonUtils.genNewArrayList();
-        String [] licIds = ParamUtil.getStrings(bpc.request, "ceaseLicIds");
-        boolean result= false;
+        String[] licIds = ParamUtil.getStrings(bpc.request, "ceaseLicIds");
+        boolean result = false;
         for (String item : licIds) {
             licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
         }
-        Map<String,Boolean> resultMap = inboxService.listResultCeased(licIdValue);
-        for(Map.Entry<String,Boolean> entry : resultMap.entrySet()){
-            if (!entry.getValue()){
+        Map<String, Boolean> resultMap = inboxService.listResultCeased(licIdValue);
+        for (Map.Entry<String, Boolean> entry : resultMap.entrySet()) {
+            if (!entry.getValue()) {
                 result = true;
                 break;
             }
         }
-        if(result) {
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,true);
-        }else{
+        if (result) {
+            ParamUtil.setRequestAttr(bpc.request, InboxConst.LIC_CEASED_ERR_RESULT, true);
+        } else {
             ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohCessationApplication");
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication");
             String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }
     }
 
-    public void withdrawApp(BaseProcessClass bpc){
+    public void withdrawApp(BaseProcessClass bpc) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
 
-        SearchParam appParam = SearchResultHelper.getSearchParam(bpc.request,appParameter,true);
-        appParam.addFilter("licenseeId", licenseeId,true);
-        appParam.addFilter("appStatus", ApplicationConsts.APPLICATION_STATUS_DRAFT,true);
+        SearchParam appParam = SearchResultHelper.getSearchParam(bpc.request, appParameter, true);
+        appParam.addFilter("licenseeId", licenseeId, true);
+        appParam.addFilter("appStatus", ApplicationConsts.APPLICATION_STATUS_DRAFT, true);
 
-        QueryHelp.setMainSql("interInboxQuery","applicationQuery", appParam);
+        QueryHelp.setMainSql("interInboxQuery", "applicationQuery", appParam);
         SearchResult<InboxAppQueryDto> appResult = inboxService.appDoQuery(appParam);
 
-        if(!StringUtil.isEmpty(appResult)){
-            ParamUtil.setSessionAttr(bpc.request,"appParam", appParam);
-            ParamUtil.setRequestAttr(bpc.request,"appResult", appResult);
+        if (!StringUtil.isEmpty(appResult)) {
+            ParamUtil.setSessionAttr(bpc.request, "appParam", appParam);
+            ParamUtil.setRequestAttr(bpc.request, "appResult", appResult);
         }
     }
 
@@ -252,32 +260,35 @@ public class HalpAssessmentGuideDelegator {
         String appNo = ParamUtil.getMaskedString(request, "withdrawAppNo");
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithdrawalApplication")
+                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohWithdrawalApplication")
                 .append("?withdrawAppId=")
-                .append(MaskUtil.maskValue("withdrawAppId",appId))
+                .append(MaskUtil.maskValue("withdrawAppId", appId))
                 .append("&withdrawAppNo=")
-                .append(MaskUtil.maskValue("withdrawAppNo",appNo));
+                .append(MaskUtil.maskValue("withdrawAppNo", appNo));
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
-    public void resumeDraftApp(BaseProcessClass bpc){
+
+    public void resumeDraftApp(BaseProcessClass bpc) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        SearchParam appParam = SearchResultHelper.getSearchParam(bpc.request,appParameter,true);
-        appParam.addFilter("licenseeId", licenseeId,true);
+        SearchParam appParam = SearchResultHelper.getSearchParam(bpc.request, appParameter, true);
+        appParam.addFilter("licenseeId", licenseeId, true);
 
-        QueryHelp.setMainSql("interInboxQuery","applicationQuery", appParam);
+        QueryHelp.setMainSql("interInboxQuery", "applicationQuery", appParam);
         SearchResult<InboxAppQueryDto> appResult = inboxService.appDoQuery(appParam);
 
-        if(!StringUtil.isEmpty(appResult)){
-            ParamUtil.setSessionAttr(bpc.request,"appParam", appParam);
-            ParamUtil.setRequestAttr(bpc.request,"appResult", appResult);
+        if (!StringUtil.isEmpty(appResult)) {
+            ParamUtil.setSessionAttr(bpc.request, "appParam", appParam);
+            ParamUtil.setRequestAttr(bpc.request, "appResult", appResult);
         }
     }
-    public void subDateMoh(BaseProcessClass bpc){
+
+    public void subDateMoh(BaseProcessClass bpc) {
 
     }
-    public void updateAdminPers(BaseProcessClass bpc){
+
+    public void updateAdminPers(BaseProcessClass bpc) {
 
     }
 
