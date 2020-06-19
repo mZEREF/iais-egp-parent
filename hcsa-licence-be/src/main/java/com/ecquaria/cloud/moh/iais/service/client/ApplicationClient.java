@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -277,4 +278,7 @@ public interface ApplicationClient {
     FeignResponseEntity<List<ApplicationDto>> getApplicationDtosByApplicationNo(@RequestParam("applicationNo")String applicationNo);
     @PostMapping(value = "/iais-licence-view/app-edit-selsect-by-application-ids",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDtosByAppIds(@RequestBody List<String> applicationIds);
+
+    @PostMapping (path = "/iais-appt-inspec-be/appt-Resch-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<SearchResult<ReschApptGrpPremsQueryDto>> searchApptReschGrpPrems(@RequestBody SearchParam searchParam);
 }

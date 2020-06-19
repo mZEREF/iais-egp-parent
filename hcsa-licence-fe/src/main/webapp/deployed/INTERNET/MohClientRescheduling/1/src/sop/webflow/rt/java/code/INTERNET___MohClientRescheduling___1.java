@@ -42,4 +42,14 @@ public class INTERNET___MohClientRescheduling___1 extends BaseProcessClass {
 // 		preRoundRobin->OnStepProcess
 	}
 
+	public void page_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "page", this); 
+// 		page->OnStepProcess
+	}
+
+	public void sort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "sort", this); 
+// 		sort->OnStepProcess
+	}
+
 }

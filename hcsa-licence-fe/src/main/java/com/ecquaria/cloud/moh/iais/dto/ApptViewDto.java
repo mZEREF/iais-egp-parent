@@ -19,6 +19,7 @@ public class ApptViewDto implements Serializable {
 
     private String address;
     private String appId;
+    private String appGrpId;
     private String applicationNo;
     private String applicationType;
     private String applicationStatus;

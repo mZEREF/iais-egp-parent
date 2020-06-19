@@ -21,7 +21,7 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="components">
-
+                    <br>
                     <div class="table-gp">
 
                         <table class="table">
@@ -29,8 +29,8 @@
                             <tr align="center">
                                 <iais:sortableHeader needSort="false" field="" value=""></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="ture"  field="BLK_NO" value="Premises"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false"  field="REQUEST_DATE " value="Date and Time of Inspection"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true"  field="ADDRESS" value="Premises"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="true"  field="RECOM_IN_DATE " value="Date and Time of Inspection"></iais:sortableHeader>
                             </tr>
                             </thead>
                             <tbody>
@@ -47,7 +47,7 @@
                                             <tr>
                                                 <td class="form-check"  >
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                           name="appIds" value="${pool.appId}"   >
+                                                           name="appIds" value="${pool.appGrpId}"   >
                                                     <label class="form-check-label" for="licence${status.index + 1}"><span
                                                             class="check-square"></span>
                                                     </label>
@@ -64,6 +64,7 @@
                         <iais:action style="text-align:left;">
                             <div align="left"><span><a  href="/main-web/eservice/INTERNET/MohInternetInbox">< Back</a></span></div>
                         </iais:action>
+                        <br>
                         <iais:action style="text-align:right;">
                             <button class="btn btn-secondary" type="button"  onclick="doReschedule()">Reschedule</button>
                         </iais:action>
@@ -94,7 +95,6 @@
     function doReschedule(){
         $('#apptReschedule').modal('show');
     }
-
     function sortRecords(sortFieldName, sortType) {
         SOP.Crud.cfxSubmit("mainForm", "sort", sortFieldName, sortType);
     }
