@@ -35,31 +35,35 @@ public class BlastValidate implements CustomizeValidator {
                 }
             }
         }
-        if(blastManagementDto.getSchedule() == null){
-            errMap.put("date","The field is mandatory.");
-        }
-        String HH = blastManagementDto.getHH();
-        String MM = blastManagementDto.getMM();
-        if(HH == null){
-            errMap.put("HH","The field is mandatory.");
-        }else if(!(StringUtils.isNumeric(HH) &&  Integer.parseInt(HH) < 24)){
-            errMap.put("HH","Field format is wrong");
-        }
-        if(MM == null){
-            errMap.put("HH","The field is mandatory.");
-        }else if(!(StringUtils.isNumeric(MM) &&  Integer.parseInt(MM) < 60)){
-            errMap.put("HH","Field format is wrong");
-        }
-        if(blastManagementDto.getSchedule() != null && HH != null && MM != null) {
-            SimpleDateFormat newformat = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
-            Date schedule = new Date();
-            schedule = blastManagementDto.getSchedule();
-            Date now = new Date();
-            if (schedule.compareTo(now) < 0) {
-                errMap.put("date", "Send date and time cannot be earlier than now");
+        String step = (String)ParamUtil.getSessionAttr(request,"BlastManagementStep");
+        if("fillMessage".equals(step)){
+            if(blastManagementDto.getSchedule() == null){
+                errMap.put("date","The field is mandatory.");
+            }
+            String HH = blastManagementDto.getHH();
+            String MM = blastManagementDto.getMM();
+            if(HH == null){
+                errMap.put("HH","The field is mandatory.");
+            }else if(!(StringUtils.isNumeric(HH) &&  Integer.parseInt(HH) < 24)){
+                errMap.put("HH","Field format is wrong");
+            }
+            if(MM == null){
+                errMap.put("HH","The field is mandatory.");
+            }else if(!(StringUtils.isNumeric(MM) &&  Integer.parseInt(MM) < 60)){
+                errMap.put("HH","Field format is wrong");
+            }
+            if(blastManagementDto.getSchedule() != null && HH != null && MM != null) {
+                SimpleDateFormat newformat = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
+                Date schedule = new Date();
+                schedule = blastManagementDto.getSchedule();
+                Date now = new Date();
+                if (schedule.compareTo(now) < 0) {
+                    errMap.put("date", "Send date and time cannot be earlier than now");
+                }
             }
         }
-        if(blastManagementDto.getAttachmentDtos() != null){
+
+        if(blastManagementDto.getAttachmentDtos().size() > 0){
             double filesSize = 0;
             for (AttachmentDto item:blastManagementDto.getAttachmentDtos()
             ) {

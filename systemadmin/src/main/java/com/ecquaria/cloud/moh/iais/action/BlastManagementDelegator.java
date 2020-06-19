@@ -64,7 +64,7 @@ import java.util.Map;
 @Slf4j
 public class BlastManagementDelegator {
 
-    private SearchParam searchParam;
+
     private static final String BASE_SERVICE = "SVTP001";
     private static final String SPECIFIED_SERVICE = "SVTP003";
     private static final String EMAIL = "Email";
@@ -78,20 +78,20 @@ public class BlastManagementDelegator {
     @Autowired
     DistributionListService distributionListService;
 
-//    private BlastManagementDto blastManagementDto = new BlastManagementDto();
-    String searchmode = "";
     public void start(BaseProcessClass bpc){
-        searchParam = new SearchParam(BlastManagementListDto.class.getName());
-        searchParam.setPageSize(10);
-        searchParam.setPageNo(1);
-        searchParam.setSort("ID", SearchParam.ASCENDING);
+
         AuditTrailHelper.auditFunction("blastManagement", "BlastManagementDelegator");
+
+        SearchParam searchParam = getSearchParam(bpc.request,true);
+        ParamUtil.setSessionAttr(bpc.request, "blastmanagementSearchParam", searchParam);
     }
     /**
      * doPrepare
      * @param bpc
      */
     public void prepare(BaseProcessClass bpc){
+        SearchParam searchParam = getSearchParam(bpc.request,false);
+
         CrudHelper.doPaging(searchParam,bpc.request);
         QueryHelp.setMainSql("systemAdmin", "queryBlastManagementList",searchParam);
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
@@ -105,10 +105,22 @@ public class BlastManagementDelegator {
             }
         }
 
-        getDistribution(bpc,searchmode);
+        getDistribution(bpc,(String)searchParam.getFilters().get("mode"));
         setModeSelection(bpc);
         ParamUtil.setRequestAttr(bpc.request,"blastSearchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"blastSearchParam",searchParam);
+
+    }
+
+    private SearchParam getSearchParam(HttpServletRequest request, boolean neednew){
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(request, "blastmanagementSearchParam");
+        if(neednew){
+            searchParamGroup = new SearchParam(BlastManagementListDto.class.getName());
+            searchParamGroup.setPageSize(10);
+            searchParamGroup.setPageNo(1);
+            searchParamGroup.setSort("SCHEDULE_SEND_DATE", SearchParam.DESCENDING);
+        }
+        return searchParamGroup;
 
     }
 
@@ -180,6 +192,7 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void search(BaseProcessClass bpc){
+        SearchParam searchParam = getSearchParam(bpc.request,true);
         String descriptionSwitch = ParamUtil.getRequestString(bpc.request,"descriptionSwitch");
         String msgName = ParamUtil.getRequestString(bpc.request,"msgName");
         String start = ParamUtil.getRequestString(bpc.request,"start");
@@ -204,7 +217,6 @@ public class BlastManagementDelegator {
                 searchParam.addFilter("start",  start,true);
             }
             if(!StringUtil.isEmpty(mode)){
-                searchmode = mode;
                 searchParam.addFilter("mode",  mode,true);
             }
             if(!StringUtil.isEmpty(distribution)){
@@ -216,6 +228,7 @@ public class BlastManagementDelegator {
             }
             ParamUtil.setRequestAttr(bpc.request,"distributionList",distribution);
         }
+        ParamUtil.setSessionAttr(bpc.request, "blastmanagementSearchParam", searchParam);
         ParamUtil.setRequestAttr(bpc.request,"descriptionSwitch",descriptionSwitch);
         ParamUtil.setRequestAttr(bpc.request,"msgName",msgName);
         ParamUtil.setRequestAttr(bpc.request,"start",start);
@@ -255,6 +268,7 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void fillMessage(BaseProcessClass bpc){
+        ParamUtil.setSessionAttr(bpc.request,"BlastManagementStep","fillMessage");
         BlastManagementDto blastManagementDto = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"blastManagementDto");
         String name = ParamUtil.getString(bpc.request, "msgName");
         String mode = ParamUtil.getString(bpc.request, "mode");
@@ -301,7 +315,7 @@ public class BlastManagementDelegator {
             }else{
                 String fileName = "";
                 StringBuffer fileBuffer = new StringBuffer();
-                if(blastManagementDto.getAttachmentDtos() != null){
+                if(blastManagementDto.getAttachmentDtos().size() > 0){
                     for (AttachmentDto item: blastManagementDto.getAttachmentDtos()
                     ) {
                         fileBuffer.append(item.getDocName()).append(',');
@@ -328,6 +342,7 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void writeMessage(BaseProcessClass bpc) throws Exception {
+        ParamUtil.setSessionAttr(bpc.request,"BlastManagementStep","writeMessage");
         BlastManagementDto blastManagementDto = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"blastManagementDto");
         HttpServletRequest request = bpc.request;
         //setfile
@@ -336,14 +351,18 @@ public class BlastManagementDelegator {
         String subject = mulReq.getParameter("subject");
         String messageContent = mulReq.getParameter( "messageContent");
         String content = messageContent.replaceAll("\\&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "").replaceAll("\\r", "").replaceAll("\\n", "");
+        blastManagementDto.setSubject(subject);
+        blastManagementDto.setMsgContent(messageContent);
         if(StringUtil.isEmpty(content)){
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
             errMap.put("content","The field is mandatory.");
+            if(StringUtil.isEmpty(subject)){
+                errMap.put("subject","The field is mandatory.");
+            }
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }else{
-            blastManagementDto.setSubject(subject);
-            blastManagementDto.setMsgContent(messageContent);
+
             List<AttachmentDto> attachmentDtos = IaisCommonUtils.genNewArrayList();
             String fileChange = mulReq.getParameter("fileChange");
             if("1".equals(fileChange)){
@@ -386,7 +405,7 @@ public class BlastManagementDelegator {
         BlastManagementDto blastManagementDto = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"blastManagementDto");
         String fileName = "";
         StringBuffer fileBuffer = new StringBuffer();
-        if(blastManagementDto.getAttachmentDtos() != null){
+        if(blastManagementDto.getAttachmentDtos().size() > 0){
             for (AttachmentDto item: blastManagementDto.getAttachmentDtos()
             ) {
                 fileBuffer.append(item.getDocName()).append(',');
@@ -405,6 +424,7 @@ public class BlastManagementDelegator {
      * @param bpc
      */
     public void selectRecipients(BaseProcessClass bpc){
+        ParamUtil.setSessionAttr(bpc.request,"BlastManagementStep","selectRecipients");
         BlastManagementDto blastManagementDto = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"blastManagementDto");
         String distribution = ParamUtil.getString(bpc.request, "distribution");
         if(distribution == null){
@@ -437,6 +457,7 @@ public class BlastManagementDelegator {
     public @ResponseBody
     void fileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         File file = null;
+        SearchParam searchParam = getSearchParam(request,false);
         QueryHelp.setMainSql("systemAdmin", "queryBlastManagementList",searchParam);
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
         if (!searchResult.getRows().isEmpty()){
