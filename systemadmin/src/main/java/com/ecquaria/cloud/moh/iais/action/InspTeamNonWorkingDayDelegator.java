@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.AppointmentService;
+import com.ecquaria.cloud.moh.iais.service.InspSupAddAvailabilityService;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.PublicHolidayService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,8 @@ public class InspTeamNonWorkingDayDelegator {
 	private static final String NON_WKR_DAY_ID_ATTR = "nonWkrDayId";
 	private static final String AM_AVAILABILITY__ATTR = "amAvailability";
 	private static final String PM_AVAILABILITY__ATTR = "pmAvailability";
-	private static final String CURRENT_SHORT_NAME = "currentGroupId";
+//	private static final String CURRENT_SHORT_NAME = "currentGroupName";
+	private static final String CURRENT_SHORT_ID = "currentGroupId";
 
 	private static final String AM_START = "9:00:00";
 	private static final String AM_END = "13:00:00";
@@ -61,6 +63,9 @@ public class InspTeamNonWorkingDayDelegator {
 	@Autowired
     private PublicHolidayService publicHolidayService;
 
+	@Autowired
+	InspSupAddAvailabilityService inspSupAddAvailabilityService;
+
 	/**
 	 * StartStep: startStep
 	 * @param bpc
@@ -72,7 +77,8 @@ public class InspTeamNonWorkingDayDelegator {
 		AuditTrailHelper.auditFunction("Appointment",
 				"Non working day");
 		ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, null);
-		ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, null);
+//		ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, null);
+		ParamUtil.setSessionAttr(request, CURRENT_SHORT_ID, null);
 	}
 
 	/**
@@ -109,35 +115,59 @@ public class InspTeamNonWorkingDayDelegator {
 		List<WorkingGroupQueryDto> workingGroupQueryList = searchResult.getRows();
 
 		List<ApptNonWorkingDateDto> nonWorkingDateListByWorkGroupId = null;
-		String shotName = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
+		String shotId = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
 
-		if (shotName != null){
-			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(shotName);
-			ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, shotName);
+		if (shotId != null){
+			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(shotId);
+			ParamUtil.setSessionAttr(request, CURRENT_SHORT_ID, shotId);
 		}else {
 			Optional<WorkingGroupQueryDto> wrkOtional = Optional.ofNullable(workingGroupQueryList.get(0));
 			if (wrkOtional.isPresent()){
-				String defualtGroupName = wrkOtional.get().getGroupName();
-				nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(defualtGroupName);
-				ParamUtil.setSessionAttr(request, CURRENT_SHORT_NAME, defualtGroupName);
+				String defualtGroupId = wrkOtional.get().getId();
+				nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(defualtGroupId);
+				ParamUtil.setSessionAttr(request, CURRENT_SHORT_ID, defualtGroupId);
 			}
 		}
 
 		List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
 		workingGroupQueryList.forEach(wkr -> {
 			String groupName = wkr.getGroupName();
-			wrlGrpNameOpt.add(new SelectOption(groupName, groupName));
+			String groupId = wkr.getId();
+			wrlGrpNameOpt.add(new SelectOption(groupId, groupName));
 		});
 
 		if (IaisCommonUtils.isEmpty(nonWorkingDateListByWorkGroupId)){
-			nonWorkingDateListByWorkGroupId = IaisCommonUtils.genNewArrayList();
+			String groupId = (String)ParamUtil.getSessionAttr(request, CURRENT_SHORT_ID);
+			saveWeekend(groupId);
+			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(groupId);
 		}
 
 		ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
 
-		List<ApptNonWorkingDateDto> sortDayList = sortNonWorkingDay(nonWorkingDateListByWorkGroupId);
+		String groupId = (String)ParamUtil.getSessionAttr(request, CURRENT_SHORT_ID);
+		List<ApptNonWorkingDateDto> sortDayList = sortNonWorkingDay(nonWorkingDateListByWorkGroupId,groupId);
 
 		ParamUtil.setSessionAttr(request, NON_WKR_DAY_LIST_ATTR, (Serializable) sortDayList);
+	}
+
+	private void saveWeekend(String groupId){
+
+		List<String> wkrDays = new ArrayList<>(Arrays.asList("Saturday", "Sunday"));
+		for (int i = 0; i < wkrDays.size(); i++) {
+			ApptNonWorkingDateDto nonWorkingDateDto = new ApptNonWorkingDateDto();
+			nonWorkingDateDto.setId(UUID.randomUUID().toString());
+			nonWorkingDateDto.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
+			nonWorkingDateDto.setRecursivceDate(wkrDays.get(i));
+			nonWorkingDateDto.setDesc("");
+			nonWorkingDateDto.setShortName(groupId);
+			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
+			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
+			nonWorkingDateDto.setNonWkrDay(true);
+			nonWorkingDateDto.setAm(true);
+			nonWorkingDateDto.setPm(true);
+			appointmentService.updateNonWorkingDate(nonWorkingDateDto);
+		}
 	}
 
 	/**
@@ -146,11 +176,13 @@ public class InspTeamNonWorkingDayDelegator {
 	 * @param:
 	 * @return:
 	 */
-	private List<ApptNonWorkingDateDto> sortNonWorkingDay(List<ApptNonWorkingDateDto> nonWorkingDateList){
+	private List<ApptNonWorkingDateDto> sortNonWorkingDay(List<ApptNonWorkingDateDto> nonWorkingDateList ,String groupId){
+
 		List<String> wkrDays = new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"));
 		List<ApptNonWorkingDateDto> retList = new ArrayList<>(7);
 		LinkedHashMap<String, ApptNonWorkingDateDto> map = new LinkedHashMap<>(7);
-        List<String> prohibitlist = publicHolidayService.getScheduleInCalender();
+		String groupName = inspSupAddAvailabilityService.getWorkGroupById(groupId).getGroupName();
+        List<String> prohibitlist = publicHolidayService.getScheduleInCalender(groupName);
 		for (int i = 0; i < wkrDays.size(); i++){
 			ApptNonWorkingDateDto nonWorkingDateDto = new ApptNonWorkingDateDto();
 			nonWorkingDateDto.setId(UUID.randomUUID().toString());
@@ -206,7 +238,7 @@ public class InspTeamNonWorkingDayDelegator {
 	 */
 	public void doSearch(BaseProcessClass bpc) {
 		HttpServletRequest request = bpc.request;
-
+		String groupName = ParamUtil.getString(bpc.request,"wrlGrpNameOpt");
 		//do nothing
 	}
 

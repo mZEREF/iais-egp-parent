@@ -28,7 +28,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -102,8 +101,8 @@ public class EmailResendDelegator {
                 Date endDate = Formatter.parseDate(end);
                 int comparatorValue = endDate.compareTo(startDate);
                 if (comparatorValue < 0){
-                    Map<String, String> errorMap = new HashMap<>(1);
-                    errorMap.put("date", "Sent Date From cannot be later than Sent Date End");
+                    Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+                    errorMap.put("later", "Sent Date From cannot be later than Sent Date To");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 }
             }catch (Exception e){

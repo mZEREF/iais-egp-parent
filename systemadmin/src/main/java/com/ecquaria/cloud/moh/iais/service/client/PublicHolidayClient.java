@@ -44,5 +44,5 @@ public interface PublicHolidayClient {
     FeignResponseEntity<String> getPublicHolidayInCalender(@RequestParam("fromDate") String fromDate);
 
     @PostMapping(value = "/iais-publicHoliday/getScheduleInCalender", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<String>> getScheduleInCalender();
+    FeignResponseEntity<List<String>> getScheduleInCalender(@RequestParam("groupName") String groupName);
 }

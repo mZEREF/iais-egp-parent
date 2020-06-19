@@ -317,4 +317,10 @@ public class InspSupAddAvailabilityServiceImpl implements InspSupAddAvailability
         }
         return userIdList;
     }
+
+    @Override
+    public WorkingGroupDto getWorkGroupById(String workGroupId){
+        WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
+        return workingGroupDto;
+    }
 }

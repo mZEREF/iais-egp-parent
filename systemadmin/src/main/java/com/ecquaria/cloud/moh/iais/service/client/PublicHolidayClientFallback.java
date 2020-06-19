@@ -75,7 +75,7 @@ public class PublicHolidayClientFallback implements PublicHolidayClient{
     }
 
     @Override
-    public FeignResponseEntity<List<String>> getScheduleInCalender() {
+    public FeignResponseEntity<List<String>> getScheduleInCalender(String groupName) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAgencyUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
@@ -130,4 +131,6 @@ public interface InspSupAddAvailabilityService {
       * @Descripation: setUserSysCorrIdsByDto
       */
     ApptNonAvailabilityDateDto setUserSysCorrIdsByDto(ApptNonAvailabilityDateDto apptNonAvailabilityDateDto, GroupRoleFieldDto groupRoleFieldDto);
+
+    WorkingGroupDto getWorkGroupById(String workGroupId);
 }
