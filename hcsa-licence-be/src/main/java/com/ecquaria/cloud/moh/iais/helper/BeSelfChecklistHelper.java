@@ -134,10 +134,8 @@ public final class BeSelfChecklistHelper {
                             String svcName = serviceInfo.getSvcName();
                             selfAssessment.setSvcName(svcName);
                             selfAssessment.setSvcId(serviceInfo.getId());
-                            SelfAssessmentConfig selfAssessmentConfig;
-
-                            if (selfAssessmentConfigMap.containsKey(svcCode)) {
-                                selfAssessmentConfig = selfAssessmentConfigMap.get(svcCode);
+                            SelfAssessmentConfig selfAssessmentConfig = selfAssessmentConfigMap.get(svcCode);
+                            if ( selfAssessmentConfig != null) {
                                 selfAssessmentConfig.getQuestion().addAll(answerData);
                             } else {
                                 selfAssessmentConfig = new SelfAssessmentConfig();
