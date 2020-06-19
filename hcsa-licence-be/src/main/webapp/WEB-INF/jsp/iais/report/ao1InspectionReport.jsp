@@ -93,7 +93,13 @@
                                                                         <span id="error_submit" class="error-msg" hidden> The field is mandatory.</span>
                                                                     </iais:value>
                                                                 </iais:row>
-
+                                                                <iais:row>
+                                                                    <iais:field value="Recommendation"
+                                                                                required="false"/>
+                                                                    <iais:value width="10">
+                                                                        <p><iais:code code="${appPremisesRecommendationDto.period}"/></p>
+                                                                    </iais:value>
+                                                                </iais:row>
                                                                 <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
                                                                 <iais:row>
                                                                     <iais:field value="Licence Start Date" required="false"/>
