@@ -479,4 +479,30 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
+
+    public static int getCompareDate(Date startDate,Date endDate){
+        if(startDate == null || endDate == null)
+            return  -1;
+        Calendar calendarStart = Calendar.getInstance();
+        calendarStart.setTime(startDate);
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.setTime( endDate);
+        int day1 = calendarStart.get(Calendar.DAY_OF_YEAR);
+        int day2 = calendarEnd.get(Calendar.DAY_OF_YEAR);
+        int year1 = calendarStart.get(Calendar.YEAR);
+        int year2 = calendarEnd.get(Calendar.YEAR);
+        if (year1 != year2){
+            int timeDistance = 0;
+            for (int i = year1 ; i < year2 ;i++){
+                if (i%4==0 && i%100!=0||i%400==0) {
+                    timeDistance += 366;
+                }else {
+                    timeDistance += 365;
+                }
+            }
+            return  timeDistance + (day2-day1+1);
+        }else {
+            return day2-day1+1;
+        }
+    }
 }

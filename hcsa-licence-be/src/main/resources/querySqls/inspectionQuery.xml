@@ -153,7 +153,9 @@
             <#if hclCode??> and charindex(:hclCode,t5.HCI_CODE)!=0 </#if>
             <#if premType??> and charindex(:premType,t5.PREMISES_TYPE) != 0 </#if>
             <#if isTcuNeeded??> and t3.IS_TCU_NEEDED = :isTcuNeeded </#if>
-
+            <#if aduitInspectionMonthBeforeTcu??>
+             and  DATEDIFF(DAY, getdate() ,t3.TCU_DATE) <= :aduitInspectionMonthBeforeTcu
+             </#if>
         ]]>
     </sql>
 

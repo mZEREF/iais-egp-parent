@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -13,10 +14,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
-import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -35,17 +36,15 @@ import java.util.*;
 @Service
 public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalListService {
     @Autowired
-    HcsaLicenceClient hcsaLicenceClient;
+    private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
-    HcsaConfigClient hcsaConfigClient;
+    private HcsaConfigClient hcsaConfigClient;
     @Autowired
-    HcsaRiskSupportBeService hcsaRiskSupportBeService;
+    private  FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
-    FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+    private ApplicationViewService applicationViewService;
     @Autowired
-    HcsaRiskSupportBeServiceImpl hcsaRiskSupportBeServiceImpl;
-    @Autowired
-    ApplicationViewService applicationViewService;
+    private SystemParamConfig systemParamConfig;
     @Override
     public List<AuditTaskDataFillterDto> getSystemPotentailAdultList() {
         AuditSystemPotentialDto dto = new AuditSystemPotentialDto();
@@ -315,6 +314,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         SearchParam searchParam = new SearchParam(AuditTaskDataDto.class.getName());
         if(dto.getIsTcuNeeded() != null){
             searchParam.addFilter("isTcuNeeded", dto.getIsTcuNeeded(), Boolean.TRUE);
+            searchParam.addFilter("aduitInspectionMonthBeforeTcu",getDayByAduitInspectionMonthBeforeTcu(systemParamConfig.getAduitInspectionMonthBeforeTcu()), Boolean.TRUE);
         }
         if (!IaisCommonUtils.isEmpty(dto.getTotalServiceNameList()) && !StringUtil.isEmpty(insql)) {
             searchParam.addParam("serviceNameList", insql);
@@ -334,6 +334,14 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         QueryHelp.setMainSql("inspectionQuery", "aduitSystemList", searchParam);
         return searchParam;
     }
+
+    private int getDayByAduitInspectionMonthBeforeTcu( int aduitInspectionMonthBeforeTcu){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.MONTH,aduitInspectionMonthBeforeTcu);
+        return IaisEGPHelper.getCompareDate(new Date(), calendar.getTime());
+    }
+
 
     private List<String> getSvcName(List<String> svcNameList, List<String> hcsaServiceCodeList) {
         List<String> serviceNameList = IaisCommonUtils.genNewArrayList();
