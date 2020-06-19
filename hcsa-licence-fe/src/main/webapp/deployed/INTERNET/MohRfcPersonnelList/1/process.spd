@@ -37,7 +37,7 @@
     <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="430" y="190">
+  <AutomaticStep defClass="" executor="" icon="" name="doSearch" x="440" y="200">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -58,11 +58,25 @@
     <JavaCode defClass="" executor="" methodName="doPaging_OnStepProcess_0" name="doPaging_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="940" y="550">
+  <AutomaticStep defClass="" executor="" icon="" name="preparePayment" x="770" y="550">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0"/>
+    <JavaCode defClass="" executor="" methodName="preparePayment_OnStepProcess_0" name="preparePayment_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="jumpBank" x="790" y="290">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="jumpBank_OnStepProcess_0" name="jumpBank_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="dash" x="920" y="200">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="dash_OnStepProcess_0" name="dash_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -79,7 +93,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="830" y="550">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="790" y="200">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="payment" stageIndicator="" x="790" y="420">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -104,7 +124,7 @@
    <position>{(520,100)(370,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
-   <position>{(520,100)(450,210)}</position>
+   <position>{(520,100)(460,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPaging" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch" style="oblique">
    <position>{(520,100)(540,210)}</position>
@@ -113,13 +133,13 @@
    <position>{(520,100)(660,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSorting" style="oblique">
-   <position>{(370,220)(460,570)}</position>
+   <position>{(370,220)(450,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearch" style="oblique">
-   <position>{(450,210)(460,570)}</position>
+   <position>{(460,220)(450,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPaging" style="oblique">
-   <position>{(540,210)(460,570)}</position>
+   <position>{(540,210)(450,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/personnelEdit" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preparePersonnelEdit" style="rectanular">
    <position>{(660,210)(680,330)}</position>
@@ -128,25 +148,31 @@
    <position>{(680,330)(680,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnel" linkstyle="Rectangle" name="" sourceName="/Merges/Merge/Merge1" style="rectanular">
-   <position>{(460,570)(59,574)(30,100)}</position>
+   <position>{(450,570)(59,574)(30,100)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPersonnelEdit" style="rectanular">
-   <position>{(680,450)(700,570)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(700,570)(850,570)}</position>
+   <position>{(680,450)(720,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(700,570)(460,570)}</position>
+   <position>{(720,570)(450,570)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnelEdit" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(700,570)(571,570)(660,210)}</position>
+   <position>{(720,570)(571,570)(660,210)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ack" style="rectanular">
-   <position>{(850,570)(960,570)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePayment" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(720,570)(790,570)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preparePersonnel" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step2" style="rectanular">
-   <position>{(960,570)(66,4)(30,100)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/payment" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preparePayment" style="rectanular">
+   <position>{(790,570)(810,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/jumpBank" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/payment" style="rectanular">
+   <position>{(810,440)(810,310)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="rectanular">
+   <position>{(810,310)(810,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/dash" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ack" style="rectanular">
+   <position>{(810,220)(940,220)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -158,16 +184,16 @@
    <SwitchCase component="/Steps/AutomaticStep/doPaging" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preparePersonnelEdit" value="&quot;edit&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Pages/WebPage/ack" executor="" icon="" leftOperand="action_type" name="Switch1" x="680" y="550">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/preparePersonnelEdit" executor="" icon="" leftOperand="action_type" name="Switch1" x="700" y="550">
    <Description/>
-   <SwitchCase component="/Pages/WebPage/ack" value="&quot;ack&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preparePersonnelEdit" value="&quot;valid&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preparePayment" value="&quot;bank&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
  <Merges>
-  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="440" y="550">
+  <Merge defClass="" executor="" icon="" name="Merge1" type="Or" x="430" y="550">
    <Description/>
   </Merge>
  </Merges>

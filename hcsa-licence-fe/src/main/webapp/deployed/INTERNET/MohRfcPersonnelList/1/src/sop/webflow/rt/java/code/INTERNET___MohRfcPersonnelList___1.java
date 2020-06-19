@@ -34,24 +34,18 @@ public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 	}
 
 	public void init_OnStepProcess_0 () throws Exception { 
-	
-		// 		init->OnStepProcess
-			EngineHelper.delegate(DELEGATOR, "preparePersonnel", this);
-		} 
+		EngineHelper.delegate(DELEGATOR, "preparePersonnel", this);
+	} 
 
 	public void controlSwitch_OnStepProcess_0 () throws Exception { 
-	
-		// 		ControlSwitch->OnStepProcess
-			EngineHelper.delegate(DELEGATOR, "controlSwitch", this);
-		}
+		EngineHelper.delegate(DELEGATOR, "controlSwitch", this);
+	}
 
 	public void step1_OnStepProcess_0() throws Exception {
-	// 		Step1->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "personnleListStart", this);
 	}
 
 	public void step1_OnStepProcess_1() throws Exception {
-	// 		Step1->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "personnleListStart", this);
 	}
 
@@ -67,9 +61,15 @@ public class INTERNET___MohRfcPersonnelList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "personnleSearch", this);
 	}
 
-	public void step2_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "personnleAckBack", this);
+	public void preparePayment_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "preparePersonnelBank", this);
 	}
 
-	
+	public void jumpBank_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "jumpPersonnelBank", this);
+	}
+
+	public void dash_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "personnelDashboard", this);
+	}
 }

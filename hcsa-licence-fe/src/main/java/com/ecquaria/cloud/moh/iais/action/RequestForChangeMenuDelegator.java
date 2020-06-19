@@ -934,7 +934,7 @@ public class RequestForChangeMenuDelegator {
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(specialty1)) {
                 errMap.put("specialty1", "UC_CHKLMD001_ERR001");
             }
-            if (psnTypes.contains("CGO") && !StringUtil.isEmpty(specialty1)&&StringUtil.isEmpty(specialityOther1)) {
+            if (psnTypes.contains("CGO") && !"other".equals(specialty1)&&StringUtil.isEmpty(specialityOther1)) {
                 errMap.put("specialityOther1", "UC_CHKLMD001_ERR001");
             }
         }
@@ -968,9 +968,6 @@ public class RequestForChangeMenuDelegator {
             if (StringUtil.isEmpty(editSelect)) {
                 errMap.put("editSelect", "UC_CHKLMD001_ERR001");
             }
-            if (StringUtil.isEmpty(specialityOther)) {
-                errMap.put("specialityOther", "UC_CHKLMD001_ERR001");
-            }
             if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo)) {
                 errMap.put("officeTelNo", "UC_CHKLMD001_ERR001");
             }
@@ -980,7 +977,7 @@ public class RequestForChangeMenuDelegator {
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(specialty)) {
                 errMap.put("specialty", "UC_CHKLMD001_ERR001");
             }
-            if (psnTypes.contains("CGO") && !StringUtil.isEmpty(specialty)&&StringUtil.isEmpty(specialityOther)) {
+            if (psnTypes.contains("CGO") && "other".equals(specialty)&&StringUtil.isEmpty(specialityOther)) {
                 errMap.put("specialityOther", "UC_CHKLMD001_ERR001");
             }
         }
@@ -1061,7 +1058,7 @@ public class RequestForChangeMenuDelegator {
                 if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSpeciality())) {
                     errMap.put("specialty2", "UC_CHKLMD001_ERR001");
                 }
-                if (psnTypes.contains("CGO") &&!StringUtil.isEmpty(newPerson.getSalutation())&&StringUtil.isEmpty(newPerson.getSpecialityOther())) {
+                if (psnTypes.contains("CGO") &&!"other".equals(newPerson.getSpeciality())&&StringUtil.isEmpty(newPerson.getSpecialityOther())) {
                     errMap.put("specialityOther2", "UC_CHKLMD001_ERR001");
                 }
             }
@@ -1134,11 +1131,15 @@ public class RequestForChangeMenuDelegator {
             if ("replace".equals(editSelect)) {
                 AppSubmissionDto appSubmissionDto2 = replacePersonnelDate(appSubmissionDto, newPerson);
                 appSubmissionDto.setAutoRfc(false);
+                appSubmissionDto.setAmount(0.0);
+                appSubmissionDto.setAmountStr("$0.0");
                 appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                 appSubmissionDtos1.add(appSubmissionDto2);
             } else {
                 AppSubmissionDto appSubmissionDto1 = setPersonnelDate(appSubmissionDto, personnelEditDto);
                 appSubmissionDto.setAutoRfc(true);
+                appSubmissionDto.setAmount(0.0);
+                appSubmissionDto.setAmountStr("$0.0");
                 appSubmissionDtos1.add(appSubmissionDto1);
             }
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
@@ -1147,21 +1148,66 @@ public class RequestForChangeMenuDelegator {
         if (appSvcRelatedInfoDtoList.equals(oldSvcDto)) {
             requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
         }
-        ParamUtil.setRequestAttr(bpc.request, "action_type", "ack");
-        ParamUtil.setRequestAttr(bpc.request, "pmtRefNo", "N/A");
-        ParamUtil.setRequestAttr(bpc.request, "createDate", new Date());
-        ParamUtil.setRequestAttr(bpc.request, "dAmount", "N/A");
-        ParamUtil.setRequestAttr(bpc.request, "payMethod", "N/A");
+        ParamUtil.setRequestAttr(bpc.request, "action_type", "bank");
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
+        ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos1);
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
     }
 
-    public void personnleAckBack(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do personnleAckBack start ...."));
-        ParamUtil.setRequestAttr(bpc.request, "action_type", "back");
-        log.debug(StringUtil.changeForLog("the do personnleAckBack end ...."));
+    public void preparePersonnelBank(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do prePayment start ...."));
+        Double dAmount = 0.0;
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getRequestAttr(bpc.request, "AppSubmissionDto");
+        ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
+        bpc.request.getSession().setAttribute("dAmount", "$" + dAmount);
+        log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
 
+    public void jumpPersonnelBank(BaseProcessClass bpc) throws IOException {
+        log.debug(StringUtil.changeForLog("the do jumpBank start ...."));
+        String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+        if (StringUtil.isEmpty(payMethod)) {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
+            return;
+        }
+        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "AppSubmissionDtos");
+        bpc.request.getSession().setAttribute("payMethod", payMethod);
+        if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
+                || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
+                || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
+            String backUrl = "hcsa-licence-web/eservice/INTERNET/MohRfcPersonnelList/1/ack";
+            StringBuffer url = new StringBuffer();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/payment-web/eservice/INTERNET/PaymentRequest")
+                    .append("?amount=").append(MaskUtil.maskValue("amount", String.valueOf(appSubmissionDtos.get(0).getAmount())))
+                    .append("&payMethod=").append(MaskUtil.maskValue("payMethod", payMethod))
+                    .append("&reqNo=").append(MaskUtil.maskValue("reqNo", appSubmissionDtos.get(0).getAppGrpNo()))
+                    .append("&backUrl=").append(MaskUtil.maskValue("backUrl", backUrl));
+            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+            return;
+        } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
+            String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
+            ApplicationGroupDto appGrp = new ApplicationGroupDto();
+            appGrp.setId(appGrpId);
+            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
+            serviceConfigService.updatePaymentStatus(appGrp);
+            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
+            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+        }
+        log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
+    }
+
+    public void personnelDashboard(BaseProcessClass bpc) {
+        StringBuilder url = new StringBuilder();
+        url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        try {
+            bpc.response.sendRedirect(tokenUrl);
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 
     /**
      * @param bpc

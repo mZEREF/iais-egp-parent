@@ -40,7 +40,6 @@
                                     </thead>
                                     <tbody>
                                     <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">
-
                                             <tr>
                                                 <td>
                                                     <p><c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></p>

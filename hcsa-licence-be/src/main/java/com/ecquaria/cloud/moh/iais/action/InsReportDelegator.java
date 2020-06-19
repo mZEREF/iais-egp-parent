@@ -94,12 +94,13 @@ public class InsReportDelegator {
             }
         }
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(appStatus)){
             initRecommendation(correlationId,applicationViewDto,bpc);
         }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();
-        List<SelectOption> recommendationOption = getRecommendationOption();
+        List<SelectOption> recommendationOption = getRecommendationOption(applicationType);
         List<SelectOption> riskLevelOptions = getriskLevel();
         List<SelectOption> processingDe = getProcessingDecision(appStatus);
         String periodDefault = insRepService.getPeriodDefault(applicationViewDto);
@@ -340,14 +341,21 @@ public class InsReportDelegator {
         return ChronoResult;
     }
 
-    private List<SelectOption> getRecommendationOption() {
+    private List<SelectOption> getRecommendationOption(String appType) {
         List<SelectOption> recommendationResult = IaisCommonUtils.genNewArrayList();
-        SelectOption so1 = new SelectOption(InspectionReportConstants.APPROVED, "Proceed with Licence Issuance");
-        SelectOption so2 = new SelectOption(InspectionReportConstants.APPROVEDLTC, "Proceed with Licence Issuance (with LTCs)");
-        SelectOption so3 = new SelectOption(InspectionReportConstants.REJECTED, "Reject Licence");
-        recommendationResult.add(so1);
-        recommendationResult.add(so2);
-        recommendationResult.add(so3);
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            SelectOption so1 = new SelectOption(InspectionReportConstants.APPROVED, "Approve");
+            SelectOption so3 = new SelectOption(InspectionReportConstants.REJECTED, "Reject");
+            recommendationResult.add(so1);
+            recommendationResult.add(so3);
+        }else {
+            SelectOption so1 = new SelectOption(InspectionReportConstants.APPROVED, "Proceed with Licence Issuance");
+            SelectOption so2 = new SelectOption(InspectionReportConstants.APPROVEDLTC, "Proceed with Licence Issuance (with LTCs)");
+            SelectOption so3 = new SelectOption(InspectionReportConstants.REJECTED, "Reject Licence");
+            recommendationResult.add(so1);
+            recommendationResult.add(so2);
+            recommendationResult.add(so3);
+        }
         return recommendationResult;
     }
 
