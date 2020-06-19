@@ -1482,6 +1482,7 @@ public class RequestForChangeMenuDelegator {
                 }
                 appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
                 oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
+                requestForChangeService.svcDocToPresmise(appSubmissionDtoByLicenceId);
                 appSubmissionDtos.add(appSubmissionDtoByLicenceId);
             }
 

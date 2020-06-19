@@ -58,7 +58,12 @@
             if (oldVal.length > 0 && newVal.length > 0) {
                 if (oldVal != newVal) {
                     $(this).show();
-                } else {
+                    var newHtml=$(this).parent().prev().find('.' + newValClass).html();
+                    var oldHtml=$(this).html();
+                    $(this).html(newHtml);
+                    $(this).parent().prev().find('.' + newValClass).html(oldHtml);
+                    $(this).attr("class","newVal compareTdStyle");
+                } else if(oldVal.length > 0 && newVal.length <= 0){
                     $(this).hide();
                 }
             }
