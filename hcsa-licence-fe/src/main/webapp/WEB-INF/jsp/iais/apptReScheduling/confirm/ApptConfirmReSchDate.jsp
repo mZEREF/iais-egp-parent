@@ -29,7 +29,7 @@
             <div class="center-content">
               <div class="intranet-content">
                 <iais:body >
-                  <c:if test="${'SUCCESS' eq 'SUCCESS'}">
+                  <c:if test="${'SUCCESS' eq apptInspFlag}">
                     <iais:section title="" id = "rec_ack_page">
                       <div class="bg-title">
                         <h3 style="border-bottom: 0px solid">Submission successful</h3>
@@ -47,7 +47,7 @@
                       </iais:action>
                     </iais:section>
                   </c:if>
-                  <c:if test="${'SUCCESS' ne 'FALSE'}">
+                  <c:if test="${'SUCCESS' ne apptInspFlag}">
                     <iais:section title="" id = "ava_appt_date">
                       <div class="row">
                         <div class="col-md-4">
@@ -56,8 +56,8 @@
                       </div>
                       <div class="row">
                         <div class="col-md-6">
-                          <c:forEach items="${apptFeConfirmDateDto.inspectionDate}" var="date">
-                            <br><input class="form-check-input" type="radio" name="apptCheckDate" aria-invalid="true" value="${date.value}" <c:if test="${date.value eq apptFeConfirmDateDto.checkDate}">checked</c:if>>
+                          <c:forEach items="${processReSchedulingDto.inspectionDate}" var="date">
+                            <br><input class="form-check-input" type="radio" name="apptCheckDate" aria-invalid="true" value="${date.value}" <c:if test="${date.value eq processReSchedulingDto.checkDate}">checked</c:if>>
                             <span><c:out value = "${date.text}"/></span>
                           </c:forEach>
                           <br><span class="error-msg" name="iaisErrorMsg" id="error_checkDate"></span>
@@ -65,7 +65,7 @@
                       </div>
                       <br>
                       <iais:action>
-                        <button class="btn btn-primary" style="float:right" data-target= "#rejectDate" type="button">Reject All</button>
+                        <button class="btn btn-primary" style="float:right" data-toggle= "modal" data-target= "#rejectDate" type="button">Reject All</button>
                         <iais:confirm yesBtnCls="btn btn-primary" msg="APPT_ERROR0003" callBack="apptConfirmReSchDateRej()" popupOrder="rejectDate" title="Message from webpage" needCancel="false"></iais:confirm>
                         <span style="float:right">&nbsp;</span>
                         <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptConfirmReSchDateCon()">Accept</button>
