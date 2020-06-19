@@ -44,6 +44,7 @@ import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.kafka.model.Submission;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,7 +161,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private void getinspectorOp(List<OrgUserDto> orgDtos, AuditTaskDataFillterDto temp) {
         List<SelectOption> ops = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(orgDtos)) {
-            Map<String,String> userIdToEmails = new HashMap<>(orgDtos.size());
+            Map<String,String> userIdToEmails = Maps.newHashMapWithExpectedSize(orgDtos.size());
             for (OrgUserDto ou : orgDtos) {
                 SelectOption op = new SelectOption();
                 op.setText(ou.getDisplayName());
@@ -338,7 +339,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     public void sendEmailToIns(String ins, String emailKey, String appGroupNo,String email) {
         MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(emailKey).getEntity();
         if (autoEntity == null){
-            log.info("===>>>>sendEmailToIns can not find message template. " + "key is" + emailKey);
+            log.info(StringUtil.changeForLog("===>>>>sendEmailToIns can not find message template. " + "key is" + emailKey));
             return;
         }
 

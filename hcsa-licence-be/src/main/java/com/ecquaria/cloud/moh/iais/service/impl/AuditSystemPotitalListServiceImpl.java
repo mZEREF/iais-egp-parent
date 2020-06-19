@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.esotericsoftware.minlog.Log;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -210,7 +211,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     }
 
     private Map<String,String> getAllServiceByAuditTaskDataFillterDtoList( List<AuditTaskDataDto> auditTaskDtos ){
-        Map<String,String> map = new HashMap<>(auditTaskDtos.size());
+        Map<String,String> map = Maps.newHashMapWithExpectedSize(auditTaskDtos.size());
         if( IaisCommonUtils.isEmpty(auditTaskDtos)) return map;
         for(AuditTaskDataDto temp : auditTaskDtos ){
             if(StringUtil.isEmpty(map.get(temp.getSvcName()))){
@@ -313,8 +314,8 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
     public SearchParam getSearchParamFrom(AuditSystemPotentialDto dto, String insql) {
         SearchParam searchParam = new SearchParam(AuditTaskDataDto.class.getName());
         if(dto.getIsTcuNeeded() != null){
-            searchParam.addFilter("isTcuNeeded", dto.getIsTcuNeeded(), Boolean.TRUE);
-            searchParam.addFilter("aduitInspectionMonthBeforeTcu",getDayByAduitInspectionMonthBeforeTcu(systemParamConfig.getAduitInspectionMonthBeforeTcu()), Boolean.TRUE);
+            searchParam.addFilter("isTcuNeeded", dto.getIsTcuNeeded(), true);
+            searchParam.addFilter("aduitInspectionMonthBeforeTcu",getDayByAduitInspectionMonthBeforeTcu(systemParamConfig.getAduitInspectionMonthBeforeTcu()), true);
         }
         if (!IaisCommonUtils.isEmpty(dto.getTotalServiceNameList()) && !StringUtil.isEmpty(insql)) {
             searchParam.addParam("serviceNameList", insql);
@@ -323,13 +324,13 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             }
         }
         if (!StringUtil.isEmpty(dto.getPostalCode())) {
-            searchParam.addFilter("postalCode", dto.getPostalCode(), Boolean.TRUE);
+            searchParam.addFilter("postalCode", dto.getPostalCode(), true);
         }
         if (!StringUtil.isEmpty(dto.getHclCode())) {
-            searchParam.addFilter("hclCode", dto.getHclCode(), Boolean.TRUE);
+            searchParam.addFilter("hclCode", dto.getHclCode(), true);
         }
         if (!StringUtil.isEmpty(dto.getPremisesType())) {
-            searchParam.addFilter("premType", dto.getPremisesType(), Boolean.TRUE);
+            searchParam.addFilter("premType", dto.getPremisesType(), true);
         }
         QueryHelp.setMainSql("inspectionQuery", "aduitSystemList", searchParam);
         return searchParam;
