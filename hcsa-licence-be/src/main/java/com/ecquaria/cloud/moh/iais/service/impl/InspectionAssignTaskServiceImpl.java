@@ -463,7 +463,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 taskDto.setWkGrpId(td.getWkGrpId());
                 taskDto.setUserId(loginContext.getUserId());
                 taskDto.setDateAssigned(new Date());
-                taskDto.setRoleId(td.getRoleId());
+                taskDto.setRoleId(role);
                 taskDto.setAuditTrailDto(auditTrailDto);
                 taskDto.setProcessUrl(processUrl);
                 taskDto.setScore(score);
