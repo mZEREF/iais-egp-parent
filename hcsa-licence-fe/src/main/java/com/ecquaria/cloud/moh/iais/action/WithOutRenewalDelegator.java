@@ -788,11 +788,6 @@ public class WithOutRenewalDelegator {
         AppSubmissionDto oldAppSubmissionDto  =(AppSubmissionDto)bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         RenewDto renewDto = (RenewDto)ParamUtil.getSessionAttr(bpc.request,RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
-        Map<String, String> stringStringMap = newApplicationDelegator.doPreviewAndSumbit(bpc);
-        if(stringStringMap!=null&&!stringStringMap.isEmpty()){
-            ParamUtil.setRequestAttr(bpc.request,PAGE_SWITCH,PAGE2);
-            return;
-        }
         String renewEffectiveDate = ParamUtil.getDate(bpc.request, "renewEffectiveDate");
         if(!StringUtil.isEmpty(renewEffectiveDate)){
             Date date = Formatter.parseDate(renewEffectiveDate);
