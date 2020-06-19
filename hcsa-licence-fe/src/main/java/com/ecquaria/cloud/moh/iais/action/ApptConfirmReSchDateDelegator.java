@@ -2,6 +2,9 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ProcessReSchedulingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -55,6 +58,7 @@ public class ApptConfirmReSchDateDelegator {
      */
     public void apptUserChooseDateInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptUserChooseDateInit start ...."));
+        ParamUtil.setSessionAttr(bpc.request, "processReSchedulingDto", null);
     }
 
     /**
@@ -65,7 +69,23 @@ public class ApptConfirmReSchDateDelegator {
      */
     public void apptUserChooseDatePre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptUserChooseDatePre start ...."));
+        InspSetMaskValueDto inspSetMaskValueDto = (InspSetMaskValueDto)ParamUtil.getSessionAttr(bpc.request, "inspSetMaskValueDto");
+        ProcessReSchedulingDto processReSchedulingDto = (ProcessReSchedulingDto)ParamUtil.getSessionAttr(bpc.request, "processReSchedulingDto");
+        String applicationNo = inspSetMaskValueDto.getApplicationNo();
+        ApplicationDto applicationDto = apptConfirmReSchDateService.getApplicationDtoByAppNo(applicationNo);
+        String appId = applicationDto.getId();
+        String appPremCorrId = apptConfirmReSchDateService.getAppPremCorrIdByAppId(appId);
+        String appStatus = applicationDto.getStatus();
+        if(processReSchedulingDto == null) {
+            if (ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_APPLICANT.equals(appStatus)) {
+                processReSchedulingDto = apptConfirmReSchDateService.getApptSystemDateByCorrId(appPremCorrId);
+                ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.FALSE);
+            } else {
+                ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", AppConsts.SUCCESS);
+            }
+        }
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,"System Proposes Alternate Dates");
+        ParamUtil.setSessionAttr(bpc.request, "processReSchedulingDto", processReSchedulingDto);
     }
 
     /**
