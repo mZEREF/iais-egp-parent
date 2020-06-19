@@ -20,4 +20,7 @@
     $("#renewLicence2").click(function(){
         SOP.Crud.cfxSubmit("mainForm", "renewUp");
     });
+    $("#amendLicence2").click(function(){
+        SOP.Crud.cfxSubmit("mainForm", "amend2");
+    });
 </script>

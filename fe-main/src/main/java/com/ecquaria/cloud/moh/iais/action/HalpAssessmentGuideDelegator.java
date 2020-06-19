@@ -177,7 +177,18 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void amendLic2(BaseProcessClass bpc) {
-
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        log.info("****start ******");
+        String licenseeId = loginContext.getLicenseeId();
+        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, premiseFilterParameter, true);
+        searchParam.addFilter("licenseeId", licenseeId, true);
+        QueryHelp.setMainSql("interInboxQuery", "queryPremises", searchParam);
+        SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
+        if (!StringUtil.isEmpty(searchResult)) {
+            ParamUtil.setSessionAttr(bpc.request, "PremisesSearchParam", searchParam);
+            ParamUtil.setRequestAttr(bpc.request, "PremisesSearchResult", searchResult);
+        }
+        log.info("****end ******");
     }
 
     public void amendLic3_1(BaseProcessClass bpc) {

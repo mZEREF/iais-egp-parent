@@ -1,5 +1,5 @@
 <div class="form-check-gp">
-    <p class="form-check-title">Please select the type of change(s) to be made t your licence(?)</p>
+    <p class="form-check-title">Please select the type of change(s) to be made to your licence(s)</p>
 
     <div class="form-check progress-step-check" style="width: 900px">
         <input class="form-check-input" id="amendLicence1"
@@ -21,7 +21,7 @@
                aria-invalid="false">
         <label class="form-check-label" for="amendLicence2">
             <span class="check-circle"></span>
-            <span class="left-content">Update Healthcare Instituion(HCI) Information<a
+            <span class="left-content">Update Healthcare Instituition(HCI) Information<a
                     class="btn-tooltip styleguide-tooltip"
                     data-toggle="tooltip" data-html="true"
                     title="" data-original-title=""
@@ -36,7 +36,7 @@
         <label class="form-check-label" for="amendLicence3">
             <span class="check-circle"></span>
             <span class="left-content">Update licensee information</span>
-            <span class="right-content">Update a change in licensee, or licensee’s information </span>
+            <span class="right-content">Update a change in licensee, or licensee’s information</span>
         </label>
     </div>
     <div class="form-check progress-step-check" style="width: 900px">
