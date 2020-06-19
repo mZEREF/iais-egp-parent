@@ -161,6 +161,7 @@ public class InspectionCreTaskByInspDateDelegator {
             taskDto.setAuditTrailDto(intranet);
             taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY);
             taskDto.setScore(score);
+            taskDto.setApplicationNo(td.getApplicationNo());
             taskDtoList.add(taskDto);
             ApplicationViewDto applicationViewDto = applicationClient.getAppViewByCorrelationId(appPremCorrId).getEntity();
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
