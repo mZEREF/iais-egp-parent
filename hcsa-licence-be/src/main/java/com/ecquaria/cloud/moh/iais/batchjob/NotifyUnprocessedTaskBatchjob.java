@@ -145,7 +145,7 @@ public class NotifyUnprocessedTaskBatchjob {
 
     }
 
-    private void sendEmail(TaskEmailDto item, ApplicationDto application,List<String> emailAddr) throws IOException, TemplateException{
+    private void sendEmail(TaskEmailDto item, ApplicationDto application,List<String> emailAddr){
         EmailDto email = new EmailDto();
         switch (application.getApplicationType()){
             case ApplicationConsts.APPLICATION_TYPE_APPEAL:

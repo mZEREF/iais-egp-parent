@@ -1634,7 +1634,7 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-    private void sendSMS(String msgId, String licenseeId, Map<String, Object> msgInfoMap) throws IOException, TemplateException {
+    private void sendSMS(String msgId, String licenseeId, Map<String, Object> msgInfoMap){
         //MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(msgId).getEntity();
         //String templateMessageByContent = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), msgInfoMap);
         String templateMessageByContent = "send sms";
