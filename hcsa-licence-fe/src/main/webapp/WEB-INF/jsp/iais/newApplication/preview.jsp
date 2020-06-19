@@ -25,7 +25,7 @@
                                             <p></p>
                                         </div>
                                         <div class="col-xs-12 col-md-2 text-right">
-                                            <p class="print"><a href="" onclick="preview()"> <em class="fa fa-print"></em>Print</a></p>
+                                            <p class="print"><div style="font-size: 16px;"><a href="" onclick="preview()"> <em class="fa fa-print"></em>Print</a></div></p>
                                         </div>
                                     </div>
                                     <div class="row">
