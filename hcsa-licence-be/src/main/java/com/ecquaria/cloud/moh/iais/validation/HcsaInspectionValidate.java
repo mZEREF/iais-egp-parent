@@ -387,7 +387,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inLeftMod)){
             try {
                 inLeftModNum = Integer.valueOf(inLeftMod);
-                if(inLeftModNum<0||inLeftModNum>999){
+                if(inLeftModNum<=0||inLeftModNum>999){
                     if("C".equals(level)){
                         errMap.put(serviceCode+"caLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC);
                         fdto.setDoCaLeftModCountherr(true);
@@ -417,7 +417,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inRightMod)){
             try {
                 inRightModNum = Integer.valueOf(inRightMod);
-                if(inRightModNum<0 || inRightModNum >999){
+                if(inRightModNum<=0 || inRightModNum >999){
                     if("C".equals(level)){
                         errMap.put(serviceCode+"caRightModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC);
                         fdto.setDoCaRightModCountherr(true);

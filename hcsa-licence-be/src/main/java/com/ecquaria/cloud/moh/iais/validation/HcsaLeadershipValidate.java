@@ -118,7 +118,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inLeftMod)){
             try {
                 inLeftModNum = Integer.valueOf(inLeftMod);
-                if(inLeftModNum<0||inLeftModNum>999){
+                if(inLeftModNum<= 0||inLeftModNum>999){
                     if(isIn){
                         errMap.put(serviceCode+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
                         fdto.setAdLeftModCaseCountherr(true);
@@ -142,7 +142,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         if(!StringUtil.isEmpty(inRightMod)){
             try {
                 inRightModNum = Integer.valueOf(inRightMod);
-                if(inRightModNum<0 || inRightModNum >999){
+                if(inRightModNum<=0 || inRightModNum >999){
                     if(isIn){
                         errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
                         fdto.setAdRightModCaseCountherr(true);
