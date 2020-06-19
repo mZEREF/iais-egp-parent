@@ -236,6 +236,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licId);
             if (licenseeDto != null){
                 hrefLink.append(id);
+                maskParams.put("appGroupId", id);
 
                 param.put("APPLICANT_NAME",  StringUtil.viewHtml(licenseeDto.getName()));
                 param.put("A_HREF", StringUtil.viewHtml(hrefLink.toString()));
@@ -243,7 +244,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 interMessageDto.setSubject(autoEntity.getTemplateName());
                 interMessageDto.setMsgContent(autoEntity.getMessageContent());
                 interMessageDto.setUserId(licId);
-                //interMessageDto.setService_id();
+                interMessageDto.setMaskParams(maskParams);
                 interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
                 String refNo = inboxMsgService.getMessageNo();
                 interMessageDto.setRefNo(refNo);
