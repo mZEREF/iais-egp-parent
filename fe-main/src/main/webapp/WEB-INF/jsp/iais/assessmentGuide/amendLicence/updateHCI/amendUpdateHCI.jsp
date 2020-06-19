@@ -1,5 +1,5 @@
-<%@include file="../assessmentGuideMenuHead.jsp" %>
-<%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel.jsp" %>
+<%@include file="../../assessmentGuideMenuHead.jsp" %>
+<%@include file="../../assessmentGuideMenuLevel/assessmentGuideMenuLevel.jsp" %>
 <div class="self-assessment-item assessment-level-1 completed">
     <div class="renewLicence hidden">
         <div class="form-check-gp">
@@ -30,13 +30,29 @@
     <div class="amendLicence2">
         <div class="form-check-gp">
             <%@include
-                    file="/WEB-INF/jsp/iais/assessmentGuide/amendLicence/amendUpdateHCIContent.jsp" %>
+                    file="/WEB-INF/jsp/iais/assessmentGuide/amendLicence/updateHCI/amendUpdateHCIContent.jsp" %>
         </div>
-        <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2_1.jsp" %>
     </div>
+    <%@include file="../../assessmentGuideMenuLevel/assessmentGuideMenuLevel2_1.jsp" %>
 </div>
-<%@include file="../assessmentGuideMenuFoot.jsp" %>
+<%@include file="../../assessmentGuideMenuFoot.jsp" %>
 <script type="application/javascript">
     $("#amendLicence").attr('checked', 'true');
     $("#amendLicence2").attr('checked', 'true');
+
+    $("#withdrawApplication").click(function(){
+        guideSubmit("withdraw","main");
+    });
+
+    $("#resumeDraftApplication").click(function () {
+        guideSubmit("resume","main");
+    });
+
+    $("#renewLicence2").click(function () {
+        guideSubmit("renewUp","main");
+    });
+
+    $("#ceaseLicence").click(function(){
+        guideSubmit("cease","main");
+    });
 </script>

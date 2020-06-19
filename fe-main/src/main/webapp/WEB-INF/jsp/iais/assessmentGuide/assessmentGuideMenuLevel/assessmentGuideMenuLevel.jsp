@@ -8,14 +8,15 @@
                        aria-invalid="false">
                 <label class="form-check-label" for="applyLicence">
                     <span class="check-circle"></span>
-                    <span class="left-content">Apply for a new licence<a
-                            class="btn-tooltip styleguide-tooltip"
-                            data-toggle="tooltip" data-html="true"
-                            title="" data-original-title=""
-                            aria-describedby="tooltip883061">i</a></span>
+                    <span class="left-content">Apply for a new licence </span>
                     <span class="right-content">For new services or premises</span>
                 </label>
             </div>
+            <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true"
+               title="112123123123123123123123123123"
+               style="position: absolute;left: 343px; top: -48px;"
+               data-original-title=""
+               >i</a>
             <%--
                 2
             --%>

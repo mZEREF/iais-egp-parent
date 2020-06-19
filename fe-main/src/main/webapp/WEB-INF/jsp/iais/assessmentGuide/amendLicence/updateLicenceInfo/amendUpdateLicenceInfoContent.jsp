@@ -1,8 +1,6 @@
 <div class="form-check-gp">
-
-    <p class="form-check-title">You may select one HCI to amend at a time:</p>
+    <p class="form-check-title">You select one licence to amend at a time:</p>
     <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
-
     <div class="table-gp">
         <table class="table">
             <thead>
@@ -29,12 +27,12 @@
                         <tr>
                             <td>
                                 <div class="form-check">
-                                    <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
-                                           name="renewLicenId" value="renew1LicenId${status.index}" aria-invalid="false"/>
-                                    <label class="form-check-label" for="licence1"><span
+                                    <input class="form-check-input licenceCheck" id="amendHciId" type="checkbox"
+                                           name="amendHciId" value="amendHciId${status.index}" aria-invalid="false"/>
+                                    <label class="form-check-label" for="amendHciId"><span
                                             class="check-square"></span>
                                     </label>
-                                    <input type="hidden" name="renew1LicenId${status.index}" value="<iais:mask name= "renew1LicenId${status.index}" value="${pool.licenceId}"/>"/>
+                                    <input type="hidden" name="amendHciId${status.index}" value="<iais:mask name= "amendHciId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>
                             </td>
                             <td>${pool.hciName}</td>

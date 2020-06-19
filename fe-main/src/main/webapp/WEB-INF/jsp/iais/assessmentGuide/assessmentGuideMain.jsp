@@ -23,4 +23,16 @@
     $("#amendLicence2").click(function(){
         SOP.Crud.cfxSubmit("mainForm", "amend2");
     });
+    $("#amendLicence1_1").click(function(){
+        SOP.Crud.cfxSubmit("mainForm", "amend1_1");
+    });
+    $("#amendLicence1_2").click(function(){
+        SOP.Crud.cfxSubmit("mainForm", "amend1_2");
+    });
+    $("#amendLicence3_1").click(function(){
+        SOP.Crud.cfxSubmit("mainForm", "amend3_1");
+    });
+    $("#amendLicence3_2").click(function(){
+        SOP.Crud.cfxSubmit("mainForm", "amend3_2");
+    });
 </script>

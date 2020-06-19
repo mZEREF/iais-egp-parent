@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/assessmentGuide/amendLicence/amendUpdateHCI.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/assessmentGuide/amendLicence/updateHCI/amendUpdateHCI.jsp"%>
