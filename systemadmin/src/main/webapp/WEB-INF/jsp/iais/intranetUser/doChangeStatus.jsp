@@ -7,28 +7,38 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <webui:setLayout name="iais-intranet"/>
-<form class="form-horizontal" style="margin-left: 1%;margin-right:1%;width: 100%"  method="post" id="ChangeStatusForm" action=<%=process.runtime.continueURL()%>>
+<form class="form-horizontal" style="margin-left: 1%;margin-right:1%;width: 100%" method="post" id="ChangeStatusForm"
+      action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <br><br><br><br><br><br>
-                    <h2>Change Status</h2>
-                    <iais:section title="" id="change_status">
-                        <iais:row>
-                            <iais:field value="UserId" required="true"/>
-                            <iais:value width="7">
-                                <input id="userId" type="text" name="statusUserId" value="${statusUserId}">
-                                <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
-                            </iais:value>
-                        </iais:row>
-                        <iais:action>
-                            <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
-                            <a style="margin-left: 51%" class="btn btn-primary" href="#" onclick="submit('doDeactivate')">Deactivate</a>
-                            <a style="margin-left: 1%" class="btn btn-primary" href="#" onclick="submit('doReactivate')">Reactivate</a>
-                            <a style="margin-left: 1%" class="btn btn-primary" href="#" onclick="submit('doTerminate')">Terminate</a>
-                            <a style="margin-left: 1%" class="btn btn-primary" href="#" onclick="submit('doUnlock')">Unlock</a>
-                        </iais:action>
-                    </iais:section>
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <br><br><br><br><br><br>
+        <h2>Change Status</h2>
+        <iais:section title="" id="change_status">
+            <iais:row>
+                <iais:field value="UserId" required="true"/>
+                <iais:value width="7">
+                    <input id="userId" type="text" name="statusUserId" value="${statusUserId}">
+                    <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
+                </iais:value>
+            </iais:row>
+            <div class="application-tab-footer">
+                <div class="row">
+                    <div class="col-xs-11 col-md-11">
+                        <div class="text-right">
+                            <a class="btn btn-primary" href="#" onclick="submit('doDeactivate')">Deactivate</a>
+                            <a class="btn btn-primary" href="#" onclick="submit('doReactivate')">Reactivate</a>
+                            <a class="btn btn-primary" href="#" onclick="submit('doTerminate')">Terminate</a>
+                            <a class="btn btn-primary" href="#" onclick="submit('doUnlock')">Unlock</a>
+                        </div>
+                        <div class="text-right">
+                            <a style="padding-right: 92%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
+                        </div>
+                    </div>
+
                 </div>
+            </div>
+        </iais:section>
+    </div>
 </form>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">

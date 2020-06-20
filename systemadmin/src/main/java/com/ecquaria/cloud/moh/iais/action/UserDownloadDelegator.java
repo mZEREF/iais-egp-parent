@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -69,7 +70,26 @@ public class UserDownloadDelegator {
                 String officeTelNoText = orgUserDto.getOfficeTelNo();
                 String branchUnitText = orgUserDto.getBranchUnit();
                 String emailText = orgUserDto.getEmail();
-                String statusText = orgUserDto.getStatus();
+                String statusText = null;
+                String status1 = orgUserDto.getStatus();
+                if(IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status1)){
+                    statusText = "Active";
+                }
+                if(IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status1)){
+                    statusText = "Deactivated";
+                }
+                if(IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status1)){
+                    statusText = "Terminated";
+                }
+                if(IntranetUserConstant.COMMON_STATUS_SUSPENDED.equals(status1)){
+                    statusText = "Suspended";
+                }
+                if(IntranetUserConstant.COMMON_STATUS_LOCKED.equals(status1)){
+                    statusText = "Locked";
+                }
+                if(IntranetUserConstant.COMMON_STATUS_EXPIRED.equals(status1)){
+                    statusText = "Expired";
+                }
                 Element userGroup = userGroups.addElement("user-group");
                 Element userId = userGroup.addElement("userId");
                 if (!StringUtil.isEmpty(userIdText)) {
