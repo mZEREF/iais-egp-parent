@@ -34,4 +34,22 @@ public interface ApptConfirmReSchDateService {
       * @Descripation: getApptSystemDateByCorrId
       */
     ProcessReSchedulingDto getApptSystemDateByCorrId(String appPremCorrId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/6/19
+      * @Param: processReSchedulingDto
+      * @return: void
+      * @Descripation: acceptReschedulingDate
+      */
+    void acceptReschedulingDate(ProcessReSchedulingDto processReSchedulingDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/6/19
+      * @Param: processReSchedulingDto
+      * @return: void
+      * @Descripation: rejectReschedulingDate
+      */
+    void rejectReschedulingDate(ProcessReSchedulingDto processReSchedulingDto);
 }
