@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
@@ -24,14 +25,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.InboxConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -73,26 +68,6 @@ public class InterInboxDelegator {
     private static String msgArchiverStatus[] = {
             MessageConstants.MESSAGE_STATUS_ARCHIVER,
     };
-    private FilterParameter appParameter = new FilterParameter.Builder()
-            .clz(InboxAppQueryDto.class)
-            .searchAttr(InboxConst.APP_PARAM)
-            .resultAttr(InboxConst.APP_RESULT)
-            .sortField("CREATED_DT")
-            .sortType(InboxConst.DESCENDING).build();
-
-    private FilterParameter inboxParameter = new FilterParameter.Builder()
-            .clz(InboxQueryDto.class)
-            .searchAttr(InboxConst.INBOX_PARAM)
-            .resultAttr(InboxConst.INBOX_RESULT)
-            .sortField("created_dt")
-            .sortType(SearchParam.DESCENDING).build();
-
-    private FilterParameter licenceParameter = new FilterParameter.Builder()
-            .clz(InboxLicenceQueryDto.class)
-            .searchAttr(InboxConst.LIC_PARAM)
-            .resultAttr(InboxConst.LIC_RESULT)
-            .sortField("START_DATE")
-            .sortType(InboxConst.DESCENDING).build();
 
     public void start(BaseProcessClass bpc) throws IllegalAccessException, ParseException {
         clearSessionAttr(bpc.request);
@@ -135,19 +110,21 @@ public class InterInboxDelegator {
 
     public void msgDoPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchResultHelper.doPage(request,inboxParameter);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
+        HalpSearchResultHelper.doPage(request,inboxParam);
     }
 
     public void msgDoSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchResultHelper.doSort(request,inboxParameter);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
+        HalpSearchResultHelper.doSort(request,inboxParam);
     }
 
     public void msgToArchive(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
-        SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
         inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgArchiverStatus,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
@@ -237,7 +214,8 @@ public class InterInboxDelegator {
         }else{
             inboxSearchMap.remove("msgSubject");
         }
-        inboxParameter.setFilters(inboxSearchMap);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
+        HalpSearchResultHelper.doSearch(inboxParam,inboxSearchMap);
     }
 
     public void prepareDate(BaseProcessClass bpc){
@@ -245,7 +223,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
-        SearchParam inboxParam = SearchResultHelper.getSearchParam(request,inboxParameter,true);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
         inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgStatus,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
@@ -284,7 +262,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         prepareLicSelectOption(request);
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
-        SearchParam licParam = SearchResultHelper.getSearchParam(request,licenceParameter,true);
+        SearchParam licParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
         licParam.addFilter("licenseeId",interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
@@ -397,18 +375,20 @@ public class InterInboxDelegator {
                 licSearchMap.remove("eExpiryDate");
             }
         }
-        licenceParameter.setFilters(licSearchMap);
-        licenceParameter.setPageNo(1);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
+        HalpSearchResultHelper.doSearch(inboxParam,licSearchMap);
     }
 
     public void licDoPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchResultHelper.doPage(request,licenceParameter);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
+        HalpSearchResultHelper.doPage(request,inboxParam);
     }
 
     public void licDoSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchResultHelper.doSort(request,licenceParameter);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
+        HalpSearchResultHelper.doSort(request,inboxParam);
     }
 
     public void licDoAppeal(BaseProcessClass bpc) throws IOException {
@@ -557,7 +537,7 @@ public class InterInboxDelegator {
          * Application SearchResult
          */
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
-        SearchParam appParam = SearchResultHelper.getSearchParam(request,appParameter,true);
+        SearchParam appParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp");
         appParam.addFilter("licenseeId", interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         SearchResult appResult = inboxService.appDoQuery(appParam);
@@ -647,18 +627,20 @@ public class InterInboxDelegator {
                 appSearchMap.remove("createDtEnd");
             }
         }
-        appParameter.setFilters(appSearchMap);
-        appParameter.setPageNo(1);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp");
+        HalpSearchResultHelper.doSearch(inboxParam,appSearchMap);
     }
 
     public void appDoPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchResultHelper.doPage(request,appParameter);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp");
+        HalpSearchResultHelper.doPage(request,inboxParam);
     }
 
     public void appDoSort(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        SearchResultHelper.doSort(request,appParameter);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp");
+        HalpSearchResultHelper.doSort(request,inboxParam);
     }
 
     public void appDoAppeal(BaseProcessClass bpc) throws IOException {
@@ -885,16 +867,16 @@ public class InterInboxDelegator {
     }
 
     private void clearParameter(String tabName){
-        if (InboxConst.INTER_INBOX_APPLICATION_TAB.equals(tabName)){
-            inboxParameter.setFilters(null);
-            licenceParameter.setFilters(null);
-        }else if (InboxConst.INTER_INBOX_LICENSE_TAB.equals(tabName)){
-            appParameter.setFilters(null);
-            inboxParameter.setFilters(null);
-        }else if (InboxConst.INTER_INBOX_MESSAGE_TAB.equals(tabName)){
-            appParameter.setFilters(null);
-            licenceParameter.setFilters(null);
-        }
+//        if (InboxConst.INTER_INBOX_APPLICATION_TAB.equals(tabName)){
+//            inboxParameter.setFilters(null);
+//            licenceParameter.setFilters(null);
+//        }else if (InboxConst.INTER_INBOX_LICENSE_TAB.equals(tabName)){
+//            appParameter.setFilters(null);
+//            inboxParameter.setFilters(null);
+//        }else if (InboxConst.INTER_INBOX_MESSAGE_TAB.equals(tabName)){
+//            appParameter.setFilters(null);
+//            licenceParameter.setFilters(null);
+//        }
     }
 
     private void clearSessionAttr(HttpServletRequest request){
@@ -903,14 +885,6 @@ public class InterInboxDelegator {
         ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, null);
         ParamUtil.setSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO, null);
-        inboxParameter.setFilters(null);
-        inboxParameter.setPageNo(1);
-        inboxParameter.setPageSize(10);
-        appParameter.setFilters(null);
-        appParameter.setPageNo(1);
-        appParameter.setPageSize(10);
-        licenceParameter.setFilters(null);
-        licenceParameter.setPageNo(1);
-        licenceParameter.setPageSize(10);
+
     }
 }
