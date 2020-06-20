@@ -44,7 +44,6 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -382,7 +381,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 try {
                     insDate = Formatter.parseDate(inspectionDate);
                 }catch (Exception e){
-                    Log.debug(e.toString());
+                    log.debug(e.toString());
 
                 }
                 appPreRecommentdationDto.setRecomInDate(insDate);

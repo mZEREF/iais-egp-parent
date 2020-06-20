@@ -24,7 +24,6 @@ import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.sz.commons.util.FileUtil;
-import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -69,7 +68,7 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void start(BaseProcessClass bpc){
-        Log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,ADHOCLDTO,null);
         ParamUtil.setSessionAttr(request,COMMONDTO,null);
@@ -80,7 +79,7 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void successViewPre(BaseProcessClass bpc){
-        Log.info("=======>>>>>successViewPre>>>>>>>>>>>>>>>>successViewPre");
+        log.info("=======>>>>>successViewPre>>>>>>>>>>>>>>>>successViewPre");
         HttpServletRequest request = bpc.request;
         InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
         serListDto.setCheckListTab("chkList");
@@ -88,13 +87,13 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void successViewBack(BaseProcessClass bpc){
-        Log.info("=======>>>>>successViewBack>>>>>>>>>>>>>>>>successViewBack");
+        log.info("=======>>>>>successViewBack>>>>>>>>>>>>>>>>successViewBack");
         HttpServletRequest request = bpc.request;
 
     }
 
     public void init(BaseProcessClass bpc){
-        Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
+        log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getMaskedString(request,"taskId");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
@@ -177,7 +176,7 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void pre(BaseProcessClass bpc){
-        Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
+        log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         HttpServletRequest request = bpc.request;
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,"taskDto");
         AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
@@ -192,7 +191,7 @@ public class InspectionNcCheckListDelegator {
 
     public void doNext(BaseProcessClass bpc) throws IOException{
 
-        Log.info("=======>>>>>doNextStep>>>>>>>>>>>>>>>>doNextRequest");
+        log.info("=======>>>>>doNextStep>>>>>>>>>>>>>>>>doNextRequest");
         HttpServletRequest request = bpc.request;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
@@ -368,7 +367,7 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void doSubmit(BaseProcessClass bpc){
-        Log.info("=======>>>>>doSubmitStep>>>>>>>>>>>>>>>>doSubmitRequest");
+        log.info("=======>>>>>doSubmitStep>>>>>>>>>>>>>>>>doSubmitRequest");
         HttpServletRequest request = bpc.request;
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
@@ -490,7 +489,7 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void doCheckList(BaseProcessClass bpc){
-        Log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
+        log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
         HttpServletRequest request = bpc.request;
         InspectionFDtosDto serListDto = getServiceCheckListDataFormViewPage(request);
         InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
@@ -515,7 +514,7 @@ public class InspectionNcCheckListDelegator {
     }
 
     public void preViewCheckList(BaseProcessClass bpc)throws IOException{
-        Log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
+        log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);

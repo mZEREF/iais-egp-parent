@@ -53,7 +53,6 @@ import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListItemValidate;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import com.esotericsoftware.minlog.Log;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -559,7 +558,7 @@ public class InspectReviseNcEmailDelegator {
 
 
     public void doCheckList(BaseProcessClass bpc){
-        Log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
+        log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
         HttpServletRequest request = bpc.request;
         InspectionFDtosDto serListDto = getServiceCheckListDataFormViewPage(request);
         InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
@@ -687,7 +686,7 @@ public class InspectReviseNcEmailDelegator {
         }
     }
     public void preViewCheckList(BaseProcessClass bpc) throws IOException{
-        Log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
+        log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);

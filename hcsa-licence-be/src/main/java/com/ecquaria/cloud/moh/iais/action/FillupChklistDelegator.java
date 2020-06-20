@@ -22,7 +22,6 @@ import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.esotericsoftware.minlog.Log;
 import java.io.Serializable;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -73,7 +72,7 @@ public class FillupChklistDelegator {
      * @throws
      */
     public void start(BaseProcessClass bpc){
-        Log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
+        log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,ADHOCLDTO,null);
         ParamUtil.setSessionAttr(request,COMMONDTO,null);
@@ -83,7 +82,7 @@ public class FillupChklistDelegator {
     }
     public void successViewPre(BaseProcessClass bpc){
 
-        Log.info("=======>>>>>successViewPre>>>>>>>>>>>>>>>>successViewPre");
+        log.info("=======>>>>>successViewPre>>>>>>>>>>>>>>>>successViewPre");
 
         HttpServletRequest request = bpc.request;
         InspectionFDtosDto serListDto  = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,SERLISTDTO);
@@ -92,13 +91,13 @@ public class FillupChklistDelegator {
     }
 
     public void successViewBack(BaseProcessClass bpc){
-        Log.info("=======>>>>>successViewBack>>>>>>>>>>>>>>>>successViewBack");
+        log.info("=======>>>>>successViewBack>>>>>>>>>>>>>>>>successViewBack");
         HttpServletRequest request = bpc.request;
 
     }
 
     public void init(BaseProcessClass bpc){
-        Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
+        log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getRequestString(request,"taskId");
@@ -162,7 +161,7 @@ public class FillupChklistDelegator {
      * @throws
      */
     public void assignedInspectionTask(BaseProcessClass bpc) {
-        Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
+        log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         HttpServletRequest request = bpc.request;
         TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(request,"taskDto");
         AdCheckListShowDto adchklDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
@@ -183,7 +182,7 @@ public class FillupChklistDelegator {
      * @throws
      */
     public void inspectionChecklist(BaseProcessClass bpc) {
-        Log.info("=======>>>>>doNextStep>>>>>>>>>>>>>>>>doNextRequest");
+        log.info("=======>>>>>doNextStep>>>>>>>>>>>>>>>>doNextRequest");
         HttpServletRequest request = bpc.request;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
@@ -389,7 +388,7 @@ public class FillupChklistDelegator {
     }
 
     public void doCheckList(BaseProcessClass bpc){
-        Log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
+        log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
         HttpServletRequest request = bpc.request;
         InspectionFDtosDto serListDto = null;
         serListDto = getServiceCheckListDataFormViewPage(request);
@@ -403,7 +402,7 @@ public class FillupChklistDelegator {
     }
 
     public void preViewCheckList(BaseProcessClass bpc){
-        Log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
+        log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);

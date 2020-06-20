@@ -38,7 +38,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.cloud.moh.iais.validation.InspectionCheckListValidation;
 import com.ecquaria.sz.commons.util.FileUtil;
-import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -102,7 +101,7 @@ public class InspectEmailAo1Delegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
 
 
-        Log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
+        log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         HttpServletRequest request = bpc.request;
         String taskId = ParamUtil.getMaskedString(request,"taskId");
         AuditTrailHelper.auditFunction("Checklist Management", "Post Inspection Task");
@@ -479,7 +478,7 @@ public class InspectEmailAo1Delegator {
 
 
     public void doCheckList(BaseProcessClass bpc){
-        Log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
+        log.info("=======>>>>>doCheckList>>>>>>>>>>>>>>>>doCheckList");
         HttpServletRequest request = bpc.request;
         InspectionFDtosDto serListDto = null;
         serListDto = getServiceCheckListDataFormViewPage(request);
@@ -626,7 +625,7 @@ public class InspectEmailAo1Delegator {
         }
     }
     public void preViewCheckList(BaseProcessClass bpc) throws IOException{
-        Log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
+        log.info("=======>>>>>preViewCheckList>>>>>>>>>>>>>>>>preViewCheckList");
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);

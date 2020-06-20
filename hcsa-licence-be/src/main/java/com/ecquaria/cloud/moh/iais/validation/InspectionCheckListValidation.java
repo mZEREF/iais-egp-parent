@@ -15,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -217,7 +216,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                 errMap.put("timevad","UC_INSTA004_ERR006");
             }
         }catch (Exception e){
-            Log.debug(e.toString());
+            log.debug(e.toString());
         }
 
     }
@@ -239,7 +238,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                 errMap.put("sTime","UC_INSTA004_ERR005");
             }
         }catch (Exception e){
-            Log.debug(e.toString());
+            log.debug(e.toString());
             flagNum++;
             errMap.put("sTime","UC_INSTA004_ERR005");
         }
@@ -252,7 +251,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                 errMap.put("eTime","UC_INSTA004_ERR005");
             }
         }catch (Exception e){
-            Log.debug(e.toString());
+            log.debug(e.toString());
             flagNum++;
             errMap.put("eTime","UC_INSTA004_ERR005");
         }
@@ -324,7 +323,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             }
         }catch (Exception e){
             errMap.put("tcuDate","UC_CHKLMD001_ERR003");
-            Log.debug(e.toString());
+            log.debug(e.toString());
         }
         if(icDto.isTcuFlag() && StringUtil.isEmpty(icDto.getTuc())){
             errMap.put("tcuDate","UC_CHKLMD001_ERR001");

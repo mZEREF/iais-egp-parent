@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.esotericsoftware.minlog.Log;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -272,7 +271,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             try {
                 dtostartDate = Formatter.parseDate(dto.getLastInspectionStart());
             } catch (Exception e) {
-                Log.debug(e.toString());
+                log.debug(e.toString());
                 return Boolean.FALSE;
             }
         }
@@ -280,7 +279,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             try {
                 dtostartDate = Formatter.parseDate(dto.getLastInspectionEnd());
             } catch (Exception e) {
-                Log.debug(e.toString());
+                log.debug(e.toString());
                 return Boolean.FALSE;
             }
         }

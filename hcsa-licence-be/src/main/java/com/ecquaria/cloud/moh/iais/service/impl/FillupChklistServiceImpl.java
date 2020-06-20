@@ -36,7 +36,6 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
-import com.esotericsoftware.minlog.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -1223,7 +1222,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 }
             }
         }catch (Exception e){
-            Log.debug(e.toString());
+            log.debug(e.toString());
         }
         return fdtoList;
     }
