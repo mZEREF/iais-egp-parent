@@ -181,8 +181,8 @@ public interface BeEicGatewayClient {
     @PutMapping(value = "/v1/hcsa-licence-status", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HttpStatus> updateFeLicDto(@RequestBody List<LicenceDto> licenceDtos,
-                                                      @RequestHeader("date") String date,
-                                                      @RequestHeader("authorization") String authorization,
-                                                      @RequestHeader("date-Secondary") String dateSec,
-                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
+                                                   @RequestHeader("date") String date,
+                                                   @RequestHeader("authorization") String authorization,
+                                                   @RequestHeader("date-Secondary") String dateSec,
+                                                   @RequestHeader("authorization-Secondary") String authorizationSec);
 }

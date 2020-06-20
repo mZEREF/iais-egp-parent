@@ -44,12 +44,6 @@ public class LicenceExpiredBatchJob {
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
 
-    @Value("${spring.application.name}")
-    private String currentApp;
-
-    @Value("${iais.current.domain}")
-    private String currentDomain;
-
     private final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
     public void start(BaseProcessClass bpc){
