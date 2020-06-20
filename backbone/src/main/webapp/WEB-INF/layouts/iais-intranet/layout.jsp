@@ -10,7 +10,7 @@
 <%-- END imports --%>
 
 <%-- BEGIN taglib --%>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+<%@ taglib uri="ecquaria/sop/layout" prefix="layout"%>
 <%-- END taglib --%>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -18,7 +18,7 @@
 	<title>HALP</title>
 	<%@ include file="/WEB-INF/jsp/inc/iais-intranet-common-include.jsp" %>
 	<%-- BEGIN additional header --%>
-	<tiles:insertAttribute name="header-ext" ignore="true" />
+	<layout:insertAttribute name="header-ext" ignore="true" />
 	<%-- END additional header --%>
 
 
@@ -39,7 +39,7 @@
 	  <jsp:include page="user-info.jsp" flush="true"/>
 		<jsp:include page="left-menu.jsp" />
 	</nav>
-	<tiles:insertAttribute name="body" ignore="true" />
+	<layout:insertAttribute name="body" ignore="true" />
 </div>
 <br class="clear"/>
 <jsp:include page="footer.jsp" />
