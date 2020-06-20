@@ -341,7 +341,6 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             SelectOption so = new SelectOption(apptRefNo, dateStr);
             inspectionDate.add(so);
         }
-
         processReSchedulingDto.setInspectionDate(inspectionDate);
         processReSchedulingDto.setInspectionDateMap(inspectionDateMap);
     }
