@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRe
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SyncDataBody;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -172,6 +173,14 @@ public interface BeEicGatewayClient {
     @PostMapping(value = "/v1/hcsa-adhoc-chkl-sync", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<HttpStatus> syncAdhocItemData(@RequestBody AdhocCheckListConifgDto configDto,
+                                                      @RequestHeader("date") String date,
+                                                      @RequestHeader("authorization") String authorization,
+                                                      @RequestHeader("date-Secondary") String dateSec,
+                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PutMapping(value = "/v1/hcsa-licence-status", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HttpStatus> updateFeLicDto(@RequestBody List<LicenceDto> licenceDtos,
                                                       @RequestHeader("date") String date,
                                                       @RequestHeader("authorization") String authorization,
                                                       @RequestHeader("date-Secondary") String dateSec,

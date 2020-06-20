@@ -28,6 +28,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -200,4 +201,7 @@ public interface HcsaLicenceClient {
 
     @PostMapping(value = "/hcsa-premises/hciCode/premises",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PremisesDto> getHciCodePremises(@RequestBody AppGrpPremisesEntityDto appGrpPremisesEntityDto);
+
+    @GetMapping(path= "/hcsa-licence/licence-orgId/{licId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceDto> getLicdtoByOrgId(@PathVariable("licId") String licId);
 }

@@ -5,10 +5,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -27,6 +30,25 @@ public class LicenceExpiredBatchJob {
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private CessationBeService cessationBeService;
+    @Autowired
+    private BeEicGatewayClient gatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
+    @Value("${spring.application.name}")
+    private String currentApp;
+
+    @Value("${iais.current.domain}")
+    private String currentDomain;
 
     private final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
@@ -55,20 +77,29 @@ public class LicenceExpiredBatchJob {
                 if(stringBooleanMap.get(id)){
                     licenceDtosForSave.add(licenceDto);
                 }
-                cessationBeService.sendEmail(LICENCEENDDATE,date,svcName,id,licenseeId,licenceNo);
+                //cessationBeService.sendEmail(LICENCEENDDATE,date,svcName,id,licenseeId,licenceNo);
             }
         }
-        List<LicenceDto> licenceDtos2 = updateLicenceStatus(licenceDtosForSave,date);
-        hcsaLicenceClient.updateLicences(licenceDtos2).getEntity();
+        updateLicenceStatus(licenceDtosForSave,date);
     }
 
-    private List<LicenceDto> updateLicenceStatus(List<LicenceDto> licenceDtos,Date date){
+    private void updateLicenceStatus(List<LicenceDto> licenceDtos,Date date){
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
         for(LicenceDto licenceDto :licenceDtos){
-            licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
+            String licId = licenceDto.getId();
+            LicenceDto newLicDto = hcsaLicenceClient.getLicdtoByOrgId(licId).getEntity();
+            if(newLicDto==null){
+                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_LAPSED);
+            }else {
+                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_EXPIRY);
+            }
             licenceDto.setEndDate(date);
             updateLicenceDtos.add(licenceDto);
         }
-        return updateLicenceDtos;
+        hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        gatewayClient.updateFeLicDto(updateLicenceDtos,signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
     }
 }
