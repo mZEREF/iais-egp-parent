@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -32,5 +33,9 @@ public interface AppPremisesCorrClient {
 
     @GetMapping(value = "/iais-apppremisescorrelation-be/AppPremisesCorrelationsByPremises/{appCorreId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPremisesCorrelationsByPremises(@PathVariable("appCorreId") String appCorreId);
+
+    ///application-number-grp-premiese/{appPremcorrId}
+    @GetMapping(value = "/Iais-applicatio-be/application-number-grp-premiese/{appPremcorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppInsRepDto> appGrpPremises(@PathVariable("appPremcorrId") String appPremcorrId);
 
 }

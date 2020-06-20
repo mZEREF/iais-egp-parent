@@ -19,15 +19,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -69,20 +62,11 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -170,6 +154,10 @@ public class HcsaApplicationDelegator {
     OrganizationClient organizationClient;
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
+    @Autowired
+    private AppPremisesCorrClient appPremisesCorrClient;
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
 
     @Value("${iais.email.sender}")
@@ -2073,10 +2061,28 @@ public class HcsaApplicationDelegator {
                     isLateFeeAppealType = true;
                     isOtherAppealType = false;
                 }
+                //file
+                AppPremisesSpecialDocDto appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
+                if(appealSpecialDocDto != null){
+                    ParamUtil.setSessionAttr(request, "appealSpecialDocDto",appealSpecialDocDto);
+                }
                 String oldAppId = premiseMiscDto.getRelateRecId();
                 String type = "";
                 ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                 if(oldApplication != null){
+                    List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(oldApplication.getId()).getEntity();
+                    if(appPremisesCorrelationDtos != null && appPremisesCorrelationDtos.size()>0){
+                        AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrelationDtos.get(0);
+                        AppInsRepDto appInsRepDto = appPremisesCorrClient.appGrpPremises(appPremisesCorrelationDto.getAppGrpPremId()).getEntity();
+                        if(appInsRepDto != null){
+                            String hciName = appInsRepDto.getHciName();
+                            List<String> hciNames = IaisCommonUtils.genNewArrayList();
+                            if(!StringUtil.isEmpty(hciName)){
+                                hciNames.add(hciName);
+                                ParamUtil.setSessionAttr(request, "hciNames", (Serializable) hciNames);
+                            }
+                        }
+                    }
                     appealNo = oldApplication.getApplicationNo();
                     type = "application";
                     ParamUtil.setSessionAttr(request, "oldApplicationNo", oldApplication.getApplicationNo());
