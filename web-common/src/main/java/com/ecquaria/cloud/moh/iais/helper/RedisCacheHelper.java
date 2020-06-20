@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisCacheHelper {
     @Autowired
-    private RedisTemplate<Object, Object> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     public static final  long SESSION_DEFAULT_EXPIRE = 60L * 30L;
     /**  set do not expire */
@@ -85,7 +85,7 @@ public class RedisCacheHelper {
     }
 
     public void clear(String cacheName) {
-        Set<Object> keys = redisTemplate.keys(cacheName + ":");
+        Set<String> keys = redisTemplate.keys(cacheName + ":");
         if (CollectionUtils.isNotEmpty(keys)) {
             redisTemplate.delete(keys);
         }
