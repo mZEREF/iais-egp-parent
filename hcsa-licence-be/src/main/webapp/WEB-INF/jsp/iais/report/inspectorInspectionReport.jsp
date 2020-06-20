@@ -18,6 +18,7 @@
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_additional" value="">
         <input type="hidden" name="readRecom" value="">
+        <input type="hidden" name="appType" value="${appType}">
         <div class="main-content">
             <div class="row">
                 <div class="col-lg-12 col-xs-12">
@@ -78,8 +79,7 @@
                                                     <%@include
                                                             file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp" %>
                                                 </div>
-                                                <div class="${reportClassBelow}" id="tabInspectionReport"
-                                                     role="tabpanel">
+                                                <div class="${reportClassBelow}" id="tabInspectionReport" role="tabpanel">
                                                     <jsp:include
                                                             page="/WEB-INF/jsp/iais/report/inspectorReport.jsp"></jsp:include>
                                                 </div>

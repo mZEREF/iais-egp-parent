@@ -16,6 +16,7 @@
     <input type="hidden" name="action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
+    <input type="hidden" name="appType" value="${appType}">
     <div class="main-content">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
@@ -227,6 +228,16 @@
             $("#error_submit").hide();
         }
     }
+
+    $(document).ready(function () {
+        var type = $('input[name="appType"]').val();
+        if(type=='APTY007'){
+            $("#recommendationTitle").addClass("hidden");
+            $("#recommendationContent").addClass("hidden");
+            $("#sectionF").addClass("hidden");
+            $("#sectionD").removeClass("hidden");
+        }
+    });
 </script>
 
 

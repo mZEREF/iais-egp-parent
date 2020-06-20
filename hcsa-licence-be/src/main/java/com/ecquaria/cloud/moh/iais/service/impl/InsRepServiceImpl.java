@@ -781,7 +781,10 @@ public class InsRepServiceImpl implements InsRepService {
             listUserId.add(lead);
         }
         List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
-        String leadName = leadList.get(0).getDisplayName();
+        String leadName = null ;
+        if(!IaisCommonUtils.isEmpty(leadId)){
+            leadName = leadList.get(0).getDisplayName();
+        }
         reportDtoForInspector.setReportedBy(reportBy);
         reportDtoForInspector.setReportNoteBy(leadName);
         Set<String> inspectiors = taskService.getInspectiors(taskDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
@@ -1020,6 +1023,8 @@ public class InsRepServiceImpl implements InsRepService {
         if (StringUtil.isEmpty(userId) && SystemParameterConstants.ROUND_ROBIN.equals(schemeType)) {
             TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
             taskDto.setUserId(taskDto1.getUserId());
+        }else if(StringUtil.isEmpty(userId) && SystemParameterConstants.COMMON_POOL.equals(schemeType)) {
+            taskDto.setUserId(null);
         }
         taskDto.setId(null);
         taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());

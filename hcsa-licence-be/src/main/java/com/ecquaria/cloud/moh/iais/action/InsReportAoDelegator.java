@@ -76,18 +76,19 @@ public class InsReportAoDelegator {
         AuditTrailHelper.auditFunction("InspectionAO Report", "InspectionAO Report");
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
-        ApplicationViewDto  applicationViewDto = insRepService.getApplicationViewDto(correlationId);
+        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(correlationId);
         AuditTrailHelper.auditFunctionWithAppNo("Inspection Report", "AO1 process Report",
                 applicationViewDto.getApplicationDto().getApplicationNo());
         InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
         InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto, applicationViewDto);
         insRepDto.setInspectors(inspectorAo.getInspectors());
-        initAoRecommendation(correlationId,bpc);
+        initAoRecommendation(correlationId,bpc,applicationViewDto.getApplicationDto().getApplicationType());
 
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
         String reportClassBelow = "tab-pane";
         ParamUtil.setSessionAttr(bpc.request, "infoClassTop", infoClassTop);
+        ParamUtil.setSessionAttr(bpc.request,"appType",null);
         ParamUtil.setSessionAttr(bpc.request, "reportClassTop", null);
         ParamUtil.setSessionAttr(bpc.request, "infoClassBelow", infoClassBelow);
         ParamUtil.setSessionAttr(bpc.request, "reportClassBelow", reportClassBelow);
@@ -100,6 +101,9 @@ public class InsReportAoDelegator {
 
     public void AoReportPre(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>prepareReportData");
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATIONVIEWDTO);
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        ParamUtil.setSessionAttr(bpc.request,"appType",applicationType);
     }
 
     public void action(BaseProcessClass bpc){
@@ -148,7 +152,7 @@ public class InsReportAoDelegator {
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
     }
 
-    private void initAoRecommendation(String correlationId,BaseProcessClass bpc){
+    private void initAoRecommendation(String correlationId,BaseProcessClass bpc,String appType){
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
         AppPremisesRecommendationDto riskRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
@@ -165,7 +169,16 @@ public class InsReportAoDelegator {
                 initRecommendationDto.setPeriod(recommendationOnlyShowStr);
             }
             if(InspectionReportConstants.REJECTED.equals(recomDecision)){
-                initRecommendationDto.setPeriod("Rejected");
+                initRecommendationDto.setPeriod(InspectionReportConstants.REJECTED);
+            }
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+                String recommendation = appPremisesRecommendationDto.getRecomDecision();
+                if(InspectionReportConstants.RFC_APPROVED.equals(recommendation)){
+                    initRecommendationDto.setPeriod(InspectionReportConstants.APPROVED);
+                }
+                if(InspectionReportConstants.RFC_REJECTED.equals(recommendation)){
+                    initRecommendationDto.setPeriod(InspectionReportConstants.REJECTED);
+                }
             }
         }
         if (engageRecommendationDto != null) {

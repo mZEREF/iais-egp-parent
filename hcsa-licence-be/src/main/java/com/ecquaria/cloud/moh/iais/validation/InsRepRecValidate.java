@@ -1,9 +1,13 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.submission.client.App;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -27,7 +31,10 @@ public class InsRepRecValidate implements CustomizeValidator {
         String enforcementRemarks = ParamUtil.getRequestString(httpServletRequest, "enforcementRemarks");
         String periods = ParamUtil.getRequestString(httpServletRequest, "periods");
         String recommendation = ParamUtil.getRequestString(httpServletRequest, RECOMMENDATION);
-        if (OTHERS.equals(periods)) {
+        ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(httpServletRequest, "applicationViewDto");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String applicationType = applicationDto.getApplicationType();
+        if (OTHERS.equals(periods)&&!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)&&!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)) {
             if (StringUtil.isEmpty(chrono)) {
                 errorMap.put("chronoUnit", "ERR0009");
             } else if (StringUtil.isEmpty(number)) {
@@ -44,7 +51,7 @@ public class InsRepRecValidate implements CustomizeValidator {
             errorMap.put("enforcementRemarks", "ERR0009");
         }
         if(!StringUtil.isEmpty(recommendation)){
-            if(InspectionReportConstants.APPROVED.equals(recommendation) ||InspectionReportConstants.APPROVEDLTC.equals(recommendation)){
+            if(InspectionReportConstants.APPROVED.equals(recommendation)||InspectionReportConstants.APPROVEDLTC.equals(recommendation)){
                 if(StringUtil.isEmpty(periods)){
                     errorMap.put("periods", "ERR0009");
                 }

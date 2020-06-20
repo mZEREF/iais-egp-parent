@@ -364,84 +364,145 @@
             </div>
         </div>
     </div>
-    <div class="alert alert-info" role="alert">
-        <strong>
-            <h4>Section E (Recommendations)</h4>
-        </strong>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="table-gp">
-                <table class="table">
-                    <tr>
-                        <td class="col-xs-4">
-                            <p>Recommendation</p>
-                        </td>
-                        <td class="col-xs-4">
-                            <p><iais:code code="${appPremisesRecommendationDto.period}"/></p>
-                        </td>
-                        <td class="col-xs-4"></td>
-                    </tr>
-                </table>
-            </div>
+    <c:if test="${appType!='APTY007'}">
+        <div class="alert alert-info" role="alert">
+            <strong>
+                <h4>Section E (Recommendations)</h4>
+            </strong>
         </div>
-    </div>
-    <div class="alert alert-info" role="alert">
-        <strong>
-            <h4>Section F (After Action)</h4>
-        </strong>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="table-gp">
-                <table class="table">
-                    <tr>
-                        <td class="col-xs-4">
-                            <p>Follow up Action</p>
-                        </td>
-                        <td class="col-xs-4">
-                            <textarea style="resize: none" disabled name="followUpAction" cols="50" rows="6"
-                                      title="content" maxlength="8000"><c:out
-                                    value="${appPremisesRecommendationDto.followUpAction}"/></textarea>
-                        </td>
-                        <td class="col-xs-4"/>
-                    </tr>
-                    <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks!=null}">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="table-gp">
+                    <table class="table">
                         <tr>
                             <td class="col-xs-4">
-                                <p>To Engage Enforcement?</p>
+                                <p>Recommendation</p>
                             </td>
                             <td class="col-xs-4">
-                                <input type="checkbox" disabled checked >
+                                <p><iais:code code="${appPremisesRecommendationDto.period}"/></p>
                             </td>
                             <td class="col-xs-4"></td>
                         </tr>
-                        <tr id="engageRemarks">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="alert alert-info" role="alert">
+            <strong>
+                <h4>Section F (After Action)</h4>
+            </strong>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="table-gp">
+                    <table class="table">
+                        <tr>
                             <td class="col-xs-4">
-                                <p>Enforcement Remarks</p>
+                                <p>Follow up Action</p>
                             </td>
                             <td class="col-xs-4">
-                                <textarea style="resize: none" disabled cols="50" rows="6" title="content"
-                                          MAXLENGTH="4000"><c:out
-                                        value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
+                                <p><textarea style="resize: none" disabled name="followUpAction" cols="50" rows="6"
+                                             title="content" maxlength="8000"><c:out
+                                        value="${appPremisesRecommendationDto.followUpAction}"/></textarea></p>
                             </td>
                             <td class="col-xs-4"/>
                         </tr>
-                    </c:if>
-                    <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks==null}">
-                        <tr>
-                            <td class="col-xs-4">
-                                <p>To Engage Enforcement?</p>
-                            </td>
-                            <td class="col-xs-4">
-                                <input type="checkbox" disabled  name="engageEnforcement" >
-                            </td>
-                            <td class="col-xs-4"></td>
-                        </tr>
-                    </c:if>
-                </table>
+                        <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks!=null}">
+                            <tr>
+                                <td class="col-xs-4">
+                                    <p>To Engage Enforcement?</p>
+                                </td>
+                                <td class="col-xs-4">
+                                    <input type="checkbox" disabled checked>
+                                </td>
+                                <td class="col-xs-4"></td>
+                            </tr>
+                            <tr id="engageRemarks">
+                                <td class="col-xs-4">
+                                    <p>Enforcement Remarks</p>
+                                </td>
+                                <td class="col-xs-4">
+                                <textarea style="resize: none" disabled cols="50" rows="6" title="content"
+                                          MAXLENGTH="4000"><c:out
+                                        value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
+                                </td>
+                                <td class="col-xs-4"/>
+                            </tr>
+                        </c:if>
+                        <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks==null}">
+                            <tr>
+                                <td class="col-xs-4">
+                                    <p>To Engage Enforcement?</p>
+                                </td>
+                                <td class="col-xs-4">
+                                    <input type="checkbox" disabled name="engageEnforcement">
+                                </td>
+                                <td class="col-xs-4"></td>
+                            </tr>
+                        </c:if>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+    </c:if>
+    <c:if test="${appType=='APTY007'}">
+        <div hidden class="alert alert-info" role="alert">
+            <strong>
+                <h4>Section E (After Action)</h4>
+            </strong>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="table-gp">
+                    <table class="table">
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>Follow up Action</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <p><textarea style="resize: none" disabled name="followUpAction" cols="50" rows="6"
+                                             title="content" maxlength="8000"><c:out
+                                        value="${appPremisesRecommendationDto.followUpAction}"/></textarea></p>
+                            </td>
+                            <td class="col-xs-4"/>
+                        </tr>
+                        <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks!=null}">
+                            <tr>
+                                <td class="col-xs-4">
+                                    <p>To Engage Enforcement?</p>
+                                </td>
+                                <td class="col-xs-4">
+                                    <input type="checkbox" disabled checked>
+                                </td>
+                                <td class="col-xs-4"></td>
+                            </tr>
+                            <tr id="engageRemarks">
+                                <td class="col-xs-4">
+                                    <p>Enforcement Remarks</p>
+                                </td>
+                                <td class="col-xs-4">
+                                <textarea style="resize: none" disabled cols="50" rows="6" title="content"
+                                          MAXLENGTH="4000"><c:out
+                                        value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
+                                </td>
+                                <td class="col-xs-4"/>
+                            </tr>
+                        </c:if>
+                        <c:if test="${appPremisesRecommendationDto.engageEnforcementRemarks==null}">
+                            <tr>
+                                <td class="col-xs-4">
+                                    <p>To Engage Enforcement?</p>
+                                </td>
+                                <td class="col-xs-4">
+                                    <input type="checkbox" disabled name="engageEnforcement">
+                                </td>
+                                <td class="col-xs-4"></td>
+                            </tr>
+                        </c:if>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </c:if>
 </div>
 

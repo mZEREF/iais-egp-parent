@@ -297,7 +297,8 @@
                                 <p>Risk Level <strong style="color:#ff0000;"> *</strong></p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select cssClass="nice-select riskLevel" name="riskLevel" options="riskLevelOptions" firstOption="Please Select"
+                                <iais:select cssClass="nice-select riskLevel" name="riskLevel"
+                                             options="riskLevelOptions" firstOption="Please Select"
                                              value="${appPremisesRecommendationDto.riskLevel}"/>
                                 <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
                             </td>
@@ -381,103 +382,183 @@
             </div>
         </div>
     </div>
-    <div class="alert alert-info" role="alert">
-        <strong>
-            <h4 style="border-bottom: none">Section E (Recommendations)</h4>
-        </strong>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="table-gp">
-                <table class="table">
-                    <tr>
-                        <td class="col-xs-4">
-                            <p>Recommendation <strong style="color:#ff0000;"> *</strong></p>
-                        </td>
-                        <td class="col-xs-4">
-                            <iais:select cssClass="nice-select recommendation" id="recommendation" name="recommendation" options="recommendationOption"
-                                         firstOption="Please Select"
-                                         value="${appPremisesRecommendationDto.recommendation}"
-                                         onchange="javascirpt:changeRecommendation(this.value);"/>
-                        </td>
-                        <td class="col-xs-4"></td>
-                    </tr>
-                    <tr id="period" hidden>
-                        <td class="col-xs-4">
-                            <p>Period <strong style="color:#ff0000;"> *</strong></p>
-                        </td>
-                        <td class="col-xs-4">
-                            <iais:select cssClass="nice-select periods" name="periods" options="riskOption" firstOption="${periodDefault}"
-                                         onchange="javascirpt:changePeriod();"
-                                         value="${appPremisesRecommendationDto.period}"/>
-                            <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
-                        </td>
-                        <td class="col-xs-4"></td>
-                    </tr>
-                    <tr id="selfPeriod" hidden>
-                        <td class="col-xs-4">
-                            <p>Other Period <strong style="color:#ff0000;"> *</strong></p>
-                        </td>
-                        <td class="col-xs-4">
-                            <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" id=recomInNumber type="text" name="number" maxlength="2" value="${appPremisesRecommendationDto.recomInNumber}">
-                            <iais:select cssClass="nice-select chronoUnit"  id="chronoUnit" name="chrono" options="chronoOption"
-                                         value="${appPremisesRecommendationDto.chronoUnit}"/>
-                            <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
-                            <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
-                        </td>
-                        <td class="col-xs-4"></td>
-                    </tr>
-                </table>
+    <c:if test="${appType!='APTY007'}">
+        <div id="recommendationTitle" class="alert alert-info" role="alert">
+            <strong>
+                <h4 style="border-bottom: none">Section E (Recommendations)</h4>
+            </strong>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="table-gp">
+                    <table class="table">
+                        <c:if test="${appType!='APTY005'}">
+                            <tr>
+                                <td class="col-xs-4">
+                                    <p>Recommendation <strong style="color:#ff0000;"> *</strong></p>
+                                </td>
+                                <td class="col-xs-4">
+                                    <iais:select cssClass="nice-select recommendation" id="recommendation"
+                                                 name="recommendation"
+                                                 options="recommendationOption"
+                                                 firstOption="Please Select"
+                                                 value="${appPremisesRecommendationDto.recommendation}"
+                                                 onchange="javascirpt:changeRecommendation(this.value);"/>
+                                </td>
+                                <td class="col-xs-4"></td>
+                            </tr>
+                            <c:if test="${appType!='APTY005'}">
+                            <tr id="period" hidden>
+                                <td class="col-xs-4">
+                                    <p>Period <strong style="color:#ff0000;"> *</strong></p>
+                                </td>
+                                <td class="col-xs-4">
+                                    <iais:select cssClass="nice-select periods" name="periods" options="riskOption"
+                                                 firstOption="${periodDefault}"
+                                                 onchange="javascirpt:changePeriod();"
+                                                 value="${appPremisesRecommendationDto.period}"/>
+                                    <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
+                                </td>
+                                <td class="col-xs-4"></td>
+                            </tr>
+                            <tr id="selfPeriod" hidden>
+                                <td class="col-xs-4">
+                                    <p>Other Period <strong style="color:#ff0000;"> *</strong></p>
+                                </td>
+                                <td class="col-xs-4">
+                                    <input onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                           onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                           id=recomInNumber type="text" name="number" maxlength="2"
+                                           value="${appPremisesRecommendationDto.recomInNumber}">
+                                    <iais:select cssClass="nice-select chronoUnit" id="chronoUnit" name="chrono"
+                                                 options="chronoOption"
+                                                 value="${appPremisesRecommendationDto.chronoUnit}"/>
+                                    <span id="error_recomInNumber" name="iaisErrorMsg" class="error-msg"></span>
+                                    <span id="error_chronoUnit" name="iaisErrorMsg" class="error-msg"></span>
+                                </td>
+                                <td class="col-xs-4"></td>
+                            </tr>
+                            </c:if>
+                        </c:if>
+                        <c:if test="${appType=='APTY005'}">
+                            <tr>
+                                <td class="col-xs-4">
+                                    <p>Recommendation <strong style="color:#ff0000;"> *</strong></p>
+                                </td>
+                                <td class="col-xs-4">
+                                    <iais:select cssClass="nice-select recommendationRfc" id="recommendationRfc"
+                                                 name="recommendationRfc" options="recommendationOption"
+                                                 firstOption="Please Select"
+                                                 value="${appPremisesRecommendationDto.recommendation}"/>
+                                    <span id="error_recommendationRfc" name="iaisErrorMsg" class="error-msg"></span>
+                                </td>
+                                <td class="col-xs-4"></td>
+                            </tr>
+                        </c:if>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="alert alert-info" role="alert">
-        <strong>
-            <h4>Section F (After Action)</h4>
-        </strong>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="table-gp">
-                <table class="table">
-                    <tr>
-                        <td class="col-xs-4">
-                            <p>Follow up Action</p>
-                        </td>
-                        <td class="col-xs-4">
-                            <P><textarea style="resize:none" name="followUpAction" cols="50" rows="6" title="content"
-                                         maxlength="8000"><c:out
-                                    value="${appPremisesRecommendationDto.followUpAction}"/></textarea></P>
-                        </td>
-                        <td class="col-xs-4"></td>
-                    </tr>
-                    <tr>
-                        <td class="col-xs-4">
-                            <p>To Engage Enforcement?</p>
-                        </td>
-                        <td class="col-xs-4">
-                            <input type="checkbox" id="enforcement" name="engageEnforcement"
-                                   onchange="javascirpt:changeEngage();"
-                                   <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if> >
-                        </td>
-                        <td class="col-xs-4"></td>
-                    </tr>
-                    <tr id="engageRemarks" hidden>
-                        <td class="col-xs-4">
-                            <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
-                        </td>
-                        <td class="col-xs-4">
+        <div id="sectionF" class="alert alert-info" role="alert">
+            <strong>
+                <h4>Section F (After Action)</h4>
+            </strong>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="table-gp">
+                    <table class="table">
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>Follow up Action</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <p><textarea style="resize:none" name="followUpAction" cols="50" rows="6"
+                                             title="content"
+                                             maxlength="8000"><c:out
+                                        value="${appPremisesRecommendationDto.followUpAction}"/></textarea></p>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>To Engage Enforcement?</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input type="checkbox" id="enforcement" name="engageEnforcement"
+                                       onchange="javascirpt:changeEngage();"
+                                       <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if> >
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr id="engageRemarks" hidden>
+                            <td class="col-xs-4">
+                                <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
+                            </td>
+                            <td class="col-xs-4">
                             <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content"
                                       MAXLENGTH="4000"><c:out
                                     value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
-                            <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
-                        </td>
-                        <td class="col-xs-4"></td>
-                    </tr>
-                </table>
+                                <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+    </c:if>
+
+    <c:if test="${appType=='APTY007'}">
+        <div class="alert alert-info" role="alert">
+            <strong>
+                <h4>Section E (After Action)</h4>
+            </strong>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="table-gp">
+                    <table class="table">
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>Follow up Action</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <p><textarea style="resize:none" name="followUpAction" cols="50" rows="6"
+                                             title="content"
+                                             maxlength="8000"><c:out
+                                        value="${appPremisesRecommendationDto.followUpAction}"/></textarea></p>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-xs-4">
+                                <p>To Engage Enforcement?</p>
+                            </td>
+                            <td class="col-xs-4">
+                                <input type="checkbox" id="enforcement" name="engageEnforcement"
+                                       onchange="javascirpt:changeEngage();"
+                                       <c:if test="${appPremisesRecommendationDto.engageEnforcement =='on'}">checked</c:if> >
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                        <tr id="engageRemarks" hidden>
+                            <td class="col-xs-4">
+                                <p>Enforcement Remarks <strong style="color:#ff0000;"> *</strong></p>
+                            </td>
+                            <td class="col-xs-4">
+                            <textarea style="resize:none" name="enforcementRemarks" cols="50" rows="6" title="content"
+                                      MAXLENGTH="4000"><c:out
+                                    value="${appPremisesRecommendationDto.engageEnforcementRemarks}"/></textarea>
+                                <span id="error_enforcementRemarks" name="iaisErrorMsg" class="error-msg"></span>
+                            </td>
+                            <td class="col-xs-4"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </c:if>
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 
@@ -509,43 +590,44 @@
         }
     }
 
-        function changeRecommendation(obj) {
-            if (obj == "IRE001" || obj == "IRE002") {
-                $("#period").show();
-            } else {
-                $("#period").hide();
-                $("#selfPeriod").hide();
-            }
+    function changeRecommendation(obj) {
+        if (obj == "IRE001" || obj == "IRE002") {
+            $("#period").show();
+        } else {
+            $("#period").hide();
+            $("#selfPeriod").hide();
         }
+    }
 
 
-        function changeEngage() {
-            if ($('#enforcement').is(':checked')) {
-                $("#engageRemarks").show();
-            } else {
-                $("#engageRemarks").hide();
-            }
+    function changeEngage() {
+        if ($('#enforcement').is(':checked')) {
+            $("#engageRemarks").show();
+        } else {
+            $("#engageRemarks").hide();
         }
+    }
 
 
-        $(document).ready(function () {
-            if ($("#recommendation").val() == "IRE001") {
-                changeRecommendation("IRE001");
-            }
-            if ($("#recommendation").val() == "IRE002") {
-                changeRecommendation("IRE002");
-            }
-            if ($("#recommendation").val() == "IRE003") {
-                $("#period").hide();
-                $("#selfPeriod").hide();
-            }
-            if ($("#periods").val() == "Others") {
-                changePeriod("Others");
-            }
-            if ($('#enforcement').is(':checked')) {
-                $("#engageRemarks").show();
-            }
-        });
+    $(document).ready(function () {
+        var type = $('input[name="appType"]').val();
+        if ($("#recommendation").val() == "IRE001") {
+            changeRecommendation("IRE001");
+        }
+        if ($("#recommendation").val() == "IRE002") {
+            changeRecommendation("IRE002");
+        }
+        if ($("#recommendation").val() == "IRE003") {
+            $("#period").hide();
+            $("#selfPeriod").hide();
+        }
+        if ($("#periods").val() == "Others" && type != "APTY005" && type != "APTY007") {
+            changePeriod("Others");
+        }
+        if ($('#enforcement').is(':checked')) {
+            $("#engageRemarks").show();
+        }
+    });
 
 </script>
 
