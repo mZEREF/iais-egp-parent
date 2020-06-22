@@ -152,7 +152,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         }
                         // if role is AOS or PSO ,check verified's value
                         if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {
-                            if (RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified) && !isAppealType) {
+                            if ((RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)) && !isAppealType) {
                                 if (StringUtil.isEmpty(recommendationStr)) {
                                     errMap.put("recommendation", "Please key in recommendation");
                                 }
