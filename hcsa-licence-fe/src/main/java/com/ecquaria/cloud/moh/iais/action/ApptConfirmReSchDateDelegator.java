@@ -153,6 +153,10 @@ public class ApptConfirmReSchDateDelegator {
         ProcessReSchedulingDto processReSchedulingDto = (ProcessReSchedulingDto)ParamUtil.getSessionAttr(bpc.request, "processReSchedulingDto");
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+        String dateValue = processReSchedulingDto.getCheckDate();
+        Map<String, Date> inspectionDateMap = processReSchedulingDto.getInspectionDateMap();
+        Date checkDate = inspectionDateMap.get(dateValue);
+        processReSchedulingDto.setSaveDate(checkDate);
         apptConfirmReSchDateService.acceptReschedulingDate(processReSchedulingDto);
         ParamUtil.setSessionAttr(bpc.request, "processReSchedulingDto", processReSchedulingDto);
     }
@@ -168,10 +172,6 @@ public class ApptConfirmReSchDateDelegator {
         ProcessReSchedulingDto processReSchedulingDto = (ProcessReSchedulingDto)ParamUtil.getSessionAttr(bpc.request, "processReSchedulingDto");
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
-        String dateValue = processReSchedulingDto.getCheckDate();
-        Map<String, Date> inspectionDateMap = processReSchedulingDto.getInspectionDateMap();
-        Date checkDate = inspectionDateMap.get(dateValue);
-        processReSchedulingDto.setSaveDate(checkDate);
         apptConfirmReSchDateService.rejectReschedulingDate(processReSchedulingDto);
         ParamUtil.setSessionAttr(bpc.request, "processReSchedulingDto", processReSchedulingDto);
     }

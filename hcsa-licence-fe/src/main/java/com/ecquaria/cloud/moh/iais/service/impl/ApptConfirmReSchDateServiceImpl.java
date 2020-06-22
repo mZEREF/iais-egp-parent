@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ProcessReSchedulingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -105,6 +104,8 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         processReSchedulingDto.setTaskRefNo(taskRefNo);
         if(!StringUtil.isEmpty(appPremCorrId)) {
             List<ApplicationDto> applicationDtos = applicationClient.getPremisesApplicationsByCorreId(appPremCorrId).getEntity();
+            //set appNo and appPremCorrId map
+            processReSchedulingDto = setAppNoAndAppPremCorrIdMap(applicationDtos, processReSchedulingDto);
             processReSchedulingDto.setApplicationDtos(applicationDtos);
             List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.getSystemDtosByAppPremCorrIdList(taskRefNo).getEntity();
             processReSchedulingDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
@@ -143,11 +144,24 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         return processReSchedulingDto;
     }
 
+    private ProcessReSchedulingDto setAppNoAndAppPremCorrIdMap(List<ApplicationDto> applicationDtos, ProcessReSchedulingDto processReSchedulingDto) {
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+            Map<String, String> appNoCorrIdMap = IaisCommonUtils.genNewHashMap();
+            for(ApplicationDto applicationDto : applicationDtos){
+                String appId = applicationDto.getId();
+                String appNo = applicationDto.getApplicationNo();
+                String appPremCorrId = getAppPremCorrIdByAppId(appId);
+                appNoCorrIdMap.put(appNo, appPremCorrId);
+            }
+            processReSchedulingDto.setAppNoCorrIdMap(appNoCorrIdMap);
+        }
+        return processReSchedulingDto;
+    }
+
     @Override
     public void acceptReschedulingDate(ProcessReSchedulingDto processReSchedulingDto) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
         //get selected date(apptRefNo)
         String checkDate = processReSchedulingDto.getCheckDate();
         //Exclude a selected date
@@ -164,22 +178,17 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         cancelRefNo = new ArrayList<>(cancelRefNoSet);
         processReSchedulingDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
         //update appt
-        setApptUpdateList(processReSchedulingDto, apptInspectionDateDto);
+        setApptUpdateList(processReSchedulingDto);
         //update application
-        setUpdateApplicationDto(processReSchedulingDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
+        setUpdateApplicationDto(processReSchedulingDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
         //set history
-        setCreateHistoryDto(processReSchedulingDto, apptInspectionDateDto);
+        setCreateHistoryDto(processReSchedulingDto);
         //set some data to update inspection status
-        setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+        setCreateInspectionStatus(processReSchedulingDto, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
         //set some data to update recommendation
-        setRecommendationDto(processReSchedulingDto, apptInspectionDateDto);
-        apptInspectionDateDto.setRefNo(processReSchedulingDto.getTaskRefNo());
-        //set audit trail
-        AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
-        appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
+        setRecommendationDto(processReSchedulingDto);
         //save eic record
-        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "confirmInspectionDate",
+        /*EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "confirmInspectionDate",
                 "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
@@ -191,7 +200,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        appEicClient.updateStatus(eicRequestTrackingDtos);
+        appEicClient.updateStatus(eicRequestTrackingDtos);*/
         //create task
         createApptDateTask(processReSchedulingDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
         //cancel or confirm appointment date
@@ -214,7 +223,6 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
         //Exclude a selected date
         List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
@@ -227,20 +235,15 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         cancelRefNo = new ArrayList<>(cancelRefNoSet);
         processReSchedulingDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
         //update appt
-        setApptUpdateList(processReSchedulingDto, apptInspectionDateDto);
+        setApptUpdateList(processReSchedulingDto);
         //update application
-        setUpdateApplicationDto(processReSchedulingDto, apptInspectionDateDto, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING);
+        setUpdateApplicationDto(processReSchedulingDto, ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING);
         //set history
-        setCreateHistoryDto(processReSchedulingDto, apptInspectionDateDto);
+        setCreateHistoryDto(processReSchedulingDto);
         //set some data to update inspection status
-        setCreateInspectionStatus(apptInspectionDateDto, InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE);
-        apptInspectionDateDto.setRefNo(processReSchedulingDto.getTaskRefNo());
-        //set audit trail
-        AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
-        appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        apptInspectionDateDto.setAppPremisesInspecApptDto(appPremisesInspecApptDto);
+        setCreateInspectionStatus(processReSchedulingDto, InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE);
         //save eic record
-        EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "confirmInspectionDate",
+        /*EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "confirmInspectionDate",
                 "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
         String eicRefNo = eicRequestTrackingDto.getRefNo();
         feEicGatewayClient.apptFeDataUpdateCreateBe(apptInspectionDateDto, signature.date(), signature.authorization(),
@@ -252,9 +255,9 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        appEicClient.updateStatus(eicRequestTrackingDtos);
+        appEicClient.updateStatus(eicRequestTrackingDtos);*/
         //create task
-        createApptDateTask(processReSchedulingDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+        createApptDateTask(processReSchedulingDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
@@ -262,7 +265,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         ccCalendarStatusEic(apptCalendarStatusDto);
     }
 
-    private void setRecommendationDto(ProcessReSchedulingDto processReSchedulingDto, ApptInspectionDateDto apptInspectionDateDto) {
+    private void setRecommendationDto(ProcessReSchedulingDto processReSchedulingDto) {
         List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = IaisCommonUtils.genNewArrayList();
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -271,19 +274,19 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         appPremisesRecommendationDto.setRecomInDate(processReSchedulingDto.getSaveDate());
         appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
         appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
-        apptInspectionDateDto.setAppPremisesRecommendationDtos(appPremisesRecommendationDtos);
+        processReSchedulingDto.setAppPremisesRecommendationDtos(appPremisesRecommendationDtos);
     }
 
-    private void setCreateInspectionStatus(ApptInspectionDateDto apptInspectionDateDto, String status) {
+    private void setCreateInspectionStatus(ProcessReSchedulingDto processReSchedulingDto, String status) {
         List<AppInspectionStatusDto> appInspectionStatusDtos = IaisCommonUtils.genNewArrayList();
         AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();
         appInspectionStatusDto.setStatus(status);
         appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appInspectionStatusDtos.add(appInspectionStatusDto);
-        apptInspectionDateDto.setAppInspectionStatusDtos(appInspectionStatusDtos);
+        processReSchedulingDto.setAppInspectionStatusDtos(appInspectionStatusDtos);
     }
 
-    private void setCreateHistoryDto(ProcessReSchedulingDto processReSchedulingDto, ApptInspectionDateDto apptInspectionDateDto) {
+    private void setCreateHistoryDto(ProcessReSchedulingDto processReSchedulingDto) {
         List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : processReSchedulingDto.getApplicationDtos()) {
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
@@ -295,10 +298,10 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
         }
-        apptInspectionDateDto.setAppPremisesRoutingHistoryDtos(appPremisesRoutingHistoryDtos);
+        processReSchedulingDto.setAppPremisesRoutingHistoryDtos(appPremisesRoutingHistoryDtos);
     }
 
-    private void setUpdateApplicationDto(ProcessReSchedulingDto processReSchedulingDto, ApptInspectionDateDto apptInspectionDateDto, String status) {
+    private void setUpdateApplicationDto(ProcessReSchedulingDto processReSchedulingDto, String status) {
         List<ApplicationDto> applicationDtos = processReSchedulingDto.getApplicationDtos();
         for(ApplicationDto applicationDto : applicationDtos) {
             applicationDto.setStatus(status);
@@ -306,10 +309,10 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             applicationDto = applicationClient.updateApplication(applicationDto).getEntity();
             applicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
-        apptInspectionDateDto.setApplicationDtos(applicationDtos);
+        processReSchedulingDto.setApplicationDtos(applicationDtos);
     }
 
-    private void setApptUpdateList(ProcessReSchedulingDto processReSchedulingDto, ApptInspectionDateDto apptInspectionDateDto) {
+    private void setApptUpdateList(ProcessReSchedulingDto processReSchedulingDto) {
         for(AppPremisesInspecApptDto apptDto : processReSchedulingDto.getAppPremisesInspecApptDtoList()){
             apptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             apptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -320,7 +323,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
                 appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             }
-            apptInspectionDateDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoList);
+            processReSchedulingDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoList);
         }
     }
 
@@ -356,8 +359,6 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
     }
 
     private void createApptDateTask(ProcessReSchedulingDto processReSchedulingDto, String processUrl) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         String applicationNo = processReSchedulingDto.getApplicationDto().getApplicationNo();
         TaskDto taskDto = new TaskDto();
         taskDto.setRefNo(processReSchedulingDto.getAppPremCorrId());
@@ -366,21 +367,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         processReSchedulingDto.setTaskDto(taskDto);
         //set list and map
-        processReSchedulingDto = setAppNoListByCorrIds(processReSchedulingDto);
-        //save eic record
-        /*EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.ORGANIZATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "createApptDateTask",
-                "hcsa-licence-web-internet", ApptFeConfirmDateDto.class.getName(), JsonUtil.parseToJson(processReSchedulingDto));
-        String eicRefNo = eicRequestTrackingDto.getRefNo();
-        feEicGatewayClient.createFeReplyTask(apptFeConfirmDateDto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
-        //get eic record
-        eicRequestTrackingDto = orgEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
-        //update eic record status
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
-        eicRequestTrackingDtos.add(eicRequestTrackingDto);
-        orgEicClient.updateStatus(eicRequestTrackingDtos);*/
+        setAppNoListByCorrIds(processReSchedulingDto);
     }
 
     private void ccCalendarStatusEic(ApptCalendarStatusDto apptCalendarStatusDto) {
