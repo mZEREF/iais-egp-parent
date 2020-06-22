@@ -149,6 +149,7 @@
         </div>
       </div>
     </div>
+    <input type="hidden"  id="saveDraftSuccess" name="saveDraftSuccess" value="${saveDraftSuccess}">
     <ias:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></ias:confirm>
 
     <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -163,6 +164,9 @@
 <script  type="text/javascript">
 
   $(document).ready(function () {
+      if($('#saveDraftSuccess').val()=='success'){
+          $('#saveDraft').modal('show');
+      }
       var reason= $('#reasonSelect option:selected').val();
       if("MS003"==reason){
           $('#cgo').attr("style" ,"display: block;margin-top: 20px");
@@ -293,12 +297,13 @@ $('.selectedFile').change(function () {
   function cancelSaveDraft() {
 
   }
-
   function cancel() {
-
+      $('#saveDraft').modal('hide');
   }
 
-
+  function jumpPage() {
+      SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");
+  }
 </script>
 
 </>

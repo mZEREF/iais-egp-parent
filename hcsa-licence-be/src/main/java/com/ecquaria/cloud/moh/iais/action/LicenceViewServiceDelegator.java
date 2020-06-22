@@ -244,16 +244,7 @@ public class LicenceViewServiceDelegator {
             stringList.add(hcsaServiceStepSchemeDto.getStepCode());
         }
         bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList", stringList);
-        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        if (appGrpPrimaryDocDtos != null) {
-            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos) {
-                String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
-                HcsaSvcDocConfigDto hcsaSvcDocConfigDto = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
-                if (hcsaSvcDocConfigDto != null) {
-                    appGrpPrimaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
-                }
-            }
-        }
+
         contrastNewAndOld(appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         boolean canEidtPremise  = canEidtPremise(applicationViewDto.getApplicationGroupDto().getId());
@@ -266,6 +257,16 @@ public class LicenceViewServiceDelegator {
             AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
             if(oldAppSubmissionDto!=null){
                 svcDocToPresmise(oldAppSubmissionDto);
+            }
+        }
+        List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+        if (appGrpPrimaryDocDtos != null) {
+            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos) {
+                String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
+                HcsaSvcDocConfigDto hcsaSvcDocConfigDto = hcsaConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
+                if (hcsaSvcDocConfigDto != null) {
+                    appGrpPrimaryDocDto.setSvcComDocName(hcsaSvcDocConfigDto.getDocTitle());
+                }
             }
         }
 
@@ -699,32 +700,51 @@ public class LicenceViewServiceDelegator {
             appGrpPrimaryDocDtos = new ArrayList<>(oldAppGrpPrimaryDocDtos.size());
             for (int i = 0; i < oldAppGrpPrimaryDocDtos.size(); i++) {
                 AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
-                appGrpPrimaryDocDto.setSvcDocId(oldAppGrpPrimaryDocDtos.get(i).getSvcDocId());
+                String svcDocId = oldAppGrpPrimaryDocDtos.get(i).getSvcDocId();
+                if(svcDocId!=null){
+                    appGrpPrimaryDocDto.setSvcDocId(svcDocId);
+                }else {
+                    appGrpPrimaryDocDto.setSvcDocId(oldAppGrpPrimaryDocDtos.get(i).getSvcComDocId());
+                }
                 appGrpPrimaryDocDto.setDocName("-");
                 appGrpPrimaryDocDto.setDocSize(0);
                 appGrpPrimaryDocDto.setSvcComDocName(oldAppGrpPrimaryDocDtos.get(i).getSvcComDocName());
                 appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
             }
         } else if (appGrpPrimaryDocDtos != null && oldAppGrpPrimaryDocDtos != null) {
-            if (appGrpPrimaryDocDtos.size() < oldAppGrpPrimaryDocDtos.size()) {
-                for (int i = 0; i < oldAppGrpPrimaryDocDtos.size() - appGrpPrimaryDocDtos.size(); i++) {
+            int size = appGrpPrimaryDocDtos.size();
+            int oldSize = oldAppGrpPrimaryDocDtos.size();
+            if (size < oldSize) {
+                for (int i = 0; i <oldSize - size; i++) {
                     AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                     appGrpPrimaryDocDto.setDocSize(0);
-                    appGrpPrimaryDocDto.setSvcComDocName(oldAppGrpPrimaryDocDtos.get(appGrpPrimaryDocDtos.size()+i).getSvcComDocName());
+                    appGrpPrimaryDocDto.setSvcComDocName(oldAppGrpPrimaryDocDtos.get(size-1+i).getSvcComDocName());
                     appGrpPrimaryDocDto.setDocName("-");
+                    String svcDocId = oldAppGrpPrimaryDocDtos.get(size - 1 + i).getSvcDocId();
+                    if(svcDocId!=null){
+                        appGrpPrimaryDocDto.setSvcDocId(svcDocId);
+                    }else {
+                        appGrpPrimaryDocDto.setSvcDocId(oldAppGrpPrimaryDocDtos.get(size-1+i).getSvcComDocId());
+                    }
                     appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                 }
-            }else if(oldAppGrpPrimaryDocDtos.size()<appGrpPrimaryDocDtos.size()){
-                for(int i=0;i<appGrpPrimaryDocDtos.size()-oldAppGrpPrimaryDocDtos.size();i++){
+            }else if(oldSize<size){
+                for(int i=0;i<size-oldSize;i++){
                     AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
                     appGrpPrimaryDocDto.setDocSize(0);
-                    appGrpPrimaryDocDto.setSvcComDocName(appGrpPrimaryDocDtos.get(oldAppGrpPrimaryDocDtos.size()+i).getSvcComDocName());
+                    appGrpPrimaryDocDto.setSvcComDocName(appGrpPrimaryDocDtos.get(oldSize-1+i).getSvcComDocName());
                     appGrpPrimaryDocDto.setDocName("-");
+                    String svcDocId = appGrpPrimaryDocDtos.get(oldSize - 1 + i).getSvcDocId();
+                    if(svcDocId!=null){
+                        appGrpPrimaryDocDto.setSvcDocId(svcDocId);
+                    }else {
+                        appGrpPrimaryDocDto.setSvcDocId(appGrpPrimaryDocDtos.get(oldSize-1+i).getSvcComDocId());
+                    }
                     oldAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                 }
-
             }
         }
+        sortPremiseDoc(appGrpPrimaryDocDtos,oldAppGrpPrimaryDocDtos);
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
@@ -737,24 +757,25 @@ public class LicenceViewServiceDelegator {
                 appSvcDocDto.setSvcDocId(oldAppSvcDocDtoLit.get(i).getSvcDocId());
                 appSvcDocDto.setUpFileName(oldAppSvcDocDtoLit.get(i).getUpFileName());
                 appSvcDocDto.setDocName("-");
-                appSvcDocDto.setDocSize(0);
                 appSvcDocDtoLit.add(appSvcDocDto);
             }
         } else if (appSvcDocDtoLit != null && oldAppSvcDocDtoLit != null) {
-            if (appSvcDocDtoLit.size() < oldAppSvcDocDtoLit.size()) {
-                for (int i = 0; i < oldAppSvcDocDtoLit.size() - appSvcDocDtoLit.size(); i++) {
+            int size = appSvcDocDtoLit.size();
+            int oldSize = oldAppSvcDocDtoLit.size();
+            if (size < oldSize) {
+                for (int i = 0; i < oldSize - size; i++) {
                     AppSvcDocDto appSvcDocDto = new AppSvcDocDto();
-                    appSvcDocDto.setDocSize(0);
                     appSvcDocDto.setDocName("-");
-                    appSvcDocDto.setUpFileName(oldAppSvcDocDtoLit.get(appSvcDocDtoLit.size()+i).getUpFileName());
+                    appSvcDocDto.setUpFileName(oldAppSvcDocDtoLit.get(size-1+i).getUpFileName());
+                    appSvcDocDto.setSvcDocId(oldAppSvcDocDtoLit.get(size-1+i).getSvcDocId());
                     appSvcDocDtoLit.add(appSvcDocDto);
                 }
-            }else if(oldAppSvcDocDtoLit.size()<appSvcDocDtoLit.size()){
-                for(int i=0;i<appSvcDocDtoLit.size()-oldAppSvcDocDtoLit.size();i++){
+            }else if(oldSize<size){
+                for(int i=0;i < size-oldSize;i++){
                     AppSvcDocDto appSvcDocDto = new AppSvcDocDto();
-                    appSvcDocDto.setDocSize(0);
                     appSvcDocDto.setDocName("-");
-                    appSvcDocDto.setUpFileName(appSvcDocDtoLit.get(oldAppSvcDocDtoLit.size()+i).getUpFileName());
+                    appSvcDocDto.setSvcDocId(appSvcDocDtoLit.get(oldSize-1+i).getSvcDocId());
+                    appSvcDocDto.setUpFileName(appSvcDocDtoLit.get(oldSize-1+i).getUpFileName());
                     oldAppSvcDocDtoLit.add(appSvcDocDto);
                 }
             }
@@ -807,8 +828,10 @@ public class LicenceViewServiceDelegator {
                 appSvcMedAlertPersonList.add(appSvcPrincipalOfficersDto);
             }
         } else if (appSvcMedAlertPersonList != null && oldAppSvcMedAlertPersonList != null) {
-            if (appSvcMedAlertPersonList.size() < oldAppSvcMedAlertPersonList.size()) {
-                for (int i = 0; i < oldAppSvcMedAlertPersonList.size() - appSvcMedAlertPersonList.size(); i++) {
+            int size = appSvcMedAlertPersonList.size();
+            int oldSize = oldAppSvcMedAlertPersonList.size();
+            if (size < oldSize) {
+                for (int i = 0; i < oldSize -size; i++) {
                     AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
                     appSvcPrincipalOfficersDto.setPreferredMode("-");
                     appSvcPrincipalOfficersDto.setOfficeTelNo("-");
@@ -822,7 +845,21 @@ public class LicenceViewServiceDelegator {
                     appSvcPrincipalOfficersDto.setProfRegNo("-");
                     appSvcMedAlertPersonList.add(appSvcPrincipalOfficersDto);
                 }
-
+            }else if(oldSize<size){
+                for(int i =0 ;i< size-oldSize;i++){
+                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
+                    appSvcPrincipalOfficersDto.setPreferredMode("-");
+                    appSvcPrincipalOfficersDto.setOfficeTelNo("-");
+                    appSvcPrincipalOfficersDto.setName("-");
+                    appSvcPrincipalOfficersDto.setSalutation("-");
+                    appSvcPrincipalOfficersDto.setIdType("-");
+                    appSvcPrincipalOfficersDto.setIdNo("-");
+                    appSvcPrincipalOfficersDto.setDesignation("-");
+                    appSvcPrincipalOfficersDto.setMobileNo("-");
+                    appSvcPrincipalOfficersDto.setEmailAddr("-");
+                    appSvcPrincipalOfficersDto.setProfRegNo("-");
+                    oldAppSvcMedAlertPersonList.add(appSvcPrincipalOfficersDto);
+                }
             }
         }
         appSvcRelatedInfoDto.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
@@ -846,8 +883,10 @@ public class LicenceViewServiceDelegator {
             }
 
         } else if (appSvcPrincipalOfficersDtoList != null && olAppSvcPrincipalOfficersDtoList != null) {
-            if (appSvcPrincipalOfficersDtoList.size() < olAppSvcPrincipalOfficersDtoList.size()) {
-                for(int i=0;i<olAppSvcPrincipalOfficersDtoList.size()-appSvcPrincipalOfficersDtoList.size();i++){
+            int size = appSvcPrincipalOfficersDtoList.size();
+            int oldSize = olAppSvcPrincipalOfficersDtoList.size();
+            if (size < oldSize) {
+                for(int i = 0;i < oldSize-size;i++){
                     AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
                     appSvcPrincipalOfficersDto.setPreferredMode("-");
                     appSvcPrincipalOfficersDto.setOfficeTelNo("-");
@@ -860,6 +899,21 @@ public class LicenceViewServiceDelegator {
                     appSvcPrincipalOfficersDto.setEmailAddr("-");
                     appSvcPrincipalOfficersDto.setProfRegNo("-");
                     appSvcPrincipalOfficersDtoList.add(appSvcPrincipalOfficersDto);
+                }
+            }else  if(oldSize<size){
+                for(int i=0;i<size-oldSize;i++){
+                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
+                    appSvcPrincipalOfficersDto.setPreferredMode("-");
+                    appSvcPrincipalOfficersDto.setOfficeTelNo("-");
+                    appSvcPrincipalOfficersDto.setName("-");
+                    appSvcPrincipalOfficersDto.setSalutation("-");
+                    appSvcPrincipalOfficersDto.setIdType("-");
+                    appSvcPrincipalOfficersDto.setIdNo("-");
+                    appSvcPrincipalOfficersDto.setDesignation("-");
+                    appSvcPrincipalOfficersDto.setMobileNo("-");
+                    appSvcPrincipalOfficersDto.setEmailAddr("-");
+                    appSvcPrincipalOfficersDto.setProfRegNo("-");
+                    olAppSvcPrincipalOfficersDtoList.add(appSvcPrincipalOfficersDto);
                 }
             }
         }
@@ -879,16 +933,29 @@ public class LicenceViewServiceDelegator {
                 appSvcPersonnelDtoList.add(appSvcPersonnelDto);
             }
         } else if (appSvcPersonnelDtoList != null && oldAppSvcPersonnelDtoList != null) {
-            if(appSvcPersonnelDtoList.size()<oldAppSvcPersonnelDtoList.size()){
-                for(int i=0;i<oldAppSvcPersonnelDtoList.size()-appSvcPersonnelDtoList.size();i++){
+            int size = appSvcPersonnelDtoList.size();
+            int oldSize = oldAppSvcPersonnelDtoList.size();
+            if( size < oldSize ){
+                for(int i=0;i<oldSize-size;i++){
                     AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
-                    appSvcPersonnelDto.setPersonnelType(oldAppSvcPersonnelDtoList.get(appSvcPersonnelDtoList.size()+0).getPersonnelType());
+                    appSvcPersonnelDto.setPersonnelType(oldAppSvcPersonnelDtoList.get(size-1+i).getPersonnelType());
                     appSvcPersonnelDto.setDesignation("-");
                     appSvcPersonnelDto.setName("-");
                     appSvcPersonnelDto.setProfRegNo("-");
                     appSvcPersonnelDto.setWrkExpYear("-");
                     appSvcPersonnelDto.setQualification("-");
                     appSvcPersonnelDtoList.add(appSvcPersonnelDto);
+                }
+            }else if(oldSize < size){
+                for(int i=0;i<size-oldSize;i++){
+                    AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
+                    appSvcPersonnelDto.setPersonnelType(oldAppSvcPersonnelDtoList.get(oldSize-1+i).getPersonnelType());
+                    appSvcPersonnelDto.setDesignation("-");
+                    appSvcPersonnelDto.setName("-");
+                    appSvcPersonnelDto.setProfRegNo("-");
+                    appSvcPersonnelDto.setWrkExpYear("-");
+                    appSvcPersonnelDto.setQualification("-");
+                    oldAppSvcPersonnelDtoList.add(appSvcPersonnelDto);
                 }
             }
 
@@ -897,9 +964,11 @@ public class LicenceViewServiceDelegator {
     }
 
     private void creatNewPremise( List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
-        for (int i = 0; i < oldAppGrpPremisesDtoList.size() - appGrpPremisesDtoList.size(); i++) {
+        int size = appGrpPremisesDtoList.size();
+        int oldSize = oldAppGrpPremisesDtoList.size();
+        for (int i = 0; i <oldSize - size; i++) {
             AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
-            appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(appGrpPremisesDtoList.size()+i).getPremisesType());
+            appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(appGrpPremisesDtoList.size()-1+i).getPremisesType());
             appGrpPremisesDto.setPostalCode("-");
             appGrpPremisesDto.setOffTelNo("-");
             appGrpPremisesDto.setScdfRefNo("-");
@@ -919,7 +988,9 @@ public class LicenceViewServiceDelegator {
     }
 
     private void creatCgo(List<AppSvcCgoDto> appSvcCgoDtoList,List<AppSvcCgoDto>oldAppSvcCgoDtoList){
-        for(int i=0;i<oldAppSvcCgoDtoList.size()-appSvcCgoDtoList.size();i++){
+        int size = appSvcCgoDtoList.size();
+        int oldSize = oldAppSvcCgoDtoList.size();
+        for(int i=0;i<oldSize-size;i++){
             AppSvcCgoDto appSvcCgoDto = new AppSvcCgoDto();
             appSvcCgoDto.setSpecialityOther("-");
             appSvcCgoDto.setSpeciality("-");
@@ -934,5 +1005,41 @@ public class LicenceViewServiceDelegator {
             appSvcCgoDto.setSpeciality("-");
             appSvcCgoDtoList.add(appSvcCgoDto);
         }
+    }
+
+    private void sortPremiseDoc(List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos,List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos){
+        if(appGrpPrimaryDocDtos==null||oldAppGrpPrimaryDocDtos==null){
+            return;
+        }
+        List<AppGrpPrimaryDocDto> sortAppGrpPrimaryDocDtos=new ArrayList<>(appGrpPrimaryDocDtos.size());
+        List<AppGrpPrimaryDocDto> sortOldAppGrpPrimaryDocDtos=new ArrayList<>(oldAppGrpPrimaryDocDtos.size());
+        for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
+            String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto1 : oldAppGrpPrimaryDocDtos){
+                String svcDocId1 = appGrpPrimaryDocDto1.getSvcComDocId();
+                if(svcDocId!=null){
+                    if(svcDocId.equals(svcDocId1)){
+                        sortAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
+                        sortOldAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto1);
+                        continue;
+                    }
+                }else if(svcDocId1!=null){
+                    if(svcDocId1.equals(svcDocId)){
+                        sortAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
+                        sortOldAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto1);
+                        continue;
+                    }
+                }
+
+            }
+        }
+        appGrpPrimaryDocDtos.removeAll(sortAppGrpPrimaryDocDtos);
+        oldAppGrpPrimaryDocDtos.removeAll(sortOldAppGrpPrimaryDocDtos);
+        sortAppGrpPrimaryDocDtos.addAll(appGrpPrimaryDocDtos);
+        sortOldAppGrpPrimaryDocDtos.addAll(oldAppGrpPrimaryDocDtos);
+        appGrpPrimaryDocDtos.clear();
+        oldAppGrpPrimaryDocDtos.clear();
+        appGrpPrimaryDocDtos.addAll(sortAppGrpPrimaryDocDtos);
+        oldAppGrpPrimaryDocDtos.addAll(sortOldAppGrpPrimaryDocDtos);
     }
 }

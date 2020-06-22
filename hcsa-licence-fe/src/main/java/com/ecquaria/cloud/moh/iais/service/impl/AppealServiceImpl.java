@@ -187,16 +187,11 @@ public class AppealServiceImpl implements AppealService {
         if(N.equals(isDelete)){
             req.getSession().removeAttribute("appPremisesSpecialDocDto");
             req.getSession().removeAttribute("filename");
-
-
         }
         List<AppSvcCgoDto> appSvcCgoDtoList = reAppSvcCgo(request);
         ParamUtil.setRequestAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
-
         ParamUtil.setSessionAttr(req, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
-
         String groupId =(String) request.getAttribute("groupId");
-
         String s = JsonUtil.parseToJson(appealPageDto);
         AppPremiseMiscDto appPremiseMiscDto=new AppPremiseMiscDto();
         if(!StringUtil.isEmpty(saveDraftId)){
@@ -207,8 +202,13 @@ public class AppealServiceImpl implements AppealService {
                 if(!StringUtil.isEmpty(draftStatus)){
                     entity.setDraftStatus(draftStatus);
                 }
-                entity.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                if(groupId==null){
+                    entity.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                }else {
+                    entity.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                }
                 entity.setLicenseeId(licenseeId);
+                req.setAttribute("saveDraftSuccess","success");
                 applicationClient.saveDraft(entity).getEntity();
             }
             appPremiseMiscDto.setRemarks(remarks);
@@ -216,7 +216,6 @@ public class AppealServiceImpl implements AppealService {
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME.equals(reasonSelect)) {
                 appPremiseMiscDto.setNewHciName(proposedHciName);
             }
-
             req.setAttribute(APPEALING_FOR,appealingFor);
             req.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
             return null;
@@ -226,10 +225,13 @@ public class AppealServiceImpl implements AppealService {
         appSubmissionDto.setDraftNo(apty);
         appSubmissionDto.setAppGrpId(groupId);
         appSubmissionDto.setAmountStr(s);
-        appSubmissionDto.setDraftStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        if(groupId==null){
+            appSubmissionDto.setDraftStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        }else {
+            appSubmissionDto.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+        }
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
         //todo
-
         appSubmissionDto.setLicenseeId(licenseeId);
         String serviceName =(String)req.getSession().getAttribute("serviceName");
         HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
@@ -247,6 +249,7 @@ public class AppealServiceImpl implements AppealService {
         req.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
         req.setAttribute(APPEALING_FOR,appealingFor);
         req.getSession().setAttribute("saveDraftNo",draftNo);
+        req.setAttribute("saveDraftSuccess","success");
         return null;
     }
 

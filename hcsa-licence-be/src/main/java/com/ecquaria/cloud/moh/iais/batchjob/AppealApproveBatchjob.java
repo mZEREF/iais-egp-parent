@@ -305,6 +305,9 @@ public class AppealApproveBatchjob {
             rollBackLicence.add(licenceDto);
             LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
             Date startDate = appealLicenceDto.getStartDate();
+            if(appPremisesRecommendationDto==null){
+                return;
+            }
             Date expiryDate = LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
             appealLicenceDto.setExpiryDate(expiryDate);
             appealLicence.add(appealLicenceDto);

@@ -450,14 +450,19 @@
                                         <div class="control col-sm-12">
                                           <div class="fileList">
                                               <span class="filename server-site col-xs-12 col-md-12" id="130">
-                                                  <div class="col-xs-6 col-md-6">
-                                                  <span class="newVal " attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}" ><c:out value="${appGrpPrimaryDocDto.docName} (${appGrpPrimaryDocDto.docSize} KB)"/></span>
+                                                <div class="col-xs-6 col-md-6">
+                                                  <span class="newVal" attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}">
+                                                     <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
+                                                     value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a><c:out value="${appGrpPrimaryDocDto.docName} (${appGrpPrimaryDocDto.docSize} KB)"/>
+                                                  </span>
                                                 </div>
                                                 <div class="col-xs-6 col-md-6">
-                                                  <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/></span>
+                                                  <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
+                                                     <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
+                                                     value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].fileRepoId}"/>&fileRepoName=${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}" title="Download" class="downloadFile">${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}</a><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/>
+                                                  </span>
                                                 </div>
                                               </span>
-
                                           </div>
                                         </div>
                                       </div>
@@ -684,7 +689,9 @@
                                           Salutation
                                         </div>
                                         <div class="col-md-6">
-                                          <span class="newVal " attr="Mr">Mr</span>
+                                          <div class="col-md-6">
+                                            <span class="newVal " attr="Mr">Mr</span>
+                                          </div>
                                         </div>
                                       </div>
 
@@ -694,7 +701,9 @@
                                           name
                                         </div>
                                         <div class="col-md-6">
-                                          <span class="newVal ">Mo Delan</span>
+                                          <div class="col-md-6">
+                                            <span class="newVal ">Mo Delan</span>
+                                          </div>
                                         </div>
                                       </div>
 
@@ -703,8 +712,9 @@
                                           ID No.
                                         </div>
                                         <div class="col-md-6">
-                                          <span class="newVal ">S8299230H</span>
-
+                                          <div class="col-md-6">
+                                            <span class="newVal ">S8299230H</span>
+                                          </div>
                                         </div>
                                       </div>
 
@@ -713,18 +723,19 @@
                                           Designation
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal ">CEO</span>
-
+                                          <div class="col-md-6">
+                                            <span  class="newVal ">CEO</span>
+                                          </div>
                                         </div>
                                       </div>
-
                                       <div class="row">
                                         <div class="col-md-6">
                                           Designation Cessation Date
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal ">-</span>
-
+                                          <div class="col-md-6">
+                                            <span  class="newVal ">-</span>
+                                          </div>
                                         </div>
                                       </div>
 
@@ -733,7 +744,10 @@
                                           Designation Cessation Reason
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal ">-</span>
+                                          <div class="col-md-6">
+                                            <span  class="newVal ">-</span>
+                                          </div>
+
                                         </div>
                                       </div>
 
@@ -750,8 +764,9 @@
                                           Salutation
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal ">    Mrs</span>
-
+                                          <div  class="col-md-6">
+                                            <span  class="newVal ">Mrs</span>
+                                          </div>
                                         </div>
                                       </div>
 
@@ -760,8 +775,9 @@
                                           name
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal "> Linda Tan</span>
-
+                                          <div  class="col-md-6">
+                                            <span  class="newVal ">Linda Tan</span>
+                                          </div>
                                         </div>
                                       </div>
 
@@ -770,8 +786,9 @@
                                           Designation
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal ">   CFO</span>
-
+                                          <div class="col-md-6">
+                                            <span  class="newVal ">CFO</span>
+                                          </div>
                                         </div>
                                       </div>
 
@@ -780,7 +797,9 @@
                                           Designation Cessation Date
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal ">-</span>
+                                          <div class="col-md-6">
+                                            <span  class="newVal ">-</span>
+                                          </div>
                                         </div>
                                       </div>
 
@@ -789,7 +808,9 @@
                                           Designation Cessation Reason
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal ">-</span>
+                                          <div  class="col-md-6">
+                                            <span  class="newVal ">-</span>
+                                          </div>
                                         </div>
                                       </div>
 
@@ -806,8 +827,9 @@
                                           Name
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal ">    Mo Delan</span>
-
+                                          <div class="col-md-6">
+                                            <span  class="newVal ">Mo Delan</span>
+                                          </div>
                                         </div>
                                       </div>
                                       <div class="row">
@@ -815,8 +837,9 @@
                                           ID No.
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal "> S8299230H</span>
-
+                                          <div  class="col-md-6">
+                                            <span  class="newVal ">S8299230H</span>
+                                          </div>
                                         </div>
                                       </div>
                                       <div class="row">
@@ -824,8 +847,9 @@
                                           Designation
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal ">CEO</span>
-
+                                          <div class="col-md-6">
+                                            <span  class="newVal ">CEO</span>
+                                          </div>
                                         </div>
                                       </div>
                                       <div class="row">
@@ -833,8 +857,9 @@
                                           Office Telephone
                                         </div>
                                         <div class="col-md-6">
-                                          <span  class="newVal ">64593810</span>
-
+                                          <div  class="col-md-6">
+                                            <span  class="newVal ">64593810</span>
+                                          </div>
                                         </div>
                                       </div>
                                       <div class="row">
@@ -842,7 +867,9 @@
                                           Mobile No.
                                         </div>
                                         <div class="col-md-6">
-                                          92338899
+                                          <div class="col-md-6">
+                                            <span >92338899</span>
+                                          </div>
                                         </div>
                                       </div>
                                       <div class="row">
@@ -850,7 +877,9 @@
                                           Email Address
                                         </div>
                                         <div class="col-md-6">
-                                          modelan@gmail.com
+                                          <div class="col-md-6">
+                                            <span >modelan@gmail.com</span>
+                                          </div>
                                         </div>
                                       </div>
                                       <div class="row">
@@ -858,7 +887,9 @@
                                           name
                                         </div>
                                         <div class="col-md-6">
-                                          Linda Tan
+                                          <div class="col-md-6">
+                                            <span>Linda Tan</span>
+                                          </div>
                                         </div>
                                       </div>
                                       <div class="row">
@@ -866,7 +897,9 @@
                                           ID No.
                                         </div>
                                         <div class="col-md-6">
-                                          S4285224D
+                                          <div class="col-md-6">
+                                            <span >S4285224D</span>
+                                          </div>
                                         </div>
                                       </div>
                                       <div class="row">
@@ -874,7 +907,9 @@
                                           Designation
                                         </div>
                                         <div class="col-md-6">
-                                          CFO
+                                          <div class="col-md-6">
+                                            <span >CFO</span>
+                                          </div>
                                         </div>
                                       </div>
                                       <div class="row">
@@ -882,7 +917,9 @@
                                           Office Telephone
                                         </div>
                                         <div class="col-md-6">
-                                          64593815
+                                          <div class="col-md-6">
+                                            <span >64593815</span>
+                                          </div>
                                         </div>
                                       </div>
                                       <div class="row">
@@ -890,7 +927,9 @@
                                           Mobile No.
                                         </div>
                                         <div class="col-md-6">
-                                          82331122
+                                          <div class="col-md-6">
+                                            <span >82331122</span>
+                                          </div>
                                         </div>
                                       </div>
                                       <div class="row">
@@ -898,12 +937,11 @@
                                           Email Address
                                         </div>
                                         <div class="col-md-6">
-                                          lindatan@gmail.com
+                                          <div class="col-md-6">
+                                            <span>lindatan@gmail.com</span>
+                                          </div>
                                         </div>
                                       </div>
-
-
-
                                     </div>
                                   </div>
                                 </div>

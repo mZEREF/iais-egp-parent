@@ -48,12 +48,10 @@
                     <p class="form-check-label " aria-label="premise-1-cytology">
                         <span class="check-square " style="margin-top: 2%;">
                          <div class="col-xs-6 col-md-6">
-                           <span class="newVal " attr="${checkList.chkName}" ><label><c:out value="${checkList.chkName}"/></label></span>
-
+                           <span class="newVal " style="margin-left: 3%" attr="${checkList.chkName}" ><c:out value="${checkList.chkName}"/></span>
                           </div>
                           <div class="col-xs-6 col-md-6">
-                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}"  style="display: none"><label><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}"/></label></span>
-
+                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}"  style="display: none"><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}"/></span>
                           </div>
                          </span>
                     </p>
@@ -517,7 +515,7 @@
                         <td class="col-xs-6">
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation</p>
                         </td>
-                        <td class="col-xs-6">
+                        <td>
                           <div class="col-xs-6">
                             <span class="newVal " attr="${appSvcPersonnelDtoList.designation}"><c:out value="${appSvcPersonnelDtoList.designation}"/></span>
                           </div>
