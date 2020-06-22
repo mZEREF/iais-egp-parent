@@ -140,7 +140,6 @@ public class InterInboxDelegator {
             }
         }
         if(!StringUtil.isEmpty(inboxResult)){
-            clearParameter("IIMT");
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
             ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
             ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_PAGE, InboxConst.MESSAGE_CONTENT_VIEW);
@@ -237,7 +236,6 @@ public class InterInboxDelegator {
             }
         }
         if(!StringUtil.isEmpty(inboxResult)){
-            clearParameter("IIMT");
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
             ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
             ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_PAGE, InboxConst.MESSAGE_VIEW);
@@ -276,7 +274,6 @@ public class InterInboxDelegator {
 
         });
         if(!StringUtil.isEmpty(licResult)){
-            clearParameter("IILT");
             ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, licParam);
             ParamUtil.setRequestAttr(request,InboxConst.LIC_RESULT, licResult);
         }
@@ -538,7 +535,6 @@ public class InterInboxDelegator {
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         SearchResult appResult = inboxService.appDoQuery(appParam);
         if(!StringUtil.isEmpty(appResult)){
-            clearParameter("IIAT");
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
             inboxAppQueryDtoList.forEach(h ->{
                 RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
@@ -858,19 +854,6 @@ public class InterInboxDelegator {
 
         List<SelectOption> LicenceNoActionsList = IaisCommonUtils.genNewArrayList();
         ParamUtil.setRequestAttr(request, "licNoActions", LicenceNoActionsList);
-    }
-
-    private void clearParameter(String tabName){
-//        if (InboxConst.INTER_INBOX_APPLICATION_TAB.equals(tabName)){
-//            inboxParameter.setFilters(null);
-//            licenceParameter.setFilters(null);
-//        }else if (InboxConst.INTER_INBOX_LICENSE_TAB.equals(tabName)){
-//            appParameter.setFilters(null);
-//            inboxParameter.setFilters(null);
-//        }else if (InboxConst.INTER_INBOX_MESSAGE_TAB.equals(tabName)){
-//            appParameter.setFilters(null);
-//            licenceParameter.setFilters(null);
-//        }
     }
 
     private void clearSessionAttr(HttpServletRequest request){
