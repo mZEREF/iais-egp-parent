@@ -2,7 +2,6 @@
 <%@page import="com.ecquaria.egp.core.payment.api.services.GatewayAPI"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
-<%@ include file="/../../../overlays/com.ecquaria.egp.backbone-19.04.2/WEB-INF/jsp/inc/script.jsp" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
 <webui:setLayout name="none"/>
 <%
