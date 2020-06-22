@@ -191,7 +191,6 @@ public class InterInboxDelegator {
 
     public void msgDoSearch(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        Map<String,Object> inboxSearchMap = IaisCommonUtils.genNewHashMap();
         String inboxType = ParamUtil.getString(request,InboxConst.MESSAGE_TYPE);
         String inboxService = ParamUtil.getString(request,InboxConst.MESSAGE_SERVICE);
         String msgSubject = ParamUtil.getString(request,InboxConst.MESSAGE_SEARCH);
