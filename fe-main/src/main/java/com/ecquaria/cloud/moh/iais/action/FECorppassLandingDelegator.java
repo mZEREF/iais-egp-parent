@@ -92,9 +92,9 @@ public class FECorppassLandingDelegator {
 
         OrganizationDto organizationDto = orgUserManageService.findOrganizationByUen(uen);
         if (organizationDto != null){
-            ParamUtil.setRequestAttr(request, "isFirstLogin", "N");
+            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "N");
         }else {
-            ParamUtil.setRequestAttr(request, "isFirstLogin", "Y");
+            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "Y");
         }
     }
 
@@ -157,7 +157,7 @@ public class FECorppassLandingDelegator {
             }
             // End Audit Trail -- End
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0012"));
-            ParamUtil.setRequestAttr(bpc.request, "isAdminRole", "N");
+            ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "N");
         }
     }
 
@@ -191,6 +191,7 @@ public class FECorppassLandingDelegator {
             feUserDto.setIdType(idType);
             feUserDto.setEmail(email);
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);
+            ParamUtil.setRequestAttr(request, UserConstants.IS_NEED_VALIDATE_FIELD, IaisEGPConstant.NO);
             ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "create");
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();

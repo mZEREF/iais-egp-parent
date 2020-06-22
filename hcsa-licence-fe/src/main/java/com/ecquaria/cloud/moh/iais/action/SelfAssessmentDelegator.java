@@ -102,7 +102,7 @@ public class SelfAssessmentDelegator {
         }else {
             String groupId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
             if (StringUtil.isEmpty(groupId)) {
-                log.debug("the group id is null");
+                log.info("the group id is null");
                 return;
             }
 

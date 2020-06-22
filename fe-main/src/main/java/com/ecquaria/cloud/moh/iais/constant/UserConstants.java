@@ -23,6 +23,9 @@ public class UserConstants {
 
     public static final String SESSION_USER_DTO   = "inter_user_attr";
     public static final String SESSION_CAN_EDIT_USERINFO   = "canEditFlag";
+    public static final String ACCOUNT_EXIST   = "isFirstLogin";
+    public static final String IS_ADMIN   = "isAdminRole";
+    public static final String IS_NEED_VALIDATE_FIELD   = "isNeedValidateField";
 
 
 }
