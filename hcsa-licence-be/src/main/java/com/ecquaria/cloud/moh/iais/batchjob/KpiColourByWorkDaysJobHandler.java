@@ -1,6 +1,9 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
-import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
+import com.ecquaria.cloud.job.executor.handler.IJobHandler;
+import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
+import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
@@ -25,10 +28,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,6 +35,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * @Process MohKpiColourShow
@@ -43,9 +45,10 @@ import java.util.Set;
  * @author Shicheng
  * @date 2020/4/23 16:45
  **/
-@Delegator("kpiColourByWorkDaysBatchJob")
+@JobHandler(value="kpiColourByWorkDaysJobHandler")
+@Component
 @Slf4j
-public class KpiColourByWorkDaysBatchJob {
+public class KpiColourByWorkDaysJobHandler extends IJobHandler {
 
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
@@ -62,23 +65,8 @@ public class KpiColourByWorkDaysBatchJob {
     @Autowired
     private AppointmentClient appointmentClient;
 
-    /**
-     * StartStep: mohKpiColourShowStart
-     *
-     * @param bpc
-     * @throws
-     */
-    public void mohKpiColourShowStart(BaseProcessClass bpc){
-        logAbout("MohKpiColourShow");
-    }
-
-    /**
-     * StartStep: mohKpiColourShowStep
-     *
-     * @param bpc
-     * @throws
-     */
-    public void mohKpiColourShowStep(BaseProcessClass bpc){
+    @Override
+    public ReturnT<String> execute(String s) throws Exception {
         logAbout("MohKpiColourShow");
         List<Date> holidays = appointmentClient.getHolidays().getEntity();
         List<Long> holidayTime = IaisCommonUtils.genNewArrayList();
@@ -91,14 +79,18 @@ public class KpiColourByWorkDaysBatchJob {
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         if(!IaisCommonUtils.isEmpty(taskDtos)){
             for(TaskDto taskDto : taskDtos){
-                log.debug(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
+                log.info(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
+                JobLogger.log(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
                 getTimeLimitWarningColourByTask(taskDto, intranet, holidayTime);
             }
         }
+
+        return ReturnT.SUCCESS;
     }
 
     private void logAbout(String methodName){
-        log.debug(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));
+        log.info(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));
+        JobLogger.log(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));
     }
 
     private void getTimeLimitWarningColourByTask(TaskDto taskDto, AuditTrailDto intranet, List<Long> holidayTime) {
@@ -383,4 +375,5 @@ public class KpiColourByWorkDaysBatchJob {
         }
         return subStage;
     }
+
 }
