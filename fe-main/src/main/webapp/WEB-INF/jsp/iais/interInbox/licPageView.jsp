@@ -70,7 +70,6 @@
                 $("#lic-cease").removeClass('disabled');
                 $("#lic-amend").removeClass('disabled');
                 $("#lic-appeal").removeClass('disabled');
-
             } else{
                 var statusDuo = [];
                 $("[name='licenceNo']:checked").each(function (k,v) {
@@ -87,12 +86,14 @@
                 console.log(statusDuo);
                 $("#lic-print").addClass('disabled');
                 $("#lic-amend").addClass('disabled');
+                $("#lic-appeal").addClass('disabled');
             }
         }else {
             $("#lic-amend").addClass('disabled');
             $("#lic-print").addClass('disabled');
             $("#lic-renew").addClass('disabled');
             $("#lic-cease").addClass('disabled');
+            $("#lic-appeal").addClass('disabled');
         }
     }
 
