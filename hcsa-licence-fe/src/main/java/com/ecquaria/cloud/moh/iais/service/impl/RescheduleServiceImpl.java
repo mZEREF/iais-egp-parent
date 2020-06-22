@@ -41,7 +41,7 @@ public class RescheduleServiceImpl implements RescheduleService {
             ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
             applicationClient.updateApplication(applicationDto);
-            //eic update to be
+            //eic update to be status and task
         }
     }
 }

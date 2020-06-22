@@ -28,7 +28,7 @@
                     <iais:section title="" id = "supPoolList">
 
                         <iais:action style="text-align:right;">
-                            <a class="btn btn-secondary" type="button"   href="/main-web/eservice/INTERNET/MohInternetInbox" >OK</a>
+                            <a class="btn btn-secondary" type="button"   href="/hcsa-licence-web/eservice/INTERNET/MohClientRescheduling" >OK</a>
                         </iais:action>
                     </iais:section>
                 </div>

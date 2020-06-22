@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
@@ -9,9 +8,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.ApptViewDto;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.RescheduleService;
@@ -38,7 +37,7 @@ public class ClientReschedulingDelegator {
             .clz(ReschApptGrpPremsQueryDto.class)
             .searchAttr("SearchParam")
             .resultAttr("SearchResult")
-            .sortField("BLK_NO").sortType(SearchParam.ASCENDING).build();
+            .sortField("RECOM_IN_DATE").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(10).build();
 
 
     @Autowired
@@ -58,39 +57,46 @@ public class ClientReschedulingDelegator {
     }
 
     public void init(BaseProcessClass bpc)  {
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String licenseeId = loginContext.getLicenseeId();
-        SearchParam rescheduleParam = SearchResultHelper.getSearchParam(bpc.request, rescheduleParameter,true);
+        //LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        //String licenseeId = loginContext.getLicenseeId();
+        String licenseeId ="9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
+        SearchParam rescheduleParam = IaisEGPHelper.getSearchParam(bpc.request, true,rescheduleParameter);
         rescheduleParam.addParam("appStatus_reschedule", "(app.status not in('APST062','APST063','APST064','APST065','APST066','APST067','APST023','APST024'))");
         rescheduleParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("rescheduleQuery", "queryApptGrpPremises", rescheduleParam);
 
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        SearchResult<ReschApptGrpPremsQueryDto> result  = feEicGatewayClient.eicSearchApptReschPrem(rescheduleParam, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+        try {
+            SearchResult<ReschApptGrpPremsQueryDto> result  = feEicGatewayClient.eicSearchApptReschPrem(rescheduleParam, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization()).getEntity();
 
-        List<ReschApptGrpPremsQueryDto> rows = result.getRows();
-        if(rows!=null){
-            List<ApptViewDto> apptViewDtos= IaisCommonUtils.genNewArrayList();
+            List<ReschApptGrpPremsQueryDto> rows = result.getRows();
+            if(rows!=null){
+                List<ApptViewDto> apptViewDtos= IaisCommonUtils.genNewArrayList();
 
-            ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
-            ParamUtil.setRequestAttr(bpc.request,"SearchResult",result);
-            for (ReschApptGrpPremsQueryDto reschApptGrpPremsQueryDto : rows) {
-                ApptViewDto apptViewDto=new ApptViewDto();
-                apptViewDto.setAppId(reschApptGrpPremsQueryDto.getId());
-                apptViewDto.setAppCorrId(reschApptGrpPremsQueryDto.getAppCorrId());
-                apptViewDto.setLicenseeId(reschApptGrpPremsQueryDto.getLicenseeId());
-                apptViewDto.setAddress(MiscUtil.getAddress(reschApptGrpPremsQueryDto.getBlkNo(),reschApptGrpPremsQueryDto.getStreetName(),reschApptGrpPremsQueryDto.getBuildingName(),reschApptGrpPremsQueryDto.getFloorNo(),reschApptGrpPremsQueryDto.getUnitNo(),reschApptGrpPremsQueryDto.getPostalCode()));
-                apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
-                apptViewDtos.add(apptViewDto);
+                ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
+                ParamUtil.setRequestAttr(bpc.request,"SearchResult",result);
+                for (ReschApptGrpPremsQueryDto reschApptGrpPremsQueryDto : rows) {
+                    ApptViewDto apptViewDto=new ApptViewDto();
+                    apptViewDto.setAppId(reschApptGrpPremsQueryDto.getId());
+                    apptViewDto.setAppCorrId(reschApptGrpPremsQueryDto.getAppCorrId());
+                    apptViewDto.setLicenseeId(reschApptGrpPremsQueryDto.getLicenseeId());
+                    apptViewDto.setAddress(MiscUtil.getAddress(reschApptGrpPremsQueryDto.getBlkNo(),reschApptGrpPremsQueryDto.getStreetName(),reschApptGrpPremsQueryDto.getBuildingName(),reschApptGrpPremsQueryDto.getFloorNo(),reschApptGrpPremsQueryDto.getUnitNo(),reschApptGrpPremsQueryDto.getPostalCode()));
+                    apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
+                    apptViewDtos.add(apptViewDto);
+                }
+                ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos);
             }
-            ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
         }
+
 
     }
 
-    public void sort(BaseProcessClass bpc)  {SearchResultHelper.doSort(bpc.request,rescheduleParameter);
+    public void sort(BaseProcessClass bpc)  {
+        SearchResultHelper.doSort(bpc.request,rescheduleParameter);
     }
     public void page(BaseProcessClass bpc)  {SearchResultHelper.doPage(bpc.request,rescheduleParameter);
     }

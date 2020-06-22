@@ -3,20 +3,24 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * RoundRobinCommPoolBatchJob
@@ -29,6 +33,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 public class RoundRobinCommPoolBatchJob {
     @Autowired
     private SystemParamConfig systemParamConfig;
+    @Autowired
+    private ApplicationClient applicationClient;
 
     @Autowired
     private TaskService taskService;
@@ -43,6 +49,10 @@ public class RoundRobinCommPoolBatchJob {
           for (TaskDto taskDto : taskDtoList){
               if(!RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())){
                   try{
+                      ApplicationDto applicationDto=applicationClient.getAppByNo(taskDto.getApplicationNo()).getEntity();
+                      if(applicationDto.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL)){
+                          //update status
+                      }
                       String workGroupId = taskDto.getWkGrpId();
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));

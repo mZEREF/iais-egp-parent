@@ -200,7 +200,7 @@ public interface FeEicGatewayClient {
                                                                      @RequestHeader("date-Secondary") String dateSec,
                                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
 
-    @PostMapping(value = "api/v1/hcsa-query-appointment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/v1/hcsa-query-appointment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<ReschApptGrpPremsQueryDto>> eicSearchApptReschPrem(@RequestBody SearchParam rescheduleParam,
                                                                                         @RequestHeader("date") String date,
                                                                                         @RequestHeader("authorization") String authorization,
