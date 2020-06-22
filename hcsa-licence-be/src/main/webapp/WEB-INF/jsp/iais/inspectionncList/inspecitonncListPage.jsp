@@ -76,6 +76,7 @@
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                                     View CheckList
                                                 </button>
+                                                <br/>
                                                 <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                                             </div>
                                         </div>
