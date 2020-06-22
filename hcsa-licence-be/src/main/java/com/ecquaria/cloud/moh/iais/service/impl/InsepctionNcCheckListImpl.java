@@ -323,12 +323,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         String[] fileSplit = appPremisesSpecialDocDto.getDocName() .split("\\.");
         String fileType = fileSplit[fileSplit.length - 1];
         //name
-        String fileName = fileSplit[0];
-//            String fileName = UUID.randomUUID().toString();
-        if(!StringUtil.isEmpty(fileName) && fileName.contains("\\")) {
-            String [] DOCS= fileName.split("\\\\");
-            fileName = DOCS[DOCS.length-1];
-        }
+        String fileName = IaisCommonUtils.getDocNameByStrings(fileSplit);
         appIntranetDocDto.setDocType(fileType);
         appIntranetDocDto.setDocName(fileName);
         appIntranetDocDto.setDocDesc(fileName);

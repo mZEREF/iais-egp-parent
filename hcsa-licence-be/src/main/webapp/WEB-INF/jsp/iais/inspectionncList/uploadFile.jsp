@@ -196,7 +196,8 @@
 
             try {
                 var fileName =  getFileName($("#selectedFile").val());
-                fileName = fileName.split(".")[1];
+                var list = fileName.split(".");
+                fileName = list[list.length-1];
                 if(fileType.indexOf(fileName.toUpperCase()) == -1){
                     $('#selectedFileShow').html('Only files with the following extensions are allowed:'+ fileType +'. Please re-upload the file.');
                 }

@@ -314,7 +314,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         SearchParam searchParam = new SearchParam(AuditTaskDataDto.class.getName());
         if(dto.getIsTcuNeeded() != null){
             searchParam.addFilter("isTcuNeeded", dto.getIsTcuNeeded(), true);
-            searchParam.addFilter("aduitInspectionMonthBeforeTcu",getDayByAduitInspectionMonthBeforeTcu(systemParamConfig.getAduitInspectionMonthBeforeTcu()), true);
+            searchParam.addFilter("aduitInspectionMonthBeforeTcu",getDayByAduitInspectionMonthBeforeTcu(systemParamConfig.getAuditInspectionMonthBeforeTcu()), true);
         }
         if (!IaisCommonUtils.isEmpty(dto.getTotalServiceNameList()) && !StringUtil.isEmpty(insql)) {
             searchParam.addParam("serviceNameList", insql);
