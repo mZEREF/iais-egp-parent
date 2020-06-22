@@ -176,6 +176,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 log.error(e.getMessage(), e);
             }
             try {
+                org.setIdType(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getIdType()}).get(0).getText());
+
+            }catch (NullPointerException e){
+                log.error(e.getMessage(), e);
+            }
+            try {
                 org.setSalutation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{org.getSalutation()}).get(0).getText());
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);

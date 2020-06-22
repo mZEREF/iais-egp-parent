@@ -61,6 +61,7 @@ public class ClientReschedulingDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
         SearchParam rescheduleParam = SearchResultHelper.getSearchParam(bpc.request, rescheduleParameter,true);
+        rescheduleParam.addParam("appStatus_reschedule", "(app.status not in('APST062','APST063','APST064','APST065','APST066','APST067','APST023','APST024'))");
         rescheduleParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("rescheduleQuery", "queryApptGrpPremises", rescheduleParam);
 
