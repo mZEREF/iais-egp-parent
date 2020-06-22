@@ -4378,7 +4378,107 @@ margin-bottom: 10px;
 .withdraw-info-gp .withdraw-info-row .withdraw-delete p {
   text-align: right;
 }
+/***********************/
 
+.cesform-box .tablebox {
+  width: 100%;
+display: inline-block;
+vertical-align: top;
+padding: 30px;
+margin-bottom: 20px;
+background: #fafafa;
+border-radius: 18px;
+
+}
+.cesform-box .tablebox .topheader {
+   border-bottom: 1px solid #d1d1d1;
+   margin-bottom: 30px;
+}
+ .cesform-box .tablebox h4 {
+  position: relative;
+  padding-left: 0px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.cesform-box .tablebox p {
+  position: relative;
+  padding-left: 0px;
+  font-size: 18px; 
+}
+
+.cesform-box { 
+border-radius: 18px;
+border:2px dotted #d1d1d1;
+padding: 20px;
+margin-bottom: 10px; 
+}
+.cesform-box:last-child  {
+  margin-bottom: 0px;
+} 
+.license-info-box {
+  margin-top: 10px; 
+}
+.cesform-box .license-info {
+  width: 100%;
+display: inline-block;
+vertical-align: top;
+padding: 20px;
+margin-bottom: 20px;
+background: #fafafa;
+border-radius: 18px;
+
+}
+.cesform-box .license-info h4 {
+  position: relative;
+  padding-left: 50px;
+  font-size: 22px;
+}
+.cesform-box .license-info p {
+  position: relative;
+  padding-left: 50px;
+  font-size: 18px;
+  color: #a1a1a1;
+}
+.cesform-box .license-info p.lic-no:before {
+  content: "";
+  font:normal normal normal 14px/1 FontAwesome;
+  color: #a2d9e7;
+  font-size: 30px;
+  width: 6px;
+  height: 6px;
+ /* background-color: #333333;*/
+  border-radius: 3px;
+  position: absolute;
+  top: 0px;
+  left: 8px;
+}
+.cesform-box .license-info p.serv-name:before {
+  content: "";
+  font:normal normal normal 14px/1 FontAwesome;
+  color: #a2d9e7;
+  font-size: 30px;
+  width: 6px;
+  height: 6px;
+ /* background-color: #333333;*/
+  border-radius: 3px;
+  position: absolute;
+  top: 0px;
+  left: 8px;
+}
+.withdraw-info-gp .withdraw-info-row .withdraw-delete {
+  margin-left: 20px;
+  width: 80px;
+  display: inline-block;
+  text-align: right;
+}
+.withdraw-info-gp .withdraw-info-row .withdraw-delete p {
+  text-align: right;
+}
+
+
+
+/**********************/
 .fa.fa-trash-o {
     font-size: 1.6rem;
     margin-right: 5px;
