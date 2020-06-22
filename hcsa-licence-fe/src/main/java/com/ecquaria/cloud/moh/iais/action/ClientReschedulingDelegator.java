@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
@@ -8,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.ApptViewDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -57,9 +59,9 @@ public class ClientReschedulingDelegator {
     }
 
     public void init(BaseProcessClass bpc)  {
-        //LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        //String licenseeId = loginContext.getLicenseeId();
-        String licenseeId ="9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenseeId = loginContext.getLicenseeId();
+        //String licenseeId ="9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
         SearchParam rescheduleParam = IaisEGPHelper.getSearchParam(bpc.request, true,rescheduleParameter);
         rescheduleParam.addParam("appStatus_reschedule", "(app.status not in('APST062','APST063','APST064','APST065','APST066','APST067','APST023','APST024'))");
         rescheduleParam.addFilter("licenseeId", licenseeId, true);
