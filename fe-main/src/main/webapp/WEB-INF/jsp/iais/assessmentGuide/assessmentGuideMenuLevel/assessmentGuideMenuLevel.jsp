@@ -13,8 +13,8 @@
                 </label>
             </div>
             <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true"
-               title="112123123123123123123123123123"
-               style="position: absolute;left: 343px; top: -48px;"
+               title='<p>"Base Licence" is a licence that a licensee must have to provide a special licensable healthcare service. "Special Licensable Healthcare Services" are services where the licensee will require the relevant base licence in order to provide the service.</p>'
+               style="position: absolute;left: 330px; top: 55px;z-index: 10"
                data-original-title=""
                >i</a>
             <%--
@@ -44,8 +44,8 @@
                     <span class="left-content">Amend my licence<a
                             class="btn-tooltip styleguide-tooltip"
                             data-toggle="tooltip" data-html="true"
-                            title="" data-original-title=""
-                            aria-describedby="tooltip883061">i</a></span>
+                            title="" data-original-title='"Subsumed Service" is a service that does not have its own licence, but has regulatory requirements that will be issued under the relevant licensable healthcare service.'
+                            style="position: absolute;left: 189px; top: 12px;z-index: 10">i</a></span>
                     <span class="right-content">For changes in address, personnel, or subsumed services</span>
                 </label>
             </div>
@@ -62,8 +62,8 @@
                     <span class="left-content">Cease my licence<a
                             class="btn-tooltip styleguide-tooltip"
                             data-toggle="tooltip" data-html="true"
-                            title="" data-original-title=""
-                            aria-describedby="tooltip883061">i</a></span>
+                            title="" data-original-title='"Licensed Premises" means the premises specified in a licence as premises at which a licensable healthcare service may be provided. "Conveyance" means a Singapore registered vehicle that is used to provide a healthcare service in Singapore. "Non-premises based licensable healthcare service" means a licensable healthcare service that is provided outside of a licensed premises or a remote setting.'
+                            style="position: absolute;left: 189px; top: 12px;z-index: 10">i</a></span>
                     <span class="right-content">For service cessation and premises removal</span>
                 </label>
             </div>

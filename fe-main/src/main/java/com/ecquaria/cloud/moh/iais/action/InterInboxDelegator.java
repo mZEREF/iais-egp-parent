@@ -195,27 +195,26 @@ public class InterInboxDelegator {
         String inboxType = ParamUtil.getString(request,InboxConst.MESSAGE_TYPE);
         String inboxService = ParamUtil.getString(request,InboxConst.MESSAGE_SERVICE);
         String msgSubject = ParamUtil.getString(request,InboxConst.MESSAGE_SEARCH);
+        SearchParam inboxMsgParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
         if(inboxType != null){
             if (inboxType.equals(InboxConst.SEARCH_ALL)){
-                inboxSearchMap.remove("messageType");
+                inboxMsgParam.removeFilter("messageType");
             }else{
-                inboxSearchMap.put("messageType",inboxType);
+                inboxMsgParam.addFilter("messageType",inboxType,true);
             }
         }
         if(inboxService != null){
             if (inboxService.equals(InboxConst.SEARCH_ALL)){
-                inboxSearchMap.remove("interService");
+                inboxMsgParam.removeFilter("interService");
             }else{
-                inboxSearchMap.put("interService",inboxService);
+                inboxMsgParam.addFilter("interService",inboxService,true);
             }
         }
         if(msgSubject != null){
-            inboxSearchMap.put("msgSubject",'%'+msgSubject+'%');
+            inboxMsgParam.addFilter("msgSubject",'%'+msgSubject+'%',true);
         }else{
-            inboxSearchMap.remove("msgSubject");
+            inboxMsgParam.removeFilter("msgSubject");
         }
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
-        HalpSearchResultHelper.doSearch(inboxParam,inboxSearchMap);
     }
 
     public void prepareDate(BaseProcessClass bpc){
@@ -293,7 +292,6 @@ public class InterInboxDelegator {
 
     public void licDoSearch(BaseProcessClass bpc) throws ParseException {
         HttpServletRequest request = bpc.request;
-        Map<String,Object> licSearchMap = IaisCommonUtils.genNewHashMap();
         String licenceNo = ParamUtil.getString(request,"licNoPath");
         String serviceType = ParamUtil.getString(request,"licType");
         String licStatus = ParamUtil.getString(request,"licStatus");
@@ -305,32 +303,33 @@ public class InterInboxDelegator {
         String eStartDate = Formatter.formatDateTime(licEndDate, SystemAdminBaseConstants.DATE_FORMAT);
         String fExpiryDate = Formatter.formatDateTime(licfExpiryDate, SystemAdminBaseConstants.DATE_FORMAT);
         String eExpiryDate = Formatter.formatDateTime(liceExpiryDate, SystemAdminBaseConstants.DATE_FORMAT);
+        SearchParam inboxLicParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic",true);
         if(licenceNo != null){
-            licSearchMap.put("licNo",'%'+licenceNo+'%');
+            inboxLicParam.addFilter("licNo",'%'+licenceNo+'%',true);
         }else{
-            licSearchMap.remove("licNo");
+            inboxLicParam.removeFilter("licNo");
         }
         if(serviceType == null || serviceType.equals(InboxConst.SEARCH_ALL)){
-            licSearchMap.remove("serviceType");
+            inboxLicParam.removeFilter("serviceType");
         }else {
-            licSearchMap.put("serviceType", serviceType);
+            inboxLicParam.addFilter("serviceType",serviceType,true);
         }
         if(licStatus == null || licStatus.equals(InboxConst.SEARCH_ALL)){
-            licSearchMap.remove("licStatus");
+            inboxLicParam.removeFilter("licStatus");
         }else{
-            licSearchMap.put("licStatus",licStatus);
+            inboxLicParam.addFilter("licStatus",licStatus,true);
         }
         if (licStartDate != null && licEndDate != null){
             if (licStartDate.compareTo(licEndDate)<=0){
                 if(!StringUtil.isEmpty(fStartDate)){
-                    licSearchMap.put("fStartDate",fStartDate);
+                    inboxLicParam.addFilter("fStartDate",fStartDate,true);
                 }else{
-                    licSearchMap.remove("fStartDate");
+                    inboxLicParam.removeFilter("fStartDate");
                 }
                 if(!StringUtil.isEmpty(eStartDate)){
-                    licSearchMap.put("eStartDate",eStartDate);
+                    inboxLicParam.addFilter("eStartDate",eStartDate,true);
                 }else{
-                    licSearchMap.remove("eStartDate");
+                    inboxLicParam.removeFilter("eStartDate");
                 }
             }
             else{
@@ -338,45 +337,43 @@ public class InterInboxDelegator {
             }
         }else{
             if(!StringUtil.isEmpty(fStartDate)){
-                licSearchMap.put("fStartDate",fStartDate);
+                inboxLicParam.addFilter("fStartDate",fStartDate,true);
             }else{
-                licSearchMap.remove("fStartDate");
+                inboxLicParam.removeFilter("fStartDate");
             }
             if(!StringUtil.isEmpty(eStartDate)){
-                licSearchMap.put("eStartDate",eStartDate);
+                inboxLicParam.addFilter("eStartDate",eStartDate,true);
             }else{
-                licSearchMap.remove("eStartDate");
+                inboxLicParam.removeFilter("eStartDate");
             }
         }
         if (licfExpiryDate != null && liceExpiryDate != null){
             if (licfExpiryDate.compareTo(liceExpiryDate)<=0){
                 if(!StringUtil.isEmpty(fExpiryDate)){
-                    licSearchMap.put("fExpiryDate",fExpiryDate);
+                    inboxLicParam.addFilter("fExpiryDate",fExpiryDate,true);
                 }else{
-                    licSearchMap.remove("fExpiryDate");
+                    inboxLicParam.removeFilter("fExpiryDate");
                 }
                 if(!StringUtil.isEmpty(eExpiryDate)){
-                    licSearchMap.put("eExpiryDate",eExpiryDate);
+                    inboxLicParam.addFilter("eExpiryDate",eExpiryDate,true);
                 }else{
-                    licSearchMap.remove("eExpiryDate");
+                    inboxLicParam.removeFilter("eExpiryDate");
                 }
             }else{
                 ParamUtil.setRequestAttr(request,InboxConst.LIC_EXPIRY_ERR_MSG, "Licence Expiry Date From cannot be later than Licence Expiry Date To");
             }
         }else{
             if(!StringUtil.isEmpty(fExpiryDate)){
-                licSearchMap.put("fExpiryDate",fExpiryDate);
+                inboxLicParam.addFilter("fExpiryDate",fExpiryDate,true);
             }else{
-                licSearchMap.remove("fExpiryDate");
+                inboxLicParam.removeFilter("fExpiryDate");
             }
             if(!StringUtil.isEmpty(eExpiryDate)){
-                licSearchMap.put("eExpiryDate",eExpiryDate);
+                inboxLicParam.addFilter("eExpiryDate",eExpiryDate,true);
             }else{
-                licSearchMap.remove("eExpiryDate");
+                inboxLicParam.removeFilter("eExpiryDate");
             }
         }
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
-        HalpSearchResultHelper.doSearch(inboxParam,licSearchMap);
     }
 
     public void licDoPage(BaseProcessClass bpc){
@@ -566,7 +563,6 @@ public class InterInboxDelegator {
     public void appDoSearch(BaseProcessClass bpc) throws ParseException {
         log.debug(StringUtil.changeForLog("Step ---> appDoSearch"));
         HttpServletRequest request = bpc.request;
-        Map<String,Object> appSearchMap = IaisCommonUtils.genNewHashMap();
         String applicationType = ParamUtil.getString(request,"appTypeSelect");
         String serviceType = ParamUtil.getString(request,"appServiceType");
         String applicationStatus = ParamUtil.getString(request,"appStatusSelect");
@@ -575,60 +571,59 @@ public class InterInboxDelegator {
         Date endAppDate = Formatter.parseDate(ParamUtil.getString(request, "eed"));
         String createDtStart = Formatter.formatDateTime(startAppDate, SystemAdminBaseConstants.DATE_FORMAT);
         String createDtEnd = Formatter.formatDateTime(endAppDate, SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp",true);
         if(applicationType == null || applicationType.equals(InboxConst.SEARCH_ALL)){
-            appSearchMap.remove("appType");
+            inboxParam.removeFilter("appType");
         }else{
-            appSearchMap.put("appType",applicationType);
+            inboxParam.addFilter("appType", applicationType,true);
         }
         if(applicationStatus == null || applicationStatus.equals(InboxConst.SEARCH_ALL)){
-            appSearchMap.remove("appStatus");
+            inboxParam.removeFilter("appStatus");
         }else{
-            appSearchMap.put("appStatus",applicationStatus);
+            inboxParam.addFilter("appStatus", applicationStatus,true);
         }
         if(applicationNo != null){
             if(applicationNo.indexOf('%') != -1){
                 applicationNo = applicationNo.replaceAll("%","//%");
-                appSearchMap.put("appNo","%"+applicationNo+"%");
+                inboxParam.addFilter("appNo", "%"+applicationNo+"%",true);
             }else{
-                appSearchMap.put("appNo","%"+applicationNo+"%");
+                inboxParam.addFilter("appNo", "%"+applicationNo+"%",true);
             }
         }else{
-            appSearchMap.remove("appNo");
+            inboxParam.removeFilter("appNo");
         }
         if(serviceType == null || serviceType.equals(InboxConst.SEARCH_ALL)){
-            appSearchMap.remove("serviceType");
+            inboxParam.removeFilter("serviceType");
         }else{
-            appSearchMap.put("serviceType",serviceType);
+            inboxParam.addFilter("serviceType", serviceType,true);
         }
         if (startAppDate != null && endAppDate != null){
             if(startAppDate.compareTo(endAppDate)<=0){
                 if(!StringUtil.isEmpty(createDtStart)){
-                    appSearchMap.put("createDtStart",createDtStart);
+                    inboxParam.addFilter("createDtStart", createDtStart,true);
                 }else{
-                    appSearchMap.remove("createDtStart");
+                    inboxParam.removeFilter("createDtStart");
                 }
                 if(!StringUtil.isEmpty(createDtEnd)){
-                    appSearchMap.put("createDtEnd",createDtEnd);
+                    inboxParam.addFilter("createDtEnd", createDtEnd,true);
                 }else{
-                    appSearchMap.remove("createDtEnd");
+                    inboxParam.removeFilter("createDtEnd");
                 }
             }else{
                 ParamUtil.setRequestAttr(request,InboxConst.APP_DATE_ERR_MSG, "Date Submitted From cannot be later than Date Submitted To");
             }
         }else{
             if(!StringUtil.isEmpty(createDtStart)){
-                appSearchMap.put("createDtStart",createDtStart);
+                inboxParam.addFilter("createDtStart", createDtStart,true);
             }else{
-                appSearchMap.remove("createDtStart");
+                inboxParam.removeFilter("createDtStart");
             }
             if(!StringUtil.isEmpty(createDtEnd)){
-                appSearchMap.put("createDtEnd",createDtEnd);
+                inboxParam.addFilter("createDtEnd", createDtEnd,true);
             }else{
-                appSearchMap.remove("createDtEnd");
+                inboxParam.removeFilter("createDtEnd");
             }
         }
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp");
-        HalpSearchResultHelper.doSearch(inboxParam,appSearchMap);
     }
 
     public void appDoPage(BaseProcessClass bpc){

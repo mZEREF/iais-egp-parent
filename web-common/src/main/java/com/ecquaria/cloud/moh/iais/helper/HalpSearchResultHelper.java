@@ -26,6 +26,7 @@ public class HalpSearchResultHelper {
                     searchParam.setPageSize(10);
                     searchParam.setPageNo(1);
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
+                    ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, searchParam);
                 }
                 break;
             case "inboxApp":
@@ -35,6 +36,7 @@ public class HalpSearchResultHelper {
                     searchParam.setPageNo(1);
                     searchParam.setPageSize(10);
                     searchParam.setSort("created_dt", SearchParam.DESCENDING);
+                    ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, searchParam);
                 }
                 break;
             case "inboxLic":
@@ -44,6 +46,7 @@ public class HalpSearchResultHelper {
                     searchParam.setSort("START_DATE", SearchParam.DESCENDING);
                     searchParam.setPageNo(1);
                     searchParam.setPageSize(10);
+                    ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, searchParam);
                 }
                 break;
         }
