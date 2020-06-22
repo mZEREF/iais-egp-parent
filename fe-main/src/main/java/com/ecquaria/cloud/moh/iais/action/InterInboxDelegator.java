@@ -386,7 +386,8 @@ public class InterInboxDelegator {
 
     public void licDoAppeal(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
-        String licId = ParamUtil.getMaskedString(bpc.request, InboxConst.ACTION_ID_VALUE);
+        String licMaskId = ParamUtil.getString(bpc.request, "licenceNo");
+        String licId = ParamUtil.getMaskedString(bpc.request,licMaskId);
         Boolean result = inboxService.checkEligibility(licId);
         if (result){
             StringBuilder url = new StringBuilder();

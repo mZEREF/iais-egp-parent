@@ -9,9 +9,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-xs-4 col-md-4" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search
+                        <label class="col-xs-3 col-md-3" for="licNoPath" style="text-align:left;margin-top: 1.5%">Search
                             by Licence No or Part of:</label>
-                        <div class="col-xs-8 col-md-8">
+                        <div class="col-xs-9 col-md-9">
                             <input id="licNoPath" name="licNoPath" type="text" maxlength="24"
                                    value="${param.licNoPath}">
                         </div>
@@ -21,9 +21,9 @@
             <div class="row" style="margin-bottom: 1.5%">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-xs-4 col-md-4" for="licType" style="text-align:left;margin-top: 1.5%">Service
+                        <label class="col-xs-3 col-md-3" for="licType" style="text-align:left;margin-top: 1.5%">Service
                             Type:</label>
-                        <div class="col-xs-8 col-md-8">
+                        <div class="col-xs-9 col-md-9">
                             <iais:select name="licType" id="licType" options="licType" value="${param.licType}" cssClass="serviceType"/>
                         </div>
                     </iais:value>
@@ -32,9 +32,9 @@
             <div class="row" style="margin-bottom: 1.5%">
                 <div class="col-md-12">
                     <iais:value>
-                        <label class="col-xs-4 col-md-4" for="licStatus" style="text-align:left;margin-top: 1.5%">Licence
+                        <label class="col-xs-3 col-md-3" for="licStatus" style="text-align:left;margin-top: 1.5%">Licence
                             Status:</label>
-                        <div class="col-xs-8 col-md-8">
+                        <div class="col-xs-9 col-md-9">
                             <iais:select name="licStatus" id="licStatus" options="licStatus" value="${param.licStatus}" cssClass="licStatus"/>
                         </div>
                     </iais:value>
@@ -49,7 +49,7 @@
                             <iais:datePicker id="fStartDate" name="fStartDate" value="${param.fStartDate}"/>
                         </div>
                         <div class="col-xs-1 col-md-1" style="margin-top: 1.5%">
-                            <span>To</span>
+                            <label>To</label>
                         </div>
                         <div class="col-md-4">
                             <iais:datePicker id="eStartDate" name="eStartDate" value="${param.eStartDate}"/>
@@ -75,7 +75,7 @@
                         </div>
                     </iais:value>
                     <div class="col-xs-1 col-md-1" style="margin-top: 1.5%">
-                        <span>To</span>
+                        <label>To</label>
                     </div>
                     <iais:value>
                         <div class="col-xs-4 col-md-4">
@@ -117,7 +117,6 @@
                                              value="Start Date"/>
                         <iais:sortableHeader needSort="true" field="EXPIRY_DATE"
                                              value="Expiry Date"/>
-                        <th style="width:15%">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -157,7 +156,6 @@
                                             <p href="#">${licenceQuery.licenceNo}</p>
                                             <input type="hidden" name="licenId${status.index}" value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                         </c:if>
-
                                     </td>
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Type</p>
@@ -192,17 +190,6 @@
                                         <p class="visible-xs visible-sm table-row-title">Expiry Date</p>
                                         <p><fmt:formatDate value="${licenceQuery.expiryDate}"
                                                            pattern="dd/MM/yyyy"/></p>
-                                    </td>
-                                    <td>
-                                        <p class="visible-xs visible-sm table-row-title">Actions</p>
-                                        <c:if test="${licenceQuery.status == 'LICEST001'}">
-                                            <iais:select name="licActions" cssClass="licActions" id="licActions" options="licActions"
-                                                         firstOption="Select"/>
-                                        </c:if>
-                                        <c:if test="${licenceQuery.status != 'LICEST001'}">
-                                            <iais:select name="licNoActions"  options="licNoActions" id="licNoActions"
-                                                         firstOption="Select"/>
-                                        </c:if>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -257,6 +244,7 @@
                             <a class="btn btn-primary disabled" href="#" id="lic-renew">Renew</a>
                             <a class="btn btn-primary disabled" href="#" id="lic-cease">Cease</a>
                             <a class="btn btn-primary disabled" href="#" id="lic-amend">Amend</a>
+                            <a class="btn btn-primary disabled" href="#" id="lic-appeal">Appeal</a>
                             <a class="btn btn-primary disabled" id="lic-print" onclick="doPrint()">Print</a>
                         </div>
                     </div>
@@ -275,6 +263,9 @@
     });
     $('#lic-cease').click(function () {
         doLicCease();
+    });
+    $('#lic-appeal').click(function () {
+        doLicAppeal();
     });
 
 </script>

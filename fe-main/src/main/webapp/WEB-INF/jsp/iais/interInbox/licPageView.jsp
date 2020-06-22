@@ -69,6 +69,7 @@
                 $("#lic-renew").removeClass('disabled');
                 $("#lic-cease").removeClass('disabled');
                 $("#lic-amend").removeClass('disabled');
+                $("#lic-appeal").removeClass('disabled');
 
             } else{
                 var statusDuo = [];
@@ -127,6 +128,10 @@
         submit('licDoRenew');
     }
 
+    function doLicAppeal(){
+        showWaiting();
+        submit('licDoAppeal');
+    }
     function doLicCease(){
         showWaiting();
         submit('licDoCease');
@@ -150,12 +155,7 @@
     });
     
     $(".licActions").change(function () {
-        var licNo = $(this).closest("tr").find(".licNo").html();
-        var licId = $(this).closest("tr").find(".licId").html();
-        showWaiting();
-        $("[name='crud_action_value']").val(licNo);
-        $("[name='action_id_value']").val(licId);
-        submit('licDoAppeal');
+
     });
     
     function scrollIntoLicView() {
