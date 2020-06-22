@@ -245,7 +245,7 @@
 
     <sql key="templatesQuery"  remarks="QUERY MESSAGE TEMPLATE">
         <![CDATA[
-              SELECT *  FROM (SELECT
+             SELECT *  FROM (SELECT
                 mt.id,
                 mt.message_type,
                 mt.template_name,
@@ -253,9 +253,29 @@
                 mt.delivery_mode,
                 mt.effective_from,
                 mt.effective_to,
-                (SELECT mtp.process_type FROM message_template_process AS mtp WHERE mtp.message_template_id = mt.ID ) as process,
-                (SELECT mtr.recipient FROM message_template_recipient  AS mtr WHERE mtr.message_template_id = mt.ID ) as recipient
+                (SELECT mtp.process_type FROM message_template_process AS mtp WHERE mtp.message_template_id = mt.ID ) as process
             FROM message_template AS mt) AS T1
+            CROSS APPLY
+			(
+				SELECT RECIPIENT + ', '
+				FROM message_template_recipient M1
+				WHERE T1.ID = M1.MESSAGE_TEMPLATE_ID and M1.RECIPIENT_TYPE = 'CC'
+				FOR XML PATH('')
+			) A (CC)
+            CROSS APPLY
+			(
+				SELECT RECIPIENT + ', '
+				FROM message_template_recipient M1
+				WHERE T1.ID = M1.MESSAGE_TEMPLATE_ID and M1.RECIPIENT_TYPE = 'BCC'
+				FOR XML PATH('')
+			) B (BCC)
+			CROSS APPLY
+			(
+				SELECT RECIPIENT + ', '
+				FROM message_template_recipient M1
+				WHERE T1.ID = M1.MESSAGE_TEMPLATE_ID and M1.RECIPIENT_TYPE = 'TO'
+				FOR XML PATH('')
+			) C (REC)
             WHERE 1=1
             <#if id??> and charindex(:id, id) >0</#if>
             <#if msgType??> AND T1.message_type = :msgType</#if>

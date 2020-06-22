@@ -27,22 +27,22 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="msgType">Message Type</label>
                             <div class="col-xs-5 col-sm-5 col-md-5">
-                                <iais:select name="msgType" id="msgType" options="messageTypeSelect" disabled="true" value="${MsgTemplateDto.messageType}"/>
+                                <label name="msgType" id="msgType" options="messageTypeSelect"  class="control-label"><iais:code code="${MsgTemplateDto.messageType}"></iais:code></label>
                                 <span id="error_msgType" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="templateName">Template Name</label>
                             <div class="col-xs-5 col-sm-5 col-md-5">
-                                <textarea id="templateName" rows="10" cols="70" name="templateName" maxlength="500">${MsgTemplateDto.templateName}</textarea>
+                                <textarea style="width: 100%;" id="templateName" rows="10" cols="70" name="templateName" maxlength="500" >${MsgTemplateDto.templateName}</textarea>
                                 <span id="error_templateName" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Delivery Mode</label>
                             <div class="col-xs-5 col-sm-5 col-md-5">
-                                <iais:select name="deliveryMode" id="deliveryMode"
-                                             options="deliveryModeSelect" value="${MsgTemplateDto.deliveryMode}" disabled="true"/>
+                                <label name="deliveryMode" id="deliveryMode"
+                                       options="deliveryModeSelect" class="control-label" ><iais:code code="${MsgTemplateDto.deliveryMode}"></iais:code></label>
                                 <span id="error_deliveryMode" name="iaisErrorMsg"
                                       class="error-msg"></span>
                             </div>
@@ -51,8 +51,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">To Recipients</label>
                             <div class="col-xs-5 col-sm-5 col-md-5">
-                                <input id="toRecipientsEdit" type="text" name="toRecipientsEdit" value="<c:if test="${'to' == MsgTemplateDto.recipientType}">${MsgTemplateDto.recipient}</c:if>"
-                                       maxlength="25">
+                                <iais:multipleSelect name="recipient" selectValue="${recipientString}" options="recipient"></iais:multipleSelect>
                                 <span id="error_toRecipients" name="iaisErrorMsg"
                                       class="error-msg"></span>
                             </div>
@@ -60,8 +59,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">CC Recipients</label>
                             <div class="col-xs-5 col-sm-5 col-md-5">
-                                <input id="ccRecipientsEdit" type="text" name="ccRecipientsEdit" value="<c:if test="${'cc' == MsgTemplateDto.recipientType}">${MsgTemplateDto.recipient}</c:if>"
-                                       maxlength="25">
+                                <iais:multipleSelect name="ccrecipient" selectValue="${ccrecipientString}" options="recipient"></iais:multipleSelect>
                                 <span id="error_ccRecipients" name="iaisErrorMsg"
                                       class="error-msg"></span>
                             </div>
@@ -69,8 +67,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">BCC Recipients</label>
                             <div class="col-xs-5 col-sm-5 col-md-5">
-                                <input id="bccRecipientsEdit" type="text" name="bccRecipientsEdit" value="<c:if test="${'bcc' == MsgTemplateDto.recipientType}">${MsgTemplateDto.recipient}</c:if>"
-                                       maxlength="25">
+                                <iais:multipleSelect name="bccrecipient" selectValue="${bccrecipientString}" options="recipient"></iais:multipleSelect>
                                 <span id="error_bccRecipients" name="iaisErrorMsg"
                                       class="error-msg"></span>
                             </div>
@@ -78,10 +75,17 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Process</label>
                             <div class="col-xs-5 col-sm-5 col-md-5">
-                                <input id="processEdit" type="text" name="processEdit" value="${MsgTemplateDto.process}"
+                                <label id="processEdit" type="text" name="processEdit" class="control-label"
                                        maxlength="25">
-                                <span id="error_process" name="iaisErrorMsg"
-                                      class="error-msg"></span>
+                                    <c:choose>
+                                        <c:when test="${empty MsgTemplateDto.process}">
+                                            N/A
+                                        </c:when>
+                                        <c:otherwise>
+                                            <iais:code code="${MsgTemplateDto.process}"/>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </label>
                             </div>
                         </div>
                         <div class="form-group">
