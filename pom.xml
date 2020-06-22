@@ -125,7 +125,7 @@
             <dependency>
                 <groupId>com.ecquaria.submission.client</groupId>
                 <artifactId>submissionclient</artifactId>
-                <version>0.76</version>
+                <version>0.78</version>
             </dependency>
 
             <dependency>
