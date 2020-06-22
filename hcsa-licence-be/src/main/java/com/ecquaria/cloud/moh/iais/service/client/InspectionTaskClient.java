@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -123,4 +124,8 @@ public interface InspectionTaskClient {
 
     @GetMapping(value = "/application-be/one-stage-salday/{id}")
     FeignResponseEntity<AppStageSlaTrackingDto> searchSlaTrackById(@PathVariable("id") String id);
+
+    @PostMapping(value = "/iais-inspection/history-ext", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesRoutingHistoryExtDto>> createAppPremisesRoutingHistoryExtDtos(@RequestBody List<AppPremisesRoutingHistoryExtDto> appPremisesRoutingHistoryExtDtos);
 }
