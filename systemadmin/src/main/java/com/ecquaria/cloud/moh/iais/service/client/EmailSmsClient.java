@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import java.io.IOException;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class EmailSmsClient {
     @Autowired
+    @Qualifier(value = "iaisRestTemplate")
     private RestTemplate restTemplate;
 
     public void sendEmail(EmailDto emailDto, Map<String, byte[]> attachments) throws IOException {
