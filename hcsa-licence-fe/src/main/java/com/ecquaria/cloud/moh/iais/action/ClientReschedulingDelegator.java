@@ -13,7 +13,7 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.service.RescheduleService;
+import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import java.util.List;
 @Delegator("clientReschedulingDelegator")
 public class ClientReschedulingDelegator {
     @Autowired
-    RescheduleService rescheduleService;
+    ApptConfirmReSchDateService rescheduleService;
     private FilterParameter rescheduleParameter = new FilterParameter.Builder()
             .clz(ReschApptGrpPremsQueryDto.class)
             .searchAttr("SearchParam")
@@ -75,7 +75,6 @@ public class ClientReschedulingDelegator {
             if(rows!=null){
                 List<ApptViewDto> apptViewDtos= IaisCommonUtils.genNewArrayList();
 
-                ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
                 ParamUtil.setRequestAttr(bpc.request,"SearchResult",result);
                 for (ReschApptGrpPremsQueryDto reschApptGrpPremsQueryDto : rows) {
                     ApptViewDto apptViewDto=new ApptViewDto();
@@ -91,6 +90,7 @@ public class ClientReschedulingDelegator {
         }catch (Exception e){
             log.info(e.getMessage(),e);
         }
+        ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
 
 
     }
@@ -106,6 +106,7 @@ public class ClientReschedulingDelegator {
     public void preCommPool(BaseProcessClass bpc)  {
         String [] appIds=ParamUtil.getStrings(bpc.request,"appIds");
         rescheduleService.updateAppStatusCommPool(appIds);
+
     }
 
     public void preRoundRobin(BaseProcessClass bpc)  {}

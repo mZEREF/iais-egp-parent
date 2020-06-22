@@ -49,7 +49,7 @@
                                             <tr>
                                                 <td class="form-check"  >
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                           name="appIds" value="${pool.appId}" onclick="javascript:controlCease()"  >
+                                                           name="appIds" value="${pool.appId}|${pool.appCorrId}" onclick="javascript:controlCease()"  >
                                                     <label class="form-check-label" for="licence${status.index + 1}"><span
                                                             class="check-square"></span>
                                                     </label>

@@ -52,4 +52,10 @@ public interface ApptConfirmReSchDateService {
       * @Descripation: rejectReschedulingDate
       */
     void rejectReschedulingDate(ProcessReSchedulingDto processReSchedulingDto);
+
+    void updateAppStatusCommPool(String[] appIds);
+
+    ProcessReSchedulingDto getApptComPolSystemDateByCorrId(String appPremCorrId);
+
+    void comPolReschedulingDate(ProcessReSchedulingDto processReSchedulingDto);
 }
