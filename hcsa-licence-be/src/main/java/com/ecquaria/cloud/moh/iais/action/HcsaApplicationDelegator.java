@@ -1184,7 +1184,7 @@ public class HcsaApplicationDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"isShowInspection","Y");
                 LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 InspectionReportDto insRepDto = insRepService.getInsRepDto(taskDto,applicationViewDto,loginContext);
-                InspectionReportDto inspectorAo = insRepService.getInspectorAo2(taskDto,applicationViewDto);
+                InspectionReportDto inspectorAo = insRepService.getInspectorAo(taskDto,applicationViewDto);
                 insRepDto.setInspectors(inspectorAo.getInspectors());
                 insRepDto.setReportNoteBy(inspectorAo.getReportNoteBy());
                 insRepDto.setReportedBy(inspectorAo.getReportedBy());
