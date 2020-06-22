@@ -51,6 +51,6 @@ public class EmailSmsClient {
         }
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartRequest, headers);
-        restTemplate.postForObject("http://email-sms/emails", requestEntity, String.class);
+        restTemplate.postForObject("http://email-sms:8885/emails", requestEntity, String.class);
     }
 }
