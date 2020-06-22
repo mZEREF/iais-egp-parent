@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -428,6 +429,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     private void assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto) {
+        //update
         td.setSlaDateCompleted(new Date());
         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
         td.setAuditTrailDto(auditTrailDto);
@@ -440,8 +442,46 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT);
         applicationDto1.setAuditTrailDto(auditTrailDto);
         applicationService.updateFEApplicaiton(applicationDto1);
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), td.getTaskKey(), null,
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto1.getStatus(), td.getTaskKey(), null,
                 InspectionConstants.PROCESS_DECI_PENDING_APPLICANT_ACCEPT_INSPECTION_DATE, td.getRoleId(), null, td.getWkGrpId());
+        String appHistoryId = appPremisesRoutingHistoryDto.getId();
+        List<AppPremisesRoutingHistoryExtDto> appPremisesRoutingHistoryExtDtoList = IaisCommonUtils.genNewArrayList();
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        for(String taskUserId : taskUserIds){
+            //create AppPremisesRoutingHistoryExtDto and task
+            AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
+            appPremisesRoutingHistoryExtDto.setAppPremRhId(appHistoryId);
+            appPremisesRoutingHistoryExtDto.setComponentName(RoleConsts.USER_ROLE_INSPECTIOR);
+            appPremisesRoutingHistoryExtDto.setComponentValue(taskUserId);
+            appPremisesRoutingHistoryExtDto.setId(null);
+            appPremisesRoutingHistoryExtDto.setAuditTrailDto(auditTrailDto);
+            appPremisesRoutingHistoryExtDtoList.add(appPremisesRoutingHistoryExtDto);
+
+            TaskDto taskDto = new TaskDto();
+            taskDto.setId(null);
+            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+            taskDto.setPriority(td.getPriority());
+            taskDto.setRefNo(td.getRefNo());
+            taskDto.setSlaAlertInDays(td.getSlaAlertInDays());
+            taskDto.setSlaDateCompleted(null);
+            taskDto.setSlaInDays(td.getSlaInDays());
+            taskDto.setSlaRemainInDays(null);
+            taskDto.setTaskKey(td.getTaskKey());
+            taskDto.setTaskType(td.getTaskType());
+            taskDto.setWkGrpId(td.getWkGrpId());
+            taskDto.setUserId(taskUserId);
+            taskDto.setDateAssigned(new Date());
+            taskDto.setRoleId(td.getRoleId());
+            taskDto.setAuditTrailDto(auditTrailDto);
+            taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_RESCHEDULING_COMMON_POOL);
+            taskDto.setScore(td.getScore());
+            taskDto.setApplicationNo(td.getApplicationNo());
+            taskDtoList.add(taskDto);
+        }
+        taskService.createTasks(taskDtoList);
+        inspectionTaskClient.createAppPremisesRoutingHistoryExtDtos(appPremisesRoutingHistoryExtDtoList);
+
+        //get inspection date
     }
 
     private void updateInspectionStatus(String appPremCorrId, String status) {
@@ -457,6 +497,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         List<String> roleIds = new ArrayList<>(roleIdSet);
         Map<String, String> stageRoleMap = MiscUtil.getStageRoleByBroadcast(roleIds);
         if(stageRoleMap != null){
+            List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
             for(Map.Entry<String, String> map : stageRoleMap.entrySet()){
                 td.setSlaDateCompleted(new Date());
                 td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
@@ -480,7 +521,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
                 int score = hcsaSvcStageWorkingGroupDtos.get(0).getCount();
                 String processUrl = getProcessUrlByRoleAndStageId(role, stageId);
-                List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
                 TaskDto taskDto = new TaskDto();
                 taskDto.setId(null);
                 taskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
@@ -501,9 +541,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 taskDto.setScore(score);
                 taskDto.setApplicationNo(td.getApplicationNo());
                 taskDtoList.add(taskDto);
-                taskService.createTasks(taskDtoList);
                 createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), stageId, null, null, td.getRoleId(), subStage, td.getWkGrpId());
             }
+            taskService.createTasks(taskDtoList);
         }
     }
 
