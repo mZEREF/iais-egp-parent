@@ -46,7 +46,7 @@ public class LicenceExpiredBatchJob {
 
     private final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
-    public void start(BaseProcessClass bpc){
+    public void start(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("The licenceExpiredBatchJob is start ..."));
     }
 
@@ -56,35 +56,40 @@ public class LicenceExpiredBatchJob {
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
         String status = ApplicationConsts.LICENCE_STATUS_ACTIVE;
-        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status,dateStr).getEntity();
+        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
         List<LicenceDto> licenceDtosForSave = IaisCommonUtils.genNewArrayList();
         List<String> ids = IaisCommonUtils.genNewArrayList();
-        if(licenceDtos!=null&&!licenceDtos.isEmpty()){
-            for(LicenceDto licenceDto :licenceDtos){
-                String id = licenceDto.getId();
-                ids.clear();
-                ids.add(id);
-                String svcName = licenceDto.getSvcName();
-                String licenceNo = licenceDto.getLicenceNo();
-                String licenseeId = licenceDto.getLicenseeId();
-                Map<String, Boolean> stringBooleanMap = cessationBeService.listResultCeased(ids);
-                if(stringBooleanMap.get(id)){
-                    licenceDtosForSave.add(licenceDto);
+        if (licenceDtos != null && !licenceDtos.isEmpty()) {
+            for (LicenceDto licenceDto : licenceDtos) {
+                try {
+                    String id = licenceDto.getId();
+                    ids.clear();
+                    ids.add(id);
+                    String svcName = licenceDto.getSvcName();
+                    String licenceNo = licenceDto.getLicenceNo();
+                    String licenseeId = licenceDto.getLicenseeId();
+                    Map<String, Boolean> stringBooleanMap = cessationBeService.listResultCeased(ids);
+                    if (stringBooleanMap.get(id)) {
+                        licenceDtosForSave.add(licenceDto);
+                    }
+                    cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, id, licenseeId, licenceNo);
+                    updateLicenceStatus(licenceDtosForSave, date);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    continue;
                 }
-                //cessationBeService.sendEmail(LICENCEENDDATE,date,svcName,id,licenseeId,licenceNo);
             }
         }
-        updateLicenceStatus(licenceDtosForSave,date);
     }
 
-    private void updateLicenceStatus(List<LicenceDto> licenceDtos,Date date){
+    private void updateLicenceStatus(List<LicenceDto> licenceDtos, Date date) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
-        for(LicenceDto licenceDto :licenceDtos){
+        for (LicenceDto licenceDto : licenceDtos) {
             String licId = licenceDto.getId();
             LicenceDto newLicDto = hcsaLicenceClient.getLicdtoByOrgId(licId).getEntity();
-            if(newLicDto==null){
+            if (newLicDto == null) {
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_LAPSED);
-            }else {
+            } else {
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_EXPIRY);
             }
             licenceDto.setEndDate(date);
@@ -93,7 +98,7 @@ public class LicenceExpiredBatchJob {
         hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        gatewayClient.updateFeLicDto(updateLicenceDtos,signature.date(), signature.authorization(),
+        gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
     }
 }
