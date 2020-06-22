@@ -221,7 +221,7 @@ public class AdhocChecklistServiceImpl implements AdhocChecklistService {
         }
     }
 
-    private void callEicGatewaySaveItem(AdhocCheckListConifgDto data) {
+    public void callEicGatewaySaveItem(AdhocCheckListConifgDto data) {
         //route to fe
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);

@@ -100,7 +100,7 @@ public class PrefDateRangePeriodServiceImpl implements PrefDateRangePeriodServic
         }
     }
 
-    private void callFeInspPeriod(HcsaServicePrefInspPeriodDto periodDto){
+    public void callFeInspPeriod(HcsaServicePrefInspPeriodDto periodDto){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 

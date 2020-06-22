@@ -102,7 +102,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
 
-    private void callEicCreateErrorMessage(MessageDto msg){
+    public void callEicCreateErrorMessage(MessageDto msg){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         MessageDto postSaveMsg = msg;

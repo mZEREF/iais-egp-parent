@@ -139,7 +139,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         }
 	}
 
-	private void callFeEicCreateAccount(OrganizationDto organizationDto){
+    public void callFeEicCreateAccount(OrganizationDto organizationDto){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         eicGatewayFeMainClient.syncAccountDataFormFe(organizationDto, signature.date(), signature.authorization(),

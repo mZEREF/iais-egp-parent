@@ -112,7 +112,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
         log.info("save system parameter end....");
     }
 
-    private void callEicCreateSystemParameter(SystemParameterDto systemParameterDto){
+    public void callEicCreateSystemParameter(SystemParameterDto systemParameterDto){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         eicGatewayClient.saveSystemParameterFe(systemParameterDto, signature.date(), signature.authorization(),
