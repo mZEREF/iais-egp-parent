@@ -22,16 +22,19 @@ import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
+import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import sop.rbac.user.UserIdentifier;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -239,7 +242,17 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         String salutation = userDto.getSalutation();
         clientUser.setSalutation(salutation);
         clientUser.setEmail(email);
-        clientUser.setPassword("password$2");
+
+        UserIdentifier userIdentifier = new UserIdentifier();
+        userIdentifier.setId(userDto.getUserId());
+        userIdentifier.setUserDomain(userDto.getUserDomain());
+
+        StringBuilder stb = new StringBuilder(UUID.randomUUID().toString().substring(0,6));
+        stb.append(UUID.randomUUID().toString(), 0, 6);
+
+        String pwd = PasswordUtil.encryptPassword(userIdentifier, stb.toString(), null);
+        clientUser.setPassword(pwd);
+
         clientUser.setPasswordChallengeQuestion("A");
         clientUser.setPasswordChallengeAnswer("A");
 
@@ -249,7 +262,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         calendar.add(Calendar.DAY_OF_MONTH, 12);
         clientUser.setAccountActivateDatetime(activeDate);
         clientUser.setAccountDeactivateDatetime(calendar.getTime());
-
+        String json = JsonUtil.parseToJson(clientUser);
         userClient.createClientUser(clientUser);
     }
 

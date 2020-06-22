@@ -55,7 +55,7 @@ public class UserValidator implements CustomizeValidator {
                 }
             }
 
-            if (IaisEGPConstant.NO.equals(isNeedValidateField)){
+            if (IaisEGPConstant.YES.equals(isNeedValidateField)){
                 if(dto.getId() == null){
                     FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNric(dto.getIdentityNo());
                     if(feUserDto != null){
