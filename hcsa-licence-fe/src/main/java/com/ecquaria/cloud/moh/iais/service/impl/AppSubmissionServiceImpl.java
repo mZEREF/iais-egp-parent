@@ -239,12 +239,6 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                             }
                         }
                     }
-//                if(appSubmissionDto.isOnlySpecifiedSvc()){
-                    if (false) {
-                        licenceFeeDto.setIncludeBase(false);
-                    } else {
-                        licenceFeeDto.setIncludeBase(true);
-                    }
                 }
                 licenceFeeDto.setServiceCode(hcsaServiceDto.getSvcCode());
                 licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
@@ -255,23 +249,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     String licenceId = appSubmissionDto.getLicenceId();
                     Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
                     licenceFeeDto.setExpiryDate(licExpiryDate);
-                    List<String> licenceIds = IaisCommonUtils.genNewArrayList();
-                    licenceFeeDto.setExpiryDate(appSubmissionDto.getLicExpiryDate());
-                    licenceIds.add(licenceId);
-                    List<HcsaLicenceGroupFeeDto> hcsaLicenceGroupFeeDtos = hcsaLicenClient.retrieveHcsaLicenceGroupFee(licenceIds).getEntity();
-                    if (!IaisCommonUtils.isEmpty(hcsaLicenceGroupFeeDtos)) {
-                        HcsaLicenceGroupFeeDto hcsaLicenceGroupFeeDto = hcsaLicenceGroupFeeDtos.get(0);
-                        licenceFeeDto.setGroupId(hcsaLicenceGroupFeeDto.getGroupId());
-                        licenceFeeDto.setMigrated(hcsaLicenceGroupFeeDto.isMigrated());
-                        licenceFeeDto.setOldAmount(hcsaLicenceGroupFeeDto.getAmount());
-                        licenceFeeDto.setExpiryDate(hcsaLicenceGroupFeeDto.getExpiryDate());
-                        if (hcsaLicenceGroupFeeDto.isMigrated()) {
-                            licenceFeeDto.setRenewCount(hcsaLicenceGroupFeeDto.getCount());
-                        } else {
-                            licenceFeeDto.setRenewCount(0);
-                        }
-                    }
-                    // licenceFeeDto.setCharity();
+                    licenceFeeDto.setLicenceId(licenceId);
                 }
                 linenceFeeQuaryDtos.add(licenceFeeDto);
             }
