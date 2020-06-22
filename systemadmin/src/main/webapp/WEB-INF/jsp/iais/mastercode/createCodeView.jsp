@@ -83,7 +83,7 @@
                             <iais:field value="Status" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="codeCategoryStatus" id="codeCategoryStatus"  value="${param.codeCategoryStatus}" options="codeStatusSelectList" firstOption="Pelect Select"/>
+                                    <iais:select name="codeCategoryStatus" id="codeCategoryStatus"  value="${param.codeCategoryStatus}" options="codeStatusSelectList" firstOption="Please Select"/>
                                     <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>

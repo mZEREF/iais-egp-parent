@@ -23,7 +23,7 @@
                             <iais:field value="Master Code Category" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <iais:select name="codeCategoryCMC" firstOption="Pelect Select" options="codeCategory"
+                                    <iais:select name="codeCategoryCMC" firstOption="Please Select" options="codeCategory"
                                                  value="${param.codeCategoryCMC}"/>
                                 </div>
                             </iais:value>
