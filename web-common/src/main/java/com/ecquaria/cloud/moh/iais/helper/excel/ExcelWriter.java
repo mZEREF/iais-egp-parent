@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
@@ -242,6 +243,8 @@ public final class ExcelWriter {
             xssfCellStyle.setLocked(false);
             xssfCellStyle.setHidden(false);
             xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
+            xssfCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+            xssfCellStyle.setWrapText(true);
             unlockStyle = xssfCellStyle;
         }
     }
@@ -251,9 +254,11 @@ public final class ExcelWriter {
             XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
             xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
             xssfCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            xssfCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
             xssfCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
             xssfCellStyle.setLocked(true);
             xssfCellStyle.setHidden(true);
+            xssfCellStyle.setWrapText(true);
             lockStyle = xssfCellStyle;
         }
     }

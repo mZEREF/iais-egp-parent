@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.ChecklistConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import org.apache.commons.lang.StringUtils;
@@ -26,8 +27,8 @@ public final class ChecklistHelper {
     private ChecklistHelper(){}
 
     public static boolean validateFile(HttpServletRequest request, MultipartFile file){
-        if (file == null){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0004"));
+        if (file == null || file.isEmpty()){
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0018"));
             return true;
         }
 
@@ -60,8 +61,24 @@ public final class ChecklistHelper {
         String type = excelTemplate.getType();
         String module = excelTemplate.getModule();
         String service = excelTemplate.getSvcName();
-        String subType = excelTemplate.getSvcSubType();
-        String hciCode = excelTemplate.getHciCode();
+
+        if (!isCommon){
+            if (StringUtil.isEmpty(module)){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, MessageUtil.replaceMessage("GENERAL_ERR0006", "Module", "field")));
+                return true;
+            }
+
+            if (StringUtil.isEmpty(type)){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type", "field")));
+                return true;
+            }
+
+            if (StringUtil.isEmpty(service)){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, MessageUtil.replaceMessage("GENERAL_ERR0006", "Service", "field")));
+                return true;
+            }
+        }
+
         String effectiveStartDate = excelTemplate.getEftStartDate();
         String effectiveEndDate = excelTemplate.getEftEndDate();
 
@@ -81,7 +98,7 @@ public final class ChecklistHelper {
         }
 
         if (StringUtils.isEmpty(effectiveStartDate) || StringUtils.isEmpty(effectiveEndDate)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "Effective Start Date and end date is mandatory , format should be DD/MM/YYYY"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR014"));
             return true;
         }else {
             try {
@@ -94,16 +111,9 @@ public final class ChecklistHelper {
                 }
 
             }catch (IaisRuntimeException e){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "Effective Start Date and end date is mandatory , format should be DD/MM/YYYY"));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR014"));
                 return true;
             }
-        }
-
-        boolean order = uploadType(type, service, module, subType, hciCode);
-
-        if (isCommon != order){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "Only common or service can be created"));
-            return true;
         }
 
         return false;
