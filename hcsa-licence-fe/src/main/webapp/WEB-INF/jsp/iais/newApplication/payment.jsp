@@ -35,10 +35,10 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <c:set var="readOnly" value="false"/>
+                                    <c:set var="onlySpec" value="false"/>
                                     <c:forEach var="appSvcDto" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
-                                        <c:if test="${!empty appSvcDto.relLicenceNo || !empty appSvcDto.alignLicenceNo }">
-                                            <c:set var="readOnly" value="true"/>
+                                        <c:if test="${!empty appSvcDto.relLicenceNo}">
+                                            <c:set var="onlySpec" value="true"/>
                                         </c:if>
                                     </c:forEach>
                                     <c:choose>
@@ -61,13 +61,7 @@
                                             </c:forEach>
                                         </c:when>
 
-                                        <%--<c:when test="${'APTY002' == AppSubmissionDto.appType && readOnly}">--%>
-                                            <%----%>
-
-                                        <%--</c:when>--%>
-
-                                        <%--<c:when test="${AppSubmissionDto.groupLic && 'APTY002' == AppSubmissionDto.appType && !AppSubmissionDto.onlySpecifiedSvc}">--%>
-                                        <c:when test="${AppSubmissionDto.groupLic && 'APTY002' == AppSubmissionDto.appType }">
+                                        <c:when test="${AppSubmissionDto.groupLic && 'APTY002' == AppSubmissionDto.appType &&!onlySpec}">
                                             <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
                                                 <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
                                                 <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
@@ -96,6 +90,39 @@
                                             </c:forEach>
                                         </c:when>
 
+                                        <c:when test="${'APTY002' == AppSubmissionDto.appType && onlySpec}">
+                                            <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
+                                                <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
+                                                <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
+                                                <tr>
+                                                    <td>
+                                                        <p><em>Complex Specified Services <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
+                                                        <c:forEach var="svcName" items="${complexSpecifiedFeeExt.svcNames}">
+                                                            <p>&nbsp;&nbsp;<c:out value="${svcName}"></c:out></p>
+                                                        </c:forEach>
+
+                                                    </td>
+                                                    <td>
+                                                        <p>&nbsp;</p>
+                                                        <p>
+                                                            New Licence
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <p>&nbsp;</p>
+                                                        <p>
+                                                            <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <p>&nbsp;</p>
+                                                        <p>
+                                                            <c:out value="${complexSpecifiedFeeExt.amountStr}"></c:out>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
                                         <c:otherwise>
                                             <c:choose>
                                                 <c:when test="${AppSubmissionDto.appGrpPremisesDtoList.size()>1}">
@@ -113,7 +140,6 @@
                                                     <!--todo:includedSvcFeeExtList -->
                                                     <!--base -->
                                                     <%--<c:if test="${!AppSubmissionDto.onlySpecifiedSvc}">--%>
-                                                    <c:if test="true">
                                                     <tr>
                                                         <td>
                                                             <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
@@ -141,7 +167,6 @@
                                                             </p>
                                                         </td>
                                                     </tr>
-                                                    </c:if>
 
                                                     <!--simpleSpecifiedFeeExt -->
                                                     <c:if test="${simpleSpecifiedFeeExt.svcNames.size()>0 }">
