@@ -12,9 +12,6 @@
 <webui:setLayout name="iais-internet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-    <input type="hidden" name="crud_action_type" value="">
-    <input type="hidden" name="crud_action_value" value="">
-    <input type="hidden" name="crud_action_additional" value="">
     <div class="main-content">
         <br><br><br>
 

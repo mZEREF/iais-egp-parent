@@ -446,6 +446,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             processReSchedulingDto.setApplicationDto(applicationDto);
             processReSchedulingDto.setCreateFlag(AppConsts.COMMON_POOL);
             //eic update to be status and task
+            comPolReschedulingDate(processReSchedulingDto);
         }
     }
 
@@ -526,7 +527,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         //set history
         setCreateHistoryDto(processReSchedulingDto);
         //set some data to update inspection status
-        setCreateInspectionStatus(processReSchedulingDto, InspectionConstants.INSPECTION_STATUS_PENDING_RE_APPOINTMENT_INSPECTION_DATE);
+        setCreateInspectionStatus(processReSchedulingDto, InspectionConstants.INSPECTION_STATUS_RESCHEDULING_COMMON_POOL);
         //save eic record
         /*EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "confirmInspectionDate",
                 "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));

@@ -69,6 +69,8 @@ public class ClientReschedulingDelegator {
 
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+
+
         try {
             SearchResult<ReschApptGrpPremsQueryDto> result  = feEicGatewayClient.eicSearchApptReschPrem(rescheduleParam, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
@@ -89,11 +91,10 @@ public class ClientReschedulingDelegator {
                 }
                 ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos);
             }
+            ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
         }catch (Exception e){
             log.info(e.getMessage(),e);
         }
-        ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
-
 
     }
 
