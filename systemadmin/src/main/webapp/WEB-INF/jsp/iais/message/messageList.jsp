@@ -63,9 +63,9 @@
                             <iais:sortableHeader needSort="true"  field="domain_type" value="Type"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
-                            <iais:sortableHeader needSort="true"   field="description" value="Description"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:50%" needSort="true"   field="description" value="Description"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true"   field="message" value="Message"></iais:sortableHeader>
-                            <iais:sortableHeader needSort="true"   field="status" value="Status"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:50%" needSort="true"   field="status" value="Status"></iais:sortableHeader>
                             <iais:sortableHeader needSort="false"   field="action" style="padding-bottom:22px" value="Action"></iais:sortableHeader>
                         </tr>
                         </thead>
