@@ -500,8 +500,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
     }
 
-    private void assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
-                                        ApplicationGroupDto applicationGroupDto) {
+    @Override
+    public void assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
+                                       ApplicationGroupDto applicationGroupDto) {
         //update
         td.setSlaDateCompleted(new Date());
         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
