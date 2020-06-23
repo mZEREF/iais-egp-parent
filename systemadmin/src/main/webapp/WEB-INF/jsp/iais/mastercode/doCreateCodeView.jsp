@@ -29,16 +29,6 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Master Code Key" required="true"/>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeKeyCMC" type="text" name="codeKeyCMC" value="${param.codeKeyCMC}"
-                                           maxlength="50">
-                                    <span id="error_masterCodeKey" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
                             <iais:field value="Code Value" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
@@ -59,7 +49,7 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Sequence"/>
+                            <iais:field value="Sequence" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <input id="codeSequenceCMC" type="text" name="codeSequenceCMC"

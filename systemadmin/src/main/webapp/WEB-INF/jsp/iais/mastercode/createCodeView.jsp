@@ -39,15 +39,6 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Master Code Key" required="true"/>
-                            <iais:value>
-                                <div class="col-xs-8 col-sm-6 col-md-5">
-                                    <input id="codeCategoryKey" type="text" name="codeCategoryKey" value="${param.codeCategoryKey}" maxlength="50">
-                                    <span id="error_masterCodeKey" name="iaisErrorMsg" class="error-msg"></span>
-                                </div>
-                            </iais:value>
-                        </div>
-                        <div class="form-group">
                             <iais:field value="Code Value" required="true"/>
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
@@ -67,11 +58,13 @@
                             </iais:value>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="codeCategorySequence">Sequence</label>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="codeCategorySequence" type="text" name="codeCategorySequence" maxlength="3" value="${param.codeCategorySequence}">
-                                <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
-                            </div>
+                            <iais:field value="Sequence" required="true"/>
+                            <iais:value>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <input id="codeCategorySequence" type="text" name="codeCategorySequence" maxlength="3" value="${param.codeCategorySequence}">
+                                    <span id="error_sequence" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
+                            </iais:value>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="codeCategoryRemarks">Remark</label>
