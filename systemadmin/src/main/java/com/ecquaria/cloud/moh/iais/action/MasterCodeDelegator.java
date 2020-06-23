@@ -536,9 +536,8 @@ public class MasterCodeDelegator {
         if (!masterCodeId.isEmpty()) {
             MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
             List<SelectOption> mcStatusSelectList = IaisCommonUtils.genNewArrayList();
-            mcStatusSelectList.add(new SelectOption(masterCodeDto.getStatus(), MasterCodeUtil.getCodeDesc(masterCodeDto.getStatus())));
+//            mcStatusSelectList.add(new SelectOption(masterCodeDto.getStatus(), MasterCodeUtil.getCodeDesc(masterCodeDto.getStatus())));
             mcStatusSelectList.add(new SelectOption("CMSTAT001", "Active"));
-            mcStatusSelectList.add(new SelectOption("CMSTAT002", "Deleted"));
             mcStatusSelectList.add(new SelectOption("CMSTAT003", "Inactive"));
             ParamUtil.setRequestAttr(bpc.request, "mcStatusSelectList", mcStatusSelectList);
             ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);

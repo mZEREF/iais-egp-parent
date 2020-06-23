@@ -77,7 +77,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="codeStatus">Status</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <iais:select name="codeStatus" id="codeStatus" options="mcStatusSelectList"/>
+                                <iais:select name="codeStatus" id="codeStatus" options="mcStatusSelectList" value="${MasterCodeDto.status}"/>
                                 <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
