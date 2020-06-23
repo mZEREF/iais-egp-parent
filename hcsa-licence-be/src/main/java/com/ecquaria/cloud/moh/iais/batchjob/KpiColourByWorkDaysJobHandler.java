@@ -67,25 +67,31 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
 
     @Override
     public ReturnT<String> execute(String s) throws Exception {
-        logAbout("MohKpiColourShow");
-        List<Date> holidays = appointmentClient.getHolidays().getEntity();
-        List<Long> holidayTime = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(holidays)){
-            for(Date date : holidays){
-                holidayTime.add(date.getTime());
+        try {
+            logAbout("MohKpiColourShow");
+            List<Date> holidays = appointmentClient.getHolidays().getEntity();
+            List<Long> holidayTime = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(holidays)){
+                for(Date date : holidays){
+                    holidayTime.add(date.getTime());
+                }
             }
-        }
-        List<TaskDto> taskDtos = organizationClient.getKpiTaskByStatus().getEntity();
-        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
-        if(!IaisCommonUtils.isEmpty(taskDtos)){
-            for(TaskDto taskDto : taskDtos){
-                log.info(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
-                JobLogger.log(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
-                getTimeLimitWarningColourByTask(taskDto, intranet, holidayTime);
+            List<TaskDto> taskDtos = organizationClient.getKpiTaskByStatus().getEntity();
+            AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+            if(!IaisCommonUtils.isEmpty(taskDtos)){
+                for(TaskDto taskDto : taskDtos){
+                    log.info(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
+                    JobLogger.log(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
+                    getTimeLimitWarningColourByTask(taskDto, intranet, holidayTime);
+                }
             }
-        }
 
-        return ReturnT.SUCCESS;
+            return ReturnT.SUCCESS;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            JobLogger.log(e);
+            return ReturnT.FAIL;
+        }
     }
 
     private void logAbout(String methodName){
