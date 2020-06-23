@@ -79,19 +79,9 @@ public class CessationApplicationBeDelegator {
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
         List<SelectOption> patientsOption = getPatientsOption();
-        String text1 = "(1). The licensee must notify the Director of Medical Services in writing at least 30 days before the cessation of operation," +
-                " letting, sale or disposal of his private hospital, medical clinic or clinical laboratory.";
-        String text2 = "(2). Any licensee of a licensed healthcare institution (For e.g a medical clinic) who intends to cease operating the medical clinic" +
-                " shall take all measures as are reasonable and necessary to ensure that the medical records of every patient are " +
-                "properly transferred to the medical clinic or other healthcare institution to which such patient is to be transferred.";
-
-        String text3 = "The following specified healthcare services will also be ceased as their underlying licensable healthcare service(s) is/are listed above.";
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, (Serializable) appCessDtosByLicIds);
         ParamUtil.setSessionAttr(bpc.request, "reasonOption", (Serializable) reasonOption);
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
-        ParamUtil.setSessionAttr(bpc.request, "text1", text1);
-        ParamUtil.setSessionAttr(bpc.request, "text2", text2);
-        ParamUtil.setSessionAttr(bpc.request, "text3", text3);
         ParamUtil.setSessionAttr(bpc.request, "size", size);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
     }
@@ -204,7 +194,10 @@ public class CessationApplicationBeDelegator {
                 String reason = ParamUtil.getRequestString(bpc.request, i + REASON + j);
                 String otherReason = ParamUtil.getRequestString(bpc.request, i + OTHERREASON + j);
                 String patRadio = ParamUtil.getRequestString(bpc.request, i + PATRADIO + j);
-                boolean patNeedTrans = "yes".equals(patRadio);
+                Boolean patNeedTrans = null;
+                if(!StringUtil.isEmpty(patRadio)){
+                    patNeedTrans = "yes".equals(patRadio);
+                }
                 String patientSelect = ParamUtil.getRequestString(bpc.request, i + PATIENTSELECT + j);
                 String patNoRemarks = ParamUtil.getRequestString(bpc.request, i + PATNOREMARKS + j);
                 String patHciName = ParamUtil.getRequestString(bpc.request, i + PATHCINAME + j);

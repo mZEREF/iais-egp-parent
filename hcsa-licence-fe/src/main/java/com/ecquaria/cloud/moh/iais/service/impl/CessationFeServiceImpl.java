@@ -40,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,7 @@ import java.util.Map;
  * @date 2020/2/7 13:17
  */
 @Service
+@Slf4j
 public class CessationFeServiceImpl implements CessationFeService {
 
     @Autowired
@@ -319,6 +321,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<String> listAppIds = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appCessationDtos.size(); i++) {
+
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String licId = appCessationDto.getLicId();
             LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
@@ -337,10 +340,14 @@ public class CessationFeServiceImpl implements CessationFeService {
             String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
             String applicationNo = applicationDto.getApplicationNo();
             Date effectiveDate = appCessationDto.getEffectiveDate();
-            if (effectiveDate.after(new Date())) {
-                sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
-            } else {
-                sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+            try {
+                if (effectiveDate.after(new Date())) {
+                    sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+                } else {
+                    sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+                }
+            } catch (Exception e) {
+                log.info("===================================>>>>>>>" + e.getMessage());
             }
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);
