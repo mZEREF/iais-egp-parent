@@ -107,4 +107,11 @@ public class SystemClientBeLicFallback {
         entity.setHeaders(headers);
         return entity;
     }
+
+    FeignResponseEntity<JobRemindMsgTrackingDto> getJobRemindMsgTrackingDtoByMsgAAndCreatedAt( String refNo, String msgKey){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
