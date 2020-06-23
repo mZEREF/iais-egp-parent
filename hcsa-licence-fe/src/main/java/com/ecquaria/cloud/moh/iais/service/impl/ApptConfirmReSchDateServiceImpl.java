@@ -217,7 +217,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_APPLICANT.equals(appStatus)){
             //todo email
 
-        } else if (ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT.equals(appStatus)) {
+        } else if (ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_PENDING_FE.equals(appStatus)) {
             //todo email
 
         }

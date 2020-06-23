@@ -140,6 +140,14 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
+    public FeignResponseEntity<String> removeHistoryById(String id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getSubmitPreInspHistory(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

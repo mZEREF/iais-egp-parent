@@ -33,6 +33,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -74,6 +75,9 @@ public interface ApplicationClient {
     FeignResponseEntity<ApplicationDto> updateApplication(@RequestBody ApplicationDto applicationDto);
     @RequestMapping(path = "/iais-application-history",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesRoutingHistoryDto> create(@RequestBody AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto );
+
+    @DeleteMapping(value = "/iais-inspection/sc-history/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> removeHistoryById(@PathVariable("id")String id);
 
     @PostMapping(value = "/iais-application-history/pre-insp-history", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getSubmitPreInspHistory(@RequestBody AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto);
