@@ -915,7 +915,7 @@ public class HcsaChklConfigDelegator {
     public void exportConfigTemplate(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String configId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.CURRENT_MASK_ID);
-
+        log.info(StringUtil.changeForLog("exportConfigTemplate ++++++++ config id" + configId));
         if (!StringUtils.isEmpty(configId)){
             ChecklistConfigDto config = hcsaChklService.getChecklistConfigById(configId);
             try {
