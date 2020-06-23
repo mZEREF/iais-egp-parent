@@ -1,0 +1,47 @@
+1. copy com.ecquaria.egp.core.payment.api into your project;
+
+2. goto egp payment->Client Management(login with egovadmin) to register your payment client:
+   a. input your Client Name, Agency, Mechanisms and so on;
+   b. select the Sign Type: 
+       if you select MD5, after you create the system will generate the MD5 key, you can view the client to see the value;
+   	   if you select RSA, you need generate the RSA public key &  private key , input the public key to Secure Key
+   
+3. config com.ecquaria.egp.core.payment.api.config.GatewayConfig
+   a. if you used MD5 encrypt, you need to config: 
+   
+   	   public static String payment_registry_name = "your client name";
+   
+       public static String key = "your md5 key that you can find it in the view payment client";
+       
+       public static String notify_url = "http://${your server ip + port}/egp/commpymt/commpymt_notify.jsp";
+
+	   public static String return_url = "http://${your server ip + port}/egp/commpymt/commpymt_return.jsp";
+
+	   public static final String common_gateway_url = "${egp server ip + port}/egp/process/EGOV/CommPayment?";
+	
+	   public static String log_path = "D:\\alipay_log_" + System.currentTimeMillis() + ".txt";
+	   
+	   public static String sign_type = "MD5";
+	   
+   b. if you used RSA to encrypt, you need to config:
+   
+       public static String payment_registry_name = "your client name";
+      	   
+       //RSA private key
+	   public static String rsa_private_key = "your RSA private key";
+	   
+	   //RSA public key
+	   public static String rsa_public_key = "your RSA public key";
+	   
+	   //RSA Gateway public key
+	   public static String rsa_gateway_public_key = "egp gateway RSA public key";
+       
+       public static String notify_url = "http://${your server ip + port}/egp/commpymt/commpymt_notify.jsp";
+
+	   public static String return_url = "http://${your server ip + port}/egp/commpymt/commpymt_return.jsp";
+
+	   public static final String common_gateway_url = "${egp server ip + port}/egp/process/EGOV/CommPayment?";
+	
+	   public static String log_path = "D:\\alipay_log_" + System.currentTimeMillis() + ".txt";
+	   
+	   public static String sign_type = "RSA";
