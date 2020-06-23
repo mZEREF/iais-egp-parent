@@ -32,12 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
-import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
@@ -100,6 +95,17 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     private EmailClient emailClient;
 
     static String[] category = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
+
+    @Override
+    public void sendMailForAuditPlaner(String emailKey) {
+        List<OrgUserDto> userDtoList = organizationClient. retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_AUDIT_PLAN).getEntity();
+        if( !IaisCommonUtils.isEmpty(userDtoList)){
+            for(OrgUserDto orgUserDto :  userDtoList){
+               sendEmailToIns(orgUserDto.getDisplayName(),emailKey,null,orgUserDto.getEmail());
+            }
+        }
+    }
+
     @Override
     public void getInspectors(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
