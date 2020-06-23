@@ -59,7 +59,7 @@
                                                             Content
                                                         </strong>
                                                     </td>
-                                                    <td>
+                                                    <td style="height: 1180px;">
                                                         <div class="col-sm-9">
                                                             <textarea name="messageContent" cols="108" rows="50"
                                                                       class="wenbenkuang" id="htmlEditroArea"

@@ -94,7 +94,7 @@
                                                                 Content
                                                             </strong>
                                                         </td>
-                                                        <td>
+                                                        <td style="height: 1180px;">
                                                             <div class="col-sm-9">
                                                                 <textarea name="messageContent" cols="108" rows="50"
                                                                           id="htmlEditroArea"
@@ -109,7 +109,7 @@
                                                                     Internal Remarks
                                                                 </strong>
                                                             </td>
-                                                            <td>
+                                                            <td style="height: 203px;">
                                                                 <iais:value width="4000">
                                                                     <textarea name="remarks" cols="60" rows="7"
                                                                               maxlength="300"
@@ -125,7 +125,7 @@
                                                                     Processing Decision<strong style="color:#ff0000;"> *</strong>
                                                                 </strong>
                                                             </td>
-                                                            <td>
+                                                            <td style="height: 90px;">
                                                                 <iais:value width="6">
                                                                     <select id="decision_merge_email" name="decision"
                                                                             onchange="thisTime()">
