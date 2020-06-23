@@ -87,7 +87,7 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
             }
 
             return ReturnT.SUCCESS;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error(e.getMessage(), e);
             JobLogger.log(e);
             return ReturnT.FAIL;
