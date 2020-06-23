@@ -576,7 +576,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             List<ApplicationDto> applicationDtoList = getApplicationDtosByCorr(appPremisesCorrelationDtos);
             boolean allInPlaceFlag = allAppFromSamePremisesIsOk(applicationDtoList);
             if(allInPlaceFlag){
-                saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto);
+                saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto, appHistoryId);
                 //update App
                 ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
                 applicationDto1.setAuditTrailDto(auditTrailDto);
@@ -601,7 +601,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         } else {
             List<String> premCorrIds = IaisCommonUtils.genNewArrayList();
             premCorrIds.add(appPremCorrId);
-            saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto);
+            saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto, appHistoryId);
             //update App
             ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
             applicationDto1.setAuditTrailDto(auditTrailDto);
@@ -681,7 +681,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     private void saveInspectionDate(String appPremCorrId, List<TaskDto> taskDtoList, ApplicationDto applicationDto,
-                                    List<String> taskUserIds, List<String> premCorrIds, AuditTrailDto auditTrailDto) {
+                                    List<String> taskUserIds, List<String> premCorrIds, AuditTrailDto auditTrailDto, String appHistoryId) {
         AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(appPremCorrId).getEntity();
         appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
@@ -734,6 +734,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
             }
         } catch (Exception e){
+            applicationClient.removeHistoryById(appHistoryId);
             log.error(e.getMessage(), e);
             throw new IaisRuntimeException("get InspectionDate Error!!!");
         }
