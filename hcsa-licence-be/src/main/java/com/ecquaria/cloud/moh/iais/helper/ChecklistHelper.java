@@ -28,7 +28,7 @@ public final class ChecklistHelper {
 
     public static boolean validateFile(HttpServletRequest request, MultipartFile file){
         if (file == null || file.isEmpty()){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0018"));
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0020"));
             return true;
         }
 
@@ -46,14 +46,6 @@ public final class ChecklistHelper {
         return false;
     }
 
-    private static boolean uploadType(String type, String service, String module, String subType, String hciCode){
-        if (StringUtils.isEmpty(type) && StringUtils.isEmpty(service) &&  StringUtils.isEmpty(module) && StringUtils.isEmpty(subType) && StringUtils.isEmpty(hciCode)){
-            return true;
-        }else {
-            return false;
-        }
-    }
-
     public static boolean validateTemplate(HttpServletRequest request, ChecklistConfigDto excelTemplate){
         int action = excelTemplate.getWebAction();
         String configId = excelTemplate.getId();
@@ -61,6 +53,13 @@ public final class ChecklistHelper {
         String type = excelTemplate.getType();
         String module = excelTemplate.getModule();
         String service = excelTemplate.getSvcName();
+
+        if (HcsaChecklistConstants.UPDATE == action){
+            if (StringUtils.isEmpty(configId)){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
+                return true;
+            }
+        }
 
         if (!isCommon){
             if (StringUtil.isEmpty(module)){
@@ -82,21 +81,6 @@ public final class ChecklistHelper {
         String effectiveStartDate = excelTemplate.getEftStartDate();
         String effectiveEndDate = excelTemplate.getEftEndDate();
 
-        List<ConfigExcelItemDto> allItem = excelTemplate.getExcelTemplate();
-
-        if (IaisCommonUtils.isEmpty(allItem)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR017"));
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            return true;
-        }
-
-        if (HcsaChecklistConstants.UPDATE == action){
-            if (StringUtils.isEmpty(configId)){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
-                return true;
-            }
-        }
-
         if (StringUtils.isEmpty(effectiveStartDate) || StringUtils.isEmpty(effectiveEndDate)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR014"));
             return true;
@@ -114,6 +98,14 @@ public final class ChecklistHelper {
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR014"));
                 return true;
             }
+        }
+
+        List<ConfigExcelItemDto> allItem = excelTemplate.getExcelTemplate();
+
+        if (IaisCommonUtils.isEmpty(allItem)){
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR017"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            return true;
         }
 
         return false;
