@@ -14,11 +14,15 @@
 <input type="hidden" name="crud_action_additional" value="">
 <input type="hidden" name="crud_action_type_form_page" value="">
 <input type="hidden" id = "controlLi" value="<%=action%>">
+<input type="hidden" value="${coMap.premises}" id="coMappremises" name="coMappremises">
+<input type="hidden" value="${coMap.document}" id="coMapdocument" name="coMapdocument">
+<input type="hidden" value="${coMap.information}" id="coMapinformation" name="coMapinformation">
+<input type="hidden" value="${coMap.previewli}" id="coMappreviewli" name="coMappreviewli">
 <ul id = "nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-    <li id ="premisesli" class="<c:if test="${coMap.premises==''}">incomplete</c:if>  <c:if test="${coMap.premises=='premises'}">complete</c:if>"  role="presentation"><a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Premises</a></li>
-    <li id = "documentsli" class="<c:if test="${coMap.document==''}">incomplete</c:if> <c:if test="${coMap.document=='document'}">complete</c:if>"  role="presentation"><a id = "documents" aria-controls="documentsTab" role="tab" data-toggle="tab">Primary <br> Documents</a></li>
-    <li id = "serviceFormsli" class="<c:if test="${coMap.information==''}">incomplete</c:if> <c:if test="${coMap.information=='information'}">complete</c:if>" role="presentation"><a id = "serviceForms" aria-controls="serviceInformationTab" role="tab" data-toggle="tab">Service-Related <br> Information</a></li>
-    <li id = "previewli" class="<c:if test="${coMap.previewli==''}">incomplete</c:if> <c:if test="${coMap.previewli=='previewli'}">complete</c:if>" role="presentation"><a id = "preview" aria-controls="previewTab" role="tab" data-toggle="tab">Preview & Submit</a></li>
+    <li id ="premisesli"  role="presentation"><a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Premises</a></li>
+    <li id = "documentsli"  role="presentation"><a id = "documents" aria-controls="documentsTab" role="tab" data-toggle="tab">Primary <br> Documents</a></li>
+    <li id = "serviceFormsli"  role="presentation"><a id = "serviceForms" aria-controls="serviceInformationTab" role="tab" data-toggle="tab">Service-Related <br> Information</a></li>
+    <li id = "previewli"  role="presentation"><a id = "preview" aria-controls="previewTab" role="tab" data-toggle="tab">Preview & Submit</a></li>
     <li id = "paymentli" class="disabled" role="presentation"><a id = "payment" aria-controls="paymentTab" role="tab" data-toggle="tab">Payment</a></li>
 </ul>
 <div class="tab-nav-mobile visible-xs visible-sm">
@@ -37,6 +41,32 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
+        let val = $('#coMappremises').val();
+        let val1 = $('#coMapdocument').val();
+        let val2 = $('#coMapinformation').val();
+        let val3 = $('#coMappreviewli').val();
+        if(val=='premises'){
+            $('#premisesli').attr("class",'complete');
+        }else {
+            $('#premisesli').attr("class",'incomplete');
+        }
+        if(val1=='document'){
+            $('#documentsli').attr("class","complete");
+        }else {
+            $('#documentsli').attr("class","incomplete");
+        }
+        if(val2=='information'){
+            $('#serviceFormsli').attr("class",'complete');
+        }else {
+            $('#serviceFormsli').attr("class",'incomplete');
+        }
+        if(val3=='previewli'){
+            $('#previewli').attr("class",'complete');
+        }else {
+            $('#previewli').attr("class",'incomplete');
+        }
+
+
         var controlLi = $('#controlLi').val();
         $('#'+controlLi+'li').addClass('active');
         var premisesli= $('#premisesli').attr("class");

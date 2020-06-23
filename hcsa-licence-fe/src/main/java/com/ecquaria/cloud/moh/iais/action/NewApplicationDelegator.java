@@ -1659,6 +1659,10 @@ public class NewApplicationDelegator {
         List<AppSvcRelatedInfoDto> o=(List<AppSvcRelatedInfoDto>)CopyUtil.copyMutableObject(oldAppSvcRelatedInfoDtoList);
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = n.get(0).getAppSvcDisciplineAllocationDtoList();
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList1 = o.get(0).getAppSvcDisciplineAllocationDtoList();
+        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = n.get(0).getHcsaServiceStepSchemeDtos();
+        String deputyPoFlag = n.get(0).getDeputyPoFlag();
+        o.get(0).setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
+        o.get(0).setDeputyPoFlag(deputyPoFlag);
         if(appSvcDisciplineAllocationDtoList!=null&&appSvcDisciplineAllocationDtoList1!=null){
             for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
                 String idNo = appSvcDisciplineAllocationDto.getIdNo();
@@ -1678,7 +1682,6 @@ public class NewApplicationDelegator {
                     }catch (NullPointerException e){
                         log.error("error " ,e);
                     }
-
                 }
             }
         }
@@ -1698,7 +1701,14 @@ public class NewApplicationDelegator {
             n.get(0).setAppSvcCgoDtoList(appSvcCgoDtos);
             o.get(0).setAppSvcCgoDtoList(oldAppSvcCgoDtos);
         }
-
+        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = n.get(0).getAppSvcMedAlertPersonList();
+        List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = n.get(0).getAppSvcMedAlertPersonList();
+        if(appSvcMedAlertPersonList!=null&&oldAppSvcMedAlertPersonList!=null){
+            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonDtos = copyAppSvcPo(appSvcMedAlertPersonList);
+            List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonDtos = copyAppSvcPo(oldAppSvcMedAlertPersonList);
+            n.get(0).setAppSvcMedAlertPersonList(appSvcMedAlertPersonDtos);
+            o.get(0).setAppSvcMedAlertPersonList(oldAppSvcMedAlertPersonDtos);
+        }
         if(!o.equals(n)){
 
            return true;
@@ -3694,7 +3704,7 @@ public class NewApplicationDelegator {
                     }
                     if(!StringUtil.isEmpty(officeTelNo)) {
                         if (!officeTelNo.matches("^[6][0-9]{7}$")) {
-                            oneErrorMap.put("officeTelNo"+poIndex, "CHKLMD001_ERR007");
+                            oneErrorMap.put("officeTelNo"+poIndex, "GENERAL_ERR0015");
                         }
                     }else {
                         oneErrorMap.put("officeTelNo"+poIndex, "UC_CHKLMD001_ERR001");
@@ -3745,7 +3755,7 @@ public class NewApplicationDelegator {
                     oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }else {
                     if(!officeTelNo.matches("^[6][0-9]{7}$")){
-                        oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"CHKLMD001_ERR007");
+                        oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"GENERAL_ERR0015");
                     }
                 }
                 if(StringUtil.isEmpty(idNo)){
@@ -4393,7 +4403,7 @@ public class NewApplicationDelegator {
                         }else {
                             boolean matches = offTelNo.matches("^[6][0-9]{7}$");
                             if(!matches) {
-                                errorMap.put("offTelNo"+i,"CHKLMD001_ERR007");
+                                errorMap.put("offTelNo"+i,"GENERAL_ERR0015");
                             }
                         }
 
@@ -4445,7 +4455,7 @@ public class NewApplicationDelegator {
                         String postalCode = appGrpPremisesDtoList.get(i).getPostalCode();
                         if (!StringUtil.isEmpty(postalCode)) {
                             if (!postalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("postalCode"+i, "UC_CHKLMD001_ERR004");
+                                errorMap.put("postalCode"+i, "NEW_ERR0004");
                             }else {
 
                                 if(!StringUtil.isEmpty(stringBuilder.toString())){
@@ -4670,7 +4680,7 @@ public class NewApplicationDelegator {
                             errorMap.put("conveyancePostalCode"+i,"UC_CHKLMD001_ERR001");
                         }else {
                             if(!conveyancePostalCode.matches("^[0-9]{6}$")){
-                                errorMap.put("conveyancePostalCode"+i, "UC_CHKLMD001_ERR004");
+                                errorMap.put("conveyancePostalCode"+i, "NEW_ERR0004");
                             }else {
                                 if(!StringUtil.isEmpty(stringBuilder.toString())){
                                     stringBuilder.append(conveyancePostalCode);
@@ -4703,7 +4713,7 @@ public class NewApplicationDelegator {
                         String offSitePostalCode = appGrpPremisesDtoList.get(i).getOffSitePostalCode();
                         if (!StringUtil.isEmpty(offSitePostalCode)) {
                             if (!offSitePostalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("offSitePostalCode"+i, "UC_CHKLMD001_ERR004");
+                                errorMap.put("offSitePostalCode"+i, "NEW_ERR0004");
                             }else {
 
                                 if(!StringUtil.isEmpty(stringBuilder.toString())){
@@ -5220,7 +5230,7 @@ public class NewApplicationDelegator {
             }
             long length = appGrpPrimaryDocDto.getRealDocSize();
             if(length>4*1024*1024){
-                errorMap.put(keyName,"UC_CHKLMD001_ERR007");
+                errorMap.put(keyName,"UC_GENERAL_ERR0015");
                 continue;
             }
             Boolean flag=Boolean.FALSE;

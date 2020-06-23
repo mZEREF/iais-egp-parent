@@ -1816,40 +1816,40 @@ public class ClinicalLaboratoryDelegator {
                 cgoMap.put(idNo, idNo);
             }
         }
-        List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
-        List<AppSvcCgoDto> appSvcCgoDtos = IaisCommonUtils.genNewArrayList();
-        if (appSvcCgoList != null) {
-            if (daList.size() < appSvcCgoList.size()) {
-                return;
-            }
-            if (appSvcCgoList.size() <= daList.size()) {
-                cgoMap.forEach((k, v) -> {
-                    for (AppSvcCgoDto appSvcCgoDto : appSvcCgoList) {
-                        String idNo = appSvcCgoDto.getIdNo();
-                        if (k.equals(idNo)) {
-                            appSvcCgoDtos.add(appSvcCgoDto);
-                        }
-                    }
-                });
-            }
-            appSvcCgoList.removeAll(appSvcCgoDtos);
-            StringBuilder stringBuilder = new StringBuilder();
-            for (AppSvcCgoDto appSvcCgoDto : appSvcCgoList) {
-                stringBuilder.append(appSvcCgoDto.getName()).append(',');
-            }
-            if (!StringUtil.isEmpty(stringBuilder.toString())) {
-                String string = stringBuilder.toString();
-                String substring = string.substring(0, string.lastIndexOf(','));
-                String error = MessageUtil.getMessageDesc("UC_CHKLMD001_ERR005");
-                if (substring.contains(",")) {
-                    error = error.replaceFirst("is", "are");
+        if(map.isEmpty()){
+            List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(request, GOVERNANCEOFFICERSDTOLIST);
+            List<AppSvcCgoDto> appSvcCgoDtos = IaisCommonUtils.genNewArrayList();
+            if (appSvcCgoList != null) {
+                if (daList.size() < appSvcCgoList.size()) {
+                    return;
                 }
-                String replace = error.replace("<CGO Name>", substring);
-                map.put("CGO", replace);
+                if (appSvcCgoList.size() <= daList.size()) {
+                    cgoMap.forEach((k, v) -> {
+                        for (AppSvcCgoDto appSvcCgoDto : appSvcCgoList) {
+                            String idNo = appSvcCgoDto.getIdNo();
+                            if (k.equals(idNo)) {
+                                appSvcCgoDtos.add(appSvcCgoDto);
+                            }
+                        }
+                    });
+                }
+                appSvcCgoList.removeAll(appSvcCgoDtos);
+                StringBuilder stringBuilder = new StringBuilder();
+                for (AppSvcCgoDto appSvcCgoDto : appSvcCgoList) {
+                    stringBuilder.append(appSvcCgoDto.getName()).append(',');
+                }
+                if (!StringUtil.isEmpty(stringBuilder.toString())) {
+                    String string = stringBuilder.toString();
+                    String substring = string.substring(0, string.lastIndexOf(','));
+                    String error = MessageUtil.getMessageDesc("UC_CHKLMD001_ERR005");
+                    if (substring.contains(",")) {
+                        error = error.replaceFirst("is", "are");
+                    }
+                    String replace = error.replace("<CGO Name>", substring);
+                    map.put("CGO", replace);
+                }
             }
-
         }
-
     }
 
     private void doValidateSvcDocument(HttpServletRequest request, Map<String, String> errorMap) {
@@ -1865,7 +1865,7 @@ public class ClinicalLaboratoryDelegator {
                             String docName = appSvcDocDtoLit.get(i).getDocName();
                             String id = appSvcDocDtoLit.get(i).getSvcDocId();
                             if (docSize > 4 * 1024) {
-                                errorMap.put(id + "selectedFile", "UC_CHKLMD001_ERR007");
+                                errorMap.put(id + "selectedFile", "UC_GENERAL_ERR0015");
                             }
                             Boolean flag = Boolean.FALSE;
                             String substring = docName.substring(docName.lastIndexOf('.') + 1);

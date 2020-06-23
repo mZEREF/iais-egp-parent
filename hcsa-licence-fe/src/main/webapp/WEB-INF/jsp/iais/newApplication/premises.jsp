@@ -129,8 +129,10 @@
     var init;
     $(document).ready(function() {
         cl();
+        preperChange();
         $("select[name='onSiteAddressType']").trigger('change');
         $("select[name='conveyanceAddrType']").trigger('change');
+        $("select[name='offSiteAddrType']").trigger('change');
         <!-- init start-->
         init = 0;
         if($('#ackMessage').val()=='ACKMESSAGE'){

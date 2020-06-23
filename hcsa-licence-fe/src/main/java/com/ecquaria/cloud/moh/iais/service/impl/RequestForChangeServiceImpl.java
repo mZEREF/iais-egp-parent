@@ -638,7 +638,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }else {
                             boolean matches = offTelNo.matches("^[6][0-9]{7}$");
                             if(!matches) {
-                                errorMap.put("offTelNo"+i,"CHKLMD001_ERR007");
+                                errorMap.put("offTelNo"+i,"GENERAL_ERR0015");
                             }
                         }
 
@@ -922,7 +922,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             errorMap.put("conveyancePostalCode"+i,"UC_CHKLMD001_ERR001");
                         }else {
                             if(!conveyancePostalCode.matches("^[0-9]{6}$")){
-                                errorMap.put("conveyancePostalCode"+i, "UC_CHKLMD001_ERR004");
+                                errorMap.put("conveyancePostalCode"+i, "NEW_ERR0004");
                             }else {
                                 if(!StringUtil.isEmpty(stringBuilder.toString())){
                                     stringBuilder.append(conveyancePostalCode);
@@ -962,7 +962,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String offSitePostalCode = appGrpPremisesDtoList.get(i).getOffSitePostalCode();
                         if (!StringUtil.isEmpty(offSitePostalCode)) {
                             if (!offSitePostalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("offSitePostalCode"+i, "UC_CHKLMD001_ERR004");
+                                errorMap.put("offSitePostalCode"+i, "NEW_ERR0004");
                             }else {
 
                                 if(!StringUtil.isEmpty(stringBuilder.toString())){

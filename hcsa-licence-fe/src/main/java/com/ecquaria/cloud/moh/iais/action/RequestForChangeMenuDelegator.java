@@ -929,7 +929,7 @@ public class RequestForChangeMenuDelegator {
                 errMap.put("officeTelNo1", "UC_CHKLMD001_ERR001");
             }
             if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo1)&&!officeTelNo1.matches("^[6][0-9]{7}$")) {
-                errMap.put("officeTelNo1", "CHKLMD001_ERR007");
+                errMap.put("officeTelNo1", "GENERAL_ERR0015");
             }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(specialty1)) {
                 errMap.put("specialty1", "UC_CHKLMD001_ERR001");
@@ -972,7 +972,7 @@ public class RequestForChangeMenuDelegator {
                 errMap.put("officeTelNo", "UC_CHKLMD001_ERR001");
             }
             if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo)&&!officeTelNo.matches("^[6][0-9]{7}$")) {
-                errMap.put("officeTelNo", "CHKLMD001_ERR007");
+                errMap.put("officeTelNo", "GENERAL_ERR0015");
             }
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(specialty)) {
                 errMap.put("specialty", "UC_CHKLMD001_ERR001");
@@ -1053,7 +1053,7 @@ public class RequestForChangeMenuDelegator {
                     errMap.put("officeTelNo2", "UC_CHKLMD001_ERR001");
                 }
                 if (psnTypes.contains("PO") && !StringUtil.isEmpty(newPerson.getOfficeTelNo())&&!newPerson.getOfficeTelNo().matches("^[6][0-9]{7}$")) {
-                    errMap.put("officeTelNo", "CHKLMD001_ERR007");
+                    errMap.put("officeTelNo", "GENERAL_ERR0015");
                 }
                 if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSpeciality())) {
                     errMap.put("specialty2", "UC_CHKLMD001_ERR001");

@@ -180,7 +180,7 @@ public class PublicHolidayDelegate {
         long size = file.getSize()/1024;
         if(size>5*1024){
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("selectedFile", MessageUtil.getMessageDesc("UC_CHKLMD001_ERR007"));
+            errMap.put("selectedFile", MessageUtil.getMessageDesc("UC_GENERAL_ERR0015"));
             ParamUtil.setRequestAttr(bpc.request,"filename", filename);
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         }else if("ics".equals(suffix)){

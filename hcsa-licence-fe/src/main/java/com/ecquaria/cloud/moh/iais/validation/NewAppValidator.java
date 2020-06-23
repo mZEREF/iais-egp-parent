@@ -63,7 +63,7 @@ public class NewAppValidator implements CustomizeValidator {
                         map.put("offTelNo"+i,"cannot be blank");
                     }else {
                         if( !list.get(i).getOffTelNo().matches("^[6][0-9]{7}$")){
-                            map.put("offTelNo"+i,"CHKLMD001_ERR007");
+                            map.put("offTelNo"+i,"GENERAL_ERR0015");
                         }
                     }
                 }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){

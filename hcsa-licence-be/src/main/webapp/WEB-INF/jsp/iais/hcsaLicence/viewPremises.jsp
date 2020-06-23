@@ -117,15 +117,16 @@
                                           </c:if>
                                         </div>
                                         <div class="col-md-6">
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt==null}">
-                                           <span class="oldVal " attr="-" style="display: none">-</span>
-                                          </c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt!=null}">
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt==null}">
+                                              <span class="oldVal " attr="-" style="display: none">-</span>
+                                            </c:if>
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt!=null}">
                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}"
                                                    style="display: none"><fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}" pattern="dd/MM/yyyy"/>
                                                 </span>
+                                            </c:if>
                                           </c:if>
-
                                         </div>
                                       </div>
                                     </div>
@@ -320,16 +321,16 @@
 
                                       </div>
                                       <div class="col-md-6">
-                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom==null}">
-                                           <span class=" oldVal" attr="-" style="display: none">-</span>
-                                        </c:if>
-                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom!=null}">
+                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom==null}">
+                                            <span class=" oldVal" attr="-" style="display: none">-</span>
+                                          </c:if>
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom!=null}">
                                           <span class=" oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}" style="display: none">
                                               <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}"
                                                               pattern="HH : mm"></fmt:formatDate></span>
+                                          </c:if>
                                         </c:if>
-
-
                                       </div>
                                     </div>
                                   </div>
@@ -349,13 +350,15 @@
 
                                       </div>
                                       <div class="col-md-6">
-                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo==null}">
-                                           <span class="oldVal " attr="-" style="display: none"> -</span>
-                                        </c:if>
-                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo!=null}">
+                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo==null}">
+                                            <span class="oldVal " attr="-" style="display: none"> -</span>
+                                          </c:if>
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo!=null}">
                                            <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
                                                  style="display: none"> <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
                                                                                         pattern="HH : mm"></fmt:formatDate></span>
+                                          </c:if>
                                         </c:if>
                                       </div>
                                     </div>
@@ -453,13 +456,13 @@
                                                 <div class="col-xs-6 col-md-6">
                                                   <span class="newVal" attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}">
                                                      <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
-                                                     value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a><c:out value="${appGrpPrimaryDocDto.docName} (${appGrpPrimaryDocDto.docSize} KB)"/>
+                                                     value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a>
                                                   </span>
                                                 </div>
                                                 <div class="col-xs-6 col-md-6">
                                                   <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
                                                      <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
-                                                     value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].fileRepoId}"/>&fileRepoName=${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}" title="Download" class="downloadFile">${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}</a><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName} (${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize} KB)"/>
+                                                     value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].fileRepoId}"/>&fileRepoName=${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}" title="Download" class="downloadFile">${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}</a>
                                                   </span>
                                                 </div>
                                               </span>

@@ -313,11 +313,20 @@ public class LicenceViewServiceDelegator {
                     for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
                         String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
                         String svcDocId1 = appGrpPrimaryDocDto1.getSvcDocId();
-                        if(svcDocId1.equals(svcDocId)){
-                            continue;
-                        }else {
-                            appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto1);
+                        if(svcDocId1!=null){
+                            if(svcDocId1.equals(svcDocId)){
+                                continue;
+                            }else {
+                                appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto1);
+                            }
+                        }else if(svcDocId!=null){
+                            if(svcDocId.equals(svcDocId1)){
+                                continue;
+                            }else {
+                                appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto1);
+                            }
                         }
+
                     }
                 }
             }

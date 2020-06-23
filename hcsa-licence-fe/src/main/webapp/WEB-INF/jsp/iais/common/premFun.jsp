@@ -245,6 +245,7 @@
                 removePH();
                 otherLic();
                 cl();
+                preperChange();
                 $('.date_picker').datepicker({
                     format:"dd/mm/yyyy"
                 });

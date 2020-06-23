@@ -418,7 +418,7 @@ public class NewApplicationHelper {
                     }
                     if(!StringUtil.isEmpty(officeTelNo)) {
                         if (!officeTelNo.matches("^[6][0-9]{7}$")) {
-                            oneErrorMap.put("officeTelNo"+poIndex, "CHKLMD001_ERR007");
+                            oneErrorMap.put("officeTelNo"+poIndex, "GENERAL_ERR0015");
                         }
                     }else {
                         oneErrorMap.put("officeTelNo"+poIndex, "UC_CHKLMD001_ERR001");
@@ -479,7 +479,7 @@ public class NewApplicationHelper {
                     oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"UC_CHKLMD001_ERR001");
                 }else {
                     if(!officeTelNo.matches("^[6][0-9]{7}$")){
-                        oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"CHKLMD001_ERR007");
+                        oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"GENERAL_ERR0015");
                     }
                 }
                 if(StringUtil.isEmpty(idNo)){
