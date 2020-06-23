@@ -182,10 +182,14 @@
             $('#uploadFileButton').attr("disabled", false);
             return false;
         }else {
-            if(maxSize == null ||  maxSize == "")
+            if(maxSize == null ||  maxSize == ""){
                 maxSize = 4;
+            } else{
+                maxSize =  parseInt(maxSize);
+            }
             var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-            if(fileSize> maxSize){
+             fileSize = parseInt(fileSize);
+            if(fileSize>= maxSize){
                 $('#selectedFileShow').html('The file has exceeded the maximum upload size of '+ maxSize + 'M.');
                 $('#uploadFileButton').attr("disabled", false);
                 return false;
