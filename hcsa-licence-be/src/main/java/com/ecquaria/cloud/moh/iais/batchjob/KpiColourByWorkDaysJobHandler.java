@@ -78,11 +78,17 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
             }
             List<TaskDto> taskDtos = organizationClient.getKpiTaskByStatus().getEntity();
             AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
-            if(!IaisCommonUtils.isEmpty(taskDtos)){
+            if (!IaisCommonUtils.isEmpty(taskDtos)) {
                 for(TaskDto taskDto : taskDtos){
-                    log.info(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
-                    JobLogger.log(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
-                    getTimeLimitWarningColourByTask(taskDto, intranet, holidayTime);
+                    try {
+                        log.info(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
+                        JobLogger.log(StringUtil.changeForLog("Task Id = " + taskDto.getId()));
+                        getTimeLimitWarningColourByTask(taskDto, intranet, holidayTime);
+                    } catch (Exception e) {
+                        JobLogger.log(e);
+                        log.error(e.getMessage(), e);
+                        continue;
+                    }
                 }
             }
 
