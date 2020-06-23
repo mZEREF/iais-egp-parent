@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohClientRescheduling___1 extends BaseProcessClass {
@@ -36,19 +37,14 @@ public class INTERNET___MohClientRescheduling___1 extends BaseProcessClass {
 // 		preCommPool->OnStepProcess
 	}
 
-	public void preRoundRobin_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "preRoundRobin", this); 
-// 		preRoundRobin->OnStepProcess
+	public void doSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doSort", this); 
+		// 		doSort->OnStepProcess
 	}
 
-	public void page_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "page", this); 
-// 		page->OnStepProcess
-	}
-
-	public void sort_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "sort", this); 
-// 		sort->OnStepProcess
+	public void doPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doPage", this); 
+// 		doPage->OnStepProcess
 	}
 
 }

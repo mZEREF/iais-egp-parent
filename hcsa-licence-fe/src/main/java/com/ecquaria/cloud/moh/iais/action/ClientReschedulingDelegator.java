@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQuery
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.ApptViewDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -72,6 +73,11 @@ public class ClientReschedulingDelegator {
 
 
         try {
+            log.info(StringUtil.changeForLog("rescheduleParam->"+rescheduleParam));
+            log.info(StringUtil.changeForLog("signature.date()->"+signature.date()));
+            log.info(StringUtil.changeForLog("signature.authorization()->"+signature.authorization()));
+            log.info(StringUtil.changeForLog("signature2.date()->"+signature2.date()));
+            log.info(StringUtil.changeForLog("signature2.authorization()->"+signature2.authorization()));
             SearchResult<ReschApptGrpPremsQueryDto> result  = feEicGatewayClient.eicSearchApptReschPrem(rescheduleParam, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
 
@@ -98,10 +104,10 @@ public class ClientReschedulingDelegator {
 
     }
 
-    public void sort(BaseProcessClass bpc)  {
+    public void doSort(BaseProcessClass bpc)  {
         SearchResultHelper.doSort(bpc.request,rescheduleParameter);
     }
-    public void page(BaseProcessClass bpc)  {SearchResultHelper.doPage(bpc.request,rescheduleParameter);
+    public void doPage(BaseProcessClass bpc)  {SearchResultHelper.doPage(bpc.request,rescheduleParameter);
     }
 
     public void doReschedule(BaseProcessClass bpc)  {}
@@ -112,6 +118,5 @@ public class ClientReschedulingDelegator {
 
     }
 
-    public void preRoundRobin(BaseProcessClass bpc)  {}
 
 }

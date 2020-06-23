@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
@@ -37,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
@@ -421,10 +423,150 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setRequestAttr(request,"appStatusOption", appStatusOption);
         ParamUtil.setRequestAttr(request,"servicePersonnelRoleOption", servicePersonnelRoleOption);
     }
-    public void preSearchLicence(BaseProcessClass bpc) {
+    public void preSearchLicence(BaseProcessClass bpc) throws ParseException {
         log.info("=======>>>>>preSearchLicence>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request = bpc.request;
         preSelectOption(request);
+        String applicationNo = ParamUtil.getString(bpc.request, "application_no");
+        String applicationType = ParamUtil.getString(bpc.request, "application_type");
+        String status = ParamUtil.getString(bpc.request, "application_status");
+        String licenceNo = ParamUtil.getString(bpc.request, "licence_no");
+        String uenNo = ParamUtil.getString(bpc.request, "uen_no");
+        String serviceLicenceType = ParamUtil.getString(bpc.request, "service_licence_type");
+        String licenceStatus = ParamUtil.getString(bpc.request, "licence_status");
+        String svcSubType=ParamUtil.getString(bpc.request,"service_sub_type");
+        String hciCode = ParamUtil.getString(bpc.request, "hci_code");
+        String hciName = ParamUtil.getString(bpc.request, "hci_name");
+        String hciStreetName = ParamUtil.getString(bpc.request, "hci_street_name");
+        String hciPostalCode = ParamUtil.getString(bpc.request, "hci_postal_code");
+        String licenseeIdNo = ParamUtil.getString(bpc.request, "licensee_idNo");
+        String licenseeName = ParamUtil.getString(bpc.request, "licensee_name");
+        String licenseeRegnNo = ParamUtil.getString(bpc.request, "licensee_regn_no");
+        String personnelId = ParamUtil.getString(bpc.request, "personnelId");
+        String personnelName = ParamUtil.getString(bpc.request, "personnelName");
+        String personnelRegnNo = ParamUtil.getString(bpc.request, "personnelRegnNo");
+        String personnelRole = ParamUtil.getString(bpc.request, "personnelRole");
+        String appSubDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String appSubToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+                SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+        String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String licStaToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_to_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String licExpDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "expiry_start_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String licExpToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "expiry_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String count=ParamUtil.getString(request,"searchChk");
+        if(count==null){
+            count= (String) ParamUtil.getSessionAttr(request,"count");
+        }
+        Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
+        switch (count) {
+            case "2":
+                if(!StringUtil.isEmpty(applicationNo)){
+                    filters.put("appNo", applicationNo);
+                }
+                if(!StringUtil.isEmpty(applicationType)){
+                    filters.put("appType", applicationType);
+                }
+                if(!StringUtil.isEmpty(status)){
+                    if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
+                        filters.put("appGrpPmtStatus", status);
+                    }else
+                    if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
+                        filters.put("appStatus", status);
+                    }
+                }
+                if(!StringUtil.isEmpty(appSubDate)){
+                    filters.put("subDate", appSubDate);
+                }
+                if(!StringUtil.isEmpty(appSubToDate)){
+                    filters.put("toDate",appSubToDate);
+                }
+                if(!StringUtil.isEmpty(licStaDate)){
+                    filters.put("start_date", licStaDate);count="3";
+                }
+                if(!StringUtil.isEmpty(licStaToDate)){
+                    filters.put("start_to_date",licStaToDate);count="3";
+                }
+                if(!StringUtil.isEmpty(licExpDate)){
+                    filters.put("expiry_start_date", licExpDate);count="3";
+                }
+                if(!StringUtil.isEmpty(licExpToDate)){
+                    filters.put("expiry_date",licExpToDate);count="3";
+                }
+                if(!StringUtil.isEmpty(licenceNo)){
+                    filters.put("licence_no", licenceNo);count="3";
+                }
+                if(!StringUtil.isEmpty(licenceStatus)){
+                    filters.put("licence_status", licenceStatus);count="3";
+                }
+                if(!StringUtil.isEmpty(serviceLicenceType)){
+                    filters.put("svc_name", serviceLicenceType);count="3";
+                }
+                if(!StringUtil.isEmpty(svcSubType)){
+                    filters.put("serviceSubTypeName", svcSubType);count="3";
+
+                }
+                if(!StringUtil.isEmpty(uenNo)){
+                    count="3";
+                }
+                break;
+            case "1":
+                if(!StringUtil.isEmpty(hciCode)){
+                    filters.put("hciCode", hciCode);
+                }
+                if(!StringUtil.isEmpty(hciName)){
+                    filters.put("hciName", hciName);
+                }
+                if(!StringUtil.isEmpty(hciPostalCode)){
+                    filters.put("hciPostalCode", hciPostalCode);
+                }
+                if(!StringUtil.isEmpty(hciStreetName)){
+                    filters.put("hciStreetName", hciStreetName);
+                }
+                break;
+            case "5":
+                if(!StringUtil.isEmpty(personnelId)){
+                    filters.put("personnelId", personnelId);
+                }
+                if(!StringUtil.isEmpty(personnelName)){
+                    filters.put("personnelName",personnelName);
+                }
+                if(!StringUtil.isEmpty(personnelRegnNo)){
+                    filters.put("personnelRegnNo", personnelRegnNo);
+                }
+                if(!StringUtil.isEmpty(personnelRole)){
+                    filters.put("personnelRole", personnelRole);
+                }
+                break;
+            case "4":
+                if(!StringUtil.isEmpty(licenseeIdNo)){
+                    filters.put("licenseeIdNo",licenseeIdNo);
+                }
+                if(!StringUtil.isEmpty(licenseeName)){
+                    filters.put("licenseeName", licenseeName);
+                }
+                if(!StringUtil.isEmpty(licenseeRegnNo)){
+                    filters.put("licenseeRegnNo",licenseeRegnNo);
+                }
+                break;
+            default:
+                break;
+        }
+        licenceParameter.setFilters(filters);
+        SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
+        setSearchParamDate(request, uenNo, appSubDate, appSubToDate, licStaDate, licStaToDate, licExpDate, licExpToDate, licParam);
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        errorMap=validateDate(request);
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+            //
+        }
         // 		preSearchLicence->OnStepProcess
     }
 
@@ -465,6 +607,16 @@ public class OfficerOnlineEnquiriesDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         String licExpToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "expiry_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
+
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        errorMap=validateDate(request);
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+            //
+            return;
+        }
 
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         List<String> svcNames=IaisCommonUtils.genNewArrayList();
@@ -871,6 +1023,7 @@ public class OfficerOnlineEnquiriesDelegator {
     public void doSearchLicenceAfter(BaseProcessClass bpc) {
         log.info("=======>>>>>doSearchLicenceAfter>>>>>>>>>>>>>>>>OnlineEnquiries");
         HttpServletRequest request=bpc.request;
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         try{
             String id = ParamUtil.getMaskedString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
             ParamUtil.setSessionAttr(request,"id",id);
@@ -948,9 +1101,35 @@ public class OfficerOnlineEnquiriesDelegator {
     }
 
 
-    private Map<String, String> validate(HttpServletRequest request) {
+    private Map<String, String> validateDate(HttpServletRequest request) throws ParseException {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-
+        String appSubDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "sub_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String appSubToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "to_date")),
+                SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
+        String licStaDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String licStaToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "start_to_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String licExpDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "expiry_start_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        String licExpToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "expiry_date")),
+                SystemAdminBaseConstants.DATE_FORMAT);
+        if(!StringUtil.isEmpty(appSubDate)||!StringUtil.isEmpty(appSubToDate)){
+            if(appSubDate.compareTo(appSubToDate)>0){
+                errMap.put("to_date","Application Submitted Date From cannot be later than Application Submitted Date To.");
+            }
+        }
+        if(!StringUtil.isEmpty(licStaDate)||!StringUtil.isEmpty(licStaToDate)){
+            if(licStaDate.compareTo(licStaToDate)>0){
+                errMap.put("start_to_date","Licence Start Date From cannot be later than Licence Start Date To.");
+            }
+        }
+        if(!StringUtil.isEmpty(licExpDate)||!StringUtil.isEmpty(licExpToDate)){
+            if(licExpDate.compareTo(licExpToDate)>0){
+                errMap.put("expiry_date","Licence Expiry Date From cannot be later than Licence Expiry Date To.");
+            }
+        }
 
         return errMap;
     }

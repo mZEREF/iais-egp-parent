@@ -105,6 +105,7 @@
     }
     function sortRecords(sortFieldName, sortType) {
         showWaiting();
+        $('input[name="pageJumpNoTextchangePage"]').val(1);
         SOP.Crud.cfxSubmit("mainForm", "sort", sortFieldName, sortType);
     }
     function jumpToPagechangePage(){

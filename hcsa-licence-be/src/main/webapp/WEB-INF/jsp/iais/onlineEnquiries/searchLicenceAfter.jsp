@@ -92,14 +92,10 @@
                                             <div class="col-sm-7 col-md-4 col-xs-10">
                                                 <iais:datePicker id="to_date" name="to_date"
                                                                  value="${SearchParam.filters['toDate']}"></iais:datePicker>
+                                                <span style="font-weight:normal;" id="error_to_date" name="iaisErrorMsg" class="error-msg" ></span>
                                             </div>
                                         </iais:row>
-                                        <iais:row style="color:#ff0000; display: none" id="submittedDateError">
-                                            <iais:field value=""/>
-                                            <div class="col-sm-7 col-md-8 col-xs-10">
-                                                Application Submitted Date From cannot be later than Application Submitted Date To.
-                                            </div>
-                                        </iais:row>
+
                                         <iais:row>
                                             <iais:field value="Licence No."/>
                                             <div class="col-sm-7 col-md-4 col-xs-10">
@@ -156,14 +152,10 @@
                                             <div class="col-sm-7 col-md-4 col-xs-10">
                                                 <iais:datePicker id="start_to_date" name="start_to_date"
                                                                  value="${SearchParam.filters['start_to_date']}"></iais:datePicker>
+                                                <span style="font-weight:normal;" id="error_start_to_date" name="iaisErrorMsg" class="error-msg" ></span>
                                             </div>
                                         </iais:row>
-                                        <iais:row style="color:#ff0000; display: none" id="startDateError">
-                                            <iais:field value=""/>
-                                            <div class="col-sm-7 col-md-6 col-xs-10">
-                                                Licence Start Date From cannot be later than Licence Start Date To.
-                                            </div>
-                                        </iais:row>
+
                                         <iais:row>
                                             <iais:field value="Licence Expiry Date From"/>
                                             <div class="col-sm-7 col-md-4 col-xs-10">
@@ -176,12 +168,7 @@
                                             <div class="col-sm-7 col-md-4 col-xs-10">
                                                 <iais:datePicker id="expiry_date" name="expiry_date"
                                                                  value="${SearchParam.filters['expiry_date']}"></iais:datePicker>
-                                            </div>
-                                        </iais:row>
-                                        <iais:row style="color:#ff0000; display: none" id="expiryDateError">
-                                        <iais:field value=""/>
-                                            <div class="col-sm-7 col-md-6 col-xs-10">
-                                                Licence Expiry Date From cannot be later than Licence Expiry Date To.
+                                                <span style="font-weight:normal;" id="error_expiry_date" name="iaisErrorMsg" class="error-msg" ></span>
                                             </div>
                                         </iais:row>
                                     </iais:section>
@@ -511,9 +498,8 @@
                     onclick="javascript:doCessation();">Cease</button>
         </c:if>
     </iais:action>
-
-
 </form>
+<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
     function controlCease(isAso) {
@@ -561,32 +547,9 @@
 
     function licSearch() {
         showWaiting();
-        var startTo=$('#start_to_date').val();
-        var startSub=$('#start_date').val();
-        var expiryTo=$('#expiry_date').val();
-        var expirySub=$('#expiry_start_date').val();
-        var periodTo=$('#to_date').val();
-        var periodSub=$('#sub_date').val();
-        var flag=true;
-        if(startSub>startTo&&startTo!=""){
-            $("#startDateError").show();
-            flag=false;
-        }
-        if(expirySub>expiryTo&&expiryTo!=""){
-            $("#expiryDateError").show();
-            flag=false;
-        }
-        if(periodSub>periodTo&&periodTo!=""){
-            $("#submittedDateError").show();
-            flag=false;
-        }
-        if(flag)
-        {
-            SOP.Crud.cfxSubmit("mainForm", "search");
-        }
-        else {
-            dismissWaiting();
-        }
+
+        SOP.Crud.cfxSubmit("mainForm", "search");
+
     }
 
     function doLicBack() {

@@ -113,6 +113,23 @@
                                     </div>
                                 </div>
 
+                                <c:if test="${empty organizationLicDto.licenseeKeyApptPersonDtos}">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading"><strong>Board Members</strong></div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="table-gp">
+                                                    <table class="table table-bordered">
+                                                        <tbody>
+                                                        -
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:if>
+
                                 <c:forEach var="member" items="${organizationLicDto.licenseeKeyApptPersonDtos}" varStatus="status">
 
                                     <div class="panel panel-default">

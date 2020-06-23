@@ -16,28 +16,28 @@
     <JavaCode defClass="" executor="" methodName="preBasicSearch_OnStepProcess_0" name="preBasicSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doBasicSearch" x="240" y="350">
+  <AutomaticStep defClass="" executor="" icon="" name="doBasicSearch" x="320" y="350">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doBasicSearch_OnStepProcess_0" name="doBasicSearch_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preSearchLicence" x="500" y="350">
+  <AutomaticStep defClass="" executor="" icon="" name="preSearchLicence" x="440" y="170">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preSearchLicence_OnStepProcess_0" name="preSearchLicence_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSearchLicence" x="700" y="240">
+  <AutomaticStep defClass="" executor="" icon="" name="doSearchLicence" x="680" y="240">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doSearchLicence_OnStepProcess_0" name="doSearchLicence_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSearchLicenceAfter" x="860" y="360">
+  <AutomaticStep defClass="" executor="" icon="" name="doSearchLicenceAfter" x="500" y="460">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -93,19 +93,19 @@
   </InvokeStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="BasicSearchPage" stageIndicator="" x="400" y="220">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="BasicSearchPage" stageIndicator="" x="100" y="230">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="searchLicencePage" stageIndicator="" x="380" y="350">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="searchLicencePage" stageIndicator="" x="310" y="170">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="searchLicenceAfterPage" stageIndicator="" x="680" y="360">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="searchLicenceAfterPage" stageIndicator="" x="660" y="360">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -136,40 +136,40 @@
    <position>{(120,120)(260,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/BasicSearchPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preBasicSearch" style="oblique">
-   <position>{(260,120)(420,240)}</position>
+   <position>{(260,120)(120,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doBasicSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(280,250)(260,370)}</position>
+   <position>{(280,250)(340,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/searchLicencePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doBasicSearch" style="oblique">
-   <position>{(260,370)(400,370)}</position>
+   <position>{(340,370)(330,190)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preSearchLicence" linkstyle="Direct" name="" sourceName="/Pages/WebPage/searchLicencePage" style="oblique">
-   <position>{(400,370)(520,370)}</position>
+   <position>{(330,190)(460,190)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preSearchLicence" style="oblique">
-   <position>{(520,370)(560,260)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(575,400)(560,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
    <position>{(560,260)(560,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicence" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(560,260)(720,260)}</position>
+   <position>{(560,260)(700,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/searchLicenceAfterPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearchLicence" style="oblique">
-   <position>{(720,260)(700,380)}</position>
+   <position>{(700,260)(680,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Direct" name="" sourceName="/Pages/WebPage/searchLicenceAfterPage" style="oblique">
-   <position>{(700,380)(880,380)}</position>
+   <position>{(680,380)(520,480)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearchLicenceAfter" style="oblique">
-   <position>{(880,380)(920,250)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(945,510)(920,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preLicDetails" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(920,250)(1060,250)}</position>
+   <position>{(920,260)(1060,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(920,250)(560,120)}</position>
+   <position>{(920,260)(560,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/licDetailsPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preLicDetails" style="oblique">
    <position>{(1060,250)(1060,120)}</position>
@@ -181,19 +181,19 @@
    <position>{(560,120)(260,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/BasicSearchPage" style="oblique">
-   <position>{(420,240)(280,250)}</position>
+   <position>{(120,250)(280,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preBasicSearch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
    <position>{(280,250)(260,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(280,250)(880,380)}</position>
+   <position>{(280,250)(520,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicence" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
-   <position>{(920,250)(720,260)}</position>
+   <position>{(920,260)(700,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preAppDetails" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(920,250)(900,120)}</position>
+   <position>{(920,260)(900,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/appDetailsPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preAppDetails" style="oblique">
    <position>{(900,120)(760,120)}</position>
@@ -202,19 +202,19 @@
    <position>{(760,120)(560,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Branches/BranchSource/Branch1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(280,250)(220,460)}</position>
+   <position>{(280,250)(150,460)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Direct" name="" sourceName="/Branches/BranchSource/Branch1" style="oblique">
-   <position>{(220,460)(880,380)}</position>
+   <position>{(150,460)(520,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/callCessation" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(920,250)(1020,380)}</position>
+   <position>{(920,260)(1020,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Branches/BranchSource/Branch2" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(280,250)(340,460)}</position>
+   <position>{(280,250)(210,490)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Direct" name="" sourceName="/Branches/BranchSource/Branch2" style="oblique">
-   <position>{(340,460)(880,380)}</position>
+   <position>{(210,490)(520,480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Cessation" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/callCessation" style="oblique">
    <position>{(1020,380)(1120,460)}</position>
@@ -232,26 +232,45 @@
    <position>{(1220,250)(1060,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/callReqForInfo" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(920,250)(1120,370)}</position>
+   <position>{(920,260)(1120,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/ReqForInfo" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/callReqForInfo" style="oblique">
    <position>{(1120,370)(1260,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Branches/BranchSource/Branch3" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
-   <position>{(280,250)(480,460)}</position>
+   <position>{(280,250)(280,510)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicenceAfter" linkstyle="Direct" name="" sourceName="/Branches/BranchSource/Branch3" style="oblique">
-   <position>{(480,460)(880,380)}</position>
+   <position>{(280,510)(520,480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preSearchLicence" style="oblique">
+   <position>{(460,190)(575,400)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doBasicSearch" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(575,400)(340,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSearchLicenceAfter" style="oblique">
+   <position>{(520,480)(945,510)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doSearchLicence" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(945,510)(700,260)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/doBasicSearch" componentIfTrue="/Switches/Switch/Switch1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="530" y="350">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/doSearchLicence" componentIfTrue="/Switches/Switch/Switch2" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="900" y="460">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doSearchLicence" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="540" y="240">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicence" value="&quot;search&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value="&quot;back&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="900" y="230">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="900" y="240">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/preLicDetails" value="&quot;details&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSearchLicence" value="&quot;search&quot;"/>
@@ -276,13 +295,13 @@
   </Switch>
  </Switches>
  <Branches>
-  <BranchSource defClass="" executor="" icon="" name="Branch1" x="200" y="440">
+  <BranchSource defClass="" executor="" icon="" name="Branch1" x="130" y="440">
    <Description/>
   </BranchSource>
-  <BranchSource defClass="" executor="" icon="" name="Branch2" x="320" y="440">
+  <BranchSource defClass="" executor="" icon="" name="Branch2" x="190" y="470">
    <Description/>
   </BranchSource>
-  <BranchSource defClass="" executor="" icon="" name="Branch3" x="460" y="440">
+  <BranchSource defClass="" executor="" icon="" name="Branch3" x="260" y="490">
    <Description/>
   </BranchSource>
  </Branches>
