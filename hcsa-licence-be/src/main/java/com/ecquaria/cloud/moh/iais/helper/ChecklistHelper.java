@@ -119,7 +119,5 @@ public final class ChecklistHelper {
                 errorMsgContent.getErrorMsgList().set(idx++, msg);
             }
         }
-
-
     }
 }
