@@ -168,7 +168,7 @@
               <td>
 
                 <div class="text-right text-center-mobile">
-                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.submit('mainForm', 'createUploadConfig')">Upload Checklist Configurationse</a>
+                  <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.submit('mainForm', 'createUploadConfig')">Upload Checklist Configurations</a>
                   <a class="btn btn-primary next" href="javascript:void(0);" onclick="Utils.submit('mainForm', 'updateTemplate')">Update Checklist Configurations</a>
                   <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript: prepareAddConfig();">Add Configuration</a>
                 </div>
