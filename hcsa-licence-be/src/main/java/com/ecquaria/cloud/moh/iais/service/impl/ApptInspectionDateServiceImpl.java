@@ -572,7 +572,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                         appPremisesInspecApptDto.setStartDate(Formatter.parseDateTime(appointmentDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
                     } catch (ParseException e) {
                         log.error(e.getMessage(), e);
-                        throw new IaisRuntimeException(e);
                     }
                 }
                 if(appointmentDto.getEndDate() != null) {
@@ -580,7 +579,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                         appPremisesInspecApptDto.setEndDate(Formatter.parseDateTime(appointmentDto.getEndDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
                     } catch (ParseException e) {
                         log.error(e.getMessage(), e);
-                        throw new IaisRuntimeException(e);
                     }
                 }
                 appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
