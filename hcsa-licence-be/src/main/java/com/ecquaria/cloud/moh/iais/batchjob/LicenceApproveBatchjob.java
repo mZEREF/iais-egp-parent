@@ -1532,7 +1532,12 @@ public class LicenceApproveBatchjob {
             //licenceDto.setLicenceNo(licenceNo);
             licenceDto.setVersion(version);
             licenceDto.setFeeRetroNeeded(false);
-            licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
+            //0065635
+            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
+                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_APPROVED);
+            }else{
+                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
+            }
         }
         List<ApplicationDto> applicationDtos1 = IaisCommonUtils.genNewArrayList();
         if (applicationDto != null) {
