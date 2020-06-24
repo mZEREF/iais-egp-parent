@@ -127,7 +127,18 @@
                t5.HCI_CODE as  hclcode,t5.HCI_NAME as hclName,t5.HCI_CONTACT_NO,t5.SCDF_REF_NO,t5.CERT_ISSUED_DT,t5.VEHICLE_NO,t5.PREMISES_TYPE as premisesType,t5.POSTAL_CODE  as postalCode,
                t5.ADDR_TYPE,t5.BLK_NO,t5.FLOOR_NO,t5.UNIT_NO,t5.STREET_NAME,t5.BUILDING_NAME,t5.VERSION,t5.STATUS,t5.ORGANIZATION_ID,
                t5.WRK_TIME_FROM,t5.WRK_TIME_TO,t5.IS_LOCATE_WITH_OTHERS,
-               isnull(t5.HCI_NAME,'')+' '+isnull(t5.STREET_NAME,'')+' '+isnull(t5.UNIT_NO,'')+' '+isnull(t5.BLK_NO,'')+','+isnull(t5.FLOOR_NO,'')+'Singapore '+isnull(t5.POSTAL_CODE,'') as address,
+               isnull(t5.BLK_NO,'')+
+		      ' '+isnull(t5.STREET_NAME,'')
+		      +' '+isnull(t5.BUILDING_NAME,'')
+		      + (case isnull(t5.FLOOR_NO,'')
+		         when '' then ''
+		         else ' # ' end)
+		       +isnull(t5.FLOOR_NO,'')
+		       +(case isnull(t5.UNIT_NO,'')
+		           when '' then ''
+		           else '-' end)
+		        +isnull(t5.UNIT_NO,'')
+		        +','+isnull(t5.POSTAL_CODE,'') as address,
                t1.ID as lic_premises_audit_id,t1.AUDIT_TYPE,t1.AUDIT_RISK_TYPE,t1.REMARKS,t1.IS_IN_RISK_SCORE,t1.INCLUDE_RISK_TYPE,t1.STATUS as audit_status,
                t2.INSPECTOR_ID,
                t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
@@ -168,7 +179,18 @@
                t5.HCI_CODE as  hclcode,t5.HCI_NAME as hclName,t5.HCI_CONTACT_NO,t5.SCDF_REF_NO,t5.CERT_ISSUED_DT,t5.VEHICLE_NO,t5.PREMISES_TYPE as premisesType,t5.POSTAL_CODE  as postalCode,
                t5.ADDR_TYPE,t5.BLK_NO,t5.FLOOR_NO,t5.UNIT_NO,t5.STREET_NAME,t5.BUILDING_NAME,t5.VERSION,t5.STATUS,t5.ORGANIZATION_ID,
                t5.WRK_TIME_FROM,t5.WRK_TIME_TO,t5.IS_LOCATE_WITH_OTHERS,
-               isnull(t5.HCI_NAME,'')+' '+isnull(t5.STREET_NAME,'')+' '+isnull(t5.UNIT_NO,'')+' '+isnull(t5.BLK_NO,'')+','+isnull(t5.FLOOR_NO,'')+'Singapore '+isnull(t5.POSTAL_CODE,'') as address,
+               isnull(t5.BLK_NO,'')+
+		      ' '+isnull(t5.STREET_NAME,'')
+		      +' '+isnull(t5.BUILDING_NAME,'')
+		      + (case isnull(t5.FLOOR_NO,'')
+		         when '' then ''
+		         else ' # ' end)
+		       +isnull(t5.FLOOR_NO,'')
+		       +(case isnull(t5.UNIT_NO,'')
+		           when '' then ''
+		           else '-' end)
+		        +isnull(t5.UNIT_NO,'')
+		        +','+isnull(t5.POSTAL_CODE,'') as address,
                t1.ID as lic_premises_audit_id,t1.AUDIT_TYPE,t1.AUDIT_RISK_TYPE,t1.REMARKS,t1.IS_IN_RISK_SCORE,t1.INCLUDE_RISK_TYPE,t1.STATUS as audit_status,
                t2.INSPECTOR_ID,
                t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
