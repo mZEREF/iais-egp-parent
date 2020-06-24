@@ -52,8 +52,8 @@
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">
-                      <button name="clearBtn" class="btn btn-secondary" type="button" onclick="javascript:doInspectionCommonPoolClear()">Clear</button>
-                      <button name="searchBtn" class="btn btn-primary" type="button" onclick="javascript:doInspectionCommonPoolSearch()">Search</button>
+                      <button name="clearBtn" class="btn btn-secondary" type="button" onclick="javascript:officerReSchedulingClear()">Clear</button>
+                      <button name="searchBtn" class="btn btn-primary" type="button" onclick="javascript:officerReSchedulingSearch()">Search</button>
                     </iais:action>
                   </div>
                 </iais:section>
@@ -63,10 +63,10 @@
                     <thead>
                     <tr align="center">
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="GROUP_NO" value="HCI NAME"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="APP_TYPE" value="Application Type"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="COU" value="Submission Type"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="SUBMIT_DT" value="Application Date"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true" field="GROUP_NO" value="HCI NAME"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" field="" value="Inspector(s)"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true" field="COU" value="Date and Time of Inspection"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true" field="COU" value="Type of Task"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
@@ -81,11 +81,12 @@
                       </c:when>
                       <c:otherwise>
                         <c:forEach var="pool" items="${cPoolSearchResult.rows}" varStatus="status">
-                          <tr style = "display: table-row;" id = "advfilter${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}">
+                          <tr>
                             <td class="row_no"><c:out value="${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"/></td>
                             <td><iais:code code="${pool.applicationType}"/></td>
                             <td><c:out value="${pool.submissionType}"/></td>
                             <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
+                            <td><iais:code code="${pool.paymentStatus}"/></td>
                             <td><iais:code code="${pool.paymentStatus}"/></td>
                           </tr>
                         </c:forEach>
@@ -122,7 +123,7 @@
         mainPoolForm.submit();
     }
 
-    function doInspectionCommonPoolSearch() {
+    function officerReSchedulingSearch() {
         showWaiting();
         officerReSchedulingSubmit('search');
     }
