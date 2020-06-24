@@ -132,6 +132,9 @@ public class CessationBeServiceImpl implements CessationBeService {
 
     @Override
     public List<String> saveCessations(List<AppCessationDto> appCessationDtos, String licenseeId) {
+        if(StringUtil.isEmpty(licenseeId)){
+            licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
+        }
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         Map<String, List<String>> licPremiseIdMap = IaisCommonUtils.genNewHashMap();
@@ -241,11 +244,17 @@ public class CessationBeServiceImpl implements CessationBeService {
             String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
             String applicationNo = applicationDto.getApplicationNo();
             Date effectiveDate = appCessationDto.getEffectiveDate();
-            if (effectiveDate.after(new Date())) {
-                sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
-            } else {
-                sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+            try{
+                if (effectiveDate.after(new Date())) {
+                    sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+                } else {
+                    sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+                }
+            }catch (Exception e){
+                e.getMessage();
+                log.info("======send email error");
             }
+
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);
             appCessatonConfirmDto.setEffectiveDate(effectiveDate);

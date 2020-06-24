@@ -10,37 +10,41 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <form id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
+    <%@include file="../cessation/ackhead.jsp" %>
     <div class="main-content">
-        <div class="panel-heading"><h2><strong>Acknowledgement</strong></h2></div>
-        <div class="row" style="margin-left: 1%;margin-right: 1%">
-            <div class="col-xs-12">
-                <div class="table-gp">
+        <div class="container">
+            <br/>
+            <div class="row">
+                <div class="col-lg-12 col-xs-12 cesform-box">
                     <c:forEach items="${appCessConDtos}" var="confirm" varStatus="num">
-                        <p>Your cessation application has been successfully submitted, the following licences will be
-                            ceased on <U><strong><fmt:formatDate value="${confirm.effectiveDate}" pattern="dd/MM/yyyy"/></strong></U></p>
-
-                        <p>and the application number is <U><strong><c:out value="${confirm.appNo}"/></strong></U></p>
-                        <table class="table" border="1" cellspacing="0" cellpadding="0">
+                        <p>Your cessation application has been successfully submitted, the following licences will
+                            be
+                            ceased on <U><strong><fmt:formatDate value="${confirm.effectiveDate}"
+                                                                 pattern="dd/MM/yyyy"/></strong></U>
+                        </p>
+                        <p>and the application number is <U><strong><c:out value="${confirm.appNo}"/></strong></U>
+                        </p>
+                        <table class="table">
                             <thead>
-                            <tr style="padding: 1%">
-                                <th style="text-align:center;padding: 1%">Licence No.</th>
-                                <th style="text-align:center;padding: 1%">Service Name</th>
-                                <th style="text-align:center;padding: 1%">HCI Name</th>
-                                <th style="text-align:center;padding: 1%">HCI Address</th>
+                            <tr>
+                                <th style="text-align:center">Licence No.</th>
+                                <th style="text-align:center">Service Name</th>
+                                <th style="text-align:center">HCI Name</th>
+                                <th style="text-align:center">HCI Address</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td class="col-xs-1" align="center">
+                            <tr style="text-align: center">
+                                <td>
                                     <p><c:out value="${confirm.licenceNo}"></c:out></p>
                                 </td>
-                                <td class="col-xs-1" align="center">
+                                <td>
                                     <p><c:out value="${confirm.svcName}"></c:out></p>
                                 </td>
-                                <td class="col-xs-1" align="center">
+                                <td>
                                     <p><c:out value="${confirm.hciName}"></c:out></p>
                                 </td>
-                                <td class="col-xs-1" align="center">
+                                <td>
                                     <p><c:out value="${confirm.hciAddress}"></c:out></p>
                                 </td>
                             </tr>
@@ -48,21 +52,23 @@
                         </table>
                     </c:forEach>
                 </div>
-
-                <div style="padding-left: 1%">
-                    <a href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left" style="padding-left: 2%"></em> Back</a>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <a href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em>
+                                Back</a>
+                        </div>
                 </div>
             </div>
         </div>
     </div>
 </form>
-
 <script>
-    function submit(action){
+    function submit(action) {
         $("[name='crud_action_type']").val(action);
         $("#mainForm").submit();
     }
-    function back(action){
+
+    function back(action) {
         submit(action);
     }
 </script>
