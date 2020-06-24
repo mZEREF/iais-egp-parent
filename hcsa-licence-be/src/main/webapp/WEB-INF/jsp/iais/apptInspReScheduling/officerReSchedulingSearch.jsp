@@ -47,7 +47,7 @@
                       <iais:field value="Inspector Name"/>
                       <iais:value width="18">
                         <div id = "appComPoolSelect">
-                          <iais:select cssClass="application_type" name="application_type" options="appTypeOption" firstOption="Please Select" value="${cPoolSearchParam.filters['application_type']}" ></iais:select>
+                          <iais:select name="inspectorName" options="appTypeOption" firstOption="Please Select" value="${cPoolSearchParam.filters['application_type']}" ></iais:select>
                         </div>
                       </iais:value>
                     </iais:row>
@@ -83,16 +83,6 @@
                         <c:forEach var="pool" items="${cPoolSearchResult.rows}" varStatus="status">
                           <tr style = "display: table-row;" id = "advfilter${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}">
                             <td class="row_no"><c:out value="${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"/></td>
-                            <td>
-                              <p>
-                                <c:out value="${pool.appGroupNo}"/>
-                                <a class="accordion-toggle  collapsed"
-                                   data-toggle="collapse" aria-expanded="false"
-                                   data-target="#advfilter${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"
-                                   onclick="javascript:commonPoolByGroupId('<iais:mask name="appGroupNo" value="${pool.appGroupNo}"/>','${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}')">
-                                </a>
-                              </p>
-                            </td>
                             <td><iais:code code="${pool.applicationType}"/></td>
                             <td><c:out value="${pool.submissionType}"/></td>
                             <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
@@ -120,15 +110,10 @@
         officerReSchedulingSubmit('assign');
     }
 
-    function doInspectionCommonPoolClear() {
-        $('input[name="application_no"]').val("");
-        $('#application_type option:first').prop('selected', 'selected');
+    function officerReSchedulingClear() {
+        $('#inspWorkGroup option:first').prop('selected', 'selected');
+        $('#inspectorName option:first').prop('selected', 'selected');
         $("#appComPoolSelect .current").text("Please Select");
-        $('input[name="hci_code"]').val("");
-        $('input[name="hci_name"]').val("");
-        $('input[name="hci_address"]').val("");
-        $('input[name="service_name"]').val("");
-        $('input[name="sub_date"]').val("");
     }
 
     function officerReSchedulingSubmit(action){
@@ -137,24 +122,20 @@
         mainPoolForm.submit();
     }
 
-    $("#commonPoolRole").change(function() {
-        doInspectionCommonPoolSearch();
-    });
-
     function doInspectionCommonPoolSearch() {
         showWaiting();
-        inspectionCommonPoolSubmit('search');
+        officerReSchedulingSubmit('search');
     }
 
     function jumpToPagechangePage(){
         showWaiting();
-        inspectionCommonPoolSubmit('page');
+        officerReSchedulingSubmit('page');
     }
 
     function sortRecords(sortFieldName,sortType){
         $("[name='crud_action_value']").val(sortFieldName);
         $("[name='crud_action_additional']").val(sortType);
-        inspectionCommonPoolSubmit('sort');
+        officerReSchedulingSubmit('sort');
     }
 </script>
 
