@@ -73,11 +73,16 @@ public class CessationEffectiveDateBatchjob {
                                 String licenseeId = licenceDto.getLicenseeId();
                                 String licenceNo = licenceDto.getLicenceNo();
                                 String id = licenceDto.getId();
-                                cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
+                                try {
+                                    cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
+                                } catch (Exception e) {
+                                    log.info("=================email error===========");
+                                }
                                 break;
                             }
                         }
                     }
+
                     //create grp licence and ceased old licence
                     List<String> grpLicIds = IaisCommonUtils.genNewArrayList();
                     grpLicIds.clear();
@@ -113,7 +118,11 @@ public class CessationEffectiveDateBatchjob {
                                 LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
                                 String status = licenceDto.getStatus();
                                 if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(status)) {
-                                    updateLicenceStatusAndSendMails(licenceDto, date);
+                                    try {
+                                        updateLicenceStatusAndSendMails(licenceDto, date);
+                                    } catch (Exception e) {
+                                        log.info("=================email error===========");
+                                    }
                                     String svcName = licenceDto.getSvcName();
                                     HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(svcName);
                                     String svcType = hcsaServiceDto.getSvcType();
@@ -122,7 +131,11 @@ public class CessationEffectiveDateBatchjob {
                                         List<String> specLicIds = hcsaLicenceClient.getSpecIdsByBaseId(originLicenceId).getEntity();
                                         if (specLicIds != null && !specLicIds.isEmpty()) {
                                             specLicenceDto = hcsaLicenceClient.retrieveLicenceDtos(specLicIds).getEntity();
-                                            updateLicencesStatusAndSendMails(specLicenceDto, date);
+                                            try {
+                                                updateLicencesStatusAndSendMails(specLicenceDto, date);
+                                            } catch (Exception e) {
+                                                log.info("=================email error===========");
+                                            }
                                         }
                                     }
                                 }
