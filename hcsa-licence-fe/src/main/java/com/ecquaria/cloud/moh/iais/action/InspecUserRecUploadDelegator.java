@@ -237,7 +237,7 @@ public class InspecUserRecUploadDelegator {
                 return errorMap;
             }
             if(!IaisCommonUtils.isEmpty(sysFileTypes)) {
-                if (sysFileTypes.contains(substring)) {
+                if (sysFileTypes.contains(substring.toUpperCase())) {
                     flag = Boolean.TRUE;
                 }
             }
