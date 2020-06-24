@@ -72,10 +72,10 @@ public class LicenceExpiredBatchJob {
                     if (stringBooleanMap.get(id)) {
                         licenceDtosForSave.add(licenceDto);
                     }
-                    cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, id, licenseeId, licenceNo);
                     updateLicenceStatus(licenceDtosForSave, date);
+                    cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, id, licenseeId, licenceNo);
                 } catch (Exception e) {
-                    log.error(e.getMessage(), e);
+                    log.info("====================eic error >===================");
                     continue;
                 }
             }
@@ -91,14 +91,16 @@ public class LicenceExpiredBatchJob {
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_LAPSED);
             } else {
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_EXPIRY);
+                newLicDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
+                updateLicenceDtos.add(newLicDto);
             }
             licenceDto.setEndDate(date);
             updateLicenceDtos.add(licenceDto);
         }
         hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
     }
 }
