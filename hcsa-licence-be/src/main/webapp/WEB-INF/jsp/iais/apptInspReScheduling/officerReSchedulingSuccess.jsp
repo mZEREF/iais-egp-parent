@@ -23,7 +23,7 @@
               <h2>Inspection date for Audit task has been set.</h2>
             </c:if>
             <c:if test="${'APTY007' ne applicationDto.applicationType}">
-              <h2>The appointment date has been sent to the applicant for confirmation.</h2>
+              <h2>The task has been released from the assigned inspectors and is now in the common pool.</h2>
             </c:if>
           </div>
         </div>
