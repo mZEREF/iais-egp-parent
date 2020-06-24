@@ -802,7 +802,7 @@ public class LicenceApproveBatchjob {
             mapParam.put("appNo", applicationNo);
             interMessageDto.setMaskParams(mapParam);
             inboxMsgService.saveInterMessage(interMessageDto);
-        } catch (IOException | TemplateException e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
     }
