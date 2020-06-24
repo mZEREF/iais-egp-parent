@@ -298,8 +298,13 @@ public class HalpAssessmentGuideDelegator {
 
     }
 
-    public void updateAdminPers(BaseProcessClass bpc) {
-
+    public void updateAdminPers(BaseProcessClass bpc) throws IOException {
+        HttpServletRequest request = bpc.request;
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS).append(request.getServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList");
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), request);
+        bpc.response.sendRedirect(tokenUrl);
     }
 
 }
