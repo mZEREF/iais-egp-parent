@@ -40,9 +40,12 @@
                         <div class="file-upload-gp">
                             <div class="fileNameDisplay"></div>
                             <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
+                            <span id="delFile" hidden="hidden"><strong id="fileName"></strong><button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"> <em
+                                    class="fa fa-times"></em></button></span>
                         </div>
                     </div>
                 </div>
+
             </div>
             <c:choose>
                 <c:when test="${empty ERR_CONTENT}">
@@ -74,7 +77,7 @@
             </c:choose>
         </div>
         <div class="row">
-            <div class="col-xs-6 col-md-4">
+            <div class="col-xs-6 col-md-4" style="padding-top: 4%">
                 <p><a id = "docBack" class="back" href="/system-admin-web/eservice/INTRANET/MohMasterCode"><em class="fa fa-angle-left"></em> Back</a></p>
             </div>
             <div class="col-xs-5 col-md-8 text-right">
@@ -94,4 +97,19 @@
     $('#docNext').click(function () {
         SOP.Crud.cfxSubmit("mainForm", "doUpload");
     });
+
+    $("#selectedFile").change(function () {
+        $("#delFile").removeAttr("hidden");
+        var fileName = $("#selectedFile").val();
+        var pos = fileName.lastIndexOf("\\");
+        $("#fileName").html(fileName.substring(pos + 1));
+    });
+
+    function deleteWdFile() {
+        // document.getElementById("withdrawFile").files[0] = null;
+        wdfile = $("#selectedFile");
+        wdfile.after(wdfile.clone().val(""));
+        wdfile.remove();
+        $("#delFile").attr("hidden", "hidden");
+    }
 </script>
