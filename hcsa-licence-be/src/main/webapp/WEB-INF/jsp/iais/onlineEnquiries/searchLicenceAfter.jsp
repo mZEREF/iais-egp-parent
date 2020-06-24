@@ -348,7 +348,7 @@
                         <br>
                         <br>
                         <iais:action style="text-align:left;">
-                            <a onclick="javascript:doLicBack()">< Back</a>
+                            <a onclick="javascript:doLicBack()"><em class="fa fa-angle-left"> </em> Back</a>
                         </iais:action>
                         <iais:action style="text-align:right;">
                             <button class="btn btn-secondary" type="button" onclick="javascript:doLicClear()">Clear</button>

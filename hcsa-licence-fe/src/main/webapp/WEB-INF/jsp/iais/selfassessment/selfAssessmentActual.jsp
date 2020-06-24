@@ -25,7 +25,7 @@
             <input type="hidden" name="selfAssessmentCorrId" value="${param.selfAssessmentCorrId}"/>
             <%@ include file="/WEB-INF/jsp/iais/common/selfassessmentQuestion.jsp" %>
                 <iais:action style="text-align:left;">
-                    <a  id="backLastPageId" >< Back</a>
+                    <a  id="backLastPageId" ><em class="fa fa-angle-left"> </em> Back</a>
                 </iais:action>
 
             <td>
