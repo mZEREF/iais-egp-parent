@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
 import lombok.extern.slf4j.Slf4j;
@@ -233,7 +234,7 @@ public class InspecUserRecUploadDelegator {
             String fileName = file.getOriginalFilename();
             String substring = fileName.substring(fileName.lastIndexOf('.') + 1);
             if (file.getSize() > sysFileSize * 1024 * 1024) {
-                errorMap.put(errorKey, "The file has exceeded the maximum upload size of " + sysFileSize + "MB.");
+                errorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(sysFileSize),"sizeMax"));
                 return errorMap;
             }
             if(!IaisCommonUtils.isEmpty(sysFileTypes)) {
@@ -242,7 +243,7 @@ public class InspecUserRecUploadDelegator {
                 }
             }
             if (!flag) {
-                errorMap.put(errorKey, "The file type is incorrect.");
+                errorMap.put(errorKey, "GENERAL_ERR0018");
                 return errorMap;
             }
             if (file.getSize() / 1024 > 0) {
