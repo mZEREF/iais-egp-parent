@@ -372,7 +372,6 @@ public class MasterCodeDelegator {
         List<String> duplicateCode = IaisCommonUtils.genNewArrayList();
         List<String> emptyCode = IaisCommonUtils.genNewArrayList();
         List<String> filterCode = IaisCommonUtils.genNewArrayList();
-        List<MasterCodeToExcelDto> masterCodeAllList = masterCodeService.findAllMasterCode();
         boolean result = false;
         for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
             masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
@@ -383,14 +382,14 @@ public class MasterCodeDelegator {
                 emptyCode.add(masterCodeToExcelDto.getCodeValue());
                 result = true;
             }
-            for(MasterCodeToExcelDto masterCodeToExcelDto1:masterCodeAllList){
-                if (masterCodeToExcelDto.getFilterValue().equals(masterCodeToExcelDto1.getCodeValue())){
-                    filterCode.add(masterCodeToExcelDto.getCodeValue());
+            if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
+//                if (masterCodeToExcelDto.getFilterValue().equals(masterCodeToExcelDto1.getCodeValue())){
+//                    filterCode.add(masterCodeToExcelDto.getCodeValue());
+//                }
+                if (filterCode.size() == 0){
+                    emptyCode.add(masterCodeToExcelDto.getCodeValue());
+                    result = true;
                 }
-            }
-            if (filterCode.size() == 0){
-                emptyCode.add(masterCodeToExcelDto.getCodeValue());
-                result = true;
             }
         }
         if (result){

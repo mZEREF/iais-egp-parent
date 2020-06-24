@@ -27,7 +27,7 @@
                     </h3>
                     <div class="table-gp">
                         <iais:action style="text-align:left;">
-                            <div align="left"><span><a  href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initMsgView">< Back</a></span></div>
+                            <div align="left"><span><a  href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initMsgView"><em class="fa fa-angle-left"> </em> Back</a></span></div>
                         </iais:action>
                         <table class="table">
                             <thead>

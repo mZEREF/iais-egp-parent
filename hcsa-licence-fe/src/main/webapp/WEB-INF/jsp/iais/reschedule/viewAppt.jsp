@@ -63,7 +63,7 @@
 
                         <iais:row>
                             <iais:action style="text-align:left;">
-                                <div align="left"><span><a  href="/main-web/eservice/INTERNET/MohInternetInbox">< Back</a></span></div>
+                                <div align="left"><span><a  href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"> </em> Back</a></span></div>
                             </iais:action>
                             <br>
                             <iais:action style="text-align:right;"  >

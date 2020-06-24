@@ -123,7 +123,7 @@
 
                                         </c:if>
                                         <iais:action style="text-align:left;">
-                                            <a onclick="javascript:doBack()">< Back</a>
+                                            <a onclick="javascript:doBack()"><em class="fa fa-angle-left"> </em> Back</a>
                                         </iais:action>
                                         <iais:action style="text-align:right;">
                                             <button class="btn btn-primary" type="button"

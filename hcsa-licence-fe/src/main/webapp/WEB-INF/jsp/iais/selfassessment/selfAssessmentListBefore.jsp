@@ -71,7 +71,7 @@
 
                             <c:if test="${!selfDeclAction eq 'rfi'}">
                                 <iais:action style="text-align:left;">
-                                    <a  id="backLastPageId" >< Back</a>
+                                    <a  id="backLastPageId" ><em class="fa fa-angle-left"> </em> Back</a>
                                 </iais:action>
                             </c:if>
 

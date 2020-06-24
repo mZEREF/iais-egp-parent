@@ -35,4 +35,8 @@
     $("#amendLicence3_2").click(function(){
         SOP.Crud.cfxSubmit("mainForm", "amend3_2");
     });
+
+    $("#updateAdminPersonnel").click(function(){
+        SOP.Crud.cfxSubmit("mainForm", "upAdmin");
+    });
 </script>

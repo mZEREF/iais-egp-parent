@@ -380,7 +380,7 @@
                 </div>
             </div>
         </div>
-        <a  onclick="javascript:doBack();" >< Back</a>
+        <a  onclick="javascript:doBack();" ><em class="fa fa-angle-left"> </em> Back</a>
     </div>
 </form>
 <script type="text/javascript">
