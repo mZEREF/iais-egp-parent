@@ -5,10 +5,12 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
@@ -111,6 +113,9 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("saveDraftNo");
         bpc.getSession().removeAttribute("CgoMandatoryCount");
         bpc.getSession().removeAttribute("GovernanceOfficersList");
+        bpc.getSession().removeAttribute("CgoSelectList");
+        bpc.getSession().removeAttribute("SpecialtySelectList");
+        bpc.getSession().removeAttribute("IdTypeSelect");
         log.info("end**************start************");
     }
 
@@ -185,8 +190,9 @@ public class AppealDelegator {
         specialtyAttr.put("name", "specialty");
         specialtyAttr.put("class", "specialty");
         specialtyAttr.put("style", "display: none;");
-
-        specialtySelectList= genSpecialtySelectList("CLB");
+        String serviceName =(String)request.getSession().getAttribute("serviceName");
+        HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+        specialtySelectList= genSpecialtySelectList(serviceByServiceName.getSvcCode());
         ParamUtil.setSessionAttr(request, "SpecialtySelectList",(Serializable)  specialtySelectList);
 
         String specialtySelectStr = getHtml(specialtyAttr, specialtySelectList, null);
@@ -205,7 +211,7 @@ public class AppealDelegator {
         return sql;
     }
 
-    private List<SelectOption> getIdTypeSelOp(){
+    public static List<SelectOption> getIdTypeSelOp(){
         List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
         SelectOption idType0 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
         idTypeSelectList.add(idType0);
@@ -217,7 +223,7 @@ public class AppealDelegator {
     }
 
 
-    private  List<SelectOption> genSpecialtySelectList(String svcCode){
+    public static   List<SelectOption> genSpecialtySelectList(String svcCode){
         List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(svcCode)){
             if(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) ||

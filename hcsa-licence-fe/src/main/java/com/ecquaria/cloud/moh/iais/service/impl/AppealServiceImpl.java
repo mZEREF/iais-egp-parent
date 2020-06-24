@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.action.AppealDelegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -240,6 +241,7 @@ public class AppealServiceImpl implements AppealService {
         appSvcRelatedInfoDto.setServiceCode(serviceByServiceName.getSvcCode());
         appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
+        appSubmissionDto.setServiceName(serviceName);
         AppSubmissionDto entity = applicationClient.saveDraft(appSubmissionDto).getEntity();
         String draftNo = entity.getDraftNo();
         appPremiseMiscDto.setRemarks(remarks);
@@ -258,6 +260,7 @@ public class AppealServiceImpl implements AppealService {
         String draftNumber = ParamUtil.getMaskedString(request, "DraftNumber");
         if(draftNumber!=null){
             AppSubmissionDto appSubmissionDto = applicationClient.draftNumberGet(draftNumber).getEntity();
+            String serviceName = appSubmissionDto.getServiceName();
             String amountStr = appSubmissionDto.getAmountStr();
             try {
                 AppealPageDto appealPageDto = JsonUtil.parseToObject(amountStr, AppealPageDto.class);
@@ -282,6 +285,22 @@ public class AppealServiceImpl implements AppealService {
                     List<AppSvcCgoDto> appSvcCgoDto = appealPageDto.getAppSvcCgoDto();
                     request.getSession().setAttribute("CgoMandatoryCount",appSvcCgoDto.size());
                     request.getSession().setAttribute("GovernanceOfficersList",appSvcCgoDto);
+                    SelectOption sp0 = new SelectOption("-1", "Please Select");
+                    List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
+                    cgoSelectList.add(sp0);
+                    SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+                    cgoSelectList.add(sp1);
+                    ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
+                    List<SelectOption> idTypeSelOp = AppealDelegator.getIdTypeSelOp();
+                    ParamUtil.setSessionAttr(request, "IdTypeSelect",(Serializable)  idTypeSelOp);
+                    if(serviceName!=null){
+                        HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+                        List<SelectOption> list = AppealDelegator.genSpecialtySelectList(serviceByServiceName.getSvcCode());
+                        ParamUtil.setSessionAttr(request, "SpecialtySelectList",(Serializable)  list);
+
+                    }
+
+
                 }
                 typeApplicationOrLicence(request,type,appealFor);
                 request.setAttribute("appPremiseMiscDto",appPremiseMiscDto);

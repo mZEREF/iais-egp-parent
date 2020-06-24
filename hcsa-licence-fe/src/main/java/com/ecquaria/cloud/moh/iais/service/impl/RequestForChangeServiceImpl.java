@@ -100,6 +100,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Value("${iais.email.sender}")
     private String mailSender;
 
+
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
         return licenceClient.getPremises(licenseeId).getEntity();
@@ -1215,11 +1216,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         }
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+        List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos=IaisCommonUtils.genNewArrayList();
         List<AppSvcDocDto> appSvcDocDtos=IaisCommonUtils.genNewArrayList();
         if(appSvcDocDtoLit!=null){
             for(AppSvcDocDto appSvcDocDto : appSvcDocDtoLit){
                 String svcDocId = appSvcDocDto.getSvcDocId();
+                if(StringUtil.isEmpty(svcDocId)){
+                    continue;
+                }
                 HcsaSvcDocConfigDto entity = appConfigClient.getHcsaSvcDocConfigDtoById(svcDocId).getEntity();
                 if(entity!=null){
                     String serviceId = entity.getServiceId();
@@ -1239,7 +1244,32 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             }
             appSvcDocDtoLit.removeAll(appSvcDocDtos);
         }
+        if(dtoAppGrpPrimaryDocDtos!=null){
+            if(appGrpPrimaryDocDtos.isEmpty()){
+                appGrpPrimaryDocDtos.addAll(dtoAppGrpPrimaryDocDtos);
+            }else {
+                for(AppGrpPrimaryDocDto appGrpPrimaryDocDto1 : dtoAppGrpPrimaryDocDtos){
+                    for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
+                        String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
+                        String svcDocId1 = appGrpPrimaryDocDto1.getSvcDocId();
+                        if(svcDocId1!=null){
+                            if(svcDocId1.equals(svcDocId)){
+                                continue;
+                            }else {
+                                appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto1);
+                            }
+                        }else if(svcDocId!=null){
+                            if(svcDocId.equals(svcDocId1)){
+                                continue;
+                            }else {
+                                appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto1);
+                            }
+                        }
 
+                    }
+                }
+            }
+        }
         appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtos);
 
 

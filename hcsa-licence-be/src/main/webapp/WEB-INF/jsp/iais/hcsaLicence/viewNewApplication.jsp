@@ -34,7 +34,7 @@
 
           </div>
           <div class="col-xs-6">
-            <span class="oldVal " attr="${oldAppGrpPremisesDtoList[status.index].address}" style="display: none" ><label><c:out value="${oldAppGrpPremisesDtoList[status.index].address}"/></label></span>
+            <span class="oldVal " attr="${oldAppGrpPremisesDtoList[status.index].address}" style="display: none" ><c:out value="${oldAppGrpPremisesDtoList[status.index].address}"/></span>
 
           </div>
 
@@ -70,7 +70,7 @@
       <label style="font-size: 2.2rem">CLINICAL GOVERNANCE OFFICER</label>
       <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
-        <p><strong class="col-xs-6">Clinical Governance Officer ${status.index+1}</strong><span class="col-xs-4 col-md-4"><c:if test="${cgo.name==null}">-</c:if><c:if test="${cgo.name!=null}">${cgo.name}</c:if></span>
+        <p><strong class="col-xs-6">Clinical Governance Officer ${status.index+1}</strong><span class="col-xs-4 col-md-4"></span>
         </p>
         <div class="form-check-gp">
           <div class="row">
@@ -353,7 +353,7 @@
           <div class="row">
             <div class="col-xs-12">
               <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po" varStatus="status">
-                <p><strong class="col-xs-6">Principal Officers ${status.index+1}:</strong><span class="col-xs-6">${po.name}</span></p>
+                <p><strong class="col-xs-6">Principal Officers ${status.index+1}:</strong></p>
                 <table class="col-xs-12">
                   <tr>
                     <td class="col-xs-6">
@@ -876,13 +876,11 @@
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                       <div  class="col-xs-6">
-                        <span class="newVal " attr="${appSvcMedAlertPerson.salutation}" ><c:out value="${appSvcMedAlertPerson.salutation}"/></span>
+                        <span class="newVal " attr="${appSvcMedAlertPerson.salutation}" ><iais:code code="${appSvcMedAlertPerson.salutation}"/></span>
                       </div>
                       <div  class="col-xs-6">
                         <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}" style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].salutation}"/></span>
                       </div>
-
-
                       </p>
                     </td>
                   </tr>
@@ -1041,10 +1039,9 @@
                     </td>
                   </tr>
                   <tr >
-                    <td class="col-xs-12">
+                    <td>
                         <%-- <a href="${pageContext.request.contextPath}/file-repo?filerepo=svcFileRoId${currentSvcCode}${status.index}&fileRo${status.index}=<iais:mask name="svcFileRoId${currentSvcCode}${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}" title="Download" class="downloadFile">${svcDoc.docName}</a>--%>
-                      <div class="fileList">
-                        <span class="col-xs-12">
+
                           <div class="col-xs-6">
                              <span class="newVal " attr="${svcDoc.docSize}${svcDoc.docName}" >
                                     <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
@@ -1059,10 +1056,6 @@
                                   <c:out value="(${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcDocDtoLit[status.index].docSize})KB"/></span>
                           </div>
 
-                        </span>
-
-
-                      </div>
                     </td>
                   </tr>
                 </c:forEach>

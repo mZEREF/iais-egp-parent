@@ -117,12 +117,10 @@ public class LicenceViewServiceDelegator {
         String oldCorrelationId = "";
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
         if (appPremisesCorrelationDto != null) {
-
             newCorrelationId = appPremisesCorrelationDto.getId();
             oldCorrelationId = appPremisesCorrelationDto.getOldCorrelationId();
             String applicationId = appPremisesCorrelationDto.getApplicationId();
             appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationId);
-
             ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
             List<String> list = new ArrayList<>(1);
             if (applicationDto.getOriginLicenceId() != null) {
@@ -140,7 +138,6 @@ public class LicenceViewServiceDelegator {
                         String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
                         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
                         appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto.getId());
-
                         appSubmissionDto.setOldAppSubmissionDto(entity.get(0));
                     }
 
@@ -174,8 +171,8 @@ public class LicenceViewServiceDelegator {
                         String licenseeId = oldApplicationGroupDto.getLicenseeId();
                         LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
                         bpc.request.setAttribute("oldLicenceDto", oldLicenceDto);
+                        AppSubmissionDto appSubmissionByAppId = applicationClient.getAppSubmissionByoldAppId(applicationDto.getId()).getEntity();
 
-                        AppSubmissionDto appSubmissionByAppId = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
                         if (appSubmissionDto != null) {
                             appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId);
                         }
@@ -246,11 +243,9 @@ public class LicenceViewServiceDelegator {
         bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList", stringList);
 
         contrastNewAndOld(appSubmissionDto);
-        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         boolean canEidtPremise  = canEidtPremise(applicationViewDto.getApplicationGroupDto().getId());
         ParamUtil.setRequestAttr(bpc.request,"canEidtPremise",canEidtPremise);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData end ..."));
-        prepareViewServiceForm(bpc);
         String appType = appSubmissionDto.getAppType();
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
              svcDocToPresmise(appSubmissionDto);
@@ -269,7 +264,8 @@ public class LicenceViewServiceDelegator {
                 }
             }
         }
-
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        prepareViewServiceForm(bpc);
     }
     public void svcDocToPresmise(AppSubmissionDto appSubmissionDto) {
         if(appSubmissionDto==null){

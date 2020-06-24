@@ -510,6 +510,7 @@ public class WithOutRenewalDelegator {
                         if(attribute!=null){
                             for(LicenceDto licenceDto : attribute){
                                 AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceDto.getId());
+                                appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                                 appSubmissionService.transform(appSubmissionDtoByLicenceId,licenseeId);
                                 boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
                                 String address = appGrpPremisesDtoList.get(i).getAddress();

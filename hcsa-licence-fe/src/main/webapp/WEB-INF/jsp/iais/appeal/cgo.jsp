@@ -26,44 +26,6 @@
         <tr height="1">
           <td class="first last" style="width: 100%;">
             <div id="control--runtime--1" class="section control  container-s-1">
-              <div class="control-set-font control-font-header section-header">
-
-                <c:if test="${'APTY005' ==AppSubmissionDto.appType}">
-                  <c:forEach var="clickEditPage" items="${AppSubmissionDto.clickEditPage}">
-                    <c:if test="${'APPSPN02' == clickEditPage}">
-                      <c:set var="isClickEdit" value="true"/>
-                    </c:if>
-                  </c:forEach>
-                  <c:choose>
-                    <c:when test="${'true' != isClickEdit}">
-                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="0"/>
-                    </c:when>
-                    <c:otherwise>
-                      <input id="isEditHiddenVal" type="hidden" name="isEdit" value="1"/>
-                    </c:otherwise>
-                  </c:choose>
-                  <c:if test="${'true' != isClickEdit}">
-                    <c:set var="locking" value="true"/>
-                    <c:forEach var="amendType"  items="${AppSubmissionDto.amendTypes}">
-                      <c:if test="${amendType =='RFCATYPE05'}">
-                        <c:set var="canEdit" value="1"/>
-                      </c:if>
-                    </c:forEach>
-                    <div id="edit-content">
-                      <c:choose>
-                        <c:when test="${'1' == canEdit}">
-                          <em class="text-right"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></em>
-                        </c:when>
-                        <c:otherwise>
-                          <em class="text-right" style="color: gray"><em class="fa fa-pencil-square-o"></em>Edit</em>
-                        </c:otherwise>
-                      </c:choose>
-                    </div>
-                  </c:if>
-                </c:if>
-              </div>
-
-
               <div id="control--runtime--1--errorMsg_section_top" class="error_placements"></div>
               <div class="assignContent hideen-div hidden"></div>
               <c:if test="${CgoMandatoryCount >0}">
@@ -73,110 +35,92 @@
                   <c:set value="${cgoList[status.index]}" var="currentCgo"/>
                   <c:set value="${errorMap_governanceOfficers[status.index]}" var="errorMap"/>
                   <c:set value="${status.index}" var="suffix" />
-                  <table class="assignContent control-grid">
+                  <table class="assignContent control-grid" style="width:100%;">
+                    <input type="hidden" name="isPartEdit" value="0"/>
+                    <input type="hidden" name="cgoIndexNo" value="${currentCgo.cgoIndexNo}"/>
+                    <input type="hidden" name="existingPsn" value="0"/>
+                    <c:choose>
+                      <c:when test="${currentCgo.licPerson}">
+                        <input type="hidden" name="licPerson" value="1"/>
+                      </c:when>
+                      <c:otherwise>
+                        <input type="hidden" name="licPerson" value="0"/>
+                      </c:otherwise>
+                    </c:choose>
                     <tbody>
                     <tr height="1">
                       <td class="first last" style="width: 100%;">
                         <c:choose>
-                          <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
+                          <c:when test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
                             <div id="control--runtime--2" class="control control-caption-horizontal">
                               <c:if test="${currentCgo != null}">
-                                <div class=" form-group form-horizontal formgap">
-                                  <div class="col-sm-4 control-label formtext ">
-                                    <label>Clinical Governance Office ${status.index+1}</label><br/>
-                                    <label>${currentCgo.name},${currentCgo.idNo}(${currentCgo.idType})</label>
+                                <div class="form-group form-horizontal formgap">
+                                  <div class="col-sm-4 control-label formtext control">
+                                    <div class="cgo-header">
+                                      <strong>Clinical Governance Officer <label class="assign-psn-item">${status.index+1}</label></strong>
+                                    </div>
                                   </div>
-                                  <div class="hidden">
-                                    <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
+                                  <div class="col-sm-8 text-right">
+                                    <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
+                                      <div class="">
+                                        <h4 class="text-danger"><em class="fa fa-times-circle removeBtn cursorPointer"></em></h4>
+                                      </div>
+                                    </c:if>
+                                    <div class="hidden">
+                                      <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
+                                    </div>
+                                  </div>
+                                  <div class="col-sm-10">
+                                    <label class="control-font-label">${currentCgo.name}, ${currentCgo.idNo} (${currentCgo.idType})</label>
+                                  </div>
+                                  <div class="col-sm-2" style="margin-top:3%;">
+                                    <div class="edit-content">
+                                      <c:if test="${'true' == canEdit}">
+                                        <p><div class="text-right app-font-size-16"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>
+                                      </c:if>
+                                    </div>
                                   </div>
                                 </div>
                               </c:if>
                             </div>
                           </c:when>
                           <c:otherwise>
+                            <div id="control--runtime--" class="control control-caption-horizontal">
+                              <div class=" form-group form-horizontal formgap" <c:if test="${status.first}">style="width:194%;"</c:if> >
+                                <div class="col-sm-4 control-label formtext control">
+                                  <div class="cgo-header">
+                                    <strong>Clinical Governance Officer <label class="assign-psn-item">${status.index+1}</label></strong>
+                                  </div>
+                                </div>
+                                <div class="col-sm-8 text-right">
+                                  <c:if test="${status.index - HcsaSvcPersonnel.mandatoryCount >=0}">
+                                    <div class="">
+                                      <h4 class="text-danger"><em class="fa fa-times-circle cursorPointer removeBtn"></em></h4>
+                                    </div>
+                                  </c:if>
+                                </div>
+                              </div>
+                            </div>
                             <div id="control--runtime--2" class="control control-caption-horizontal">
                               <div class=" form-group form-horizontal formgap">
-                                <div class="control-label formtext assign-header">
-                                  Clinical Governance Officer <label class="assign-psn-item">${status.index+1}</label>
-                                </div><br/>
                                 <div class="col-sm-5 control-label formtext ">
-                                  <label id="control--runtime--2--label" class="control-label control-set-font control-font-label">Add/Assign a Clinical Governance Officer</label>
+                                  <label id="control--runtime--2--label" class="control-label control-set-font control-font-label" >Add/Assign a Clinical Governance Officer</label>
                                   <span class="upload_controls"></span>
                                 </div>
-                                <div class="col-sm-5" id="assignSelect${suffix}">
-                                  <div class="">
+                                <div class="col-sm-5 col-md-7" id="assignSelect${suffix}">
+                                  <div >
                                     <iais:select cssClass="assignSel"  name="assignSelect"  options="CgoSelectList" value="${currentCgo.assignSelect}"></iais:select>
                                     <span class="error-msg" name="iaisErrorMsg" id="error_assignSelect${status.index}"></span>
                                   </div>
                                 </div>
                               </div>
-
                             </div>
                           </c:otherwise>
                         </c:choose>
-                        <div class="profile-info-gp hidden">
-                          <div class="officer-info">
-                            <h3>Linda Tan</h3>
-                            <div class="row profile-line">
-                              <div class="col-xs-6 col-md-3">
-                                <p>Name</p>
-                              </div>
-                              <div class="col-xs-6 col-md-7">
-                                <p>Linda Tan</p>
-                              </div>
-                            </div>
-                            <div class="row profile-line">
-                              <div class="col-xs-6 col-md-3">
-                                <p>ID No.</p>
-                              </div>
-                              <div class="col-xs-6 col-md-7">
-                                <p>XXXX422 (NRIC)</p>
-                              </div>
-                            </div>
-                            <div class="row profile-line">
-                              <div class="col-xs-6 col-md-3">
-                                <p>Mobile No.</p>
-                              </div>
-                              <div class="col-xs-6 col-md-7">
-                                <p>+65 90009098</p>
-                              </div>
-                            </div>
-                            <div class="row profile-line">
-                              <div class="col-xs-6 col-md-3">
-                                <p>Email Address</p>
-                              </div>
-                              <div class="col-xs-6 col-md-7">
-                                <p>lindatan@hotmail.com</p>
-                              </div>
-                            </div>
-                            <div class="row">
-                              <div class="col-xs-12">
-                                <p>To edit these details, you will need to <a data-toggle="modal" data-target="#officerAmend">amend</a> it first before proceeding with your application.</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div id="newOfficer" class="new-officer-form ${cgoIndeNo}-new hidden">
-                          <table class="control-grid">
+                        <div class="profile-info-gp hidden"></div>
+                        <div id="newOfficer" class="new-officer-form hidden">
+                          <table class="control-grid" >
                             <tbody>
-                            <tr height="1">
-                              <td class="first last" style="width: 100%;">
-                                <div  class="control control-caption-horizontal">
-                                  <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
-                                      <label  class="control-label control-set-font control-font-label">Salutation</label>
-                                      <span class="mandatory">*</span>
-                                      <span class="upload_controls"></span>
-                                    </div>
-                                    <div class="col-sm-5" id="salutation${suffix}">
-                                      <iais:select  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${currentCgo.salutation}" firstOption="Please Select"></iais:select>
-                                      <span class="error-msg" name="iaisErrorMsg" id="error_salutation${status.index}"></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
                             <tr height="1">
                               <td class="first last" style="width: 100%;">
                                 <div  class="control control-caption-horizontal">
@@ -188,29 +132,14 @@
                                       <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-sm-5" id="name${suffix}">
+                                    <div class="col-sm-5 col-md-3" id="salutation${suffix}">
+                                      <iais:select cssClass="salutationSel"  name="salutation" codeCategory="CATE_ID_SALUTATION" value="${currentCgo.salutation}" firstOption="Please Select"></iais:select>
+                                      <span class="error-msg" name="iaisErrorMsg" id="error_salutation${status.index}"></span>
+                                    </div>
+                                    <div class="col-sm-3 col-md-4" id="name${suffix}">
                                       <div class="">
                                         <iais:input maxLength="66" type="text" name="name" value="${currentCgo.name}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_name${status.index}"></span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr height="1">
-                              <td class="first last" style="width: 100%;">
-                                <div id="control--runtime--3" class="control control-caption-horizontal">
-                                  <div class=" form-group form-horizontal formgap">
-                                    <div class="col-sm-4 control-label formtext ">
-                                      <label id="control--runtime--3--label" class="control-label control-set-font control-font-label">ID Type</label>
-                                      <span class="mandatory">*</span>
-                                      <span class="upload_controls"></span>
-                                    </div>
-                                    <div class="col-sm-5" id="idType${suffix}">
-                                      <div class="">
-                                        <iais:select cssClass="assignSel" name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_idTyp${status.index}"></span>
                                       </div>
                                     </div>
                                   </div>
@@ -228,12 +157,31 @@
                                       <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-5 col-md-3" id="idType${suffix}">
+                                      <div class="">
+                                        <iais:select cssClass="idTypeSel"  name="idType" value="${currentCgo.idType}" options="IdTypeSelect"></iais:select>
+                                        <span class="error-msg" name="iaisErrorMsg" id="error_idTyp${status.index}"></span>
+                                      </div>
+                                    </div>
+                                    <div class="col-sm-5 col-md-4">
                                       <div class="">
                                         <iais:input maxLength="9" type="text" name="idNo" value="${currentCgo.idNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMSg" id="error_idNo${status.index}"></span>
                                         <span class="error-msg" name="iaisErrorMSg" id="error_idNo"></span>
                                       </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr height="1">
+                              <td class="first last" style="width: 100%;">
+                                <div id="" class="control control-caption-horizontal">
+                                  <div class=" form-group form-horizontal formgap">
+                                    <div class="col-sm-4 control-label formtext ">
+                                    </div>
+                                    <div class="col-sm-5 col-md-7">
+                                      <span class="error-msg" name="iaisErrorMSg" id="error_idTypeNo${status.index}"></span>
                                     </div>
                                   </div>
                                 </div>
@@ -248,9 +196,9 @@
                                       <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-sm-5" id="designation${suffix}">
+                                    <div class="col-sm-5 col-md-7" id="designation${suffix}">
                                       <div class="">
-                                        <iais:select name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Select Designation"></iais:select>
+                                        <iais:select cssClass="designationSel" name="designation" codeCategory="CATE_ID_DESIGNATION" value="${currentCgo.designation}" firstOption="Please Select"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_designation${status.index}"></span>
                                       </div>
                                     </div>
@@ -267,9 +215,9 @@
                                       <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-sm-5" id="professionType${suffix}">
+                                    <div class="col-sm-5 col-md-7" id="professionType${suffix}">
                                       <div class="professionRegoType">
-                                        <iais:select name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Select professionRegoType"></iais:select>
+                                        <iais:select cssClass="professionTypeSel" name="professionType" codeCategory="CATE_ID_PROFESSIONAL_TYPE" value="${currentCgo.professionType}" firstOption="Please Select"></iais:select>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionType${status.index}"></span>
                                       </div>
                                     </div>
@@ -288,7 +236,7 @@
                                       <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-5 col-md-7">
                                       <div class="">
                                         <iais:input maxLength="20" type="text" name="professionRegoNo" value="${currentCgo.profRegNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_professionRegoNo${status.index}"></span>
@@ -306,19 +254,31 @@
                                       <label id="control--runtime--29--label" class="control-label control-set-font control-font-label">Specialty</label>
                                       <span class="mandatory">*</span>
                                     </div>
-                                    <div class="col-sm-5" id="specialty${suffix}">
+                                    <div class="col-sm-5 col-md-7" id="specialty${suffix}">
                                       <div class="specialtyContent">
-                                        <iais:select cssClass="specialty" name="specialty" options="SpecialtySelectList" value="${currentCgo.speciality}" ></iais:select>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
-                                        <c:choose>
-                                          <c:when test="${currentCgo.speciality eq 'other'}">
-                                            <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal" value="${currentCgo.specialityOther}" maxlength="100">
-                                          </c:when>
-                                          <c:otherwise>
-                                            <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal hidden" value="" maxlength="100">
-                                          </c:otherwise>
-                                        </c:choose>
-
+                                        <div class="specialtyDiv">
+                                          <c:choose>
+                                            <c:when test="${currentCgo.needSpcOptList}">
+                                              ${currentCgo.specialityHtml}
+                                              <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
+                                            </c:when>
+                                            <c:otherwise>
+                                              <iais:select cssClass="specialty" name="specialty" options="SpecialtySelectList" value="${currentCgo.speciality}" ></iais:select>
+                                              <span class="error-msg" name="iaisErrorMsg" id="error_speciality${status.index}"></span>
+                                            </c:otherwise>
+                                          </c:choose>
+                                        </div>
+                                        <div class="specialtyOtherDiv">
+                                          <c:choose>
+                                            <c:when test="${currentCgo.speciality eq 'other'}">
+                                              <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal" value="${currentCgo.specialityOther}" maxlength="100">
+                                              <span name="iaisErrorMsg" class="error-msg" id="error_other${status.index}"></span>
+                                            </c:when>
+                                            <c:otherwise>
+                                              <input name="specialtyOther" type="text"  class="form-control control-input control-set-font control-font-normal hidden" value="" maxlength="100">
+                                            </c:otherwise>
+                                          </c:choose>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -334,7 +294,7 @@
                                         Subspeciality or relevant qualification
                                       </label>
                                     </div>
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-5 col-md-7">
                                       <div class="">
                                         <iais:input maxLength="100" type="text" name="qualification" value="${currentCgo.subSpeciality}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_qualification${status.index}"><c:out value="${errorMap.qualification}"></c:out></span>
@@ -349,11 +309,10 @@
                                 <div  class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
-                                      <label  class="control-label control-set-font control-font-label">Mobile No.
-                                      </label>                                                                                                                                        <span class="mandatory">*</span>
+                                      <label  class="control-label control-set-font control-font-label">Mobile No.</label>                                                                                                                                        <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-5 col-md-7">
                                       <div class="">
                                         <iais:input maxLength="8" type="text" name="mobileNo" value="${currentCgo.mobileNo}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_mobileNo${status.index}"></span>
@@ -368,11 +327,11 @@
                                 <div id="control--runtime--33" class="control control-caption-horizontal">
                                   <div class=" form-group form-horizontal formgap">
                                     <div class="col-sm-4 control-label formtext ">
-                                      <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email address
-                                      </label>                                                                                                                                                        <span class="mandatory">*</span>
+                                      <label id="control--runtime--33--label" class="control-label control-set-font control-font-label">Email Address</label>
+                                      <span class="mandatory">*</span>
                                       <span class="upload_controls"></span>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4 col-md-7">
                                       <div class="">
                                         <iais:input maxLength="66" type="text" name="emailAddress" value="${currentCgo.emailAddr}"></iais:input>
                                         <span class="error-msg" name="iaisErrorMsg" id="error_emailAddr${status.index}"></span>
