@@ -103,7 +103,7 @@
                     <iais:sortableHeader needSort="true" field="STATUS" value="Status"/>
                     <iais:sortableHeader needSort="true" field="CREATED_DT"
                                          value="Submission Date"/>
-                    <th style="width:15%">Actions</th>
+                    <th style="width:15%;padding-bottom: 21px">Actions</th>
                 </tr>
                 </thead>
                 <tbody>

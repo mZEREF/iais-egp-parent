@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
-                <div class="tab-gp dashboard-tab">
+                <div class="tab-gp dashboard-tab" style="margin-left: 6px;margin-right: -8px;">
                     <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
                         <li class="active" role="presentation" id="inboxTab"><a href="#" aria-controls="tabInbox"
                                                                                 role="tab" data-toggle="tab">Inbox
