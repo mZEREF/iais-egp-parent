@@ -39,7 +39,7 @@
         </div>
     </div>
     <div align="center">
-        <a href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
+        <a   href="javascript:void(0);" onclick="doOpenApp()">
             <button type="button" class="btn btn-primary">
                 View Application
             </button>
@@ -96,4 +96,9 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        function doOpenApp() {
+            window.open ("/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService");
+        }
+    </script>
 
