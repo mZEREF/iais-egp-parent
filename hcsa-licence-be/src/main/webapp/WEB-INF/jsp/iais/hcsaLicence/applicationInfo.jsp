@@ -39,7 +39,7 @@
         </div>
     </div>
     <div align="center">
-        <a   href="javascript:void(0);" onclick="doOpenApp()">
+        <a   href="javascript:void(0);" onclick="javascript:doOpenApp()">
             <button type="button" class="btn btn-primary">
                 View Application
             </button>
