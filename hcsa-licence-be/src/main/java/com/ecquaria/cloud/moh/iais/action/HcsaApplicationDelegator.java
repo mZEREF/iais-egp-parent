@@ -1254,6 +1254,22 @@ public class HcsaApplicationDelegator {
         }
     }
 
+    public void sendRouteBackEmail(String licenseeId,ApplicationViewDto applicationViewDto) throws Exception{
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String applicationType = applicationDto.getApplicationType();
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+            String mesContext = "Internal route back context";
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject("MOH IAIS – Internal Clarification for New Application");
+            emailDto.setSender(mailSender);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
+            //send
+            emailClient.sendNotification(emailDto).getEntity();
+        }
+    }
+
     private void checkRecommendationDropdownValue(Integer  recomInNumber,String chronoUnit,String codeDesc,ApplicationViewDto applicationViewDto,BaseProcessClass bpc){
         if(StringUtil.isEmpty(recomInNumber)){
             ParamUtil.setRequestAttr(bpc.request,"recommendationStr","");
@@ -1622,6 +1638,13 @@ public class HcsaApplicationDelegator {
     private void rollBack(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws CloneNotSupportedException {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        //send internal route back email
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+        try{
+            sendRouteBackEmail(licenseeId,applicationViewDto);
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("send internal route back email error"));
+        }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
@@ -1716,7 +1739,6 @@ public class HcsaApplicationDelegator {
 
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
-
     }
 
     private void updateInspectionStatus(String appPremisesCorrelationId, String status) {
