@@ -371,6 +371,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             List<String> emailAdresss = new ArrayList<>(1);
             emailAdresss.add(email);
             emailDto.setReceipts(emailAdresss);
+            emailDto.setClientQueryCode(emailKey);
             //send
             emailClient.sendNotification(emailDto).getEntity();
         }catch (Exception e){
