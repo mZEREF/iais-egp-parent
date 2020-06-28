@@ -267,8 +267,7 @@ public class InboxServiceImpl implements InboxService {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         for(ApplicationDto app : apps){
-            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(app.getApplicationType())
-                    && !(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(app.getStatus()))
+            if(!(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(app.getStatus()))
                     && !(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(app.getStatus()))
                     && !(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(app.getStatus()))
                     && !(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(app.getStatus()))
