@@ -51,11 +51,12 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         if(serListDto!=null){
             if(serListDto.getAppPremisesSpecialDocDto() != null){
                 if( maxFile < serListDto.getAppPremisesSpecialDocDto().getDocSize()){
-                    errMap.put("litterFile",MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxFile),"sizeMax"));
+                    errMap.put("litterFile",MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(applicationViewDto.getSystemMaxFileSize()),"sizeMax"));
                 }
                 String docName = serListDto.getAppPremisesSpecialDocDto().getDocName();
                 if( !StringUtil.isEmpty(docName)){
-                    String  docNameType = serListDto.getAppPremisesSpecialDocDto().getDocName().split("\\.")[1];
+                    String [] DGroup =  serListDto.getAppPremisesSpecialDocDto().getDocName().split("\\.");
+                    String  docNameType = DGroup[DGroup.length-1];
                     boolean noType = false;
                     for(String s : fileTypes){
                         if( s.equalsIgnoreCase(docNameType)){
