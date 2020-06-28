@@ -611,8 +611,8 @@ public class WithOutRenewalDelegator {
             if(!StringUtil.isEmpty(amount)){
                 renewTotal+=amount;
                 total +=amount;
-                appSubmissionDto.setAmount(amount);
-                String amountStr = Formatter.formatterMoney(amount);
+                appSubmissionDto.setAmount(amount - lateFee);
+                String amountStr = Formatter.formatterMoney(amount - lateFee);
                 appSubmissionDto.setAmountStr(amountStr);
             }
            requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);

@@ -29,21 +29,14 @@
                                     <li class="tracker-item active">Payment</li>
                                     <li class="tracker-item disabled">Acknowledgement</li>
                                 </ul>
-                                <h2 style="margin-top: 20px;">Payment Summary</h2>
-                                <p >
-                                    Total amount due:
-                                    <c:out value="${totalStr}"></c:out>
-                                </p>
+                                <h2 style="margin-top: 20px; border-bottom: none;">Payment Summary</h2>
                                 <table class="table">
                                     <thead>
                                     <tr>
                                         <th>Service</th>
-                                        <th>Late Fee Type</th>
                                         <th>Application Type</th>
                                         <th>Application No.</th>
-                                        <th>Late Fee Amount</th>
                                         <th>Amount</th>
-<%--                                        <th>Amount</th>--%>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -55,57 +48,50 @@
                                                     <p><c:out value="${svc.serviceName}"></c:out></p>
                                                 </td>
                                                 <td>
-                                                    <p>${detailFeeDto.lateFeeType}</p>
-                                                </td>
-                                                <td>
                                                   <c:if test="${svc.applicationType=='APTY005'}">
                                                     Amendment
                                                   </c:if>
                                                   <c:if test="${svc.applicationType=='APTY004'}">
                                                     Renewal
                                                   </c:if>
-
                                                 </td>
                                                 <td>
                                                     <p>${svc.groupNo}</p>
                                                 </td>
                                                 <td>
-                                                    <p>${detailFeeDto.lateFeeAmoumtStr}</p>
+                                                    <p>${AppSubmissionDto.amountStr}</p>
                                                 </td>
-                                                <td>
-                                                    <p>${svc.amountStr}</p>
-                                                </td>
-<%--                                                <td>--%>
-<%--                                                    <p><c:out value="${AppSubmissionDto.amountStr}"></c:out></p>--%>
-<%--                                                </td>--%>
                                             </tr>
                                         </c:forEach>
                                     </c:forEach>
 
+                                    <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}"  varStatus="status">
+                                        <c:set var="detailFeeDto" value="${AppSubmissionDto.detailFeeDto}"/>
+                                        <c:if test="${detailFeeDto != null && detailFeeDto.lateFeeType != '' && detailFeeDto.lateFeeAmoumtStr != '' && detailFeeDto.lateFeeType != null && detailFeeDto.lateFeeAmoumtStr != null}">
+                                            <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
+                                                <tr>
+                                                    <td>
+                                                        <p>${detailFeeDto.lateFeeType}</p>
+                                                        <p>Applicable to the following licence(s):</p>
+                                                        <p><c:out value="${svc.serviceName}"></c:out></p>
+                                                    </td>
+                                                    <td>NA</td>
+                                                    <td>NA</td>
+                                                    <td><p>${detailFeeDto.lateFeeAmoumtStr}</p></td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:if>
+                                    </c:forEach>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Total amount due:</td>
+                                        <td><p><strong><c:out value="${totalStr}"></c:out></strong></p></td>
+                                    </tr>
                                     </tbody>
                                 </table>
-<%--                                <h2>Payment Method</h2>--%>
-<%--                                <input class="form-check-input premTypeRadio"  type="radio" checked name="payMethod" value="Credit">--%>
-<%--                                <label class="form-check-label" ><span class="check-circle"></span>Credit/Debit Card</label>&nbsp&nbsp&nbsp&nbsp--%>
-<%--                                <span name="iaisErrorMsg" id="error_payMethod" class="error-msg"></span>--%>
-<%--                                <br>--%>
-
-<%--                                &nbsp&nbsp&nbsp&nbsp<img src="<%=webroot1%>img/mastercard.png" width="40" height="25" alt="mastercard">&nbsp--%>
-<%--                                <img src="<%=webroot1%>img/paymentVISA.png" width="66" height="25" alt="VISA">--%>
                                 <%@include file="../newApplication/paymentMethod.jsp"%>
                             </div>
-
-<%--                            <div class="application-tab-footer">--%>
-<%--                                <div class="row">--%>
-<%--                                    <div class="col-xs-12 col-sm-6">--%>
-<%--                                        <p><a id="BACK" class="back"><em class="fa fa-angle-left"></em> Back</a></p>--%>
-<%--                                    </div>--%>
-<%--                                    <div class="col-xs-12 col-sm-6">--%>
-<%--                                        <div id="proceed" class="text-right text-center-mobile"><a class="btn btn-primary">Proceed</a></div>--%>
-<%--                                    </div>--%>
-<%--                                </div>--%>
-<%--                            </div>--%>
-
                         </div>
                     </div>
                 </div>
