@@ -536,13 +536,13 @@ public class InterInboxDelegator {
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         SearchResult appResult = inboxService.appDoQuery(appParam);
         if(!StringUtil.isEmpty(appResult)){
-//            List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
-//            inboxAppQueryDtoList.forEach(h ->{
+            List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
+            inboxAppQueryDtoList.forEach(h ->{
 //                RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
 //                recallApplicationDto.setAppId(h.getId());
 //                recallApplicationDto.setAppNo(h.getApplicationNo());
-//                h.setCanRecall(inboxService.canRecallApplication(recallApplicationDto));
-//            });
+                h.setCanRecall(true);
+            });
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);
         }

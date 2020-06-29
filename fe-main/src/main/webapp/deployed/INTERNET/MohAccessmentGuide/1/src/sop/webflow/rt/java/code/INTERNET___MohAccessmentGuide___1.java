@@ -30,14 +30,6 @@ public class INTERNET___MohAccessmentGuide___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "newApp1", this);
 	}
 
-	public void newApp2_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "newApp2", this);
-	}
-
-	public void newApp3_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "newApp3", this);
-	}
-
 	public void renewLic_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "renewLic", this);
 	}
@@ -128,6 +120,72 @@ public class INTERNET___MohAccessmentGuide___1 extends BaseProcessClass {
 
 	public void prepareSwitch_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "prepareSwitch", this);
+	}
+
+	public void doWithdrawalSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doWithdrawalSort", this);
+	}
+
+	public void doWithdrawalPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doWithdrawalPage", this);
+	}
+
+	public void doCeasLicSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doCeasLicSort", this);
+	}
+
+	public void doCeasLicPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doCeasLicPage", this);
+	}
+
+	public void updateLicenceSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "updateLicenceSort", this);
+	// 		updateLicenceSort->OnStepProcess
+	}
+
+	public void updateLicencePage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "updateLicencePage", this);
+	// 		updateLicencePage->OnStepProcess
+	}
+
+	public void addServicePage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "addServicePage", this);
+	// 		addServicePage->OnStepProcess
+	}
+
+	public void addServiceSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "addServiceSort", this);
+	// 		addServiceSort->OnStepProcess
+	}
+
+	public void addRemovePersonalPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "addRemovePersonalPage", this);
+	// 		addRemovePersonalPage->OnStepProcess
+	}
+
+	public void addRemovePersonalSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "addRemovePersonalSort", this);
+	// 		addRemovePersonalSort->OnStepProcess
+	}
+
+	public void updateLicenceesPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "updateLicenceesPage", this);
+	// 		updateLicenceesPage->OnStepProcess
+	}
+
+	public void updateLicenceesSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, " updateLicenceesSort", this);
+	// 		updateLicenceesSort->OnStepProcess
+	}
+
+	public void updateContactSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "updateContactSort", this);
+	// 		updateContactSort->OnStepProcess
+	}
+
+	public void updateContactPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "updateContactPage", this);
+	// 		updateContactPage->OnStepProcess
 	}
 	
 

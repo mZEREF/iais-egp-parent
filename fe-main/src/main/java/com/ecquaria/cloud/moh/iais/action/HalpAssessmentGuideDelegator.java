@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -210,15 +211,25 @@ public class HalpAssessmentGuideDelegator {
         log.info("****start ******");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, premiseFilterParameter, true);
-        searchParam.addFilter("licenseeId", licenseeId, true);
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", searchParam);
-        SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
-        if (!StringUtil.isEmpty(searchResult)) {
-            ParamUtil.setSessionAttr(bpc.request, "PremisesSearchParam", searchParam);
-            ParamUtil.setRequestAttr(bpc.request, "PremisesSearchResult", searchResult);
+        SearchParam ceaseLicenceParam = HalpSearchResultHelper.gainSearchParam(bpc.request,GuideConsts.CEASE_LICENCE_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
+        ceaseLicenceParam.addFilter("licenseeId", licenseeId, true);
+        QueryHelp.setMainSql("interInboxQuery", "queryPremises", ceaseLicenceParam);
+        SearchResult<PremisesListQueryDto> ceaseLicenceResult = requestForChangeService.searchPreInfo(ceaseLicenceParam);
+        if (!StringUtil.isEmpty(ceaseLicenceResult)) {
+            ParamUtil.setSessionAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_PARAM, ceaseLicenceParam);
+            ParamUtil.setRequestAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_RESULT, ceaseLicenceResult);
         }
         log.info("****end ******");
+    }
+
+    public void doCeasLicSort(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
+    }
+
+    public void doCeasLicPage(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.CEASE_LICENCE_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
 
     public void doCeasLicStep(BaseProcessClass bpc) throws IOException {
@@ -251,17 +262,26 @@ public class HalpAssessmentGuideDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
 
-        SearchParam appParam = SearchResultHelper.getSearchParam(bpc.request, appParameter, true);
-        appParam.addFilter("licenseeId", licenseeId, true);
-        appParam.addFilter("appStatus", ApplicationConsts.APPLICATION_STATUS_DRAFT, true);
+        SearchParam withdrawAppParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+        withdrawAppParam.addFilter("licenseeId", licenseeId, true);
 
-        QueryHelp.setMainSql("interInboxQuery", "applicationQuery", appParam);
-        SearchResult<InboxAppQueryDto> appResult = inboxService.appDoQuery(appParam);
+        QueryHelp.setMainSql("interInboxQuery", "applicationQuery", withdrawAppParam);
+        SearchResult<InboxAppQueryDto> withdrawAppResult = inboxService.appDoQuery(withdrawAppParam);
 
-        if (!StringUtil.isEmpty(appResult)) {
-            ParamUtil.setSessionAttr(bpc.request, "appParam", appParam);
-            ParamUtil.setRequestAttr(bpc.request, "appResult", appResult);
+        if (withdrawAppResult != null) {
+            ParamUtil.setSessionAttr(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM, withdrawAppParam);
+            ParamUtil.setRequestAttr(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_RESULT, withdrawAppResult);
         }
+    }
+
+    public void doWithdrawalSort(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
+    }
+
+    public void doWithdrawalPage(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
 
     public void doWithdrawalStep(BaseProcessClass bpc) throws IOException {
@@ -305,6 +325,66 @@ public class HalpAssessmentGuideDelegator {
                 .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList");
         String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), request);
         bpc.response.sendRedirect(tokenUrl);
+    }
+
+
+
+
+
+    public void updateLicenceSort(BaseProcessClass bpc) {
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+
+    }
+
+    public void updateLicencePage(BaseProcessClass bpc) {
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+
+    }
+
+    public void addServicePage(BaseProcessClass bpc) {
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+
+    }
+
+    public void addServiceSort(BaseProcessClass bpc) {
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+
+    }
+
+    public void addRemovePersonalPage(BaseProcessClass bpc) {
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+
+    }
+
+
+    public void addRemovePersonalSort(BaseProcessClass bpc) {
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+
+    }
+
+
+    public void updateLicenceesPage(BaseProcessClass bpc) {
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+
+    }
+
+    public void updateContactSort(BaseProcessClass bpc) {
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+
+    }
+
+    public void updateContactPage(BaseProcessClass bpc) {
+        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
+        CrudHelper.doPaging(searchParam,bpc.request);
+
     }
 
 }

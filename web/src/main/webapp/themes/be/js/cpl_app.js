@@ -640,12 +640,12 @@ function selfAssessmentFunc() {
 
     });
 
-    $('.self-assessment-gp .self-assessment-item .table-gp .table input[type="radio"]').on('change', function() {
-        var radioName = $(this).attr("name");
-        var itemID = $("input[name='" + radioName + "']:checked").attr("id");
-        $("input[name='" + radioName + "']").closest("tr").removeClass('selectedRow');
-        $('#' + itemID).closest("tr").addClass('selectedRow');
-
-        $(this).closest('.form-check-gp').find('a.disabled').removeClass('disabled');
-    });
+    // $('.self-assessment-gp .self-assessment-item .table-gp .table input[type="radio"]').on('change', function() {
+    //     var radioName = $(this).attr("name");
+    //     var itemID = $("input[name='" + radioName + "']:checked").attr("id");
+    //     $("input[name='" + radioName + "']").closest("tr").removeClass('selectedRow');
+    //     $('#' + itemID).closest("tr").addClass('selectedRow');
+    //
+    //     $(this).closest('.form-check-gp').find('a.disabled').removeClass('disabled');
+    // });
 }

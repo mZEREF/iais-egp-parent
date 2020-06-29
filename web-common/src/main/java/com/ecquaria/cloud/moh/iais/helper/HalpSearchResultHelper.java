@@ -16,6 +16,19 @@ public class HalpSearchResultHelper {
         return getSearchParam(request, searchClassName,false);
     }
 
+
+    public static SearchParam gainSearchParam(HttpServletRequest request,String paramName,String searchClassName,String sortField,String sortRule,boolean isNew){
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, paramName);
+        if(searchParam == null || isNew){
+            searchParam = new SearchParam(searchClassName);
+            searchParam.setPageSize(10);
+            searchParam.setPageNo(1);
+            searchParam.setSort(sortField, sortRule);
+            ParamUtil.setSessionAttr(request,paramName, searchParam);
+        }
+        return searchParam;
+    }
+
     public static SearchParam getSearchParam(HttpServletRequest request,String searchClassName,boolean isNew) {
         SearchParam searchParam = null;
         switch (searchClassName) {

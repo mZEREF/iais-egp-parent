@@ -29,5 +29,13 @@
 
     $("#withdrawApplication").attr('checked', 'true');
 
+    function jumpToPagechangePage() {
+        $("[name='guide_action_type']").val("withdrawPage");
+        $("#mainForm").submit();
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        SOP.Crud.cfxSubmit("mainForm", "withdrawSort", sortFieldName, sortType);
+    }
 </script>
 
