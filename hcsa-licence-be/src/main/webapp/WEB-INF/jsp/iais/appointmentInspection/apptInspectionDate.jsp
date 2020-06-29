@@ -85,7 +85,7 @@
                                   <tr align="center">
                                     <th>Application No</th>
                                     <th>Application Status</th>
-                                    <th>Responsible Person</th>
+                                    <th>MOH Officer(s)</th>
                                   </tr>
                                 </thead>
                                 <tbody>
