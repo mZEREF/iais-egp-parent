@@ -27,7 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RecommendInspectionDto;
@@ -171,29 +171,15 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = appConfigClient.serviceCorrelation().getEntity();
         boolean onlySpecifiedSvc = false;
         for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-            if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || !StringUtil.isEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())){
+            if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
                 onlySpecifiedSvc = true;
             }
         }
        if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-            //baseServiceIds = appSubmissionDto.getExistBaseServiceList();
-//            for(String baseSvcId:baseServiceIds){
-//                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(baseSvcId);
-//                LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
-//                licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
-//                licenceFeeDto.setIncludeBase(false);
-//                licenceFeeDto.setServiceCode(hcsaServiceDto.getSvcCode());
-//                licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
-//                licenceFeeDto.setPremises(premisessTypes);
-//                linenceFeeQuaryDtos.add(licenceFeeDto);
-//            }
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
-                //todo:change
-                if(StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) && StringUtil.isEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())){
+                if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
                     licenceFeeDto.setIncludeBase(true);
-                }else{
-                    licenceFeeDto.setIncludeBase(false);
                 }
                 HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
                 licenceFeeDto.setBaseService(baseServiceDto.getSvcCode());
@@ -738,6 +724,21 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
             appGrpPremisesEntityDtos = applicationClient.getPendAppPremises(licenseeId,svcIdStr).getEntity();
         }
         return appGrpPremisesEntityDtos;
+    }
+
+    @Override
+    public List<AppAlignLicQueryDto> getAppAlignLicQueryDto(String licenseeId, List<String> svcNameList) {
+        List<AppAlignLicQueryDto> appAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(licenseeId) && !IaisCommonUtils.isEmpty(svcNameList)) {
+            String svcNames = JsonUtil.parseToJson(svcNameList);
+            appAlignLicQueryDtos = licenceClient.getAppAlignLicQueryDto(licenseeId,svcNames).getEntity();
+        }
+        return appAlignLicQueryDtos;
+    }
+
+    @Override
+    public List<AppGrpPremisesDto> getLicPremisesInfo(String id) {
+        return licenceClient.getLicPremisesById(id).getEntity();
     }
 
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){

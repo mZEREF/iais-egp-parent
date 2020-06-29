@@ -2215,6 +2215,19 @@ public class NewApplicationDelegator {
 
         //set psn dropdown
         setPsnDroTo(appSubmissionDto,bpc);
+        //rfi select control
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+        appEditSelectDto.setPremisesEdit(true);
+        appEditSelectDto.setDocEdit(true);
+        appEditSelectDto.setServiceEdit(true);
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+            if(StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || StringUtil.isEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())){
+                appEditSelectDto.setPremisesEdit(false);
+                break;
+            }
+        }
+        appSubmissionDto.setChangeSelectDto(appEditSelectDto);
 
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -3865,6 +3878,11 @@ public class NewApplicationDelegator {
             log.info(StringUtil.changeForLog("draftNo is not empty"));
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(appSubmissionDto!=null){
+                //remove submit id
+                appSubmissionDto.setId("");
+                appSubmissionDto.setAppGrpId("");
+                appSubmissionDto.setAppGrpNo("");
+
                 if(IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
                     log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));
                 }
@@ -5284,41 +5302,67 @@ public class NewApplicationDelegator {
 
     private void loadingSpecifiedInfo(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
-        List<String> licenceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licence");
-        List<String> specifiedServiceIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "specifiedServiceChecked");
-        List<String> baseSvcIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "baseServiceChecked");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
-        if(!IaisCommonUtils.isEmpty(licenceIds) && !IaisCommonUtils.isEmpty(specifiedServiceIds) && appSubmissionDto == null){
-            //todo: now 1:1
-            AppSvcRelatedInfoDto svcRelaDto = new AppSvcRelatedInfoDto();
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos2 = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,ServiceMenuDelegator.APP_SVC_RELATED_INFO_LIST);
+        if(appSvcRelatedInfoDtos2 != null && appSubmissionDto == null){
+            appSubmissionDto = new AppSubmissionDto();
+            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos2);
 
-            appSubmissionDto = appSubmissionService.getExistBaseSvcInfo(licenceIds);
-            if(appSubmissionDto != null){
-                //deal with premises page load
-                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-                    for(AppGrpPremisesDto appGrpPremisesDtos1:appGrpPremisesDtos){
-                        appGrpPremisesDtos1.setPremisesSelect(NewApplicationConstant.NEW_PREMISES);
-                    }
+            String premisesId = appSvcRelatedInfoDtos2.get(0).getLicPremisesId();
+            if(!StringUtil.isEmpty(premisesId)){
+                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionService.getLicPremisesInfo(premisesId);
+                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                    appGrpPremisesDto.setPremisesSelect(NewApplicationConstant.NEW_PREMISES);
                 }
                 appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
-                for(String specifiedServiceId:specifiedServiceIds){
-                    HcsaServiceDto spcService = HcsaServiceCacheHelper.getServiceById(specifiedServiceId);
-                    AppSvcRelatedInfoDto appSvcRelatedInfoDto =  appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
-                    appSvcRelatedInfoDto.setServiceId(specifiedServiceId);
-                    appSvcRelatedInfoDto.setServiceName(spcService.getSvcName());
-                    appSvcRelatedInfoDto.setServiceCode(spcService.getSvcCode());
-                    appSvcRelatedInfoDto.setServiceType(spcService.getSvcType());
-                    HcsaServiceDto baseService = HcsaServiceCacheHelper.getServiceByServiceName(appSvcRelatedInfoDto.getBaseServiceName());
-                    appSvcRelatedInfoDto.setBaseServiceId(baseService.getId());
-                    appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
-                }
-                appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            }else{
+                List<AppGrpPremisesDto> appGrpPremisesDtos = IaisCommonUtils.genNewArrayList();
+                AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();
+                appGrpPremisesDtos.add(appGrpPremisesDto);
+                appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
             }
-            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto  );
         }
+
+//        List<String> licenceIds = IaisCommonUtils.genNewArrayList();
+//        List<String> specifiedServiceIds = IaisCommonUtils.genNewArrayList();
+//        List<String> baseSvcIds = IaisCommonUtils.genNewArrayList();
+//        licenceIds.add("BFE7C0D4-E098-EA11-BE82-000C29F371DC");
+//        specifiedServiceIds.add("A21ADD49-820B-EA11-BE7D-000C29F371DC");
+//        baseSvcIds.add("35F99D15-820B-EA11-BE7D-000C29F371DC");
+//
+//        if(!IaisCommonUtils.isEmpty(licenceIds) && !IaisCommonUtils.isEmpty(specifiedServiceIds) && appSubmissionDto == null){
+//            //todo: now 1:1
+//            AppSvcRelatedInfoDto svcRelaDto = new AppSvcRelatedInfoDto();
+//
+//            appSubmissionDto = appSubmissionService.getExistBaseSvcInfo(licenceIds);
+//            if(appSubmissionDto != null){
+//                //deal with premises page load
+//                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+//                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+//                    for(AppGrpPremisesDto appGrpPremisesDtos1:appGrpPremisesDtos){
+//                        appGrpPremisesDtos1.setPremisesSelect(NewApplicationConstant.NEW_PREMISES);
+//                    }
+//                }
+//                appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+//                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
+//                for(String specifiedServiceId:specifiedServiceIds){
+//                    HcsaServiceDto spcService = HcsaServiceCacheHelper.getServiceById(specifiedServiceId);
+//                    AppSvcRelatedInfoDto appSvcRelatedInfoDto =  appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+//                    appSvcRelatedInfoDto.setServiceId(specifiedServiceId);
+//                    appSvcRelatedInfoDto.setServiceName(spcService.getSvcName());
+//                    appSvcRelatedInfoDto.setServiceCode(spcService.getSvcCode());
+//                    appSvcRelatedInfoDto.setServiceType(spcService.getSvcType());
+//                    HcsaServiceDto baseService = HcsaServiceCacheHelper.getServiceByServiceName(appSvcRelatedInfoDto.getBaseServiceName());
+//                    appSvcRelatedInfoDto.setBaseServiceId(baseService.getId());
+//                    appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+//                }
+//                appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
+//                appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+//            }
+//            ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+//        }
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
     }
 
