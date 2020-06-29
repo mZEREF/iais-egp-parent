@@ -1,14 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
@@ -64,6 +62,10 @@ public interface ApplicationClient  {
     @RequestMapping(value = "/iais-application/status",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE,method =RequestMethod.PUT)
     FeignResponseEntity<Void> updateStatus(@RequestBody Map<String,List<String>> map);
+
+    @PutMapping(path = "/iais-application/application-correlations-Appt", produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesCorrelationDto>> appPremisesCorrelationDtosByApptViewDtos(@RequestBody List<ApptViewDto> apptViewDtos);
 
     @PutMapping(path = "/iais-application/lastApplication", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)

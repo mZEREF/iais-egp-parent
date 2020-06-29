@@ -26,7 +26,14 @@
                         <table class="table">
                             <thead>
                             <tr align="center">
-                                <iais:sortableHeader needSort="false" field="" value=""></iais:sortableHeader>
+                                <th class="form-check">
+                                    <c:if test="${!empty SearchResult.rows}">
+                                        <input class="form-check-input licenceCheck" type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/>
+                                        <label class="form-check-label" for="checkboxAll">
+                                            <span class="check-square"></span>
+                                        </label>
+                                    </c:if>
+                                </th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Premises"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="SERVICES"></iais:sortableHeader>
@@ -47,7 +54,7 @@
                                             <tr>
                                                 <td class="form-check" >
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                           name="appIds" value="${pool.appId}|${pool.appCorrId}" onclick="javascript:controlCease()"  >
+                                                           name="appIds" value="${pool.viewCorrId}" onclick="javascript:controlCease()"  >
                                                     <label class="form-check-label" for="licence${status.index + 1}"><span
                                                             class="check-square"></span>
                                                     </label>
@@ -85,6 +92,24 @@
     <h3></h3>
 </form>
 <script type="text/javascript">
+    function checkAll() {
+        if ($('#checkboxAll').is(':checked')) {
+            $("input[name='appIds']").attr("checked", "true");
+            var chk = $("[name='appIds']:checked");
+            var dropIds = new Array();
+            chk.each(function () {
+                dropIds.push($(this).val());
+            });
+            if(dropIds.length!==0){
+                $('.RescheduleButton').prop('disabled',false);
+
+            }
+
+        } else {
+            $("input[name='appIds']").removeAttr("checked");
+            $('.RescheduleButton').prop('disabled',true);
+        }
+    }
 
 
     function controlCease() {

@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptViewDto;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -434,11 +435,13 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
     }
 
     @Override
-    public void updateAppStatusCommPool(String[] appIds) {
-        for (String appIdAppCorrId:appIds
+    public void updateAppStatusCommPool(List<ApptViewDto> apptViewDtos) {
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationClient.appPremisesCorrelationDtosByApptViewDtos(apptViewDtos).getEntity();
+
+        for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
         ) {
-            String appId=appIdAppCorrId.split("\\|")[0];
-            String appCorrId=appIdAppCorrId.split("\\|")[1];
+            String appId=appPremisesCorrelationDto.getApplicationId();
+            String appCorrId=appPremisesCorrelationDto.getId();
             ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
 
             ProcessReSchedulingDto processReSchedulingDto;

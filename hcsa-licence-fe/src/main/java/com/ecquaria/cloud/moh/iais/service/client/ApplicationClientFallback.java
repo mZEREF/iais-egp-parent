@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
@@ -337,6 +338,14 @@ public class ApplicationClientFallback implements ApplicationClient {
 
     @Override
     public FeignResponseEntity<Void> updateStatus( Map<String,List<String>> map) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<AppPremisesCorrelationDto>> appPremisesCorrelationDtosByApptViewDtos(List<ApptViewDto> apptViewDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

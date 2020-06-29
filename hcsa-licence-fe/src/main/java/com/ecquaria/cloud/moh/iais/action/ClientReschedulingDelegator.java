@@ -8,7 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQuery
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.dto.ApptViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptViewDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,6 @@ public class ClientReschedulingDelegator {
     public void init(BaseProcessClass bpc)  {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        //String licenseeId ="9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
         SearchParam rescheduleParam = IaisEGPHelper.getSearchParam(bpc.request, true,rescheduleParameter);
         rescheduleParam.addParam("appStatus_reschedule", "(app.status not in('APST062','APST063','APST064','APST065','APST066','APST067','APST068','APST023','APST024'))");
         rescheduleParam.addFilter("licenseeId", licenseeId, true);
@@ -89,6 +89,7 @@ public class ClientReschedulingDelegator {
                     }
                     svcIds.add(reschApptGrpPremsQueryDto.getSvcId());
                     apptViewDto.setSvcIds(svcIds);
+                    apptViewDto.setVehicleNo(reschApptGrpPremsQueryDto.getVehicleNo());
                     apptViewDto.setAppId(reschApptGrpPremsQueryDto.getId());
                     apptViewDto.setAppCorrId(reschApptGrpPremsQueryDto.getAppCorrId());
                     apptViewDto.setLicenseeId(reschApptGrpPremsQueryDto.getLicenseeId());
@@ -104,6 +105,7 @@ public class ClientReschedulingDelegator {
                     apptViewDtos1.add(apptViewDtos.get(key));
                 }
                 ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos1);
+                ParamUtil.setSessionAttr(bpc.request, "apptViewDtosMap", (Serializable) apptViewDtos);
             }
             ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
         }catch (Exception e){
@@ -121,8 +123,15 @@ public class ClientReschedulingDelegator {
     public void doReschedule(BaseProcessClass bpc)  {}
 
     public void preCommPool(BaseProcessClass bpc)  {
-        String [] appIds=ParamUtil.getStrings(bpc.request,"appIds");
-        rescheduleService.updateAppStatusCommPool(appIds);
+        String [] keyIds=ParamUtil.getStrings(bpc.request,"appIds");
+        Map<String ,ApptViewDto> apptViewDtos= (Map<String, ApptViewDto>) ParamUtil.getSessionAttr(bpc.request,"apptViewDtosMap");
+
+        List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
+        for (String key: keyIds
+             ) {
+            apptViewDtos1.add(apptViewDtos.get(key));
+        }
+        rescheduleService.updateAppStatusCommPool(apptViewDtos1);
 
     }
 

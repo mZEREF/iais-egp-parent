@@ -2,6 +2,9 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ProcessReSchedulingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptViewDto;
+
+import java.util.List;
 
 /**
  * @author Shicheng
@@ -53,7 +56,7 @@ public interface ApptConfirmReSchDateService {
       */
     void rejectReschedulingDate(ProcessReSchedulingDto processReSchedulingDto);
 
-    void updateAppStatusCommPool(String[] appIds);
+    void updateAppStatusCommPool(List<ApptViewDto> apptViewDtos);
 
     ProcessReSchedulingDto getApptComPolSystemDateByCorrId(String appPremCorrId);
 
