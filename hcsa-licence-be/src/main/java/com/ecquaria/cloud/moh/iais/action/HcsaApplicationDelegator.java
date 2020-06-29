@@ -1041,7 +1041,11 @@ public class HcsaApplicationDelegator {
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
         String externalRemarks = ParamUtil.getString(bpc.request,"comments");
-        applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);
+        try{
+            applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("send application RfiAndEmail error"));
+        }
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
     }
 
