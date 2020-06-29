@@ -925,19 +925,26 @@ public class HcsaChklConfigDelegator {
 
                 File inputFile = ResourceUtils.getFile("classpath:template/Checklist_Config_Update_Template.xlsx");
 
-                File temp = EspecialExcelWriterUtil.writerToExcelByIndex(inputFile, 1, val, excelConfigValueIndex);
+                log.info(StringUtil.changeForLog("before export config template" + inputFile.getPath()));
+
+                File configInfoTemplate = EspecialExcelWriterUtil.writerToExcelByIndex(inputFile, 1, val, excelConfigValueIndex);
+
+                log.info(StringUtil.changeForLog("export temp config template " + configInfoTemplate.getPath()));
 
                 String prevConfigId = config.getId();
                 String nextConfigId = hcsaChklService.callProceduresGenUUID();
                 String currentVersion = config.getVersion().toString();
                 String[] hiddenVal = {prevConfigId, nextConfigId, currentVersion};
 
-                temp = EspecialExcelWriterUtil.writerToExcelByIndex(temp, 1, hiddenVal, excelHiddenValueIndex, true);
+                File versionFile = EspecialExcelWriterUtil.writerToExcelByIndex(configInfoTemplate, 1, hiddenVal, excelHiddenValueIndex, true);
 
-                File latest = ExcelWriter.writerToExcel(updateItem, ConfigExcelItemDto.class, temp,  "Checklist_Config_Update_Template", true, false);
+                log.info(StringUtil.changeForLog("after export config template" + versionFile.getPath()));
+
+                File latest = ExcelWriter.writerToExcel(updateItem, ConfigExcelItemDto.class, versionFile,  "Checklist_Config_Update_Template", true, false);
                 FileUtils.writeFileResponseProcessContent(request, latest);
 
-                FileUtils.deleteTempFile(temp);
+                FileUtils.deleteTempFile(configInfoTemplate);
+                FileUtils.deleteTempFile(versionFile);
                 FileUtils.deleteTempFile(latest);
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             } catch (Exception e) {

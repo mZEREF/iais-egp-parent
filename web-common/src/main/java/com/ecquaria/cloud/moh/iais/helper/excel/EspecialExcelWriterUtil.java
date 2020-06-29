@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper.excel;
 
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -14,6 +15,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+
+import static com.ecquaria.cloud.moh.iais.helper.FileUtils.EXCEL_TYPE_XSSF;
 
 /**
  * @author yi chen
@@ -37,9 +40,9 @@ public class EspecialExcelWriterUtil {
             throw new IaisRuntimeException("can not find file when writerToExcelByIndex");
         }
 
-
-        File out = file;
         XSSFWorkbook workbook = null;
+        File out = new File(FileUtils.generationFileName("temp"+ System.currentTimeMillis(), EXCEL_TYPE_XSSF));
+        OutputStream outputStream = new FileOutputStream(out);
         try (InputStream fileInputStream = java.nio.file.Files.newInputStream(file.toPath())) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
@@ -68,8 +71,9 @@ public class EspecialExcelWriterUtil {
                 }
             }
 
-            OutputStream outputStream = new FileOutputStream(out);
+
             workbook.write(outputStream);
+
 
         } catch (Exception e) {
             throw new Exception("has error when when export excel, may be is resource corrupted");
@@ -77,6 +81,8 @@ public class EspecialExcelWriterUtil {
             if (workbook != null){
                 workbook.close();
             }
+
+            outputStream.close();
         }
 
         return out;

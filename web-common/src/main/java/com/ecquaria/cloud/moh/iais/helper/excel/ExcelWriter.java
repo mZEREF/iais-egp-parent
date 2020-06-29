@@ -69,7 +69,64 @@ public final class ExcelWriter {
         return writerToExcel(source, sourceClz, file, fileName, block, headName, unlockCellMap, null);
     }
 
-    public static File writerToExcel(final List<?> source, Class<?> sourceClz, final File file, String fileName, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap, String pwd) throws Exception {
+    private static boolean isNew(File file){
+        return file == null ? true : false;
+    }
+
+
+    private static File createNewExcel(String fileName, String sheetName, List<?> source, Class<?> sourceClz, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap, String pwd, int startCellIndex) throws Exception {
+        File out = new File(fileName);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(out)) {
+            workbook = XSSFWorkbookFactory.createWorkbook();
+
+            startInternal();
+
+            Sheet sheet = workbook.createSheet(sheetName);
+
+            parseSheet(source, sourceClz, block, headName, unlockCellMap, startCellIndex, sheet, pwd);
+
+            workbook.write(fileOutputStream);
+        } catch (Exception e) {
+            throw new Exception("has IO error when when export excel");
+        }finally {
+            if (workbook != null){
+                workbook.close();
+            }
+        }
+
+        return out;
+    }
+
+    private static File appendToExcel(final File file, final String fileName, final Integer sheetAt, final List<?> source, Class<?> sourceClz,
+                                      final boolean block, final boolean headName, final Map<Integer, List<Integer>> unlockCellMap, final String pwd, final int startCellIndex) throws Exception {
+        File out = new File(fileName);
+        OutputStream outputStream = new FileOutputStream(out);
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
+
+            startInternal();
+
+            Sheet sheet = workbook.getSheetAt(sheetAt);
+
+            parseSheet(source, sourceClz, block, headName, unlockCellMap, startCellIndex, sheet, pwd);
+
+            workbook.write(outputStream);
+
+        } catch (Exception e) {
+            throw new Exception("has error when when export excel, may be is resource corrupted");
+        }finally {
+            if (workbook != null){
+                workbook.close();
+            }
+
+            outputStream.close();
+        }
+
+        return out;
+    }
+
+    public static File writerToExcel(final List<?> source, Class<?> sourceClz, final File file, String fileName, boolean block, boolean headName,
+                                     final Map<Integer, List<Integer>> unlockCellMap, final String pwd) throws Exception {
         if (source == null || sourceClz == null) {
             log.info("don't have source when writer to excel!!!!");
             throw new IaisRuntimeException("Please check the export excel parameters.");
@@ -79,47 +136,14 @@ public final class ExcelWriter {
         int startCellIndex = property.startRowIndex();
         int sheetAt = property.sheetAt();
         String sheetName = property.sheetName();
+        final String postFileName = FileUtils.generationFileName(fileName, EXCEL_TYPE_XSSF);
+        boolean isNew = isNew(file);
 
-        File out;
-        final String localFileName = FileUtils.generationFileName(fileName, EXCEL_TYPE_XSSF);
-        if (file == null){
-            out = new File(localFileName);
-            try (FileOutputStream fileOutputStream = new FileOutputStream(out)) {
-                workbook = XSSFWorkbookFactory.createWorkbook();
-
-                startInternal();
-
-                Sheet sheet = workbook.createSheet(sheetName);
-
-                parseSheet(source, sourceClz, block, headName, unlockCellMap, startCellIndex, sheet, pwd);
-
-                workbook.write(fileOutputStream);
-            } catch (Exception e) {
-                throw new Exception("has IO error when when export excel");
-            }finally {
-                workbook.close();
-            }
+        if (isNew){
+            return createNewExcel(postFileName, sheetName, source, sourceClz, block, headName, unlockCellMap, pwd, startCellIndex);
         }else {
-            try (FileInputStream fileInputStream = new FileInputStream(file)) {
-                workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
-
-                startInternal();
-
-                Sheet sheet = workbook.getSheetAt(sheetAt);
-                parseSheet(source, sourceClz, block, headName, unlockCellMap, startCellIndex, sheet, pwd);
-                OutputStream outputStream = new FileOutputStream(localFileName);
-                workbook.write(outputStream);
-                out = new File(localFileName);
-
-                return out;
-            } catch (Exception e) {
-                throw new Exception("has error when when export excel, may be is resource corrupted");
-            }finally {
-                workbook.close();
-            }
+            return appendToExcel(file, postFileName, sheetAt, source, sourceClz, block, headName, unlockCellMap, pwd, startCellIndex);
         }
-
-        return out;
     }
 
     private static void startInternal() {
