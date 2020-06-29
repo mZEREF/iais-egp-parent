@@ -368,15 +368,17 @@
                         <table class="table">
                             <thead>
                             <tr align="center">
-                                <th class="form-check">
-                                    <c:if test="${!empty SearchResult.rows}">
-                                        <input class="form-check-input licenceCheck" type="checkbox" name="userUids"
-                                               id="checkboxAll" onchange="javascirpt:checkAll('${isASO}');"/>
-                                        <label class="form-check-label" for="checkboxAll">
-                                            <span class="check-square"></span>
-                                        </label>
-                                    </c:if>
-                                </th>
+                                <c:if test="${cease==1}">
+                                    <th class="form-check">
+                                        <c:if test="${!empty SearchResult.rows}">
+                                            <input class="form-check-input licenceCheck" type="checkbox" name="userUids"
+                                                   id="checkboxAll" onchange="javascirpt:checkAll('${isASO}');"/>
+                                            <label class="form-check-label" for="checkboxAll">
+                                                <span class="check-square"></span>
+                                            </label>
+                                        </c:if>
+                                    </th>
+                                </c:if>
                                 <iais:sortableHeader needSort="false" field="" value="S/N"/>
                                 <iais:sortableHeader needSort="false" field="APPLICATION_NO"
                                                      value="Application No."/>
@@ -418,15 +420,18 @@
                                 <c:otherwise>
                                     <c:forEach var="pool" items="${SearchResult.rows}" varStatus="status">
                                         <tr>
-                                            <td class="form-check" onclick="javascript:controlCease('${isASO}')">
-                                                <c:if test="${pool.licenceStatus!='Lapsed'&&pool.licenceStatus!='Ceased'&&pool.licenceStatus!='Expired'}">
-                                                    <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                           name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}"   >
-                                                    <label class="form-check-label" for="licence${status.index + 1}"><span
-                                                            class="check-square"></span>
-                                                    </label>
-                                                </c:if>
-                                            </td>
+                                            <c:if test="${cease==1}">
+                                                <td class="form-check" onclick="javascript:controlCease('${isASO}')">
+                                                    <c:if test="${pool.licenceStatus!='Lapsed'&&pool.licenceStatus!='Ceased'&&pool.licenceStatus!='Expired'&&pool.licenceId!=null}">
+                                                        <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
+                                                               name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}"   >
+                                                        <label class="form-check-label" for="licence${status.index + 1}"><span
+                                                                class="check-square"></span>
+                                                        </label>
+                                                    </c:if>
+                                                </td>
+                                            </c:if>
+
                                             <td class="row_no">
                                                 <c:out value="${status.index + 1+ (SearchParam.pageNo - 1) * SearchParam.pageSize}"/>
                                             </td>
@@ -534,10 +539,18 @@
     function checkAll(isAso) {
         if ($('#checkboxAll').is(':checked')) {
             $("input[name='appIds']").attr("checked", "true");
-            $('.ReqForInfoBtn').prop('disabled',false);
-            if(isAso==="1"){
-                $('.CeaseBtn').prop('disabled',false);
+            var chk = $("[name='appIds']:checked");
+            var dropIds = new Array();
+            chk.each(function () {
+                dropIds.push($(this).val());
+            });
+            if(dropIds.length!==0){
+                $('.ReqForInfoBtn').prop('disabled',false);
+                if(isAso==="1"){
+                    $('.CeaseBtn').prop('disabled',false);
+                }
             }
+
         } else {
             $("input[name='appIds']").removeAttr("checked");
             $('.CeaseBtn').prop('disabled',true);

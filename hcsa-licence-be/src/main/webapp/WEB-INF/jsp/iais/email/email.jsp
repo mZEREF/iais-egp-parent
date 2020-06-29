@@ -21,7 +21,7 @@
                 Content
             </p>
         </td>
-        <td style="height: 1180px;">
+        <td >
             <div class="col-sm-9">
                 <textarea name="messageContent" cols="108" rows="50" id="htmlEditroArea" title="content"  >${insEmailDto.messageContent}</textarea>
             </div>
