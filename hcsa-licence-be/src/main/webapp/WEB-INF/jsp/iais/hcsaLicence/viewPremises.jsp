@@ -134,6 +134,17 @@
                                     <div class="row">
                                       <div class="col-md-6">
                                         Name of HCI
+                                        <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
+                                      </div>
+                                      <div  class="col-md-6" style="position: absolute;z-index: 100;left: 50%;background-color: #999999;display: none" id="hciNameShowOrHidden">
+                                        <table>
+                                          <tr>
+                                            <td  class="col-md-4">Name of Licensee</td>
+                                            <td  class="col-md-4">HCI Name</td>
+                                            <td  class="col-md-4">Service Name</td>
+                                          </tr>
+                                        </table>
+
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-6">
@@ -1007,3 +1018,14 @@
     </div>
   </div>
 </div>
+<script>
+  $('#hciNameClick').click(function () {
+      let jQuery = $('#hciNameShowOrHidden').attr('style');
+      if(jQuery.match("display: none")){
+          $('#hciNameShowOrHidden').show();
+      }else {
+          $('#hciNameShowOrHidden').hide();
+      }
+
+  });
+</script>

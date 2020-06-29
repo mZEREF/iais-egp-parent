@@ -173,9 +173,6 @@ public class NewApplicationDelegator {
     private WithOutRenewalService withOutRenewalService;
 
     @Autowired
-    private SystemAdminClient systemAdminClient;
-
-    @Autowired
     private ApplicationClient applicationClient;
     @Autowired
     private EventBusHelper eventBusHelper;
@@ -243,11 +240,11 @@ public class NewApplicationDelegator {
         //for loading Service Config
         boolean flag = loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:"+flag));
+        initOldSession(bpc);
         if(flag){
             //init session and data
             initSession(bpc);
         }
-        initOldSession(bpc);
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
@@ -2027,7 +2024,6 @@ public class NewApplicationDelegator {
             appSvcPrincipalOfficersDto.setSelectDropDown(false);
             appSvcPrincipalOfficersDto.setNeedSpcOptList(false);
             appSvcPrincipalOfficersDto.setSpecialityHtml(null);
-            appSvcPrincipalOfficersDto.setPreferredMode(null);
             appSvcPrincipalOfficersDto.setSpcOptList(null);
             appSvcPrincipalOfficersDto.setCgoIndexNo(null);
             appSvcPrincipalOfficersDto.setAssignSelect(null);
@@ -3246,9 +3242,7 @@ public class NewApplicationDelegator {
 
     private void doCommomDocument(HttpServletRequest request, Map<String, String> documentMap) {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            return;
-        }
+
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList  = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>)   request.getSession().getAttribute(COMMONHCSASVCDOCCONFIGDTO);
         if(commonHcsaSvcDocConfigList==null){
@@ -4079,7 +4073,6 @@ public class NewApplicationDelegator {
                     String licenceId = appSubmissionDto.getLicenceId();
                     appSubmissionDto.setLicenceNo(withOutRenewalService.getLicenceNumberByLicenceId(licenceId));
                 }
-                AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
                 //ParamUtil.setSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
                 HashMap<String,String> coMap=(HashMap<String,String>) bpc.request.getSession().getAttribute("coMap");
