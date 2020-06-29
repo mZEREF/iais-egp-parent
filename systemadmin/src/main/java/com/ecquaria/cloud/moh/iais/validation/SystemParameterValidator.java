@@ -32,7 +32,8 @@ public class SystemParameterValidator implements CustomizeValidator {
 
 		switch (paramType){
 			case SystemParameterConstants.PARAM_TYPE_REMINDER:
-			break;
+			case SystemParameterConstants.PARAM_TYPE_MONTH:
+				break;
 			case SystemParameterConstants.PARAM_TYPE_PAGE_SIZE:
 				verifyPageSize(errMap, Integer.parseInt(editDto.getValue()));
 			break;
@@ -45,8 +46,6 @@ public class SystemParameterValidator implements CustomizeValidator {
 			case SystemParameterConstants.PARAM_TYPE_FILE_TYPE_FOR_UPLOADING:
 				verifyUploadFileType(errMap, editDto.getValue());
 				break;
-			case SystemParameterConstants.PARAM_TYPE_MONTH:
-			break;
 
 			/*case SystemParameterConstants.PARAM_TYPE_YES:
 				pass = verifyYes(value);

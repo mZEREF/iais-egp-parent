@@ -149,6 +149,17 @@ public class SystemParameterDelegator {
         }
     }
 
+    private void beforeSave(SystemParameterDto dto){
+        String paramType = dto.getParamType();
+        switch (paramType){
+            case SystemParameterConstants.PARAM_TYPE_FILE_TYPE_FOR_UPLOADING:
+                String value = dto.getValue().toUpperCase();
+                dto.setValue(value);
+                break;
+            default:
+        }
+    }
+
     /**
      * AutoStep: doEdit
      * user do edit with message management
@@ -170,21 +181,19 @@ public class SystemParameterDelegator {
         editDto.setAuditTrailDto(auditTrailDto);
         editDto.setValue(value);
         editDto.setDescription(description);
-
         ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }else {
+            beforeSave(editDto);
             parameterService.saveSystemParameter(editDto);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
 
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             ParamUtil.setRequestAttr(request,"ackMsg", MessageUtil.dateIntoMessage(MessageCodeKey.ACKSPM001));
             ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAMETER_REQUEST_DTO, editDto);
-
         }
-
     }
 
     /**

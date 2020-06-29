@@ -14,10 +14,12 @@
         },
 
         submit: function (form, action, value) {
+            showWaiting();
             SOP.Crud.cfxSubmit(form, action, value);
         },
 
         markSubmit: function (form, action, paramNameId, paramValue) {
+            showWaiting();
             $('#' + paramNameId).val(paramValue);
             SOP.Crud.cfxSubmit(form, action, paramValue);
         },
@@ -44,6 +46,7 @@
     $("#crud_search_button").click(function () {
         var val = $("#crud_search_button").attr("value");
         if (val != null && val != ''){
+            showWaiting();
             SOP.Crud.cfxSubmit("mainForm", val);
         }
     })
@@ -56,6 +59,7 @@
     })
 
     $("#crud_clear_button").click(function () {
+        showWaiting();
         $(".form-horizontal input").val("");
         $(".form-horizontal input[type='checkbox']").removeAttr('checked');
         $(".form-horizontal input[type='radio']").removeAttr('checked');
