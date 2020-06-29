@@ -1,17 +1,23 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.FeToBeRecFileService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -70,6 +76,12 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     @Autowired
     private FileRepoClient fileRepoClient;
+
+    @Autowired
+    private EicRequestTrackingHelper eicRequestTrackingHelper;
+
+    @Autowired
+    private AppEicClient appEicClient;
 
     @Override
     public void compressFile(Map<String, String> appIdItemIdMap) {
@@ -286,7 +298,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         }
     }
 
-    private String saveFileName(String fileName ,String filePath, String appId){
+    public String saveFileName(String fileName ,String filePath, String appId){
         ProcessFileTrackDto processFileTrackDto =new ProcessFileTrackDto();
         processFileTrackDto.setProcessType(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION);
         processFileTrackDto.setFileName(fileName);
@@ -297,10 +309,21 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
         processFileTrackDto.setAuditTrailDto(internet);
         String s = AppConsts.FAIL;
         try {
+            EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.FeToBeRecFileImpl", "saveFileName",
+                    "hcsa-licence-web-internet", ProcessFileTrackDto.class.getName(), JsonUtil.parseToJson(processFileTrackDto));
+            String eicRefNo = eicRequestTrackingDto.getRefNo();
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             s = eicGatewayClient.saveFile(processFileTrackDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
+            //get eic record
+            eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
+            //update eic record status
+            eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+            eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
+            eicRequestTrackingDtos.add(eicRequestTrackingDto);
+            appEicClient.updateStatus(eicRequestTrackingDtos);
             if(AppConsts.SUCCESS.equals(s)) {
                 ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
                 applicationDto.setAuditTrailDto(internet);
