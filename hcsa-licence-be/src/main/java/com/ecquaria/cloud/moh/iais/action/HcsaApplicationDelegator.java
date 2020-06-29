@@ -1379,7 +1379,11 @@ public class HcsaApplicationDelegator {
                     Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
                     if(null != recomInNumber && recomInNumber == 0){
                         appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
-                        rejectSendNotification(applicationViewDto);
+                        try{
+                            rejectSendNotification(applicationViewDto);
+                        }catch (Exception e){
+                            log.error(StringUtil.changeForLog("send reject notification error"));
+                        }
                     }
                 }else{
                     String recomDecision = appPremisesRecommendationDto.getRecomDecision();
