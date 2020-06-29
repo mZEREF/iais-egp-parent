@@ -29,7 +29,7 @@ public class BlastValidate implements CustomizeValidator {
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request, "blastManagementDto");
         if(blastManagementDto.getEmailAddress() != null){
             for (String item :blastManagementDto.getEmailAddress()
-                 ) {
+            ) {
                 if(!item.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
                     errMap.put("addr","Please key in a valid email address");
                 }
@@ -63,7 +63,7 @@ public class BlastValidate implements CustomizeValidator {
             }
         }
 
-        if(blastManagementDto.getAttachmentDtos().size() > 0){
+        if(blastManagementDto.getAttachmentDtos() != null && blastManagementDto.getAttachmentDtos().size() > 0){
             double filesSize = 0;
             for (AttachmentDto item:blastManagementDto.getAttachmentDtos()
             ) {
