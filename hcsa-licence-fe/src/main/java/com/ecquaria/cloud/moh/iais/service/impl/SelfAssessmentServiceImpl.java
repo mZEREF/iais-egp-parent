@@ -290,7 +290,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                List<String> sendEmailAddress = selfAssessmentList.stream().map(SelfAssessment::getCorrId).collect(Collectors.toList());
                 sendNotificationToInspector(sendEmailAddress);
             }catch (Exception e){
-                log.info(StringUtil.changeForLog("encounter failure when self decl send notification" + e.getMessage()));
+                log.error(StringUtil.changeForLog("encounter failure when self decl send notification"), e);
             }
 
 
@@ -318,7 +318,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     }
                 }
             }catch (Exception e){
-                log.error(StringUtil.changeForLog("encounter failure when sync self assessment to be" + e.getMessage()));
+                log.error(StringUtil.changeForLog("encounter failure when sync self assessment to be"), e);
             }
         }
 
