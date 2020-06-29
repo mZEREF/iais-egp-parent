@@ -11,7 +11,6 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
-
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohServiceFeMenu___1 extends BaseProcessClass {
@@ -25,12 +24,12 @@ public class INTERNET___MohServiceFeMenu___1 extends BaseProcessClass {
 
 	public void validation_OnStepProcess_0() throws Exception {
 	// 		validation->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "validation", this);
+		EngineHelper.delegate(DELEGATOR, "doChooseService", this);
 	}
 
 	public void prepareData_OnStepProcess_0() throws Exception {
 	// 		prepareData->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "serviceMenuSelection", this);
+		EngineHelper.delegate(DELEGATOR, "prepareData", this);
 	}
 
 	public void beforeJump_OnStepProcess_0() throws Exception {
@@ -42,24 +41,59 @@ public class INTERNET___MohServiceFeMenu___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doBeforStart", this);
 	}
 
-	public void chooseBase_OnStepProcess_0() throws Exception {
-	// 		chooseBase->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "chooseBase", this);
+	public void controSwitch_OnStepProcess_0() throws Exception {
+	// 		controSwitch->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "controlSwitch", this);
 	}
 
-	public void baseValidation_OnStepProcess_0() throws Exception {
-	// 		baseValidation->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "baseValidation", this);
+	public void preChooseSvc_OnStepProcess_0() throws Exception {
+	// 		preChooseSvc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preChooseSvc", this);
 	}
 
-	public void licenseValidation_OnStepProcess_0() throws Exception {
-	// 		licenseValidation->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "licenseValidation", this);
+	public void preChooseBaseSvc_OnStepProcess_0() throws Exception {
+	// 		preChooseBaseSvc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preChooseBaseSvc", this);
 	}
 
-	public void chooseLicence_OnStepProcess_0() throws Exception {
-	// 		chooseLicence->OnStepProcess
-		EngineHelper.delegate(DELEGATOR, "chooseLicence", this);
+	public void preChooseAlign_OnStepProcess_0() throws Exception {
+	// 		preChooseAlign->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preChooseAlign", this);
+	}
+
+	public void preChooseLic_OnStepProcess_0() throws Exception {
+	// 		preChooseLic->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preChooseLic", this);
+	}
+
+	public void backInbox_OnStepProcess_0() throws Exception {
+	// 		backInbox->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "backInbox", this);
+	}
+
+	public void doChooseBaseSvc_OnStepProcess_0() throws Exception {
+	// 		doChooseBaseSvc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doChooseBaseSvc", this);
+	}
+
+	public void doChooseAlign_OnStepProcess_0() throws Exception {
+	// 		doChooseAlign->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doChooseAlign", this);
+	}
+
+	public void doChooseLic_OnStepProcess_0() throws Exception {
+	// 		doChooseLic->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doChooseLic", this);
+	}
+
+	public void backChooseSvc_OnStepProcess_0() throws Exception {
+	// 		backChooseSvc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "backChooseSvc", this);
+	}
+
+	public void doPage_OnStepProcess_0() throws Exception {
+	// 		doPage->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "doPage", this);
 	}
 
 }
