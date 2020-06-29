@@ -301,7 +301,7 @@ public class ServiceMenuDelegator {
         for(HcsaServiceDto hcsaServiceDto:baseSvcDtoList){
             svcNameList.add(hcsaServiceDto.getSvcName());
             List<AppAlignLicQueryDto> appAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
-            //commPremises.put(hcsaServiceDto.getSvcName(),appAlignLicQueryDtos);
+            commPremises.put(hcsaServiceDto.getSvcName(),appAlignLicQueryDtos);
         }
         String licenseeId = "";
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -595,6 +595,7 @@ public class ServiceMenuDelegator {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
         Map<String,AppSvcRelatedInfoDto>  baseReloadDtoMap = IaisCommonUtils.genNewHashMap();
         boolean chooseExist = false;
+        boolean chooseDiff = false;
         if(!IaisCommonUtils.isEmpty(speSvcDtoList)){
             Map<String,List<AppAlignLicQueryDto>> baseLicMap = (Map<String, List<AppAlignLicQueryDto>>) ParamUtil.getSessionAttr(bpc.request,BASE_LIC_PREMISES_MAP);
             //reload
@@ -609,6 +610,7 @@ public class ServiceMenuDelegator {
                 if(!StringUtil.isEmpty(baseSvcMaskCode) && !StringUtil.isEmpty(baseSvcCode)){
                     if(baseSvcMaskCode.contains("-new")){
                         //new base+spec
+                        chooseDiff = true;
                         appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
                         appSvcRelatedInfoDto.setServiceId(baseServiceDto.getId());
                         appSvcRelatedInfoDto.setServiceName(baseServiceDto.getSvcName());
@@ -656,25 +658,31 @@ public class ServiceMenuDelegator {
         }
         //validate
         String erroMsg = "";
-        int chkCount;
-        if(chooseExist){
-            chkCount = appSelectSvcDto.getSpeSvcDtoList().size();
-        }else{
-            chkCount = appSelectSvcDto.getSpeSvcDtoList().size() + appSelectSvcDto.getBaseSvcDtoList().size();
-        }
-        if(chkCount != appSvcRelatedInfoDtos.size()){
-            //todo:may be change
+        int chkCount = 0;
+        if(chooseExist && chooseDiff){
             erroMsg = MessageUtil.getMessageDesc("NEW_ERR0007");
-        }else if(appSvcRelatedInfoDtos.size()>1){
-            //NEW_ERR0007
-            String hciCodeMark = StringTransfer(appSvcRelatedInfoDtos.get(0).getHciCode());
-            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                String hciCode = StringTransfer(appSvcRelatedInfoDto.getHciCode());
-                if(!hciCodeMark.equals(hciCode)){
-                    erroMsg = MessageUtil.getMessageDesc("NEW_ERR0007");
+        }else if(chooseExist && !chooseDiff){
+            chkCount = appSelectSvcDto.getSpeSvcDtoList().size();
+        }else if(!chooseExist && chooseDiff){
+            chkCount = appSelectSvcDto.getSpeSvcDtoList().size() * 2;
+        }
+        if(StringUtil.isEmpty(erroMsg)){
+            if(chkCount != appSvcRelatedInfoDtos.size()){
+                //todo:may be change
+                erroMsg = MessageUtil.getMessageDesc("NEW_ERR0007");
+            }else if(appSvcRelatedInfoDtos.size()>1){
+                //NEW_ERR0007
+                String hciCodeMark = StringTransfer(appSvcRelatedInfoDtos.get(0).getHciCode());
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    String hciCode = StringTransfer(appSvcRelatedInfoDto.getHciCode());
+                    if(!hciCodeMark.equals(hciCode)){
+                        erroMsg = MessageUtil.getMessageDesc("NEW_ERR0007");
+                    }
                 }
             }
+
         }
+
 
         if(StringUtil.isEmpty(erroMsg)){
             //choose existing

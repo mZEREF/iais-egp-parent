@@ -78,6 +78,8 @@
             $('#saveDraft').modal('show');
         }
 
+
+
         $('.form-check-input').click(function () {
             var $currSpecContent = $(this).closest('div.speSvcContent');
             var $baseLicContent = $(this).closest('div.exist-base-lic-content');
@@ -97,14 +99,28 @@
                     $('.disable-point .exist-base-lic-content .firstStep').prop('disabled',false);
                     $('.disable-point .new-base .firstStep').prop('disabled',true);
                     $('.disable-point .new-base .firstStep').prop('checked',false);
+
+                    // $('.disable-point div.existing-base-content').each(function () {
+                    //     if($(this).find('input[type="radio"]:checked') == 'false'){
+                    //         $(this).find('input[type="radio"]').prop('disabled',true);
+                    //         $(this).find('input[type="radio"]').prop('checked',false);
+                    //     }
+                    //
+                    // });
                 }else if($(this).hasClass('diff-base')){
                     $('.disable-point .exist-base-lic-content .firstStep').prop('disabled',true);
                     $('.disable-point .new-base .firstStep').prop('disabled',false);
                     $('.disable-point .exist-base-lic-content .firstStep').prop('checked',false);
+                    //unChecked the second step
+                    $('div.existing-base-content').find('input[type="radio"]').prop('disabled',true);
+                    $('div.existing-base-content').find('input[type="radio"]').prop('checked',false);
+
                 }
+                init = 1;
+
                 //the second step
-                $('.disable-point div.existing-base-content').find('input[type="radio"]').prop('disabled',true);
-                $('.disable-point div.existing-base-content').find('input[type="radio"]').prop('checked',false);
+                // $('.disable-point div.existing-base-content').find('input[type="radio"]').prop('disabled',true);
+                // $('.disable-point div.existing-base-content').find('input[type="radio"]').prop('checked',false);
             }else{
                 $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
             }
@@ -123,7 +139,7 @@
             });
             //
         }else{
-
+            $('.form-check-input:checked').trigger('click');
         }
 
     });
