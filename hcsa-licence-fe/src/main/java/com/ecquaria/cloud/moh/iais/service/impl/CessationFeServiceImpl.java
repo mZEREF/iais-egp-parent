@@ -367,7 +367,12 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
         }
         if (!licNos.isEmpty()) {
-            updateLicenceFe(licNos);
+            try{
+                updateLicenceFe(licNos);
+            }catch (Exception e){
+                log.info("====================eic error=================");
+            }
+
         }
         return appCessationDtosConfirms;
     }

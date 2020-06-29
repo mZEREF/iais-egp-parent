@@ -73,7 +73,7 @@
                                                             </strong>
                                                         </div>
                                                         <div class="table-gp">
-                                                            <iais:section title="">
+                                                            <c:if title="">
                                                                 <iais:row>
                                                                     <iais:field value="Current Status"/>
                                                                     <iais:value width="6">
@@ -94,6 +94,7 @@
                                                                         <span id="error_submit" class="error-msg" hidden> The field is mandatory.</span>
                                                                     </iais:value>
                                                                 </iais:row>
+                                                                <c:if test="${appType!='APTY007'}">
                                                                 <iais:row>
                                                                     <iais:field value="Recommendation"
                                                                                 required="false"/>
@@ -101,6 +102,7 @@
                                                                         <p><iais:code code="${appPremisesRecommendationDto.period}"/></p>
                                                                     </iais:value>
                                                                 </iais:row>
+                                                            </c:if>
                                                                 <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
                                                                 <iais:row>
                                                                     <iais:field value="Licence Start Date" required="false"/>

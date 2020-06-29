@@ -446,7 +446,7 @@
         </div>
     </c:if>
     <c:if test="${appType=='APTY007'}">
-        <div hidden class="alert alert-info" role="alert">
+        <div class="alert alert-info" role="alert">
             <strong>
                 <h4>Section E (After Action)</h4>
             </strong>
