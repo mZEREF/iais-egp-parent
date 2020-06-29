@@ -99,14 +99,8 @@
 </div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <script>
-    "use strict";
     customItemId.onclick = function(){
-        doValidation();
-        if (getErrorMsg()) {
-            dismissWaiting();
-        } else {
-            SOP.Crud.cfxSubmit("mainForm", "customItem");
-        }
+        SOP.Crud.cfxSubmit("mainForm", "customItem");
     }
   
     function doBack() {
