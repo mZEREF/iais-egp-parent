@@ -13,9 +13,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -131,13 +131,10 @@ public class MessageDelegator {
 
         String description = ParamUtil.getString(request, MessageConstants.PARAM_DESCRIPTION);
         String message = ParamUtil.getString(request, MessageConstants.PARAM_MESSAGE);
-        String status = ParamUtil.getString(request, MessageConstants.PARAM_STATUS);
-
         MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO);
 
         editDto.setDescription(description);
         editDto.setMessage(message);
-        editDto.setStatus(status);
         ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
         if(validationResult != null && validationResult.isHasErrors()){
             Map<String,String> errorMap = validationResult.retrieveAll();
