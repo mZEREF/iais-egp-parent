@@ -112,7 +112,7 @@
                       <tr>
                         <td class="row_no">${(status.index + 1) + (auditTrailSearch.pageNo - 1) * auditTrailSearch.pageSize}</td>
                           <%-- <td>${resultRow.operationType}</td>--%>
-                        <td><c:out value="${resultRow.operation}"></c:out></td>
+                        <td><c:out value="${resultRow.operationByExcelColumn}"></c:out></td>
                         <td><iais:code code="${resultRow.domain}"></iais:code></td>
                         <td><%--<c:out value="${resultRow.batchjobId}"></c:out>--%></td>
                         <td><%--<c:out value="${resultRow.corpPassId}"></c:out>--%></td>
