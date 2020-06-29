@@ -84,8 +84,8 @@ public class ClientReschedulingDelegator {
                 for (ReschApptGrpPremsQueryDto reschApptGrpPremsQueryDto : rows) {
                     ApptViewDto apptViewDto=new ApptViewDto();
                     List<String> svcIds=IaisCommonUtils.genNewArrayList();
-                    if(apptViewDtos.get(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getIsFastTracking())!=null){
-                        svcIds=apptViewDtos.get(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getIsFastTracking()).getSvcIds();
+                    if(apptViewDtos.get(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getFastTracking())!=null){
+                        svcIds=apptViewDtos.get(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getFastTracking()).getSvcIds();
                     }
                     svcIds.add(reschApptGrpPremsQueryDto.getSvcId());
                     apptViewDto.setSvcIds(svcIds);
@@ -94,9 +94,16 @@ public class ClientReschedulingDelegator {
                     apptViewDto.setLicenseeId(reschApptGrpPremsQueryDto.getLicenseeId());
                     apptViewDto.setAddress(MiscUtil.getAddress(reschApptGrpPremsQueryDto.getBlkNo(),reschApptGrpPremsQueryDto.getStreetName(),reschApptGrpPremsQueryDto.getBuildingName(),reschApptGrpPremsQueryDto.getFloorNo(),reschApptGrpPremsQueryDto.getUnitNo(),reschApptGrpPremsQueryDto.getPostalCode()));
                     apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
-                    apptViewDtos.put(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getIsFastTracking(),apptViewDto);
+                    apptViewDto.setFastTracking(reschApptGrpPremsQueryDto.getFastTracking());
+                    apptViewDto.setViewCorrId(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getFastTracking());
+                    apptViewDtos.put(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getFastTracking(),apptViewDto);
                 }
-                ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos);
+                List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
+                for (String key:apptViewDtos.keySet()
+                     ) {
+                    apptViewDtos1.add(apptViewDtos.get(key));
+                }
+                ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos1);
             }
             ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
         }catch (Exception e){

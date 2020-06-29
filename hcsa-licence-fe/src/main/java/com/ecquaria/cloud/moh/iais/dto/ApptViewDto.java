@@ -28,6 +28,8 @@ public class ApptViewDto implements Serializable {
     private String licenseeId;
     private Date inspStartDate;
     private List<String> svcIds;
+    private String fastTracking;
+    private String viewCorrId;
 
 
 }
