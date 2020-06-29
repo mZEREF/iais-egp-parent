@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClientReschedulingDelegator
@@ -77,17 +78,23 @@ public class ClientReschedulingDelegator {
 
             List<ReschApptGrpPremsQueryDto> rows = result.getRows();
             if(rows!=null){
-                List<ApptViewDto> apptViewDtos= IaisCommonUtils.genNewArrayList();
+                Map<String ,ApptViewDto> apptViewDtos= IaisCommonUtils.genNewHashMap();
 
                 ParamUtil.setRequestAttr(bpc.request,"SearchResult",result);
                 for (ReschApptGrpPremsQueryDto reschApptGrpPremsQueryDto : rows) {
                     ApptViewDto apptViewDto=new ApptViewDto();
+                    List<String> svcIds=IaisCommonUtils.genNewArrayList();
+                    if(apptViewDtos.get(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getIsFastTracking())!=null){
+                        svcIds=apptViewDtos.get(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getIsFastTracking()).getSvcIds();
+                    }
+                    svcIds.add(reschApptGrpPremsQueryDto.getSvcId());
+                    apptViewDto.setSvcIds(svcIds);
                     apptViewDto.setAppId(reschApptGrpPremsQueryDto.getId());
                     apptViewDto.setAppCorrId(reschApptGrpPremsQueryDto.getAppCorrId());
                     apptViewDto.setLicenseeId(reschApptGrpPremsQueryDto.getLicenseeId());
                     apptViewDto.setAddress(MiscUtil.getAddress(reschApptGrpPremsQueryDto.getBlkNo(),reschApptGrpPremsQueryDto.getStreetName(),reschApptGrpPremsQueryDto.getBuildingName(),reschApptGrpPremsQueryDto.getFloorNo(),reschApptGrpPremsQueryDto.getUnitNo(),reschApptGrpPremsQueryDto.getPostalCode()));
                     apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
-                    apptViewDtos.add(apptViewDto);
+                    apptViewDtos.put(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getIsFastTracking(),apptViewDto);
                 }
                 ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos);
             }

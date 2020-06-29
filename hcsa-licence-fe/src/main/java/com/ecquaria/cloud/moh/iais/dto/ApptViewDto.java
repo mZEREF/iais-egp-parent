@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * ApptViewDto
@@ -26,6 +27,7 @@ public class ApptViewDto implements Serializable {
     private String appCorrId;
     private String licenseeId;
     private Date inspStartDate;
+    private List<String> svcIds;
 
 
 }

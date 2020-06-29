@@ -29,6 +29,7 @@
                                 <iais:sortableHeader needSort="false" field="" value=""></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Premises"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false" field="" value="SERVICES"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>
                             </tr>
                             </thead>
@@ -53,6 +54,11 @@
                                                 </td>
                                                 <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                                 <td><c:out value="${pool.address}"/></td>
+                                                <td>
+                                                    <c:forEach var="svcId" items="${pool.svcIds}">
+                                                        <iais:service value="${svcId}"></iais:service>&nbsp;
+                                                    </c:forEach>
+                                                </td>
                                                 <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
                                             </tr>
                                         </c:forEach>
@@ -70,13 +76,13 @@
                                 <button class="btn btn-primary RescheduleButton" type="button" disabled onclick="doReschedule()">Reschedule</button>
                             </iais:action>
                         </iais:row>
-                        <iais:row></iais:row>
 
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <h3></h3>
 </form>
 <script type="text/javascript">
 

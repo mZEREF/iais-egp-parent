@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -523,7 +524,7 @@ public class RequestForInformationDelegator {
         // 		doUpdate->OnStepProcess
     }
 
-    private Map<String, String> validate(HttpServletRequest request) {
+    private Map<String, String> validate(HttpServletRequest request) throws ParseException {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         String[] lengths=ParamUtil.getStrings(request,"lengths");
         String[] lengthsInfo=ParamUtil.getStrings(request,"lengthsInfo");
@@ -557,7 +558,9 @@ public class RequestForInformationDelegator {
             errMap.put("Due_date","ERR0010");
         }else {
             date= ParamUtil.getString(request, "Due_date");
-            String now=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(new Date());
+            Date dueDate=Formatter.parseDate(date);
+            date=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(dueDate);
+            String now=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(new Date());
             if(date.compareTo(now) <=0 ){
                 errMap.put("Due_date","Due Date should be a future Date.");
             }

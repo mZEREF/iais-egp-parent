@@ -5,18 +5,17 @@
     <sql remarks="Query" key="queryApptGrpPremises">
         <![CDATA[
                 SELECT distinct
-                app.id,app.application_no,app.app_type,app.status,app.service_id,
+                app.id,app.application_no,app.app_type,app.status,app.service_id,app.IS_FAST_TRACKING,
                 T2.id APP_CORR_ID,T4.ID APP_GRP_ID,
-                T3.id APP_GRP_PREM_ID,
                 T3.HCI_CODE,T3.HCI_NAME,
                 T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,T3.POSTAL_CODE,
-                CONCAT(T3.BLK_NO,T3.STREET_NAME, T3.BUILDING_NAME,T3.FLOOR_NO, T3.UNIT_NO, T3.POSTAL_CODE) ADDRESS,
+                CONCAT(T3.BLK_NO,T3.FLOOR_NO, T3.UNIT_NO, T3.POSTAL_CODE,T3.PREM_TYPE, T3.VEHICLE_NO) ADDRESS,
                 T4.LICENSEE_ID,appRec.RECOM_IN_DATE
 
-            FROM APPLICATION AS app
-             LEFT JOIN APP_PREMISES_CORRELATION T2 ON T2.APPLICATION_ID = app.ID
-             LEFT JOIN APPLICATION_GROUP T4 ON T4.ID = app.APP_GRP_ID
+            FROM APPLICATION_GROUP T4
              LEFT JOIN APP_GRP_PREMISES T3 ON T4.ID = T3.APP_GRP_ID
+             LEFT JOIN APP_PREMISES_CORRELATION T2 ON T2.APP_GRP_PREM_ID = T3.ID
+             LEFT JOIN APPLICATION AS app ON T2.APPLICATION_ID = app.ID
              LEFT JOIN app_premises_recommendation appRec ON (appRec.APP_PREM_CORRE_ID = T2.ID AND appRec.RECOM_TYPE='RETYPE006')
 
             WHERE 1=1
