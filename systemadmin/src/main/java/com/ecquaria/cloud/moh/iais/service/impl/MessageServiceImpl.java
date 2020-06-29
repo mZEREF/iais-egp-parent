@@ -95,7 +95,7 @@ public class MessageServiceImpl implements MessageService {
                 }
 
             }catch (Exception e){
-                log.error(StringUtil.changeForLog("encounter failure when sync message to fe " + e.getMessage()));
+                log.error(StringUtil.changeForLog("encounter failure when sync message to fe " + e.getMessage()), e);
             }
 
         }

@@ -99,7 +99,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
             }
 
         }catch (Exception e){
-            log.error(StringUtil.changeForLog("encounter failure when sync parameter to fe " + e.getMessage()));
+            log.error(StringUtil.changeForLog("encounter failure when sync parameter to fe " + e.getMessage()), e);
         }
 
         try {

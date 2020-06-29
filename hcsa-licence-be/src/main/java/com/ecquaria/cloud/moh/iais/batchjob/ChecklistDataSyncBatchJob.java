@@ -219,7 +219,7 @@ public class ChecklistDataSyncBatchJob {
             beEicGatewayClient.saveSyncData(syncDataBody, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
         }catch (Exception e){
-            log.info(StringUtil.changeForLog("sync checklist data from be failure" + e.getMessage()));
+            log.info(StringUtil.changeForLog("sync checklist data from be failure" + e.getMessage()), e);
         }
     }
 }

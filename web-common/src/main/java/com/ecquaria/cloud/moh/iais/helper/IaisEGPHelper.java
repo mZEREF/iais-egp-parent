@@ -309,7 +309,7 @@ public final class IaisEGPHelper extends EGPHelper {
                 ParamUtil.setSessionAttr(request, filter.getSearchAttr(), searchParam);
             }
         }catch (NullPointerException e){
-            log.error(StringUtil.changeForLog("getSearchParam ===>>>> " + e.getMessage()));
+            log.error(StringUtil.changeForLog("getSearchParam ===>>>> " + e.getMessage()), e);
         }
         return searchParam;
     }
@@ -424,7 +424,7 @@ public final class IaisEGPHelper extends EGPHelper {
             response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
             response.sendRedirect(tokenUrl);
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 

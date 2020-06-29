@@ -178,7 +178,7 @@ public class HcsaChklItemDelegator {
         }catch (IaisRuntimeException e){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             return;
         }
     }
@@ -201,7 +201,7 @@ public class HcsaChklItemDelegator {
         try {
             doSubmitOrUpdate(request);
         }catch (IaisRuntimeException e){
-           log.error(e.getMessage());
+           log.error(e.getMessage(), e);
         }
 
     }
