@@ -127,7 +127,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-	public OrganizationDto createSingpassAccount(OrganizationDto organizationDto) {
+    public OrganizationDto createSingpassAccount(OrganizationDto organizationDto) {
         FeignResponseEntity<OrganizationDto> result = feUserClient.createSingpassAccount(organizationDto);
         int status = result.getStatusCode();
         if (status == HttpStatus.SC_OK){
@@ -137,7 +137,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         }else {
             return null;
         }
-	}
+    }
 
     public void callFeEicCreateAccount(OrganizationDto organizationDto){
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
@@ -281,6 +281,14 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             clientUser.setIdentityNo(feUserDto.getIdentityNo());
             clientUser.setMobileNo(feUserDto.getMobileNo());
             clientUser.setContactNo(feUserDto.getOfficeTelNo());
+
+            //prevent history simple pwd throw 500
+            StringBuilder stb = new StringBuilder(UUID.randomUUID().toString().substring(0,6));
+            stb.append(UUID.randomUUID().toString(), 0, 6);
+            String pwd = PasswordUtil.encryptPassword(feUserDto.getIdentityNo(), stb.toString(), null);
+
+            clientUser.setPassword(pwd);
+
             userClient.updateClientUser(clientUser);
         }else{
             clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
@@ -292,7 +300,12 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             clientUser.setSalutation(salutation);
             clientUser.setEmail(email);
             clientUser.setDisplayName(feUserDto.getFirstName()+feUserDto.getLastName());
-            clientUser.setPassword("password$2");
+
+            StringBuilder stb = new StringBuilder(UUID.randomUUID().toString().substring(0,6));
+            stb.append(UUID.randomUUID().toString(), 0, 6);
+            String pwd = PasswordUtil.encryptPassword(feUserDto.getIdentityNo(), stb.toString(), null);
+
+            clientUser.setPassword(pwd);
             clientUser.setPasswordChallengeQuestion("A");
             clientUser.setPasswordChallengeAnswer("A");
 
