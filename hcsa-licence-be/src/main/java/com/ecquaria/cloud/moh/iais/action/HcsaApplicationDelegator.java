@@ -1490,10 +1490,15 @@ public class HcsaApplicationDelegator {
             //0065354
             if(!ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(appStatus)){
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+                List<ApplicationDto> saveApplicationDtoList = applicationDtoList;
                 applicationDtoList = removeFastTracking(applicationDtoList);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 if(isAllSubmit || applicationDto.isFastTracking()){
+                    updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
+                    saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
+                    broadcastApplicationDto.setApplicationDtos(saveApplicationDtoList);
+                    broadcastApplicationDto.setRollBackApplicationDtos(saveApplicationDtoList);
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
@@ -1639,6 +1644,17 @@ public class HcsaApplicationDelegator {
         }
         return  result;
     }
+
+    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos,String applicationId,String status){
+        if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(applicationId)){
+            for (ApplicationDto applicationDto : applicationDtos){
+                if(applicationId.equals(applicationDto.getId())){
+                    applicationDto.setStatus(status);
+                }
+            }
+        }
+    }
+
     private void rollBack(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws CloneNotSupportedException {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
