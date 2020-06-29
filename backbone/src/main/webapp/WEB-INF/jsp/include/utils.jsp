@@ -59,7 +59,6 @@
     })
 
     $("#crud_clear_button").click(function () {
-        showWaiting();
         $(".form-horizontal input").val("");
         $(".form-horizontal input[type='checkbox']").removeAttr('checked');
         $(".form-horizontal input[type='radio']").removeAttr('checked');
