@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQuery
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.ApptViewDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -64,7 +63,7 @@ public class ClientReschedulingDelegator {
         String licenseeId = loginContext.getLicenseeId();
         //String licenseeId ="9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
         SearchParam rescheduleParam = IaisEGPHelper.getSearchParam(bpc.request, true,rescheduleParameter);
-        rescheduleParam.addParam("appStatus_reschedule", "(app.status not in('APST062','APST063','APST064','APST065','APST066','APST067','APST023','APST024'))");
+        rescheduleParam.addParam("appStatus_reschedule", "(app.status not in('APST062','APST063','APST064','APST065','APST066','APST067','APST068','APST023','APST024'))");
         rescheduleParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("rescheduleQuery", "queryApptGrpPremises", rescheduleParam);
 
@@ -73,11 +72,6 @@ public class ClientReschedulingDelegator {
 
 
         try {
-            log.info(StringUtil.changeForLog("rescheduleParam->"+rescheduleParam));
-            log.info(StringUtil.changeForLog("signature.date()->"+signature.date()));
-            log.info(StringUtil.changeForLog("signature.authorization()->"+signature.authorization()));
-            log.info(StringUtil.changeForLog("signature2.date()->"+signature2.date()));
-            log.info(StringUtil.changeForLog("signature2.authorization()->"+signature2.authorization()));
             SearchResult<ReschApptGrpPremsQueryDto> result  = feEicGatewayClient.eicSearchApptReschPrem(rescheduleParam, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
 
