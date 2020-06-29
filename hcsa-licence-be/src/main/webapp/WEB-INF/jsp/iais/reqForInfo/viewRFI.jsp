@@ -48,12 +48,14 @@
                                             <div class="col-sm-7 col-md-4 col-xs-10">
                                                 <iais:datePicker name="Due_date" dateVal="${licPreReqForInfoDto.dueDateSubmission}"/>
                                             </div>
-                                            <div class="col-sm-7 col-md-2 col-xs-10">
-                                                <button class="btn btn-secondary" type="button"
-                                                        onclick="javascript:doExtends('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.id)}')">
-                                                    Extends
-                                                </button>
-                                            </div>
+                                            <c:if test="${licPreReqForInfoDto.status!='RFIST002'}">
+                                                <div class="col-sm-7 col-md-2 col-xs-10">
+                                                    <button class="btn btn-secondary" type="button"
+                                                            onclick="javascript:doExtends('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.id)}')">
+                                                        Extends
+                                                    </button>
+                                                </div>
+                                            </c:if>
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Status :"/>

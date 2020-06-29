@@ -63,7 +63,7 @@
                                                 <td><c:out value="${pool.address}"/></td>
                                                 <td>
                                                     <c:forEach var="svcId" items="${pool.svcIds}">
-                                                        <iais:service value="${svcId}"></iais:service>&nbsp;
+                                                        <iais:service value="${svcId}"></iais:service><br>
                                                     </c:forEach>
                                                 </td>
                                                 <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
