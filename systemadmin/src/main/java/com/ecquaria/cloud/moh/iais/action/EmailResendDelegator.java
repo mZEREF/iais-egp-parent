@@ -122,27 +122,30 @@ public class EmailResendDelegator {
         email.setSender(emailAttachMentDto.getSender());
         email.setSubject(emailAttachMentDto.getSubject());
         email.setClientQueryCode(emailAttachMentDto.getClientQueryCode());
-        String[] recipient = emailAttachMentDto.getRecipient().split("&");
-        List<String> recipientList = IaisCommonUtils.genNewArrayList();
-        for (String item:recipient
-             ) {
-            recipientList.add(item);
-        }
-        email.setReceipts(recipientList);
-        email.setReqRefNum(emailAttachMentDto.getRequestRefNum());
 
-        if(emailAttachMentDto.getAnnexDtos() != null){
-            Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
-            for (AnnexDto item:emailAttachMentDto.getAnnexDtos()
-                 ) {
-                emailMap.put(item.getFileName(),item.getContent());
+        if(!StringUtil.isEmpty(emailAttachMentDto.getRecipient())){
+            String[] recipient = emailAttachMentDto.getRecipient().split("&");
+            List<String> recipientList = IaisCommonUtils.genNewArrayList();
+            for (String item:recipient
+            ) {
+                recipientList.add(item);
             }
+            email.setReceipts(recipientList);
+            email.setReqRefNum(emailAttachMentDto.getRequestRefNum());
 
-            blastManagementListService.sendEmail(email,emailMap);
-        }else{
-            blastManagementListService.sendEmail(email,null);
+            if(emailAttachMentDto.getAnnexDtos() != null){
+                Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
+                for (AnnexDto item:emailAttachMentDto.getAnnexDtos()
+                ) {
+                    emailMap.put(item.getFileName(),item.getContent());
+                }
+
+                blastManagementListService.sendEmail(email,emailMap);
+            }else{
+                blastManagementListService.sendEmail(email,null);
+            }
+            blastManagementListService.setEmailResend(id);
         }
-        blastManagementListService.setEmailResend(id);
     }
 
     /**
