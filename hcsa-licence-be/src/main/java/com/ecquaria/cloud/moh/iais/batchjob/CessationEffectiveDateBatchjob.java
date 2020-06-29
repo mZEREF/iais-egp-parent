@@ -82,7 +82,6 @@ public class CessationEffectiveDateBatchjob {
                             }
                         }
                     }
-
                     //create grp licence and ceased old licence
                     List<String> grpLicIds = IaisCommonUtils.genNewArrayList();
                     grpLicIds.clear();

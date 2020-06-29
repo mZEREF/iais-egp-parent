@@ -48,7 +48,6 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public OrgUserDto updateOrgUser(OrgUserDto orgUserDto) {
         return intranetUserClient.updateOrgUserDto(orgUserDto).getEntity();
-
     }
 
     @Override

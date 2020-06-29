@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
+import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
@@ -36,6 +37,7 @@ import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import sop.rbac.user.UserIdentifier;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -50,6 +52,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author weilu
@@ -209,16 +212,22 @@ public class MohIntranetUserDelegator {
         String userDomain = orgUserDto.getUserDomain();
         String userId = orgUserDto.getUserId();
         ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, userDomain);
-        if (clientUser.isFirstTimeLoginNo()) {
+        if(clientUser!=null){
+            if (clientUser.isFirstTimeLoginNo()) {
+                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
+                intranetUserService.updateOrgUser(orgUserDto);
+                deleteEgpUser(userDomain, userId);
+                return;
+            } else {
+                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
+                intranetUserService.updateOrgUser(orgUserDto);
+                clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
+                intranetUserService.updateEgpUser(clientUser);
+                return;
+            }
+        }else {
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
             intranetUserService.updateOrgUser(orgUserDto);
-            deleteEgpUser(userDomain, userId);
-            return;
-        } else {
-            orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
-            intranetUserService.updateOrgUser(orgUserDto);
-            clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
-            intranetUserService.updateEgpUser(clientUser);
             return;
         }
     }
@@ -547,7 +556,13 @@ public class MohIntranetUserDelegator {
         String salutation = orgUserDto.getSalutation();
         clientUser.setSalutation(salutation);
         clientUser.setEmail(email);
-        clientUser.setPassword("password$2");
+        StringBuilder stb = new StringBuilder(UUID.randomUUID().toString().substring(0,6));
+        stb.append(UUID.randomUUID().toString(), 0, 6);
+        UserIdentifier userIdentifier = new UserIdentifier();
+        userIdentifier.setId(orgUserDto.getUserId());
+        userIdentifier.setUserDomain(orgUserDto.getUserDomain());
+        String pwd = PasswordUtil.encryptPassword(userIdentifier, stb.toString(), null);
+        clientUser.setPassword(pwd);
         clientUser.setPasswordChallengeQuestion("A");
         clientUser.setPasswordChallengeAnswer("A");
         intranetUserService.saveEgpUser(clientUser);
