@@ -1,5 +1,5 @@
 <p class="form-check-title">Please select a draft application to resume</p>
-<iais:pagination param="appParam" result="appResult"/>
+<iais:pagination param="draftAppSearchParam" result="draftAppSearchResult"/>
 <div class="table-gp">
     <table class="table">
         <thead>
@@ -13,7 +13,7 @@
         </thead>
         <tbody>
         <c:choose>
-            <c:when test="${empty appResult.rows}">
+            <c:when test="${empty draftAppSearchResult.rows}">
                 <tr>
                     <td colspan="15">
                         <iais:message key="ACK018" escape="true"/>
@@ -21,7 +21,7 @@
                 </tr>
             </c:when>
             <c:otherwise>
-                <c:forEach var="pool" items="${appResult.rows}" varStatus="status">
+                <c:forEach var="pool" items="${draftAppSearchResult.rows}" varStatus="status">
                     <tr>
                         <td>
                             <div class="form-check hover">

@@ -1,6 +1,6 @@
 <p class="form-check-title">Please select licence(s) to cease:</p>
 <div class="form-check">
-    <iais:pagination param="PremisesSearchParam" result="PremisesSearchResult"/>
+    <iais:pagination param="ceaseLicenceSearchParam" result="ceaseLicenceSearchResult"/>
     <div class="table-gp">
         <table class="table">
             <thead>
@@ -15,7 +15,7 @@
             </thead>
             <tbody>
             <c:choose>
-                <c:when test="${empty PremisesSearchResult.rows}">
+                <c:when test="${empty ceaseLicenceSearchResult.rows}">
                     <tr>
                         <td colspan="15">
                             <iais:message key="ACK018" escape="true"/>
@@ -23,7 +23,7 @@
                     </tr>
                 </c:when>
                 <c:otherwise>
-                    <c:forEach var="pool" items="${PremisesSearchResult.rows}" varStatus="status">
+                    <c:forEach var="pool" items="${ceaseLicenceSearchResult.rows}" varStatus="status">
                         <tr>
                             <td>
                                 <div class="form-check hover">

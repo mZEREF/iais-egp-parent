@@ -302,15 +302,15 @@ public class HalpAssessmentGuideDelegator {
     public void resumeDraftApp(BaseProcessClass bpc) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        SearchParam appParam = SearchResultHelper.getSearchParam(bpc.request, appParameter, true);
-        appParam.addFilter("licenseeId", licenseeId, true);
+        SearchParam draftAppSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.DRAFT_APPLICATION_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
+        draftAppSearchParam.addFilter("licenseeId", licenseeId, true);
 
-        QueryHelp.setMainSql("interInboxQuery", "applicationQuery", appParam);
-        SearchResult<InboxAppQueryDto> appResult = inboxService.appDoQuery(appParam);
+        QueryHelp.setMainSql("interInboxQuery", "applicationQuery", draftAppSearchParam);
+        SearchResult<InboxAppQueryDto> draftAppSearchResult = inboxService.appDoQuery(draftAppSearchParam);
 
-        if (!StringUtil.isEmpty(appResult)) {
-            ParamUtil.setSessionAttr(bpc.request, "appParam", appParam);
-            ParamUtil.setRequestAttr(bpc.request, "appResult", appResult);
+        if (!StringUtil.isEmpty(draftAppSearchResult)) {
+            ParamUtil.setSessionAttr(bpc.request, GuideConsts.DRAFT_APPLICATION_SEARCH_PARAM, draftAppSearchParam);
+            ParamUtil.setRequestAttr(bpc.request, GuideConsts.DRAFT_APPLICATION_SEARCH_RESULT, draftAppSearchResult);
         }
     }
 
