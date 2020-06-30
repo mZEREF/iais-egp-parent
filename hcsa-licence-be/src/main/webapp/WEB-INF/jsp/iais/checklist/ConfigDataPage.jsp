@@ -139,8 +139,8 @@
                     <td>${config.svcName}</td>
                     <td>${config.svcSubType}</td>
                     <td>${config.hciCode}</td>
-                    <td><fmt:formatDate value="${config.eftStartDate}" pattern="MM/dd/yyyy"/></td>
-                    <td><fmt:formatDate value="${config.eftEndDate}" pattern = "MM/dd/yyyy"/></td>
+                    <td><fmt:formatDate value="${config.eftStartDate}" pattern="dd/MM/yyyy"/></td>
+                    <td><fmt:formatDate value="${config.eftEndDate}" pattern = "dd/MM/yyyy"/></td>
 
 
                     <td>
