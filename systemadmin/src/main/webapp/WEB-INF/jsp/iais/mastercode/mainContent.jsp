@@ -21,7 +21,7 @@
                                 <iais:sortableHeader needSort="true" field="code_category" value="Code Description" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="filter_value" value="Filter Value" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="sequence" value="Sequence" style="width:7%" />
-                                <iais:sortableHeader needSort="false" field="Version" value="Version" />
+                                <iais:sortableHeader needSort="true" field="Version" value="Version" style="width:7%"/>
                                 <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"  style="width:13%"/>
                                 <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"  style="width:13%"/>
                                 <iais:sortableHeader needSort="true" field="status" value="Status" style="width:6%"/>
