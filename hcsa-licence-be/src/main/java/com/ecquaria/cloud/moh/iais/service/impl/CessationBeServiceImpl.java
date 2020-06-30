@@ -112,9 +112,11 @@ public class CessationBeServiceImpl implements CessationBeService {
                         String floorNo = premisesDto.getFloorNo();
                         String unitNo = premisesDto.getUnitNo();
                         String postalCode = premisesDto.getPostalCode();
+                        String hciCode = premisesDto.getHciCode();
                         String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
                         AppCessHciDto appCessHciDto = new AppCessHciDto();
                         String hciName = premisesDto.getHciName();
+                        appCessHciDto.setHciCode(hciCode);
                         appCessHciDto.setHciName(hciName);
                         appCessHciDto.setPremiseId(premisesId);
                         appCessHciDto.setHciAddress(hciAddress);
@@ -305,6 +307,7 @@ public class CessationBeServiceImpl implements CessationBeService {
         appPremisesRoutingHistoryDto.setRoleId(curRoleId);
         appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
         appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.PROCESSING_DECISION_VERIFIED);
+        appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
         taskService.createHistorys(appPremisesRoutingHistoryDtos);
     }
 

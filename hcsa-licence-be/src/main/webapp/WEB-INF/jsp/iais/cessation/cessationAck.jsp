@@ -53,7 +53,7 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-sm-6">
-                        <a onclick="back('back')"><em class="fa fa-angle-left"></em>Back</a>
+                        <a onclick="back('back')"><em class="fa fa-angle-left"></em> Back</a>
                     </div>
                 </div>
             </div>

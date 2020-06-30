@@ -62,6 +62,8 @@ public class CessationApplicationBeDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>CessationApplicationDelegator");
         AuditTrailHelper.auditFunction("Cessation Application", "Cessation Application");
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
+        ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
+        ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag",null);
     }
 
     public void init(BaseProcessClass bpc) {
@@ -73,8 +75,8 @@ public class CessationApplicationBeDelegator {
         List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
         List<AppSpecifiedLicDto> specLicInfo = cessationBeService.getSpecLicInfo(licIds);
         if(specLicInfo.size()>0) {
-            ParamUtil.setRequestAttr(bpc.request, "specLicInfo", specLicInfo);
-            ParamUtil.setRequestAttr(bpc.request, "specLicInfoFlag","exist");
+            ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) specLicInfo);
+            ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag","exist");
         }
         int size = appCessDtosByLicIds.size();
         List<SelectOption> reasonOption = getReasonOption();
@@ -144,7 +146,6 @@ public class CessationApplicationBeDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
             return;
         }
-
         List<AppCessationDto> appCessationDtos = transformDto(cloneAppCessHciDtos);
         ParamUtil.setSessionAttr(bpc.request, "confirmDtos", (Serializable) confirmDtos);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);

@@ -112,6 +112,8 @@ public class CessationFeServiceImpl implements CessationFeService {
                         String hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
                         AppCessHciDto appCessHciDto = new AppCessHciDto();
                         String hciName = premisesDto.getHciName();
+                        String hciCode = premisesDto.getHciCode();
+                        appCessHciDto.setHciCode(hciCode);
                         appCessHciDto.setHciName(hciName);
                         appCessHciDto.setPremiseId(premisesId);
                         appCessHciDto.setHciAddress(hciAddress);

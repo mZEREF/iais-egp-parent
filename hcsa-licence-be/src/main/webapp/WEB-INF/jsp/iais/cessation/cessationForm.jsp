@@ -30,14 +30,14 @@
                                 <div class="license-info-box">
                                     <div class="col-lg-6 col-xs-12">
                                         <div class="license-info">
-                                            <p class="lic-no">License Number</p>
-                                            <h4>L/20I5286/CLB/001/201</h4>
+                                            <p class="lic-no">Licence Number</p>
+                                            <h4><c:out value="${appCess.licenceNo}"/></h4>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-xs-12">
                                         <div class="license-info">
                                             <p class="serv-name">Service Name</p>
-                                            <h4>Clinical Laboratory</h4>
+                                            <h4><c:out value="${appCess.svcName}"/></h4>
                                         </div>
                                     </div>
                                 </div>
@@ -45,9 +45,9 @@
                                     <div class="col-lg-12 col-xs-12">
                                         <div class="table-gp tablebox">
                                             <div class="topheader">
-                                                <h4>(HCI Name) - (HCI Code)</h4>
-                                                <p><c:out value="${appCess.licenceNo}"/>, <c:out
-                                                        value="${appCess.svcName}"/></p>
+                                                <h4><c:out value="${appCessHci.hciName}"/> - <c:out
+                                                        value="${appCessHci.hciCode}"/></h4>
+                                                <p><c:out value="${appCessHci.hciAddress}"/></p>
                                             </div>
 
                                             <iais:section title="" id="potentialAuditableHCIs">
@@ -305,6 +305,14 @@
         width: 90%;
         padding-left: 10px;
         padding-right: 10px;
+    }
+
+    ul li {
+        list-style: disc;
+        padding-left: 16px;
+        position: relative;
+        font-size: 1.6rem;
+        margin-bottom: 10px;
     }
 
     #effectiveDate {
