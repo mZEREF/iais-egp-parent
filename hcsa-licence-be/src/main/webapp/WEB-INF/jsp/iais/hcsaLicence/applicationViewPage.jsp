@@ -49,7 +49,7 @@
                             <li id="ApplicationViewInspection" class="complete" role="presentation"
                                 style="display: block"><a href="#tabInspection"
                                                           aria-controls="tabInspection" role="tab"
-                                                          data-toggle="tab">Inspection</a></li>
+                                                          data-toggle="tab">Inspection${!isAso && !isPso ? ' Report' : ''}</a></li>
                             <li class="incomplete" id="process" role="presentation"><a href="#tabProcessing"
                                                                           aria-controls="tabProcessing" role="tab"
                                                                           data-toggle="tab">Processing</a></li>
