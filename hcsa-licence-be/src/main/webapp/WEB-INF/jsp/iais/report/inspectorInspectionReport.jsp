@@ -141,6 +141,7 @@
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </c:if>
+                                                                    <c:if test="${appType!='APTY007'}">
                                                                     <iais:row>
                                                                         <iais:field value="Recommendation"
                                                                                     required="false"/>
@@ -148,6 +149,7 @@
                                                                             <p id="periodValue"></p>
                                                                         </iais:value>
                                                                     </iais:row>
+                                                                    </c:if>
                                                                     <div class="fastTrack">
                                                                         <iais:row>
                                                                             <iais:field value="Fast Tracking?"
