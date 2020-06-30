@@ -1404,6 +1404,7 @@ public class HcsaApplicationDelegator {
         String externalRemarks = ParamUtil.getString(bpc.request,"comments");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
+        boolean hasAllUpdate = Boolean.FALSE;
         if(!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)){
             processDecision = nextStageReplys;
         }
@@ -1547,6 +1548,7 @@ public class HcsaApplicationDelegator {
                     broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
                     //update fe application status
                     updateFeApplications(saveApplicationDtoList);
+                    hasAllUpdate = Boolean.TRUE;
                 }
             }else{
                 log.info(StringUtil.changeForLog("This RFI  this application -->:"+applicationDto.getApplicationNo()));
@@ -1564,7 +1566,9 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
-        applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        if(!hasAllUpdate){
+            applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        }
         //appeal save return fee
 
 
