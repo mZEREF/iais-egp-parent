@@ -185,7 +185,7 @@
 
     function doSubmit(reqInfoId) {
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "cancel", reqInfoId);
+        SOP.Crud.cfxSubmit("mainForm", "update", reqInfoId);
     }
 
     function doExtends(reqInfoId) {

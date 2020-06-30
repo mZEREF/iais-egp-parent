@@ -415,67 +415,8 @@ public class RequestForInformationDelegator {
         // 		doCreateRequest->OnStepProcess
     }
 
-    public void doCancel(BaseProcessClass bpc) throws ParseException {
-        log.info("=======>>>>>doCancel>>>>>>>>>>>>>>>>requestForInformation");
-        String reqInfoId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        String status=ParamUtil.getString(bpc.request,"status");
-        String date=ParamUtil.getString(bpc.request, "Due_date");
-        Date dueDate;
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if(date==null){
-            errorMap.put("Due_date","ERR0010");
-        }else {
-            date= ParamUtil.getString(bpc.request, "Due_date");
-            dueDate=Formatter.parseDate(date);
-            date=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(dueDate);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
-            Date tomorrow= calendar.getTime();
-            String now=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(tomorrow);
-            if(date.compareTo(now) <0 ){
-                errorMap.put("Due_date","Due Date should be a future Date.");
-            }
-        }
-        if (!errorMap.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
-            //
-            return;
-        }
+    public void doCancel(BaseProcessClass bpc) {
 
-        Calendar calendar = Calendar.getInstance();
-        if(!StringUtil.isEmpty(date)){
-            dueDate= Formatter.parseDate(date);
-        }
-        else {
-            calendar.add(Calendar.DATE,rfiDueDay);
-            dueDate =calendar.getTime();
-        }
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto=new LicPremisesReqForInfoDto();
-        licPremisesReqForInfoDto.setId(reqInfoId);
-        licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
-        licPremisesReqForInfoDto.setStatus(status);
-        licPremisesReqForInfoDto.setAction("update");
-        requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
-        EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
-        eicRequestTrackingDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        Date now = new Date();
-        eicRequestTrackingDto.setActionClsName("com.ecquaria.cloud.moh.iais.service.RequestForInformationServiceImpl");
-        eicRequestTrackingDto.setActionMethod("eicCallFeRfiLic");
-        eicRequestTrackingDto.setModuleName("hcsa-licence-web-intranet");
-        eicRequestTrackingDto.setDtoClsName(LicPremisesReqForInfoDto.class.getName());
-        eicRequestTrackingDto.setDtoObject(JsonUtil.parseToJson(licPremisesReqForInfoDto));
-        eicRequestTrackingDto.setProcessNum(1);
-        eicRequestTrackingDto.setFirstActionAt(now);
-        eicRequestTrackingDto.setLastActionAt(now);
-        eicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
-        eicRequestTrackingDto.setRefNo(System.currentTimeMillis()+"");
-        licPremisesReqForInfoDto.setEventRefNo(eicRequestTrackingDto.getRefNo());
-        requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
-        requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto);
-        // 		doCancel->OnStepProcess
     }
 
 
@@ -502,6 +443,7 @@ public class RequestForInformationDelegator {
     public void doUpdate(BaseProcessClass bpc) throws ParseException {
         log.info("=======>>>>>preCancel>>>>>>>>>>>>>>>>requestForInformation");
         HttpServletRequest request=bpc.request;
+        String status=ParamUtil.getString(bpc.request,"status");
         String reqInfoId = ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
         String date=ParamUtil.getString(request, "Due_date");
         Date dueDate;
@@ -539,7 +481,7 @@ public class RequestForInformationDelegator {
         }
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
         licPremisesReqForInfoDto.setDueDateSubmission(dueDate);
-        licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_RETRIGGER);
+        licPremisesReqForInfoDto.setStatus(status);
         requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
         licPremisesReqForInfoDto.setAction("update");
         EicRequestTrackingDto eicRequestTrackingDto=new EicRequestTrackingDto();
