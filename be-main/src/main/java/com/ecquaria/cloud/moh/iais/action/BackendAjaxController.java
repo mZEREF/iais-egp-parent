@@ -113,7 +113,7 @@ public class BackendAjaxController {
                 }
                 if(item.getLicenceId() != null){
                     LicenceDto licenceDto = inspEmailService.getLicBylicId(item.getLicenceId());
-                    if(licenceDto.getExpiryDate() != null){
+                    if(licenceDto != null && licenceDto.getExpiryDate() != null){
                         item.setExpiryDate(Formatter.formatDate(licenceDto.getExpiryDate()));
                     }else{
                         item.setExpiryDate("N/A");
