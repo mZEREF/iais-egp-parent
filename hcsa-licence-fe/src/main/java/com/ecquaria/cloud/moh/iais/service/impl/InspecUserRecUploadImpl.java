@@ -353,7 +353,7 @@ public class InspecUserRecUploadImpl implements InspecUserRecUploadService {
             String itemId = adhocChecklistItemDto.getItemId();
             if(!StringUtil.isEmpty(itemId)){
                 ChecklistItemDto checklistItemDto = appConfigClient.getChklItemById(itemId).getEntity();
-                inspecUserRecUploadDto.setCheckClause(checklistItemDto.getRegulationClause());
+                inspecUserRecUploadDto.setCheckClause("-");
                 inspecUserRecUploadDto.setCheckQuestion(checklistItemDto.getChecklistItem());
             } else {
                 inspecUserRecUploadDto.setCheckClause("-");
