@@ -777,17 +777,6 @@ public class ServiceMenuDelegator {
         log.info(StringUtil.changeForLog("do choose lic start ..."));
         String additional = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
-        if(BACK_ATTR.equals(additional)){
-            if(appSelectSvcDto.isChooseBaseSvc()){
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_BASE_SVC);
-            }else{
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
-            }
-            return;
-        }else if("doPage".equals(additional)){
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
-            return;
-        }
         String alignLic = ParamUtil.getString(bpc.request,"alignLic");
         String alignLicenceNo = "";
         String licPremiseId = "";
@@ -809,6 +798,7 @@ public class ServiceMenuDelegator {
             alignLicenceNo = ParamUtil.getMaskedString(bpc.request,"licenceNo"+alignLic);
             licPremiseId = ParamUtil.getMaskedString(bpc.request,"premisesId"+alignLic);
         }
+        appSelectSvcDto.setAlignLicPremId(licPremiseId);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
         if(appSelectSvcDto.isChooseBaseSvc()){
             appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
@@ -830,6 +820,20 @@ public class ServiceMenuDelegator {
                 appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
             }
         }
+        ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
+        ParamUtil.setSessionAttr(bpc.request,ServiceMenuDelegator.APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
+        if(BACK_ATTR.equals(additional)){
+            if(appSelectSvcDto.isChooseBaseSvc()){
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_BASE_SVC);
+            }else{
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
+            }
+            return;
+        }else if("doPage".equals(additional)){
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
+            return;
+        }
+
 
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
         String nextstep = ParamUtil.getString(bpc.request,"crud_action_additional");
@@ -852,9 +856,9 @@ public class ServiceMenuDelegator {
         String switchStep = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
         if(NEXT.equals(switchStep)){
             appSelectSvcDto.setLicPage(true);
+            ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
         }
-        ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
-        ParamUtil.setSessionAttr(bpc.request,ServiceMenuDelegator.APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
+
         log.info(StringUtil.changeForLog("do choose lic end ..."));
     }
 
