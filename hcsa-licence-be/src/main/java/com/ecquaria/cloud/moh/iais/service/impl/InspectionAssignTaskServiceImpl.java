@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
@@ -28,7 +29,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -515,17 +515,17 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT, td.getTaskKey(), null,
                 InspectionConstants.PROCESS_DECI_PENDING_APPLICANT_ACCEPT_INSPECTION_DATE, td.getRoleId(), null, td.getWkGrpId());
         String appHistoryId = appPremisesRoutingHistoryDto.getId();
-        List<AppPremisesRoutingHistoryExtDto> appPremisesRoutingHistoryExtDtoList = IaisCommonUtils.genNewArrayList();
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = IaisCommonUtils.genNewArrayList();
         for(String taskUserId : taskUserIds){
-            //create AppPremisesRoutingHistoryExtDto and task
-            AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
-            appPremisesRoutingHistoryExtDto.setAppPremRhId(appHistoryId);
-            appPremisesRoutingHistoryExtDto.setComponentName(RoleConsts.USER_ROLE_INSPECTIOR);
-            appPremisesRoutingHistoryExtDto.setComponentValue(taskUserId);
-            appPremisesRoutingHistoryExtDto.setId(null);
-            appPremisesRoutingHistoryExtDto.setAuditTrailDto(auditTrailDto);
-            appPremisesRoutingHistoryExtDtoList.add(appPremisesRoutingHistoryExtDto);
+            //create appInspCorrelation and task
+            AppPremInspCorrelationDto appPremInspCorrelationDto = new AppPremInspCorrelationDto();
+            appPremInspCorrelationDto.setApplicationNo(applicationDto.getApplicationNo());
+            appPremInspCorrelationDto.setId(null);
+            appPremInspCorrelationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            appPremInspCorrelationDto.setUserId(taskUserId);
+            appPremInspCorrelationDto.setAuditTrailDto(auditTrailDto);
+            appPremInspCorrelationDtoList.add(appPremInspCorrelationDto);
 
             TaskDto taskDto = new TaskDto();
             taskDto.setId(null);
@@ -586,7 +586,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_RESCHEDULING_APPLICANT_ACCEPT_DATE);
                 taskService.updateTask(td);
                 taskService.createTasks(taskDtoList);
-                inspectionTaskClient.createAppPremisesRoutingHistoryExtDtos(appPremisesRoutingHistoryExtDtoList);
+                inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
                 createMessage(url, serviceCode, submitDt, licenseeId, maskParams);
             } else {
                 //update App
@@ -597,7 +597,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_RESCHEDULING_APPLICANT_ACCEPT_DATE);
                 taskService.updateTask(td);
                 taskService.createTasks(taskDtoList);
-                inspectionTaskClient.createAppPremisesRoutingHistoryExtDtos(appPremisesRoutingHistoryExtDtoList);
+                inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
             }
         } else {
             List<String> premCorrIds = IaisCommonUtils.genNewArrayList();
@@ -611,7 +611,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_RESCHEDULING_APPLICANT_ACCEPT_DATE);
             taskService.updateTask(td);
             taskService.createTasks(taskDtoList);
-            inspectionTaskClient.createAppPremisesRoutingHistoryExtDtos(appPremisesRoutingHistoryExtDtoList);
+            inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
             createMessage(url, serviceCode, submitDt, licenseeId, maskParams);
         }
     }
