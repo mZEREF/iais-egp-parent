@@ -64,9 +64,11 @@
              LEFT JOIN APP_GRP_PREMISES T3 ON T4.ID = T3.APP_GRP_ID
              LEFT JOIN APP_PREMISES_CORRELATION T2 ON T2.APP_GRP_PREM_ID = T3.ID
              LEFT JOIN APPLICATION AS app ON T2.APPLICATION_ID = app.ID
-             LEFT JOIN app_premises_recommendation appRec ON (appRec.APP_PREM_CORRE_ID = T2.ID AND appRec.RECOM_TYPE='RETYPE006')
+             LEFT JOIN app_premises_recommendation appRec ON (appRec.APP_PREM_CORRE_ID = T2.ID AND appRec.RECOM_TYPE='RETYPE006' AND appRec.STATUS='CMSTAT001')
+             LEFT JOIN app_premises_inspection_appt insAppt ON (insAppt.APP_PREM_CORRE_ID = T2.ID AND insAppt.STATUS='CMSTAT001')
 
             WHERE 1=1
+            AND insAppt.RESCHEDULE_COUNT <= 1
             AND appRec.STATUS = 'CMSTAT001'
             AND appRec.RECOM_IN_DATE is not null
             <#if appStatus_reschedule??>AND ${appStatus_reschedule}</#if>
