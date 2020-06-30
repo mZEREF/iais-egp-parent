@@ -499,8 +499,8 @@ public class ServiceMenuDelegator {
                 for(HcsaServiceDto hcsaServiceDto:allbaseService){
                     allBaseSvcId.add(hcsaServiceDto.getId());
                 }
-                boolean baseInSpec = baseInSpe(allBaseSvcId,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
-                if (!baseInSpec){
+                Map<String,List<String>> baseRelSpe = baseRelSpe(allBaseSvcId,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
+                if (baseRelSpe.size() == 0){
                     nextstep = currentPage;
                     err = "There is no base service in specified services.";
                     ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
@@ -539,7 +539,7 @@ public class ServiceMenuDelegator {
                     speSvcSort.add(HcsaServiceCacheHelper.getServiceById(item));
                 }
                 //spe
-                Map<String ,String> necessaryBaseServiceList = necessaryBase(basecheckedlist,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
+                 Map<String ,String> necessaryBaseServiceList = necessaryBase(basecheckedlist,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
                 List<String> extrabaselist = IaisCommonUtils.genNewArrayList();
                 extrabaselist.addAll(basecheckedlist);
                 List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedcheckedlist,allbaseService,hcsaServiceCorrelationDtoList);
@@ -557,7 +557,7 @@ public class ServiceMenuDelegator {
                 for(HcsaServiceDto hcsaServiceDto:allbaseService){
                     allBaseSvcId.add(hcsaServiceDto.getId());
                 }
-                boolean baseInSpec = baseInSpe(allBaseSvcId,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
+                Map<String,List<String>> baseRelSpe = baseRelSpe(allBaseSvcId,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
                 extrabaselist.removeAll(removeNecessary);
                 if(necessaryBaseServiceList.size() > 0){
                     //no match
@@ -566,8 +566,21 @@ public class ServiceMenuDelegator {
                         err = baseName.get(getKeyOrNull(necessaryBaseServiceList)) + " should be selected.";
                     }else{
                         for(Map.Entry<String, String> entry : necessaryBaseServiceList.entrySet()){
+                            String baseSvcName = "";
+                            for(List<String> relaSvcIdList:baseRelSpe.values()){
+                                for(int i =0; i<extrabaselist.size();i++){
+                                    String baseSvcId = extrabaselist.get(i);
+                                    if(relaSvcIdList.contains(baseSvcId)){
+                                        continue;
+                                    }
+                                    if(i == extrabaselist.size()-1){
+                                        baseSvcName = HcsaServiceCacheHelper.getServiceById(baseSvcId).getSvcName();
+                                    }
+                                }
+
+                            }
                             err = "The chosen base service ";
-                            err = err + baseName.get(extrabaselist.get(0));
+                            err = err + baseSvcName;
                             err = err + " is not the prerequisite of ";
                             err = err + specifiedName.get(entry.getValue()) + ".";
                             break;
@@ -575,7 +588,7 @@ public class ServiceMenuDelegator {
                     }
                     ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                 }else{
-                    if (!baseInSpec){
+                    if (baseRelSpe.size() == 0){
                         nextstep = currentPage;
                         err = "There is no base service in specified services.";
                         ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
@@ -1048,11 +1061,12 @@ public class ServiceMenuDelegator {
 
     }
 
-    private boolean baseInSpe(List<String> baseSvcIdList,List<String> specSvcIdList,List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList){
-        boolean result = false;
+    private Map<String,List<String>> baseRelSpe(List<String> baseSvcIdList,List<String> specSvcIdList,List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList){
+        boolean flag = false;
+        Map<String,List<String>> result = IaisCommonUtils.genNewHashMap();
         if(!IaisCommonUtils.isEmpty(baseSvcIdList) && !IaisCommonUtils.isEmpty(specSvcIdList)){
-            //specSvcId,baseSvcIdList
             Map<String,List<String>> baseInSpec = IaisCommonUtils.genNewHashMap();
+            //specSvcId,baseSvcIdList
             for(HcsaServiceCorrelationDto hcsaServiceCorrelationDto:hcsaServiceCorrelationDtoList){
                 String corrSpecSvcId = hcsaServiceCorrelationDto.getSpecifiedSvcId();
                 String corrBaseSvcId = hcsaServiceCorrelationDto.getBaseSvcId();
@@ -1079,12 +1093,13 @@ public class ServiceMenuDelegator {
                     break;
                 }
                 if(i == specSvcIdList.size()-1){
-                    result = true;
+                    flag = true;
                 }
             }
+            if(flag){
+                result = baseInSpec;
+            }
         }
-
-
         return result;
     }
 
