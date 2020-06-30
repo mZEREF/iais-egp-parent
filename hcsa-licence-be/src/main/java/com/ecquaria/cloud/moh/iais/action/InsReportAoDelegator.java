@@ -155,7 +155,6 @@ public class InsReportAoDelegator {
     private void initAoRecommendation(String correlationId,BaseProcessClass bpc,String appType){
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
-        AppPremisesRecommendationDto riskRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
         AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
 
         AppPremisesRecommendationDto initRecommendationDto = new AppPremisesRecommendationDto();
@@ -191,10 +190,6 @@ public class InsReportAoDelegator {
             }
             initRecommendationDto.setEngageEnforcement(engage);
             initRecommendationDto.setEngageEnforcementRemarks(remarks);
-        }
-        if (riskRecommendationDto != null) {
-            String riskLevel = riskRecommendationDto.getRecomDecision();
-            initRecommendationDto.setRiskLevel(riskLevel);
         }
         if (followRecommendationDto != null) {
             String followRemarks = followRecommendationDto.getRemarks();

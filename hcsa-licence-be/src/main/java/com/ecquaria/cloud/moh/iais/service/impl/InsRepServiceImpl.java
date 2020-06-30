@@ -132,6 +132,7 @@ public class InsRepServiceImpl implements InsRepService {
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
+        String applicationType = applicationDto.getApplicationType();
         String appGrpId = applicationDto.getAppGrpId();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String status = applicationDto.getStatus();
@@ -159,8 +160,6 @@ public class InsRepServiceImpl implements InsRepService {
             poNames.add(name);
         }
         inspectionReportDto.setPrincipalOfficers(poNames);
-
-
         List<String> nameList = IaisCommonUtils.genNewArrayList();
         AppPremisesRecommendationDto otherOfficesDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_OTHER_INSPECTIORS).getEntity();
         if (otherOfficesDto != null) {
@@ -193,7 +192,23 @@ public class InsRepServiceImpl implements InsRepService {
                 svcName = hcsaServiceDto.getSvcName();
             }
         }
-
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)||ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)){
+            HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+            hcsaRiskScoreDto.setAppType(applicationType);
+            if(!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+                hcsaRiskScoreDto.setLicId(appInsRepDto.getLicenceId());
+            }else {
+                List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+                applicationDtos.add(applicationDto);
+                hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+            }
+            hcsaRiskScoreDto.setServiceId(serviceId);
+            HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+            Double riskScore = entity.getRiskScore();
+            String riskLevel = entity.getRiskLevel();
+            inspectionReportDto.setRiskLevel(riskLevel);
+            applicationDto.setRiskScore(riskScore);
+        }
         List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
         List<String> subsumedServices = IaisCommonUtils.genNewArrayList();
         if (subsumedDtos != null && !subsumedDtos.isEmpty()) {
@@ -374,30 +389,6 @@ public class InsRepServiceImpl implements InsRepService {
             return;
         } else if (oldAppPremisesRecommendationDto != null && StringUtil.isEmpty(remarks)) {
             oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
-            return;
-        }
-
-    }
-
-    @Override
-    public void updateRiskRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
-        String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
-        Integer version = 1;
-        AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
-        if (oldAppPremisesRecommendationDto == null) {
-            appPremisesRecommendationDto.setVersion(version);
-            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            insRepClient.saveRecommendationData(appPremisesRecommendationDto);
-            return;
-        } else {
-            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
-            version = oldAppPremisesRecommendationDto.getVersion() + 1;
-            oldAppPremisesRecommendationDto.setVersion(version);
-            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            oldAppPremisesRecommendationDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
-            oldAppPremisesRecommendationDto.setId(null);
             insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
             return;
         }
@@ -602,7 +593,7 @@ public class InsRepServiceImpl implements InsRepService {
             if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) ||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)||ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)){
                 HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
                 hcsaRiskScoreDto.setAppType(applicationType);
-                if( !ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+                if(!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
                     AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
                     hcsaRiskScoreDto.setLicId(appInsRepDto.getLicenceId());
                 }else {
@@ -848,63 +839,6 @@ public class InsRepServiceImpl implements InsRepService {
         return reportDtoForAo;
     }
 
-    @Override
-    public InspectionReportDto getInspectorAo2(TaskDto taskDto, ApplicationViewDto applicationViewDto) {
-        List<String> listUserId = IaisCommonUtils.genNewArrayList();
-        String appNo = applicationViewDto.getApplicationDto().getApplicationNo();
-        InspectionReportDto reportDtoForAo = new InspectionReportDto();
-        Set<String> inspectorReportS = taskService.getInspectiors(appNo, TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR);
-        List<String> inspectorReportList = IaisCommonUtils.genNewArrayList();
-        for (String inspector : inspectorReportS) {
-            inspectorReportList.add(inspector);
-        }
-        List<OrgUserDto> reported = organizationClient.retrieveOrgUserAccount(inspectorReportList).getEntity();
-        List<String> inspectorsName = IaisCommonUtils.genNewArrayList();
-        for (OrgUserDto orgUserDto : reported) {
-            String displayName = orgUserDto.getDisplayName();
-            inspectorsName.add(displayName);
-        }
-        reportDtoForAo.setReportedBy(inspectorsName.get(0));
-
-        String userId = reported.get(0).getId();
-        List<String> wkGrpIds = comSystemAdminClient.getWorkGrpsByUserId(userId).getEntity();
-        if (wkGrpIds != null && !wkGrpIds.isEmpty()) {
-            listUserId.add(userId);
-            List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
-            String reportBy = userList.get(0).getDisplayName();
-            listUserId.clear();
-            //get inspection lead
-            String workId = null;
-            for (String id : wkGrpIds) {
-                WorkingGroupDto entity = organizationClient.getWrkGrpById(id).getEntity();
-                String groupDomain = entity.getGroupDomain();
-                if ("hcsa".equals(groupDomain)) {
-                    workId = entity.getId();
-                    break;
-                }
-            }
-            List<String> leadId = organizationClient.getInspectionLead(workId).getEntity();
-            for (String lead : leadId) {
-                listUserId.add(lead);
-            }
-            List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
-            String leadName = leadList.get(0).getDisplayName();
-            reportDtoForAo.setReportNoteBy(leadName);
-            Set<String> inspectiors = taskService.getInspectiors(appNo, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
-            List<String> inspectors = IaisCommonUtils.genNewArrayList();
-            for (String inspector : inspectiors) {
-                inspectors.add(inspector);
-            }
-            List<OrgUserDto> inspectorList = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
-            List<String> inspectorsNames = IaisCommonUtils.genNewArrayList();
-            for (OrgUserDto orgUserDto : inspectorList) {
-                String displayName = orgUserDto.getDisplayName();
-                inspectorsNames.add(displayName);
-            }
-            reportDtoForAo.setInspectors(inspectorsNames);
-        }
-        return reportDtoForAo;
-    }
 
     @Override
     public void sendPostInsTaskFeData(String submissionId, String eventRefNum) throws FeignException {

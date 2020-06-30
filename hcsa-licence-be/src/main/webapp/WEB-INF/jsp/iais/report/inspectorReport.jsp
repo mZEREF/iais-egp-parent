@@ -294,13 +294,10 @@
                         </tr>
                         <tr>
                             <td class="col-xs-4">
-                                <p>Risk Level <strong style="color:#ff0000;"> *</strong></p>
+                                <p>Risk Level</p>
                             </td>
                             <td class="col-xs-4">
-                                <iais:select cssClass="nice-select riskLevel" name="riskLevel"
-                                             options="riskLevelOptions" firstOption="Please Select"
-                                             value="${appPremisesRecommendationDto.riskLevel}"/>
-                                <span id="error_riskLevel" name="iaisErrorMsg" class="error-msg"></span>
+                                <p><iais:code code="${insRepDto.riskLevel}"></iais:code></p>
                             </td>
                             <td class="col-xs-4">
                             </td>

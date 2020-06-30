@@ -284,7 +284,7 @@
                             <p>Risk Level</p>
                         </td>
                         <td class="col-xs-4">
-                            <p><iais:code code="${appPremisesRecommendationDto.riskLevel}"></iais:code></p>
+                            <p><iais:code code="${insRepDto.riskLevel}"></iais:code></p>
                         </td>
                         <td class="col-xs-4"></td>
                     </tr>

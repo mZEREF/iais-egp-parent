@@ -119,6 +119,7 @@
                                                                             <iais:select id="processSubmit"
                                                                                          name="processingDecision"
                                                                                          options="processingDe"
+                                                                                         cssClass="nice-select nextStage"
                                                                                          firstOption="Please Select"
                                                                                          value="${appPremisesRecommendationDto.processingDecision}"/>
                                                                             <span id="error_submit" class="error-msg"
