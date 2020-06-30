@@ -290,6 +290,7 @@ public class MasterCodeDelegator {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
         List<MasterCodeToExcelDto> masterCodeToExcelDtoList = IaisCommonUtils.genNewArrayList();
         SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(request, MasterCodeConstants.SEARCH_PARAM);
+        searchParam.setPageSize(Integer.MAX_VALUE);
         SearchResult<MasterCodeQueryDto> searchResult = masterCodeService.doQuery(searchParam);
         searchResult.getRows().forEach(h ->{
             MasterCodeToExcelDto masterCodeToExcelDto = new MasterCodeToExcelDto();

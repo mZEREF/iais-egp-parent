@@ -15,7 +15,7 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>SN</th>
+                                <th style="padding-bottom: 16px;">SN</th>
                                 <iais:sortableHeader needSort="true" field="code_category" value="Master Code Category" style="width:15%" />
                                 <iais:sortableHeader needSort="true" field="code_value" value="Code Value" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="code_category" value="Code Description" style="width:10%"/>
@@ -25,7 +25,7 @@
                                 <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"  style="width:13%"/>
                                 <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"  style="width:13%"/>
                                 <iais:sortableHeader needSort="true" field="status" value="Status" style="width:6%"/>
-                                <th>Action</th>
+                                <th style="padding-bottom: 16px;">Action</th>
                             </tr>
                             </thead>
                             <tbody>
