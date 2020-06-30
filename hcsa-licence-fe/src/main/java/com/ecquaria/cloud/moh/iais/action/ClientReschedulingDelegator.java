@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class ClientReschedulingDelegator {
             .clz(ReschApptGrpPremsQueryDto.class)
             .searchAttr("SearchParam")
             .resultAttr("SearchResult")
-            .sortField("RECOM_IN_DATE").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(0).build();
+            .sortField("ADDRESS").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(0).build();
 
 
     @Autowired
@@ -77,14 +78,15 @@ public class ClientReschedulingDelegator {
 
             List<ReschApptGrpPremsQueryDto> rows = result.getRows();
             if(rows!=null){
-                Map<String ,ApptViewDto> apptViewDtos= IaisCommonUtils.genNewHashMap();
+                LinkedHashMap<String ,ApptViewDto> apptViewDtos= new LinkedHashMap<>();
 
                 ParamUtil.setRequestAttr(bpc.request,"SearchResult",result);
                 for (ReschApptGrpPremsQueryDto reschApptGrpPremsQueryDto : rows) {
                     ApptViewDto apptViewDto=new ApptViewDto();
                     List<String> svcIds=IaisCommonUtils.genNewArrayList();
-                    if(apptViewDtos.get(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getFastTracking())!=null){
-                        svcIds=apptViewDtos.get(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getFastTracking()).getSvcIds();
+                    String viewCorrId=reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getPremisesAddress();
+                    if(apptViewDtos.get(viewCorrId)!=null){
+                        svcIds=apptViewDtos.get(viewCorrId).getSvcIds();
                     }
                     svcIds.add(reschApptGrpPremsQueryDto.getSvcId());
                     apptViewDto.setSvcIds(svcIds);
@@ -95,7 +97,6 @@ public class ClientReschedulingDelegator {
                     apptViewDto.setAddress(reschApptGrpPremsQueryDto.getAddress());
                     apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
                     apptViewDto.setFastTracking(reschApptGrpPremsQueryDto.getFastTracking());
-                    String viewCorrId=reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getPremisesAddress();
                     if("1".equals(reschApptGrpPremsQueryDto.getFastTracking())){
                         viewCorrId=viewCorrId+reschApptGrpPremsQueryDto.getId();
                     }
