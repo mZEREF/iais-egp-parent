@@ -90,7 +90,7 @@
                                                     <h4>Processing Status Update</h4>
                                                 </strong>
                                             </div>
-                                            <iais:section title="" id = "process_NcEmail">
+                                            <iais:section title="" id = "process_NcProcess">
                                                 <iais:row>
                                                     <iais:field value="Current Status"/>
                                                     <iais:value width="7">

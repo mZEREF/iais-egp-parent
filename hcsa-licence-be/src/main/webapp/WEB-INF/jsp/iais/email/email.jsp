@@ -1,6 +1,6 @@
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/initTinyMce.js"></script>
-<iais:section title="" id = "process_NcEmail">
+<iais:section title="" id="process_NcEmail">
     <iais:row>
         <label class="col-xs-0 col-md-2 control-label col-sm-2">Subject</label>
         <div class="col-sm-9">
@@ -12,9 +12,9 @@
     <iais:row>
         <label class="col-xs-0 col-md-2 control-label col-sm-2">Content</label>
         <div class="col-sm-9">
-                                                                <textarea name="messageContent" cols="108" rows="50"
-                                                                          id="htmlEditroArea"
-                                                                          title="content">${insEmailDto.messageContent}</textarea>
+            <textarea name="messageContent" cols="108" rows="50"
+                      id="htmlEditroArea"
+                      title="content">${insEmailDto.messageContent}</textarea>
         </div>
     </iais:row>
 </iais:section>
