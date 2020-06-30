@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
@@ -128,4 +129,23 @@ public interface InspectionTaskClient {
     @PostMapping(value = "/iais-inspection/history-ext", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryExtDto>> createAppPremisesRoutingHistoryExtDtos(@RequestBody List<AppPremisesRoutingHistoryExtDto> appPremisesRoutingHistoryExtDtos);
+
+    @PostMapping(value = "/iais-appt-inspec-be/app-insp-corrc", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremInspCorrelationDto>> createAppPremInspCorrelationDto(@RequestBody List<AppPremInspCorrelationDto> appPremInspCorrelationDtos);
+
+    @PutMapping(value = "/iais-appt-inspec-be/app-insp-corru", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremInspCorrelationDto> updateAppPremInspCorrelationDto(@RequestBody AppPremInspCorrelationDto appPremInspCorrelationDto);
+
+    @GetMapping(value = "/iais-appt-inspec-be/app-insp-corrf/{appNo}/{userId}/{status}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremInspCorrelationDto>> getAppInspCorreByAppNoUserIdStatus(@PathVariable(name = "appNo")String appNo,
+                                                                                            @PathVariable(name = "userId")String userId,
+                                                                                            @PathVariable(name = "status")String status);
+
+    @GetMapping(value = "/iais-appt-inspec-be/app-insp-corrs/{userId}/{status}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremInspCorrelationDto>> getAppInspCorreByUserIdStatus(@PathVariable(name = "userId")String userId,
+                                                                                       @PathVariable(name = "status")String status);
+
+    @GetMapping(value = "/iais-appt-inspec-be/app-insp-corrt/{appNo}/{status}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremInspCorrelationDto>> getAppInspCorreByAppNoStatus(@PathVariable(name = "appNo")String appNo,
+                                                                                      @PathVariable(name = "status")String status);
 }

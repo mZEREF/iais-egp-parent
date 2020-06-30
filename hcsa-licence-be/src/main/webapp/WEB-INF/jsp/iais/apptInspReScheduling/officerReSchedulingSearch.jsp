@@ -34,21 +34,17 @@
             <div class="intranet-content">
               <iais:body>
                 <iais:section title="" id = "demoList">
-                  <div id="reScheduling" class="collapse">
+                  <div id="appComPoolSelect" class="collapse">
                     <iais:row>
                       <iais:field value="Working Group"/>
                       <iais:value width="18">
-                        <div id = "appComPoolSelect">
                           <iais:select name="inspWorkGroup" options="appTypeOption" firstOption="Please Select" value="${cPoolSearchParam.filters['application_type']}" ></iais:select>
-                        </div>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Inspector Name"/>
                       <iais:value width="18">
-                        <div id = "appComPoolSelect">
                           <iais:select name="inspectorName" options="appTypeOption" firstOption="Please Select" value="${cPoolSearchParam.filters['application_type']}" ></iais:select>
-                        </div>
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">
