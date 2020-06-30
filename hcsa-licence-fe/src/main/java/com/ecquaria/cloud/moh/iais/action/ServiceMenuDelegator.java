@@ -406,7 +406,18 @@ public class ServiceMenuDelegator {
         for(HcsaServiceDto hcsaServiceDto:baseHcsaServiceDtos){
             excludeChkBase.add(hcsaServiceDto.getId());
         }
-        excludeChkBase.removeAll(chkBaseSvcIds);
+        if(appSelectSvcDto.isChooseBaseSvc()){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
+            List<String> baseSvcIds = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    baseSvcIds.add(appSvcRelatedInfoDto.getBaseServiceId());
+                }
+            }
+            excludeChkBase.removeAll(baseSvcIds);
+        }else{
+            excludeChkBase.removeAll(chkBaseSvcIds);
+        }
         String licenseeId = "";
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         if(loginContext != null){
