@@ -53,6 +53,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -267,27 +268,40 @@ public class LicenceViewServiceDelegator {
             }
         }
         if(appGrpPremisesDtoList!=null){
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-            String licenseeId;
-            if(loginContext!=null){
-                licenseeId = loginContext.getLicenseeId();
-            }else {
-                licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
-            }
+            String licenseeId =applicationViewDto.getApplicationGroupDto().getLicenseeId();
             for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
                 String premisesType = appGrpPremisesDto.getPremisesType();
                 if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType)){
                     String hciName = appGrpPremisesDto.getHciName();
-/*
-                    List<ApplicationViewHciNameDto> entity1 = hcsaLicenceClient.getApplicationViewHciNameDtoByHciName("622", licenseeId).getEntity();
-*/
+                    List<ApplicationViewHciNameDto> applicationViewHciNameDtos = hcsaLicenceClient.getApplicationViewHciNameDtoByHciName(hciName, licenseeId).getEntity();
+                    for(ApplicationViewHciNameDto applicationViewHciNameDto : applicationViewHciNameDtos){
+                        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationViewHciNameDto.getLicensee()).getEntity();
+                        applicationViewHciNameDto.setLicensee(licenseeDto.getName());
+                    }
+                    appGrpPremisesDto.setApplicationViewHciNameDtos(applicationViewHciNameDtos);
+
                 }
+                Map<String,String> map=new HashMap<>(5);
                 String blkNo = appGrpPremisesDto.getBlkNo();
                 String floorNo = appGrpPremisesDto.getFloorNo();
                 String unitNo = appGrpPremisesDto.getUnitNo();
-                String streetName = appGrpPremisesDto.getStreetName();
-                String buildingName = appGrpPremisesDto.getBuildingName();
-
+                String postalCode = appGrpPremisesDto.getPostalCode();
+                String hciName = appGrpPremisesDto.getHciName();
+                String conveyanceVehicleNo = appGrpPremisesDto.getConveyanceVehicleNo();
+                map.put("blkNo",blkNo);
+                map.put("floorNo",floorNo);
+                map.put("unitNo",unitNo);
+                map.put("postCode",postalCode);
+                map.put("hciName",hciName);
+                map.put("vehicleNo",conveyanceVehicleNo);
+                map.put("licensee",licenseeId);
+                map.put("premisesType",premisesType);
+                List<ApplicationViewHciNameDto> applicationViewHciNameDtos = hcsaLicenceClient.getApplicationViewHciNameDtoByAddress(map).getEntity();
+                for(ApplicationViewHciNameDto applicationViewHciNameDto : applicationViewHciNameDtos){
+                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationViewHciNameDto.getLicensee()).getEntity();
+                    applicationViewHciNameDto.setLicensee(licenseeDto.getName());
+                }
+                appGrpPremisesDto.setApplicationViewAddress(applicationViewHciNameDtos);
             }
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);

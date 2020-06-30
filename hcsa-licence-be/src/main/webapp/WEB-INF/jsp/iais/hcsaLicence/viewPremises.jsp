@@ -134,18 +134,43 @@
                                     <div class="row">
                                       <div class="col-md-6">
                                         Name of HCI
-                                        <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
+                                        <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${empty appGrpPremDto.applicationViewHciNameDtos&&empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
                                       </div>
-                                      <div  class="col-md-6" style="position: absolute;z-index: 100;left: 50%;background-color: #999999;display: none" id="hciNameShowOrHidden">
-                                        <table>
-                                          <tr>
-                                            <td  class="col-md-4">Name of Licensee</td>
-                                            <td  class="col-md-4">HCI Name</td>
-                                            <td  class="col-md-4">Service Name</td>
-                                          </tr>
-                                        </table>
+                                      <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #999999;display: none;" id="hciNameShowOrHidden">
+                                      <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
+                                          <p>The address of the premises keyed in by applicant is currently used by another licensee</p>
+                                          <br>
+                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;">
+                                            <tr>
+                                              <td  class="col-md-4">Name of Licensee</td>
+                                              <td  class="col-md-4">HCI Name</td>
+                                              <td  class="col-md-4">Service Name</td>
+                                            </tr>
+                                            <tr>
+                                              <td>${applicationViewAddress.licensee}</td>
+                                              <td>${applicationViewAddress.hciName}</td>
+                                              <td>${applicationViewAddress.serviceName}</td>
+                                            </tr>
+                                          </table>
+                                        </c:forEach>
+                                        <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
+                                          <p>The HCI name is currently used by another licensee</p>
+                                          <br>
+                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;">
+                                            <tr>
+                                              <td  class="col-md-4">Name of Licensee</td>
+                                              <td  class="col-md-4">HCI Name</td>
+                                              <td  class="col-md-4">Service Name</td>
+                                            </tr>
+                                            <tr>
+                                              <td>${applicationViewHciNameDtos.licensee}</td>
+                                              <td>${applicationViewHciNameDtos.hciName}</td>
+                                              <td>${applicationViewHciNameDtos.serviceName}</td>
+                                            </tr>
+                                          </table>
+                                        </c:forEach>
+                                      </div>
 
-                                      </div>
                                       <div class="col-md-6">
                                         <div class="col-md-6">
                                                 <span class="newVal " attr="${appGrpPremDto.hciName}"><c:out value="${appGrpPremDto.hciName}"/></span>
@@ -162,16 +187,53 @@
                                   <div class="row">
                                     <div class="col-md-6">
                                       Postal Code
+                                      <c:if test="${'ONSITE'!=appGrpPremDto.premisesType}">
+                                        <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${ empty appGrpPremDto.applicationViewHciNameDtos &&  empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
+                                      </c:if>
                                     </div>
+                                    <c:if test="${'ONSITE'!=appGrpPremDto.premisesType}">
+                                      <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #999999;display: none" id="hciNameShowOrHidden">
+                                        <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
+                                          <p>The address of the premises keyed in by applicant is currently used by another licensee</p>
+                                          <br>
+                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;">
+                                            <tr>
+                                              <td  class="col-md-4">Name of Licensee</td>
+                                              <td  class="col-md-4">HCI Name</td>
+                                              <td  class="col-md-4">Service Name</td>
+                                            </tr>
+                                            <tr>
+                                              <td>${applicationViewAddress.licensee}</td>
+                                              <td>${applicationViewAddress.hciName}</td>
+                                              <td>${applicationViewAddress.serviceName}</td>
+                                            </tr>
+                                          </table>
+                                        </c:forEach>
+                                        <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
+                                          <p>The HCI name is currently used by another licensee</p>
+                                          <br>
+                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;">
+                                            <tr>
+                                              <td  class="col-md-4">Name of Licensee</td>
+                                              <td  class="col-md-4">HCI Name</td>
+                                              <td  class="col-md-4">Service Name</td>
+                                            </tr>
+                                            <tr>
+                                              <td>${applicationViewHciNameDtos.licensee}</td>
+                                              <td>${applicationViewHciNameDtos.hciName}</td>
+                                              <td>${applicationViewHciNameDtos.serviceName}</td>
+                                            </tr>
+                                          </table>
+                                        </c:forEach>
+                                      </div>
+                                    </c:if>
+
                                     <div class="col-md-6">
                                       <div  class="col-md-6">
-                                           <span class="newVal "
-                                                 attr="${appGrpPremDto.postalCode}"><c:out
-                                                   value="${appGrpPremDto.postalCode}"/></span>
+                                           <span class="newVal " attr="${appGrpPremDto.postalCode}"><c:out value="${appGrpPremDto.postalCode}"/></span>
                                       </div>
                                       <div  class="col-md-6">
-                                           <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}"
-                                                 style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}"/></span>
+                                           <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}" style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].postalCode}"/></span>
                                       </div>
                                     </div>
                                   </div>
