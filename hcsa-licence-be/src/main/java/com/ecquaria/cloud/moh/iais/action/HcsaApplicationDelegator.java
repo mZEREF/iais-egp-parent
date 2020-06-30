@@ -1404,7 +1404,6 @@ public class HcsaApplicationDelegator {
         String externalRemarks = ParamUtil.getString(bpc.request,"comments");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
-        boolean hasAllUpdate = Boolean.FALSE;
         if(!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)){
             processDecision = nextStageReplys;
         }
@@ -1548,7 +1547,10 @@ public class HcsaApplicationDelegator {
                     broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
                     //update fe application status
                     updateFeApplications(saveApplicationDtoList);
-                    hasAllUpdate = Boolean.TRUE;
+                    //get current after set return fee application dto
+                    ApplicationDto currentApplicationDto = getCurrentApplicationDto(saveApplicationDtoList, broadcastApplicationDto.getApplicationDto().getId());
+                    //update broadcastApplicationDto
+                    broadcastApplicationDto.setApplicationDto(currentApplicationDto);
                 }
             }else{
                 log.info(StringUtil.changeForLog("This RFI  this application -->:"+applicationDto.getApplicationNo()));
@@ -1566,8 +1568,10 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
-        if(!hasAllUpdate){
+        if(broadcastApplicationDto.getApplicationDto() != null){
             applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        }else{
+            log.error(StringUtil.changeForLog("application is null"));
         }
         //appeal save return fee
 
@@ -1706,6 +1710,20 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
+    }
+
+    private ApplicationDto getCurrentApplicationDto(List<ApplicationDto> applicationDtos,String applicationId){
+        ApplicationDto applicationDto = null;
+        if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(applicationId)){
+            return null;
+        }
+        for(ApplicationDto app : applicationDtos){
+            if(applicationId.equals(app.getId())){
+                applicationDto = app;
+                break;
+            }
+        }
+        return applicationDto;
     }
 
     private void rollBack(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws CloneNotSupportedException {
