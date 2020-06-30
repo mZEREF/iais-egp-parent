@@ -777,22 +777,15 @@ public class ServiceMenuDelegator {
         log.info(StringUtil.changeForLog("do choose lic start ..."));
         String additional = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
-        if(BACK_ATTR.equals(additional) || "doPage".equals(additional)){
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
-            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-                boolean chooseExisting = false;
-                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                    if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || !StringUtil.isEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())){
-                        chooseExisting = true;
-                        break;
-                    }
-                }
-                if(chooseExisting){
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_BASE_SVC);
-                }else{
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
-                }
+        if(BACK_ATTR.equals(additional)){
+            if(appSelectSvcDto.isChooseBaseSvc()){
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_BASE_SVC);
+            }else{
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
             }
+            return;
+        }else if("doPage".equals(additional)){
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
             return;
         }
         String alignLic = ParamUtil.getString(bpc.request,"alignLic");
@@ -817,15 +810,27 @@ public class ServiceMenuDelegator {
             licPremiseId = ParamUtil.getMaskedString(bpc.request,"premisesId"+alignLic);
         }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
-        for(HcsaServiceDto hcsaServiceDto:appSelectSvcDto.getBaseSvcDtoList()){
-            AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-            appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
-            appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-            appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
-            appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
-            appSvcRelatedInfoDto.setLicPremisesId(licPremiseId);
-            appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+        if(appSelectSvcDto.isChooseBaseSvc()){
+            appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
+                    appSvcRelatedInfoDto.setLicPremisesId(licPremiseId);
+                }
+            }
+
+        }else{
+            for(HcsaServiceDto hcsaServiceDto:appSelectSvcDto.getBaseSvcDtoList()){
+                AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+                appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
+                appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
+                appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
+                appSvcRelatedInfoDto.setLicPremisesId(licPremiseId);
+                appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+            }
         }
+
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
         String nextstep = ParamUtil.getString(bpc.request,"crud_action_additional");
         if(NEXT.equals(nextstep)){

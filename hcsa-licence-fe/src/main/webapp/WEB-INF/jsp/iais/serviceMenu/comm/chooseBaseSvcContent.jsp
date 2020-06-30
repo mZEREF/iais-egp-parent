@@ -48,13 +48,13 @@
                         <c:set var="indexNo" value="${specSvc.svcCode}${baseSvc.svcCode}${stat.index}"/>
                         <c:choose>
                             <c:when test="${noExistBaseLic}">
-                                <div class="row">
+                                <div class="row base-svc-content">
                                     <div class="col-xs-12 col-md-1">
                                     </div>
                                     <div class="col-xs-12 col-md-11">
                                         <div class="form-check">
                                             <input type="hidden" name="${indexNo}-new" value="${baseSvc.svcCode}" />
-                                            <input class="form-check-input" type="radio" name="${specSvc.svcCode}-base" value="${indexNo}-new" aria-invalid="false" <c:if test="${!newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >
+                                            <input class="form-check-input firstStep" type="radio" name="${specSvc.svcCode}-base" value="${indexNo}-new" aria-invalid="false" <c:if test="${newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >
                                             <label class="form-check-label"><span class="check-circle"></span>${baseSvc.svcName}</label>
                                         </div>
                                     </div>

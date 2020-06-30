@@ -42,6 +42,7 @@
             <div>
                 <%@include file="comm/chooseLicContent.jsp"%>
             </div>
+            <br/>
             <div class="row">
                 <div class="col-xs-12 col-md-3">
                 </div>

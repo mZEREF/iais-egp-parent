@@ -128,18 +128,32 @@
 
         //reload
         var defaultVal = '${appSvcRelatedInfoList == null || appSvcRelatedInfoList.size() == 0}';
-        if(defaultVal == 'true'){
-            $('.speSvcContent').each(function (v,k) {
-                $(this).find('.base-svc-content:eq(0) .exist-base-lic-content input[type="radio"]:eq(0)').prop('checked',true);
-                $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
-                $('.form-check-input:checked').trigger('click');
-            });
-            $('.existing-base-content input[type="radio"]:checked').each(function () {
-                $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
-            });
-            //
+        if(${noExistBaseLic}){
+            if(defaultVal == 'true'){
+                $('.speSvcContent').each(function (v,k) {
+                    $(this).find('.base-svc-content:eq(0) input[type="radio"]:eq(0)').prop('checked',true);
+                });
+
+            }else{
+
+            }
         }else{
-            $('.form-check-input:checked').trigger('click');
+            if(defaultVal == 'true'){
+                $('.speSvcContent').each(function (v,k) {
+                    $(this).find('.base-svc-content:eq(0) .exist-base-lic-content input[type="radio"]:eq(0)').prop('checked',true);
+                    $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
+                    $('.form-check-input:checked').trigger('click');
+                });
+                $('.existing-base-content input[type="radio"]:checked').each(function () {
+                    $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
+                });
+                //
+            }else{
+                $('.form-check-input:checked').trigger('click');
+                $('.existing-base-content input[type="radio"]:checked').each(function () {
+                    $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
+                });
+            }
         }
 
     });
