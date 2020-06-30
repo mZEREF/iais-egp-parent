@@ -7,9 +7,57 @@
                 SELECT distinct
                 app.id,app.application_no,app.app_type,app.status,app.service_id,app.IS_FAST_TRACKING,
                 T2.id APP_CORR_ID,T4.ID APP_GRP_ID,
-                T3.HCI_CODE,T3.HCI_NAME,T3.VEHICLE_NO,
+                T3.HCI_CODE,T3.HCI_NAME,T3.VEHICLE_NO,T3.ID APP_GRP_PREM_ID,
                 T3.BLK_NO, T3.FLOOR_NO, T3.UNIT_NO, T3.STREET_NAME, T3.BUILDING_NAME,T3.POSTAL_CODE,
-                CONCAT(T3.BLK_NO,T3.FLOOR_NO, T3.UNIT_NO, T3.POSTAL_CODE,T3.PREM_TYPE, T3.VEHICLE_NO) ADDRESS,
+                CONCAT(case T3.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BLK_NO end ,
+                case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end,
+                case T3.PREM_TYPE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.PREM_TYPE end,
+                case T3.VEHICLE_NO
+                  when null then null
+                  when '' then null
+                  else ', '+T3.VEHICLE_NO end) PREMISES_ADDRESS,
+                CONCAT(case T3.BLK_NO
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BLK_NO end ,
+               case T3.STREET_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.STREET_NAME end
+               , case T3.BUILDING_NAME
+                  when null then null
+                  when '' then null
+                  else ' '+T3.BUILDING_NAME end
+               , case T3.FLOOR_NO
+                  when null then null
+                  when '' then null
+                  else ' # '+T3.FLOOR_NO end
+               , case T3.UNIT_NO
+                  when null then null
+                  when '' then null
+                  else '-'+T3.UNIT_NO end
+               , case T3.POSTAL_CODE
+                  when null then null
+                  when '' then null
+                  else ', '+T3.POSTAL_CODE end
+              ) AS ADDRESS,
                 T4.LICENSEE_ID,appRec.RECOM_IN_DATE
 
             FROM APPLICATION_GROUP T4

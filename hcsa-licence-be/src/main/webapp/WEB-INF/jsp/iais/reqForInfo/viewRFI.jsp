@@ -50,8 +50,7 @@
                                             </div>
                                             <c:if test="${licPreReqForInfoDto.status!='RFIST002'}">
                                                 <div class="col-sm-7 col-md-2 col-xs-10">
-                                                    <button class="btn btn-secondary" type="button"
-                                                            onclick="javascript:doExtends('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.id)}')">
+                                                    <button class="btn btn-secondary" type="button" data-toggle="modal" data-target= "#extendsDueDate">
                                                         Extends
                                                     </button>
                                                 </div>
@@ -61,7 +60,7 @@
                                             <iais:field value="Status :"/>
                                             <div class="col-sm-7 col-md-4 col-xs-10">
                                                 <iais:select id="rfiViewStatus" name="status"
-                                                             options="salutationStatusList"></iais:select>
+                                                             options="salutationStatusList" value="${licPreReqForInfoDto.status}"></iais:select>
                                             </div>
                                         </iais:row>
                                         <iais:row>
@@ -137,9 +136,11 @@
                                             <button class="btn btn-secondary" type="button"
                                                     onclick="javascript:doBack()">Cancel
                                             </button>
-                                            <button class="btn btn-primary" type="button"
-                                                    onclick="javascript:doSubmit('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.id)}')">Submit
-                                            </button>
+                                            <c:if test="${licPreReqForInfoDto.status=='RFIST002'}">
+                                                <button class="btn btn-primary" type="button"
+                                                        onclick="javascript:doSubmit('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.id)}')">Submit
+                                                </button>
+                                            </c:if>
                                         </iais:action>
                                     </iais:section>
                                 </div>
@@ -151,6 +152,28 @@
         </div>
     </div>
 </form>
+<div class="modal fade" id="extendsDueDate" tabindex="-1" role="dialog" aria-labelledby="extendsDueDate"
+     style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Are you sure you want to extend the due date?</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" onclick="javascript:doExtends('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,licPreReqForInfoDto.id)}')">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">

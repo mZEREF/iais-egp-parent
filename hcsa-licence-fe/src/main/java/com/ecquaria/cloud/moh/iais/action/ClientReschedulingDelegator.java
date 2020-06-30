@@ -4,11 +4,10 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptViewDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -41,7 +40,7 @@ public class ClientReschedulingDelegator {
             .clz(ReschApptGrpPremsQueryDto.class)
             .searchAttr("SearchParam")
             .resultAttr("SearchResult")
-            .sortField("RECOM_IN_DATE").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(40).build();
+            .sortField("RECOM_IN_DATE").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(0).build();
 
 
     @Autowired
@@ -93,11 +92,15 @@ public class ClientReschedulingDelegator {
                     apptViewDto.setAppId(reschApptGrpPremsQueryDto.getId());
                     apptViewDto.setAppCorrId(reschApptGrpPremsQueryDto.getAppCorrId());
                     apptViewDto.setLicenseeId(reschApptGrpPremsQueryDto.getLicenseeId());
-                    apptViewDto.setAddress(MiscUtil.getAddress(reschApptGrpPremsQueryDto.getBlkNo(),reschApptGrpPremsQueryDto.getStreetName(),reschApptGrpPremsQueryDto.getBuildingName(),reschApptGrpPremsQueryDto.getFloorNo(),reschApptGrpPremsQueryDto.getUnitNo(),reschApptGrpPremsQueryDto.getPostalCode()));
+                    apptViewDto.setAddress(reschApptGrpPremsQueryDto.getAddress());
                     apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
                     apptViewDto.setFastTracking(reschApptGrpPremsQueryDto.getFastTracking());
-                    apptViewDto.setViewCorrId(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getFastTracking());
-                    apptViewDtos.put(reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getAddress()+reschApptGrpPremsQueryDto.getFastTracking(),apptViewDto);
+                    String viewCorrId=reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getPremisesAddress();
+                    if("1".equals(reschApptGrpPremsQueryDto.getFastTracking())){
+                        viewCorrId=viewCorrId+reschApptGrpPremsQueryDto.getId();
+                    }
+                    apptViewDto.setViewCorrId(viewCorrId);
+                    apptViewDtos.put(viewCorrId,apptViewDto);
                 }
                 List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
                 for (String key:apptViewDtos.keySet()

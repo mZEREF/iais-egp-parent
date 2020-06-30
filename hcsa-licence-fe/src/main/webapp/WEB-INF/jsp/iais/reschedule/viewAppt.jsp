@@ -18,7 +18,6 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="components">
-                    <iais:pagination  param="SearchParam" result="SearchResult"/>
 
                     <br>
                     <div class="table-gp">
@@ -27,7 +26,7 @@
                             <thead>
                             <tr align="center">
                                 <th class="form-check">
-                                    <c:if test="${!empty SearchResult.rows}">
+                                    <c:if test="${!empty apptViewDtos}">
                                         <input class="form-check-input licenceCheck" type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/>
                                         <label class="form-check-label" for="checkboxAll">
                                             <span class="check-square"></span>
