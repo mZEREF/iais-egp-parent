@@ -35,39 +35,24 @@
                                         <div class="tab-pane active" id="tabLetter" role="tabpanel">
                                             <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
                                             <script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/jquery-3.4.1.min.js"></script>
-                                            <table class="table">
-                                                <tbody>
-                                                <tr height="1">
-                                                    <td class="col-xs-2">
-                                                        <strong>
-                                                            Subject
-                                                        </strong>
-                                                    </td>
-                                                    <td>
-                                                        <div class="col-sm-9">
-                                                            <p><input name="subject" type="text" id="subject"
-                                                                      title="subject"
-                                                                      readonly value="${insEmailDto.subject}"></p>
-                                                        </div>
-                                                    </td>
-
-                                                </tr>
-                                                <tr height="1">
-                                                    <td class="col-xs-2">
-                                                        <strong>
-                                                            Content
-                                                        </strong>
-                                                    </td>
-                                                    <td >
-                                                        <div class="col-sm-9">
-                                                <textarea name="messageContent" cols="108" rows="50" id="htmlEditroArea"
-                                                          title="content">${insEmailDto.messageContent}</textarea>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-
-                                                </tbody>
-                                            </table>
+                                            <iais:section title="" id = "process_NcEmail">
+                                                <iais:row>
+                                                    <label class="col-xs-0 col-md-2 control-label col-sm-2">Subject</label>
+                                                    <div class="col-sm-9">
+                                                        <p><input name="subject" type="text" id="subject"
+                                                                  title="subject" readonly
+                                                                  value="${insEmailDto.subject}"></p>
+                                                    </div>
+                                                </iais:row>
+                                                <iais:row>
+                                                    <label class="col-xs-0 col-md-2 control-label col-sm-2">Content</label>
+                                                    <div class="col-sm-9">
+                                                                <textarea name="messageContent" cols="108" rows="50"
+                                                                          id="htmlEditroArea"
+                                                                          title="content">${insEmailDto.messageContent}</textarea>
+                                                    </div>
+                                                </iais:row>
+                                            </iais:section>
                                             <p class="text-right text-center-mobile">
                                                 <iais:action style="text-align:right;">
                                                     <button type="button" class="btn btn-secondary"

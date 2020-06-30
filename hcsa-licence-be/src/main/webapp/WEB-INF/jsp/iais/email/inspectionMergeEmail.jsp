@@ -12,6 +12,7 @@
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
            String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
+<script src="<%=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT%>js/jquery-3.4.1.min.js"></script>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
@@ -72,130 +73,80 @@
                                                 <%@include file="/WEB-INF/jsp/iais/inspectionncList/tabDocuments.jsp" %>
                                             </div>
                                             <div class="tab-pane active" id="tabProcessing" role="tabpanel">
-                                                <table class="table">
-                                                    <tbody>
-                                                    <tr height="1">
-                                                        <td class="col-xs-2">
-                                                            <strong>
-                                                                Subject
-                                                            </strong>
-                                                        </td>
-                                                        <td>
-                                                            <div class="col-sm-9">
-                                                                <p><input name="subject" type="text" id="subject"
-                                                                          title="subject" readonly
-                                                                          value="${insEmailDto.subject}"></p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr height="1">
-                                                        <td class="col-xs-2">
-                                                            <strong>
-                                                                Content
-                                                            </strong>
-                                                        </td>
-                                                        <td >
-                                                            <div class="col-sm-9">
+                                                <iais:section title="" id = "process_NcEmail">
+                                                    <iais:row>
+                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Subject</label>
+                                                        <div class="col-sm-9">
+                                                            <p><input name="subject" type="text" id="subject"
+                                                                      title="subject" readonly
+                                                                      value="${insEmailDto.subject}"></p>
+                                                        </div>
+                                                    </iais:row>
+                                                    <iais:row>
+                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Content</label>
+                                                        <div class="col-sm-9">
                                                                 <textarea name="messageContent" cols="108" rows="50"
                                                                           id="htmlEditroArea"
                                                                           title="content">${insEmailDto.messageContent}</textarea>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr height="1">
-                                                        <iais:row>
-                                                            <td class="col-xs-2">
-                                                                <strong>
-                                                                    Internal Remarks
-                                                                </strong>
-                                                            </td>
-                                                            <td style="height: 203px;">
-                                                                <iais:value width="4000">
-                                                                    <textarea name="remarks" cols="60" rows="7"
-                                                                              maxlength="300"
-                                                                    >${insEmailDto.remarks}</textarea>
-                                                                </iais:value>
-                                                            </td>
-                                                        </iais:row>
-                                                    </tr>
-                                                    <tr height="1">
-                                                        <iais:row>
-                                                            <td class="col-xs-2">
-                                                                <strong>
-                                                                    Processing Decision<strong style="color:#ff0000;"> *</strong>
-                                                                </strong>
-                                                            </td>
-                                                            <td style="height: 90px;">
-                                                                <iais:value width="6">
-                                                                    <select id="decision_merge_email" name="decision"
-                                                                            onchange="thisTime()">
-                                                                        <option value="Select" selected>Please Select
-                                                                        </option>
-                                                                        <c:forEach items="${appTypeOption}" var="decision">
-                                                                            <option value="${decision.value}">${decision.text}</option>
-                                                                        </c:forEach>
-                                                                    </select>
-                                                                </iais:value>
-                                                            </td>
-                                                        </iais:row>
-                                                    </tr>
-                                                    <tr height="1" style="display: none" id="selectDecisionMsg">
-                                                        <td class="col-xs-2">
-                                                        </td>
-                                                        <td>
-                                                            <div class="col-sm-9">
-                                                                <p style="color:#ff0000;">
-                                                                    This field is mandatory
-                                                                </p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr height="1" style="display: none" id="selectReviseNc">
-                                                        <td class="col-xs-2">
-                                                            <p>
-                                                                Need Revise<strong style="color:#ff0000;"> *</strong>
-                                                            </p>
-                                                        </td>
-                                                        <td>
-                                                            <div class="col-sm-9">
-                                                                <c:forEach items="${svcNames}" var="revise"
-                                                                           varStatus="index">&nbsp;
-                                                                    <input type="checkbox" name="revise${index.index+1}"
-                                                                           value="${revise}"/>&nbsp;${revise}&nbsp;
+                                                        </div>
+                                                    </iais:row>
+                                                    <iais:row>
+                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Internal Remarks</label>
+                                                        <iais:value width="4000">
+                                                            <textarea name="remarks" cols="60" rows="7"
+                                                                      maxlength="300"
+                                                            >${insEmailDto.remarks}</textarea>
+                                                        </iais:value>
+                                                    </iais:row>
+                                                    <iais:row>
+                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Processing Decision<span class="mandatory">*</span></label>
+                                                        <iais:value width="6">
+                                                            <select id="decision_merge_email" name="decision"
+                                                                    onchange="thisTime()">
+                                                                <option value="Select" selected>Please Select
+                                                                </option>
+                                                                <c:forEach items="${appTypeOption}" var="decision">
+                                                                    <option value="${decision.value}">${decision.text}</option>
                                                                 </c:forEach>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr height="1" style="display: none" id="selectDecisionMsgRevise">
-                                                        <td class="col-xs-2">
-                                                        </td>
-                                                        <td>
-                                                            <div class="col-sm-9">
-                                                                <p style="color:#ff0000;">
-                                                                    The field is mandatory
-                                                                </p>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                            </select>
+                                                        </iais:value>
+                                                    </iais:row>
+                                                    <iais:row id="selectDecisionMsg" style="display: none">
+                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2"></label>
+                                                        <iais:value style="color:#ff0000;">
+                                                            This field is mandatory
+                                                        </iais:value>
+                                                    </iais:row>
+                                                    <iais:row style="display: none" id="selectReviseNc">
+                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2">Need Revise<span class="mandatory">*</span></label>
+                                                        <iais:value width="6" cssClass="control-label">
+                                                            <c:forEach items="${svcNames}" var="revise"
+                                                                       varStatus="index">&nbsp;
+                                                                <input type="checkbox" name="revise${index.index+1}"
+                                                                       value="${revise}"/>&nbsp;${revise}&nbsp;
+                                                            </c:forEach>
+                                                        </iais:value>
+                                                    </iais:row>
+                                                    <iais:row id="selectDecisionMsgRevise" style="display: none">
+                                                        <label class="col-xs-0 col-md-2 control-label col-sm-2"></label>
+                                                        <iais:value style="color:#ff0000;">
+                                                            This field is mandatory
+                                                        </iais:value>
+                                                    </iais:row>
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
-                                                        <tr height="1">
-                                                            <td class="col-xs-2">
-                                                                <strong>Licence Start Date</strong>
-                                                            </td>
-                                                            <td>
-                                                                <div class="col-sm-9">
-                                                                    <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
-                                                                        <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
-                                                                    </c:if>
-                                                                    <c:if test="${empty applicationViewDto.recomLiceStartDate}">
-                                                                        <p>-</p>
-                                                                    </c:if>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
+                                                        <iais:row >
+                                                            <label class="col-xs-0 col-md-2 control-label col-sm-2">Licence Start Date</label>
+                                                            <div class="col-sm-9 control-label">
+                                                                <c:if test="${not empty applicationViewDto.recomLiceStartDate}">
+                                                                    <p><fmt:formatDate value='${applicationViewDto.recomLiceStartDate}' pattern='dd/MM/yyyy' /></p>
+                                                                </c:if>
+                                                                <c:if test="${empty applicationViewDto.recomLiceStartDate}">
+                                                                    <p>-</p>
+                                                                </c:if>
+                                                            </div>
+                                                        </iais:row>
                                                     </c:if>
-                                                    </tbody>
-                                                </table>
+                                                </iais:section>
                                                 <p class="text-right text-center-mobile">
 
                                                     <iais:action style="text-align:right;">

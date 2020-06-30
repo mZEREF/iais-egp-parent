@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,17 +77,22 @@ public class ClientReschedulingDelegator {
 
             List<ReschApptGrpPremsQueryDto> rows = result.getRows();
             if(rows!=null){
-                LinkedHashMap<String ,ApptViewDto> apptViewDtos= new LinkedHashMap<>();
+                LinkedHashMap<String ,ApptViewDto> apptViewDtos= new LinkedHashMap<>(rows.size());
 
                 ParamUtil.setRequestAttr(bpc.request,"SearchResult",result);
                 for (ReschApptGrpPremsQueryDto reschApptGrpPremsQueryDto : rows) {
                     ApptViewDto apptViewDto=new ApptViewDto();
                     List<String> svcIds=IaisCommonUtils.genNewArrayList();
                     String viewCorrId=reschApptGrpPremsQueryDto.getAppGrpId()+reschApptGrpPremsQueryDto.getPremisesAddress();
-                    if(apptViewDtos.get(viewCorrId)!=null){
+                    if("1".equals(reschApptGrpPremsQueryDto.getFastTracking())){
+                        viewCorrId=viewCorrId+reschApptGrpPremsQueryDto.getId();
+                    }
+                    if(apptViewDtos.get(viewCorrId)==null){
+                        svcIds.add(reschApptGrpPremsQueryDto.getSvcId());
+                    }else {
+                        apptViewDtos.get(viewCorrId).getSvcIds().add(reschApptGrpPremsQueryDto.getSvcId());
                         svcIds=apptViewDtos.get(viewCorrId).getSvcIds();
                     }
-                    svcIds.add(reschApptGrpPremsQueryDto.getSvcId());
                     apptViewDto.setSvcIds(svcIds);
                     apptViewDto.setVehicleNo(reschApptGrpPremsQueryDto.getVehicleNo());
                     apptViewDto.setAppId(reschApptGrpPremsQueryDto.getId());
@@ -97,9 +101,6 @@ public class ClientReschedulingDelegator {
                     apptViewDto.setAddress(reschApptGrpPremsQueryDto.getAddress());
                     apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
                     apptViewDto.setFastTracking(reschApptGrpPremsQueryDto.getFastTracking());
-                    if("1".equals(reschApptGrpPremsQueryDto.getFastTracking())){
-                        viewCorrId=viewCorrId+reschApptGrpPremsQueryDto.getId();
-                    }
                     apptViewDto.setViewCorrId(viewCorrId);
                     apptViewDtos.put(viewCorrId,apptViewDto);
                 }
@@ -109,7 +110,7 @@ public class ClientReschedulingDelegator {
                     apptViewDtos1.add(apptViewDtos.get(key));
                 }
                 ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos1);
-                ParamUtil.setSessionAttr(bpc.request, "apptViewDtosMap", (Serializable) apptViewDtos);
+                ParamUtil.setSessionAttr(bpc.request, "apptViewDtosMap", apptViewDtos);
             }
             ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
         }catch (Exception e){
