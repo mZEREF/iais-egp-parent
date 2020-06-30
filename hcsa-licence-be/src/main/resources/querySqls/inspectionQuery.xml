@@ -138,7 +138,7 @@
 		           when '' then ''
 		           else '-' end)
 		        +isnull(t5.UNIT_NO,'')
-		        +','+isnull(t5.POSTAL_CODE,'') as address,
+		        +', '+isnull(t5.POSTAL_CODE,'') as address,
                t1.ID as lic_premises_audit_id,t1.AUDIT_TYPE,t1.AUDIT_RISK_TYPE,t1.REMARKS,t1.IS_IN_RISK_SCORE,t1.INCLUDE_RISK_TYPE,t1.STATUS as audit_status,
                t2.INSPECTOR_ID,
                t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
@@ -190,7 +190,7 @@
 		           when '' then ''
 		           else '-' end)
 		        +isnull(t5.UNIT_NO,'')
-		        +','+isnull(t5.POSTAL_CODE,'') as address,
+		        +', '+isnull(t5.POSTAL_CODE,'') as address,
                t1.ID as lic_premises_audit_id,t1.AUDIT_TYPE,t1.AUDIT_RISK_TYPE,t1.REMARKS,t1.IS_IN_RISK_SCORE,t1.INCLUDE_RISK_TYPE,t1.STATUS as audit_status,
                t2.INSPECTOR_ID,
                t6.ID as lic_prem_insp_grp_correlation_id,t6.INS_GRP_ID,t6.STATUS as lic_prem_insp_grp_correlation_status,
