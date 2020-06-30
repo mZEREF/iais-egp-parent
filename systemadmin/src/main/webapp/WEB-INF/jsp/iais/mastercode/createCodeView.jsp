@@ -17,7 +17,7 @@
                 <div class="center-content">
                     <div class="intranet-content">
                         <div class="bg-title">
-                            <h2>Create Category</h2>
+                            <h2>Create Master Code</h2>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Master Code Category</label>

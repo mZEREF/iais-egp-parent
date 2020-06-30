@@ -22,7 +22,7 @@
                         <div class="form-group">
                             <iais:field value="Master Code Category" required="true"/>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="category" type="text" value="${MasterCodeDto.codeCategory}" name="codeCategoryEd">
+                                <input id="category" type="text" value="${MasterCodeDto.codeCategory}" name="codeCategoryEd" readonly="readonly">
                             </div>
                         </div>
                         <div class="form-group">
