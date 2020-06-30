@@ -60,12 +60,12 @@
                         <thead>
                         <tr>
                             <iais:sortableHeader needSort="false"  field="" value="S/N" style="padding-bottom:20px"></iais:sortableHeader>
-                            <iais:sortableHeader needSort="true"  field="domain_type" value="Type"></iais:sortableHeader>
-                            <iais:sortableHeader needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
-                            <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
-                            <iais:sortableHeader style="width:50%" needSort="true"   field="description" value="Description"></iais:sortableHeader>
-                            <iais:sortableHeader needSort="true"   field="message" value="Message"></iais:sortableHeader>
-                            <iais:sortableHeader style="width:50%" needSort="true"   field="status" value="Status"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:10%" needSort="true"  field="domain_type" value="Type"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:20%" needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:10%" needSort="true"   field="module" value="Module"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:20%" needSort="true"   field="description" value="Description"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:30%" needSort="true"   field="message" value="Message"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:20%" needSort="true"   field="status" value="Status"></iais:sortableHeader>
                             <iais:sortableHeader needSort="false"   field="action" style="padding-bottom:22px" value="Action"></iais:sortableHeader>
                         </tr>
                         </thead>
@@ -82,11 +82,11 @@
                                 <%-- message entity--%>
                                 <c:forEach var = "msgQuery" items = "${msgSearchResult.rows}" varStatus="status">
                                     <tr>
-                                        <td class="row_no">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
-                                        <td align="left" style="width: 120px"><c:out value="${msgQuery.domainType}"></c:out></td>
-                                        <td align="left" style="width: 180px"><c:out value="${msgQuery.msgType}"></c:out></td>
-                                        <td align="left" style="width: 150px"><c:out value="${msgQuery.module}"></c:out> </td>
-                                        <td align="left" style="width: 300px"><c:out value="${msgQuery.description}"></c:out></td>
+                                        <td class="row_no" style="width: 5px">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
+                                        <td align="left" style="width: 5px"><c:out value="${msgQuery.domainType}"></c:out></td>
+                                        <td align="left" style="width: 5px"><c:out value="${msgQuery.msgType}"></c:out></td>
+                                        <td align="left" style="width: 5px"><c:out value="${msgQuery.module}"></c:out> </td>
+                                        <td align="left" style="width: 5px"><c:out value="${msgQuery.description}"></c:out></td>
                                         <td align="left" ><c:out value="${msgQuery.message}"></c:out></td>
                                         <td align="left"  ><iais:code code="${msgQuery.status}"></iais:code></td>
                                         <td align="left"style="width: 50px">
