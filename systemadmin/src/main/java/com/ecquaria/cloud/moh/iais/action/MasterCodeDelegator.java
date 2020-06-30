@@ -362,12 +362,12 @@ public class MasterCodeDelegator {
             return;
         }
         MultipartFile file = mulReq.getFile("selectedFile");
-        File toFile = FileUtils.multipartFileToFile(file);
         Map<String, String> errorMap = validationFile(request, file);
         if (errorMap != null && errorMap.size()>0) {
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return;
         }
+        File toFile = FileUtils.multipartFileToFile(file);
         List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
         List<String> duplicateCode = IaisCommonUtils.genNewArrayList();
         List<String> emptyCode = IaisCommonUtils.genNewArrayList();
@@ -623,7 +623,7 @@ public class MasterCodeDelegator {
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
         if (file == null){
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "Please upload a file.");
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0020");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             return errorMap;
