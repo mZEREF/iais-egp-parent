@@ -145,6 +145,14 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     }
 
     @Override
+    public List<ApplicationDto> updateFEApplicaitons(List<ApplicationDto> applicationDtos){
+        for(ApplicationDto applicationdto : applicationDtos){
+            updateFEApplicaiton(applicationdto);
+        }
+        return applicationDtos;
+    }
+
+    @Override
     public ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId) {
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(appCorId);
         ApplicationViewDto applicationViewDto = applicationViewService.searchByCorrelationIdo(appCorId);

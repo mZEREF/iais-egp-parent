@@ -22,6 +22,8 @@ public interface ApplicationViewMainService {
 
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto);
 
+    public List<ApplicationDto> updateFEApplicaitons(List<ApplicationDto> applicationDtos);
+
     ApplicationViewDto getApplicationViewDtoByCorrId(String appCorId);
 
     HcsaServiceDto getHcsaServiceDtoById(String id);

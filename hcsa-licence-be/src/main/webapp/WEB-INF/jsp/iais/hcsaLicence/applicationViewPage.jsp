@@ -427,11 +427,14 @@
             $('#recommendationFieldTrue').removeClass('hidden');
             $('#recommendationFieldFalse').addClass('hidden');
         }
+        //audit
+        if ('${applicationViewDto.applicationDto.applicationType}' == 'APTY007'){
+            $('#recommendationDropdown').addClass('hidden');
+        }
         //appeal
         if (${isAppealType}){
             $('#recommendationDropdown').addClass('hidden');
             checkAppealRecommendation();
-
         }
         $('#rfiSelect').hide();
         check();

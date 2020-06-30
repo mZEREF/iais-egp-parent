@@ -1532,7 +1532,9 @@ public class HcsaApplicationDelegator {
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 if(isAllSubmit || applicationDto.isFastTracking()){
+                    //update current application status in db search result
                     updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
+                    //get and set return fee
                     saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
                     broadcastApplicationDto.setApplicationDtos(saveApplicationDtoList);
                     broadcastApplicationDto.setRollBackApplicationDtos(saveApplicationDtoList);
@@ -1543,6 +1545,8 @@ public class HcsaApplicationDelegator {
                     applicationGroupDto.setAo3ApprovedDt(new Date());
                     applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+                    //update fe application status
+                    updateFeApplications(saveApplicationDtoList);
                 }
             }else{
                 log.info(StringUtil.changeForLog("This RFI  this application -->:"+applicationDto.getApplicationNo()));
@@ -1607,6 +1611,14 @@ public class HcsaApplicationDelegator {
             }
 
         log.info(StringUtil.changeForLog("The routingTask end ..."));
+    }
+
+    private void updateFeApplications(List<ApplicationDto> applications){
+        try{
+            applicationService.updateFEApplicaitons(applications);
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("update fe applications error"));
+        }
     }
 
     private void sendInboxMessage(String licenseeId,HashMap<String, String> maskParams,String templateMessageByContent,String serviceId,String subject){

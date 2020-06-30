@@ -48,6 +48,7 @@ import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,9 @@ public class BackendInboxDelegator {
 
     @Autowired
     private BroadcastMainService broadcastService;
+
+    @Autowired
+    private HcsaConfigMainClient hcsaConfigMainClient;
 
     //    private String application_no;
 //    private String application_type;
@@ -445,10 +449,17 @@ public class BackendInboxDelegator {
             }
         }else{
             List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+            List<ApplicationDto> saveApplicationDtoList = applicationDtoList;
             applicationDtoList = removeFastTracking(applicationDtoList);
             boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
                     appStatus);
             if(isAllSubmit || applicationDto.isFastTracking()){
+                //update current application status in db search result
+                updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
+                //get and set return fee
+                saveApplicationDtoList = hcsaConfigMainClient.returnFee(saveApplicationDtoList).getEntity();
+                broadcastApplicationDto.setApplicationDtos(saveApplicationDtoList);
+                broadcastApplicationDto.setRollBackApplicationDtos(saveApplicationDtoList);
                 //update application Group status
                 ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                 broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
@@ -456,6 +467,8 @@ public class BackendInboxDelegator {
                 applicationGroupDto.setAo3ApprovedDt(new Date());
                 applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
+                //update fe application status
+                updateFeApplications(saveApplicationDtoList);
             }
         }
         //save the broadcast
@@ -482,6 +495,25 @@ public class BackendInboxDelegator {
         }
         return  result;
     }
+
+    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos,String applicationId,String status){
+        if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(applicationId)){
+            for (ApplicationDto applicationDto : applicationDtos){
+                if(applicationId.equals(applicationDto.getId())){
+                    applicationDto.setStatus(status);
+                }
+            }
+        }
+    }
+
+    private void updateFeApplications(List<ApplicationDto> applications){
+        try{
+            applicationViewService.updateFEApplicaitons(applications);
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("update fe applications error"));
+        }
+    }
+
     private TaskDto completedTask(TaskDto taskDto){
         taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
         taskDto.setSlaDateCompleted(new Date());

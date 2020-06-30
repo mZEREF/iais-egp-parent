@@ -156,6 +156,14 @@ public class ApplicationServiceImpl implements ApplicationService {
                 signature2.date(), signature2.authorization()).getEntity();
     }
 
+    @Override
+    public List<ApplicationDto> updateFEApplicaitons(List<ApplicationDto> applicationDtos){
+        for(ApplicationDto applicationdto : applicationDtos){
+            updateFEApplicaiton(applicationdto);
+        }
+        return applicationDtos;
+    }
+
 
     @Override
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto) {

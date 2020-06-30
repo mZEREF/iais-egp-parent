@@ -30,6 +30,8 @@ public interface ApplicationService {
 
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto);
 
+    public List<ApplicationDto> updateFEApplicaitons(List<ApplicationDto> applicationDtos);
+
     public List<RequestInformationSubmitDto> getRequestInformationSubmitDtos(List<ApplicationDto> applicationDtos);
 
     public List<AppEditSelectDto> getAppEditSelectDtos(String appId, String changeType);
