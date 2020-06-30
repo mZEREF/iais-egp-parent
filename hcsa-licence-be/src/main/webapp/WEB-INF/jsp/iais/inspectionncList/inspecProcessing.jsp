@@ -19,7 +19,7 @@
                     <iais:row>
                         <iais:field value="Internal Remarks"/>
                         <iais:value width="10">
-                            <textarea name="remarksForHistory" cols="60" rows="7"maxlength="300"></textarea>
+                            <textarea name="RemarksForHistory" cols="60" rows="7"maxlength="300"></textarea>
                         </iais:value>
                     </iais:row>
                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION == applicationViewDto.applicationDto.applicationType}">

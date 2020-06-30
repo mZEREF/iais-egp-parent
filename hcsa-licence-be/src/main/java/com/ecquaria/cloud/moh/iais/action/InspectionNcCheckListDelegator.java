@@ -244,7 +244,7 @@ public class InspectionNcCheckListDelegator {
                 LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
                 // SAVE OTHER TASKS
                 fillupChklistService.saveOtherTasks((List<TaskDto>)ParamUtil.getSessionAttr(request,TASKDTOLIST),taskDto);
-                fillupChklistService.routingTask(taskDto,ParamUtil.getString(request,"remarksForHistory"),loginContext,flag);
+                fillupChklistService.routingTask(taskDto,ParamUtil.getString(request,"RemarksForHistory"),loginContext,flag);
             }
        }
 
@@ -383,7 +383,7 @@ public class InspectionNcCheckListDelegator {
         }
         ParamUtil.setSessionAttr(request,"adchklDto",showPageDto);
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        fillupChklistService.routingTask(taskDto,ParamUtil.getString(request,"remarksForHistory"),loginContext,flag);
+        fillupChklistService.routingTask(taskDto,ParamUtil.getString(request,"RemarksForHistory"),loginContext,flag);
     }
 
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
