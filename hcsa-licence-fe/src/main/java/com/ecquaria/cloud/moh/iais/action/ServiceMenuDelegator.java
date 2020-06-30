@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -484,6 +485,7 @@ public class ServiceMenuDelegator {
         List<HcsaServiceDto> baseSvcSort = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceDto> speSvcSort = IaisCommonUtils.genNewArrayList();
         if(basechks == null){
+            List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
             //no base service
             if(sepcifiedchk != null){
 //                //spe choose base
@@ -492,17 +494,20 @@ public class ServiceMenuDelegator {
                     speSvcSort.add(HcsaServiceCacheHelper.getServiceById(item));
                 }
 
-//                //get matching base svc
-//                List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedcheckedlist,allbaseService);
-//                if (hcsaServiceDtosMap.size() == 0){
-//                    nextstep = currentPage;
-//                    err = "There is no base service in specified services.";
-//                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
-//                }else{
-//                    //to step2
-//                    nextstep = CHOOSE_BASE_SVC;
-//                }
-                nextstep = CHOOSE_BASE_SVC;
+                //judge matching base svc
+                List<String> allBaseSvcId = IaisCommonUtils.genNewArrayList();
+                for(HcsaServiceDto hcsaServiceDto:allbaseService){
+                    allBaseSvcId.add(hcsaServiceDto.getId());
+                }
+                boolean baseInSpec = baseInSpe(allBaseSvcId,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
+                if (!baseInSpec){
+                    nextstep = currentPage;
+                    err = "There is no base service in specified services.";
+                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                }else{
+                    //to step2
+                    nextstep = CHOOSE_BASE_SVC;
+                }
             }else{
                 //no spe err
                 nextstep = currentPage;
@@ -528,15 +533,16 @@ public class ServiceMenuDelegator {
             }
 
             if(sepcifiedchk != null){
+                List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
                 for (String item:sepcifiedchk) {
                     sepcifiedcheckedlist.add(item);
                     speSvcSort.add(HcsaServiceCacheHelper.getServiceById(item));
                 }
                 //spe
-                Map<String ,String> necessaryBaseServiceList = necessaryBase(basecheckedlist,sepcifiedcheckedlist);
+                Map<String ,String> necessaryBaseServiceList = necessaryBase(basecheckedlist,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
                 List<String> extrabaselist = IaisCommonUtils.genNewArrayList();
                 extrabaselist.addAll(basecheckedlist);
-                List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedcheckedlist,allbaseService);
+                List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedcheckedlist,allbaseService,hcsaServiceCorrelationDtoList);
                 List<String> removeNecessary = IaisCommonUtils.genNewArrayList();
                 for (String extra: extrabaselist
                         ) {
@@ -547,15 +553,13 @@ public class ServiceMenuDelegator {
                         }
                     }
                 }
-                boolean match = true;
-                for (String baseSvcId:basecheckedlist) {
-                    String specSvcId = necessaryBaseServiceList.get(baseSvcId);
-                    if(!sepcifiedcheckedlist.contains(specSvcId)){
-                        match = false;
-                    }
+                List<String> allBaseSvcId = IaisCommonUtils.genNewArrayList();
+                for(HcsaServiceDto hcsaServiceDto:allbaseService){
+                    allBaseSvcId.add(hcsaServiceDto.getId());
                 }
+                boolean baseInSpec = baseInSpe(allBaseSvcId,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
                 extrabaselist.removeAll(removeNecessary);
-                if(!match){
+                if(necessaryBaseServiceList.size() > 0){
                     //no match
                     nextstep = currentPage;
                     if(extrabaselist.size() == 0){
@@ -571,7 +575,7 @@ public class ServiceMenuDelegator {
                     }
                     ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                 }else{
-                    if (hcsaServiceDtosMap.size() == 0){
+                    if (!baseInSpec){
                         nextstep = currentPage;
                         err = "There is no base service in specified services.";
                         ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
@@ -1019,10 +1023,9 @@ public class ServiceMenuDelegator {
         return  searchResult;
     }
 
-    private Map<String ,String> necessaryBase(List<String> basechkslist, List<String> sepcifiedchkslist){
+    private Map<String ,String> necessaryBase(List<String> basechkslist, List<String> sepcifiedchkslist,List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList){
         List<String> chkslistcopy = IaisCommonUtils.genNewArrayList();
         chkslistcopy.addAll(basechkslist);
-        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
         Map<String ,String> necessaryBaseServiceList = IaisCommonUtils.genNewHashMap();
         for (String item: sepcifiedchkslist) {
             for (HcsaServiceCorrelationDto dto:hcsaServiceCorrelationDtoList) {
@@ -1032,27 +1035,66 @@ public class ServiceMenuDelegator {
             }
         }
         //remove chosed base service
-//        Iterator<String> iter = necessaryBaseServiceList.keySet().iterator();
-//        while(iter.hasNext()){
-//            String key = iter.next();
-//            for (String basechk:chkslistcopy) {
-//                if (basechk.equals(key)) {
-//                    iter.remove();
-//                }
-//            }
-//        }
+        Iterator<String> iter = necessaryBaseServiceList.keySet().iterator();
+        while(iter.hasNext()){
+            String key = iter.next();
+            for (String basechk:chkslistcopy) {
+                if (basechk.equals(key)) {
+                    iter.remove();
+                }
+            }
+        }
         return necessaryBaseServiceList;
 
     }
 
-    private List<HcsaServiceDto> getBaseInSpe(List<String> sepcifiedlist,List<HcsaServiceDto> allbaseService){
+    private boolean baseInSpe(List<String> baseSvcIdList,List<String> specSvcIdList,List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList){
+        boolean result = false;
+        if(!IaisCommonUtils.isEmpty(baseSvcIdList) && !IaisCommonUtils.isEmpty(specSvcIdList)){
+            //specSvcId,baseSvcIdList
+            Map<String,List<String>> baseInSpec = IaisCommonUtils.genNewHashMap();
+            for(HcsaServiceCorrelationDto hcsaServiceCorrelationDto:hcsaServiceCorrelationDtoList){
+                String corrSpecSvcId = hcsaServiceCorrelationDto.getSpecifiedSvcId();
+                String corrBaseSvcId = hcsaServiceCorrelationDto.getBaseSvcId();
+                if(specSvcIdList.contains(corrSpecSvcId)){
+                    List<String> baseSvcIds = baseInSpec.get(corrSpecSvcId);
+                    if(IaisCommonUtils.isEmpty(baseSvcIds)){
+                        baseSvcIds = IaisCommonUtils.genNewArrayList();
+                    }
+                    baseSvcIds.add(corrBaseSvcId);
+                    baseInSpec.put(corrSpecSvcId,baseSvcIds);
+                }
+            }
+            for(int i=0; i<specSvcIdList.size();i++){
+                String specSvcId = specSvcIdList.get(i);
+                List<String> baseSvcIds = baseInSpec.get(specSvcId);
+                boolean currFlag = false;
+                for(String baseSvcId:baseSvcIdList){
+                    if(baseSvcIds.contains(baseSvcId)){
+                        currFlag = true;
+                        break;
+                    }
+                }
+                if(!currFlag){
+                    break;
+                }
+                if(i == specSvcIdList.size()-1){
+                    result = true;
+                }
+            }
+        }
+
+
+        return result;
+    }
+
+    private List<HcsaServiceDto> getBaseInSpe(List<String> sepcifiedlist,List<HcsaServiceDto> allbaseService,List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList){
         Map<String ,HcsaServiceDto> baseIdMap = IaisCommonUtils.genNewHashMap();
         for (HcsaServiceDto item:allbaseService
         ) {
             baseIdMap.put(item.getId(),item);
         }
 
-        List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
         List<HcsaServiceDto> same = IaisCommonUtils.genNewArrayList();
         for(int i = 0; i < sepcifiedlist.size() ;i++){
             List<HcsaServiceDto> baseListInSpe = IaisCommonUtils.genNewArrayList();
