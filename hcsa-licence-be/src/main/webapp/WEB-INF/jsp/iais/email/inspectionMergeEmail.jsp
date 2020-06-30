@@ -185,6 +185,7 @@
         if ($('#decision_merge_email option:selected').val() == "Select") {
             $("#selectDecisionMsg").show();
         } else {
+            $("#selectDecisionMsg").hide();
             if ($('#decision_merge_email option:selected').val() == "REDECI005") {
                 var checkOne = false;
                 var checkBox = $('input[type = checkbox]');
