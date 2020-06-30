@@ -347,7 +347,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 }
             } catch (Exception e) {
-                log.info("===================================>>>>>>>" + e.getMessage());
+                log.info("==================== email error ===============>>>>>>>" + e.getMessage());
             }
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);

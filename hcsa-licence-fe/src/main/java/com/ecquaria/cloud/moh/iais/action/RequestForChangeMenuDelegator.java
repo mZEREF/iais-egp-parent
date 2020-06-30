@@ -651,9 +651,9 @@ public class RequestForChangeMenuDelegator {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         SelectOption s1 = new SelectOption("new", "I'd like to add a new personnel");
         selectOptions.add(s1);
-        List<LicenseeKeyApptPersonDto> persons = requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeId);
+        List<PersonnelListQueryDto> persons = requestForChangeService.getLicencePersonnelListQueryDto(licenseeId);
         if (!IaisCommonUtils.isEmpty(persons)) {
-            for (LicenseeKeyApptPersonDto dto : persons) {
+            for (PersonnelListQueryDto dto : persons) {
                 String idNo = dto.getIdNo();
                 String name = dto.getName();
                 String idType = dto.getIdType();

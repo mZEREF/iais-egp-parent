@@ -328,10 +328,15 @@
                                         </iais:value>
                                     </iais:row>
                                 </div>
-                                <div id="replace" style="width: 40%" hidden>
-                                    <iais:select name="replaceName" id="replaceOptionsId" options="replaceOptions"
-                                                 value="${replaceName}"
-                                                 onchange="addNew()" firstOption="Please Select"></iais:select>
+                                <div id="replace" class="form-horizontal" hidden>
+                                    <iais:row>
+                                        <iais:field value="Assign or add another personnel " width="12"/>
+                                        <iais:value width="7" cssClass="col-xs-12 col-sm-7 col-md-8">
+                                            <iais:select name="replaceName" id="replaceOptionsId" options="replaceOptions"
+                                                         value="${replaceName}"
+                                                         onchange="addNew()" firstOption="Please Select"></iais:select>
+                                        </iais:value>
+                                    </iais:row>
                                 </div>
                                 <br/><br/><br/><br/>
                                 <div id="newPerson" hidden class="form-horizontal">
