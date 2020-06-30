@@ -40,7 +40,7 @@ public class ClientReschedulingDelegator {
             .clz(ReschApptGrpPremsQueryDto.class)
             .searchAttr("SearchParam")
             .resultAttr("SearchResult")
-            .sortField("ADDRESS").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(0).build();
+            .sortField("ADDRESS").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(20).build();
 
 
     @Autowired

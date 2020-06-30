@@ -18,6 +18,7 @@
         <div class="container">
             <div class="col-xs-12">
                 <div class="components">
+                    <iais:pagination  param="SearchParam" result="SearchResult"/>
 
                     <br>
                     <div class="table-gp">
