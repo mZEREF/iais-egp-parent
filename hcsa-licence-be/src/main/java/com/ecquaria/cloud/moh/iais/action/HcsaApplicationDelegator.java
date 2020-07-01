@@ -239,12 +239,6 @@ public class HcsaApplicationDelegator {
                 if(!appEditSelectDtosByAppIds.isEmpty()){
                     applicationViewDto.setAppEditSelectDto(appEditSelectDtosByAppIds.get(0));
                 }
-               /* if (!StringUtil.isEmpty(applicationDto.getId())) {
-                    List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
-                    if (!IaisCommonUtils.isEmpty(appEditSelectDtos)) {
-                        applicationViewDto.setAppEditSelectDto(appEditSelectDtos.get(0));
-                    }
-                }*/
             }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
                 if (!StringUtil.isEmpty(applicationDto.getId())) {
                     List<AppEditSelectDto> appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_NEW);
@@ -269,10 +263,6 @@ public class HcsaApplicationDelegator {
                 appEditSelectDto.setDpoEdit(true);
                 applicationViewDto.setAppEditSelectDto(appEditSelectDto);
             }
-        }
-        List<AppSupDocDto> appSupDocDtoList = applicationViewDto.getAppSupDocDtoList();
-        if(IaisCommonUtils.isEmpty(appSupDocDtoList)){
-            ParamUtil.setRequestAttr(bpc.request, "appSupDocDtoListNull","Y");
         }
         String roleId = taskDto.getRoleId();
         log.debug(StringUtil.changeForLog("the do prepareData get the appPremisesRecommendationDto"));

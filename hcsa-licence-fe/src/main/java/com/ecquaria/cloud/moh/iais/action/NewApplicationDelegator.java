@@ -2472,7 +2472,7 @@ public class NewApplicationDelegator {
     }
 
     private String getServiceCodeString(List<String> serviceCodeList){
-        StringBuffer serviceCodeString = new StringBuffer();
+        StringBuilder serviceCodeString = new StringBuilder();
         for(String code : serviceCodeList){
             serviceCodeString.append(code + "@");
         }
