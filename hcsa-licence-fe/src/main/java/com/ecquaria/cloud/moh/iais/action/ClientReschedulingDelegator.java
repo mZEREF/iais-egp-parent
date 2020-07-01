@@ -120,9 +120,9 @@ public class ClientReschedulingDelegator {
                     apptViewDtos.put(viewCorrId,apptViewDto);
                 }
                 List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
-                for (String key:apptViewDtos.keySet()
+                for (Map.Entry<String,ApptViewDto> entry:apptViewDtos.entrySet()
                      ) {
-                    apptViewDtos1.add(apptViewDtos.get(key));
+                    apptViewDtos1.add(entry.getValue());
                 }
                 ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos1);
                 ParamUtil.setSessionAttr(bpc.request, "apptViewDtosMap", apptViewDtos);
