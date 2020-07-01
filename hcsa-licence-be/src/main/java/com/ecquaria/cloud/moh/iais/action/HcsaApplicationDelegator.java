@@ -1515,7 +1515,8 @@ public class HcsaApplicationDelegator {
             //0065354
             if(!ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(appStatus)){
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-                List<ApplicationDto> saveApplicationDtoList = applicationDtoList;
+                List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
+                CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
                 applicationDtoList = removeFastTracking(applicationDtoList);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_APPROVED);
