@@ -87,8 +87,8 @@
                                             <tr>
                                                 <td class="row_no">${(status.index + 1) + (regulationSearch.pageNo - 1) * regulationSearch.pageSize}</td>
                                                 </td>
-                                                <td>${item.clauseNo}</td>
-                                                <td>${item.clause}</td>
+                                                <td style="width: 25%;" >${item.clauseNo}</td>
+                                                <td style="width: 60%;" >${item.clause}</td>
                                                 <td><iais:code code="${item.status}"></iais:code></td>
                                                 <td>
                                                     <button type="button"  class="btn btn-default btn-sm" data-toggle="modal" onclick="Utils.markSubmit('mainForm','preUpdate', 'regulationId', '<iais:mask name="regulationId" value="${item.id}"/>')" >Edit</button>
