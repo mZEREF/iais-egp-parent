@@ -1226,6 +1226,8 @@ public class HcsaApplicationDelegator {
                 insRepDto.setReportNoteBy(inspectorAo.getReportNoteBy());
                 insRepDto.setReportedBy(inspectorAo.getReportedBy());
                 ParamUtil.setRequestAttr(bpc.request,"insRepDto",insRepDto);
+                String appType = applicationViewDto.getApplicationDto().getApplicationType();
+                ParamUtil.setRequestAttr(bpc.request,"appType",appType);
                 initAoRecommendation(correlationId,bpc);
             }
         }
