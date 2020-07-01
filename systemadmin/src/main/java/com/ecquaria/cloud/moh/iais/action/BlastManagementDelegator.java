@@ -200,7 +200,7 @@ public class BlastManagementDelegator {
         String mode = ParamUtil.getRequestString(bpc.request,"modeDelivery");
         String distribution = ParamUtil.getRequestString(bpc.request,"distributionList");
         if(start != null && end !=null && start.compareTo(end)>0){
-            Map<String,String> err = new HashMap<>();
+            Map<String,String> err = IaisCommonUtils.genNewHashMap();
             err.put("errDate","Scheduled Send Date From cannot be later than Scheduled Send Date To");
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
         }else{
@@ -314,13 +314,13 @@ public class BlastManagementDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, SMS);
             }else{
                 String fileName = "";
-                StringBuffer fileBuffer = new StringBuffer();
+                StringBuilder stringBuilder = new StringBuilder();
                 if(blastManagementDto.getAttachmentDtos().size() > 0){
                     for (AttachmentDto item: blastManagementDto.getAttachmentDtos()
                     ) {
-                        fileBuffer.append(item.getDocName()).append(',');
+                        stringBuilder.append(item.getDocName()).append(',');
                     }
-                    fileName = fileBuffer.substring(0,fileBuffer.length()-1);
+                    fileName = stringBuilder.substring(0,stringBuilder.length()-1);
                 }
                 if(StringUtil.isEmpty(fileName)){
                     ParamUtil.setRequestAttr(bpc.request, "fileName", "");
@@ -404,13 +404,13 @@ public class BlastManagementDelegator {
     public void writeMessageSuccess(BaseProcessClass bpc){
         BlastManagementDto blastManagementDto = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"blastManagementDto");
         String fileName = "";
-        StringBuffer fileBuffer = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
         if(blastManagementDto.getAttachmentDtos().size() > 0){
             for (AttachmentDto item: blastManagementDto.getAttachmentDtos()
             ) {
-                fileBuffer.append(item.getDocName()).append(',');
+                stringBuilder.append(item.getDocName()).append(',');
             }
-            fileName = fileBuffer.substring(0,fileBuffer.length()-1);
+            fileName = stringBuilder.substring(0,stringBuilder.length()-1);
         }
         if(StringUtil.isEmpty(fileName)){
             ParamUtil.setRequestAttr(bpc.request, "fileName", "");
