@@ -216,6 +216,7 @@ public class InspectionPreDelegator {
         } else if(InspectionConstants.SWITCH_ACTION_REQUEST_INFORMATION.equals(actionValue)){
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"prerfi");
             //choose rfi app and don't check app pop-up windows, is error
+            //NOSONAR
             validationResult = validateAppRfiCheck(validationResult, preInspRfiCheck, bpc);
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
