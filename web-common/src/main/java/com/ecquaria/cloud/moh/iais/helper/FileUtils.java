@@ -90,8 +90,8 @@ public final class FileUtils {
                 log.info("delete temp file success");
             }else {
                 file.deleteOnExit();
-                log.info("delete temp file failure, will be deleted after vm exits normally" + file.getName());
-                log.info("path " + file.getPath());
+                log.info(StringUtil.changeForLog("delete temp file failure, will be deleted after vm exits normally" + file.getName()));
+                log.info(StringUtil.changeForLog("path " + file.getPath()));
             }
         }
 
