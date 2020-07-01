@@ -624,7 +624,7 @@ public class WithOutRenewalDelegator {
             }
             appFeeDetailsDto.setAdmentFee(0.0);
             appFeeDetailsDto.setLaterFee(lateFee);
-            appFeeDetailsDto.setBaseFee(amount);
+            appFeeDetailsDto.setBaseFee(amount - lateFee);
             if(!StringUtil.isEmpty(amount)){
                 renewTotal+=amount;
                 total +=amount;
