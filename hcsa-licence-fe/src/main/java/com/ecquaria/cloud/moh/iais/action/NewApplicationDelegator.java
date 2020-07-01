@@ -77,7 +77,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -235,8 +234,8 @@ public class NewApplicationDelegator {
         requestForInformationLoading(bpc,appNo);
         //for loading the draft by appId
         loadingDraft(bpc,draftNo);
-        //load Specified info
-        loadingSpecifiedInfo(bpc);
+        //load new application info
+        loadingNewAppInfo(bpc);
         //for loading Service Config
         boolean flag = loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:"+flag));
@@ -3878,11 +3877,6 @@ public class NewApplicationDelegator {
             log.info(StringUtil.changeForLog("draftNo is not empty"));
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(appSubmissionDto!=null){
-                //remove submit id
-                appSubmissionDto.setId("");
-                appSubmissionDto.setAppGrpId("");
-                appSubmissionDto.setAppGrpNo("");
-
                 if(IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
                     log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));
                 }
@@ -5300,7 +5294,7 @@ public class NewApplicationDelegator {
         return result;
     }
 
-    private void loadingSpecifiedInfo(BaseProcessClass bpc){
+    private void loadingNewAppInfo(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos2 = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,ServiceMenuDelegator.APP_SVC_RELATED_INFO_LIST);
