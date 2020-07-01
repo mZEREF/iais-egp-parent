@@ -68,9 +68,10 @@
              LEFT JOIN app_premises_inspection_appt insAppt ON (insAppt.APP_PREM_CORRE_ID = T2.ID AND insAppt.STATUS='CMSTAT001')
 
             WHERE 1=1
-            AND insAppt.RESCHEDULE_COUNT <= 1
             AND appRec.RECOM_IN_DATE is not null
             <#if appStatus_reschedule??>AND ${appStatus_reschedule}</#if>
+            <#if RESCHEDULE_COUNT??>AND ${RESCHEDULE_COUNT}</#if>
+            <#if RECOM_IN_DATE??>AND ${RECOM_IN_DATE}</#if>
             <#if licenseeId??>AND T4.licensee_id = :licenseeId</#if>
             ]]>
     </sql>
