@@ -223,17 +223,15 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
         }
         Map<String, String> appIdPremisesMap = IaisCommonUtils.genNewHashMap();
-        for (String licId : licPremiseIdMap.keySet()) {
+        licPremiseIdMap.forEach((licId, premiseIds) -> {
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.clear();
             licIds.add(licId);
             AppSubmissionDto appSubmissionDto = licenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
-            List<String> premiseIds = licPremiseIdMap.get(licId);
             Map<String, String> transform = transform(appSubmissionDto, licenseeId, premiseIds);
             appIdPremisesMap.putAll(transform);
-        }
-        for (String premiseId : appIdPremisesMap.keySet()) {
-            String appId = appIdPremisesMap.get(premiseId);
+        });
+        appIdPremisesMap.forEach((premiseId, appId) -> {
             for (AppCessationDto appCessationDto : appCessationDtos) {
                 String premiseId1 = appCessationDto.getPremiseId();
                 if (premiseId.equals(premiseId1)) {
@@ -242,7 +240,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     appIds.add(appId);
                 }
             }
-        }
+        });
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
         return appIds;
     }
@@ -349,7 +347,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 }
             } catch (Exception e) {
-                log.info("==================== email error ===============>>>>>>>" + e.getMessage());
+                log.info(StringUtil.changeForLog("==================== email error ===============>>>>>>>" + e.getMessage()));
             }
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);
@@ -372,7 +370,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             try{
                 updateLicenceFe(licNos);
             }catch (Exception e){
-                log.info("====================eic error=================");
+                log.info(StringUtil.changeForLog("====================eic error================="));
             }
 
         }
@@ -484,7 +482,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList, String serviceCode) {
         RiskResultDto result = null;
         if (riskResultDtoList == null || StringUtil.isEmpty(serviceCode)) {
-            return result;
+            return null;
         }
         for (RiskResultDto riskResultDto : riskResultDtoList) {
             if (serviceCode.equals(riskResultDto.getSvcCode())) {

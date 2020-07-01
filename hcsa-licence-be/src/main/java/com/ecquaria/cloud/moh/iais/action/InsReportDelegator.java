@@ -225,9 +225,7 @@ public class InsReportDelegator {
         String followUpAction = ParamUtil.getRequestString(bpc.request, "followUpAction");
         String enforcementRemarks = ParamUtil.getRequestString(bpc.request, "enforcementRemarks");
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-        if (ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)) {
-            log.info("audit>>>>>>>>>>>>>>>>>>>>>>>>" + appType);
-        } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
+       if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)) {
             appPremisesRecommendationDto.setRemarks(remarks);
             appPremisesRecommendationDto.setRecommendation(recommendationRfc);
             appPremisesRecommendationDto.setRecomDecision(recommendationRfc);

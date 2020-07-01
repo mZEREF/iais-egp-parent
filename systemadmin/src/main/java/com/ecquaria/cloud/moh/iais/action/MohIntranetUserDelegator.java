@@ -556,12 +556,8 @@ public class MohIntranetUserDelegator {
         String salutation = orgUserDto.getSalutation();
         clientUser.setSalutation(salutation);
         clientUser.setEmail(email);
-        StringBuilder stb = new StringBuilder(UUID.randomUUID().toString().substring(0,6));
-        stb.append(UUID.randomUUID().toString(), 0, 6);
-        UserIdentifier userIdentifier = new UserIdentifier();
-        userIdentifier.setId(orgUserDto.getUserId());
-        userIdentifier.setUserDomain(orgUserDto.getUserDomain());
-        String pwd = PasswordUtil.encryptPassword(userIdentifier, stb.toString(), null);
+        String randomStr = IaisEGPHelper.generateRandomString(6);
+        String pwd = PasswordUtil.encryptPassword(clientUser.getUserDomain(), randomStr, null);
         clientUser.setPassword(pwd);
         clientUser.setPasswordChallengeQuestion("A");
         clientUser.setPasswordChallengeAnswer("A");

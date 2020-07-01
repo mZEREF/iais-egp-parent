@@ -202,6 +202,7 @@
                                 </c:forEach>
                             </div>
                             <c:if test="${specLicInfo !=null}">
+                                <div><h4>The following specified healthcare services will also be ceased as their underlying licensable healthcare service(s) is/are listed above.</h4></div>
                                 <table class="table-gp tablebox">
                                     <tr style="text-align:center">
                                         <th style="text-align:center;width: 0%">S/N</th>
@@ -235,20 +236,20 @@
                     </c:forEach>
                 </div>
                 <br/>
-                <ul>
-                    <li>
-                        <p>The licensee must notify the Director of Medical Services in writing at least 30 days before
-                            the cessation of operation, letting, sale or disposal of his private hospital, medical
-                            clinic or clinical laboratory.</p>
-                    </li>
-                    <li>
-                        <p> Any licensee of a licensed healthcare institution (For e.g a medical clinic) who intends to
-                            cease operating the medical clinic shall take all measures as are reasonable and necessary
-                            to ensure that the medical records of every patient are properly transferred to the medical
-                            clinic or other healthcare institution to which such patient is to be transferred.</p>
-                    </li>
-                </ul>
                 <div class="form-check">
+                    <ul>
+                        <li>
+                            <p>The licensee must notify the Director of Medical Services in writing at least 30 days before
+                                the cessation of operation, letting, sale or disposal of his private hospital, medical
+                                clinic or clinical laboratory.</p>
+                        </li>
+                        <li>
+                            <p> Any licensee of a licensed healthcare institution (For e.g a medical clinic) who intends to
+                                cease operating the medical clinic shall take all measures as are reasonable and necessary
+                                to ensure that the medical records of every patient are properly transferred to the medical
+                                clinic or other healthcare institution to which such patient is to be transferred.</p>
+                        </li>
+                    </ul>
                     <input class="form-check-input" id="confirmInfo" disabled type="radio" name="${num.count}whichTodo${uid.count}" checked aria-invalid="false">
                     <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read and
                         agreed with the above information</label>
@@ -283,6 +284,18 @@
         padding-left: 10px;
         padding-right: 10px;
     }
+    ul li {
+        list-style: disc;
+        padding-left: 16px;
+        position: relative;
+        font-size: 1.6rem;
+        margin-bottom: 10px;
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+
     #effectiveDate{
         margin-bottom: 0px;
     }
