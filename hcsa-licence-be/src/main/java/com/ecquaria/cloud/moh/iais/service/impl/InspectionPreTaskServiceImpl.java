@@ -283,12 +283,14 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             //Have you completed a self-assessment checklist?
             if(IaisCommonUtils.isEmpty(premCheckItems)) {
                 url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                        MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST_GROUP + applicationDto.getAppGrpId();
+                        MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST_GROUP + applicationDto.getAppGrpId() +
+                        "&selfDeclApplicationNumber=" + taskDto.getApplicationNo();
                 maskParams.put("appGroupId", applicationDto.getAppGrpId());
+                maskParams.put("selfDeclApplicationNumber", taskDto.getApplicationNo());
             } else {
                 url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                         MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST + taskDto.getApplicationNo() +
-                        "&selfDeclAction=rfi";
+                        "&selfDeclApplicationNumber=rfi";
                 maskParams.put("selfDeclApplicationNumber", taskDto.getApplicationNo());
             }
             MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
