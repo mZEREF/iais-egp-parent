@@ -83,10 +83,13 @@
         $('.form-check-input').click(function () {
             var $currSpecContent = $(this).closest('div.speSvcContent');
             var $baseLicContent = $(this).closest('div.exist-base-lic-content');
-            //disabled the second
-            $('div.existing-base-content input[type="radio"]').prop('disabled',true);
+
             //the first select
             if($(this).hasClass('firstStep')){
+                // if($(this).hasClass('firstStep')){
+                //     //disabled the second
+                //     $('div.existing-base-content input[type="radio"]').prop('disabled',true);
+                // }
                 //control curr
                 $baseLicContent.find('input[type="radio"]').prop('disabled',false);
 

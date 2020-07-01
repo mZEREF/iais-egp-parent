@@ -38,7 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 
@@ -1215,7 +1214,7 @@ public class ServiceMenuDelegator {
                     a.retainAll(b);
                     return a;
                 });
-        return result.orElseGet((Supplier<? extends List<AppAlignLicQueryDto>>) IaisCommonUtils.genNewArrayList());
+        return result.get();
     }
 
     private static AppAlignLicQueryDto getAppAlignLicQueryDto(Map<String,List<AppAlignLicQueryDto>> baseLicMap,String svcName,String hciCode){
