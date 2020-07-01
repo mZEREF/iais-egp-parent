@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -24,6 +25,10 @@ public class HcsaChklConfigValidate implements CustomizeValidator {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         String eftStartDate = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_START_DATE);
         String eftEndDate = ParamUtil.getString(httpServletRequest, HcsaChecklistConstants.PARAM_CONFIG_EFFECTIVE_END_DATE);
+
+        if(StringUtils.isEmpty(eftStartDate) || StringUtils.isEmpty(eftEndDate)){
+            return errMap;
+        }
 
         Date sDate = IaisEGPHelper.parseToDate(eftStartDate);
         Date eDate = IaisEGPHelper.parseToDate(eftEndDate);
