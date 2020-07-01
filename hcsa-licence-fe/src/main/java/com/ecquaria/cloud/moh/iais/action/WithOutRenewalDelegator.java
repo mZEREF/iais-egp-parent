@@ -21,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
@@ -67,7 +66,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -98,6 +96,7 @@ public class WithOutRenewalDelegator {
     private static final String CONTROL_SWITCH = "controlSwitch";
     private static final String EDIT = "doEdit";
     private static final String PREFIXTITLE = "prefixTitle";
+    private static final String LOADING_DRAFT = "loadingDraft";
     @Autowired
     WithOutRenewalService outRenewalService;
 
@@ -131,6 +130,8 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request,"totalStr",null);
         ParamUtil.setSessionAttr(bpc.request,"totalAmount",null);
         ParamUtil.setSessionAttr(bpc.request,"userAgreement",null);ParamUtil.setSessionAttr(bpc.request,PREFIXTITLE,"renewing");
+        ParamUtil.setSessionAttr(bpc.request,LOADING_DRAFT,null);
+        ParamUtil.setSessionAttr(bpc.request,"oldAppSubmissionDto",null);
         HashMap<String,String> coMap=new HashMap<>(4);
         coMap.put("premises","");
         coMap.put("document","");
@@ -155,10 +156,16 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> appSubmissionDtoList = IaisCommonUtils.genNewArrayList();
         if(StringUtil.isEmpty(draftNo)){
             appSubmissionDtoList = outRenewalService.getAppSubmissionDtos(licenceIDList);
+            if(!IaisCommonUtils.isEmpty(appSubmissionDtoList) && appSubmissionDtoList.size() ==1){
+                log.info(StringUtil.changeForLog("appSubmissionDtoList size:"+appSubmissionDtoList.size()));
+                appSubmissionDtoList.get(0).setOneLicDoRenew(true);
+            }
             log.info("can not find licence id for without renewal");
             ParamUtil.setSessionAttr(bpc.request,"backUrl","initLic");
         }else{
             AppSubmissionDto appSubmissionDtoDraft = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            ParamUtil.setSessionAttr(bpc.request,LOADING_DRAFT,"test");
+            appSubmissionDtoDraft.setOneLicDoRenew(true);
             appSubmissionDtoList.add(appSubmissionDtoDraft);
             licenceIDList=new ArrayList<>(1);
             licenceIDList.add(appSubmissionDtoDraft.getLicenceId());
@@ -367,6 +374,16 @@ public class WithOutRenewalDelegator {
             AppSubmissionDto oldAppSubmissionDto=(AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
             if(oldAppSubmissionDto==null){
                 oldAppSubmissionDto= appSubmissionDtos.get(0);
+            }
+            Object loadingDraft = ParamUtil.getSessionAttr(bpc.request,LOADING_DRAFT);
+            if(loadingDraft != null){
+                AppSubmissionDto oldAppSubmisDto = appSubmissionDtos.get(0).getOldAppSubmissionDto();
+                if(oldAppSubmisDto != null){
+                    oldAppSubmissionDto = oldAppSubmisDto;
+                }
+            }else{
+                //set oldAppSubmissionDto
+                renewDto.getAppSubmissionDtos().get(0).setOldAppSubmissionDto(oldAppSubmissionDto);
             }
             bpc.request.getSession().setAttribute("oldAppSubmissionDto",oldAppSubmissionDto);
 
