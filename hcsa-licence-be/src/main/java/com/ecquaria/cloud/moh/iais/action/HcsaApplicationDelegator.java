@@ -1231,8 +1231,10 @@ public class HcsaApplicationDelegator {
             initRecommendationDto.setRemarks(reportRemarks);
             initRecommendationDto.setRemarks(reportRemarks);
             Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
-            String recommendationOnlyShowStr = getRecommendationOnlyShowStr(recomInNumber);
-            initRecommendationDto.setPeriod(recommendationOnlyShowStr);
+            if(recomInNumber != null){
+                String recommendationOnlyShowStr = getRecommendationOnlyShowStr(recomInNumber);
+                initRecommendationDto.setPeriod(recommendationOnlyShowStr);
+            }
             String remarks = appPremisesRecommendationDto.getRemarks();
             initRecommendationDto.setRemarks(remarks);
         }
@@ -2051,7 +2053,10 @@ public class HcsaApplicationDelegator {
                 checkRecommendationDropdownValue(recomInNumber,chronoUnit,codeDesc,applicationViewDto,bpc);
             }
             Date recomInDate = appPremisesRecommendationDto.getRecomInDate();
-            String recomInDateOnlyShow = Formatter.formatDateTime(recomInDate,Formatter.DATE);
+            String recomInDateOnlyShow = "-";
+            if(recomInDate != null){
+                recomInDateOnlyShow = Formatter.formatDateTime(recomInDate,Formatter.DATE);
+            }
             ParamUtil.setRequestAttr(bpc.request, "recomInDateOnlyShow",recomInDateOnlyShow);
             if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId) || broadcastOther){
                 ParamUtil.setRequestAttr(bpc.request, "recommendationOnlyShow",recommendationOnlyShow);
