@@ -737,7 +737,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         } catch (Exception e){
             applicationClient.removeHistoryById(appHistoryId);
             log.error(e.getMessage(), e);
-            throw new IaisRuntimeException("get InspectionDate Error!!!");
+            throw new IaisRuntimeException("get InspectionDate Error!!!", e);
         }
     }
 
