@@ -91,22 +91,19 @@ public final class HcsaServiceCacheHelper {
 
 	public static void receiveServiceMapping(){
 		HcsaServiceClient serviceClient = SpringContextHelper.getContext().getBean(HcsaServiceClient.class);
-		if (serviceClient == null){
-			log.info("================== receive service on startup failed ==================");
-			return;
-		}
+		if (serviceClient != null){
+			FeignResponseEntity<List<HcsaServiceDto>> result = serviceClient.getActiveServices();
+			int status = result.getStatusCode();
 
-		FeignResponseEntity<List<HcsaServiceDto>> result = serviceClient.getActiveServices();
-		int status = result.getStatusCode();
+			log.info(StringUtil.changeForLog("HcsaServiceCacheHelper status  =====>" + status));
 
-		log.info(StringUtil.changeForLog("HcsaServiceCacheHelper status  =====>" + status));
-
-		if (status == HttpStatus.SC_OK){
-			List<HcsaServiceDto> serviceList = result.getEntity();
-			RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
-			redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST, serviceList);
-			serviceList.forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(),
-					i, RedisCacheHelper.NOT_EXPIRE));
+			if (status == HttpStatus.SC_OK){
+				List<HcsaServiceDto> serviceList = result.getEntity();
+				RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
+				redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST, serviceList);
+				serviceList.forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(),
+						i, RedisCacheHelper.NOT_EXPIRE));
+			}
 		}
 	}
 

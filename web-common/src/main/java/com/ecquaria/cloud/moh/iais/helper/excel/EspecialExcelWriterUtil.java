@@ -10,7 +10,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -42,8 +41,8 @@ public class EspecialExcelWriterUtil {
 
         XSSFWorkbook workbook = null;
         File out = new File(FileUtils.generationFileName("temp"+ System.currentTimeMillis(), EXCEL_TYPE_XSSF));
-        OutputStream outputStream = new FileOutputStream(out);
-        try (InputStream fileInputStream = java.nio.file.Files.newInputStream(file.toPath())) {
+
+        try (InputStream fileInputStream = java.nio.file.Files.newInputStream(file.toPath()); OutputStream outputStream = java.nio.file.Files.newOutputStream(out.toPath())) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
             Sheet sheet = workbook.getSheetAt(sheetAt);
@@ -71,18 +70,13 @@ public class EspecialExcelWriterUtil {
                 }
             }
 
-
             workbook.write(outputStream);
-
-
         } catch (Exception e) {
             throw new Exception("has error when when export excel, may be is resource corrupted");
         }finally {
             if (workbook != null){
                 workbook.close();
             }
-
-            outputStream.close();
         }
 
         return out;

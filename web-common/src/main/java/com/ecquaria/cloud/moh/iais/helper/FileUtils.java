@@ -157,16 +157,17 @@ public final class FileUtils {
     public static  String getStringFromSystemConfigString(String configString){
         return getStringFromStrings(fileTypeToArray(configString));
     }
+
     public static String getStringFromStrings( String[] strings){
         if( strings == null) {
             return "";
         }
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         for(String s : strings){
             if( StringUtil.isEmpty(stringBuffer.toString())) {
                 stringBuffer.append(s);
             }else {
-                stringBuffer.append(","+s);
+                stringBuffer.append(",").append(s);
             }
         }
         return stringBuffer.toString();
