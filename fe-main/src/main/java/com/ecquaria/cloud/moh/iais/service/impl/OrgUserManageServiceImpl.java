@@ -283,7 +283,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
             //prevent history simple pwd throw 500
             String randomStr = IaisEGPHelper.generateRandomString(6);
-            String pwd = PasswordUtil.encryptPassword(feUserDto.getIdentityNo(), randomStr, null);
+            String pwd = PasswordUtil.encryptPassword(feUserDto.getUserDomain(), randomStr, null);
 
             clientUser.setPassword(pwd);
 
@@ -300,7 +300,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             clientUser.setDisplayName(feUserDto.getFirstName()+feUserDto.getLastName());
 
             String randomStr = IaisEGPHelper.generateRandomString(6);
-            String pwd = PasswordUtil.encryptPassword(feUserDto.getIdentityNo(), randomStr, null);
+            String pwd = PasswordUtil.encryptPassword(feUserDto.getUserDomain(), randomStr, null);
 
             clientUser.setPassword(pwd);
             clientUser.setPasswordChallengeQuestion("A");
