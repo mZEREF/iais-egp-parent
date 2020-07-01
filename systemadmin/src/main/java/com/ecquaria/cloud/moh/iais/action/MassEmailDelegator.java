@@ -255,7 +255,7 @@ public class MassEmailDelegator {
         String mobile = mulReq.getParameter("mobile");
 
         DistributionListWebDto distributionListDto = new DistributionListWebDto();
-        if(!StringUtil.isEmpty(mode) && EMAIL.equals(mode) && email != null){
+        if(email != null && !StringUtil.isEmpty(mode) && EMAIL.equals(mode)){
             List<String> rnemaillist = Arrays.asList(email.split("\r\n"));
             List<String> commaemaillist = Arrays.asList(email.split(","));
             if(rnemaillist.size() > commaemaillist.size() ){
@@ -264,7 +264,7 @@ public class MassEmailDelegator {
                 distributionListDto.setEmailAddress(commaemaillist);
             }
         }
-        if(!StringUtil.isEmpty(mode) && SMS.equals(mode) && mobile != null){
+        if(mobile != null && !StringUtil.isEmpty(mode) && SMS.equals(mode)){
             List<String> rnmobilelist = Arrays.asList(mobile.split("\r\n"));
             List<String> commamobilelist = Arrays.asList(mobile.split(","));
             if(rnmobilelist.size() > commamobilelist.size() ){
