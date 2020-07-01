@@ -2079,6 +2079,9 @@ public class HcsaApplicationDelegator {
     }
 
     private String getRecommendationOnlyShowStr (Integer recomInNumber){
+        if(recomInNumber == null){
+            return "-";
+        }
         String recommendationOnlyShow = "-";
         if(recomInNumber >= 12){
             if( recomInNumber % 12 == 0){
