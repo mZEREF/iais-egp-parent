@@ -287,9 +287,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 maskParams.put("appGroupId", applicationDto.getAppGrpId());
             } else {
                 url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                        MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST + taskDto.getRefNo() +
+                        MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST + taskDto.getApplicationNo() +
                         "&selfDeclAction=rfi";
-                maskParams.put("selfDeclRfiCorrId", taskDto.getRefNo());
+                maskParams.put("selfDeclApplicationNumber", taskDto.getApplicationNo());
             }
             MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
             Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
