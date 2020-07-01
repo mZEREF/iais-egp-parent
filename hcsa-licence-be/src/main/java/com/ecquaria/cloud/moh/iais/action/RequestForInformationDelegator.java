@@ -111,7 +111,7 @@ public class RequestForInformationDelegator {
         ParamUtil.setSessionAttr(request,"id",null);
         ParamUtil.setSessionAttr(request, "licenceNo", null);
         ParamUtil.setSessionAttr(request, "reqInfoId", null);
-        ParamUtil.setSessionAttr(request,"rfiMulNum",systemParamConfig.getRfiMulNum());
+        ParamUtil.setSessionAttr(request,"rfiMulNum",systemParamConfig.getAdhocRfiMultipleRequest());
 
         // 		Start->OnStepProcess
     }
