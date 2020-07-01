@@ -301,7 +301,7 @@ public class LicenceViewServiceDelegator {
                     LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationViewHciNameDto.getLicensee()).getEntity();
                     applicationViewHciNameDto.setLicensee(licenseeDto.getName());
                 }
-                appGrpPremisesDto.setApplicationViewAddress(applicationViewHciNameDtos);
+                //appGrpPremisesDto.setApplicationViewAddress(applicationViewHciNameDtos);
             }
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
