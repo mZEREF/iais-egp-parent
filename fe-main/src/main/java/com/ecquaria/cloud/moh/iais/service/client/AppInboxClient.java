@@ -68,5 +68,6 @@ public interface AppInboxClient {
 
     @PostMapping(value = "/appeal/list-can-ceased",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String,Boolean>> listCanCeased(@RequestBody List<String> licIds);
-
+    @GetMapping(value = "/iais-application/applicationdto-id/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicarionById(@PathVariable(name = "appId")String appId);
 }

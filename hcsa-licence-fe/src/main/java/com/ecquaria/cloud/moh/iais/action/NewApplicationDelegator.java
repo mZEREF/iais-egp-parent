@@ -2034,13 +2034,13 @@ public class NewApplicationDelegator {
         String newHciName = "";
         String oldHciName = "";
         if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())){
-            oldHciName = appGrpPremisesDto.getHciName();
+            oldHciName = premisesListQueryDto.getHciName();
         }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())){
-            oldHciName = appGrpPremisesDto.getConveyanceVehicleNo();
+            oldHciName = premisesListQueryDto.getConveyanceVehicleNo();
         }
-        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())){
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
             newHciName = appGrpPremisesDto.getHciName();
-        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesListQueryDto.getPremisesType())){
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
             newHciName = appGrpPremisesDto.getConveyanceVehicleNo();
         }
         if(!oldHciName.equals(newHciName)){

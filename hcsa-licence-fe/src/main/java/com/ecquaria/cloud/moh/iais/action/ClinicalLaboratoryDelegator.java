@@ -1279,6 +1279,7 @@ public class ClinicalLaboratoryDelegator {
                 } else {
                     coMap.put("information", "");
                 }
+                bpc.request.getSession().setAttribute("coMap",coMap);
                 if (!errorMap.isEmpty()) {
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.MEDALERT_PERSON);

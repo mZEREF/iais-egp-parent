@@ -301,13 +301,13 @@ public class AppealApproveBatchjob {
                                List<LicenceDto> rollBackLicence,
                                LicenceDto licenceDto,AppPremisesRecommendationDto appPremisesRecommendationDto) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealLicence is start ..."));
+        if(appPremisesRecommendationDto==null){
+            return;
+        }
         if(licenceDto!=null && appPremisesRecommendationDto != null){
             rollBackLicence.add(licenceDto);
             LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
             Date startDate = appealLicenceDto.getStartDate();
-            if(appPremisesRecommendationDto==null){
-                return;
-            }
             Date expiryDate = LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
             appealLicenceDto.setExpiryDate(expiryDate);
             appealLicence.add(appealLicenceDto);

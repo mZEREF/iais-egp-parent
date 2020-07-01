@@ -234,7 +234,9 @@ public class LicenceViewServiceDelegator {
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<PublicHolidayDto> publicHolidayDtos = appointmentClient.getActiveHoliday().getEntity();
-        formatDate(appGrpPremisesDtoList, publicHolidayDtos);
+        if(appGrpPremisesDtoList!=null&&publicHolidayDtos!=null){
+            formatDate(appGrpPremisesDtoList, publicHolidayDtos);
+        }
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
@@ -340,11 +342,21 @@ public class LicenceViewServiceDelegator {
                 }
             }
             appSvcDocDtoLit.removeAll(appSvcDocDtos);
+            for(int i=0;i < appSvcDocDtoLit.size();i++){
+                for(int j=0;j < appSvcDocDtoLit.size() && j!=i;j++){
+                    if(appSvcDocDtoLit.get(i).getFileRepoId().equals(appSvcDocDtoLit.get(j).getFileRepoId())){
+                        appSvcDocDtoLit.remove(appSvcDocDtoLit.get(i));
+                        i--;
+                        break;
+                    }
+                }
+            }
         }
         if(dtoAppGrpPrimaryDocDtos!=null){
             if(appGrpPrimaryDocDtos.isEmpty()){
                 appGrpPrimaryDocDtos.addAll(dtoAppGrpPrimaryDocDtos);
             }else {
+                List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList=IaisCommonUtils.genNewArrayList();
                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto1 : dtoAppGrpPrimaryDocDtos){
                     for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtos){
                         String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
@@ -353,17 +365,27 @@ public class LicenceViewServiceDelegator {
                             if(svcDocId1.equals(svcDocId)){
                                 continue;
                             }else {
-                                appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto1);
+                                appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto1);
                             }
                         }else if(svcDocId!=null){
                             if(svcDocId.equals(svcDocId1)){
                                 continue;
                             }else {
-                                appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto1);
+                                appGrpPrimaryDocDtoList.add(appGrpPrimaryDocDto1);
                             }
                         }
 
                     }
+                }
+                appGrpPrimaryDocDtos.addAll(appGrpPrimaryDocDtoList);
+            }
+        }
+        for(int i=0;i < appGrpPrimaryDocDtos.size();i++){
+            for(int j=0;j < appGrpPrimaryDocDtos.size() && j != i;j++){
+                if(appGrpPrimaryDocDtos.get(i).getFileRepoId().equals(appGrpPrimaryDocDtos.get(j).getFileRepoId())){
+                    appGrpPrimaryDocDtos.remove(appGrpPrimaryDocDtos.get(i));
+                    i--;
+                    break;
                 }
             }
         }

@@ -42,29 +42,37 @@
                                     <tbody>
                                     <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}"  varStatus="status">
                                         <c:set var="detailFeeDto" value="${AppSubmissionDto.detailFeeDto}"/>
-                                        <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
                                             <tr>
                                                 <td>
-                                                    <p><c:out value="${svc.serviceName}"></c:out></p>
+                                                    <p><c:out value="${AppSubmissionDto.serviceName}"></c:out></p>
                                                 </td>
                                                 <td>
-                                                  <c:if test="${svc.applicationType=='APTY005'}">
-                                                    Amendment
-                                                  </c:if>
-                                                  <c:if test="${svc.applicationType=='APTY004'}">
                                                     Renewal
-                                                  </c:if>
                                                 </td>
                                                 <td>
-                                                    <p>${svc.groupNo}</p>
+                                                    <p>${AppSubmissionDto.appGrpNo}</p>
                                                 </td>
                                                 <td>
                                                     <p>${AppSubmissionDto.amountStr}</p>
                                                 </td>
                                             </tr>
-                                        </c:forEach>
                                     </c:forEach>
-
+                                    <c:forEach items="${rfcAppSubmissionDtos}" var="rfcAppSubmissionDto">
+                                        <tr>
+                                            <td>
+                                                <p><c:out value="${rfcAppSubmissionDto.serviceName}"></c:out></p>
+                                            </td>
+                                            <td>
+                                                Amendment
+                                            </td>
+                                            <td>
+                                                <p>${rfcAppSubmissionDto.appGrpNo}</p>
+                                            </td>
+                                            <td>
+                                                <p>${rfcAppSubmissionDto.amountStr}</p>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
                                     <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}"  varStatus="status">
                                         <c:set var="detailFeeDto" value="${AppSubmissionDto.detailFeeDto}"/>
                                         <c:if test="${detailFeeDto != null && detailFeeDto.lateFeeType != '' && detailFeeDto.lateFeeAmoumtStr != '' && detailFeeDto.lateFeeType != null && detailFeeDto.lateFeeAmoumtStr != null}">

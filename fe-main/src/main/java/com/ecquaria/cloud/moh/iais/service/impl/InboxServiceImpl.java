@@ -362,4 +362,29 @@ public class InboxServiceImpl implements InboxService {
     public Map<String, Boolean> listResultCeased(List<String> licIds) {
         return appInboxClient.listCanCeased(licIds).getEntity();
     }
+
+    @Override
+    public Map<String, String> appealIsApprove(String licenceId, String type) {
+        Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        List<String> endStatusList = IaisCommonUtils.getAppPendingStatus();
+        if("licence".equals(type)){
+            List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
+            if(!IaisCommonUtils.isEmpty(apps)){
+                for(ApplicationDto applicationDto:apps){
+                    if(!endStatusList.contains(applicationDto.getStatus())){
+                        errorMap.put("errorMessage","There is already a pending application for this licence");
+                        break;
+                    }
+                }
+            }
+            return errorMap;
+
+        }else if("application".equals(type)){
+            ApplicationDto applicationDto = appInboxClient.getApplicarionById(licenceId).getEntity();
+            if(!endStatusList.contains(applicationDto.getStatus())){
+                errorMap.put("errorMessage","There is already a pending application for this licence");
+            }
+        }
+        return errorMap;
+    }
 }

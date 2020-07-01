@@ -389,7 +389,8 @@ public class InterInboxDelegator {
         String licMaskId = ParamUtil.getString(bpc.request, "licenceNo");
         String licId = ParamUtil.getMaskedString(bpc.request,licMaskId);
         Boolean result = inboxService.checkEligibility(licId);
-        if (result){
+        Map<String, String> map = inboxService.appealIsApprove(licId, "licence");
+        if (result&&map.isEmpty()){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
@@ -638,7 +639,8 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         Boolean result = inboxService.checkEligibility(appId);
-        if (result){
+        Map<String, String> map = inboxService.appealIsApprove(appId, "application");
+        if (result&&map.isEmpty()){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")

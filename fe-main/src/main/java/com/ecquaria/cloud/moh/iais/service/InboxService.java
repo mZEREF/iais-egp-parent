@@ -38,4 +38,5 @@ public interface InboxService {
     AuditTrailDto getLastLoginInfo(String loginUserId);
     public Map<String,String> checkRfcStatus(String licenceId);
     Map<String,Boolean> listResultCeased(List<String> licIds);
+    Map<String,String> appealIsApprove(String appIdOrLicenceId,String type);
 }
