@@ -2226,7 +2226,7 @@ public class ClinicalLaboratoryDelegator {
 
     private String[] removeArrIndex(String[] arrs, int index) {
         if (arrs == null) {
-            return arrs;
+            return new String[1];
         }
         String[] newArrs = new String[arrs.length - 1];
         int j = 0;

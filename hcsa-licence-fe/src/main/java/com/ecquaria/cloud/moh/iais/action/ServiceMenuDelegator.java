@@ -38,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 
@@ -387,11 +388,11 @@ public class ServiceMenuDelegator {
         if(!IaisCommonUtils.isEmpty(baseSvcList)){
             List<String> svcNameList = svcIdListTransferNameList(baseSvcList);
             SearchResult searchResult = getLicense(bpc,svcNameList);
+            boolean hasExistBase = false;
             if(searchResult != null && searchResult.getRowCount() > 0){
-                ParamUtil.setRequestAttr(bpc.request,HAS_EXISTING_BASE,true);
-            }else{
-                ParamUtil.setRequestAttr(bpc.request,HAS_EXISTING_BASE,false);
+                hasExistBase = true;
             }
+            ParamUtil.setRequestAttr(bpc.request,HAS_EXISTING_BASE,true);
         }
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         Map<HcsaServiceDto,List<HcsaServiceDto>> baseAndSpcSvcMap = (Map<HcsaServiceDto, List<HcsaServiceDto>>) ParamUtil.getSessionAttr(bpc.request,BASEANDSPCSVCMAP);
@@ -434,7 +435,7 @@ public class ServiceMenuDelegator {
         StringBuilder placeholder = new StringBuilder("(");
         int i =0;
         for(String baseSvcId:excludeChkBase){
-            placeholder.append(":itemKey" + i).append(',');
+            placeholder.append(":itemKey").append(i).append(',');
             i++;
         }
         String inSql = placeholder.substring(0, placeholder.length() - 1) + ")";
@@ -449,7 +450,8 @@ public class ServiceMenuDelegator {
         QueryHelp.setMainSql("applicationQuery", "getLicenceBySerName",searchParam);
         SearchResult<MenuLicenceDto> searchResult = licenceViewService.getMenuLicence(searchParam);
         if(StringUtil.isEmpty(appSelectSvcDto.getAlignLicPremId())){
-            ParamUtil.setRequestAttr(bpc.request,"chooseFirst",true);
+            boolean flag = true;
+            ParamUtil.setRequestAttr(bpc.request,"chooseFirst",flag);
         }
         ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM,searchParam);
         ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_RESULT,searchResult);
@@ -467,7 +469,8 @@ public class ServiceMenuDelegator {
 
     public void doChooseService(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("do choose svc start ..."));
-        ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,false);
+        boolean onlyBaseSvc = false;
+        ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,onlyBaseSvc);
         String additional = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
         if(BACK_ATTR.equals(additional)){
             return;
@@ -566,21 +569,19 @@ public class ServiceMenuDelegator {
                         err = baseName.get(getKeyOrNull(necessaryBaseServiceList)) + " should be selected.";
                     }else{
                         for(Map.Entry<String, String> entry : necessaryBaseServiceList.entrySet()){
-                            String baseSvcName = "";
                             for(List<String> relaSvcIdList:baseRelSpe.values()){
                                 for(int i =0; i<extrabaselist.size();i++){
                                     String baseSvcId = extrabaselist.get(i);
                                     if(relaSvcIdList.contains(baseSvcId)){
+                                        List<String> svcIds = IaisCommonUtils.genNewArrayList();
+                                        svcIds.add(baseSvcId);
+                                        extrabaselist.removeAll(svcIds);
                                         continue;
                                     }
-                                    if(i == extrabaselist.size()-1){
-                                        baseSvcName = HcsaServiceCacheHelper.getServiceById(baseSvcId).getSvcName();
-                                    }
                                 }
-
                             }
                             err = "The chosen base service ";
-                            err = err + baseSvcName;
+                            err = err + baseName.get(extrabaselist.get(0));
                             err = err + " is not the prerequisite of ";
                             err = err + specifiedName.get(entry.getValue()) + ".";
                             break;
@@ -599,7 +600,8 @@ public class ServiceMenuDelegator {
             }else{
                 //new app
                 nextstep = CHOOSE_ALIGN;
-                ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,true);
+                onlyBaseSvc = true;
+                ParamUtil.setSessionAttr(bpc.request,ONLY_BASE_SVC,onlyBaseSvc);
             }
 
         }
@@ -1204,6 +1206,7 @@ public class ServiceMenuDelegator {
         return hcsaServiceDtos;
     }
 
+    //from internet
     private static List<AppAlignLicQueryDto> retainElementList(List<List<AppAlignLicQueryDto>> elementLists) {
 
         Optional<List<AppAlignLicQueryDto>> result = elementLists.parallelStream()
@@ -1212,7 +1215,7 @@ public class ServiceMenuDelegator {
                     a.retainAll(b);
                     return a;
                 });
-        return result.orElse(new ArrayList<>());
+        return result.orElseGet((Supplier<? extends List<AppAlignLicQueryDto>>) IaisCommonUtils.genNewArrayList());
     }
 
     private static AppAlignLicQueryDto getAppAlignLicQueryDto(Map<String,List<AppAlignLicQueryDto>> baseLicMap,String svcName,String hciCode){
@@ -1223,6 +1226,7 @@ public class ServiceMenuDelegator {
                 for(AppAlignLicQueryDto appAlignLicQueryDto:appAlignLicQueryDtos){
                     if(svcName.equals(appAlignLicQueryDto.getSvcName())){
                         result = appAlignLicQueryDto;
+                        break;
                     }
                 }
             }
