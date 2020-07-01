@@ -85,7 +85,7 @@
                                                     </td>
                                                     <td>NA</td>
                                                     <td>NA</td>
-                                                    <td><p>${detailFeeDto.lateFeeAmoumtStr}</p></td>
+                                                    <td><p>${AppSubmissionDto.lateFeeStr}</p></td>
                                                 </tr>
                                             </c:forEach>
                                         </c:if>
