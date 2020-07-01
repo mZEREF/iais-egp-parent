@@ -52,10 +52,10 @@
               <tr>
                 <td class="row_no">${(status.index + 1) + (checklistItemSearch.pageNo - 1) * checklistItemSearch.pageSize}</td>
                 <td><input name="itemCheckbox" id="itemCheckbox" type="checkbox" value="${item.itemId}" /></td>
-                <td>${item.regulationClauseNo}</td>
-                <td>${item.regulationClause}</td>
-                <td>${item.checklistItem}</td>
-                <td><iais:code code="${item.riskLevel}"></iais:code></td>
+                <td style="width: 20%">${item.regulationClauseNo}</td>
+                <td style="width: 40%">${item.regulationClause}</td>
+                <td style="width: 30%" >${item.checklistItem}</td>
+                <td style="width: 20%"><iais:code code="${item.riskLevel}"></iais:code></td>
               </tr>
             </c:forEach>
           </c:otherwise>
