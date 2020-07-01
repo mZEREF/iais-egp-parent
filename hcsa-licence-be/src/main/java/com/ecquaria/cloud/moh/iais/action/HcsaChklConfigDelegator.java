@@ -68,20 +68,18 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HcsaChklConfigDelegator {
 
-    private static Map<Integer, List<Integer>> excelConfigValueIndex = new HashMap<Integer, List<Integer>>(){
-        {
-            put(1, Collections.singletonList(2));
-            put(3, Arrays.asList(2, 5));
-            put(5, Arrays.asList(2,5));
-            put(7, Arrays.asList(2,5,7));
-        }
-    };
+    private static Map<Integer, List<Integer>> excelConfigValueIndex = IaisCommonUtils.genNewHashMap();
 
-    private static Map<Integer, List<Integer>> excelHiddenValueIndex = new HashMap<Integer, List<Integer>>(){
-        {
-            put(1, Arrays.asList(15, 16, 17));
-        }
-    };
+    private static Map<Integer, List<Integer>> excelHiddenValueIndex = IaisCommonUtils.genNewHashMap();
+
+    static {
+        excelConfigValueIndex.put(1, Collections.singletonList(2));
+        excelConfigValueIndex.put(3, Arrays.asList(2, 5));
+        excelConfigValueIndex.put(5, Arrays.asList(2,5));
+        excelConfigValueIndex.put(7, Arrays.asList(2,5,7));
+
+        excelHiddenValueIndex.put(1, Arrays.asList(15, 16, 17));
+    }
 
     private HcsaChklService hcsaChklService;
 
