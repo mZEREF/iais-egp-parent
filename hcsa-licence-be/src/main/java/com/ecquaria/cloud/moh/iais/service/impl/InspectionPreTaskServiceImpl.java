@@ -263,7 +263,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             applicationViewDto.setApplicationDto(applicationDto1);
         } else {
             applicationDto.setSelfAssMtFlag(selfAssMtFlag);
-            applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+            applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION);
             applicationDto1.setSelfAssMtFlag(selfAssMtFlag);
             applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             applicationService.updateFEApplicaiton(applicationDto1);
