@@ -447,7 +447,6 @@ public class RoundRobinCommPoolBatchJob {
         } catch (Exception e){
             applicationClient.removeHistoryById(appHistoryId);
             log.error(e.getMessage(), e);
-            throw new IaisRuntimeException("get InspectionDate Error!!!");
         }
     }
 
@@ -547,14 +546,14 @@ public class RoundRobinCommPoolBatchJob {
                     appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
-                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
+                    filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
                 }
             }
         }
         return appointmentUserDtoList;
     }
 
-    private List<AppointmentUserDto> filterRepetitiveUser(AppointmentUserDto appointmentUserDto, List<AppointmentUserDto> appointmentUserDtoList) {
+    private void filterRepetitiveUser(AppointmentUserDto appointmentUserDto, List<AppointmentUserDto> appointmentUserDtoList) {
         List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
         for(AppointmentUserDto appointmentUserDto1 : appointmentUserDtoList){
             String loginUserId = appointmentUserDto.getLoginUserId();
@@ -575,7 +574,6 @@ public class RoundRobinCommPoolBatchJob {
                 }
             }
         }
-        return appointmentUserDtoList;
     }
 
     private Map<String, String> getServiceIdsByCorrIdsFromPremises(List<String> premCorrIds) {

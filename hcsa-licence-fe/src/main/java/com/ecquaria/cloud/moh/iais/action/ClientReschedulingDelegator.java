@@ -75,10 +75,14 @@ public class ClientReschedulingDelegator {
         rescheduleParam.addParam("appStatus_reschedule", "(app.status not in('"+stringBuilder.toString()+"'))");
         rescheduleParam.addParam("RESCHEDULE_COUNT", "(insAppt.RESCHEDULE_COUNT <="+1+")");
         Date dueDate;
+        Date tomorrow;
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE,14);
+        calendar.add(Calendar.DATE,15);
         dueDate =calendar.getTime();
-        rescheduleParam.addParam("RECOM_IN_DATE", "( appRec.RECOM_IN_DATE >= convert(datetime,"+ Formatter.formatDateTime(new Date(), SystemAdminBaseConstants.DATE_FORMAT)+") AND appRec.RECOM_IN_DATE <= convert(datetime,"+Formatter.formatDateTime(dueDate, SystemAdminBaseConstants.DATE_FORMAT)+"))");
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,1);
+        tomorrow =calendar.getTime();
+        rescheduleParam.addParam("RECOM_IN_DATE", "( appRec.RECOM_IN_DATE >= convert(datetime,'"+ Formatter.formatDateTime(tomorrow, SystemAdminBaseConstants.DATE_FORMAT)+"') AND appRec.RECOM_IN_DATE <= convert(datetime,'"+Formatter.formatDateTime(dueDate, SystemAdminBaseConstants.DATE_FORMAT)+"'))");
         rescheduleParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("rescheduleQuery", "queryApptGrpPremises", rescheduleParam);
 
