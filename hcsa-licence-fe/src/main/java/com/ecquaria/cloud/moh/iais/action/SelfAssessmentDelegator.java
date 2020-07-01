@@ -37,6 +37,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SelfAssessmentDelegator {
 
+    private final static String REDIRECT_TO_MAIN_FLAG = "redirectFlag";
+    
     @Autowired
     private SelfAssessmentService selfAssessmentService;
 
@@ -47,6 +49,7 @@ public class SelfAssessmentDelegator {
     public void startStep(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
 
+        ParamUtil.setSessionAttr(bpc.request, REDIRECT_TO_MAIN_FLAG, "N");
         String action = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
         if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
             String corrId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
@@ -54,6 +57,7 @@ public class SelfAssessmentDelegator {
         }else {
             String groupId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
             if (!StringUtil.isEmpty(groupId)){
+                ParamUtil.setSessionAttr(bpc.request, REDIRECT_TO_MAIN_FLAG, "Y");
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID, groupId);
             }
         }
@@ -209,7 +213,7 @@ public class SelfAssessmentDelegator {
                     if (SelfAssessmentConstant.SELF_ASSESSMENT_RFI_ACTION.equals(action)){
                         String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
                         selfAssessmentService.changePendingSelfAssMtStatus(corrId, false);
-                        ParamUtil.setRequestAttr(bpc.request, "redirectFlag", "Y");
+                        ParamUtil.setSessionAttr(bpc.request, REDIRECT_TO_MAIN_FLAG, "Y");
                     }else {
                         String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
                         selfAssessmentService.changePendingSelfAssMtStatus(groupId, true);
