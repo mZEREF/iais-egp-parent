@@ -222,7 +222,6 @@
                             </div>
                             <c:if test="${specLicInfo !=null}">
                                 <div><h4>The following specified healthcare services will also be ceased as their underlying licensable healthcare service(s) is/are listed above.</h4></div>
-
                                 <table class="table-gp tablebox">
                                 <tr style="text-align:center">
                                     <th style="text-align:center;width: 0%">S/N</th>
