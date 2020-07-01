@@ -132,7 +132,7 @@
                                                     <c:set var="multiplePrem" value="false"/>
                                                 </c:otherwise>
                                             </c:choose>
-                                            <c:forEach items="${AppSubmissionDto.appGrpPremisesDtoList}" var="appGrp" varStatus="stat">
+                                            <c:forEach items="${AppSubmissionDto.appGrpPremisesDtoList}" var="premises" varStatus="stat">
                                                 <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
                                                     <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
                                                     <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
@@ -163,7 +163,14 @@
                                                         </td>
                                                         <td>
                                                             <p>
-                                                                <c:out value="${baseSvcFeeExt.amountStr}"></c:out>
+                                                                <c:choose>
+                                                                    <c:when test="${'OFFSIET' == premises.premisesType}">
+                                                                        <c:out value="$0"></c:out>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <c:out value="${baseSvcFeeExt.amountStr}"></c:out>
+                                                                    </c:otherwise>
+                                                                </c:choose>
                                                             </p>
                                                         </td>
                                                     </tr>
