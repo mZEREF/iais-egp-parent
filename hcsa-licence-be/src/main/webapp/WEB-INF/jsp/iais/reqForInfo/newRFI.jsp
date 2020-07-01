@@ -247,6 +247,7 @@
 </form>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
+<c:set var="mulNum" value="${rfiMulNum}"></c:set>
 <script type="text/javascript">
 
 
@@ -271,6 +272,7 @@
 
     var reqForInfoContentLength=$('div.reqForInfoContent').length;
     var length =0+reqForInfoContentLength;
+    var mulLength="${mulNum}";
 
     var addRfi = function () {
         $('.addNewRfi').click(function () {
@@ -280,7 +282,7 @@
             var jsonData={
                 'Length': length
             };
-            if(length<5){
+            if(length<mulLength){
                 $.ajax({
                     'url':'${pageContext.request.contextPath}/new-rfi-html',
                     'dataType':'text',
@@ -346,7 +348,7 @@
             var jsonData={
                 'Length': lengthInfo
             };
-            if(lengthInfo<5){
+            if(lengthInfo<mulLength){
                 $.ajax({
                     'url':'${pageContext.request.contextPath}/new-rfi-info-html',
                     'dataType':'text',
