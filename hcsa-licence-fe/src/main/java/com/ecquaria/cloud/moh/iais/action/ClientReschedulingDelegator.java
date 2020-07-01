@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -69,7 +68,7 @@ public class ClientReschedulingDelegator {
         String licenseeId = loginContext.getLicenseeId();
         SearchParam rescheduleParam = IaisEGPHelper.getSearchParam(bpc.request, true,rescheduleParameter);
         StringBuilder stringBuilder=new StringBuilder();
-        for (String appSt: AppointmentConstants.APP_STATUS_NO_RESCHEDULE
+        for (String appSt: IaisCommonUtils.APP_STATUS_NO_RESCHEDULE
              ) {
             stringBuilder.append(appSt).append(',');
         }
