@@ -57,6 +57,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 import static org.eclipse.jdt.internal.compiler.util.Util.UTF_8;
 
 @Slf4j
@@ -361,6 +362,16 @@ public final class IaisEGPHelper extends EGPHelper {
         } catch (ParseException e) {
             throw new IaisRuntimeException(e.getMessage(), e);
         }
+    }
+
+    public static String generateRandomString(int length) {
+        String base = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int number = RANDOM.nextInt(base.length());
+            sb.append(base.charAt(number));
+        }
+        return sb.toString();
     }
 
     /**

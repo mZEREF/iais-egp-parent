@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
@@ -34,7 +35,6 @@ import sop.rbac.user.UserIdentifier;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -247,10 +247,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         userIdentifier.setId(userDto.getUserId());
         userIdentifier.setUserDomain(userDto.getUserDomain());
 
-        StringBuilder stb = new StringBuilder(UUID.randomUUID().toString().substring(0,6));
-        stb.append(UUID.randomUUID().toString(), 0, 6);
 
-        String pwd = PasswordUtil.encryptPassword(userIdentifier, stb.toString(), null);
+        String randomStr = IaisEGPHelper.generateRandomString(6);
+        String pwd = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
         clientUser.setPassword(pwd);
 
         clientUser.setPasswordChallengeQuestion("A");
@@ -283,9 +282,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             clientUser.setContactNo(feUserDto.getOfficeTelNo());
 
             //prevent history simple pwd throw 500
-            StringBuilder stb = new StringBuilder(UUID.randomUUID().toString().substring(0,6));
-            stb.append(UUID.randomUUID().toString(), 0, 6);
-            String pwd = PasswordUtil.encryptPassword(feUserDto.getIdentityNo(), stb.toString(), null);
+            String randomStr = IaisEGPHelper.generateRandomString(6);
+            String pwd = PasswordUtil.encryptPassword(feUserDto.getIdentityNo(), randomStr, null);
 
             clientUser.setPassword(pwd);
 
@@ -301,9 +299,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             clientUser.setEmail(email);
             clientUser.setDisplayName(feUserDto.getFirstName()+feUserDto.getLastName());
 
-            StringBuilder stb = new StringBuilder(UUID.randomUUID().toString().substring(0,6));
-            stb.append(UUID.randomUUID().toString(), 0, 6);
-            String pwd = PasswordUtil.encryptPassword(feUserDto.getIdentityNo(), stb.toString(), null);
+            String randomStr = IaisEGPHelper.generateRandomString(6);
+            String pwd = PasswordUtil.encryptPassword(feUserDto.getIdentityNo(), randomStr, null);
 
             clientUser.setPassword(pwd);
             clientUser.setPasswordChallengeQuestion("A");
