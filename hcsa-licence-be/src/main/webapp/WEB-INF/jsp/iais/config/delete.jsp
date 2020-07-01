@@ -249,8 +249,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info
-            field to be captured*<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info field to be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input disabled id="DescriptionGeneral" type="text">
           </div>
@@ -259,7 +258,17 @@
           </div>
         </div>
       </div>
-
+      <div class="form-group">
+        <div class="col-xs-12 col-md-8">
+          <label class="col-xs-12 col-md-6 control-label">Will the doc be duplicated for individual premises?</label>
+          <div class="col-xs-12 col-md-2">
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" checked value="0"><label>No</label>
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" value="1"><label>Yes</label>
+          </div>
+        </div>
+      </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service-Related Checklists<span class="mandatory">*</span></label>

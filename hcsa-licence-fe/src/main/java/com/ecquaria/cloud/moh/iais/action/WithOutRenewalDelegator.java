@@ -380,6 +380,8 @@ public class WithOutRenewalDelegator {
                 AppSubmissionDto oldAppSubmisDto = appSubmissionDtos.get(0).getOldAppSubmissionDto();
                 if(oldAppSubmisDto != null){
                     oldAppSubmissionDto = oldAppSubmisDto;
+                    requestForChangeService.svcDocToPresmise(oldAppSubmissionDto);
+                    requestForChangeService.svcDocToPresmise(appSubmissionDtos.get(0));
                 }
             }else{
                 //set oldAppSubmissionDto
@@ -449,15 +451,24 @@ public class WithOutRenewalDelegator {
             List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
             List<AppGrpPremisesDto> newAppGrpPremisesDtoList = appSubmissionDtos.get(0).getAppGrpPremisesDtoList();
             List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtos = appSubmissionDtos.get(0).getAppGrpPrimaryDocDtos();
-            if(!oldAppSvcRelatedInfoDtoList.equals(newAppSvcRelatedInfoDtoList)){
-                ParamUtil.setRequestAttr(bpc.request,"changeRenew","Y");
+
+            if(oldAppSvcRelatedInfoDtoList!=null){
+                if(!oldAppSvcRelatedInfoDtoList.equals(newAppSvcRelatedInfoDtoList)){
+                    ParamUtil.setRequestAttr(bpc.request,"changeRenew","Y");
+                }
             }
-            if(!oldAppGrpPremisesDtoList.equals(newAppGrpPremisesDtoList)){
-                ParamUtil.setRequestAttr(bpc.request,"changeRenew","Y");
+            if(oldAppGrpPremisesDtoList!=null){
+                if(!oldAppGrpPremisesDtoList.equals(newAppGrpPremisesDtoList)){
+                    ParamUtil.setRequestAttr(bpc.request,"changeRenew","Y");
+                }
             }
-            if(!oldAppGrpPrimaryDocDtos.equals(newAppGrpPrimaryDocDtos)){
-                ParamUtil.setRequestAttr(bpc.request,"changeRenew","Y");
+
+            if(oldAppGrpPrimaryDocDtos!=null){
+                if(!oldAppGrpPrimaryDocDtos.equals(newAppGrpPrimaryDocDtos)){
+                    ParamUtil.setRequestAttr(bpc.request,"changeRenew","Y");
+                }
             }
+
         }
     }
 
@@ -760,6 +771,7 @@ public class WithOutRenewalDelegator {
             if(StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())){
                 appGrpPremisesDto.setCertIssuedDtStr(null);
             }
+            appGrpPremisesDto.setExistingData(null);
         }
         return n;
     }

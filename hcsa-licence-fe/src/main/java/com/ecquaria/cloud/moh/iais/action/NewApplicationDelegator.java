@@ -1345,9 +1345,7 @@ public class NewApplicationDelegator {
                 appGrpPremisesDto.setCertIssuedDtStr(null);
             }
         }
-        if(!appGrpPremisesDtoList.equals(oldAppSubmissionDtoAppGrpPremisesDtoList)){
-            grpPremiseIsChange=true;
-        }
+        grpPremiseIsChange = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
         AppSubmissionDto n= (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList=n.getAppSvcRelatedInfoDtoList();
         AppSubmissionDto o =(AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);
@@ -5407,6 +5405,29 @@ public class NewApplicationDelegator {
         Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
         String personMapStr = JsonUtil.parseToJson(personMap);
         appSubmissionDto.setDropDownPsnMapStr(personMapStr);
+    }
+    private List<AppGrpPremisesDto> copyAppGrpPremises( List<AppGrpPremisesDto> appGrpPremisesDtoList) throws Exception{
+        List<AppGrpPremisesDto> n=( List<AppGrpPremisesDto>)CopyUtil.copyMutableObject(appGrpPremisesDtoList);
+        for(AppGrpPremisesDto appGrpPremisesDto : n){
+            appGrpPremisesDto.setLicenceDtos(null);
+            if(StringUtil.isEmpty(appGrpPremisesDto.getOffTelNo())){
+                appGrpPremisesDto.setOffTelNo(null);
+            }
+            if(StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())){
+                appGrpPremisesDto.setCertIssuedDtStr(null);
+            }
+            appGrpPremisesDto.setExistingData(null);
+        }
+        return n;
+    }
+
+    private boolean eqGrpPremises( List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) throws  Exception{
+        List<AppGrpPremisesDto> appGrpPremisesDtos = copyAppGrpPremises(appGrpPremisesDtoList);
+        List<AppGrpPremisesDto> oldAppGrpPremisesDtos = copyAppGrpPremises(oldAppGrpPremisesDtoList);
+        if(!appGrpPremisesDtos.equals(oldAppGrpPremisesDtos)){
+            return true;
+        }
+        return false;
     }
 }
 

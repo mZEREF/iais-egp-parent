@@ -22,11 +22,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -73,7 +77,19 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Value("${iais.email.sender}")
     private String mailSender;
+    @Autowired
+    private BeEicGatewayClient gatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
 
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
     @Override
     public List<HcsaServiceDto> getAllHcsaServices(HttpServletRequest request) {
         List<HcsaServiceDto> entity = hcsaConfigClient.allHcsaService().getEntity();
@@ -170,6 +186,15 @@ public class ConfigServiceImpl implements ConfigService {
         }
 
         hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        try {
+            gatewayClient.saveFeServiceConfig(hcsaServiceConfigDto,signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+        }catch (Exception e){
+            log.error("fe save config error",e);
+        }
+
         // todo send email
         request.setAttribute("option","added");
         request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
@@ -941,6 +966,18 @@ public class ConfigServiceImpl implements ConfigService {
             request.setAttribute("NumberDocument",hcsaSvcDocConfigDtos.size());
             request.setAttribute("DescriptionDocument",stringBuilder.toString().substring(1));
         }
+        Map<String,String> docMap = IaisCommonUtils.genNewHashMap();
+        docMap.put("common", "0");
+        docMap.put("premises", "1");
+        String docMapJson = JsonUtil.parseToJson(docMap);
+        List<HcsaSvcDocConfigDto> comDocConfigDtos =  hcsaConfigClient.getHcsaSvcDocConfig(docMapJson).getEntity();
+        request.setAttribute("comDocConfigDtoSize",comDocConfigDtos.size());
+        StringBuilder stringBuilder1 =new StringBuilder();
+        for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto : comDocConfigDtos){
+            stringBuilder1.append(',');
+            stringBuilder1.append(hcsaSvcDocConfigDto.getDocTitle());
+        }
+        request.setAttribute("comDocConfigDtosTitle",stringBuilder1.toString().substring(1));
         List<HcsaSvcSubtypeOrSubsumedDto> entity = hcsaConfigClient.listSubtype(id).getEntity();
         request.setAttribute("hcsaSvcSubtypeOrSubsumedDto",entity);
         List<String> ids = IaisCommonUtils.genNewArrayList();

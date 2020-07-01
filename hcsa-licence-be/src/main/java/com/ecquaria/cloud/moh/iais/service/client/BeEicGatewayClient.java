@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskFeSupportDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
@@ -185,4 +186,14 @@ public interface BeEicGatewayClient {
                                                    @RequestHeader("authorization") String authorization,
                                                    @RequestHeader("date-Secondary") String dateSec,
                                                    @RequestHeader("authorization-Secondary") String authorizationSec);
+
+    @PostMapping(value = "/v1/hcsa-service-config-sync",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HttpStatus> saveFeServiceConfig(@RequestBody HcsaServiceConfigDto hcsaServiceConfigDto,
+                                                        @RequestHeader("date") String date,
+                                                        @RequestHeader("authorization") String authorization,
+                                                        @RequestHeader("date-Secondary") String dateSec,
+                                                        @RequestHeader("authorization-Secondary") String authorizationSec);
+
+
+
 }

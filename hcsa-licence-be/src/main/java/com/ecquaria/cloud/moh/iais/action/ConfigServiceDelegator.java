@@ -412,25 +412,22 @@ public class ConfigServiceDelegator {
         String numberfieldsMandatory = request.getParameter("NumberfieldsMandatory");
         String numberDocumentMandatory = request.getParameter("NumberDocumentMandatory");
         String descriptionDocumentMandatory = request.getParameter("DescriptionDocumentMandatory");
+        String individualPremises = request.getParameter("individualPremises");
         try {
             request.setAttribute("numberDocument",numberDocument);
             request.setAttribute("descriptionDocument",descriptionDocument);
             Integer integer = Integer.valueOf(numberDocument);
             List<String> split = configService.split(descriptionDocument);
-
             if(integer!=split.size()){
-
-
 
             }else {
                 for(int i=0;i<integer;i++){
-
                     HcsaSvcDocConfigDto hcsaSvcDocConfigDto=new HcsaSvcDocConfigDto();
-
                     hcsaSvcDocConfigDto.setDocDesc(split.get(i));
                     hcsaSvcDocConfigDto.setDocTitle(split.get(i));
                     hcsaSvcDocConfigDto.setStatus("CMSTAT001");
                     hcsaSvcDocConfigDto.setDispOrder(0);
+                    hcsaSvcDocConfigDto.setServiceId("");
                     hcsaSvcDocConfigDto.setDupForPrem("0");
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.FALSE);
                     if(numberDocumentMandatory!=null&&descriptionDocumentMandatory!=null){
@@ -462,8 +459,8 @@ public class ConfigServiceDelegator {
                     hcsaSvcDocConfigDto.setDocTitle(split.get(i));
                     hcsaSvcDocConfigDto.setStatus("CMSTAT001");
                     hcsaSvcDocConfigDto.setDispOrder(0);
-                    hcsaSvcDocConfigDto.setDupForPrem("0");
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
+                    hcsaSvcDocConfigDto.setDupForPrem(individualPremises);
                     if(numberfieldsMandatory!=null){
                         hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                     }
