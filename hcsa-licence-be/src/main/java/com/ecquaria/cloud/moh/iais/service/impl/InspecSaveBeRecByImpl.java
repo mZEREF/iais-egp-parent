@@ -209,11 +209,14 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             strAppCorrIds.append(s);
         }
         log.info(StringUtil.changeForLog("appIds:" + strAppIds.toString()));
+        Map<String, String> appNoCorrMap = IaisCommonUtils.genNewHashMap();
         if(!IaisCommonUtils.isEmpty(appIds)){
             Set<String> appIdSet = new HashSet<>(appIds);
             for(String appId : appIdSet){
+                ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
                 appPremCorrIds.add(appPremisesCorrelationDto.getId());
+                appNoCorrMap.put(applicationDto.getApplicationNo(), appPremisesCorrelationDto.getId());
             }
             log.info(StringUtil.changeForLog("appPremCorrIds:" + strAppCorrIds.toString()));
         }
@@ -224,6 +227,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             eventInspRecItemNcDto.setAppPremCorrIds(appPremCorrIds);
             eventInspRecItemNcDto = setAppNoListByCorrIds(eventInspRecItemNcDto);
             eventInspRecItemNcDto.setAuditTrailDto(intranet);
+            eventInspRecItemNcDto.setAppNoCorrMap(appNoCorrMap);
             eventInspRecItemNcDto = organizationClient.getEventInspRecItemNcTaskByCorrIds(eventInspRecItemNcDto).getEntity();
 
             SubmitResp createTask = eventBusHelper.submitAsyncRequest(eventInspRecItemNcDto, submissionId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,
