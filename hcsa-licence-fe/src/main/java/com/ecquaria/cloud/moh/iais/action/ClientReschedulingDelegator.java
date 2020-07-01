@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -46,6 +47,8 @@ public class ClientReschedulingDelegator {
             .resultAttr("SearchResult")
             .sortField("ADDRESS").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(10).build();
 
+    @Autowired
+    SystemParamConfig systemParamConfig;
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
@@ -73,11 +76,11 @@ public class ClientReschedulingDelegator {
             stringBuilder.append(appSt).append(',');
         }
         rescheduleParam.addParam("appStatus_reschedule", "(app.status not in('"+stringBuilder.toString()+"'))");
-        rescheduleParam.addParam("RESCHEDULE_COUNT", "(insAppt.RESCHEDULE_COUNT <="+1+")");
+        rescheduleParam.addParam("RESCHEDULE_COUNT", "(insAppt.RESCHEDULE_COUNT <"+systemParamConfig.getRescheduleMaxCount()+")");
         Date dueDate;
         Date tomorrow;
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE,15);
+        calendar.add(Calendar.DATE,systemParamConfig.getRescheduleDateRange());
         dueDate =calendar.getTime();
         calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE,1);

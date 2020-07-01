@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
@@ -63,8 +64,8 @@ public class SendsReminderToReplyRfiBatchjob {
     HcsaConfigClient hcsaConfigClient;
     @Value("${iais.email.sender}")
     private String mailSender;
-    @Value("${iais.system.adhoc.rfi.due.day}")
-    private int rfiDueDay;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Autowired
     OrganizationClient organizationClient;
@@ -149,7 +150,7 @@ public class SendsReminderToReplyRfiBatchjob {
         licPremisesReqForInfoDto.setReminder(licPremisesReqForInfoDto.getReminder()+1);
         Calendar cal = Calendar.getInstance();
         cal.setTime(licPremisesReqForInfoDto.getDueDateSubmission());
-        cal.add(Calendar.DAY_OF_MONTH, rfiDueDay);
+        cal.add(Calendar.DAY_OF_MONTH, systemParamConfig.getRfiDueDay());
         licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_RETRIGGER);
         licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);

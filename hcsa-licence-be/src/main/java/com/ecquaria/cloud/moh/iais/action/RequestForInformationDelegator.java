@@ -92,8 +92,6 @@ public class RequestForInformationDelegator {
     EmailClient emailClient;
     @Value("${iais.email.sender}")
     private String mailSender;
-    @Value("${iais.system.adhoc.rfi.due.day}")
-    private int rfiDueDay;
 
 
     public void start(BaseProcessClass bpc) {
@@ -207,7 +205,7 @@ public class RequestForInformationDelegator {
         newRfiPageListDto.setDate(date);
         if(date==null){
             Calendar calendar=Calendar.getInstance();
-            calendar.add(Calendar.DATE, rfiDueDay);
+            calendar.add(Calendar.DATE, systemParamConfig.getRfiDueDay());
             String dueDay=new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(calendar.getTime());
             newRfiPageListDto.setDate(dueDay);
         }
@@ -476,7 +474,7 @@ public class RequestForInformationDelegator {
             dueDate= Formatter.parseDate(date);
         }
         else {
-            calendar.add(Calendar.DATE,rfiDueDay);
+            calendar.add(Calendar.DATE,systemParamConfig.getRfiDueDay());
             dueDate =calendar.getTime();
         }
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=requestForInformationService.getLicPreReqForInfo(reqInfoId);
