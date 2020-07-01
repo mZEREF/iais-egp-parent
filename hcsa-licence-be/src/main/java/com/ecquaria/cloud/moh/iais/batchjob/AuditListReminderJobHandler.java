@@ -69,10 +69,13 @@ public class AuditListReminderJobHandler extends IJobHandler {
         if( dateOfMonth == 1){
             int auditInspectorListReminderRate = systemParamConfig.getAuditInspectorListReminderRate();
             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDtoByMsgAAndCreatedAt(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND,"AuditListReminderJob").getEntity();
+            if(jobRemindMsgTrackingDto == null ){
+               return true;
+            }
             Calendar calendar2 =  Calendar.getInstance();
             calendar2.setTime(jobRemindMsgTrackingDto.getCreateTime());
             calendar2.add(Calendar.MONTH,auditInspectorListReminderRate);
-            if(jobRemindMsgTrackingDto == null || IaisEGPHelper.getCompareDate(calendar2.getTime(),calendar.getTime()) == 1){
+            if(IaisEGPHelper.getCompareDate(calendar2.getTime(),calendar.getTime()) == 1){
                return true;
             }
         }

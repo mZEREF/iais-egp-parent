@@ -279,7 +279,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }
         try {
             if(!StringUtil.isEmpty(inLeftMod)){
-                int inLeftModNum = Integer.valueOf(inLeftMod);
+                int inLeftModNum = Integer.parseInt(inLeftMod);
                 if(inLeftModNum -1 != inRightLowNum && inLeftModNum != inRightLowNum){
                     if(isIn){
                         if(inRightLowNumFlag){

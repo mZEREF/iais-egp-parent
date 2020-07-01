@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -1365,7 +1366,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public  Map<String,String> userIdNameMapByOrgUserDtos(List<OrgUserDto> orgUserDtos){
-        Map<String,String> userIdNameMap  = new HashMap<>(orgUserDtos.size());
+        Map<String,String> userIdNameMap  = Maps.newHashMapWithExpectedSize( orgUserDtos.size());
         for(OrgUserDto orgUserDto :  orgUserDtos){
             userIdNameMap.put(orgUserDto.getId(),orgUserDto.getUserId());
         }
@@ -1402,7 +1403,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                      }
                   }
                 if(IaisCommonUtils.isEmpty(answerDtosOne)){
-                    log.info(" inspectionCheckQuestionDto id is " + inspectionCheckQuestionDto.getId() +" no draft.");
+                    log.info(StringUtil.changeForLog(" inspectionCheckQuestionDto id is " + inspectionCheckQuestionDto.getId() +" no draft."));
                 }else {
                     if(userNum == 1 && answerDtosOne .size() == 1){
                         getInspectionCheckQuestionDtoByInspectionCheckQuestionDto(inspectionCheckQuestionDto,answerDtosOne.get(0));
