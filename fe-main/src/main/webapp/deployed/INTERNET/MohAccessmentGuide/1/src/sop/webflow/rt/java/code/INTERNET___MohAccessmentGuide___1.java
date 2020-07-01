@@ -140,52 +140,58 @@ public class INTERNET___MohAccessmentGuide___1 extends BaseProcessClass {
 
 	public void updateLicenceSort_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "updateLicenceSort", this);
-	// 		updateLicenceSort->OnStepProcess
 	}
 
 	public void updateLicencePage_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "updateLicencePage", this);
-	// 		updateLicencePage->OnStepProcess
 	}
 
 	public void addServicePage_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "addServicePage", this);
-	// 		addServicePage->OnStepProcess
 	}
 
 	public void addServiceSort_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "addServiceSort", this);
-	// 		addServiceSort->OnStepProcess
 	}
 
 	public void addRemovePersonalPage_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "addRemovePersonalPage", this);
-	// 		addRemovePersonalPage->OnStepProcess
 	}
 
 	public void addRemovePersonalSort_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "addRemovePersonalSort", this);
-	// 		addRemovePersonalSort->OnStepProcess
 	}
 
 	public void updateLicenceesPage_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "updateLicenceesPage", this);
-	// 		updateLicenceesPage->OnStepProcess
 	}
 
 	public void updateLicenceesSort_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, " updateLicenceesSort", this);
-	// 		updateLicenceesSort->OnStepProcess
 	}
 
 	public void updateContactSort_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "updateContactSort", this);
-	// 		updateContactSort->OnStepProcess
 	}
 
 	public void updateContactPage_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "updateContactPage", this);
-	// 		updateContactPage->OnStepProcess
+	}
+
+	public void renewLicPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "renewLicPage", this);
+	}
+
+	public void renewLicSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "renewLicSort", this);
+	}
+
+	public void doRenewSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doRenewSort", this);
+	}
+
+	public void doRenewPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doRenewPage", this);
 	}
 	
 

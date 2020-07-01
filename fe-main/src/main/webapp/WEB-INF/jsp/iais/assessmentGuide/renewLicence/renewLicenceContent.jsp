@@ -1,6 +1,6 @@
 <div class="form-check-gp">
     <p class="form-check-title">You may select one licence at a time to update the changes.</p>
-    <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
+    <iais:pagination  param="renewLicSearchParam" result="renewLicSearchResult"/>
     <div class="table-gp">
         <table class="table">
             <thead>
@@ -15,7 +15,7 @@
             </thead>
             <tbody>
             <c:choose>
-                <c:when test="${empty PremisesSearchResult.rows}">
+                <c:when test="${empty renewLicSearchResult.rows}">
                     <tr>
                         <td colspan="15">
                             <iais:message key="ACK018" escape="true"/>
@@ -23,7 +23,7 @@
                     </tr>
                 </c:when>
                 <c:otherwise>
-                    <c:forEach var="pool" items="${PremisesSearchResult.rows}" varStatus="status">
+                    <c:forEach var="pool" items="${renewLicSearchResult.rows}" varStatus="status">
                         <tr>
                             <td>
                                 <div class="form-check">

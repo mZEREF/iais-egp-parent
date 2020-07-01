@@ -57,6 +57,18 @@
         $("#ceaseLicence").click(function(){
             guideSubmit("cease","main");
         });
-    })
+    });
+
+    function jumpToPagechangePage() {
+        $("[name='guide_action_type']").val("renewPage");
+        $("#mainForm").submit();
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='guide_action_type']").val("renewSort");
+        $("#mainForm").submit();
+    }
 </script>
 

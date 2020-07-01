@@ -30,7 +30,7 @@
     <div class="amendLicence1">
         <div class="form-check-gp">
             <%@include
-                    file="/WEB-INF/jsp/iais/assessmentGuide/renewLicence/remewLicenceContent.jsp" %>
+                    file="/WEB-INF/jsp/iais/assessmentGuide/renewLicence/renewLicenceContent.jsp" %>
         </div>
     </div>
     <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2_1.jsp" %>
@@ -57,6 +57,18 @@
         $("#ceaseLicence").click(function(){
             guideSubmit("cease","main");
         });
-    })
+    });
+
+    function jumpToPagechangePage() {
+        $("[name='guide_action_type']").val("renewLicPage");
+        $("#mainForm").submit();
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='guide_action_type']").val("renewLicSort");
+        $("#mainForm").submit();
+    }
 </script>
 

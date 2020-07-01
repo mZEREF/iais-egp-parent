@@ -109,17 +109,6 @@ public class HalpAssessmentGuideDelegator {
             ParamUtil.setSessionAttr(bpc.request, "appParam", appParam);
             ParamUtil.setRequestAttr(bpc.request, "appResult", appResult);
         }
-
-
-    }
-
-    public void page(BaseProcessClass bpc) {
-        SearchResultHelper.doPage(bpc.request, premiseFilterParameter);
-        SearchResultHelper.doPage(bpc.request, appParameter);
-    }
-
-    public void sort(BaseProcessClass bpc) {
-        SearchResultHelper.doSort(bpc.request, premiseFilterParameter);
     }
 
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -130,42 +119,54 @@ public class HalpAssessmentGuideDelegator {
 
     }
 
-    public void newApp2(BaseProcessClass bpc) {
-
-    }
-
-    public void newApp3(BaseProcessClass bpc) {
-
-    }
-
     public void renewLic(BaseProcessClass bpc) throws IOException {
+        log.info("****start ******");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        log.info("****start ******");
-        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, premiseFilterParameter, true);
-        searchParam.addFilter("licenseeId", licenseeId, true);
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", searchParam);
-        SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
-        if (!StringUtil.isEmpty(searchResult)) {
-            ParamUtil.setSessionAttr(bpc.request, "PremisesSearchParam", searchParam);
-            ParamUtil.setRequestAttr(bpc.request, "PremisesSearchResult", searchResult);
+        SearchParam renewLicSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_PARAM,PremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
+        renewLicSearchParam.addFilter("licenseeId", licenseeId, true);
+        QueryHelp.setMainSql("interInboxQuery", "queryPremises", renewLicSearchParam);
+        SearchResult<PremisesListQueryDto> renewLicSearchResult = requestForChangeService.searchPreInfo(renewLicSearchParam);
+        if (!StringUtil.isEmpty(renewLicSearchResult)) {
+            ParamUtil.setSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_PARAM, renewLicSearchParam);
+            ParamUtil.setRequestAttr(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_RESULT, renewLicSearchResult);
         }
         log.info("****end ******");
     }
+
+    public void renewLicPage(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
+    }
+
+    public void renewLicSort(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
+    }
+
 
     public void renewLicUpdate(BaseProcessClass bpc) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        log.info("****start ******");
         String licenseeId = loginContext.getLicenseeId();
-        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, premiseFilterParameter, true);
-        searchParam.addFilter("licenseeId", licenseeId, true);
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", searchParam);
-        SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
-        if (!StringUtil.isEmpty(searchResult)) {
-            ParamUtil.setSessionAttr(bpc.request, "PremisesSearchParam", searchParam);
-            ParamUtil.setRequestAttr(bpc.request, "PremisesSearchResult", searchResult);
+        SearchParam renewLicUpdateSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM,PremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
+        renewLicUpdateSearchParam.addFilter("licenseeId", licenseeId, true);
+        QueryHelp.setMainSql("interInboxQuery", "queryPremises", renewLicUpdateSearchParam);
+        SearchResult<PremisesListQueryDto> renewLicUpdateSearchResult = requestForChangeService.searchPreInfo(renewLicUpdateSearchParam);
+        if (!StringUtil.isEmpty(renewLicUpdateSearchResult)) {
+            ParamUtil.setSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM, renewLicUpdateSearchParam);
+            ParamUtil.setRequestAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_RESULT, renewLicUpdateSearchResult);
         }
         log.info("****end ******");
+    }
+
+    public void doRenewSort(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
+    }
+
+    public void doRenewPage(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
 
     public void amendLic1_1(BaseProcessClass bpc) {
@@ -211,7 +212,7 @@ public class HalpAssessmentGuideDelegator {
         log.info("****start ******");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
-        SearchParam ceaseLicenceParam = HalpSearchResultHelper.gainSearchParam(bpc.request,GuideConsts.CEASE_LICENCE_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
+        SearchParam ceaseLicenceParam = HalpSearchResultHelper.gainSearchParam(bpc.request,GuideConsts.CEASE_LICENCE_SEARCH_PARAM,PremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         ceaseLicenceParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", ceaseLicenceParam);
         SearchResult<PremisesListQueryDto> ceaseLicenceResult = requestForChangeService.searchPreInfo(ceaseLicenceParam);
@@ -327,10 +328,6 @@ public class HalpAssessmentGuideDelegator {
         bpc.response.sendRedirect(tokenUrl);
     }
 
-
-
-
-
     public void updateLicenceSort(BaseProcessClass bpc) {
         SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
         CrudHelper.doPaging(searchParam,bpc.request);
@@ -361,13 +358,11 @@ public class HalpAssessmentGuideDelegator {
 
     }
 
-
     public void addRemovePersonalSort(BaseProcessClass bpc) {
         SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
         CrudHelper.doPaging(searchParam,bpc.request);
 
     }
-
 
     public void updateLicenceesPage(BaseProcessClass bpc) {
         SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
