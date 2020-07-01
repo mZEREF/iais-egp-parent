@@ -48,7 +48,8 @@ public class AuditTcuListReminderJobHandler extends IJobHandler {
                   JobLogger.log("AuditTcuListReminderJob is no tcu task or no system send email time");
               }
         }catch (Exception e){
-            JobLogger.log(e.getMessage());
+            log.error(e.getMessage(), e);
+            JobLogger.log(e);
             return ReturnT.FAIL;
         }
         return ReturnT.SUCCESS;

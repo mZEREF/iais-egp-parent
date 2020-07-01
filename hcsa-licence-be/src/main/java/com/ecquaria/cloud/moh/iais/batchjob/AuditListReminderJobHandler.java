@@ -51,7 +51,8 @@ public class AuditListReminderJobHandler extends IJobHandler {
              }
 
         }catch (Exception e){
-            JobLogger.log(e.getMessage());
+            log.error(e.getMessage(), e);
+            JobLogger.log(e);
             return ReturnT.FAIL;
         }
         return ReturnT.SUCCESS;
