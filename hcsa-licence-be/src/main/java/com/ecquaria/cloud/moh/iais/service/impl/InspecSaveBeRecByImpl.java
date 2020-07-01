@@ -172,12 +172,14 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     }
 
     @Override
-    public Boolean saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos, List<String> reportIds) {
-        Boolean saveFlag = Boolean.FALSE;
+    public void saveData(AuditTrailDto intranet, List<ProcessFileTrackDto> processFileTrackDtos, List<String> reportIds) {
         File file = new File(download);
         List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         String submissionId = generateIdClient.getSeqId().getEntity();
+        String eventRefNo = generateIdClient.getSeqId().getEntity();
+        log.info(StringUtil.changeForLog("submissionId:" + submissionId));
+        log.info(StringUtil.changeForLog("eventRefNo:" + eventRefNo));
         //file is backupsRec
         if(file.isDirectory()){
             File[] files = file.listFiles();
@@ -187,8 +189,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                     //file2 is upload Directory, name is file report id
                     String reportId = file2.getName();
                     if(reportIds.contains(reportId)) {
-                        String eventRefNo = pDto.getRefId();
-                        saveDataDtoAndFile(file2, intranet, submissionId, reportIds);
+                        saveDataDtoAndFile(file2, intranet, submissionId, eventRefNo);
                         pDto.setStatus(ProcessFileTrackConsts.PROCESS_FILE_TRACK_STATUS_SAVE_SUCCESSFUL);
                         pDto.setAuditTrailDto(intranet);
                         pDto.setEventRefNo(eventRefNo);
@@ -207,18 +208,19 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         for (String s : appPremCorrIds) {
             strAppCorrIds.append(s);
         }
-        log.debug(StringUtil.changeForLog("appIds:" + strAppIds.toString()));
+        log.info(StringUtil.changeForLog("appIds:" + strAppIds.toString()));
         if(!IaisCommonUtils.isEmpty(appIds)){
             Set<String> appIdSet = new HashSet<>(appIds);
             for(String appId : appIdSet){
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
                 appPremCorrIds.add(appPremisesCorrelationDto.getId());
             }
-            log.debug(StringUtil.changeForLog("appPremCorrIds:" + strAppCorrIds.toString()));
+            log.info(StringUtil.changeForLog("appPremCorrIds:" + strAppCorrIds.toString()));
         }
         if(!IaisCommonUtils.isEmpty(appPremCorrIds)){
             EventInspRecItemNcDto eventInspRecItemNcDto = new EventInspRecItemNcDto();
             //get Task
+            eventInspRecItemNcDto.setEventRefNo(eventRefNo);
             eventInspRecItemNcDto.setAppPremCorrIds(appPremCorrIds);
             eventInspRecItemNcDto = setAppNoListByCorrIds(eventInspRecItemNcDto);
             eventInspRecItemNcDto.setAuditTrailDto(intranet);
@@ -244,8 +246,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
             }
         }
-
-        return saveFlag;
     }
 
     private EventInspRecItemNcDto setAppNoListByCorrIds(EventInspRecItemNcDto eventInspRecItemNcDto) {
@@ -263,7 +263,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
         return eventInspRecItemNcDto;
     }
 
-    private void saveDataDtoAndFile(File file2, AuditTrailDto intranet, String submissionId, List<String> reportIds) {
+    private void saveDataDtoAndFile(File file2, AuditTrailDto intranet, String submissionId, String eventRefNo) {
         try {
             if(file2.isDirectory()){
                 File[] files2 = file2.listFiles();
@@ -271,18 +271,18 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 for (File file3:files2) {
                     //file3 is not Directory, need save
                     String fileReportId = file2.getName();
-                    log.debug(StringUtil.changeForLog("fileReportId:" + fileReportId));
+                    log.info(StringUtil.changeForLog("fileReportId:" + fileReportId));
                     List<FileRepoDto> fileList = IaisCommonUtils.genNewArrayList();
                     FileRepoDto fileRepoDto = new FileRepoDto();
                     fileRepoDto.setId(fileReportId);
                     fileRepoDto.setAuditTrailDto(intranet);
                     fileRepoDto.setFileName(file3.getName());
-                    log.debug(StringUtil.changeForLog("saveDtoFileName:" + file3.getName()));
+                    log.info(StringUtil.changeForLog("saveDtoFileName:" + file3.getName()));
                     String relativePath = file3.getPath().replaceFirst(sharedPath, "");
                     //remove file name
                     String subRelativePath = relativePath.substring(0, relativePath.lastIndexOf(File.separator));
-                    log.debug(StringUtil.changeForLog("relativePath:" + relativePath));
-                    log.debug(StringUtil.changeForLog("subRelativePath:" + subRelativePath));
+                    log.info(StringUtil.changeForLog("relativePath:" + relativePath));
+                    log.info(StringUtil.changeForLog("subRelativePath:" + subRelativePath));
                     fileRepoDto.setRelativePath(subRelativePath);
                     fileList.add(fileRepoDto);
                     if(!IaisCommonUtils.isEmpty(fileList)) {
@@ -291,7 +291,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
                 }
                 FileRepoEventDto eventDto = new FileRepoEventDto();
                 eventDto.setFileRepoList(list);
-                eventDto.setEventRefNo(submissionId);
+                eventDto.setEventRefNo(eventRefNo);
                 SubmitResp submitResp = eventBusHelper.submitAsyncRequest(eventDto, submissionId, EventBusConsts.SERVICE_NAME_FILE_REPO,
                         EventBusConsts.OPERATION_BE_REC_DATA_COPY, eventDto.getEventRefNo(), null);
 
