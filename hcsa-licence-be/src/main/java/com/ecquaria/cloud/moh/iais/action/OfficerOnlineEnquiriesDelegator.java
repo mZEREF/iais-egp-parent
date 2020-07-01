@@ -609,14 +609,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
 
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
-        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        errorMap=validateDate(request);
-        if (!errorMap.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
-            //
-            return;
-        }
+
 
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         List<String> svcNames=IaisCommonUtils.genNewArrayList();
@@ -753,6 +746,17 @@ public class OfficerOnlineEnquiriesDelegator {
         }
 
         ParamUtil.setSessionAttr(request,"count",count);
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        errorMap=validateDate(request);
+        if (!errorMap.isEmpty()) {
+            licenceParameter.setFilters(filters);
+            SearchParam licParam = SearchResultHelper.getSearchParam(request, licenceParameter,true);
+            setSearchParamDate(request, uenNo, appSubDate, appSubToDate, licStaDate, licStaToDate, licExpDate, licExpToDate, licParam);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+            //
+            return;
+        }
         if(COUNTS.contains(count)){
             SearchResultHelper.doPage(request,applicationParameter);
             applicationParameter.setFilters(filters);
