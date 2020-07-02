@@ -15,6 +15,8 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskLicenceTenureSerice;
 import com.ecquaria.cloud.moh.iais.service.HcsaRiskSupportBeService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -98,6 +100,10 @@ public class HcsaRiskLicenceTenureSericeImpl implements HcsaRiskLicenceTenureSer
         if(subList!=null&&!subList.isEmpty()){
             subDto.setOrderNum(subList.get(subList.size()-1).getOrderNum()+1);
             subList.add(subDto);
+        }else {
+            subList = new ArrayList<>(1);
+            subList.add(subDto);
+            temp.setSubDtoList(subList);
         }
     }
 
