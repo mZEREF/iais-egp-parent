@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import feign.RequestLine;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -172,7 +173,7 @@ public interface FeEicGatewayClient {
                                                                            @RequestHeader("authorization-Secondary") String authorizationSec);
 
 
-    @GetMapping(value = "/v1/appt-public-holiday")
+    @RequestLine(value = "GET /v1/appt-public-holiday", decodeSlash = false)
     FeignResponseEntity<List<PublicHolidayDto>> getpublicHoliday(@RequestHeader("date") String date,
                                                                  @RequestHeader("authorization") String authorization,
                                                                  @RequestHeader("date-Secondary") String dateSec,
