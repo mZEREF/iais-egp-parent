@@ -19,10 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import feign.Headers;
-import feign.RequestLine;
 import java.util.List;
 import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -40,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author Jinhua
  * @date 2019/12/3 17:33
  */
-@FeignClient(value = "eicgate", url="${iais.inter.gateway.url}", configuration = {FeignConfiguration.class},
+@FeignClient(value = "eicgate", url="${iais.inter.gateway.url}",
         fallback = FeEicGatewayClientFallback.class)
 public interface FeEicGatewayClient {
     @PostMapping(value = "/v1/file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -173,8 +170,7 @@ public interface FeEicGatewayClient {
                                                                            @RequestHeader("authorization-Secondary") String authorizationSec);
 
 
-    @RequestLine(value = "GET /v1/appt-public-holiday", decodeSlash = false)
-    @Headers({"Content-Type: application/json"})
+    @GetMapping(value = "/v1/appt-public-holiday")
     FeignResponseEntity<List<PublicHolidayDto>> getpublicHoliday(@RequestHeader("date") String date,
                                                                  @RequestHeader("authorization") String authorization,
                                                                  @RequestHeader("date-Secondary") String dateSec,
