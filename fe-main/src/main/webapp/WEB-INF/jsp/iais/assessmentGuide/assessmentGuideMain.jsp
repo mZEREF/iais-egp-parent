@@ -36,6 +36,14 @@
         SOP.Crud.cfxSubmit("mainForm", "amend3_2");
     });
 
+    $("#amendLicence4_1").click(function(){
+        SOP.Crud.cfxSubmit("mainForm", "amend4_1");
+    });
+
+    $("#amendLicence4_2").click(function(){
+        SOP.Crud.cfxSubmit("mainForm", "amend4_2");
+    });
+
     $("#updateAdminPersonnel").click(function(){
         SOP.Crud.cfxSubmit("mainForm", "upAdmin");
     });

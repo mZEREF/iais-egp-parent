@@ -9,7 +9,8 @@
 
     <div class="amendLicence">
         <div class="form-check-gp">
-            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence.jsp" %>
+            <%@include
+                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence.jsp" %>
         </div>
     </div>
 
@@ -25,21 +26,25 @@
         </div>
     </div>
 </div>
-<div class="self-assessment-item assessment-level-2">
+<div class="self-assessment-item assessment-level-2 completed">
     <div class="amendLicence1 hidden">
         <div class="form-check-gp">
-            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence1.jsp" %>
+            <%@include
+                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence1.jsp" %>
         </div>
     </div>
-
+    <div class="amendLicence2 hidden">
+    </div>
     <div class="amendLicence3">
         <div class="form-check-gp">
-            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence3.jsp" %>
+            <%@include
+                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence3.jsp" %>
         </div>
     </div>
     <div class="amendLicence4 hidden">
         <div class="form-check-gp">
-            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence4.jsp" %>
+            <%@include
+                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence4.jsp" %>
         </div>
     </div>
 </div>
@@ -55,24 +60,4 @@
     $("#amendLicence").attr('checked', 'true');
     $("#amendLicence3").attr('checked', 'true');
     $("#amendLicence3_1").attr('checked', 'true');
-
-    $("#withdrawApplication").click(function(){
-        guideSubmit("withdraw","main");
-    });
-
-    $("#resumeDraftApplication").click(function () {
-        guideSubmit("resume","main");
-    });
-
-    $("#renewLicence2").click(function () {
-        guideSubmit("renewUp","main");
-    });
-
-    $("#ceaseLicence").click(function(){
-        guideSubmit("cease","main");
-    });
-
-    $("#amendLicence2").click(function(){
-        guideSubmit("amend2","main");
-    });
 </script>

@@ -11,22 +11,6 @@
 <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2.jsp" %>
 <%@include file="../assessmentGuideMenuFoot.jsp" %>
 <script>
-    $(function () {
-        $(".assessment-level-2").attr("hidden","true")
-    });
-
-    $("#ceaseLicence").click(function(){
-        guideSubmit("cease","main");
-    });
-
-    $("#resumeDraftApplication").click(function () {
-        guideSubmit("resume","main");
-    });
-
-    $("#").click(function () {
-        guideSubmit("renew","main");
-    });
-
     $("#withdrawApplication").attr('checked', 'true');
 
     function jumpToPagechangePage() {
@@ -35,7 +19,10 @@
     }
 
     function sortRecords(sortFieldName, sortType) {
-        SOP.Crud.cfxSubmit("mainForm", "withdrawSort", sortFieldName, sortType);
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='guide_action_type']").val("withdrawSort");
+        $("#mainForm").submit();
     }
 </script>
 

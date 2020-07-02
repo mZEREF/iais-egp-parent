@@ -1,5 +1,5 @@
 <div class="form-check-gp">
-    <p class="form-check-title">You may select one licence at a time to update the changes.</p>
+    <p class="form-check-title">Select the licence(s) to renew:</p>
     <iais:pagination  param="renewLicUpdateSearchParam" result="renewLicUpdateSearchResult"/>
     <div class="table-gp">
         <table class="table">

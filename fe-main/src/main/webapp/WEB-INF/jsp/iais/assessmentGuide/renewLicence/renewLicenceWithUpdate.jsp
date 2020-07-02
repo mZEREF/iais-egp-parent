@@ -27,7 +27,7 @@
     </div>
 </div>
 <div class="self-assessment-item assessment-level-2">
-    <div class="amendLicence1">
+    <div class="renewLicence2">
         <div class="form-check-gp">
             <%@include
                     file="/WEB-INF/jsp/iais/assessmentGuide/renewLicence/renewLicenceWithUpdateContent.jsp" %>

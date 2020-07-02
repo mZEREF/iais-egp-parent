@@ -542,7 +542,7 @@ public class InterInboxDelegator {
 //                RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
 //                recallApplicationDto.setAppId(h.getId());
 //                recallApplicationDto.setAppNo(h.getApplicationNo());
-                h.setCanRecall(true);
+                h.setCanRecall(Boolean.TRUE);
             });
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);

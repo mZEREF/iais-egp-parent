@@ -1,16 +1,61 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: wwwhu
-  Date: 2020/6/29
-  Time: 9:41
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Title</title>
-</head>
-<body>
+<%@include file="../../assessmentGuideMenuHead.jsp" %>
+<%@include file="../../assessmentGuideMenuLevel/assessmentGuideMenuLevel.jsp" %>
+<div class="self-assessment-item assessment-level-1 completed">
+    <div class="renewLicence hidden">
+        <div class="form-check-gp">
+            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/renewLicence.jsp" %>
+        </div>
+    </div>
 
-</body>
-</html>
+    <div class="amendLicence">
+        <div class="form-check-gp">
+            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence.jsp" %>
+        </div>
+    </div>
+
+    <div class="submitDataMoh hidden">
+        <div class="form-check-gp">
+            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/submitDataMoh.jsp" %>
+        </div>
+    </div>
+
+    <div class="updateAdminPersonnel hidden">
+        <div class="form-check-gp">
+            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/updateAdminPersonnel.jsp" %>
+        </div>
+    </div>
+</div>
+<div class="self-assessment-item assessment-level-2 completed">
+    <div class="amendLicence1 hidden">
+        <div class="form-check-gp">
+            <%@include
+                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence1.jsp" %>
+        </div>
+    </div>
+
+    <div class="amendLicence3 hidden">
+        <div class="form-check-gp">
+            <%@include
+                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence3.jsp" %>
+        </div>
+    </div>
+    <div class="amendLicence4">
+        <div class="form-check-gp">
+            <%@include
+                    file="/WEB-INF/jsp/iais/selfassessment/schematics/amendLicence4.jsp" %>
+        </div>
+    </div>
+</div>
+<div class="self-assessment-item assessment-level-3">
+    <div class="amendLicence4_1">
+        <div class="form-check-gp">
+            <%@include file="/WEB-INF/jsp/iais/assessmentGuide/amendLicence/updatePersonnelInfo/amendUpdateContactDetailsContent.jsp" %>
+        </div>
+    </div>
+</div>
+<%@include file="../../assessmentGuideMenuFoot.jsp" %>
+<script type="application/javascript">
+    $("#amendLicence").attr('checked', 'true');
+    $("#amendLicence4").attr('checked', 'true');
+    $("#amendLicence4_2").attr('checked', 'true');
+</script>

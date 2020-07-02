@@ -41,8 +41,8 @@
                        aria-invalid="false">
                 <label class="form-check-label" for="amendLicence">
                     <span class="check-circle"></span>
-                    <span class="left-content">Amend my licence<a
-                            class="btn-tooltip styleguide-tooltip"
+                    <span class="left-content">Amend my licence
+                        <a class="btn-tooltip styleguide-tooltip"
                             data-toggle="tooltip" data-html="true"
                             title="" data-original-title='"Subsumed Service" is a service that does not have its own licence, but has regulatory requirements that will be issued under the relevant licensable healthcare service.'
                             style="position: absolute;left: 189px; top: 12px;z-index: 10">i</a></span>

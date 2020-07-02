@@ -12,19 +12,19 @@
 <%@include file="../assessmentGuideMenuFoot.jsp" %>
 <script>
     $(function () {
-        $(function () {
-            $(".assessment-level-2").attr("hidden","true")
-        });
-
         $("#ceaseLicence").attr('checked', 'true');
+    });
 
-        $("#withdrawApplication").click(function(){
-            guideSubmit("withdraw","main");
-        });
+    function jumpToPagechangePage() {
+        $("[name='guide_action_type']").val("ceaseLicPage");
+        $("#mainForm").submit();
+    }
 
-        $("#resumeDraftApplication").click(function () {
-            guideSubmit("resume","main");
-        });
-    })
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='guide_action_type']").val("ceaseLicSort");
+        $("#mainForm").submit();
+    }
 </script>
 

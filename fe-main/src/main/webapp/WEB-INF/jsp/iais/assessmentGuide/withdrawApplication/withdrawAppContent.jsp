@@ -5,10 +5,10 @@
         <thead>
         <tr align="center">
             <th width="2%"></th>
-            <iais:sortableHeader needSort="false" field="APPLICATION_NO" value="Application Number" style="width:20%"/>
-            <iais:sortableHeader needSort="false" field="app_type" value="Type" style="width:20%"/>
-            <iais:sortableHeader needSort="false" field="service_id" value="Service" style="width:20%"/>
-            <iais:sortableHeader needSort="false" field="STATUS" value="Status" style="width:20%"/>
+            <iais:sortableHeader needSort="true" field="APPLICATION_NO" value="Application Number" style="width:20%"/>
+            <iais:sortableHeader needSort="true" field="app_type" value="Type" style="width:20%"/>
+            <iais:sortableHeader needSort="true" field="service_id" value="Service" style="width:20%"/>
+            <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:20%"/>
         </tr>
         </thead>
         <tbody>

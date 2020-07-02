@@ -39,20 +39,4 @@
 <script type="application/javascript">
     $("#amendLicence").attr('checked', 'true');
     $("#amendLicence2").attr('checked', 'true');
-
-    $("#withdrawApplication").click(function(){
-        guideSubmit("withdraw","main");
-    });
-
-    $("#resumeDraftApplication").click(function () {
-        guideSubmit("resume","main");
-    });
-
-    $("#renewLicence2").click(function () {
-        guideSubmit("renewUp","main");
-    });
-
-    $("#ceaseLicence").click(function(){
-        guideSubmit("cease","main");
-    });
 </script>

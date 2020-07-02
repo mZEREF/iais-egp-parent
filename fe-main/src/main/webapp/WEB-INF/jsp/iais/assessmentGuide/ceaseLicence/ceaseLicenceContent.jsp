@@ -33,7 +33,7 @@
                                 <input type="hidden" name="ceaseLicence${status.index}" value="<iais:mask name= "ceaseLicence${status.index}" value="${pool.licenceId}"/>"/>
                             </td>
                             <td>${pool.hciName}</td>
-                            <td>${pool.addrType}</td>
+                            <td><iais:code code="${pool.addrType}"/></td>
                             <td>${pool.licenceNo}</td>
                             <td>${pool.premisesType}</td>
                             <td>${pool.address}</td>

@@ -1,10 +1,6 @@
 <div class="form-check-gp">
-
-    <p class="form-check-title">Select the licence where the subsumed
-        service(s) and/or service subcategory(ies) will be provided:
-    </p>
-
-    <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
+    <p class="form-check-title">Select the licence where the subsumed service(s) and/or service subcategory(ies) will be provided:</p>
+    <iais:pagination  param="amendDetailsSearchParam" result="amendDetailsSearchResult"/>
 
     <div class="table-gp">
         <table class="table">
@@ -20,7 +16,7 @@
             </thead>
             <tbody>
             <c:choose>
-                <c:when test="${empty PremisesSearchResult.rows }">
+                <c:when test="${empty amendDetailsSearchResult.rows }">
                     <tr>
                         <td colspan="15">
                             <iais:message key="ACK018" escape="true"/>
@@ -28,7 +24,7 @@
                     </tr>
                 </c:when>
                 <c:otherwise>
-                    <c:forEach var="pool" items="${PremisesSearchResult.rows}" varStatus="status">
+                    <c:forEach var="pool" items="${amendDetailsSearchResult.rows}" varStatus="status">
                         <tr>
                             <td>
                                 <div class="form-check">
@@ -40,7 +36,8 @@
                                     <input type="hidden" name="amendDetailId${status.index}" value="<iais:mask name= "amendDetailId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>
                             </td>
-                            <td>${pool.addrType}</td>
+                            <td>${pool.hciName}</td>
+                            <td><iais:code code="${pool.addrType}"/></td>
                             <td>${pool.licenceNo}</td>
                             <td>${pool.premisesType}</td>
                             <td>${pool.address}</td>

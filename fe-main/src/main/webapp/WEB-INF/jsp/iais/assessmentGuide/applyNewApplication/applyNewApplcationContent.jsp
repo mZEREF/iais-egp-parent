@@ -1,16 +1,8 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: wwwhu
-  Date: 2020/6/29
-  Time: 9:59
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<div class="self-assessment-item">
+    <div class="ceaseLicence">
+        <div class="form-check-gp">
+            <%@include file="/WEB-INF/jsp/iais/assessmentGuide/ceaseLicence/ceaseLicenceContent.jsp" %>
+        </div>
+    </div>
+    <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel1_1.jsp" %>
+</div>

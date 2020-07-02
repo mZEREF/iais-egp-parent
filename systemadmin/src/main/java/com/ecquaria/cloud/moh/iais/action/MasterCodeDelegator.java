@@ -394,7 +394,9 @@ public class MasterCodeDelegator {
             }
         }
         if (result){
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "There is an error in the file contents");
+            if (errorMap != null){
+                errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "There is an error in the file contents");
+            }
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
