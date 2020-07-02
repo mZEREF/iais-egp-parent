@@ -260,8 +260,8 @@ public class HcsaChklItemDelegator {
         itemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         IaisApiResult<ChecklistItemDto> iaisApiResult = hcsaChklService.saveChklItem(itemDto);
         if(iaisApiResult.isHasError()){
-            int errorCode = iaisApiResult.getErrorCode();
-            if (IaisApiStatusCode.DUPLICATION_RECORD.getStatusCode() == errorCode){
+            String errorCode = iaisApiResult.getErrorCode();
+            if (IaisApiStatusCode.DUPLICATE_RECORD.getStatusCode().equals(errorCode)){
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("messageContent", "CHKL_ERR016"));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }
