@@ -290,7 +290,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             } else {
                 url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                         MessageConstants.MESSAGE_INBOX_URL_REQUEST_SELF_CHECKLIST + taskDto.getApplicationNo() +
-                        "&selfDeclApplicationNumber=rfi";
+                        "&selfDeclAction=rfi";
                 maskParams.put("selfDeclApplicationNumber", taskDto.getApplicationNo());
             }
             MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
