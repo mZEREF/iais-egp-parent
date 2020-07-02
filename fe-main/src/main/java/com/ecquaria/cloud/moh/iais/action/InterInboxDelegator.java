@@ -397,7 +397,7 @@ public class InterInboxDelegator {
                     .append("?appealingFor=")
                     .append(MaskUtil.maskValue("appealingFor",licId))
                     .append("&type=licence");
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }else{
             ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",result);
@@ -413,7 +413,7 @@ public class InterInboxDelegator {
                 .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohLicenceView")
                 .append("?licenceId=")
                 .append(licId);
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
 
@@ -434,7 +434,7 @@ public class InterInboxDelegator {
                         .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
                         .append("?licenceId=")
                         .append(MaskUtil.maskValue("licenceId",licIdValue));
-                String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 bpc.response.sendRedirect(tokenUrl);
             }else{
                 ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
@@ -480,7 +480,7 @@ public class InterInboxDelegator {
                 url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                         .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal");
                 ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
-                String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                 bpc.response.sendRedirect(tokenUrl);
             }else{
                 ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
@@ -513,7 +513,7 @@ public class InterInboxDelegator {
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohCessationApplication");
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }
     }
@@ -647,7 +647,7 @@ public class InterInboxDelegator {
                     .append("?appealingFor=")
                     .append(MaskUtil.maskValue("appealingFor",appId))
                     .append("&type=application");
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }else{
             ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",result);
@@ -666,7 +666,7 @@ public class InterInboxDelegator {
                 .append(MaskUtil.maskValue("withdrawAppId",appId))
                 .append("&withdrawAppNo=")
                 .append(MaskUtil.maskValue("withdrawAppNo",appNo));
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
 
@@ -680,7 +680,7 @@ public class InterInboxDelegator {
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange/prepareDraft")
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }else if(InboxConst.APP_DO_DRAFT_TYPE_RENEW.equals(ParamUtil.getString(request, InboxConst.ACTION_TYPE_VALUE))){
             StringBuilder url = new StringBuilder();
@@ -688,7 +688,7 @@ public class InterInboxDelegator {
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal")
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }else if(InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(ParamUtil.getString(request, InboxConst.ACTION_TYPE_VALUE))){
             StringBuilder url = new StringBuilder();
@@ -696,7 +696,7 @@ public class InterInboxDelegator {
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }
         else {
@@ -705,7 +705,7 @@ public class InterInboxDelegator {
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication")
                     .append("?DraftNumber=")
                     .append(MaskUtil.maskValue("DraftNumber",appNo));
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);}
     }
 
@@ -748,7 +748,7 @@ public class InterInboxDelegator {
                 .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication/1/InboxToPreview")
                 .append("?appNo=")
                 .append(MaskUtil.maskValue("appNo",appNo));
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
 

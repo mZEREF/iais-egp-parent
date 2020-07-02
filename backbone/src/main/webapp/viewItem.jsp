@@ -41,6 +41,6 @@
     if (!url.startsWith("/")) {
         url = "/" + url;
     }
-    url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url, request);
+    url = RedirectUtil.appendCsrfGuardToken(url, request);
 %>
 <jsp:forward page="<%=url%>"></jsp:forward>

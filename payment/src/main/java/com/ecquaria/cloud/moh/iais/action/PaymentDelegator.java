@@ -56,7 +56,7 @@ public class PaymentDelegator {
         if(!StringUtil.isEmpty(backUrl)){
              s = showUrl +"/" +backUrl+results;
         }
-        String url = RedirectUtil.changeUrlToCsrfGuardUrlUrl(s, request);
+        String url = RedirectUtil.appendCsrfGuardToken(s, request);
         bpc.response.sendRedirect(url);
 
     }

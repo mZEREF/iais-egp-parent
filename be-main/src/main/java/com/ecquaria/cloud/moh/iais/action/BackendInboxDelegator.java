@@ -705,7 +705,7 @@ public class BackendInboxDelegator {
             sb.append('?');
         }
         sb.append("taskId=").append(MaskUtil.maskValue("taskId", dto.getId()));
-        return RedirectUtil.changeUrlToCsrfGuardUrlUrl(sb.toString(), request);
+        return RedirectUtil.appendCsrfGuardToken(sb.toString(), request);
     }
 
     private WorkingGroupDto changeStatusWrokGroup(WorkingGroupDto workingGroupDto,String staus){

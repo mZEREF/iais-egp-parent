@@ -58,7 +58,7 @@ public class KpiAndReminderDelegator {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName())
                 .append("/main-web/eservice/INTRANET/MohBackendInbox");
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(),bpc.request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(),bpc.request);
         try {
             bpc.response.sendRedirect(tokenUrl);
 

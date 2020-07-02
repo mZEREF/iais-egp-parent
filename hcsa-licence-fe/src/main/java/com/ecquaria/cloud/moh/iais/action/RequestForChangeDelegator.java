@@ -146,7 +146,7 @@ public class RequestForChangeDelegator {
             url.append("https://").append(bpc.request.getServerName())
                     .append("/main-web/eservice/INTERNET/MohInternetInbox")
                     .append("?init_to_page=initLic");
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
             return;
         }
@@ -467,7 +467,7 @@ public class RequestForChangeDelegator {
                     StringBuilder url = new StringBuilder();
                     url.append("https://").append(bpc.request.getServerName())
                             .append(RfcConst.PAYMENTPROCESS);
-                    String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+                    String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
                     bpc.response.sendRedirect(tokenUrl);
                 }
             }

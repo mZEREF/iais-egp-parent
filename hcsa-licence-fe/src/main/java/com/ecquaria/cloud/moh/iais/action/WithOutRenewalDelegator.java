@@ -890,7 +890,7 @@ public class WithOutRenewalDelegator {
                     .append("&backUrl=").append(MaskUtil.maskValue("backUrl",backUrl));
 
 
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
             try {
                 bpc.request.setAttribute("paymentAmount",totalAmount);

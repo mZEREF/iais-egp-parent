@@ -430,7 +430,7 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url){
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url, request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url, request);
         try {
             response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
             response.sendRedirect(tokenUrl);

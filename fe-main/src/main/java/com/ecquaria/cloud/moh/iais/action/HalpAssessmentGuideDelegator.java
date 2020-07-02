@@ -254,7 +254,7 @@ public class HalpAssessmentGuideDelegator {
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohCessationApplication");
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }
     }
@@ -296,7 +296,7 @@ public class HalpAssessmentGuideDelegator {
                 .append(MaskUtil.maskValue("withdrawAppId", appId))
                 .append("&withdrawAppNo=")
                 .append(MaskUtil.maskValue("withdrawAppNo", appNo));
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
     }
 
@@ -324,7 +324,7 @@ public class HalpAssessmentGuideDelegator {
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS).append(request.getServerName())
                 .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList");
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
         bpc.response.sendRedirect(tokenUrl);
     }
 

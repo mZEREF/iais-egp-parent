@@ -1027,7 +1027,7 @@ public class ConfigServiceImpl implements ConfigService {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(request.getServerName())
                 .append("/main-web/eservice/INTRANET/MohBackendInbox");
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(),request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(),request);
         try {
             response.sendRedirect(tokenUrl);
             request.getSession().removeAttribute("orgUserDto");

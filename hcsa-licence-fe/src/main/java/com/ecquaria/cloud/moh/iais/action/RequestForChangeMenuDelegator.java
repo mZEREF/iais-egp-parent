@@ -1182,7 +1182,7 @@ public class RequestForChangeMenuDelegator {
                     .append("&payMethod=").append(MaskUtil.maskValue("payMethod", payMethod))
                     .append("&reqNo=").append(MaskUtil.maskValue("reqNo", appSubmissionDtos.get(0).getAppGrpNo()))
                     .append("&backUrl=").append(MaskUtil.maskValue("backUrl", backUrl));
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
             return;
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
@@ -1200,7 +1200,7 @@ public class RequestForChangeMenuDelegator {
     public void personnelDashboard(BaseProcessClass bpc) {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         try {
             bpc.response.sendRedirect(tokenUrl);
         } catch (IOException e) {
@@ -1275,7 +1275,7 @@ public class RequestForChangeMenuDelegator {
                     .append("&payMethod=").append(MaskUtil.maskValue("payMethod", payMethod))
                     .append("&reqNo=").append(MaskUtil.maskValue("reqNo", appSubmissionDtos.get(0).getAppGrpNo()))
                     .append("&backUrl=").append(MaskUtil.maskValue("backUrl", backUrl));
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
             return;
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
@@ -1344,7 +1344,7 @@ public class RequestForChangeMenuDelegator {
     public void dashboard(BaseProcessClass bpc) {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         try {
             bpc.response.sendRedirect(tokenUrl);
         } catch (IOException e) {

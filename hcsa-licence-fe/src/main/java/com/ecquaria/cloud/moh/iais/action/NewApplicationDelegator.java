@@ -1099,7 +1099,7 @@ public class NewApplicationDelegator {
     public void jumpYeMian(HttpServletRequest request , HttpServletResponse response) throws IOException {
         StringBuilder url = new StringBuilder();
         url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
-        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), request);
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
         response.sendRedirect(tokenUrl);
     }
     public void inboxToPreview(BaseProcessClass bpc) throws IOException {
@@ -2307,7 +2307,7 @@ public class NewApplicationDelegator {
                     .append("?amount=").append(MaskUtil.maskValue("amount",String.valueOf(appSubmissionDto.getAmount())))
                     .append("&payMethod=").append(MaskUtil.maskValue("payMethod",payMethod))
                     .append("&reqNo=").append(MaskUtil.maskValue("reqNo",appSubmissionDto.getAppGrpNo()));
-            String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
             return;
         }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
