@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDa
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -22,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -34,7 +32,6 @@ import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -371,41 +368,13 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             return;
         }
 
-        boolean appSubmitToBeNotYet = false;
-        for (ApplicationDto i : appList){
-            if (ApplicationConsts.APPLICATION_STATUS_RFI_ONLY_SELF_CHECKLIST
-                    .equals(i.getApplicationType())){
-                appSubmitToBeNotYet = true;
-            }
+        ApplicationDto app  = appList.get(0);
+        if (ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION.equals(app.getApplicationType())){
+            app.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
+            app.setSelfAssMtFlag(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
 
-            i.setSelfAssMtFlag(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
-        }
-
-        applicationClient.updateApplicationList(appList);
-
-        //rfi solution
-        //when the application does not return to be,  need to create a task
-        boolean rfiSolution = isGroupId == true ? false : true;
-        if (rfiSolution && appSubmitToBeNotYet){
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            //get application No.
-            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(value).getEntity();
-            ApptFeConfirmDateDto apptFeConfirmDateDto = new ApptFeConfirmDateDto();
-            List<String> appNoList = IaisCommonUtils.genNewArrayList();
-            appNoList.add(applicationDto.getApplicationNo());
-            TaskDto taskDto = new TaskDto();
-            taskDto.setRefNo(value);
-            taskDto.setApplicationNo(applicationDto.getApplicationNo());
-            taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
-            taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            apptFeConfirmDateDto.setTaskDto(taskDto);
-            apptFeConfirmDateDto.setAppNoList(appNoList);
-
-            log.info("create fe reply task start");
-            gatewayClient.createFeReplyTask(apptFeConfirmDateDto, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
-            log.info("create fe reply task end");
+            log.info(StringUtil.changeForLog("update application info " + app));
+            applicationClient.updateApplication(app);
         }
     }
 
