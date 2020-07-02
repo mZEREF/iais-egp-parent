@@ -6,11 +6,8 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,13 +25,6 @@ public class EicGatewayClient {
 
 	public FeignResponseEntity<String> saveSystemParameterFe(SystemParameterDto systemParameterDto, String date,
 	                                                      String authorization, String dateSec, String authorizationSec) {
-		HttpHeaders header = IaisEGPHelper.getHttpHeadersForEic(MediaType.APPLICATION_JSON, date, authorization,
-				dateSec, authorizationSec);
-		HttpEntity<SystemParameterDto> jsonPart = new HttpEntity<>(systemParameterDto, header);
-		ResponseEntity response = restTemplate.exchange(gateWayUrl + "/v1/sys-params", HttpMethod.PUT,
-				jsonPart, String.class);
-		FeignResponseEntity<String> resEnt = IaisEGPHelper.genFeignRespFromResp(response);
-
 		return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/sys-params", HttpMethod.PUT, systemParameterDto,
 				MediaType.APPLICATION_JSON, date, authorization,
 				dateSec, authorizationSec, String.class);
