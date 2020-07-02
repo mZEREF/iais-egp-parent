@@ -121,7 +121,7 @@
                                                     <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>I hereby certify that the information I provided is all correct and accurate</label>
                                                 </div>
                                                 <div>
-                                                    <span id="error_fieldMandatory"  class="error-msg"></span>
+                                                    <span id="error_fieldMandatory" class="error-msg"></span>
                                                 </div>
                                             </c:if>
                                         </div>
@@ -153,6 +153,7 @@
             </div>
         </div>
     </div>
+    <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <script>
 

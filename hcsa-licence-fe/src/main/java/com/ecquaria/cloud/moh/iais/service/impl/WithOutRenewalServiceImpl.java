@@ -58,6 +58,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
             List<AppSvcRelatedInfoDto> o = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObject(oldAppSvcRelatedInfoDtoList);
             n.get(0).setScore(null);
             n.get(0).setDoRiskDate(null);
+            o.get(0).setScore(null);
+            o.get(0).setDoRiskDate(null);
             List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = n.get(0).getAppSvcDisciplineAllocationDtoList();
             List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList1 = o.get(0).getAppSvcDisciplineAllocationDtoList();
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = n.get(0).getHcsaServiceStepSchemeDtos();
