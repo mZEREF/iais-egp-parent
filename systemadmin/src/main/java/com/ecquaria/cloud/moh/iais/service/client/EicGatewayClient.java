@@ -30,7 +30,7 @@ public class EicGatewayClient {
 				dateSec, authorizationSec, String.class);
 	}
 
-	FeignResponseEntity<MessageDto> syncMessageToFe(MessageDto messageDto, String date, String authorization,
+	public FeignResponseEntity<MessageDto> syncMessageToFe(MessageDto messageDto, String date, String authorization,
 												  String dateSec, String authorizationSec) {
 		return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/message-configs", HttpMethod.POST, messageDto,
 				MediaType.APPLICATION_JSON, date, authorization,
