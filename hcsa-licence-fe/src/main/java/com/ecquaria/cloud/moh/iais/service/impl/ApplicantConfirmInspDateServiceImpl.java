@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -514,6 +515,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             appPremisesRoutingHistoryDto.setSubStage(HcsaConsts.ROUTING_STAGE_PRE);
             appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
             appPremisesRoutingHistoryDto.setAppStatus(applicationDto.getStatus());
+            appPremisesRoutingHistoryDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
             appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
             appPremisesRoutingHistoryDtos.add(appPremisesRoutingHistoryDto);
