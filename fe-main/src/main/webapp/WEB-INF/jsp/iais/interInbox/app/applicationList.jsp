@@ -98,7 +98,7 @@
                 <tr>
                     <iais:sortableHeader needSort="true" field="APPLICATION_NO"
                                          value="Application No."/>
-                    <iais:sortableHeader needSort="true" field="APP_TYPE" value="Type"/>
+                    <iais:sortableHeader needSort="true" field="APP_TYPE_DESC" value="Type"/>
                     <iais:sortableHeader needSort="true" field="SERVICE_ID" value="Service"/>
                     <iais:sortableHeader needSort="true" field="STATUS" value="Status"/>
                     <iais:sortableHeader needSort="true" field="CREATED_DT"
