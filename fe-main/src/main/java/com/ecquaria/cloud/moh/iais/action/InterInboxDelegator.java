@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -569,6 +570,9 @@ public class InterInboxDelegator {
         String createDtStart = Formatter.formatDateTime(startAppDate, SystemAdminBaseConstants.DATE_FORMAT);
         String createDtEnd = Formatter.formatDateTime(endAppDate, SystemAdminBaseConstants.DATE_FORMAT+SystemAdminBaseConstants.TIME_FORMAT);
         SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp",true);
+        List<SelectOption> appTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_TYPE);
+        MasterCodePair mcp = new MasterCodePair("app_type", "app_type_desc", appTypes);
+        inboxParam.addMasterCode(mcp);
         if(applicationType == null || applicationType.equals(InboxConst.SEARCH_ALL)){
             inboxParam.removeFilter("appType");
         }else{
