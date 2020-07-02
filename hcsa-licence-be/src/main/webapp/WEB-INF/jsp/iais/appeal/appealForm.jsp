@@ -1,5 +1,6 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="main-content">
   <form id="mainForm" enctype="multipart/form-data" style="margin-left: 15%" class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
@@ -94,9 +95,11 @@
         <div class="document-upload-list">
           <div class="file-upload-gp">
             <div class="fileContent col-xs-2">
-              <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${appealSpecialDocDto.fileRepoId}"/>&fileRepoName=${appealSpecialDocDto.docName}.${appealSpecialDocDto.docType}"
-                 title="Download" class="downloadFile"><c:out
-                      value="${appealSpecialDocDto.docName}.${appealSpecialDocDto.docType}"></c:out></a>
+              <c:if test="${!empty appealSpecialDocDto}">
+                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${appealSpecialDocDto.fileRepoId}"/>&fileRepoName=${appealSpecialDocDto.docName}.${appealSpecialDocDto.docType}"
+                   title="Download" class="downloadFile"><c:out
+                        value="${appealSpecialDocDto.docName}.${appealSpecialDocDto.docType}"></c:out></a>
+              </c:if>
             </div>
           </div>
         </div>
