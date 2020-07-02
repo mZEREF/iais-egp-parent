@@ -1407,11 +1407,6 @@ public class HcsaApplicationDelegator {
                     Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
                     if(null != recomInNumber && recomInNumber == 0){
                         appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
-                        try{
-                            rejectSendNotification(applicationViewDto);
-                        }catch (Exception e){
-                            log.error(StringUtil.changeForLog("send reject notification error"));
-                        }
                     }
                 }else{
                     String recomDecision = appPremisesRecommendationDto.getRecomDecision();
@@ -1420,6 +1415,14 @@ public class HcsaApplicationDelegator {
                     }
                 }
          }
+        //send reject email
+        if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)){
+            try{
+                rejectSendNotification(applicationViewDto);
+            }catch (Exception e){
+                log.error(StringUtil.changeForLog("send reject notification error"));
+            }
+        }
         //appeal save return fee
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
