@@ -84,7 +84,7 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingPer(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingPer start ...."));
-
+        SearchParam searchParam = getSearchParam(bpc);
     }
 
     /**

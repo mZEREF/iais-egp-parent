@@ -197,6 +197,7 @@ public class InspectionPreDelegator {
         String preInspecComments = ParamUtil.getRequestString(bpc.request,"preInspecComments");
         String checkRbStage = ParamUtil.getRequestString(bpc.request,"checkRbStage");
         String[] preInspRfiCheckStr = ParamUtil.getStrings(bpc.request,"preInspRfiCheck");
+        //NOSONAR
         List<String> preInspRfiCheck = getPreInspListByArray(preInspRfiCheckStr);
         inspectionPreTaskDto.setPreInspRfiCheck(preInspRfiCheck);
         inspectionPreTaskDto.setReMarks(preInspecRemarks);
@@ -248,6 +249,7 @@ public class InspectionPreDelegator {
 
     private ValidationResult validateAppRfiCheck(ValidationResult validationResult, List<String> preInspRfiCheck, BaseProcessClass bpc) {
         if(!IaisCommonUtils.isEmpty(preInspRfiCheck)){
+            //NOSONAR
             if(preInspRfiCheck.contains(InspectionConstants.SWITCH_ACTION_APPLICATION)){
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 //rfiSelectValue

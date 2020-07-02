@@ -873,6 +873,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
+                    //NOSONAR
                     appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
                 }
             }
@@ -897,6 +898,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto auDto : appointmentUserDtos){
                 if(auDto != null){
+                    //NOSONAR
                     appointmentUserDtoList.add(auDto);
                 }
             }
