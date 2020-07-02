@@ -1394,6 +1394,7 @@ public class HcsaApplicationDelegator {
         String externalRemarks = ParamUtil.getString(bpc.request,"comments");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
+        boolean feAllUpdate = Boolean.FALSE;
         if(!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)){
             processDecision = nextStageReplys;
         }
@@ -1523,12 +1524,6 @@ public class HcsaApplicationDelegator {
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 if(isAllSubmit || applicationDto.isFastTracking()){
-                    //update current application status in db search result
-                    updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
-                    //get and set return fee
-                    saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
-                    broadcastApplicationDto.setApplicationDtos(saveApplicationDtoList);
-                    broadcastApplicationDto.setRollBackApplicationDtos(saveApplicationDtoList);
                     //update application Group status
                     ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                     broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
@@ -1536,12 +1531,21 @@ public class HcsaApplicationDelegator {
                     applicationGroupDto.setAo3ApprovedDt(new Date());
                     applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
-                    //update fe application status
-                    updateFeApplications(saveApplicationDtoList);
-                    //get current after set return fee application dto
-                    ApplicationDto currentApplicationDto = getCurrentApplicationDto(saveApplicationDtoList, broadcastApplicationDto.getApplicationDto().getId());
-                    //update broadcastApplicationDto
-                    broadcastApplicationDto.setApplicationDto(currentApplicationDto);
+                    if(isAllSubmit){
+                        feAllUpdate = Boolean.TRUE;
+                        //update current application status in db search result
+                        updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
+                        //get and set return fee
+                        saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
+                        broadcastApplicationDto.setApplicationDtos(saveApplicationDtoList);
+                        broadcastApplicationDto.setRollBackApplicationDtos(saveApplicationDtoList);
+                        //update fe application status
+                        updateFeApplications(saveApplicationDtoList);
+                        //get current after set return fee application dto
+                        ApplicationDto currentApplicationDto = getCurrentApplicationDto(saveApplicationDtoList, broadcastApplicationDto.getApplicationDto().getId());
+                        //update broadcastApplicationDto
+                        broadcastApplicationDto.setApplicationDto(currentApplicationDto);
+                    }
                 }
             }else{
                 log.info(StringUtil.changeForLog("This RFI  this application -->:"+applicationDto.getApplicationNo()));
@@ -1559,10 +1563,8 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
-        if(broadcastApplicationDto.getApplicationDto() != null){
+        if(broadcastApplicationDto.getApplicationDto() != null && !feAllUpdate){
             applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
-        }else{
-            log.error(StringUtil.changeForLog("application is null"));
         }
         //appeal save return fee
 
