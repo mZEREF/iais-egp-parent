@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -16,6 +17,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
 
 import static com.ecquaria.cloud.moh.iais.constant.HmacConstants.HMAC_SHA_1;
@@ -29,6 +31,7 @@ import static com.ecquaria.cloud.moh.iais.constant.HmacConstants.HMAC_SHA_512;
  * @author Jinhua
  * @date 2019/11/28 17:26
  */
+@Slf4j
 public class HmacHelper {
 
     /**
@@ -130,6 +133,7 @@ public class HmacHelper {
             object.authorization = "Signature keyId=\"" + keyId +
                     "\",algorithm=\"" + algorithm +
                     "\",signature=\"" + URLEncoder.encode(signature, StandardCharsets.UTF_8.name()) + "\"";
+            log.info(StringUtil.changeForLog("HMAC authorization ====> " + object.authorization));
             return object;
         } catch (UnsupportedEncodingException e) {
             throw new IaisRuntimeException(e);
