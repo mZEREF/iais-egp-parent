@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRoutingSchemeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
@@ -419,7 +420,6 @@ public class ConfigServiceImpl implements ConfigService {
         if(hcsaSvcDocConfigDtos.isEmpty()){
 
         }
-
         String svcCode = hcsaServiceDto.getSvcCode();
         String svcName = hcsaServiceDto.getSvcName();
         String svcDesc = hcsaServiceDto.getSvcDesc();
@@ -521,13 +521,18 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
         }
-
         List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaServiceConfigDto.getHcsaSvcSpeRoutingSchemeDtos();
         for (int i = 0; i < hcsaSvcSpeRoutingSchemeDtos.size(); i++) {
-
             String schemeType = hcsaSvcSpeRoutingSchemeDtos.get(i).getSchemeType();
             if (StringUtil.isEmpty(schemeType)) {
                 errorMap.put("schemeType" + i, "UC_CHKLMD001_ERR001");
+            }
+        }
+        List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtos = hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtos();
+        for(int i=0 ;i< hcsaSvcSpecificStageWorkloadDtos.size();i++){
+            Integer manhourCount = hcsaSvcSpecificStageWorkloadDtos.get(i).getManhourCount();
+            if(StringUtil.isEmpty(manhourCount)){
+               errorMap.put("manhourCount"+i,"UC_CHKLMD001_ERR001");
             }
         }
 

@@ -211,8 +211,6 @@ public class ConfigServiceDelegator {
         }
 
 
-
-
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceSubTypeDto> list=IaisCommonUtils.genNewArrayList();
         if("SVTP002".equals(serviceType)){
@@ -227,7 +225,6 @@ public class ConfigServiceDelegator {
                 }
             }
 
-
         } else if (preRequisite != null && "SVTP003".equals(serviceType)) {
             for(String str : preRequisite){
                 if(!"".equals(str)){
@@ -235,7 +232,6 @@ public class ConfigServiceDelegator {
                     hcsaServiceSubTypeDto.setServiceId(str);
                     list.add(hcsaServiceSubTypeDto);
                 }
-
             }
         }
         hcsaServiceDto.setServiceSubTypeDtos(list);
@@ -428,7 +424,7 @@ public class ConfigServiceDelegator {
                     hcsaSvcDocConfigDto.setStatus("CMSTAT001");
                     hcsaSvcDocConfigDto.setDispOrder(0);
                     hcsaSvcDocConfigDto.setServiceId("");
-                    hcsaSvcDocConfigDto.setDupForPrem("0");
+                    hcsaSvcDocConfigDto.setDupForPrem(individualPremises);
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.FALSE);
                     if(numberDocumentMandatory!=null&&descriptionDocumentMandatory!=null){
                         hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
