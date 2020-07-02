@@ -369,7 +369,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         }
 
         ApplicationDto app  = appList.get(0);
-        if (ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION.equals(app.getApplicationType())){
+        if (ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION.equals(app.getStatus())){
             app.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
             app.setSelfAssMtFlag(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
 
