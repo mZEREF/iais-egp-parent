@@ -43,7 +43,7 @@
                                     </c:forEach>
                                     <c:choose>
                                         <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
-                                            <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">
+                                            <c:forEach var="svc" items="${appSubmissionDtos}">
                                                 <tr>
                                                     <td>
                                                         <p><c:out value="${svc.serviceName}"></c:out></p>
@@ -52,10 +52,10 @@
                                                         <p>Amendment</p>
                                                     </td>
                                                     <td>
-                                                        <p><c:out value="${svc.groupNo}"></c:out></p>
+                                                        <p><c:out value="${svc.appGrpNo}"></c:out></p>
                                                     </td>
                                                     <td>
-                                                        <p><c:out value="${svc.score}"></c:out></p>
+                                                        <p><c:out value="${svc.amountStr}"></c:out></p>
                                                     </td>
                                                 </tr>
                                             </c:forEach>

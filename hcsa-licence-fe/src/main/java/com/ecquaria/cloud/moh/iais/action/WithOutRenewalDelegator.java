@@ -380,13 +380,14 @@ public class WithOutRenewalDelegator {
                 AppSubmissionDto oldAppSubmisDto = appSubmissionDtos.get(0).getOldAppSubmissionDto();
                 if(oldAppSubmisDto != null){
                     oldAppSubmissionDto = oldAppSubmisDto;
-                    requestForChangeService.svcDocToPresmise(oldAppSubmissionDto);
-                    requestForChangeService.svcDocToPresmise(appSubmissionDtos.get(0));
+
                 }
             }else{
                 //set oldAppSubmissionDto
                 renewDto.getAppSubmissionDtos().get(0).setOldAppSubmissionDto(oldAppSubmissionDto);
             }
+            requestForChangeService.svcDocToPresmise(oldAppSubmissionDto);
+            requestForChangeService.svcDocToPresmise(appSubmissionDtos.get(0));
             bpc.request.getSession().setAttribute("oldAppSubmissionDto",oldAppSubmissionDto);
 
         }

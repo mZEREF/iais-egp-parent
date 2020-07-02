@@ -532,7 +532,6 @@ public class NewApplicationDelegator {
             appSubmissionDto=tranferSub;
         }
         Double total=0.0;
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos=IaisCommonUtils.genNewArrayList();
         if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())&&!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
             total+=appSubmissionDto.getAmount();
         }
@@ -540,20 +539,13 @@ public class NewApplicationDelegator {
             for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos){
                 Double amount = appSubmissionDto1.getAmount();
                 total=total+amount;
-                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto1.getAppSvcRelatedInfoDtoList();
-                appSvcRelatedInfoDtoList.get(0).setScore(appSubmissionDto1.getAmount());
-                appSvcRelatedInfoDtos.addAll(appSvcRelatedInfoDtoList);
+                String amountStr = Formatter.formatterMoney(appSubmissionDto1.getAmount());
+                appSubmissionDto1.setAmountStr(amountStr);
+                appSubmissionDto1.setServiceName(appSubmissionDto1.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
             }
 
         }
         appSubmissionDto.setAmount(total);
-        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            if(!appSvcRelatedInfoDtos.isEmpty()){
-                appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-            }else if(appSubmissionDto.getAppSvcRelatedInfoDtoList()!=null&&!appSubmissionDto.getAppSvcRelatedInfoDtoList().isEmpty()){
-                appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setScore(total);
-            }
-        }
         if(!StringUtil.isEmpty(appSubmissionDto.getAmount())){
             String amountStr = Formatter.formatterMoney(appSubmissionDto.getAmount());
             log.info(StringUtil.changeForLog("The amountStr is -->:"+amountStr));

@@ -1221,7 +1221,7 @@ public class NewApplicationHelper {
     }
 
     public static List<SelectOption> genSpecialtySelectList(String svcCode, boolean needOtherOpt){
-        List<SelectOption> specialtySelectList = null;
+        List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(svcCode)){
             if(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) ||
                     AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode) ||
@@ -1250,6 +1250,22 @@ public class NewApplicationHelper {
                 if(needOtherOpt){
                     SelectOption ssl4 = new SelectOption("other", "Others");
                     specialtySelectList.add(ssl4);
+                }
+            }else {
+                specialtySelectList = IaisCommonUtils.genNewArrayList();
+                SelectOption ssl1 = new SelectOption("-1", "Please Select");
+                SelectOption ssl2 = new SelectOption("Diagnostic Radiology", "Diagnostic Radiology");
+                SelectOption ssl3 = new SelectOption("Nuclear Medicine", "Nuclear Medicine");
+                SelectOption ssl4 = new SelectOption("Pathology", "Pathology");
+                SelectOption ssl5 = new SelectOption("Haematology", "Haematology");
+                specialtySelectList.add(ssl1);
+                specialtySelectList.add(ssl2);
+                specialtySelectList.add(ssl3);
+                specialtySelectList.add(ssl4);
+                specialtySelectList.add(ssl5);
+                if(needOtherOpt){
+                    SelectOption ssl6 = new SelectOption("other", "Others");
+                    specialtySelectList.add(ssl6);
                 }
             }
         }

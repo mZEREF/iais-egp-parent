@@ -188,12 +188,9 @@ public class ConfigServiceImpl implements ConfigService {
         hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        try {
-            gatewayClient.saveFeServiceConfig(hcsaServiceConfigDto,signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
-        }catch (Exception e){
-            log.error("fe save config error",e);
-        }
+
+        gatewayClient.saveFeServiceConfig(hcsaServiceConfigDto,signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
 
         // todo send email
         request.setAttribute("option","added");
@@ -281,6 +278,10 @@ public class ConfigServiceImpl implements ConfigService {
             Integer i = (int) Double.parseDouble(hcsaServiceDto1.getVersion()) + 1;
             hcsaServiceDto.setVersion(i.toString());
             hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            gatewayClient.saveFeServiceConfig(hcsaServiceConfigDto,signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
             request.setAttribute("crud_action_type", "save");
             //todo send email update (if start date or end date change need send  Effective Start/End )
 
@@ -344,7 +345,6 @@ public class ConfigServiceImpl implements ConfigService {
 
             }
             //todo delete send email
-
             request.setAttribute("option","deleted");
             request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
             try {
