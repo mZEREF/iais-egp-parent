@@ -357,6 +357,7 @@ public class BackendInboxDelegator {
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
         List<String> applicationDtoIds = IaisCommonUtils.genNewArrayList();
+        boolean feAllUpdate = false;
         applicationDtoIds.add(applicationDto.getApplicationNo());
 
         //judge the final status is Approve or Reject.
@@ -449,17 +450,12 @@ public class BackendInboxDelegator {
             }
         }else{
             List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-            List<ApplicationDto> saveApplicationDtoList = applicationDtoList;
+            List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
+            CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
             applicationDtoList = removeFastTracking(applicationDtoList);
             boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
                     appStatus);
             if(isAllSubmit || applicationDto.isFastTracking()){
-                //update current application status in db search result
-                updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
-                //get and set return fee
-                saveApplicationDtoList = hcsaConfigMainClient.returnFee(saveApplicationDtoList).getEntity();
-                broadcastApplicationDto.setApplicationDtos(saveApplicationDtoList);
-                broadcastApplicationDto.setRollBackApplicationDtos(saveApplicationDtoList);
                 //update application Group status
                 ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                 broadcastApplicationDto.setRollBackApplicationGroupDto((ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto));
@@ -467,8 +463,21 @@ public class BackendInboxDelegator {
                 applicationGroupDto.setAo3ApprovedDt(new Date());
                 applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
-                //update fe application status
-                updateFeApplications(saveApplicationDtoList);
+                if(isAllSubmit){
+                    feAllUpdate = true;
+                    //update current application status in db search result
+                    updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
+                    //get and set return fee
+                    saveApplicationDtoList = hcsaConfigMainClient.returnFee(saveApplicationDtoList).getEntity();
+                    broadcastApplicationDto.setApplicationDtos(saveApplicationDtoList);
+                    broadcastApplicationDto.setRollBackApplicationDtos(saveApplicationDtoList);
+                    //update fe application status and return fee
+                    updateFeApplications(saveApplicationDtoList);
+                    //get current after set return fee application dto
+                    ApplicationDto currentApplicationDto = getCurrentApplicationDto(saveApplicationDtoList, broadcastApplicationDto.getApplicationDto().getId());
+                    //update broadcastApplicationDto
+                    broadcastApplicationDto.setApplicationDto(currentApplicationDto);
+                }
             }
         }
         //save the broadcast
@@ -481,9 +490,26 @@ public class BackendInboxDelegator {
         log.info(StringUtil.changeForLog(submissionId));
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
-
-        applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        //0062460 update FE  application status.
+        if(broadcastApplicationDto.getApplicationDto() != null && !feAllUpdate){
+            applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        }
     }
+
+    private ApplicationDto getCurrentApplicationDto(List<ApplicationDto> applicationDtos,String applicationId){
+        ApplicationDto applicationDto = null;
+        if(IaisCommonUtils.isEmpty(applicationDtos) || StringUtil.isEmpty(applicationId)){
+            return null;
+        }
+        for(ApplicationDto app : applicationDtos){
+            if(applicationId.equals(app.getId())){
+                applicationDto = app;
+                break;
+            }
+        }
+        return applicationDto;
+    }
+
     private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
         List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
