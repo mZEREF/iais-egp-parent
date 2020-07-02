@@ -11,7 +11,7 @@
         <h3>
             You may choose to align the expiry date of your new licence(s) to any of your existing licences.
         </h3>
-        <p><span>If you don't select a licence, MOH will asign an expiry date</span></p>
+        <p><span>If you don't select a licence, MOH will assign an expiry date</span></p>
     </div>
 </div>
 <div class="row">
