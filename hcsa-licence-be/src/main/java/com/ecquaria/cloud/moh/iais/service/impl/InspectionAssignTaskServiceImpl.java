@@ -801,6 +801,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         for(String appPremCorrId : appPremCorrIds) {
             List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getSystemDtosByAppPremCorrId(appPremCorrId).getEntity();
             if (!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)) {
+                List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
                 List<AppPremisesInspecApptDto> appPremisesInspecApptDtoUpdateList = IaisCommonUtils.genNewArrayList();
                 AppPremisesInspecApptDto apptDto = appPremisesInspecApptDtos.get(0);
                 reschedulingCount = apptDto.getReschedulingCount() + 1;
@@ -811,11 +812,16 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     inspecApptDto = applicationClient.updateAppPremisesInspecApptDto(inspecApptDto).getEntity();
                     inspecApptDto.setAuditTrailDto(auditTrailDto);
                     appPremisesInspecApptDtoUpdateList.add(inspecApptDto);
+                    cancelRefNo.add(inspecApptDto.getApptRefNo());
                 }
                 ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
                 apptInspectionDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoUpdateList);
                 //do update FE
                 createFeAppPremisesInspecApptDto(apptInspectionDateDto);
+                ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+                apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
+                apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+                cancelOrConfirmApptDate(apptCalendarStatusDto);
             }
         }
         return reschedulingCount;
