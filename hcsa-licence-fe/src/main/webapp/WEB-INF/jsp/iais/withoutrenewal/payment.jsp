@@ -93,7 +93,7 @@
                                     <tr>
                                         <td></td>
                                         <td></td>
-                                        <td style="font-size: 16px;">Total amount due:</td>
+                                        <td><p>Total amount due:</p></td>
                                         <td><p><strong><c:out value="${totalStr}"></c:out></strong></p></td>
                                     </tr>
                                     </tbody>
