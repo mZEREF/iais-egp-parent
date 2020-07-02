@@ -54,6 +54,7 @@ public class SelfAssessmentDelegator {
         //don't submitted self ass when route back from be
         String groupId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
         if (!StringUtil.isEmpty(groupId)){
+            log.info("when self ass rfi , the groupId is " + groupId);
             ParamUtil.setSessionAttr(bpc.request, REDIRECT_TO_MAIN_FLAG, "Y");
             ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID, groupId);
         }
@@ -61,6 +62,7 @@ public class SelfAssessmentDelegator {
         //receive application number when fe user click message content, as rfi
         String applicationNumber = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
         if (StringUtils.isEmpty(applicationNumber)){
+            log.info("when self ass rfi , the application number is " + applicationNumber);
             AppPremisesCorrelationDto correlation = selfAssessmentService.getCorrelationByAppNo(applicationNumber);
             if (correlation != null){
                 ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, correlation.getId());
