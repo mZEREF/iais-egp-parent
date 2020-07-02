@@ -235,7 +235,9 @@ public class SelfAssessmentDelegator {
                     ParamUtil.setSessionAttr(bpc.request, REDIRECT_TO_MAIN_FLAG, "Y");
 
                     String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
-                    inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+                    if (!StringUtil.isEmpty(messageId)){
+                        inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+                    }
                 }
 
                 ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("ACK025"));
