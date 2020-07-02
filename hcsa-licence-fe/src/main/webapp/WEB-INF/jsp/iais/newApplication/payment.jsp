@@ -20,11 +20,7 @@
                         <%@ include file="./navTabs.jsp" %>
                         <div class="tab-content">
                             <div class="tab-pane active" id="paymentTab" role="tabpanel">
-                                <h2>Payment Summary</h2>
-                                <p >
-                                    Total amount due:
-                                    <c:out value="${AppSubmissionDto.amountStr}"></c:out>
-                                </p>
+                                <h2 style="border-bottom: none;">Payment Summary</h2>
                                 <table class="table">
                                     <thead>
                                     <tr>
@@ -226,7 +222,12 @@
                                             </c:forEach>
                                         </c:otherwise>
                                     </c:choose>
-
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td><p>Total amount due:</p></td>
+                                        <td><p><strong> <c:out value="${AppSubmissionDto.amountStr}"></c:out></strong></p></td>
+                                    </tr>
                                     </tbody>
                                 </table>
                                 <%@include file="paymentMethod.jsp"%>
