@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
@@ -15,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.constant.SelfAssessmentConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -42,6 +45,9 @@ public class SelfAssessmentDelegator {
     
     @Autowired
     private SelfAssessmentService selfAssessmentService;
+
+    @Autowired
+    private InspecUserRecUploadService inspecUserRecUploadService;
 
     /**
      * @param bpc
@@ -227,6 +233,9 @@ public class SelfAssessmentDelegator {
                     String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
                     selfAssessmentService.changePendingSelfAssMtStatus(corrId, false);
                     ParamUtil.setSessionAttr(bpc.request, REDIRECT_TO_MAIN_FLAG, "Y");
+
+                    String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+                    inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
                 }
 
                 ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("ACK025"));
