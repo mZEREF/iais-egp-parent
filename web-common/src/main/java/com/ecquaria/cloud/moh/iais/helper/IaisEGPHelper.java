@@ -51,10 +51,13 @@ import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.sqlite.date.FastDateFormat;
 import sop.iwe.SessionManager;
@@ -539,6 +542,32 @@ public final class IaisEGPHelper extends EGPHelper {
         resEnt.setEntity(response.getBody());
         resEnt.setHeaders(response.getHeaders());
         resEnt.setStatusCode(response.getStatusCodeValue());
+
+        return resEnt;
+    }
+
+    /**
+     * @description: The method to call EIC gateway by rest template
+     *
+     * @author: Jinhua on 2020/7/2 17:28
+     * @param: [url, httpMethod, httpBody, mediaType, date, authorization, dateSec, authorizationSec, responseCls]
+     * @return: com.ecquaria.cloudfeign.FeignResponseEntity<org.apache.poi.ss.formula.functions.T>
+     */
+    public static <T> FeignResponseEntity<T> callEicGateway(String url, HttpMethod httpMethod, Object httpBody,
+                                            MediaType mediaType, String date, String authorization, String dateSec,
+                                            String authorizationSec, Class<T> responseCls) {
+        HttpHeaders header = getHttpHeadersForEic(mediaType, date, authorization,
+                dateSec, authorizationSec);
+        HttpEntity entity = null;
+        if (httpBody != null) {
+            entity = new HttpEntity<>(httpBody, header);
+        } else {
+            entity = new HttpEntity(header);
+        }
+        RestTemplate restTemplate = SpringContextHelper.getContext().getBean(RestTemplate.class);
+        ResponseEntity response = restTemplate.exchange(url, httpMethod,
+                entity, responseCls);
+        FeignResponseEntity<T> resEnt = IaisEGPHelper.genFeignRespFromResp(response);
 
         return resEnt;
     }

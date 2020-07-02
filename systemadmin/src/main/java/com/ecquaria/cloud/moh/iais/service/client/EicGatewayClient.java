@@ -31,22 +31,19 @@ public class EicGatewayClient {
 		HttpHeaders header = IaisEGPHelper.getHttpHeadersForEic(MediaType.APPLICATION_JSON, date, authorization,
 				dateSec, authorizationSec);
 		HttpEntity<SystemParameterDto> jsonPart = new HttpEntity<>(systemParameterDto, header);
-		ResponseEntity response = restTemplate.exchange(restTemplate + "/v1/sys-params", HttpMethod.PUT,
+		ResponseEntity response = restTemplate.exchange(gateWayUrl + "/v1/sys-params", HttpMethod.PUT,
 				jsonPart, String.class);
 		FeignResponseEntity<String> resEnt = IaisEGPHelper.genFeignRespFromResp(response);
 
-		return resEnt;
+		return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/sys-params", HttpMethod.PUT, systemParameterDto,
+				MediaType.APPLICATION_JSON, date, authorization,
+				dateSec, authorizationSec, String.class);
 	}
 
 	FeignResponseEntity<MessageDto> syncMessageToFe(MessageDto messageDto, String date, String authorization,
 												  String dateSec, String authorizationSec) {
-		HttpHeaders header = IaisEGPHelper.getHttpHeadersForEic(MediaType.APPLICATION_JSON, date, authorization,
-				dateSec, authorizationSec);
-		HttpEntity<MessageDto> jsonPart = new HttpEntity<>(messageDto, header);
-		ResponseEntity response = restTemplate.exchange(restTemplate + "/v1/message-configs", HttpMethod.POST,
-				jsonPart, String.class);
-		FeignResponseEntity<MessageDto> resEnt = IaisEGPHelper.genFeignRespFromResp(response);
-
-		return resEnt;
+		return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/message-configs", HttpMethod.POST, messageDto,
+				MediaType.APPLICATION_JSON, date, authorization,
+				dateSec, authorizationSec, MessageDto.class);
 	}
 }
