@@ -80,7 +80,7 @@
                                                 <tr>
                                                     <td>
                                                         <p>${detailFeeDto.lateFeeType}</p>
-                                                        <p>Applicable to the following licence(s):</p>
+                                                        <p><em>Applicable to the following licence(s):</em></p>
                                                         <p><c:out value="${svc.serviceName}"></c:out></p>
                                                     </td>
                                                     <td>NA</td>
@@ -93,7 +93,7 @@
                                     <tr>
                                         <td></td>
                                         <td></td>
-                                        <td>Total amount due:</td>
+                                        <td style="font-size: 16px;">Total amount due:</td>
                                         <td><p><strong><c:out value="${totalStr}"></c:out></strong></p></td>
                                     </tr>
                                     </tbody>
