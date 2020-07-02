@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -152,52 +153,56 @@
                                                         name="idNoShow" value="${personnelEditDto.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Designation " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                            <iais:select cssClass="designationSel" name="designationShow"
-                                                         codeCategory="CATE_ID_DESIGNATION"
-                                                         value="${personnelEditDto.designation}"
-                                                         firstOption="Please Select" disabled="true"></iais:select>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Professional Type " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                            <iais:select cssClass="professionTypeSel" name="professionTypeShow"
-                                                         codeCategory="CATE_ID_PROFESSIONAL_TYPE"
-                                                         value="${personnelEditDto.professionType}"
-                                                         firstOption="Please Select" disabled="true"></iais:select>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="20" type="text"
-                                                        name="professionRegnNoShow"
-                                                        value="${personnelEditDto.professionRegnNo}"
-                                                        needDisabled="true"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Specialty " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:select cssClass="specialty" name="specialtyShow"
-                                                         firstOption="Please Select" options="SpecialtySelectList"
-                                                         value="${personnelEditDto.speciality}"
-                                                         disabled="true"></iais:select>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Subspeciality or relevant qualification " width="12"
-                                                    mandatory="false"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="100" type="text"
-                                                        name="subspecialityShow"
-                                                        value="${personnelEditDto.subSpeciality}"
-                                                        needDisabled="true"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO')}">
+                                        <iais:row>
+                                            <iais:field value="Designation " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                                <iais:select cssClass="designationSel" name="designationShow"
+                                                             codeCategory="CATE_ID_DESIGNATION"
+                                                             value="${personnelEditDto.designation}"
+                                                             firstOption="Please Select" disabled="true"></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
+                                    <c:if test="${psnTypes.contains('CGO')}">
+                                        <iais:row>
+                                            <iais:field value="Professional Type " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                                <iais:select cssClass="professionTypeSel" name="professionTypeShow"
+                                                             codeCategory="CATE_ID_PROFESSIONAL_TYPE"
+                                                             value="${personnelEditDto.professionType}"
+                                                             firstOption="Please Select" disabled="true"></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input cssClass="needDisableI" maxLength="20" type="text"
+                                                            name="professionRegnNoShow"
+                                                            value="${personnelEditDto.professionRegnNo}"
+                                                            needDisabled="true"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Specialty " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:select cssClass="specialty" name="specialtyShow"
+                                                             firstOption="Please Select" options="SpecialtySelectList"
+                                                             value="${personnelEditDto.speciality}"
+                                                             disabled="true"></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Subspeciality or relevant qualification " width="12"
+                                                        mandatory="false"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input cssClass="needDisableI" maxLength="100" type="text"
+                                                            name="subspecialityShow"
+                                                            value="${personnelEditDto.subSpeciality}"
+                                                            needDisabled="true"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -207,7 +212,7 @@
                                                         needDisabled="true"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${containsPO}">
+                                    <c:if test="${psnTypes.contains('PO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -257,53 +262,61 @@
                                                         name="idNo" value="${personnelEditDto.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Designation " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                            <iais:select cssClass="designationSel" name="designation"
-                                                         codeCategory="CATE_ID_DESIGNATION"
-                                                         value="${personnelEditDto.designation}"
-                                                         firstOption="Please Select"></iais:select>
-                                        </iais:value>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_designation"></span>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Professional Type " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                            <iais:select cssClass="professionTypeSel" name="professionType"
-                                                         codeCategory="CATE_ID_PROFESSIONAL_TYPE"
-                                                         value="${personnelEditDto.professionType}"
-                                                         firstOption="Please Select"></iais:select>
-                                        </iais:value>
-                                        <span class="error-msg" name="iaisErrorMsg" id="error_professionType"></span>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="20" type="text" name="professionRegnNo"
-                                                        value="${personnelEditDto.professionRegnNo}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Specialty " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:select cssClass="specialty" name="specialty"
-                                                         firstOption="Please Select" options="SpecialtySelectList"
-                                                         value="${personnelEditDto.speciality}" onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
-                                            <div hidden id="specialityOtherId">
-                                                <input maxlength="20" type="text" name="specialityOther" value="${personnelEditDto.specialityOther}">
-                                                <span id="error_specialityOther" name="iaisErrorMsg" class="error-msg"></span>
-                                            </div>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Subspeciality or relevant qualification " width="12"
-                                                    mandatory="false"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="100" type="text" name="subspeciality"
-                                                        value="${personnelEditDto.subSpeciality}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO')}">
+                                        <iais:row>
+                                            <iais:field value="Designation " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                                <iais:select cssClass="designationSel" name="designation"
+                                                             codeCategory="CATE_ID_DESIGNATION"
+                                                             value="${personnelEditDto.designation}"
+                                                             firstOption="Please Select"></iais:select>
+                                            </iais:value>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_designation"></span>
+                                        </iais:row>
+                                    </c:if>
+                                    <c:if test="${psnTypes.contains('CGO')}">
+                                        <iais:row>
+                                            <iais:field value="Professional Type " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                                <iais:select cssClass="professionTypeSel" name="professionType"
+                                                             codeCategory="CATE_ID_PROFESSIONAL_TYPE"
+                                                             value="${personnelEditDto.professionType}"
+                                                             firstOption="Please Select"></iais:select>
+                                            </iais:value>
+                                            <span class="error-msg" name="iaisErrorMsg"
+                                                  id="error_professionType"></span>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input maxLength="20" type="text" name="professionRegnNo"
+                                                            value="${personnelEditDto.professionRegnNo}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Specialty " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:select cssClass="specialty" name="specialty"
+                                                             firstOption="Please Select" options="SpecialtySelectList"
+                                                             value="${personnelEditDto.speciality}"
+                                                             onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
+                                                <div hidden id="specialityOtherId">
+                                                    <input maxlength="20" type="text" name="specialityOther"
+                                                           value="${personnelEditDto.specialityOther}">
+                                                    <span id="error_specialityOther" name="iaisErrorMsg"
+                                                          class="error-msg"></span>
+                                                </div>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Subspeciality or relevant qualification " width="12"
+                                                        mandatory="false"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input maxLength="100" type="text" name="subspeciality"
+                                                            value="${personnelEditDto.subSpeciality}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -311,7 +324,7 @@
                                                         value="${personnelEditDto.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${containsPO}">
+                                    <c:if test="${psnTypes.contains('PO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -332,7 +345,8 @@
                                     <iais:row>
                                         <iais:field value="Assign or add another personnel " width="12"/>
                                         <iais:value width="7" cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:select name="replaceName" id="replaceOptionsId" options="replaceOptions"
+                                            <iais:select name="replaceName" id="replaceOptionsId"
+                                                         options="replaceOptions"
                                                          value="${replaceName}"
                                                          onchange="addNew()" firstOption="Please Select"></iais:select>
                                         </iais:value>
@@ -366,51 +380,58 @@
                                                         name="idNo1" value="${newPerson.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Designation " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                            <iais:select cssClass="designationSel" name="designation1"
-                                                         codeCategory="CATE_ID_DESIGNATION"
-                                                         value="${newPerson.designation}"
-                                                         firstOption="Please Select"></iais:select>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Professional Type " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                            <iais:select cssClass="professionTypeSel" name="professionType1"
-                                                         codeCategory="CATE_ID_PROFESSIONAL_TYPE"
-                                                         value="${newPerson.professionType}"
-                                                         firstOption="Please Select"></iais:select>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="20" type="text" name="professionRegnNo1"
-                                                        value="${newPerson.professionRegnNo}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Specialty " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:select cssClass="specialty" name="specialty1"
-                                                         firstOption="Please Select" options="SpecialtySelectList"
-                                                         value="${newPerson.speciality}" onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
-                                            <div hidden id="specialityOtherNewId">
-                                                <input maxlength="20" type="text" name="specialityOther1" value="${newPerson.specialityOther}">
-                                                <span id="error_specialityOther1" name="iaisErrorMsg" class="error-msg"></span>
-                                            </div>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Subspeciality or relevant qualification " width="12"
-                                                    mandatory="false"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input maxLength="100" type="text" name="qualification1"
-                                                        value="${newPerson.subSpeciality}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO')}">
+                                        <iais:row>
+                                            <iais:field value="Designation " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                                <iais:select cssClass="designationSel" name="designation1"
+                                                             codeCategory="CATE_ID_DESIGNATION"
+                                                             value="${newPerson.designation}"
+                                                             firstOption="Please Select"></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
+                                    <c:if test="${psnTypes.contains('CGO')}">
+                                        <iais:row>
+                                            <iais:field value="Professional Type " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                                <iais:select cssClass="professionTypeSel" name="professionType1"
+                                                             codeCategory="CATE_ID_PROFESSIONAL_TYPE"
+                                                             value="${newPerson.professionType}"
+                                                             firstOption="Please Select"></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input maxLength="20" type="text" name="professionRegnNo1"
+                                                            value="${newPerson.professionRegnNo}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Specialty " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:select cssClass="specialty" name="specialty1"
+                                                             firstOption="Please Select" options="SpecialtySelectList"
+                                                             value="${newPerson.speciality}"
+                                                             onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
+                                                <div hidden id="specialityOtherNewId">
+                                                    <input maxlength="20" type="text" name="specialityOther1"
+                                                           value="${newPerson.specialityOther}">
+                                                    <span id="error_specialityOther1" name="iaisErrorMsg"
+                                                          class="error-msg"></span>
+                                                </div>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Subspeciality or relevant qualification " width="12"
+                                                        mandatory="false"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input maxLength="100" type="text" name="qualification1"
+                                                            value="${newPerson.subSpeciality}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -418,7 +439,7 @@
                                                         value="${newPerson.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${containsPO}">
+                                    <c:if test="${psnTypes.contains('PO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -462,63 +483,76 @@
                                                         name="idNo2" value="${newPerson.idNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Designation " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                            <iais:select disabled="true" cssClass="designationSel" name="designation2"
-                                                         codeCategory="CATE_ID_DESIGNATION"
-                                                         value="${newPerson.designation}"
-                                                         firstOption="Please Select"></iais:select>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Professional Type " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                            <iais:select disabled="true" cssClass="professionTypeSel" name="professionType2"
-                                                         codeCategory="CATE_ID_PROFESSIONAL_TYPE"
-                                                         value="${newPerson.professionType}"
-                                                         firstOption="Please Select"></iais:select>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="20" type="text" name="professionRegnNo2"
-                                                        value="${newPerson.professionRegnNo}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Specialty " width="12" mandatory="true"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:select disabled="true" cssClass="specialty" name="specialty2"
-                                                         firstOption="Please Select" options="SpecialtySelectList"
-                                                         value="${newPerson.speciality}" onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
-                                            <div hidden id="specialityOtherExistId">
-                                                <input type="text" name="specialityOther2" value="${newPerson.specialityOther}">
-                                                <span id="error_specialityOther2" name="iaisErrorMsg" class="error-msg"></span>
-                                            </div>
-                                        </iais:value>
-                                    </iais:row>
-                                    <iais:row>
-                                        <iais:field value="Subspeciality or relevant qualification " width="12"
-                                                    mandatory="false"/>
-                                        <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="100" type="text" name="qualification2"
-                                                        value="${newPerson.subSpeciality}"></iais:input>
-                                        </iais:value>
-                                    </iais:row>
+                                    <c:if test="${psnTypes.contains('CGO') || psnTypes.contains('PO')}">
+                                        <iais:row>
+                                            <iais:field value="Designation " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                                <iais:select disabled="true" cssClass="designationSel"
+                                                             name="designation2"
+                                                             codeCategory="CATE_ID_DESIGNATION"
+                                                             value="${newPerson.designation}"
+                                                             firstOption="Please Select"></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
+                                    <c:if test="${psnTypes.contains('CGO')}">
+                                        <iais:row>
+                                            <iais:field value="Professional Type " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
+                                                <iais:select disabled="true" cssClass="professionTypeSel"
+                                                             name="professionType2"
+                                                             codeCategory="CATE_ID_PROFESSIONAL_TYPE"
+                                                             value="${newPerson.professionType}"
+                                                             firstOption="Please Select"></iais:select>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input cssClass="needDisableI" maxLength="20" type="text"
+                                                            name="professionRegnNo2"
+                                                            value="${newPerson.professionRegnNo}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Specialty " width="12" mandatory="true"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:select disabled="true" cssClass="specialty" name="specialty2"
+                                                             firstOption="Please Select" options="SpecialtySelectList"
+                                                             value="${newPerson.speciality}"
+                                                             onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
+                                                <div hidden id="specialityOtherExistId">
+                                                    <input type="text" name="specialityOther2"
+                                                           value="${newPerson.specialityOther}">
+                                                    <span id="error_specialityOther2" name="iaisErrorMsg"
+                                                          class="error-msg"></span>
+                                                </div>
+                                            </iais:value>
+                                        </iais:row>
+                                        <iais:row>
+                                            <iais:field value="Subspeciality or relevant qualification " width="12"
+                                                        mandatory="false"/>
+                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
+                                                <iais:input cssClass="needDisableI" maxLength="100" type="text"
+                                                            name="qualification2"
+                                                            value="${newPerson.subSpeciality}"></iais:input>
+                                            </iais:value>
+                                        </iais:row>
+                                    </c:if>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="8" type="text" name="mobileNo2"
+                                            <iais:input cssClass="needDisableI" maxLength="8" type="text"
+                                                        name="mobileNo2"
                                                         value="${newPerson.mobileNo}"></iais:input>
                                         </iais:value>
                                     </iais:row>
-                                    <c:if test="${containsPO}">
+                                    <c:if test="${psnTypes.contains('PO')}">
                                         <iais:row>
                                             <iais:field value="Office Telephone No. " width="12" mandatory="true"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:input cssClass="needDisableI" maxLength="8" type="text" name="officeTelNo2"
+                                                <iais:input cssClass="needDisableI" maxLength="8" type="text"
+                                                            name="officeTelNo2"
                                                             value="${newPerson.officeTelNo}"></iais:input>
                                             </iais:value>
                                         </iais:row>
@@ -526,7 +560,8 @@
                                     <iais:row>
                                         <iais:field value="Email Address " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                            <iais:input cssClass="needDisableI" maxLength="66" type="text" name="emailAddr2"
+                                            <iais:input cssClass="needDisableI" maxLength="66" type="text"
+                                                        name="emailAddr2"
                                                         value="${newPerson.emailAddr}"></iais:input>
                                         </iais:value>
                                     </iais:row>
@@ -620,7 +655,7 @@
             $('#edit').hide();
         }
 
-        if ($("input[type='radio']:checked").val() == 'replace'&&$('#replaceOptionsId').val() != ""){
+        if ($("input[type='radio']:checked").val() == 'replace' && $('#replaceOptionsId').val() != "") {
             $("#update").hide();
             $('#newPerson').hide();
             $('#show').hide();
@@ -628,43 +663,43 @@
             $('#edit').hide();
         }
         var val1 = $('#specialty').val();
-        if(val1=='other'){
+        if (val1 == 'other') {
             $('#specialityOtherId').show();
-        }else {
+        } else {
             $('#specialityOtherId').hide();
         }
         var val2 = $('#specialty1').val();
-        if(val2=='other'){
+        if (val2 == 'other') {
             $('#specialityOtherNewId').show();
-        }else {
+        } else {
             $('#specialityOtherNewId').hide();
         }
 
         const personSelect = $('#replaceOptionsId').val();
-        if (personSelect == 'new'&&$("input[type='radio']:checked").val() == 'replace') {
+        if (personSelect == 'new' && $("input[type='radio']:checked").val() == 'replace') {
             $("#update").hide();
             $('#newPerson').show();
             $('#show').hide();
             $('#newPersonExist').hide();
         }
-        if (personSelect == ''&&$("input[type='radio']:checked").val() == 'replace') {
+        if (personSelect == '' && $("input[type='radio']:checked").val() == 'replace') {
             $('#newPerson').hide();
         }
 
         var val1 = $('#specialty').val();
-        if(val1=='other'){
+        if (val1 == 'other') {
             $('#specialityOtherId').show();
-        }else {
+        } else {
             $('#specialityOtherId').hide();
         }
         var val2 = $('#specialty1').val();
-        if(val2=='other'){
+        if (val2 == 'other') {
             $('#specialityOtherNewId').show();
-        }else {
+        } else {
             $('#specialityOtherNewId').hide();
         }
 
-        if (personSelect != ''&&personSelect != 'new') {
+        if (personSelect != '' && personSelect != 'new') {
             $('#newPersonExist').show();
             $('#newPerson').hide();
             var person = $('#newPersonExist');
@@ -699,18 +734,18 @@
             loadSelectPerson(person, idType, idNo);
         }
     }
-    
+
     function specialtyOthers() {
         var val1 = $('#specialty').val();
-        if(val1=='other'){
+        if (val1 == 'other') {
             $('#specialityOtherId').show();
-        }else {
+        } else {
             $('#specialityOtherId').hide();
         }
         var val2 = $('#specialty1').val();
-        if(val2=='other'){
+        if (val2 == 'other') {
             $('#specialityOtherNewId').show();
-        }else {
+        } else {
             $('#specialityOtherNewId').hide();
         }
     }

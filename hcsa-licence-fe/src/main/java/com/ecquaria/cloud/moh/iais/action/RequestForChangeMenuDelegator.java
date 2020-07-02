@@ -63,10 +63,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESSAGE;
 
@@ -775,15 +772,16 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, "replaceName", replaceName);
         }
         Map<String, LicPsnTypeDto> licPsnTypeDtoMaps = personnelEditDto.getLicPsnTypeDtoMaps();
-        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
+        Set<String> psnTypes = IaisCommonUtils.genNewHashSet();
         for (LicPsnTypeDto dto : licPsnTypeDtoMaps.values()) {
-            psnTypes.addAll(dto.getPsnTypes());
+            List<String> psnTypes1 = dto.getPsnTypes();
+            if(!IaisCommonUtils.isEmpty(psnTypes1)){
+                for(String type :psnTypes1){
+                    psnTypes.add(type);
+                }
+            }
         }
-        if(psnTypes.contains("PO")){
-            ParamUtil.setRequestAttr(bpc.request, "containsPO", Boolean.TRUE);
-        }else {
-            ParamUtil.setRequestAttr(bpc.request, "containsPO", Boolean.FALSE);
-        }
+        ParamUtil.setRequestAttr(bpc.request, "psnTypes", psnTypes);
         ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
@@ -934,7 +932,7 @@ public class RequestForChangeMenuDelegator {
             if (psnTypes.contains("CGO") && StringUtil.isEmpty(specialty1)) {
                 errMap.put("specialty1", "UC_CHKLMD001_ERR001");
             }
-            if (psnTypes.contains("CGO") && !"other".equals(specialty1)&&StringUtil.isEmpty(specialityOther1)) {
+            if (psnTypes.contains("CGO") && "other".equals(specialty1)&&StringUtil.isEmpty(specialityOther1)) {
                 errMap.put("specialityOther1", "UC_CHKLMD001_ERR001");
             }
         }
@@ -1058,7 +1056,7 @@ public class RequestForChangeMenuDelegator {
                 if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSpeciality())) {
                     errMap.put("specialty2", "UC_CHKLMD001_ERR001");
                 }
-                if (psnTypes.contains("CGO") &&!"other".equals(newPerson.getSpeciality())&&StringUtil.isEmpty(newPerson.getSpecialityOther())) {
+                if (psnTypes.contains("CGO") &&"other".equals(newPerson.getSpeciality())&&StringUtil.isEmpty(newPerson.getSpecialityOther())) {
                     errMap.put("specialityOther2", "UC_CHKLMD001_ERR001");
                 }
             }
@@ -1150,7 +1148,8 @@ public class RequestForChangeMenuDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request, "action_type", "bank");
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
-        ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos1);
+        bpc.request.getSession().setAttribute("appSubmissionDtos",appSubmissionDtos1);
+        /*ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos1);*/
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
     }
 
@@ -1170,7 +1169,7 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
             return;
         }
-        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "AppSubmissionDtos");
+        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("appSubmissionDtos");
         bpc.request.getSession().setAttribute("payMethod", payMethod);
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
