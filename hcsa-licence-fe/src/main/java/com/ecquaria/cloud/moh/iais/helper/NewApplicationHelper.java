@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -50,6 +51,7 @@ import java.util.Map;
  * @date 2/24/2020
  */
 
+@Slf4j
 public class NewApplicationHelper {
     public static Map<String,String> doValidateLaboratory(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppSvcLaboratoryDisciplinesDto>  appSvcLaboratoryDisciplinesDtos, String serviceId){
         Map<String,String> map=IaisCommonUtils.genNewHashMap();
@@ -668,6 +670,7 @@ public class NewApplicationHelper {
 
     //for preview get one svc's DisciplineAllocation
     public static Map<String,List<AppSvcDisciplineAllocationDto>> getDisciplineAllocationDtoList(AppSubmissionDto appSubmissionDto,String svcId){
+        log.info(StringUtil.changeForLog("get DisciplineAllocationDtoList start..."));
         if(appSubmissionDto == null || StringUtil.isEmpty(svcId)){
             return null;
         }
@@ -688,55 +691,59 @@ public class NewApplicationHelper {
         Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
             List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
-
             String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-            /*if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
-                hciName = appGrpPremisesDto.getHciName();
-            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
-                hciName = appGrpPremisesDto.getConveyanceVehicleNo();
-            }*/
-
-            if(!StringUtil.isEmpty(premisesIndexNo) && allocationDto !=null && allocationDto.size()>0 ){
-                for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto:allocationDto){
-                    List<AppSvcChckListDto> appSvcChckListDtoList = null;
-                    if(premisesIndexNo.equals(appSvcDisciplineAllocationDto.getPremiseVal())){
-                        String chkLstId = appSvcDisciplineAllocationDto.getChkLstConfId();
-                        String idNo = appSvcDisciplineAllocationDto.getIdNo();
-                        //set chkLstName
-                        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
-                        if(appSvcLaboratoryDisciplinesDtoList != null && appSvcLaboratoryDisciplinesDtoList.size()>0){
-                            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
-                                if(premisesIndexNo.equals(appSvcLaboratoryDisciplinesDto.getPremiseVal())){
-                                    appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
-                                }
-                            }
-                        }
-                        if(appSvcChckListDtoList != null && appSvcChckListDtoList.size()>0){
-                            for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtoList){
-                                if(chkLstId.equals(appSvcChckListDto.getChkLstConfId())){
-                                    appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
-                                    if(ClinicalLaboratoryDelegator.PLEASEINDICATE.equals(appSvcChckListDto.getChkName())){
-                                        appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getOtherScopeName());
+            //get curr premises's appSvcChckListDto
+            List<AppSvcChckListDto> appSvcChckListDtoList = IaisCommonUtils.genNewArrayList();
+            List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList =appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+            List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcLaboratoryDisciplinesDtoList) && !StringUtil.isEmpty(premisesIndexNo)){
+                log.info(StringUtil.changeForLog("appSvcLaboratoryDisciplinesDtoList size:"+appSvcLaboratoryDisciplinesDtoList.size()));
+                for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto:appSvcLaboratoryDisciplinesDtoList){
+                    if(premisesIndexNo.equals(appSvcLaboratoryDisciplinesDto.getPremiseVal())){
+                        appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                        break;
+                    }
+                }
+                log.info(StringUtil.changeForLog("appSvcChckListDtoList size:"+appSvcChckListDtoList.size()));
+                for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtoList){
+                    AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = null;
+                    String chkSvcId = appSvcChckListDto.getChkLstConfId();
+                    if(!StringUtil.isEmpty(chkSvcId)){
+                        log.info(StringUtil.changeForLog("allocationDto size:"+allocationDto.size()));
+                        for(AppSvcDisciplineAllocationDto allocation:allocationDto){
+                            if(premisesIndexNo.equals(allocation.getPremiseVal()) && chkSvcId.equals(allocation.getChkLstConfId())){
+                                log.info(StringUtil.changeForLog("set chkName ..."));
+                                appSvcDisciplineAllocationDto = allocation;
+                                //set chkName
+                                appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
+                                //set selCgoName
+                                String idNo = allocation.getIdNo();
+                                if(!IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !StringUtil.isEmpty(idNo)){
+                                    for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtoList){
+                                        if(idNo.equals(appSvcCgoDto.getIdNo())){
+                                            log.info(StringUtil.changeForLog("set cgoSel ..."));
+                                            appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
+                                            break;
+                                        }
                                     }
                                 }
+                                break;
                             }
                         }
-                        //set selCgoName
-                        List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-                        if(appSvcCgoDtoList != null && appSvcCgoDtoList.size()>0){
-                            for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtoList){
-                                if(idNo.equals(appSvcCgoDto.getIdNo())){
-                                    appSvcDisciplineAllocationDto.setCgoSelName(appSvcCgoDto.getName());
-                                }
-                            }
+                        if(appSvcDisciplineAllocationDto == null){
+                            log.info(StringUtil.changeForLog("new AppSvcDisciplineAllocationDto"));
+                            appSvcDisciplineAllocationDto = new AppSvcDisciplineAllocationDto();
+                            appSvcDisciplineAllocationDto.setPremiseVal(premisesIndexNo);
+                            appSvcDisciplineAllocationDto.setChkLstConfId(appSvcChckListDto.getChkLstConfId());
+                            appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
                         }
                         reloadDisciplineAllocation.add(appSvcDisciplineAllocationDto);
                     }
                 }
+                reloadDisciplineAllocationMap.put(premisesIndexNo, reloadDisciplineAllocation);
             }
-            reloadDisciplineAllocationMap.put(premisesIndexNo, reloadDisciplineAllocation);
         }
-
+        log.info(StringUtil.changeForLog("get DisciplineAllocationDtoList end..."));
         return reloadDisciplineAllocationMap;
     }
 
