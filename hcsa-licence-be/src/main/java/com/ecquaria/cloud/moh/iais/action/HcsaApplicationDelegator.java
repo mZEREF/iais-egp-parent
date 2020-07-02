@@ -1394,7 +1394,7 @@ public class HcsaApplicationDelegator {
         String externalRemarks = ParamUtil.getString(bpc.request,"comments");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
-        boolean feAllUpdate = Boolean.FALSE;
+        boolean feAllUpdate = false;
         if(!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)){
             processDecision = nextStageReplys;
         }
@@ -1532,7 +1532,7 @@ public class HcsaApplicationDelegator {
                     applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
                     if(isAllSubmit){
-                        feAllUpdate = Boolean.TRUE;
+                        feAllUpdate = true;
                         //update current application status in db search result
                         updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
                         //get and set return fee
