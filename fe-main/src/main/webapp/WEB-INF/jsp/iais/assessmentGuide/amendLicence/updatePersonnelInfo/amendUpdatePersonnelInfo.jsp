@@ -21,8 +21,7 @@
 
     <div class="updateAdminPersonnel hidden">
         <div class="form-check-gp">
-            <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/updateAdminPersonnel.jsp" %>
-        </div>
+            <%@include file="/WEB-INF/jsp/iais/assessmentGuide/updateAdminPers/updateAdminPers.jsp" %>
     </div>
 </div>
 <div class="self-assessment-item assessment-level-2">

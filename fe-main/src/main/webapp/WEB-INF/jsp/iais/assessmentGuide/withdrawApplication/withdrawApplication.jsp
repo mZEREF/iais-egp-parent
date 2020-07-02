@@ -11,6 +11,10 @@
 <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2.jsp" %>
 <%@include file="../assessmentGuideMenuFoot.jsp" %>
 <script>
+    $(function () {
+        $(".assessment-level-2").attr("hidden","true")
+    });
+
     $("#withdrawApplication").attr('checked', 'true');
 
     function jumpToPagechangePage() {

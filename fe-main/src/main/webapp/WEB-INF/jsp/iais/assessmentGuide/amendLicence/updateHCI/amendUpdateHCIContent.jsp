@@ -1,6 +1,6 @@
 <div class="form-check-gp">
     <p class="form-check-title">You may select one HCI to amend at a time:</p>
-    <iais:pagination  param="PremisesSearchParam" result="PremisesSearchResult"/>
+    <iais:pagination  param="amendHCISearchParam" result="amendHCISearchResult"/>
     <div class="table-gp">
         <table class="table">
             <thead>
@@ -8,14 +8,14 @@
                 <th></th>
                 <iais:sortableHeader needSort="true"  field="NAME" value="Name"/>
                 <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises type"/>
-                <iais:sortableHeader needSort="false"  field="ADDRESS" value="Adderss"/>
+                <iais:sortableHeader needSort="true"  field="ADDRESS" value="Adderss"/>
                 <iais:sortableHeader needSort="true"  field="HCI_CONTACT_NO" value="Contact"/>
                 <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Actice Licence"/>
             </tr>
             </thead>
             <tbody>
             <c:choose>
-                <c:when test="${empty PremisesSearchResult.rows}">
+                <c:when test="${empty amendHCISearchResult.rows}">
                     <tr>
                         <td colspan="15">
                             <iais:message key="ACK018" escape="true"/>
@@ -23,7 +23,7 @@
                     </tr>
                 </c:when>
                 <c:otherwise>
-                    <c:forEach var="pool" items="${PremisesSearchResult.rows}" varStatus="status">
+                    <c:forEach var="pool" items="${amendHCISearchResult.rows}" varStatus="status">
                         <tr>
                             <td>
                                 <div class="form-check">

@@ -12,6 +12,8 @@
 <%@include file="../assessmentGuideMenuFoot.jsp" %>
 <script>
     $(function () {
+        $(".assessment-level-2").attr("hidden","true");
+
         $("#ceaseLicence").attr('checked', 'true');
     });
 

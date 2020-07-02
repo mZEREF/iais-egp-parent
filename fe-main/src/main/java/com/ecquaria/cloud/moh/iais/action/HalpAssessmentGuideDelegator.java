@@ -61,20 +61,6 @@ public class HalpAssessmentGuideDelegator {
 
     private String licenseeId;
 
-    private final FilterParameter premiseFilterParameter = new FilterParameter.Builder()
-            .clz(PremisesListQueryDto.class)
-            .searchAttr("PremisesSearchParam")
-            .resultAttr("PremisesSearchResult")
-            .sortField("PREMISES_TYPE").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(10).build();
-
-    private FilterParameter appParameter = new FilterParameter.Builder()
-            .clz(InboxAppQueryDto.class)
-            .searchAttr("appParam")
-            .resultAttr("appResult")
-            .sortField("CREATED_DT")
-            .sortType("DESC").build();
-
-
     public void start(BaseProcessClass bpc) {
         log.info("****start ******");
         AuditTrailHelper.auditFunction("HalpAssessmentGuideDelegator", "HalpAssessmentGuideDelegators");
@@ -84,6 +70,15 @@ public class HalpAssessmentGuideDelegator {
 
 
     public void perDate(BaseProcessClass bpc) {
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        licenseeId = loginContext.getLicenseeId();
+    }
+
+    public void prepareSwitch(BaseProcessClass bpc) {
+
+    }
+
+    public void newApp1(BaseProcessClass bpc) {
         List<HcsaServiceDto> hcsaServiceDtoList = assessmentGuideService.getServicesInActive();
         if (IaisCommonUtils.isEmpty(hcsaServiceDtoList)) {
             return;
@@ -96,29 +91,6 @@ public class HalpAssessmentGuideDelegator {
 
         ParamUtil.setRequestAttr(bpc.request, BASE_SERVICE_ATTR, allbaseService);
         ParamUtil.setRequestAttr(bpc.request, SPECIFIED_SERVICE_ATTR, allspecifiedService);
-
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        licenseeId = loginContext.getLicenseeId();
-
-        SearchParam appParam = SearchResultHelper.getSearchParam(bpc.request, appParameter, true);
-        appParam.addFilter("licenseeId", licenseeId, true);
-        appParam.addFilter("appStatus", ApplicationConsts.APPLICATION_STATUS_DRAFT, true);
-
-        QueryHelp.setMainSql("interInboxQuery", "applicationQuery", appParam);
-        SearchResult<InboxAppQueryDto> appResult = inboxService.appDoQuery(appParam);
-
-        if (!StringUtil.isEmpty(appResult)) {
-            ParamUtil.setSessionAttr(bpc.request, "appParam", appParam);
-            ParamUtil.setRequestAttr(bpc.request, "appResult", appResult);
-        }
-    }
-
-    public void prepareSwitch(BaseProcessClass bpc) {
-
-    }
-
-    public void newApp1(BaseProcessClass bpc) {
-
     }
 
     public void renewLic(BaseProcessClass bpc) throws IOException {
@@ -196,16 +168,14 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void amendLic2(BaseProcessClass bpc) {
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         log.info("****start ******");
-        String licenseeId = loginContext.getLicenseeId();
-        SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, premiseFilterParameter, true);
-        searchParam.addFilter("licenseeId", licenseeId, true);
-        QueryHelp.setMainSql("interInboxQuery", "queryPremises", searchParam);
-        SearchResult<PremisesListQueryDto> searchResult = requestForChangeService.searchPreInfo(searchParam);
-        if (!StringUtil.isEmpty(searchResult)) {
-            ParamUtil.setSessionAttr(bpc.request, "PremisesSearchParam", searchParam);
-            ParamUtil.setRequestAttr(bpc.request, "PremisesSearchResult", searchResult);
+        SearchParam amendHCISearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, "amendHCISearchParam",PremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
+        amendHCISearchParam.addFilter("licenseeId", licenseeId, true);
+        QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendHCISearchParam);
+        SearchResult<PremisesListQueryDto> amendHCISearchResult = requestForChangeService.searchPreInfo(amendHCISearchParam);
+        if (!StringUtil.isEmpty(amendHCISearchResult)) {
+            ParamUtil.setSessionAttr(bpc.request, "amendHCISearchParam", amendHCISearchParam);
+            ParamUtil.setRequestAttr(bpc.request, "amendHCISearchResult", amendHCISearchResult);
         }
         log.info("****end ******");
     }
@@ -379,56 +349,38 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void updateLicenceSort(BaseProcessClass bpc) {
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
 
     }
 
     public void updateLicencePage(BaseProcessClass bpc) {
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
 
     }
 
     public void addServicePage(BaseProcessClass bpc) {
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
 
     }
 
     public void addServiceSort(BaseProcessClass bpc) {
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
 
     }
 
     public void addRemovePersonalPage(BaseProcessClass bpc) {
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
 
     }
 
     public void addRemovePersonalSort(BaseProcessClass bpc) {
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
 
     }
 
     public void updateLicenceesPage(BaseProcessClass bpc) {
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
 
     }
 
     public void updateContactSort(BaseProcessClass bpc) {
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
 
     }
 
     public void updateContactPage(BaseProcessClass bpc) {
-        SearchParam searchParam = IaisEGPHelper.getSearchParam(bpc.request, appParameter);
-        CrudHelper.doPaging(searchParam,bpc.request);
 
     }
 

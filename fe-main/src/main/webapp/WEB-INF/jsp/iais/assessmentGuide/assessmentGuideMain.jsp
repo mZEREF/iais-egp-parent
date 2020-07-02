@@ -5,6 +5,9 @@
 <div class="self-assessment-item"></div>
 <%@include file="assessmentGuideMenuFoot.jsp" %>
 <script>
+    $("#applyLicence").click(function(){
+        SOP.Crud.cfxSubmit("mainForm", "new1");
+    });
     $("#ceaseLicence").click(function(){
         SOP.Crud.cfxSubmit("mainForm", "cease");
     });
