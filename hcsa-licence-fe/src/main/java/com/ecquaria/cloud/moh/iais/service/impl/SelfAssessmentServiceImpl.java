@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.IaisApiStatusCode;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -281,11 +280,11 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     }
 
     @Override
-    public Boolean saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList) {
-        boolean successSubmit = false;
+    public Boolean saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList, String applicationNumber) {
+        boolean retSubmit = false;
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
-            successSubmit = true;
+            retSubmit = true;
 
            try {
                List<String> sendEmailAddress = selfAssessmentList.stream().map(SelfAssessment::getCorrId).collect(Collectors.toList());
@@ -294,8 +293,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 log.error(StringUtil.changeForLog("encounter failure when self decl send notification"), e);
             }
 
-
             FeSelfAssessmentSyncDataDto include = new FeSelfAssessmentSyncDataDto();
+            include.setApplicationNumber(applicationNumber);
             include.setFeSyncData(result.getEntity());
             EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
                     SelfAssessmentServiceImpl.class.getName(),
@@ -323,7 +322,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             }
         }
 
-        return successSubmit;
+        return retSubmit;
     }
 
     @Override
@@ -408,5 +407,10 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     signature2.date(), signature2.authorization());
             log.info("create fe reply task end");
         }
+    }
+
+    @Override
+    public AppPremisesCorrelationDto getCorrelationByAppNo(String appNo) {
+        return applicationClient.getCorrelationByAppNo(appNo).getEntity();
     }
 }

@@ -50,6 +50,9 @@ import java.util.Map;
 @FeignClient(name = "hcsa-application", configuration = FeignConfiguration.class,
         fallback = ApplicationClientFallback.class)
 public interface ApplicationClient  {
+    @GetMapping(value = "/iais-application/correlation/application-number",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesCorrelationDto> getCorrelationByAppNo(@RequestParam("appNo") String appNo);
+
     @PostMapping(path = "/iais-application/all-file",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> fileAll(@RequestBody List<String> grpids);
 

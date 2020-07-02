@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 
 import java.util.List;
 
@@ -17,11 +18,13 @@ public interface SelfAssessmentService {
 
     List<SelfAssessment> receiveSelfAssessmentRfiByCorrId(String corrId);
 
-    Boolean saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList);
+    Boolean saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList, String applicationNumber);
 
     Boolean hasSubmittedSelfAssMtByGroupId(String groupId);
 
     Boolean hasSubmittedSelfAssMtRfiByCorrId(String corrId);
 
     void changePendingSelfAssMtStatus(String value, Boolean isGroupId);
+
+    AppPremisesCorrelationDto getCorrelationByAppNo(String appNo);
 }
