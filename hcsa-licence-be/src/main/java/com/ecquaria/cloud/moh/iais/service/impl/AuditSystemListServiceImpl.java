@@ -325,18 +325,22 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         updateAppCancelTaskByEventBus(auditCombinationDto,submitId);
         updateTaskCancelTaskByEventBus(auditCombinationDto,submitId);
 
-        // sysn fe app
-        log.info("========================>>>>>sysn fe app !!!!");
-        String groupNo = applicationClient.getRefNoByRefNo(RefNo).getEntity();
-        AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(groupNo).getEntity();
-        appSubmissionForAuditDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        saveAppForAuditToFe(appSubmissionForAuditDto,true);
-
+        try{
+            // sysn fe app
+            log.info("========================>>>>>sysn fe app !!!!");
+            String groupNo = applicationClient.getRefNoByRefNo(RefNo).getEntity();
+            AppSubmissionForAuditDto appSubmissionForAuditDto = applicationClient.getAppSubmissionForAuditDto(groupNo).getEntity();
+            appSubmissionForAuditDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            saveAppForAuditToFe(appSubmissionForAuditDto,true);
         //send email to insp
         if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
             sendEmailToIns(temp.getInspector(),MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK,groupNo,temp.getUserIdToEmails().get(temp.getInspector()));
         }else {
             log.info("-----------Inspector id is null or UserIdToEmails is null");
+        }
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
         }
 
     }
