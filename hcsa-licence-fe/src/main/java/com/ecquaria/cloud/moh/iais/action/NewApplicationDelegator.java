@@ -2471,7 +2471,8 @@ public class NewApplicationDelegator {
     private String getServiceCodeString(List<String> serviceCodeList){
         StringBuilder serviceCodeString = new StringBuilder();
         for(String code : serviceCodeList){
-            serviceCodeString.append(code + "@");
+            serviceCodeString.append(code);
+            serviceCodeString.append("@");
         }
         return serviceCodeString.toString();
     }
