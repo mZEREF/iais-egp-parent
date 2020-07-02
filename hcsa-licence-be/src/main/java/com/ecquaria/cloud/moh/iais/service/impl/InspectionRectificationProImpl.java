@@ -207,7 +207,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
         for(TaskDto tDto : taskDtoList){
             if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING) || tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)) {
                 tDto.setSlaDateCompleted(new Date());
-                tDto.setSlaRemainInDays(taskService.remainDays(taskDto));
+                tDto.setSlaRemainInDays(0);
                 tDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
                 tDto.setAuditTrailDto(auditTrailDto);
                 taskService.updateTask(tDto);
