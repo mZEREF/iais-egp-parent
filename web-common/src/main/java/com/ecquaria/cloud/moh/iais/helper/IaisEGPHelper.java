@@ -33,19 +33,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.egp.api.EGPHelper;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.sqlite.date.FastDateFormat;
-import sop.iwe.SessionManager;
-import sop.rbac.user.User;
-import sop.servlet.webflow.HttpHandler;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -56,6 +45,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.sqlite.date.FastDateFormat;
+import sop.iwe.SessionManager;
+import sop.rbac.user.User;
+import sop.servlet.webflow.HttpHandler;
 
 import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 import static org.eclipse.jdt.internal.compiler.util.Util.UTF_8;
@@ -492,8 +496,9 @@ public final class IaisEGPHelper extends EGPHelper {
     private IaisEGPHelper() {throw new IllegalStateException("Utility class");}
 
     public static int getCompareDate(Date startDate,Date endDate){
-        if(startDate == null || endDate == null)
+        if(startDate == null || endDate == null) {
             return  -1;
+        }
         Calendar calendarStart = Calendar.getInstance();
         calendarStart.setTime(startDate);
         Calendar calendarEnd = Calendar.getInstance();
@@ -515,5 +520,26 @@ public final class IaisEGPHelper extends EGPHelper {
         }else {
             return day2-day1+1;
         }
+    }
+
+    public static HttpHeaders getHttpHeadersForEic(MediaType mediaType, String date, String authorization, String dateSec,
+                                                   String authorizationSec) {
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(mediaType);
+        header.set("date", date);
+        header.set("authorization", authorization);
+        header.set("date-Secondary", dateSec);
+        header.set("authorization-Secondary", authorizationSec);
+
+        return header;
+    }
+
+    public static FeignResponseEntity<T> genFeignRespFromResp(ResponseEntity<T> response) {
+        FeignResponseEntity resEnt = new FeignResponseEntity();
+        resEnt.setEntity(response.getBody());
+        resEnt.setHeaders(response.getHeaders());
+        resEnt.setStatusCode(response.getStatusCodeValue());
+
+        return resEnt;
     }
 }
