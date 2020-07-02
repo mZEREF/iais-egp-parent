@@ -2,34 +2,51 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
-import com.ecquaria.cloudfeign.FeignConfiguration;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @author: yichen
  * @date time:2/25/2020 1:08 PM
  * @description:
  */
-@FeignClient(value = "eicgate", url="${iais.intra.gateway.url}", configuration = {FeignConfiguration.class},
-		fallback = EicGatewayClientFallBack.class)
-public interface EicGatewayClient {
-	@PutMapping(value = "/v1/sys-params",consumes = MediaType.APPLICATION_JSON_VALUE)
-	FeignResponseEntity<String> saveSystemParameterFe(@RequestBody SystemParameterDto systemParameterDto,
-	                                                      @RequestHeader("date") String date,
-	                                                      @RequestHeader("authorization") String authorization,
-	                                                      @RequestHeader("date-Secondary") String dateSec,
-	                                                      @RequestHeader("authorization-Secondary") String authorizationSec);
+@Component
+public class EicGatewayClient {
+	@Autowired
+	private RestTemplate restTemplate;
+	@Value("${iais.intra.gateway.url}")
+	private String gateWayUrl;
 
-	@PostMapping(value = "/v1/message-configs",consumes = MediaType.APPLICATION_JSON_VALUE)
-	FeignResponseEntity<MessageDto> syncMessageToFe(@RequestBody MessageDto messageDto,
-															  @RequestHeader("date") String date,
-															  @RequestHeader("authorization") String authorization,
-															  @RequestHeader("date-Secondary") String dateSec,
-															  @RequestHeader("authorization-Secondary") String authorizationSec);
+	public FeignResponseEntity<String> saveSystemParameterFe(SystemParameterDto systemParameterDto, String date,
+	                                                      String authorization, String dateSec, String authorizationSec) {
+		HttpHeaders header = IaisEGPHelper.getHttpHeadersForEic(MediaType.APPLICATION_JSON, date, authorization,
+				dateSec, authorizationSec);
+		HttpEntity<SystemParameterDto> jsonPart = new HttpEntity<>(systemParameterDto, header);
+		ResponseEntity response = restTemplate.exchange(restTemplate + "/v1/sys-params", HttpMethod.PUT,
+				jsonPart, String.class);
+		FeignResponseEntity<String> resEnt = IaisEGPHelper.genFeignRespFromResp(response);
+
+		return resEnt;
+	}
+
+	FeignResponseEntity<MessageDto> syncMessageToFe(MessageDto messageDto, String date, String authorization,
+												  String dateSec, String authorizationSec) {
+		HttpHeaders header = IaisEGPHelper.getHttpHeadersForEic(MediaType.APPLICATION_JSON, date, authorization,
+				dateSec, authorizationSec);
+		HttpEntity<MessageDto> jsonPart = new HttpEntity<>(messageDto, header);
+		ResponseEntity response = restTemplate.exchange(restTemplate + "/v1/message-configs", HttpMethod.POST,
+				jsonPart, String.class);
+		FeignResponseEntity<MessageDto> resEnt = IaisEGPHelper.genFeignRespFromResp(response);
+
+		return resEnt;
+	}
 }
