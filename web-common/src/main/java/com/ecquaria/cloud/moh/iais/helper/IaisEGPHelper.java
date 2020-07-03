@@ -564,7 +564,7 @@ public final class IaisEGPHelper extends EGPHelper {
         } else {
             entity = new HttpEntity(header);
         }
-        RestTemplate restTemplate = SpringContextHelper.getContext().getBean(RestTemplate.class);
+        RestTemplate restTemplate = SpringContextHelper.getContext().getBean("restTemplate", RestTemplate.class);
         ResponseEntity response = restTemplate.exchange(url, httpMethod,
                 entity, responseCls);
         FeignResponseEntity<T> resEnt = IaisEGPHelper.genFeignRespFromResp(response);
