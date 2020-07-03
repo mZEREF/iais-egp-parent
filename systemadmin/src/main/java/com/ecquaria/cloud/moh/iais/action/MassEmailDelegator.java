@@ -35,6 +35,7 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -202,7 +203,7 @@ public class MassEmailDelegator {
         ParamUtil.setRequestAttr(bpc.request,"title","Edit");
     }
 
-    public void insertFile(BaseProcessClass bpc){
+    public void insertFile(BaseProcessClass bpc) throws IOException{
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         DistributionListWebDto distributionListWebDto = getDistribution(bpc);
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
@@ -291,13 +292,14 @@ public class MassEmailDelegator {
         ParamUtil.setRequestAttr(bpc.request,"crud_action_type",type);
     }
 
-    private List<String> getAllData(MultipartFile mulfile){
+    private List<String> getAllData(MultipartFile mulfile) throws IOException {
         List<String> list = IaisCommonUtils.genNewArrayList();
+        XSSFWorkbook hb= null;
         try{
             File file = null;
             file = File.createTempFile("temp", null);
             mulfile.transferTo(file);
-            XSSFWorkbook hb=new XSSFWorkbook(file);
+            hb=new XSSFWorkbook(file);
             XSSFSheet sheet=hb.getSheetAt(0);
             int firstrow=    sheet.getFirstRowNum() + 1;
             int lastrow=    sheet.getLastRowNum();
@@ -321,7 +323,7 @@ public class MassEmailDelegator {
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }finally {
-
+            hb.close();
         }
         return list;
     }
