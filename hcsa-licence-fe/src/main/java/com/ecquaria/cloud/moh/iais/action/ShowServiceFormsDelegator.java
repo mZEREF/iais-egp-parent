@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +64,8 @@ public class ShowServiceFormsDelegator {
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_TAB,getFirstTab(bpc));
         }
 
-        String svcId = serviceConfigService.getSvcIdBySvcCode(actionTab);
-
+//        String svcId = serviceConfigService.getSvcIdBySvcCode(actionTab);
+        String svcId = HcsaServiceCacheHelper.getServiceByCode(actionTab).getId();
         List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
         ServiceStepDto serviceStepDto = new ServiceStepDto();
         serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);

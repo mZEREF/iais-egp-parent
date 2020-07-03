@@ -391,7 +391,7 @@ public class ServiceMenuDelegator {
             if(searchResult != null && searchResult.getRowCount() > 0){
                 hasExistBase = true;
             }
-            ParamUtil.setRequestAttr(bpc.request,HAS_EXISTING_BASE,true);
+            ParamUtil.setRequestAttr(bpc.request,HAS_EXISTING_BASE,hasExistBase);
         }
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         Map<HcsaServiceDto,List<HcsaServiceDto>> baseAndSpcSvcMap = (Map<HcsaServiceDto, List<HcsaServiceDto>>) ParamUtil.getSessionAttr(bpc.request,BASEANDSPCSVCMAP);
@@ -1214,7 +1214,11 @@ public class ServiceMenuDelegator {
                     a.retainAll(b);
                     return a;
                 });
-        return result.get();
+        List<AppAlignLicQueryDto> appAlignLicQueryDtos = IaisCommonUtils.genNewArrayList();
+        if(result.isPresent()){
+            appAlignLicQueryDtos = result.get();
+        }
+        return appAlignLicQueryDtos;
     }
 
     private static AppAlignLicQueryDto getAppAlignLicQueryDto(Map<String,List<AppAlignLicQueryDto>> baseLicMap,String svcName,String hciCode){
