@@ -546,6 +546,7 @@ public class RoundRobinCommPoolBatchJob {
                     appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
+                    appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
                     filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
                 }
             }
