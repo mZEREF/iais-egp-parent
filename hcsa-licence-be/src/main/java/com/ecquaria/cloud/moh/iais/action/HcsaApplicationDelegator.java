@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -53,6 +54,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -173,6 +175,8 @@ public class HcsaApplicationDelegator {
     private AppPremisesCorrClient appPremisesCorrClient;
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
 
     @Value("${iais.email.sender}")
@@ -1060,7 +1064,17 @@ public class HcsaApplicationDelegator {
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
         String externalRemarks = ParamUtil.getString(bpc.request,"comments");
+        String applicationType = applicationDto.getApplicationType();
         try{
+            if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
+                AppPremiseMiscDto premiseMiscDto = (AppPremiseMiscDto)ParamUtil.getSessionAttr(bpc.request, "premiseMiscDto");
+                if(!StringUtil.isEmpty(oldApplicationNo) && premiseMiscDto != null){
+                    HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+                    String appealType = premiseMiscDto.getAppealType();
+                    sendAppealMessage(oldApplicationNo,licenseeId,maskParams,applicationDto.getServiceId(),appealType);
+                }
+            }
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);
         }catch (Exception e){
             log.error(StringUtil.changeForLog("send application RfiAndEmail error"));
@@ -1167,6 +1181,20 @@ public class HcsaApplicationDelegator {
     //***************************************
     //private methods
     //*************************************
+
+    private void sendAppealMessage(String appealingFor, String licenseeId,HashMap<String, String> maskParams,String serviceId,String appealType){
+        if(StringUtil.isEmpty(appealingFor)
+                || StringUtil.isEmpty(licenseeId)
+                || StringUtil.isEmpty(serviceId)
+                || StringUtil.isEmpty(appealType)){
+            return;
+        }
+        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ MessageConstants.MESSAGE_CALL_BACK_URL_Appeal+appealingFor+"&type="+appealType;
+        String subject = "Appeal Message";
+        String mesContext = "<a href='" + url + "'>appeal link</a>";
+        //send message
+        sendMessage(subject,licenseeId,mesContext,maskParams,serviceId);
+    }
 
     private AppPremisesRecommendationDto getClearRecommendationDto(String appPremCorreId, String dateStr, String dateTimeShow) throws Exception{
         AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
@@ -1624,13 +1652,16 @@ public class HcsaApplicationDelegator {
     }
 
     private void sendInboxMessage(String licenseeId,HashMap<String, String> maskParams,String templateMessageByContent,String serviceId,String subject){
+        HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         String refNo = inboxMsgService.getMessageNo();
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
         interMessageDto.setSubject(subject);
         interMessageDto.setRefNo(refNo);
-        interMessageDto.setService_id(serviceId);
+        if(serviceDto != null){
+            interMessageDto.setService_id(serviceDto.getSvcCode()+"@");
+        }
         interMessageDto.setUserId(licenseeId);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         interMessageDto.setMsgContent(templateMessageByContent);
