@@ -386,7 +386,7 @@ public class HcsaApplicationDelegator {
                 if(!StringUtil.isEmpty(dateStr)){
                     Date date = Formatter.parseDate(dateStr);
                     appPremisesRecommendationDto.setRecomInDate(date);
-                }else if(!StringUtil.isEmpty(dateTimeShow)){
+                }else if(!StringUtil.isEmpty(dateTimeShow) && !"-".equals(dateTimeShow)){
                     Date date = Formatter.parseDate(dateTimeShow);
                     appPremisesRecommendationDto.setRecomInDate(date);
                 }
@@ -426,7 +426,7 @@ public class HcsaApplicationDelegator {
                 if(!StringUtil.isEmpty(dateStr)){
                     Date date = Formatter.parseDate(dateStr);
                     appPremisesRecommendationDto.setRecomInDate(date);
-                }else if(!StringUtil.isEmpty(dateTimeShow)){
+                }else if(!StringUtil.isEmpty(dateTimeShow) && !"-".equals(dateTimeShow)){
                     Date date = Formatter.parseDate(dateTimeShow);
                     appPremisesRecommendationDto.setRecomInDate(date);
                 }
@@ -1177,7 +1177,7 @@ public class HcsaApplicationDelegator {
         if(!StringUtil.isEmpty(dateStr)){
             Date date = Formatter.parseDate(dateStr);
             appPremisesRecommendationDto.setRecomInDate(date);
-        }else if(!StringUtil.isEmpty(dateTimeShow)){
+        }else if(!StringUtil.isEmpty(dateTimeShow) && !"-".equals(dateTimeShow)){
             Date date = Formatter.parseDate(dateTimeShow);
             appPremisesRecommendationDto.setRecomInDate(date);
         }
