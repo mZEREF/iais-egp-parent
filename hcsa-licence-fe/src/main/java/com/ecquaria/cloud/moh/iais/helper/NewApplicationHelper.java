@@ -547,19 +547,31 @@ public class NewApplicationHelper {
     }
 
     public static String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption, String checkedVal){
-        StringBuffer sBuffer = new StringBuffer();
+        StringBuilder sBuffer = new StringBuilder(100);
         sBuffer.append("<select ");
         for(Map.Entry<String, String> entry : premisesOnSiteAttr.entrySet()){
-            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
+//            sBuffer.append(entry.getKey()+"=\""+entry.getValue()+"\" ");
+            sBuffer.append(entry.getKey())
+                    .append("=\"")
+                    .append(entry.getValue())
+                    .append("\"");
         }
         sBuffer.append(" >");
         if(!StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
+//            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
+            sBuffer.append("<option value=\"\"")
+                    .append(firestOption)
+                    .append("</option>");
         }
         for(SelectOption sp:selectOptionList){
             if(!StringUtil.isEmpty(checkedVal)){
                 if(checkedVal.equals(sp.getValue())){
-                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+//                    sBuffer.append("<option selected=\"selected\" value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                    sBuffer.append("<option selected=\"selected\" value=\"")
+                            .append(sp.getValue())
+                            .append("\">")
+                            .append(sp.getText())
+                            .append("</option>");
                 }else{
                     sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
                 }

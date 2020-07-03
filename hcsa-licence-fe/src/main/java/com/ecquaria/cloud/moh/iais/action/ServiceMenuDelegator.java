@@ -1019,7 +1019,7 @@ public class ServiceMenuDelegator {
         StringBuilder sb = new StringBuilder("(");
         int i =0;
         for (String item: baselist) {
-            sb.append(":itemKey" + i).append(',');
+            sb.append(":itemKey").append(i).append(',');
             i++;
         }
         String inSql = sb.substring(0, sb.length() - 1) + ")";
