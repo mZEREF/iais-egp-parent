@@ -614,7 +614,7 @@ public class NewApplicationDelegator {
 
             Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
             List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            StringBuilder sB =new StringBuilder();
+            StringBuilder sB =new StringBuilder(10);
 
             for(int i=0;i< dto.size();i++ ){
                 String serviceId = dto.get(i).getServiceId();
@@ -1089,7 +1089,7 @@ public class NewApplicationDelegator {
     }
 
     public void jumpYeMian(HttpServletRequest request , HttpServletResponse response) throws IOException {
-        StringBuilder url = new StringBuilder();
+        StringBuilder url = new StringBuilder(10);
         url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
         response.sendRedirect(tokenUrl);
@@ -1127,7 +1127,7 @@ public class NewApplicationDelegator {
         String appGrpNo = appSubmissionDto.getAppGrpNo();
         //oldAppSubmissionDtos
         List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
-        StringBuilder stringBuilder=new StringBuilder();
+        StringBuilder stringBuilder=new StringBuilder(10);
         stringBuilder.append(appSubmissionDto.toString());
         log.info(StringUtil.changeForLog("appSubmissionDto:"+stringBuilder.toString()));
         stringBuilder.setLength(0);
@@ -2293,7 +2293,7 @@ public class NewApplicationDelegator {
             }catch (Exception e){
                 log.error(StringUtil.changeForLog("send email error ...."));
             }
-            StringBuilder url = new StringBuilder();
+            StringBuilder url = new StringBuilder(10);
             url.append("https://").append(bpc.request.getServerName())
                     .append("/payment-web/eservice/INTERNET/PaymentRequest")
                     .append("?amount=").append(MaskUtil.maskValue("amount",String.valueOf(appSubmissionDto.getAmount())))
@@ -2461,10 +2461,10 @@ public class NewApplicationDelegator {
     }
 
     private String getServiceCodeString(List<String> serviceCodeList){
-        StringBuilder serviceCodeString = new StringBuilder();
+        StringBuilder serviceCodeString = new StringBuilder(10);
         for(String code : serviceCodeList){
             serviceCodeString.append(code);
-            serviceCodeString.append("@");
+            serviceCodeString.append('@');
         }
         return serviceCodeString.toString();
     }
@@ -2620,7 +2620,7 @@ public class NewApplicationDelegator {
     }
 
     private Map<String,String> doComChange( AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
-        StringBuilder sB=new StringBuilder();
+        StringBuilder sB=new StringBuilder(10);
         Map<String,String> result=IaisCommonUtils.genNewHashMap();
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if(appEditSelectDto!=null){
@@ -3163,7 +3163,7 @@ public class NewApplicationDelegator {
     }
 
     public Map<String,String> doPreviewAndSumbit( BaseProcessClass bpc){
-        StringBuilder sB=new StringBuilder();
+        StringBuilder sB=new StringBuilder(10);
         Map<String,String> previewAndSubmitMap=IaisCommonUtils.genNewHashMap();
         //
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -3640,7 +3640,7 @@ public class NewApplicationDelegator {
             String psnType = poDto.get(i).getPsnType();
             if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)){
 
-                StringBuilder stringBuilder =new StringBuilder();
+                StringBuilder stringBuilder =new StringBuilder(10);
 
                 String assignSelect = poDto.get(i).getAssignSelect();
                 if ("-1".equals(assignSelect)) {
@@ -3730,7 +3730,7 @@ public class NewApplicationDelegator {
             }
 
             if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)){
-                StringBuilder stringBuilder =new StringBuilder();
+                StringBuilder stringBuilder =new StringBuilder(10);
                 String salutation = poDto.get(i).getSalutation();
                 String name = poDto.get(i).getName();
                 String idType = poDto.get(i).getIdType();
@@ -4241,7 +4241,7 @@ public class NewApplicationDelegator {
                 if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
                     errorMap.put("premisesSelect"+i, "UC_CHKLMD001_ERR001");
                 } else if ( needValidate||!StringUtil.isEmpty(premisesSelect)||"newPremise".equals(premisesSelect) ) {
-                    StringBuilder stringBuilder=new StringBuilder();
+                    StringBuilder stringBuilder=new StringBuilder(10);
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
                         String onsiteStartHH = appGrpPremisesDtoList.get(i).getOnsiteStartHH();
                         String onsiteStartMM = appGrpPremisesDtoList.get(i).getOnsiteStartMM();
