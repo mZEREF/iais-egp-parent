@@ -267,4 +267,12 @@ public class LicenceInFallback implements LicenceClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<Boolean> getOtherLicseePremises(String licenseeId, String premisesHci) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

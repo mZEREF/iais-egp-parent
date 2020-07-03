@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -28,10 +27,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
@@ -45,7 +42,6 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -729,6 +725,27 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
                             }
                         }
+                        //0065116
+                        String hciNameUsed = errorMap.get("hciNameUsed");
+                        String isOtherLic = errorMap.get("isOtherLic"+i);
+                        String licenseeId = appSubmissionDto.getLicenseeId();
+                        //new
+                        if(newTypeFlag || (rfi && clickEdit)){
+                            if(StringUtil.isEmpty(isOtherLic) && StringUtil.isEmpty(hciNameUsed) && errorMap.size() == 0){
+                                String premisesHci = hciName + NewApplicationHelper.getPremKey(appGrpPremisesDto);
+                                Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci).getEntity();
+                                if(flag){
+                                    errorMap.put("hciNameUsed","Please take note this premises address is licenced under another licensee");
+                                }
+                            }else if(StringUtil.isEmpty(isOtherLic) && !StringUtil.isEmpty(hciNameUsed) && errorMap.size() == 1){
+                                String premisesHci = hciName + NewApplicationHelper.getPremKey(appGrpPremisesDto);
+                                Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci).getEntity();
+                                if(flag){
+                                    errorMap.put("hciNameUsed",hciNameUsed+"<br/>Please take note this premises address is licenced under another licensee");
+                                }
+                            }
+                        }
+
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
                         String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
                         String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();

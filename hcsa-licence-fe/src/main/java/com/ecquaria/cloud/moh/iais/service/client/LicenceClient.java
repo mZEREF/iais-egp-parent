@@ -124,4 +124,8 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence-rfc/licence-premises-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPremisesDto>> getLicPremisesById(@RequestParam("id") String id);
+
+    @GetMapping(value = "/hcsa-licence/other-licensee-premises")
+    FeignResponseEntity<Boolean> getOtherLicseePremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("premisesHci")String premisesHci);
+
 }

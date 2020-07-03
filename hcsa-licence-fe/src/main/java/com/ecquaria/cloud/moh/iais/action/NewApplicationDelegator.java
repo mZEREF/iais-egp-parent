@@ -643,6 +643,10 @@ public class NewApplicationDelegator {
                 bpc.request.setAttribute("hciNameUsed","hciNameUsed");
             }
             if(errorMap.size()>0){
+                String hciNameUsed = errorMap.get("hciNameUsed");
+                if(!StringUtil.isEmpty(hciNameUsed)){
+                    ParamUtil.setRequestAttr(bpc.request,"newAppPopUpMsg",hciNameUsed);
+                }
                 ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"premises");
                 bpc.request.setAttribute("errormapIs","error");
