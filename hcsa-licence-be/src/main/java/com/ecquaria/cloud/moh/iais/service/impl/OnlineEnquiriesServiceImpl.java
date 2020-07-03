@@ -547,10 +547,11 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appCorrelationDto.getApplicationId()).getEntity();
             appPremisesCorrelationDtos.add(appPremisesCorrelationDto);
         }
-        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremisesCorrelationDtos.get(indexNo).getId());
+        ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremisesCorrelationDtos.get(0).getId());
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
         ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
-        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDtos.get(indexNo).getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationDtos.get(0).getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        AppPremisesRecommendationDto appPremisesRecommendationDto = appPremisesRecommendationDtos.get(indexNo);
         appPremisesRecommendationDto.setChronoUnit(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getChronoUnit()}).get(0).getText());
         LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
         if(licenceDto!=null){
@@ -558,7 +559,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             appPremisesRecommendationDto.setPeriod(sdf.format(licenceDto.getStartDate())+"-"+sdf.format(licenceDto.getExpiryDate()));
         }
         appPremisesRecommendationDto.setRecomDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getRecomDecision()}).get(0).getText());
-        String risk=fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDtos.get(indexNo).getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity().getRecomDecision();
+        String risk=fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDtos.get(0).getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity().getRecomDecision();
         appPremisesRecommendationDto.setRiskLevel(MasterCodeUtil.retrieveOptionsByCodes(new String[]{risk}).get(0).getValue());
         ParamUtil.setSessionAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         // 		preInspReport->OnStepProcess
