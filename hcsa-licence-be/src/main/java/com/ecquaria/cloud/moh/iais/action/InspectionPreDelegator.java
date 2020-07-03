@@ -218,7 +218,9 @@ public class InspectionPreDelegator {
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionPreTaskDto,"prerfi");
             //choose rfi app and don't check app pop-up windows, is error
             //NOSONAR
-            validationResult = validateAppRfiCheck(validationResult, preInspRfiCheck, bpc);
+            if(preInspRfiCheck != null) {
+                validationResult = validateAppRfiCheck(validationResult, preInspRfiCheck, bpc);
+            }
             if (validationResult.isHasErrors()) {
                 Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
