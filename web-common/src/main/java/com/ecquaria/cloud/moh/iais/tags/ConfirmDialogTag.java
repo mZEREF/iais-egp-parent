@@ -2,12 +2,11 @@ package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 
 /**
  * ConfirmDialogTag
@@ -30,6 +29,7 @@ public class ConfirmDialogTag extends TagSupport {
     private String cancelBtnDesc;
     private String cancelBtnCls;
     private String cancelFunc;
+    private boolean needEscapHtml;
 
     public ConfirmDialogTag() {
         super();
@@ -49,6 +49,7 @@ public class ConfirmDialogTag extends TagSupport {
         setCancelBtnDesc("");
         setNeedCancel(true);
         setNeedFungDuoJi(true);
+        setNeedEscapHtml(true);
     }
 
     // Releases any resources we may have (or inherit)
@@ -80,7 +81,11 @@ public class ConfirmDialogTag extends TagSupport {
             html.append("<input type=\"hidden\" name=\"fangDuoJi").append(divId).append("\" id=\"fangDuoJi").append(divId).append("\"/>");
         }
         html.append("<div class=\"col-md-8 col-md-offset-2\"><span style=\"font-size: 2rem\">");
-        html.append(StringUtil.viewHtml(MessageUtil.getMessageDesc(msg)));
+        if (needEscapHtml) {
+            html.append(StringUtil.viewHtml(MessageUtil.getMessageDesc(msg)));
+        } else {
+            html.append(MessageUtil.getMessageDesc(msg));
+        }
         html.append("</span></div></div></div>");
         html.append("<div class=\"modal-footer\">");
         html.append("<button type=\"button\" class=\"");
@@ -181,5 +186,9 @@ public class ConfirmDialogTag extends TagSupport {
 
     public void setCancelBtnCls(String cancelBtnCls) {
         this.cancelBtnCls = cancelBtnCls;
+    }
+
+    public void setNeedEscapHtml(boolean needEscapHtml) {
+        this.needEscapHtml = needEscapHtml;
     }
 }
