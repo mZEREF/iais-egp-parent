@@ -487,6 +487,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         for (RiskResultDto riskResultDto : riskResultDtoList) {
             if (serviceCode.equals(riskResultDto.getSvcCode())) {
                 result = riskResultDto;
+                break;
             }
         }
         return result;

@@ -132,7 +132,7 @@ public class CessationBeServiceImpl implements CessationBeService {
 
     @Override
     public List<String> saveCessations(List<AppCessationDto> appCessationDtos, String licenseeId) {
-        if(StringUtil.isEmpty(licenseeId)){
+        if (StringUtil.isEmpty(licenseeId)) {
             licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
         }
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
@@ -151,17 +151,17 @@ public class CessationBeServiceImpl implements CessationBeService {
             }
         }
         Map<String, String> appIdPremisesMap = IaisCommonUtils.genNewHashMap();
-        for (String licId : licPremiseIdMap.keySet()) {
+        String finalLicenseeId = licenseeId;
+        licPremiseIdMap.forEach((licId, premiseIds) -> {
             List<String> licIds = IaisCommonUtils.genNewArrayList();
             licIds.clear();
             licIds.add(licId);
             AppSubmissionDto appSubmissionDto = hcsaLicenceClient.getAppSubmissionDtos(licIds).getEntity().get(0);
-            List<String> premiseIds = licPremiseIdMap.get(licId);
-            Map<String, String> transform = transform(appSubmissionDto, licenseeId, premiseIds);
+            Map<String, String> transform = transform(appSubmissionDto, finalLicenseeId, premiseIds);
             appIdPremisesMap.putAll(transform);
-        }
-        for (String premiseId : appIdPremisesMap.keySet()) {
-            String appId = appIdPremisesMap.get(premiseId);
+        });
+
+        appIdPremisesMap.forEach((premiseId, appId) -> {
             for (AppCessationDto appCessationDto : appCessationDtos) {
                 String premiseId1 = appCessationDto.getPremiseId();
                 if (premiseId.equals(premiseId1)) {
@@ -170,7 +170,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     appIds.add(appId);
                 }
             }
-        }
+        });
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
         return appIds;
     }
@@ -244,13 +244,13 @@ public class CessationBeServiceImpl implements CessationBeService {
             String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
             String applicationNo = applicationDto.getApplicationNo();
             Date effectiveDate = appCessationDto.getEffectiveDate();
-            try{
+            try {
                 if (effectiveDate.after(new Date())) {
                     sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 } else {
                     sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.getMessage();
                 log.info("======send email error");
             }
@@ -319,9 +319,9 @@ public class CessationBeServiceImpl implements CessationBeService {
         taskService.createHistorys(appPremisesRoutingHistoryDtos);
     }
 
-    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId) {
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
-        for(ApplicationDto applicationDto : applicationDtos){
+        for (ApplicationDto applicationDto : applicationDtos) {
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
             hcsaSvcStageWorkingGroupDto.setStageId(stageId);
             hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());

@@ -1175,7 +1175,7 @@ public class RequestForChangeMenuDelegator {
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
             String backUrl = "hcsa-licence-web/eservice/INTERNET/MohRfcPersonnelList/1/ack";
-            StringBuffer url = new StringBuffer();
+            StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/payment-web/eservice/INTERNET/PaymentRequest")
                     .append("?amount=").append(MaskUtil.maskValue("amount", String.valueOf(appSubmissionDtos.get(0).getAmount())))

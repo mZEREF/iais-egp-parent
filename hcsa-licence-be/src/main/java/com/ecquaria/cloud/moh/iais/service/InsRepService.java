@@ -21,8 +21,7 @@ import java.util.List;
  */
 public interface InsRepService {
 
-    InspectionReportDto getInsRepDto (TaskDto taskDto, ApplicationViewDto applicationViewDto , LoginContext loginContext) throws FeignException;
-
+    InspectionReportDto getInsRepDto (TaskDto taskDto, ApplicationViewDto applicationViewDto , LoginContext loginContext);
     void saveRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateengageRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateFollowRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
@@ -33,10 +32,10 @@ public interface InsRepService {
     ApplicationViewDto getApplicationViewDto (String appNo);
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
     String  getRobackUserId(String appId,String stageId);
-    void routingTaskToAo1(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,AppPremisesRecommendationDto appPremisesRecommendationDto) throws FeignException;
-    void routingTaskToAo2(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks) throws FeignException;
-    void routBackTaskToInspector(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks) throws FeignException;
-    void routTaskToRoutBack(BaseProcessClass bpc,TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws TemplateException, FeignException, CloneNotSupportedException, IOException;
+    void routingTaskToAo1(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,AppPremisesRecommendationDto appPremisesRecommendationDto) throws Exception;
+    void routingTaskToAo2(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks) throws Exception;
+    void routBackTaskToInspector(TaskDto taskDto,ApplicationDto applicationDto,String appPremisesCorrelationId,String historyRemarks) throws Exception;
+    void routTaskToRoutBack(BaseProcessClass bpc,TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws Exception;
     InspectionReportDto getInspectorUser(TaskDto taskDto,LoginContext loginContext);
     InspectionReportDto getInspectorAo(TaskDto taskDto,ApplicationViewDto applicationViewDto);
     void sendPostInsTaskFeData(String submissionId,String eventRefNum) throws FeignException;

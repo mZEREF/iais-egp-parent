@@ -54,6 +54,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     @Override
     public Boolean isChange(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) throws Exception {
         {
+            boolean flag = Boolean.FALSE;
             List<AppSvcRelatedInfoDto> n = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObject(newAppSvcRelatedInfoDtoList);
             List<AppSvcRelatedInfoDto> o = (List<AppSvcRelatedInfoDto>) CopyUtil.copyMutableObject(oldAppSvcRelatedInfoDtoList);
             n.get(0).setScore(null);
@@ -113,9 +114,9 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                 o.get(0).setAppSvcMedAlertPersonList(oldAppSvcMedAlertPersonDtos);
             }
             if (!o.equals(n)) {
-                return true;
+               flag = Boolean.TRUE;
             }
-            return false;
+            return flag;
         }
     }
 

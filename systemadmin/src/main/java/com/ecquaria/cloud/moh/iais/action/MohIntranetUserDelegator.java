@@ -476,7 +476,7 @@ public class MohIntranetUserDelegator {
         String endDateStr = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_ENDDATE);
         Date endDate = DateUtil.parseDate(endDateStr, AppConsts.DEFAULT_DATE_FORMAT);
         String[] salutation = ParamUtil.getStrings(request, IntranetUserConstant.INTRANET_SALUTATION);
-        if (!StringUtil.isEmpty(equals(salutation[0]))) {
+        if (!StringUtil.isEmpty(salutation[0])) {
             orgUserDto.setSalutation(salutation[0]);
         }
         String firstName = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_FIRSTNAME);
@@ -828,7 +828,7 @@ public class MohIntranetUserDelegator {
 
     private static File inputStreamToFile(InputStream ins, File file) {
         try (FileOutputStream os = new FileOutputStream(file)) {
-            int bytesRead = 0;
+            int bytesRead;
             byte[] buffer = new byte[1024];
             while ((bytesRead = ins.read(buffer)) != -1) {
                 os.write(buffer, 0, bytesRead);

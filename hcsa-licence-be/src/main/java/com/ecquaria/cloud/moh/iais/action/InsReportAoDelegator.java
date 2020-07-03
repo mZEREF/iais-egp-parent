@@ -116,7 +116,7 @@ public class InsReportAoDelegator {
         ParamUtil.setSessionAttr(bpc.request, TASKDTO, taskDto);
     }
 
-    public void back(BaseProcessClass bpc) throws FeignException {
+    public void back(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the back start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATIONVIEWDTO);
         TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);

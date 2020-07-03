@@ -126,7 +126,7 @@ public class InsRepServiceImpl implements InsRepService {
     private final String REJECT = "Reject";
 
     @Override
-    public InspectionReportDto getInsRepDto(TaskDto taskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext) throws FeignException {
+    public InspectionReportDto getInsRepDto(TaskDto taskDto, ApplicationViewDto applicationViewDto, LoginContext loginContext) {
         InspectionReportDto inspectionReportDto = new InspectionReportDto();
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
@@ -220,11 +220,9 @@ public class InsRepServiceImpl implements InsRepService {
         }
         inspectionReportDto.setSubsumedServices(subsumedServices);
         //Nc
-//        List<ChecklistQuestionDto> listChecklistQuestionDtos = hcsaChklClient.getcheckListQuestionDtoList(svcCode, "Inspection").getEntity();
         List<ReportNcRegulationDto> listReportNcRegulationDto = IaisCommonUtils.genNewArrayList();
         List<ReportNcRectifiedDto> listReportNcRectifiedDto = IaisCommonUtils.genNewArrayList();
         //add ReportNcRegulationDto and add ncItemId
-//        if (listChecklistQuestionDtos != null && !listChecklistQuestionDtos.isEmpty()) {
         List<NcAnswerDto> ncAnswerDtoList = insepctionNcCheckListService.getNcAnswerDtoList(appPremisesCorrelationId);
         if (ncAnswerDtoList != null && !ncAnswerDtoList.isEmpty()) {
             for (NcAnswerDto ncAnswerDto : ncAnswerDtoList) {
@@ -364,7 +362,6 @@ public class InsRepServiceImpl implements InsRepService {
         appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         insRepClient.saveRecommendationData(appPremisesRecommendationDto);
     }
-
 
     @Override
     public void updateengageRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
@@ -575,7 +572,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public void routingTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, AppPremisesRecommendationDto appPremisesRecommendationDto) throws FeignException {
+    public void routingTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, AppPremisesRecommendationDto appPremisesRecommendationDto) throws Exception {
         String serviceId = applicationDto.getServiceId();
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();
@@ -620,7 +617,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws FeignException {
+    public void routingTaskToAo2(TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws Exception {
         String serviceId = applicationDto.getServiceId();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
@@ -675,7 +672,7 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public void routTaskToRoutBack(BaseProcessClass bpc, TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws TemplateException, FeignException, CloneNotSupportedException, IOException {
+    public void routTaskToRoutBack(BaseProcessClass bpc, TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws Exception {
         String serviceId = applicationDto.getServiceId();
         String status = applicationDto.getStatus();
         String applicationNo = applicationDto.getApplicationNo();

@@ -65,12 +65,12 @@ public class InsReportDelegator {
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
-    }
-
-    public void inspectionReportInit(BaseProcessClass bpc) throws FeignException {
-        log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", null);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
+    }
+
+    public void inspectionReportInit(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
         String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
         AuditTrailHelper.auditFunction("Inspection Report", "Inspection Report");
         TaskDto taskDto = taskService.getTaskById(taskId);
