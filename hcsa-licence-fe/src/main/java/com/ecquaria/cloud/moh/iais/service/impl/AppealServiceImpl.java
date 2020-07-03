@@ -940,7 +940,7 @@ public class AppealServiceImpl implements AppealService {
                     AppPremisesSpecialDocDto appPremisesSpecialDocDto=new AppPremisesSpecialDocDto();
                     appPremisesSpecialDocDto.setDocName(filename);
                     appPremisesSpecialDocDto.setMd5Code(s);
-                    appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
+                    appPremisesSpecialDocDto.setDocSize(Integer.valueOf(Integer.parseInt(size.toString())));
                     appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
                     if(loginContext!=null){
                         appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());

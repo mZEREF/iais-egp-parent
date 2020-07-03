@@ -1491,11 +1491,9 @@ public class RequestForChangeMenuDelegator {
 
         }
 
-        if (isSame) {
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
-        } else {
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
-        }
+
+        ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
+
         String submissionId = generateIdClient.getSeqId().getEntity();
         AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
         Long l = System.currentTimeMillis();
