@@ -70,7 +70,6 @@ public class TemplatesDelegator {
         QueryHelp.setMainSql(MsgTemplateConstants.MSG_TEMPLATE_FILE, MsgTemplateConstants.MSG_TEMPLATE_SQL,searchParam);
         SearchResult searchResult = templatesService.getTemplateResults(searchParam);
         List<MsgTemplateQueryDto> msgTemplateQueryDtoList = searchResult.getRows();
-        Map<String, String> recMap = recipient();
         for (MsgTemplateQueryDto msgDto:msgTemplateQueryDtoList
              ) {
             msgDto.setMessageType(MasterCodeUtil.getCodeDesc(msgDto.getMessageType()));
@@ -162,7 +161,11 @@ public class TemplatesDelegator {
             deliveryModeSelectList.add(new SelectOption("DEMD001", "Mail"));
             deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
             deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
-            List<SelectOption> selectOptions = getRecipientSelection();
+            List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_TEMPLATE_ROLE);
+            for (SelectOption item:selectOptions
+                 ) {
+                item.setValue(item.getValue().substring(3));
+            }
             ParamUtil.setSessionAttr(bpc.request,"recipient",(Serializable) selectOptions);
             ParamUtil.setSessionAttr(bpc.request,"recipientString", recipientString);
             ParamUtil.setSessionAttr(bpc.request,"ccrecipientString", ccrecipientString);
@@ -305,34 +308,4 @@ public class TemplatesDelegator {
         msgTemplateDto.setCcrecipient(ccrecipientList);
     }
 
-    private Map<String, String> recipient(){
-        Map<String, String> recipient = IaisCommonUtils.genNewHashMap();
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_AP,ApplicationConsts.PERSONNEL_PSN_TYPE_AUTHORISED_PERSON);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_PO,ApplicationConsts.PERSONNEL_PSN_TYPE_PRINCIPAL_OFFICER);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO,ApplicationConsts.PERSONNEL_PSN_TYPE_DEPUTY_PRINCIPAL_OFFICER);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP,ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,ApplicationConsts.PERSONNEL_PSN_TYPE_CLINICAL_GOVERNANCE_OFFICER);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR,ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR_SHOW);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR_LEAD,ApplicationConsts.PERSONNEL_PSN_TYPE_INSPECTOR_LEAD_SHOW);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_AO,ApplicationConsts.PERSONNEL_PSN_TYPE_ADMIN_OFFICER);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_PSO,ApplicationConsts.PERSONNEL_PSN_TYPE_PROFESSIONAL_OFFICER);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_AO1,ApplicationConsts.PERSONNEL_PSN_TYPE_AO1_SHOW);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_AO2,ApplicationConsts.PERSONNEL_PSN_TYPE_AO2_SHOW);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_AO3,ApplicationConsts.PERSONNEL_PSN_TYPE_AO3_SHOW);
-        recipient.put(ApplicationConsts.PERSONNEL_PSN_TYPE_SYS_ADM,ApplicationConsts.PERSONNEL_PSN_TYPE_SYSTEM_ADMIN);
-        return recipient;
-    }
-
-    private List<SelectOption> getRecipientSelection(){
-        Map<String, String> recipient = IaisCommonUtils.genNewHashMap();
-        recipient = recipient();
-        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-
-        for (Map.Entry<String, String> entry:recipient.entrySet())
-        {
-            selectOptions.add(new SelectOption(entry.getKey(),entry.getValue()));
-        }
-        return selectOptions;
-    }
 }
