@@ -83,8 +83,9 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     }
     public void therholdVad(Map<String, String> errMap,HcsaRiskFinanceMatrixDto fdto){
         String serviceCode = fdto.getServiceCode();
+        String messForEmpty = MessageUtil.replaceMessage("ERR0009","Threshold","The field");
         if(StringUtil.isEmpty(fdto.getInThershold())){
-            errMap.put(serviceCode+"inThershold",MessageUtil.replaceMessage("ERR0009","Threshold","The field"));
+            errMap.put(serviceCode+"inThershold",messForEmpty);
             fdto.setInThersholderr(true);
         }else{
             try {
@@ -99,7 +100,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             }
         }
         if(StringUtil.isEmpty(fdto.getPrThershold())){
-            errMap.put(serviceCode+"prThershold",MessageUtil.replaceMessage("ERR0009","Threshold","The field"));
+            errMap.put(serviceCode+"prThershold",messForEmpty);
             fdto.setPrThersholderr(true);
         }else{
             try {
@@ -131,26 +132,28 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,boolean isIn,HcsaRiskFinanceMatrixDto fdto){
         Integer inLeftModNum = 0;
         Integer inRightModNum = 0;
+        String maxMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
+        String minMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
         int numberFlag = 0;
         if(!StringUtil.isEmpty(inLeftMod)){
             try {
                 inLeftModNum = Integer.valueOf(inLeftMod);
                 if(inLeftModNum<=0||inLeftModNum>999){
                     if(isIn){
-                        errMap.put(serviceCode+"inLeftModCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+                        errMap.put(serviceCode+"inLeftModCaseCounth", minMes);
                         fdto.setInLeftModCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode+"prLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+                        errMap.put(serviceCode+"prLeftModCaseCounth",minMes);
                         fdto.setPrLeftModCaseCountherr(true);
                     }
                 }
                 numberFlag++;
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+                    errMap.put(serviceCode+"inLeftModCaseCounth",minMes);
                     fdto.setInLeftModCaseCountherr(true);
                 }else{
-                    errMap.put(serviceCode+"prLeftModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+                    errMap.put(serviceCode+"prLeftModCaseCounth",minMes);
                     fdto.setPrLeftModCaseCountherr(true);
                 }
                 log.error(e.getMessage(), e);
@@ -161,20 +164,20 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 inRightModNum = Integer.valueOf(inRightMod);
                 if(inRightModNum<=0 || inRightModNum >99){
                     if(isIn){
-                        errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+                        errMap.put(serviceCode+"inRightModCaseCounth",maxMes);
                         fdto.setInRightModCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode+"prRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+                        errMap.put(serviceCode+"prRightModCaseCounth",maxMes);
                         fdto.setPrRightModCaseCountherr(true);
                     }
                 }
                 numberFlag++;
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+                    errMap.put(serviceCode+"inRightModCaseCounth",maxMes);
                     fdto.setInRightModCaseCountherr(true);
                 }else{
-                    errMap.put(serviceCode+"prRightModCaseCounth",MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+                    errMap.put(serviceCode+"prRightModCaseCounth",maxMes);
                     fdto.setPrRightModCaseCountherr(true);
                 }
                 log.error(e.getMessage(), e);
@@ -196,6 +199,8 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         }
     }
     public void inLeftHighVad(Map<String, String> errMap,String inLeftHigh,String inRightMod, String serviceCode,boolean isIn,HcsaRiskFinanceMatrixDto fdto){
+        String maxMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
+        String minMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
         Integer inLeftHighNum = 0;
         boolean inLeftHighNumFlag = true;
         boolean prLeftHighNumFlag = true;
@@ -206,11 +211,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     if(isIn){
                         inLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "inLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+                        errMap.put(serviceCode + "inLeftHighCaseCounth", minMes);
                         fdto.setInLeftHighCaseCounterr(true);
                     }else{
                         prLeftHighNumFlag = false;
-                        errMap.put(serviceCode + "prLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+                        errMap.put(serviceCode + "prLeftHighCaseCounth", minMes);
                         fdto.setPrLeftHighCaseCounterr(true);
                     }
                 }
@@ -218,11 +223,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         } catch (Exception e) {
             if(isIn){
                 inLeftHighNumFlag = false;
-                errMap.put(serviceCode + "inLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+                errMap.put(serviceCode + "inLeftHighCaseCounth", minMes);
                 fdto.setInLeftHighCaseCounterr(true);
             }else{
                 prLeftHighNumFlag = false;
-                errMap.put(serviceCode + "prLeftHighCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES);
+                errMap.put(serviceCode + "prLeftHighCaseCounth", minMes);
                 fdto.setPrLeftHighCaseCounterr(true);
             }
             log.error(e.getMessage(), e);
@@ -246,6 +251,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
 
     }
     public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode,boolean isIn,HcsaRiskFinanceMatrixDto fdto){
+        String maxMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
         Integer inRightLowNum = 0;
         boolean inRightLowNumFlag = true;
         boolean prRightLowNumFlag = true;
@@ -255,11 +261,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     if(isIn){
                         inRightLowNumFlag = false;
-                        errMap.put(serviceCode + "inRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+                        errMap.put(serviceCode + "inRightLowCaseCounth", maxMes);
                         fdto.setInRightLowCaseCountherr(true);
                     }else{
                         prRightLowNumFlag = false;
-                        errMap.put(serviceCode + "prRightLowCaseCounth", MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+                        errMap.put(serviceCode + "prRightLowCaseCounth", maxMes);
                         fdto.setPrRightLowCaseCountherr(true);
                     }
                 }
@@ -268,11 +274,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             // TODO: handle exception
             if(isIn){
                 inRightLowNumFlag = false;
-                errMap.put(serviceCode + "inRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+                errMap.put(serviceCode + "inRightLowCaseCounth",  maxMes);
                 fdto.setInRightLowCaseCountherr(true);
             }else{
                 prRightLowNumFlag = false;
-                errMap.put(serviceCode + "prRightLowCaseCounth",  MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES);
+                errMap.put(serviceCode + "prRightLowCaseCounth",  maxMes);
                 fdto.setPrRightLowCaseCountherr(true);
             }
 
@@ -304,37 +310,39 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     public void mandatoryCaseCounthVad(Map<String, String> errMap,HcsaRiskFinanceMatrixDto fdto){
         //in
         String serviceCode = fdto.getServiceCode();
+        String minNCNoEmpty = MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field");
+        String maxNCNoEmpty = MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field");
         if(StringUtil.isEmpty(fdto.getInLeftModCaseCounth())){
-            errMap.put(serviceCode+"inLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
+            errMap.put(serviceCode+"inLeftModCaseCounth",minNCNoEmpty);
             fdto.setInLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInRightModCaseCounth())){
-            errMap.put(serviceCode+"inRightModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
+            errMap.put(serviceCode+"inRightModCaseCounth",maxNCNoEmpty);
             fdto.setInRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInRightLowCaseCounth())){
-            errMap.put(serviceCode+"inRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
+            errMap.put(serviceCode+"inRightLowCaseCounth",maxNCNoEmpty);
             fdto.setInRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getInLeftHighCaseCount())){
-            errMap.put(serviceCode+"inLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
+            errMap.put(serviceCode+"inLeftHighCaseCounth",minNCNoEmpty);
             fdto.setInLeftHighCaseCounterr(true);
         }
         //pr
         if(StringUtil.isEmpty(fdto.getPrLeftModCaseCounth())){
-            errMap.put(serviceCode+"prLeftModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
+            errMap.put(serviceCode+"prLeftModCaseCounth",minNCNoEmpty);
             fdto.setPrLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrRightModCaseCounth())){
-            errMap.put(serviceCode+"prRightModCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
+            errMap.put(serviceCode+"prRightModCaseCounth",maxNCNoEmpty);
             fdto.setPrRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrRightLowCaseCounth())){
-            errMap.put(serviceCode+"prRightLowCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field"));
+            errMap.put(serviceCode+"prRightLowCaseCounth",maxNCNoEmpty);
             fdto.setPrRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getPrLeftHighCaseCount())){
-            errMap.put(serviceCode+"prLeftHighCaseCounth",MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field"));
+            errMap.put(serviceCode+"prLeftHighCaseCounth",minNCNoEmpty);
             fdto.setPrLeftHighCaseCounterr(true);
         }
     }
@@ -415,16 +423,17 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
 
     public boolean doUsualDateVad(Date effDate,Date endDate,String serviceCode,Map<String, String> errMap,boolean isIn,int inEdit,int prEdit,HcsaRiskFinanceMatrixDto fdto){
         boolean flag = true;
+        String mesStartMes = MessageUtil.replaceMessage("ERR0012","Effective Start Date","Effective Date");
         if (effDate.getTime() < System.currentTimeMillis()) {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEffDate",MessageUtil.replaceMessage("ERR0012","Effective Start Date","Effective Date"));
+                    errMap.put(serviceCode + "inEffDate",mesStartMes);
                     fdto.setInEffectiveStartDateerr(true);
                 }
             }else {
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEffDate", MessageUtil.replaceMessage("ERR0012","Effective Start Date","Effective Date"));
+                    errMap.put(serviceCode + "prEffDate", mesStartMes);
                     fdto.setPrEffectiveStartDateerr(true);
                 }
             }
@@ -446,13 +455,17 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     }
     public boolean doDateFormatVad(Map<String, String> errMap,String strEffDate,String strEndDate,String serviceCode,boolean isIn,HcsaRiskFinanceMatrixDto fdto){
         boolean vadFlag = true;
+        String mesStartEmpty  = MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field");
+        String mesStartRepalce  = MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea");
+        String mesEndEmpty  = MessageUtil.replaceMessage("ERR0009","Effective End Date","The field");
+        String mesEndRepalce  = MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea");
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
             if(isIn){
-                errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
+                errMap.put(serviceCode+"inEffDate",mesStartEmpty);
                 fdto.setInEffectiveStartDateerr(true);
             }else{
-                errMap.put(serviceCode+"prEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
+                errMap.put(serviceCode+"prEffDate",mesStartEmpty);
                 fdto.setPrEffectiveStartDateerr(true);
             }
         }else{
@@ -460,10 +473,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                Formatter.parseDate(strEffDate);
            }catch (Exception e){
                if(isIn){
-                   errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
+                   errMap.put(serviceCode+"inEffDate",mesStartRepalce);
                    fdto.setInEffectiveStartDateerr(true);
                }else{
-                   errMap.put(serviceCode+"prEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
+                   errMap.put(serviceCode+"prEffDate",mesStartRepalce);
                    fdto.setPrEffectiveStartDateerr(true);
                }
                vadFlag = false;
@@ -472,10 +485,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
             if(isIn){
-                errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
+                errMap.put(serviceCode+"inEndDate",mesEndEmpty);
                 fdto.setInEffectiveEndDateerr(true);
             }else{
-                errMap.put(serviceCode+"prEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
+                errMap.put(serviceCode+"prEndDate",mesEndEmpty);
                 fdto.setPrEffectiveEndDateerr(true);
             }
         }else{
@@ -483,10 +496,10 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
                 Formatter.parseDate(strEndDate);
             }catch (Exception e){
                 if(isIn){
-                    errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
+                    errMap.put(serviceCode+"inEndDate",mesEndRepalce);
                     fdto.setInEffectiveEndDateerr(true);
                 }else{
-                    errMap.put(serviceCode+"prEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
+                    errMap.put(serviceCode+"prEndDate",mesEndRepalce);
                     fdto.setPrEffectiveEndDateerr(true);
                 }
                 return false;

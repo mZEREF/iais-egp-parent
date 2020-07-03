@@ -205,7 +205,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void saveDto(InspectionFillCheckListDto dto) {
         boolean ncflag = isHaveNc(dto);
         List<InspectionCheckQuestionDto> icqDtoList = dto.getCheckList();
@@ -1439,7 +1438,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                     if(StringUtil.isEmpty(otherOffs)){
                         stringBuffer.append(otherOff);
                     }else if((!StringUtil.isEmpty(otherOffs) && !otherOffs.contains(otherOff) )){
-                        stringBuffer.append(','+ otherOff);
+                        stringBuffer.append(',');
+                        stringBuffer.append(otherOff);
                     }
                 }
                 return stringBuffer.toString();
@@ -1545,7 +1545,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                      }
                 }
                if(IaisCommonUtils.isEmpty(adhocDraftDtosOne)){
-                  log.info(" adhocNcCheckItemDto id is " + adhocNcCheckItemDto.getId() +" no draft.");
+                  log.info(StringUtil.changeForLog(" adhocNcCheckItemDto id is " + adhocNcCheckItemDto.getId() +" no draft."));
                }else {
                    if(userNum == 1 && adhocDraftDtosOne .size() == 1){
                        if( !StringUtil.isEmpty(adhocDraftDtosOne.get(0).getAnswer())){
