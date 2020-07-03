@@ -1935,13 +1935,16 @@ public class HcsaApplicationDelegator {
 
 
     private void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId){
+        HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         interMessageDto.setSubject(subject);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
         String refNo = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(refNo);
-        interMessageDto.setService_id(serviceId);
+        if(serviceDto != null){
+            interMessageDto.setService_id(serviceDto.getSvcCode()+"@");
+        }
         interMessageDto.setUserId(licenseeId);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         interMessageDto.setMsgContent(templateMessageByContent);
