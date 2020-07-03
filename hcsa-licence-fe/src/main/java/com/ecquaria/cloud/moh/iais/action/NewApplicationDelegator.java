@@ -2653,7 +2653,7 @@ public class NewApplicationDelegator {
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if(appEditSelectDto != null ){
             if(appEditSelectDto.isPremisesEdit()){
-                if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto)){
+                if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto.getAppGrpPremisesDtoList())){
                     isAuto =  compareHciName(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
                     if(isAuto){
                         isAuto = compareLocation(appSubmissionDto.getAppGrpPremisesDtoList(), oldAppSubmissionDto.getAppGrpPremisesDtoList());
@@ -2955,11 +2955,11 @@ public class NewApplicationDelegator {
                 premisesSel = offSitePremisesSelect[i];
             }
             String appType = appSubmissionDto.getAppType();
-            if(!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)
-                    && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) && requestInformationConfig ==null){
+            boolean newApp = !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) && requestInformationConfig ==null;
+            if(newApp){
                 if(!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1") && !premisesSel.equals(ApplicationConsts.NEW_PREMISES)){
+                    appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
                     if(appGrpPremisesDto != null){
-                        appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
                         //get value for jsp page
                         if(StringUtil.isEmpty(premisesIndexNo[i])){
                             appGrpPremisesDto.setPremisesIndexNo(UUID.randomUUID().toString());
