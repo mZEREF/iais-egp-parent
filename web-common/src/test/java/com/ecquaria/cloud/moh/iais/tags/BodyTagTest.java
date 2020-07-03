@@ -13,6 +13,11 @@
 
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import java.io.IOException;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,16 +30,11 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
-import java.io.IOException;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.doThrow;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * BodyTagTest
@@ -68,7 +68,7 @@ public class BodyTagTest {
         assertEquals(ActionTag.EVAL_BODY_INCLUDE, ret);
     }
 
-    @Test(expected = JspTagException.class)
+    @Test(expected = IaisRuntimeException.class)
     public void testDoStartTagExp() throws JspException, IOException {
         doThrow(new RuntimeException()).when(jw).print(anyString());
         tag.isDisabled();
@@ -82,7 +82,7 @@ public class BodyTagTest {
         tag.release();
     }
 
-    @Test(expected = JspTagException.class)
+    @Test(expected = IaisRuntimeException.class)
     public void testDoEndTagExp() throws JspException, IOException {
         doThrow(new RuntimeException()).when(jw).print(anyString());
         int ret = tag.doEndTag();

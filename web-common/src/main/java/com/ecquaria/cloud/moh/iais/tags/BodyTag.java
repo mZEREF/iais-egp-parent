@@ -50,7 +50,7 @@ public final class BodyTag extends DivTagSupport {
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
-            throw new IaisRuntimeException(StringUtil.changeForLog("RowTag: " + ex.getMessage()));
+            throw new IaisRuntimeException(ex);
         }
         return EVAL_BODY_INCLUDE;
     }
@@ -59,7 +59,7 @@ public final class BodyTag extends DivTagSupport {
         try {
             pageContext.getOut().print("</div>");
         } catch (Exception ex) {
-            throw new IaisRuntimeException(StringUtil.changeForLog("RowTag: " + ex.getMessage()));
+            throw new IaisRuntimeException(ex);
         }
         return EVAL_PAGE;
     }

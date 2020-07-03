@@ -68,7 +68,7 @@ public final class DatePickerTag extends DivTagSupport {
         try {
             pageContext.getOut().print(generateHtml());
         } catch (Exception ex) {
-            throw new IaisRuntimeException(StringUtil.changeForLog("DatePickerTag: " + ex.getMessage()));
+            throw new IaisRuntimeException(ex);
         }
         return SKIP_BODY;
     }
