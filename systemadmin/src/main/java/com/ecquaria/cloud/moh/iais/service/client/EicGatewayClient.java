@@ -4,12 +4,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @author: yichen
@@ -18,8 +16,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @Component
 public class EicGatewayClient {
-	@Autowired
-	private RestTemplate restTemplate;
 	@Value("${iais.intra.gateway.url}")
 	private String gateWayUrl;
 
