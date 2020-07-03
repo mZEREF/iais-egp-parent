@@ -1,11 +1,11 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
 import java.util.Date;
 
 /**
@@ -68,7 +68,7 @@ public final class DatePickerTag extends DivTagSupport {
         try {
             pageContext.getOut().print(generateHtml());
         } catch (Exception ex) {
-            throw new JspTagException(StringUtil.changeForLog("DatePickerTag: " + ex.getMessage()));
+            throw new IaisRuntimeException(StringUtil.changeForLog("DatePickerTag: " + ex.getMessage()));
         }
         return SKIP_BODY;
     }

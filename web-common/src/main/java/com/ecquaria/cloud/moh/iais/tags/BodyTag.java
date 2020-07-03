@@ -1,10 +1,10 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
 
 /**
  * Body Tag
@@ -50,7 +50,7 @@ public final class BodyTag extends DivTagSupport {
         try {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
-            throw new JspTagException(StringUtil.changeForLog("RowTag: " + ex.getMessage()));
+            throw new IaisRuntimeException(StringUtil.changeForLog("RowTag: " + ex.getMessage()));
         }
         return EVAL_BODY_INCLUDE;
     }
@@ -59,7 +59,7 @@ public final class BodyTag extends DivTagSupport {
         try {
             pageContext.getOut().print("</div>");
         } catch (Exception ex) {
-            throw new JspTagException(StringUtil.changeForLog("RowTag: " + ex.getMessage()));
+            throw new IaisRuntimeException(StringUtil.changeForLog("RowTag: " + ex.getMessage()));
         }
         return EVAL_PAGE;
     }
