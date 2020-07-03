@@ -62,4 +62,12 @@ public interface TaskOrganizationClient {
 
     @RequestMapping(path = "/iais-task/Tasks/date",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskDtoByDate(@RequestParam(name ="date") String date);
+
+    @PostMapping(value = "/iais-orgUserRole/user-by-roles", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserByroleId(@RequestBody List<String> roleId);
+
+    @GetMapping(value = "/iais-orgUserRole/all-effect-user", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserDto>> retrieveOrgUser();
+
+
 }

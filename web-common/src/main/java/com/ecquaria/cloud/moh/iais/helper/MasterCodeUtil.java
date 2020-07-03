@@ -84,6 +84,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_SYSTEM_PARAMETER_MODULE          = "1D3F6F1A-5334-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SYSTEM_PARAMETER_TYPE            = "364C7AFB-5234-EA11-BE7D-000C29F371DC";
     public static final String CATE_ID_SYSTEM_PARAMETER_TYPE_OF_VALUE   = "D68BA451-5334-EA11-BE7D-000C29F371DC";
+    public static final String CATE_ID_TEMPLATE_ROLE   = "2C594569-0FB9-EA11-BE84-000C29F371DC";
 
     public static final String CATE_ID_SYSTEM_RISK_TYPE  = "110534B1-4967-EA11-BE7F-000C29F371DC";
     /**
