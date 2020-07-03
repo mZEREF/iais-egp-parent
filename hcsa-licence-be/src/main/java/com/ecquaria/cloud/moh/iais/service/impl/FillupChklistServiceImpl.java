@@ -1477,7 +1477,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return checkListIds;
     }
     private Map<String,InspectionCheckQuestionDto> getStringInspectionCheckQuestionDtoMapByList(List<InspectionCheckQuestionDto>  inspectionCheckQuestionDtos){
-        Map<String,InspectionCheckQuestionDto> map = new HashMap<>(inspectionCheckQuestionDtos.size());
+        Map<String,InspectionCheckQuestionDto> map = IaisCommonUtils.genNewHashMap();
         for(InspectionCheckQuestionDto inspectionCheckQuestionDto : inspectionCheckQuestionDtos){
             map.put(inspectionCheckQuestionDto.getItemId(),inspectionCheckQuestionDto);
         }
@@ -1545,7 +1545,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                      }
                 }
                if(IaisCommonUtils.isEmpty(adhocDraftDtosOne)){
-                  log.info(" adhocNcCheckItemDto id is " + adhocNcCheckItemDto.getId() +" no draft.");
+                  log.info(StringUtil.changeForLog(" adhocNcCheckItemDto id is " + adhocNcCheckItemDto.getId() +" no draft."));
                }else {
                    if(userNum == 1 && adhocDraftDtosOne .size() == 1){
                        if( !StringUtil.isEmpty(adhocDraftDtosOne.get(0).getAnswer())){

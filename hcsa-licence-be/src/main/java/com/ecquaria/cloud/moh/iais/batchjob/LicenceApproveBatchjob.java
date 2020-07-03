@@ -1712,6 +1712,13 @@ public class LicenceApproveBatchjob {
 
     private void sendEmailAndSms(ApplicationDto applicationDto, LicenceDto licenceDto,
                                  LicenseeDto oldLicenseeDto, LicenceDto originLicenceDto, String serviceId) {
+        if(applicationDto == null ||
+                licenceDto == null ||
+                oldLicenseeDto == null ||
+                originLicenceDto == null ||
+                StringUtil.isEmpty(serviceId)){
+            return;
+        }
         log.info(StringUtil.changeForLog("The sendEmailAndSms start ..."));
         String applicationNo = applicationDto.getApplicationNo();
         String loginUrl = "#";
