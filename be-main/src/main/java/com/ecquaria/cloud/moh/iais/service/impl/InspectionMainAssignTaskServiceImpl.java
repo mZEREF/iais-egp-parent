@@ -31,13 +31,14 @@ import com.ecquaria.cloud.moh.iais.service.client.BelicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @author Shicheng
@@ -126,7 +127,9 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
             for(TaskDto td:commPools) {
                 if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())
                         && !IaisCommonUtils.isEmpty(inspectorCheckList)) {
+                    if(!StringUtil.isEmpty(inspectorCheckList.get(0).getValue())){
                         td.setUserId(inspectorCheckList.get(0).getValue());
+                    }
                         td.setDateAssigned(new Date());
                         td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         updateTask(td);
