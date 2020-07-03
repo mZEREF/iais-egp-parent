@@ -141,7 +141,4 @@ public class EmailHelper {
 		return all;
 	}
 
-	private boolean isOrganizationEmail(String role){
-		return true;
-	}
 }
