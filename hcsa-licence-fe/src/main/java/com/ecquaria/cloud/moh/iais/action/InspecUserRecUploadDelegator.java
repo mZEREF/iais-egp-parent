@@ -86,9 +86,11 @@ public class InspecUserRecUploadDelegator {
                 if(i == 0){
                     recFileType.append(sysFileTypeArr[i]);
                 } else if (i != sysFileTypeArr.length - 1) {
-                    recFileType.append(", " + sysFileTypeArr[i]);
+                    recFileType.append(", ");
+                    recFileType.append(sysFileTypeArr[i]);
                 } else {
-                    recFileType.append(" and " + sysFileTypeArr[i]);
+                    recFileType.append(" and ");
+                    recFileType.append(sysFileTypeArr[i]);
                 }
             }
             String recFileTypeHint = recFileType.toString();
