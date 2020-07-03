@@ -1,9 +1,9 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
 /**
  * Action Tag
  *
@@ -49,7 +49,7 @@ public final class ActionTag extends DivTagSupport {
             }
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
-            throw new JspTagException(StringUtil.changeForLog("ActionTag: " + ex.getMessage()));
+            throw new IaisRuntimeException(StringUtil.changeForLog("ActionTag: " + ex.getMessage()));
         }
         return EVAL_BODY_INCLUDE;
     }
@@ -58,7 +58,7 @@ public final class ActionTag extends DivTagSupport {
         try {
             pageContext.getOut().print("</div>");
         } catch (Exception ex) {
-            throw new JspTagException(StringUtil.changeForLog("ActionTag: " + ex.getMessage()));
+            throw new IaisRuntimeException(StringUtil.changeForLog("ActionTag: " + ex.getMessage()));
         }
         return EVAL_PAGE;
     }
