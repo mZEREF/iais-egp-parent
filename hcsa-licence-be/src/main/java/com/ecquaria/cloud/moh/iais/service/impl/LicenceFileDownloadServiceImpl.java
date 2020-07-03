@@ -651,10 +651,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                }
             }
             if(dto!=null){
-                List<ApplicationGroupDto> applicationGroup = dto.getApplicationGroup();
-                List<ApplicationDto> application = dto.getApplication();
-                update(listNewApplicationDto ,applicationGroup,application);
-                requeOrNew(requestForInfList,applicationGroup,application);
+                ApplicationNewAndRequstDto applicationNewAndRequstDto = dto.getApplicationNewAndRequstDto();
+                if(applicationNewAndRequstDto!=null){
+                  listNewApplicationDto = applicationNewAndRequstDto.getListNewApplicationDto();
+                  requestForInfList = applicationNewAndRequstDto.getRequestForInfList();
+                  log.info(StringUtil.changeForLog("listNewApplicationDto size"+listNewApplicationDto.size()));
+                  log.info(StringUtil.changeForLog("requestForInfList size"+listNewApplicationDto.size()));
+                }
             }
             log.info(StringUtil.changeForLog(listNewApplicationDto.size()+"listNewApplicationDto size"));
             log.info(StringUtil.changeForLog(requestForInfList.size()+"requestForInfList size"));

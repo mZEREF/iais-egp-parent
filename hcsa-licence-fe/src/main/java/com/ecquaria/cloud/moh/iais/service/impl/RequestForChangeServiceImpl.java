@@ -487,10 +487,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
 
-                        /*Boolean isOtherLic = appGrpPremisesDtoList.get(i).isLocateWithOthers();
-                        if(StringUtil.isEmpty(isOtherLic)){
-                            errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR002");
-                        }*/
+                        String locateWithOthers = appGrpPremisesDtoList.get(i).getLocateWithOthers();
+                        if(StringUtil.isEmpty(locateWithOthers)){
+                            errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR001");
+                        }
 
                         //set  time
                         if(!errorMap.containsKey("onsiteStartMM"+i) && !errorMap.containsKey("onsiteEndMM"+i)){

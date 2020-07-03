@@ -397,9 +397,36 @@ public class ConfigServiceDelegator {
             svcPersonnelDto.setMandatoryCount(-1);
         }
 
-
         svcPersonnelDto.setStatus("CMSTAT001");
         hcsaSvcPersonnelDtos.add(svcPersonnelDto);
+        String manMedalertPerson = request.getParameter("man-MedalertPerson");
+        String mixMedalertPerson = request.getParameter("mix-MedalertPerson");
+        HcsaSvcPersonnelDto mapPersonnelDto = new HcsaSvcPersonnelDto();
+        mapPersonnelDto.setPsnType("MAP");
+        try {
+            if(!StringUtil.isEmpty(manMedalertPerson)){
+                mapPersonnelDto.setMandatoryCount(Integer.parseInt(manMedalertPerson));
+            }
+        }catch (Exception e){
+            mapPersonnelDto.setMandatoryCount(-1);
+        }
+        try {
+            if(!StringUtil.isEmpty(mixMedalertPerson)){
+                mapPersonnelDto.setMaximumCount(Integer.parseInt(mixMedalertPerson));
+            }
+        }catch (Exception e){
+            mapPersonnelDto.setMaximumCount(-1);
+        }
+        mapPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        hcsaSvcPersonnelDtos.add(mapPersonnelDto);
+        if(mapPersonnelDto.getMandatoryCount()>0&&mapPersonnelDto.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStepCode("SVST007");
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = IaisCommonUtils.genNewArrayList();
         String numberDocument = request.getParameter("NumberDocument");
         String descriptionDocument = request.getParameter("DescriptionDocument");

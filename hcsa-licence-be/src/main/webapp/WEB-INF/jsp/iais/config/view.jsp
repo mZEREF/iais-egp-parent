@@ -212,6 +212,22 @@
       </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
+          <label class="col-xs-12 col-md-6 control-label" >Medalert Person<span class="mandatory">*</span></label>
+          <div class="col-xs-12 col-md-2">
+            <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text">
+            <input  type="text" name="man-MedalertPerson" value="${MAP.mandatoryCount}" placeholder="minimum count">
+          </div>
+          <div class="col-xs-12 col-md-2">
+            <input  type="text" name="mix-MedalertPerson" value="${MAP.maximumCount}"  placeholder="maximum count">
+          </div>
+          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
+            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">

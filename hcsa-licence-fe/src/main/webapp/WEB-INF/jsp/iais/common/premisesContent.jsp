@@ -305,8 +305,9 @@
                                 <input <c:if test="${'0'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
                             </div>
-                            <span class="error-msg" name="iaisErrorMsg" id="error_isOtherLic${status.index}"></span>
+                            <span class="error-msg " name="iaisErrorMsg" id="error_isOtherLic${status.index}"></span>
                         </iais:value>
+
                     </iais:row>
                     <div class="form-group">
                         <label class="col-xs-12 col-md-4 control-label">
