@@ -110,10 +110,10 @@ public class HcsaRiskWeightageServiceImpl implements HcsaRiskWeightageService {
         try {
             saveShowDto = (HcsaRiskWeightageShowDto)CopyUtil.copyMutableObject(wShowDto);
         }catch (CloneNotSupportedException C){
-
+            log.error(C.getMessage(),C);
         }
         List<HcsaRiskWeightageDto> saveList = IaisCommonUtils.genNewArrayList();
-        HcsaRiskWeightageDto sWeiDto = null;
+        HcsaRiskWeightageDto sWeiDto;
         for(HcsaRiskWeightageDto temp:weightageDtoList){
             if(temp.isEdit()){
                 sWeiDto = getWeiDto(temp,RiskConsts.LAST_INSPECTION);
