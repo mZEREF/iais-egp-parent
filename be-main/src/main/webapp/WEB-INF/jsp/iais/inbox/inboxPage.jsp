@@ -264,7 +264,6 @@
                         '</thead>' +
                         '<tbody>';
                     console.log(res)
-                    console.log(res.size)
                     for (var i = 0; i < res.length; i++) {
                         var color = "black";
                         if (res[i].timeLimitWarning == "black") {
