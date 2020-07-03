@@ -3,14 +3,17 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -74,6 +77,8 @@ public class OfficersReSchedulingDelegator {
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, "hoursOption", null);
         ParamUtil.setSessionAttr(bpc.request, "endHoursOption", null);
+        ParamUtil.setSessionAttr(bpc.request, "workGroupOption", null);
+        ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", null);
     }
 
     /**
@@ -85,6 +90,26 @@ public class OfficersReSchedulingDelegator {
     public void mohOfficerReSchedulingPer(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingPer start ...."));
         SearchParam searchParam = getSearchParam(bpc);
+        SearchResult<ReschedulingOfficerQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "inspReSchSearchResult");
+        if(searchResult == null || IaisCommonUtils.isEmpty(searchResult.getRows())){
+            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            ReschedulingOfficerDto reschedulingOfficerDto = new ReschedulingOfficerDto();
+            //get all inspection work group
+            List<SelectOption> workGroupOption = officersReSchedulingService.getInspWorkGroupByLogin(loginContext, reschedulingOfficerDto);
+            if(!IaisCommonUtils.isEmpty(workGroupOption)) {
+                //get a work group to show
+                reschedulingOfficerDto.setWorkGroupCheck(workGroupOption.get(0).getValue());
+            }
+            //get all inspector by work group list
+            officersReSchedulingService.allInspectorFromGroupList(reschedulingOfficerDto, workGroupOption);
+            //get Work Group Check and it's inspector, get appNo by inspector and some Filter conditions
+            List<String> appNoList = officersReSchedulingService.getAppNoByInspectorAndConditions(reschedulingOfficerDto);
+
+            ParamUtil.setSessionAttr(bpc.request, "workGroupOption", (Serializable) workGroupOption);
+            ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
+        }
+        ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchResult", searchResult);
+        ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchParam", searchParam);
     }
 
     /**
@@ -129,7 +154,7 @@ public class OfficersReSchedulingDelegator {
     public void mohOfficerReSchedulingPage(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingPage start ...."));
         SearchParam searchParam = getSearchParam(bpc);
-        CrudHelper.doPaging(searchParam,bpc.request);
+        CrudHelper.doPaging(searchParam, bpc.request);
     }
 
     /**
@@ -261,12 +286,10 @@ public class OfficersReSchedulingDelegator {
     private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "inspReSchSearchParam");
         if(searchParam == null || isNew){
-            //todo query dto
-            searchParam = new SearchParam(InspectionCommonPoolQueryDto.class.getName());
+            searchParam = new SearchParam(ReschedulingOfficerQueryDto.class.getName());
             searchParam.setPageSize(10);
             searchParam.setPageNo(1);
-            //todo query dto
-            searchParam.setSort("GROUP_NO", SearchParam.ASCENDING);
+            searchParam.setSort("ID", SearchParam.ASCENDING);
         }
         return searchParam;
     }

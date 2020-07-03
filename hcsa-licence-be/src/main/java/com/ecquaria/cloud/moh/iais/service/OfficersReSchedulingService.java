@@ -1,8 +1,49 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+
+import java.util.List;
+
 /**
  * @author Shicheng
  * @date 2020/6/30 13:57
  **/
 public interface OfficersReSchedulingService {
+    /**
+      * @author: shicheng
+      * @Date 2020/7/2
+      * @Param: loginContext, reschedulingOfficerDto
+      * @return: List<SelectOption>
+      * @Descripation: getInspWorkGroupByLogin
+      */
+    List<SelectOption> getInspWorkGroupByLogin(LoginContext loginContext, ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/2
+      * @Param: workGroupId
+      * @return: List<SelectOption>
+      * @Descripation: getInspectorByWorkGroupId
+      */
+    List<SelectOption> getInspectorByWorkGroupId(String workGroupId, ReschedulingOfficerDto reschedulingOfficerDto, String workGroupNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/3
+      * @Param: reschedulingOfficerDto,workGroupOption
+      * @return: void
+      * @Descripation: allInspectorFromGroupList
+      */
+    void allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/3
+      * @Param: reschedulingOfficerDto
+      * @return: List<String>
+      * @Descripation: getAppNoByInspectorAndConditions
+      */
+    List<String> getAppNoByInspectorAndConditions(ReschedulingOfficerDto reschedulingOfficerDto);
 }
