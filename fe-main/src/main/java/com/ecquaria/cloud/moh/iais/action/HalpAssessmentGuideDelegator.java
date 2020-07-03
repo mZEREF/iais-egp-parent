@@ -118,8 +118,6 @@ public class HalpAssessmentGuideDelegator {
 
 
     public void renewLicUpdate(BaseProcessClass bpc) {
-        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String licenseeId = loginContext.getLicenseeId();
         SearchParam renewLicUpdateSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM,PremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
         renewLicUpdateSearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "queryPremises", renewLicUpdateSearchParam);

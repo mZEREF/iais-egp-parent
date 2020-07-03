@@ -2,7 +2,7 @@
     <div class="amendLicence">
         <div class="form-check-gp">
             <p class="form-check-title">What would you like to do today?</p>
-            <div class="form-check progress-step-check" style="width: 900px">
+            <div class="form-check progress-step-check" style="width: 930px">
                 <input class="form-check-input" id="applyLicence"
                        type="radio" name="selfAssessmentType"
                        aria-invalid="false">
@@ -21,7 +21,7 @@
                 2
             --%>
             <div class="form-check progress-step-check"
-                 style="width: 900px">
+                 style="width: 930px">
                 <input class="form-check-input" id="renewLicence"
                        type="radio" name="selfAssessmentType"
                        aria-invalid="false">
@@ -35,7 +35,7 @@
                 3
             --%>
             <div class="form-check progress-step-check"
-                 style="width: 900px">
+                 style="width: 930px">
                 <input class="form-check-input" id="amendLicence"
                        type="radio" name="selfAssessmentType"
                        aria-invalid="false">
@@ -53,7 +53,7 @@
                 4
             --%>
             <div class="form-check progress-step-check"
-                 style="width: 900px">
+                 style="width: 930px">
                 <input class="form-check-input" id="ceaseLicence"
                        type="radio" name="selfAssessmentType"
                        aria-invalid="false">
@@ -71,7 +71,7 @@
                 5
             --%>
             <div class="form-check progress-step-check"
-                 style="width: 900px">
+                 style="width: 930px">
                 <input class="form-check-input" id="withdrawApplication"
                        type="radio" name="selfAssessmentType"
                        aria-invalid="false">
@@ -86,7 +86,7 @@
                 6
             --%>
             <div class="form-check progress-step-check"
-                 style="width: 900px">
+                 style="width: 930px">
                 <input class="form-check-input"
                        id="resumeDraftApplication" type="radio"
                        name="selfAssessmentType" aria-invalid="false">
@@ -101,7 +101,7 @@
                 7
             --%>
             <div class="form-check progress-step-check"
-                 style="width: 900px">
+                 style="width: 930px">
                 <input class="form-check-input" id="submitDataMoh"
                        type="radio" name="selfAssessmentType"
                        aria-invalid="false">
@@ -115,7 +115,7 @@
                 8
             --%>
             <div class="form-check progress-step-check"
-                 style="width: 900px">
+                 style="width: 930px">
                 <input class="form-check-input"
                        id="updateAdminPersonnel" type="radio"
                        name="selfAssessmentType" aria-invalid="false">
