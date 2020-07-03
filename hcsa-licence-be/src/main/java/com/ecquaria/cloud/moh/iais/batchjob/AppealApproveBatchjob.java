@@ -243,23 +243,24 @@ public class AppealApproveBatchjob {
                 }
             }
         }
-        try {
-            if(appealDto != null){
-                String relateRecId = appealDto.getRelateRecId();
-                if(relateRecId!=null){
-                    ApplicationDto applicationDto = applicationClient.getApplicationById(relateRecId).getEntity();
-                    if(applicationDto!=null){
+
+        if(appealDto != null){
+            String relateRecId = appealDto.getRelateRecId();
+            if(relateRecId!=null){
+                ApplicationDto applicationDto = applicationClient.getApplicationById(relateRecId).getEntity();
+                if(applicationDto!=null){
+                    try {
                         sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO,"",
                                 "","" );
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
                     }
 
                 }
+
             }
-        }catch (Exception e){
-
-            log.error(e.getMessage(),e);
-
         }
+
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationAddCGO is end ..."));
     }
     private void applicationChangeHciName(List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,

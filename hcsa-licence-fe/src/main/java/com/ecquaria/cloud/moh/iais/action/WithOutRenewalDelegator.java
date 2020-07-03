@@ -508,13 +508,15 @@ public class WithOutRenewalDelegator {
             String appType = appSubmissionDto.getAppType();
             String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                appGrpPremisesDto.setLicenceDtos(null);
-                if (StringUtil.isEmpty(appGrpPremisesDto.getOffTelNo())) {
-                    appGrpPremisesDto.setOffTelNo(null);
-                }
-                if (StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
-                    appGrpPremisesDto.setCertIssuedDtStr(null);
+            if(appGrpPremisesDtoList!=null){
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
+                    appGrpPremisesDto.setLicenceDtos(null);
+                    if (StringUtil.isEmpty(appGrpPremisesDto.getOffTelNo())) {
+                        appGrpPremisesDto.setOffTelNo(null);
+                    }
+                    if (StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
+                        appGrpPremisesDto.setCertIssuedDtStr(null);
+                    }
                 }
             }
             boolean eqGrpPremisesResult = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);

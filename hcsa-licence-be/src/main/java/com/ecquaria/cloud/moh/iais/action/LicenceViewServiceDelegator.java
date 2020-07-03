@@ -763,7 +763,7 @@ public class LicenceViewServiceDelegator {
 
       List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-        if (appGrpPrimaryDocDtos.isEmpty() && oldAppGrpPrimaryDocDtos != null) {
+        if (IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && oldAppGrpPrimaryDocDtos != null) {
             appGrpPrimaryDocDtos = new ArrayList<>(oldAppGrpPrimaryDocDtos.size());
             for (int i = 0; i < oldAppGrpPrimaryDocDtos.size(); i++) {
                 AppGrpPrimaryDocDto appGrpPrimaryDocDto = new AppGrpPrimaryDocDto();
@@ -817,7 +817,7 @@ public class LicenceViewServiceDelegator {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         List<AppSvcDocDto> appSvcDocDtoLit = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
         List<AppSvcDocDto> oldAppSvcDocDtoLit = oldAppSvcRelatedInfoDto.getAppSvcDocDtoLit();
-        if (appSvcDocDtoLit.isEmpty() && oldAppSvcDocDtoLit != null) {
+        if (IaisCommonUtils.isEmpty(appSvcDocDtoLit) && oldAppSvcDocDtoLit != null) {
             appSvcDocDtoLit = new ArrayList<>(oldAppSvcDocDtoLit.size());
             for (int i = 0; i < oldAppSvcDocDtoLit.size(); i++) {
                 AppSvcDocDto appSvcDocDto = new AppSvcDocDto();
@@ -880,7 +880,7 @@ public class LicenceViewServiceDelegator {
 
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = oldAppSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-          if (appSvcMedAlertPersonList.isEmpty() && oldAppSvcMedAlertPersonList != null) {
+          if (IaisCommonUtils.isEmpty(appSvcMedAlertPersonList) && oldAppSvcMedAlertPersonList != null) {
             appSvcMedAlertPersonList = new ArrayList<>(oldAppSvcMedAlertPersonList.size());
             for (int i = 0; i < oldAppSvcMedAlertPersonList.size(); i++) {
                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
@@ -932,7 +932,7 @@ public class LicenceViewServiceDelegator {
         appSvcRelatedInfoDto.setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> olAppSvcPrincipalOfficersDtoList = oldAppSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
-        if (appSvcPrincipalOfficersDtoList == null && olAppSvcPrincipalOfficersDtoList != null || appSvcPrincipalOfficersDtoList.isEmpty() && olAppSvcPrincipalOfficersDtoList != null) {
+        if (IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtoList) && !IaisCommonUtils.isEmpty(olAppSvcPrincipalOfficersDtoList)) {
             appSvcPrincipalOfficersDtoList = new ArrayList<>(olAppSvcPrincipalOfficersDtoList.size());
             for (int i = 0; i < olAppSvcPrincipalOfficersDtoList.size(); i++) {
                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
@@ -987,7 +987,7 @@ public class LicenceViewServiceDelegator {
         appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
         List<AppSvcPersonnelDto> appSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
         List<AppSvcPersonnelDto> oldAppSvcPersonnelDtoList = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
-        if (appSvcPersonnelDtoList == null && oldAppSvcPersonnelDtoList != null || appSvcPersonnelDtoList.isEmpty() && oldAppSvcPersonnelDtoList != null) {
+        if (IaisCommonUtils.isEmpty(appSvcPersonnelDtoList) && oldAppSvcPersonnelDtoList != null) {
             appSvcPersonnelDtoList = new ArrayList<>(oldAppSvcPersonnelDtoList.size());
             for (int i = 0; i < oldAppSvcPersonnelDtoList.size(); i++) {
                 AppSvcPersonnelDto appSvcPersonnelDto = new AppSvcPersonnelDto();
@@ -1083,14 +1083,8 @@ public class LicenceViewServiceDelegator {
             String svcDocId = appGrpPrimaryDocDto.getSvcDocId();
             for(AppGrpPrimaryDocDto appGrpPrimaryDocDto1 : oldAppGrpPrimaryDocDtos){
                 String svcDocId1 = appGrpPrimaryDocDto1.getSvcComDocId();
-                if(svcDocId!=null){
+                if(svcDocId!=null&&svcDocId1!=null){
                     if(svcDocId.equals(svcDocId1)){
-                        sortAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
-                        sortOldAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto1);
-                        continue;
-                    }
-                }else if(svcDocId1!=null){
-                    if(svcDocId1.equals(svcDocId)){
                         sortAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                         sortOldAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto1);
                         continue;

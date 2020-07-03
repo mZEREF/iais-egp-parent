@@ -426,7 +426,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
     @Override
     public  Map<String, String> doValidatePremiss( AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, String masterCodeDto, boolean rfi ) {
-        log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+
         //do validate one premiss
         List<String> list=IaisCommonUtils.genNewArrayList();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();

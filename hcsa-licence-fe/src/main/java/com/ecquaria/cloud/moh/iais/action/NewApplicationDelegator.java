@@ -1328,13 +1328,15 @@ public class NewApplicationDelegator {
         docIsChange=eqDocChange(dtoAppGrpPrimaryDocDtos,oldAppGrpPrimaryDocDtos);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         appEditSelectDto.setDocEdit(docIsChange);
-        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-            appGrpPremisesDto.setLicenceDtos(null);
-            if(StringUtil.isEmpty(appGrpPremisesDto.getOffTelNo())){
-                appGrpPremisesDto.setOffTelNo(null);
-            }
-            if(StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())){
-                appGrpPremisesDto.setCertIssuedDtStr(null);
+        if(appGrpPremisesDtoList!=null){
+            for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                appGrpPremisesDto.setLicenceDtos(null);
+                if(StringUtil.isEmpty(appGrpPremisesDto.getOffTelNo())){
+                    appGrpPremisesDto.setOffTelNo(null);
+                }
+                if(StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())){
+                    appGrpPremisesDto.setCertIssuedDtStr(null);
+                }
             }
         }
         grpPremiseIsChange = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
@@ -3204,11 +3206,10 @@ public class NewApplicationDelegator {
 
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
 
-
+        ServiceStepDto serviceStepDto = new ServiceStepDto();
         for(int i=0;i< dto.size();i++ ){
             String serviceId = dto.get(i).getServiceId();
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
-            ServiceStepDto serviceStepDto = new ServiceStepDto();
             serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
             List<HcsaSvcPersonnelDto>  currentSvcAllPsnConfig= serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
             Map<String, String> map = doCheckBox(bpc,sB,allSvcAllPsnConfig,currentSvcAllPsnConfig, dto.get(i));
@@ -3976,6 +3977,7 @@ public class NewApplicationDelegator {
             coMap.put("document","document");
             coMap.put("information","information");
             coMap.put("previewli","previewli");
+            bpc.request.getSession().setAttribute("coMap",coMap);
         }
         log.info(StringUtil.changeForLog("the do requestForChangeLoading end ...."));
     }
@@ -4083,6 +4085,7 @@ public class NewApplicationDelegator {
                 coMap.put("document","document");
                 coMap.put("information","information");
                 coMap.put("previewli","previewli");
+                bpc.request.getSession().setAttribute("coMap",coMap);
             }else{
                 ApplicationDto applicationDto = appSubmissionService.getMaxVersionApp(appNo);
                 if(applicationDto != null){

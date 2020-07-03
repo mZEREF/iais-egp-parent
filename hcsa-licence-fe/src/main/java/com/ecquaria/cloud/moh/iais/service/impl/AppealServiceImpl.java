@@ -922,7 +922,7 @@ public class AppealServiceImpl implements AppealService {
                 }else {
                     appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
                 }
-                appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
+                appPremisesSpecialDocDto.setDocSize(Integer.valueOf(Integer.parseInt(size.toString())));
                 appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
 
             } catch (IOException e) {
@@ -1017,21 +1017,28 @@ public class AppealServiceImpl implements AppealService {
 
     private void sendAdminEmail(HttpServletRequest request) throws IOException, TemplateException {
         List<String> email = adminEmail(request);
+        LoginContext loginContext =( LoginContext )request.getSession().getAttribute("loginContext");
         String newApplicationNo =(String) request.getAttribute("newApplicationNo");
         EmailDto emailDto=new EmailDto();
         emailDto.setContent("Send notification to Admin Officer when appeal application is submitted.");
         emailDto.setSubject(" MOH IAIS –Submission of Appeal - "+newApplicationNo);
         emailDto.setSender(mailSender);
         emailDto.setClientQueryCode(newApplicationNo);
-        emailDto.setReceipts(email);
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        try {
-            feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+        if(loginContext!=null){
+            List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
+            if(licenseeEmailAddrs!=null){
+                emailDto.setReceipts(licenseeEmailAddrs);
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                try {
+                    feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                            signature2.date(), signature2.authorization());
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
         }
+
     }
 
     private List<String> adminEmail(HttpServletRequest request){

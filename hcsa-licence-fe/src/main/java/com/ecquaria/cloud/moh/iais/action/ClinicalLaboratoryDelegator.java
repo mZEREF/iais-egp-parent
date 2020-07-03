@@ -579,10 +579,10 @@ public class ClinicalLaboratoryDelegator {
 
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         Map<String, String> map = new HashMap<>();
+        ServiceStepDto serviceStepDto = new ServiceStepDto();
         for (int i = 0; i < dto.size(); i++) {
             String serviceId = dto.get(i).getServiceId();
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceConfigService.getHcsaServiceStepSchemesByServiceId(serviceId);
-            ServiceStepDto serviceStepDto = new ServiceStepDto();
             serviceStepDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
             List<HcsaSvcPersonnelDto> currentSvcAllPsnConfig = serviceConfigService.getSvcAllPsnConfig(hcsaServiceStepSchemeDtos, serviceId);
             map = NewApplicationDelegator.doCheckBox(bpc, sB, svcAllPsnConfig, currentSvcAllPsnConfig, dto.get(i));

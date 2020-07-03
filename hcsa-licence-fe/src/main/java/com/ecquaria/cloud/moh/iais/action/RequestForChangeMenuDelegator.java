@@ -333,15 +333,19 @@ public class RequestForChangeMenuDelegator {
                 }
             }
         }
-        String hciCode = premisesListQueryDto.getHciCode();
+
         AppSubmissionDto oldAppSubmissionDto = new AppSubmissionDto();
         oldAppSubmissionDto = (AppSubmissionDto) CopyUtil.copyMutableObject(appSubmissionDto);
         AppSubmissionDto appSubmissionDto1 = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         if (appSubmissionDto1 != null) {
             oldAppSubmissionDto = appSubmissionDto1;
         }
-        List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode);
-        bpc.request.getSession().setAttribute("licenceDtoList", licenceDtoList);
+        if(premisesListQueryDto!=null){
+            String hciCode = premisesListQueryDto.getHciCode();
+            List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode);
+            bpc.request.getSession().setAttribute("licenceDtoList", licenceDtoList);
+        }
+
         appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, reloadPremisesDtoList);
