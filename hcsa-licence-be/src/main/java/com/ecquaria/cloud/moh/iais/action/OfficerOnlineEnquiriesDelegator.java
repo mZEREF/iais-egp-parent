@@ -972,15 +972,17 @@ public class OfficerOnlineEnquiriesDelegator {
         List<String> addressList = IaisCommonUtils.genNewArrayList();
         addressList.add(MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode()));
         reqForInfoSearchListDto.setAddress(addressList);
-
-        try{
-            List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-            if(appPremisesRecommendationDtos.size()>=2){
+        List<AppPremisesRecommendationDto> appPremisesRecommendationDtos = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        try {
+            if (appPremisesRecommendationDtos.size() >= 2) {
                 reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
-            }
-            else {
+            } else {
                 reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
             }
+        }catch (Exception e){
+            reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
+        }
+        try {
             if(appPremisesRecommendationDtos.size()>=1){
                 reqForInfoSearchListDto.setLastComplianceHistory("Full");
                 List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtos = insepctionNcCheckListService.getNcItemDtoByAppCorrId(rfiApplicationQueryDto.getAppCorrId());
@@ -1008,7 +1010,6 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }catch (Exception e){
             reqForInfoSearchListDto.setLastComplianceHistory("-");
-            reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
         }
         log.debug(StringUtil.changeForLog("licenseeId start ...."+rfiApplicationQueryDto.getLicenseeId()));
         if(rfiApplicationQueryDto.getLicenseeId()!=null){
