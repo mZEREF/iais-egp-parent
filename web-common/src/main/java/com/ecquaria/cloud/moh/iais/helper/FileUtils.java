@@ -167,7 +167,7 @@ public final class FileUtils {
             if( StringUtil.isEmpty(stringBuffer.toString())) {
                 stringBuffer.append(s);
             }else {
-                stringBuffer.append(",").append(s);
+                stringBuffer.append(',').append(s);
             }
         }
         return stringBuffer.toString();

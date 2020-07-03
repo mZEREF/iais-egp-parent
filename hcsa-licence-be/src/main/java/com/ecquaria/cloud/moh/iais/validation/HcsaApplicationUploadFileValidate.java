@@ -30,7 +30,7 @@ public class HcsaApplicationUploadFileValidate implements CustomizeValidator {
         MultipartFile commonsMultipartFile = (MultipartFile) httpServletRequest.getAttribute("selectedFile");
         if(commonsMultipartFile.isEmpty()){
             errMap.put("selectedFile",MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
-        }else{
+        }else if(applicationViewDto != null){
             List<String> fileTypes = Arrays.asList(applicationViewDto.getSystemFileType().split(","));
             Map<String, Boolean> booleanMap = ValidationUtils.validateFile(commonsMultipartFile,fileTypes,(maxFile * 1024 *1024l));
             Boolean fileSize = booleanMap.get("fileSize");
