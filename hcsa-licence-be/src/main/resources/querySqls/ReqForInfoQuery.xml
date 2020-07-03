@@ -16,7 +16,7 @@
              LEFT JOIN app_grp_personnel appGrpPer ON appGrpPer.APP_GRP_ID = T4.ID
              LEFT JOIN app_grp_personnel_ext appGrpPerExt ON appGrpPer.ID = appGrpPerExt.APP_GRP_PSN_ID
              LEFT JOIN app_svc_key_personnel appKeyPsn ON appKeyPsn.APPLICATION_ID = app.ID
-             LEFT JOIN app_premises_recommendation appRec ON (appRec.APP_PREM_CORRE_ID = T2.ID AND appRec.RECOM_TYPE='RETYPE012')
+             LEFT JOIN app_premises_recommendation appRec ON (appRec.APP_PREM_CORRE_ID = T2.ID AND appRec.RECOM_TYPE='RETYPE012' AND appRec.STATUS='CMSTAT001')
             WHERE 1=1
             <#if id??> AND app.id = :id </#if>
             <#if appType??> AND app.app_type = :appType</#if>
