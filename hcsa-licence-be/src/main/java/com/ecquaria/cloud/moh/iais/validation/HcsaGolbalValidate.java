@@ -130,30 +130,31 @@ public class HcsaGolbalValidate implements CustomizeValidator {
     }
 
     private void doComVad(GobalRiskTotalDto temp, Map<String, String> errMap) {
+        String serviceCode = temp.getSvcCode();
         if(StringUtil.isEmpty(temp.getDoMaxLic())){
-            errMap.put(temp.getServiceCode()+"maxl",MessageUtil.replaceMessage("ERR0009","Maximum Licence Tenure","The field"));
+            errMap.put(serviceCode+"maxl",MessageUtil.replaceMessage("ERR0009","Maximum Licence Tenure","The field"));
         }else{
-            numberVad(temp.getDoMaxLic(),errMap,temp.getServiceCode(),"maxl");
+            numberVad(temp.getDoMaxLic(),errMap,serviceCode,"maxl");
         }
         if(StringUtil.isEmpty(temp.getDoLastInspection())){
-            errMap.put(temp.getServiceCode()+"last",MessageUtil.replaceMessage("ERR0009","Last Inspection was more than","The field"));
+            errMap.put(serviceCode+"last",MessageUtil.replaceMessage("ERR0009","Last Inspection was more than","The field"));
         }else{
-            numberVad(temp.getDoLastInspection(),errMap,temp.getServiceCode(),"last");
+            numberVad(temp.getDoLastInspection(),errMap,serviceCode,"last");
         }
         if(StringUtil.isEmpty(temp.getDoAutoRenew())){
-            errMap.put(temp.getServiceCode()+"auto",MessageUtil.replaceMessage("ERR0009","Eligible for auto renewal","The field"));
+            errMap.put(serviceCode+"auto",MessageUtil.replaceMessage("ERR0009","Eligible for auto renewal","The field"));
         }
         if(StringUtil.isEmpty(temp.getDonewInspectType())){
-            errMap.put(temp.getServiceCode()+"newit",MessageUtil.replaceMessage("ERR0009","Type of Inspection Required for New Application","The field"));
+            errMap.put(serviceCode+"newit",MessageUtil.replaceMessage("ERR0009","Type of Inspection Required for New Application","The field"));
         }
         if(StringUtil.isEmpty(temp.getDonewIsPreInspect())){
-            errMap.put(temp.getServiceCode()+"newpp",MessageUtil.replaceMessage("ERR0009","Pre/Post Licensing Inspection for New Application","The field"));
+            errMap.put(serviceCode+"newpp",MessageUtil.replaceMessage("ERR0009","Pre/Post Licensing Inspection for New Application","The field"));
         }
         if(StringUtil.isEmpty(temp.getDorenewInspectType())){
-            errMap.put(temp.getServiceCode()+"renewit",MessageUtil.replaceMessage("ERR0009","Type of Inspection Required for Renewal","The field"));
+            errMap.put(serviceCode+"renewit",MessageUtil.replaceMessage("ERR0009","Type of Inspection Required for Renewal","The field"));
         }
         if(StringUtil.isEmpty(temp.getDorenewIsPreInspect())){
-            errMap.put(temp.getServiceCode()+"renewpp",MessageUtil.replaceMessage("ERR0009","Pre/Post Licensing Inspection for Renewal","The field"));
+            errMap.put(serviceCode+"renewpp",MessageUtil.replaceMessage("ERR0009","Pre/Post Licensing Inspection for Renewal","The field"));
         }
     }
 

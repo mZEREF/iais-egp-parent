@@ -273,7 +273,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         if(commDto!=null&&commDto.getCheckList()!=null&&!commDto.getCheckList().isEmpty()){
             fillcheckDtoList.add(commDto);
         }
-        if(!fillcheckDtoList.isEmpty() || (showDto != null && !IaisCommonUtils.isEmpty(showDto.getAdItemList()))){
+        if(!fillcheckDtoList.isEmpty() || !IaisCommonUtils.isEmpty(showDto.getAdItemList()))
+        {
             saveNcItem(fillcheckDtoList,appPremId,showDto);
         }
     }
