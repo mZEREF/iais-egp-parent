@@ -7,6 +7,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 
 /**
  * EicGatewayClient
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
  * @author suocheng
  * @date 2019/12/14 17:33
  */
+@Component
 public class BeEicGatewayMainClient {
     @Value("${iais.intra.gateway.url}")
     private String gateWayUrl;

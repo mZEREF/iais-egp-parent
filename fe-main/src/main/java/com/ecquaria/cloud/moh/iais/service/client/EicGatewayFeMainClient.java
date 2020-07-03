@@ -9,7 +9,9 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EicGatewayFeMainClient {
     @Value("${iais.inter.gateway.url}")
     private String gateWayUrl;
