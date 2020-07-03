@@ -30,13 +30,13 @@
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
                 <div class="form-horizontal">
                     <div class="tab-content">
-                        <h2 class="component-title">Upload Result</h2>
+                        <h2 class="component-title">Uploaded Result</h2>
                         <table class="table">
                             <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>Upload Item</th>
-                                <th>Upload Result</th>
+                                <th>Item</th>
+                                <th>Status</th>
                             </tr>
                             </thead>
                             <tbody>
