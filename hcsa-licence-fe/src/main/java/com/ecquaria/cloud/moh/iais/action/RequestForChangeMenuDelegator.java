@@ -1146,14 +1146,14 @@ public class RequestForChangeMenuDelegator {
                 AppSubmissionDto appSubmissionDto2 = replacePersonnelDate(appSubmissionDto, newPerson);
                 appSubmissionDto.setAutoRfc(false);
                 appSubmissionDto.setAmount(0.0);
-                appSubmissionDto.setAmountStr("$0.0");
+                appSubmissionDto.setAmountStr("$0");
                 appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                 appSubmissionDtos1.add(appSubmissionDto2);
             } else {
                 AppSubmissionDto appSubmissionDto1 = setPersonnelDate(appSubmissionDto, personnelEditDto);
                 appSubmissionDto.setAutoRfc(true);
                 appSubmissionDto.setAmount(0.0);
-                appSubmissionDto.setAmountStr("$0.0");
+                appSubmissionDto.setAmountStr("$0");
                 appSubmissionDtos1.add(appSubmissionDto1);
             }
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);

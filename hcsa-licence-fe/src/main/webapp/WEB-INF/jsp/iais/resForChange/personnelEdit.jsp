@@ -613,11 +613,13 @@
             $('#replace').hide();
             $('#newPerson').hide();
             $('#show').hide();
+            $('#newPersonExist').hide();
         });
         $('#checkitem2').click(function () {
             $("#update").hide();
             $('#show').hide();
             $('#replace').show();
+            $('#newPersonExist').hide();
         });
 
         $('#cancel').click(function () {
@@ -625,18 +627,21 @@
             $('#replace').hide();
             $('#newPerson').hide();
             $('#show').show();
+            $('#newPersonExist').hide();
         });
         if ($('#replaceOptionsId').val() != "") {
             $("#update").hide();
             $('#show').hide();
             $('#replace').show();
             $('#newPerson').show();
+            $('#newPersonExist').hide();
         }
 
         $('#replaceOptionsId').click(function () {
             $("#update").hide();
             $('#show').hide();
             $('#newPerson').show();
+            $('#newPersonExist').hide();
         });
 
         if ($("input[type='radio']:checked").val() == 'update') {
@@ -646,6 +651,7 @@
             $('#newPerson').hide();
             $("#editSelect").show();
             $('#edit').hide();
+            $('#newPersonExist').hide();
         } else if ($("input[type='radio']:checked").val() == 'replace') {
             $("#update").hide();
             $('#show').hide();
@@ -653,6 +659,7 @@
             $('#newPerson').show();
             $("#editSelect").show();
             $('#edit').hide();
+            $('#newPersonExist').hide();
         }
 
         if ($("input[type='radio']:checked").val() == 'replace' && $('#replaceOptionsId').val() != "") {
@@ -661,6 +668,7 @@
             $('#show').hide();
             $('#newPersonExist').hide();
             $('#edit').hide();
+            $('#newPersonExist').hide();
         }
         var val1 = $('#specialty').val();
         if (val1 == 'other') {

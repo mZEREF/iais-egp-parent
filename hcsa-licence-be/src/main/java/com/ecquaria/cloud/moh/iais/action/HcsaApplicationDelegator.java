@@ -1194,7 +1194,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"recommendationShowName",recommendationShowName);
     }
 
-    private void checkShowInspection(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto,String correlationId) throws FeignException {
+    private void checkShowInspection(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto,String correlationId) {
         String status = applicationViewDto.getApplicationDto().getStatus();
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =  appPremisesRoutingHistoryService.
                             getAppPremisesRoutingHistoryForCurrentStage(applicationViewDto.getApplicationDto().getApplicationNo(),HcsaConsts.ROUTING_STAGE_INS);
