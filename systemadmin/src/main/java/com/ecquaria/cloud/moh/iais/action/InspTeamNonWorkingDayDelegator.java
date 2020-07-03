@@ -178,7 +178,7 @@ public class InspTeamNonWorkingDayDelegator {
 	 */
 	private List<ApptNonWorkingDateDto> sortNonWorkingDay(List<ApptNonWorkingDateDto> nonWorkingDateList ,String groupId){
 
-		List<String> wkrDays = new ArrayList<>(Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"));
+		List<String> wkrDays = new ArrayList<>(Arrays.asList("Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"));
 		List<ApptNonWorkingDateDto> retList = new ArrayList<>(7);
 		LinkedHashMap<String, ApptNonWorkingDateDto> map = new LinkedHashMap<>(7);
 		String groupName = inspSupAddAvailabilityService.getWorkGroupById(groupId).getGroupName();
@@ -192,7 +192,7 @@ public class InspTeamNonWorkingDayDelegator {
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
 			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
-			if(i < 5){
+			if(i < 6 && i >0){
 				nonWorkingDateDto.setNonWkrDay(false);
 				nonWorkingDateDto.setAm(false);
 				nonWorkingDateDto.setPm(false);
@@ -201,7 +201,7 @@ public class InspTeamNonWorkingDayDelegator {
 				nonWorkingDateDto.setAm(true);
 				nonWorkingDateDto.setPm(true);
 			}
-			String weekend = Integer.toString(i + 1);
+			String weekend = Integer.toString(i);
             if(prohibitlist.contains(weekend)){
 				nonWorkingDateDto.setProhibit(true);
             }else{
