@@ -873,7 +873,7 @@ public class WithOutRenewalDelegator {
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-            StringBuffer url = new StringBuffer();
+            StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/payment-web/eservice/INTERNET/PaymentRequest")
                     .append("?amount=").append(MaskUtil.maskValue("amount", String.valueOf(totalAmount)))
@@ -1104,22 +1104,17 @@ public class WithOutRenewalDelegator {
     }
 
     public static String emailAddressesToString(List<String> emailAddresses) {
-        StringBuffer emailAddress = new StringBuffer();
-        //String emailAddress = "";
+        StringBuilder emailAddress = new StringBuilder();
         if (emailAddresses.isEmpty()) {
             return emailAddress.toString();
         }
-
         if (emailAddresses.size() == 1) {
             emailAddress.append(emailAddresses.get(0));
-//            emailAddress += emailAddresses.get(0);
         } else {
             for (int i = 0; i < emailAddresses.size(); i++) {
                 if (i == emailAddresses.size() - 1) {
-//                    emailAddress += emailAddresses.get(i);
                     emailAddress.append(emailAddresses.get(i));
                 } else {
-//                    emailAddress += emailAddresses.get(i) + ", ";
                     emailAddress.append(emailAddresses.get(i)).append(", ");
                 }
             }
