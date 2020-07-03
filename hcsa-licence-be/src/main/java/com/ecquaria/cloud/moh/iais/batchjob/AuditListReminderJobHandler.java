@@ -67,7 +67,8 @@ public class AuditListReminderJobHandler extends IJobHandler {
         Calendar calendar =  Calendar.getInstance();
         calendar.setTime(new Date());
         int dateOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        if( dateOfMonth == 1){
+        // dateOfMonth == 1
+        if( dateOfMonth > -2){
             int auditInspectorListReminderRate = systemParamConfig.getAuditInspectorListReminderRate();
             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDtoByMsgAAndCreatedAt(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND,"AuditListReminderJob").getEntity();
             if(jobRemindMsgTrackingDto == null ){
