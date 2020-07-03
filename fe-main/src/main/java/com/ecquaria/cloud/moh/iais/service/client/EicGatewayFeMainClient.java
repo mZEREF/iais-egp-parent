@@ -4,44 +4,42 @@ package com.ecquaria.cloud.moh.iais.service.client;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
-import com.ecquaria.cloudfeign.FeignConfiguration;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(value = "eicgate", url="${iais.inter.gateway.url}", configuration = {FeignConfiguration.class},
-        fallback = EicGatewayFeMainFallBack.class)
-public interface EicGatewayFeMainClient {
+public class EicGatewayFeMainClient {
+    @Value("${iais.inter.gateway.url}")
+    private String gateWayUrl;
 
-    @PostMapping(value = "/v1/hcsa-app-recall",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Boolean> updateApplicationStatus(@RequestBody RecallApplicationDto recallApplicationDto,
-                                                                                     @RequestHeader("date") String date,
-                                                                                     @RequestHeader("authorization") String authorization,
-                                                                                     @RequestHeader("date-Secondary") String dateSec,
-                                                                                     @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<Boolean> updateApplicationStatus(RecallApplicationDto recallApplicationDto,
+                                                                String date, String authorization, String dateSec,
+                                                                String authorizationSec) {
+        return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/hcsa-app-recall", HttpMethod.POST, recallApplicationDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Boolean.class);
+    }
 
-    @PostMapping(value = "v1/user-account-sync",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<RecallApplicationDto> syncAccountDataFormFe(@RequestBody OrganizationDto organizationDto,
-                                                                  @RequestHeader("date") String date,
-                                                                  @RequestHeader("authorization") String authorization,
-                                                                  @RequestHeader("date-Secondary") String dateSec,
-                                                                  @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<RecallApplicationDto> syncAccountDataFormFe(OrganizationDto organizationDto,
+                                                                  String date, String authorization, String dateSec,
+                                                                  String authorizationSec) {
+        return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/user-account-sync", HttpMethod.POST, organizationDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, RecallApplicationDto.class);
+    }
 
 
-    @PostMapping(value = "/v1/task-recall",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<RecallApplicationDto> recallAppChangeTask(@RequestBody RecallApplicationDto recallApplicationDto,
-                                                                                     @RequestHeader("date") String date,
-                                                                                     @RequestHeader("authorization") String authorization,
-                                                                                     @RequestHeader("date-Secondary") String dateSec,
-                                                                                     @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<RecallApplicationDto> recallAppChangeTask(RecallApplicationDto recallApplicationDto,
+                                                                         String date, String authorization, String dateSec,
+                                                                         String authorizationSec) {
+        return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/task-recall", HttpMethod.POST, recallApplicationDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, RecallApplicationDto.class);
+    }
 
-    @PostMapping(value = "/v1/file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> saveFile(@RequestBody ProcessFileTrackDto processFileTrackDto,
-                                         @RequestHeader("date") String date,
-                                         @RequestHeader("authorization") String authorization,
-                                         @RequestHeader("date-Secondary") String dateSec,
-                                         @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<String> saveFile(ProcessFileTrackDto processFileTrackDto,
+                                         String date, String authorization, String dateSec,
+                                         String authorizationSec) {
+        return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/file-sync-trackings", HttpMethod.POST, processFileTrackDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+    }
 }
