@@ -866,6 +866,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
+        //NOSONAR
         List<AppointmentUserDto> appointmentUserDtoList = null;
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
