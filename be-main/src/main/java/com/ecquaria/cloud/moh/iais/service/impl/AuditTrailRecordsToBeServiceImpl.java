@@ -3,13 +3,13 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityEventDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditTrailRecordsToBeService;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
@@ -47,30 +47,22 @@ import java.util.zip.ZipFile;
 public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeService {
     @Value("${iais.syncFileTracking.shared.path}")
     private     String sharedPath;
-    private     String download;
-    private     String backups;
-    private     String fileFormat=".text";
-    private     String compressPath;
-    private     String downZip;
-    private static final String FOLDER="folder";
+
     @Autowired
     private GenerateIdClient generateIdClient;
     @Autowired
     private SystemBeLicMainClient systemClient;
-    @Autowired
-    private EventBusHelper eventBusHelper;
+
     @Autowired
     AuditTrailMainBeClient auditTrailMainBeClient;
 
     @Override
     public void info() {
-        download= sharedPath+File.separator+File.separator+FOLDER;
-        backups=sharedPath+File.separator+"backupsAudit"+File.separator;
-        compressPath=sharedPath+File.separator+"compress";
-        downZip=sharedPath+File.separator+"compress";
-        File file =new File(download);
-        File b=new File(backups);
-        File c=new File(compressPath);
+
+
+        File file =new File(sharedPath+File.separator+File.separator+"folder");
+        File b=new File(sharedPath+File.separator+ RequestForInformationConstants.BACKUPS_AUDIT +File.separator);
+        File c=new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS);
         if(!c.exists()){
             c.mkdirs();
         }
@@ -86,13 +78,13 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     @Override
     public void compress(){
         log.info("-------------compress start ---------");
-        if(new File(backups).isDirectory()){
-            File[] files = new File(backups).listFiles();
+        if(new File(sharedPath+File.separator+ RequestForInformationConstants.BACKUPS_AUDIT +File.separator).isDirectory()){
+            File[] files = new File(sharedPath+File.separator+ RequestForInformationConstants.BACKUPS_AUDIT +File.separator).listFiles();
             for(File fil:files){
-                if(fil.getName().endsWith(".zip")){
+                if(fil.getName().endsWith(RequestForInformationConstants.ZIP_NAME)){
                     String name = fil.getName();
                     String path = fil.getPath();
-                    String relPath="backupsAudit"+File.separator+name;
+                    String relPath=RequestForInformationConstants.BACKUPS_AUDIT+File.separator+name;
                     HashMap<String,String> map= IaisCommonUtils.genNewHashMap();
                     map.put("fileName",name);
                     map.put("filePath",relPath);
@@ -153,11 +145,11 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
             if(!zipEntry.getName().endsWith(File.separator)){
 
                 String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                File file =new File(compressPath+File.separator+fileName+File.separator+substring);
+                File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+substring);
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os = new FileOutputStream(compressPath+File.separator+fileName+File.separator+zipEntry.getName());
+                os = new FileOutputStream(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+zipEntry.getName());
                 bos = new BufferedOutputStream(os);
                 InputStream is = zipFile.getInputStream(zipEntry);
                 bis = new BufferedInputStream(is);
@@ -172,7 +164,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
 
             }else {
 
-                new File(compressPath+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
+                new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
             }
         }catch (IOException e){
 
@@ -211,14 +203,14 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     @Override
     public void download(ProcessFileTrackDto processFileTrackDto, String fileName, String refId, String submissionId) {
 
-        File file =new File(downZip+File.separator+fileName+File.separator+"auditRecFile");
+        File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+RequestForInformationConstants.FILE_NAME_AUDIT);
         if(!file.exists()){
             file.mkdirs();
         }
 
         File[] files = file.listFiles();
         for(File  filzz:files){
-            if(filzz.isFile() &&filzz.getName().endsWith(fileFormat)){
+            if(filzz.isFile() &&filzz.getName().endsWith(RequestForInformationConstants.FILE_FORMAT)){
                 try (FileInputStream fileInputStream =new FileInputStream(filzz)){
                     ByteArrayOutputStream by=new ByteArrayOutputStream();
                     int count=0;

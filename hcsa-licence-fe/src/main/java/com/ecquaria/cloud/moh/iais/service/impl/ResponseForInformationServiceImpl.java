@@ -5,12 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -20,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ResponseForInformationService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepositoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ResponseForInformationClient;
@@ -66,10 +61,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     SystemAdminClient systemAdminClient;
     @Value("${iais.syncFileTracking.shared.path}")
     private String sharedPath;
-    private String download;
-    private String fileName;
-    private String fileFormat = ".text";
-    private String backups;
+
 
     private Boolean flag=Boolean.TRUE;
     @Value("${iais.hmac.keyId}")
@@ -100,25 +92,23 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     @Override
     public void saveFile(LicPremisesReqForInfoDto licPremisesReqForInfoDto) throws IOException {
-        fileName = "rfiRecFile";
-        download = sharedPath + fileName;
-        backups = sharedPath + "backupsRec";
+
 
         String data = JsonUtil.parseToJson(licPremisesReqForInfoDto);
         String s = FileUtil.genMd5FileChecksum(data.getBytes(StandardCharsets.UTF_8));
-        File file=MiscUtil.generateFile(download+File.separator, s+fileFormat);
+        File file=MiscUtil.generateFile(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator, s+RequestForInformationConstants.FILE_FORMAT);
         if(!file.exists()){
             boolean createFlag = file.createNewFile();
             if (!createFlag) {
                 log.error("Create File fail");
             }
         }
-        File groupPath=new File(download+File.separator);
+        File groupPath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator);
 
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (FileOutputStream fileInputStream = new FileOutputStream(backups+File.separator+file.getName());
+        try (FileOutputStream fileInputStream = new FileOutputStream(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+file.getName());
              FileOutputStream fileOutputStream  =new FileOutputStream(file);){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -132,11 +122,9 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     @Override
     public String getData(LicPremisesReqForInfoDto licPremisesReqForInfoDto) {
         deleteFile();
-        fileName = "rfiRecFile";
-        download = sharedPath +fileName;
-        backups = sharedPath + "backupsRec";
+
         //if path is not exists create path
-        File fileRepPath=new File(download+File.separator+"files");
+        File fileRepPath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator+"files");
         if(!fileRepPath.exists()){
             fileRepPath.mkdirs();
         }
@@ -145,7 +133,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
             for (LicPremisesReqForInfoDocDto doc:licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()
             ) {
                 byte[] entity = fileRepositoryClient.getFileFormDataBase(doc.getFileRepoId()).getEntity();
-                File file = MiscUtil.generateFile(download + File.separator + "files",
+                File file = MiscUtil.generateFile(sharedPath + RequestForInformationConstants.FILE_NAME_RFI + File.separator + "files",
                         doc.getFileRepoId() + "@" + doc.getDocName());
                 try (FileOutputStream outputStream=new FileOutputStream(file);){
                     outputStream.write(entity);
@@ -171,15 +159,15 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String compress(String rfiId){
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
-        File c= new File(backups+File.separator);
+        File c= new File(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator);
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=new FileOutputStream(backups+File.separator+ l+".zip");
+        try (OutputStream is=new FileOutputStream(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+ l+RequestForInformationConstants.ZIP_NAME);
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
-            log.info(StringUtil.changeForLog("------------zip file name is"+backups+File.separator+ l+".zip"+"--------------------"));
-            File file = new File(download+File.separator);
+            log.info(StringUtil.changeForLog("------------zip file name is"+sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+ l+RequestForInformationConstants.ZIP_NAME+"--------------------"));
+            File file = new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator);
 
             MiscUtil.checkDirs(file);
             zipFile(zos, file);
@@ -194,14 +182,14 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private void zipFile(ZipOutputStream zos,File file) throws IOException {
         log.info("-----------start zipFile---------------------");
         if (file.isDirectory()) {
-            zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))+File.separator));
+            zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(RequestForInformationConstants.FILE_NAME_RFI))+File.separator));
             zos.closeEntry();
             for(File f: Objects.requireNonNull(file.listFiles())){
                 zipFile(zos,f);
             }
         } else {
             try  ( BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));){
-                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(fileName))));
+                zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(RequestForInformationConstants.FILE_NAME_RFI))));
                 int count ;
                 byte [] b =new byte[1024];
                 count=bis.read(b);
@@ -219,11 +207,11 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
     private void rename(String fileNamesss, String rfiId)  {
         flag = Boolean.TRUE;
-        File zipFile =new File(backups);
+        File zipFile =new File(sharedPath + RequestForInformationConstants.BACKUPS_REC);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
-                if (name.endsWith(fileNamesss+".zip")) {
+                if (name.endsWith(fileNamesss+RequestForInformationConstants.ZIP_NAME)) {
                     return true;
                 }
                 return false;
@@ -241,13 +229,13 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
 
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    File curFile =new File(backups + File.separator + s + ".zip");
+                    File curFile =new File(sharedPath + RequestForInformationConstants.BACKUPS_REC + File.separator + s + RequestForInformationConstants.ZIP_NAME);
                     boolean renameFlag = file.renameTo(curFile);
                     if (!renameFlag) {
                         log.error("Rename file fail");
                     }
-                    log.info(StringUtil.changeForLog("----------- new zip file name is"+backups+File.separator+s+".zip"));
-                    String s1 = saveFileName(s+".zip","backupsRec" + File.separator+s+".zip",rfiId);
+                    log.info(StringUtil.changeForLog("----------- new zip file name is"+sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+s+RequestForInformationConstants.ZIP_NAME));
+                    String s1 = saveFileName(s+RequestForInformationConstants.ZIP_NAME,RequestForInformationConstants.BACKUPS_REC + File.separator+s+RequestForInformationConstants.ZIP_NAME,rfiId);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
                         flag=Boolean.FALSE;
@@ -261,9 +249,9 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     private void deleteFile(){
-        File file =new File(backups+File.separator);
-        File fileRepPath=new File(download+File.separator+"files");
-        File filePath=new File(download+File.separator);
+        File file =new File(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator);
+        File fileRepPath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator+"files");
+        File filePath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_RFI+File.separator);
         MiscUtil.checkDirs(fileRepPath);
         MiscUtil.checkDirs(file);
         if(fileRepPath.isDirectory()){
@@ -276,7 +264,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         }
         {
             File[] files = filePath.listFiles((dir, name) -> {
-                if (name.endsWith(fileFormat)) {
+                if (name.endsWith(RequestForInformationConstants.FILE_FORMAT)) {
                     return true;
                 }
                 return false;
@@ -289,7 +277,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         }
         {
             File[] files = file.listFiles((dir, name) -> {
-                if (name.endsWith(fileFormat)) {
+                if (name.endsWith(RequestForInformationConstants.FILE_FORMAT)) {
                     return true;
                 }
                 return false;
