@@ -454,6 +454,9 @@ public class RoundRobinCommPoolBatchJob {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         //save AppPremisesInspecApptDto
         for(String appPremCorrId : appPremCorrIds) {
+            int reschedulingCount = updateAppPremisesInspecApptDtoList(appPremCorrIds, auditTrailDto);
+
+            //create AppPremisesInspecApptDto
             for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
                 String apptRefNo = inspDateMap.getKey();
                 AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
@@ -462,6 +465,7 @@ public class RoundRobinCommPoolBatchJob {
                 appPremisesInspecApptDto.setSpecificInspDate(null);
                 appPremisesInspecApptDto.setId(null);
                 appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appPremisesInspecApptDto.setReschedulingCount(reschedulingCount);
                 if(appointmentDto.getStartDate() != null) {
                     try {
                         appPremisesInspecApptDto.setStartDate(Formatter.parseDateTime(appointmentDto.getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT));
@@ -499,7 +503,38 @@ public class RoundRobinCommPoolBatchJob {
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         cancelOrConfirmApptDate(apptCalendarStatusDto);
     }
+    private int updateAppPremisesInspecApptDtoList(List<String> appPremCorrIds, AuditTrailDto auditTrailDto) {
+        int reschedulingCount = 0;
+        //remove(update) AppPremisesInspecApptDto
+        for(String appPremCorrId : appPremCorrIds) {
+            List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getSystemDtosByAppPremCorrId(appPremCorrId).getEntity();
+            if (!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)) {
+                List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
 
+                List<AppPremisesInspecApptDto> appPremisesInspecApptDtoUpdateList = IaisCommonUtils.genNewArrayList();
+                AppPremisesInspecApptDto apptDto = appPremisesInspecApptDtos.get(0);
+                reschedulingCount = apptDto.getReschedulingCount() + 1;
+                for (AppPremisesInspecApptDto inspecApptDto : appPremisesInspecApptDtos) {
+                    inspecApptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    inspecApptDto.setAuditTrailDto(auditTrailDto);
+                    //update BE
+                    inspecApptDto = applicationClient.updateAppPremisesInspecApptDto(inspecApptDto).getEntity();
+                    inspecApptDto.setAuditTrailDto(auditTrailDto);
+                    appPremisesInspecApptDtoUpdateList.add(inspecApptDto);
+                    cancelRefNo.add(inspecApptDto.getApptRefNo());
+                }
+                ApptInspectionDateDto apptInspectionDateDto = new ApptInspectionDateDto();
+                apptInspectionDateDto.setAppPremisesInspecApptCreateList(appPremisesInspecApptDtoUpdateList);
+                //do update FE
+                createFeAppPremisesInspecApptDto(apptInspectionDateDto);
+                ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
+                apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
+                apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+                cancelOrConfirmApptDate(apptCalendarStatusDto);
+            }
+        }
+        return reschedulingCount;
+    }
     private void createFeAppPremisesInspecApptDto(ApptInspectionDateDto apptInspectionDateDto) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = apptInspectionDateDto.getAppPremisesInspecApptCreateList();
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
