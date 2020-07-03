@@ -558,7 +558,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             appPremisesRecommendationDto.setPeriod(sdf.format(licenceDto.getStartDate())+"-"+sdf.format(licenceDto.getExpiryDate()));
         }
         appPremisesRecommendationDto.setRecomDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getRecomDecision()}).get(0).getText());
-        appPremisesRecommendationDto.setRiskLevel(fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDtos.get(indexNo).getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity().getRecomDecision());
+        String risk=fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDtos.get(indexNo).getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity().getRecomDecision();
+        appPremisesRecommendationDto.setRiskLevel(MasterCodeUtil.retrieveOptionsByCodes(new String[]{risk}).get(0).getValue());
         ParamUtil.setSessionAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         // 		preInspReport->OnStepProcess
     }
