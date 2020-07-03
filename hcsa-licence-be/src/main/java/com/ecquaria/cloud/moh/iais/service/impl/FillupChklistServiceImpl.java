@@ -1477,7 +1477,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return checkListIds;
     }
     private Map<String,InspectionCheckQuestionDto> getStringInspectionCheckQuestionDtoMapByList(List<InspectionCheckQuestionDto>  inspectionCheckQuestionDtos){
-        Map<String,InspectionCheckQuestionDto> map = new HashMap<>(inspectionCheckQuestionDtos.size());
+        Map<String,InspectionCheckQuestionDto> map = Maps.newHashMapWithExpectedSize(inspectionCheckQuestionDtos.size());
         for(InspectionCheckQuestionDto inspectionCheckQuestionDto : inspectionCheckQuestionDtos){
             map.put(inspectionCheckQuestionDto.getItemId(),inspectionCheckQuestionDto);
         }
