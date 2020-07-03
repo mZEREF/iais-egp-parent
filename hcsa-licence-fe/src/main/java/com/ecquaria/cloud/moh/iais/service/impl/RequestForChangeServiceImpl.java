@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -731,17 +732,18 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String licenseeId = appSubmissionDto.getLicenseeId();
                         //new
                         if(newTypeFlag || (rfi && clickEdit)){
+                            String errMsg = MessageUtil.getMessageDesc("NEW_ACK004");
                             if(StringUtil.isEmpty(isOtherLic) && StringUtil.isEmpty(hciNameUsed) && errorMap.size() == 0){
                                 String premisesHci = hciName + NewApplicationHelper.getPremKey(appGrpPremisesDto);
                                 Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci).getEntity();
                                 if(flag){
-                                    errorMap.put("hciNameUsed","Please take note this premises address is licenced under another licensee");
+                                    errorMap.put("hciNameUsed",errMsg);
                                 }
                             }else if(StringUtil.isEmpty(isOtherLic) && !StringUtil.isEmpty(hciNameUsed) && errorMap.size() == 1){
                                 String premisesHci = hciName + NewApplicationHelper.getPremKey(appGrpPremisesDto);
                                 Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci).getEntity();
                                 if(flag){
-                                    errorMap.put("hciNameUsed",hciNameUsed+"<br/>Please take note this premises address is licenced under another licensee");
+                                    errorMap.put("hciNameUsed",hciNameUsed+"<br/>"+errMsg);
                                 }
                             }
                         }
