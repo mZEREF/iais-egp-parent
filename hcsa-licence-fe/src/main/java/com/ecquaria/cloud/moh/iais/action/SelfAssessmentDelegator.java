@@ -224,19 +224,23 @@ public class SelfAssessmentDelegator {
             } else {
                 String applicationNumber = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
 
-                selfAssessmentService.saveAllSelfAssessment(selfAssessmentList, applicationNumber).booleanValue();
+                boolean retSubmit = selfAssessmentService.saveAllSelfAssessment(selfAssessmentList, applicationNumber).booleanValue();
+                if (retSubmit){
 
-                if (StringUtils.isEmpty(applicationNumber)){
-                    String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
-                    selfAssessmentService.changePendingSelfAssMtStatus(groupId, true);
-                }else {
-                    String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
-                    selfAssessmentService.changePendingSelfAssMtStatus(corrId, false);
-                    ParamUtil.setSessionAttr(bpc.request, REDIRECT_TO_MAIN_FLAG, "Y");
+                    log.info("retSubmit flag " , retSubmit);
 
-                    String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
-                    if (!StringUtil.isEmpty(messageId)){
-                        inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+                    if (StringUtils.isEmpty(applicationNumber)){
+                        String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
+                        selfAssessmentService.changePendingSelfAssMtStatus(groupId, true);
+                    }else {
+                        String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
+                        selfAssessmentService.changePendingSelfAssMtStatus(corrId, false);
+                        ParamUtil.setSessionAttr(bpc.request, REDIRECT_TO_MAIN_FLAG, "Y");
+
+                        String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+                        if (!StringUtil.isEmpty(messageId)){
+                            inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
+                        }
                     }
                 }
 
