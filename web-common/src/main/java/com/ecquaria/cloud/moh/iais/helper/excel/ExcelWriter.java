@@ -100,8 +100,8 @@ public final class ExcelWriter {
     private static File appendToExcel(final File file, final String fileName, final Integer sheetAt, final List<?> source, Class<?> sourceClz,
                                       final boolean block, final boolean headName, final Map<Integer, List<Integer>> unlockCellMap, final String pwd, final int startCellIndex) throws Exception {
         File out = new File(fileName);
-        OutputStream outputStream = new FileOutputStream(out);
-        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+
+        try (FileInputStream fileInputStream = new FileInputStream(file); OutputStream outputStream = new FileOutputStream(out)) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
             startInternal();
@@ -118,8 +118,6 @@ public final class ExcelWriter {
             if (workbook != null){
                 workbook.close();
             }
-
-            outputStream.close();
         }
 
         return out;
