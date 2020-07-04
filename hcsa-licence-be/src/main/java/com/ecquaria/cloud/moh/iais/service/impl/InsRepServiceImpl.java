@@ -678,36 +678,119 @@ public class InsRepServiceImpl implements InsRepService {
         String applicationNo = applicationDto.getApplicationNo();
         String applicationType = applicationDto.getApplicationType();
         String taskKey = taskDto.getTaskKey();
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtosByAppNo = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationNo);
-        String userId = null;
-        String roleId = null;
-        String stageId = null;
-        if (!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtosByAppNo)) {
-            for (AppPremisesRoutingHistoryDto dto : appPremisesRoutingHistoryDtosByAppNo) {
-                String roleId1 = dto.getRoleId();
-                String actionby = dto.getActionby();
-                String stageId1 = dto.getStageId();
-                if (RoleConsts.USER_ROLE_AO3.equals(roleId1)) {
-                    userId = actionby;
-                    roleId = roleId1;
-                    stageId = stageId1;
+
+        AppPremisesRoutingHistoryDto secondRouteBackHistoryByAppNo = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(applicationNo, status);
+        String userId = secondRouteBackHistoryByAppNo.getActionby();
+        String roleId = secondRouteBackHistoryByAppNo.getRoleId();
+        String stageId = secondRouteBackHistoryByAppNo.getStageId();
+        String subStage = getSubStage(appPremisesCorrelationId, taskKey);
+
+        String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
+        if (HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)) {
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
+        } else if (HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)) {
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;
+        } else if (HcsaConsts.ROUTING_STAGE_INS.equals(stageId)) {
+            if (RoleConsts.USER_ROLE_AO1.equals(roleId)) {
+                nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION;
+            } else {
+                nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW;
+            }
+        } else if (HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)) {
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;
+        } else if (HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)) {
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+        } else if (HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)) {
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+        }
+
+        String routeHistoryId = secondRouteBackHistoryByAppNo.getId();
+        AppPremisesRoutingHistoryExtDto historyExtDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistoryExtByHistoryAndComponentName(routeHistoryId, ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW).getEntity();
+        if (historyExtDto == null) {
+            ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
+            updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
+            completedTask(taskDto,applicationNo);
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
+            String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
+            List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
+            taskService.createTasks(taskDtos);
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
+            String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
+            createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
+            createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, historyRemarks, null, roleId, groupId2, subStage);
+        } else {
+            String componentValue = historyExtDto.getComponentValue();
+            if ("N".equals(componentValue)) {
+                List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(serviceId,
+                        stageId, applicationType);
+                if (hcsaSvcRoutingStageDtoList != null) {
+                    HcsaSvcRoutingStageDto nextStage = hcsaSvcRoutingStageDtoList.get(0);
+                    String stageCode = nextStage.getStageCode();
+                    String routeNextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+                    String nextStageId = HcsaConsts.ROUTING_STAGE_AO2;
+                    if (RoleConsts.USER_ROLE_AO3.equals(stageCode)) {
+                        nextStageId = HcsaConsts.ROUTING_STAGE_AO3;
+                        routeNextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+                    }
+                    hcsaApplicationDelegator.routingTask(bpc, nextStageId, routeNextStatus, stageCode);
+                } else {
+                    log.error(StringUtil.changeForLog("RoutingStageDtoList is null"));
                 }
+            } else {
+                ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
+                updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
+                completedTask(taskDto,applicationNo);
+                HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
+                String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
+                List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
+                taskService.createTasks(taskDtos);
+                HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
+                String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
+                createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, ApplicationConsts.PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
+                createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, roleId, groupId2, subStage);
             }
         }
-        String subStage = getSubStage(appPremisesCorrelationId, taskKey);
-        String nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;;
-        ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
-        updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
-        completedTask(taskDto, applicationNo);
-        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
-        String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
-        List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
-        taskService.createTasks(taskDtos);
-        HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
-        String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
-        createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
-        createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, historyRemarks, null, roleId, groupId2, subStage);
+    }
 
+    @Override
+    public void routTaskToRoutBackAo3(BaseProcessClass bpc, TaskDto taskDto, ApplicationDto applicationDto, String appPremisesCorrelationId, String historyRemarks) throws Exception {
+        {
+            String serviceId = applicationDto.getServiceId();
+            String status = applicationDto.getStatus();
+            String applicationNo = applicationDto.getApplicationNo();
+            String applicationType = applicationDto.getApplicationType();
+            String taskKey = taskDto.getTaskKey();
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtosByAppNo = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationNo);
+            String userId = null;
+            String roleId = null;
+            String stageId = null;
+            if (!IaisCommonUtils.isEmpty(appPremisesRoutingHistoryDtosByAppNo)) {
+                for (AppPremisesRoutingHistoryDto dto : appPremisesRoutingHistoryDtosByAppNo) {
+                    String roleId1 = dto.getRoleId();
+                    String actionby = dto.getActionby();
+                    String stageId1 = dto.getStageId();
+                    if (RoleConsts.USER_ROLE_AO3.equals(roleId1)) {
+                        userId = actionby;
+                        roleId = roleId1;
+                        stageId = stageId1;
+                    }
+                }
+            }
+            String subStage = getSubStage(appPremisesCorrelationId, taskKey);
+            String nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;;
+            ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
+            updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
+            completedTask(taskDto, applicationNo);
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
+            String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
+            List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
+            taskService.createTasks(taskDtos);
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto2 = getHcsaSvcStageWorkingGroupDto(serviceId, 1, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
+            String groupId2 = hcsaSvcStageWorkingGroupDto2.getGroupId();
+            createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
+            createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, historyRemarks, null, roleId, groupId2, subStage);
+
+        }
     }
 
     @Override
