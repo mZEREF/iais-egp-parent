@@ -8,9 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
-import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -18,20 +15,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
-import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloudfeign.FeignConfiguration;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 
 /**
  * EicGatewayClient
@@ -39,22 +31,25 @@ import java.util.Map;
  * @author Jinhua
  * @date 2019/12/3 17:33
  */
-@FeignClient(value = "eicgate", url="${iais.inter.gateway.url}", configuration = {FeignConfiguration.class},
-        fallback = FeEicGatewayClientFallback.class)
-public interface FeEicGatewayClient {
-    @PostMapping(value = "/v1/file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> saveFile(@RequestBody ProcessFileTrackDto processFileTrackDto,
-                                         @RequestHeader("date") String date,
-                                         @RequestHeader("authorization") String authorization,
-                                         @RequestHeader("date-Secondary") String dateSec,
-                                         @RequestHeader("authorization-Secondary") String authorizationSec);
+@Component
+public class FeEicGatewayClient {
+    @Value("${iais.inter.gateway.url}")
+    private String gateWayUrl;
 
-    @GetMapping(value = "v1/hcsa-app-officer", produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<String>> getEmailByCorrelationIdAndStatusAndRole(@RequestParam(value = "corrData") String corrDataJson,
-                                                                              @RequestHeader("date") String date,
-                                                                              @RequestHeader("authorization") String authorization,
-                                                                              @RequestHeader("date-Secondary") String dateSec,
-                                                                              @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<String> saveFile(ProcessFileTrackDto processFileTrackDto,
+                                        String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/file-sync-trackings", HttpMethod.POST, processFileTrackDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+    }
+
+    public FeignResponseEntity<List> getEmailByCorrelationIdAndStatusAndRole(String corrDataJson,
+                                                                String date, String authorization, String dateSec,
+                                                                String authorizationSec) {
+        Map<String, Object> param = IaisCommonUtils.genNewHashMap(1);
+        param.put("corrData", corrDataJson);
+        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/v1/hcsa-app-officer", HttpMethod.GET, param,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+    }
 
     /**
     * @author: yichen
@@ -62,20 +57,17 @@ public interface FeEicGatewayClient {
     * @param:
     * @return:
     */
-    @PostMapping(value = "/v1/app-file-sync-trackings/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> saveFileApplication(@RequestBody ProcessFileTrackDto processFileTrackDto,
-                                         @RequestHeader("date") String date,
-                                         @RequestHeader("authorization") String authorization,
-                                         @RequestHeader("date-Secondary") String dateSec,
-                                         @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<String> saveFileApplication(ProcessFileTrackDto processFileTrackDto,
+                                         String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-file-sync-trackings", HttpMethod.POST, processFileTrackDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+    }
 
-
-    @PostMapping(value = "/v1/self-decl-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<IaisApiResult> routeSelfAssessment(@RequestBody FeSelfAssessmentSyncDataDto selfDeclSyncDataDto,
-                                                                                     @RequestHeader("date") String date,
-                                                                                     @RequestHeader("authorization") String authorization,
-                                                                                     @RequestHeader("date-Secondary") String dateSec,
-                                                                                     @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<IaisApiResult> routeSelfAssessment(FeSelfAssessmentSyncDataDto selfDeclSyncDataDto,
+                                                            String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/self-decl-bridge", HttpMethod.POST, selfDeclSyncDataDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, IaisApiResult.class);
+    }
 
 
     /**
@@ -84,12 +76,11 @@ public interface FeEicGatewayClient {
      * @param:
      * @return:
      */
-    @PostMapping(value = "/v1/app-self-desc-status-sync/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> inactiveLastVersionRecord(@RequestBody List<String> lastVersionId,
-                                                          @RequestHeader("date") String date,
-                                                          @RequestHeader("authorization") String authorization,
-                                                          @RequestHeader("date-Secondary") String dateSec,
-                                                          @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<String> inactiveLastVersionRecord(List<String> lastVersionId,
+                                                String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-self-desc-status-sync", HttpMethod.POST, lastVersionId,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+    }
 
 
     /**
@@ -98,12 +89,12 @@ public interface FeEicGatewayClient {
      *@return :
      *@Description :
      */
-    @PutMapping(value = "/v1/payment-status/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicenceDto>> routePaymentStatus(@RequestBody ApplicationGroupDto applicationGroupDto,
-                                                   @RequestHeader("date") String date,
-                                                   @RequestHeader("authorization") String authorization,
-                                                   @RequestHeader("date-Secondary") String dateSec,
-                                                   @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<List> routePaymentStatus(ApplicationGroupDto applicationGroupDto,
+                                                   String date, String authorization,
+                                                   String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/payment-status", HttpMethod.PUT, applicationGroupDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+    }
 
 
     /**
@@ -112,98 +103,84 @@ public interface FeEicGatewayClient {
      *@return :
      *@Description :update licence when effective date <= new Date
      */
-    @PutMapping(value = "/v1/cessation-status/",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicenceDto>> updateLicenceStatus(@RequestBody List<LicenceDto> licenceDtos,
-                                                   @RequestHeader("date") String date,
-                                                   @RequestHeader("authorization") String authorization,
-                                                   @RequestHeader("date-Secondary") String dateSec,
-                                                   @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<List> updateLicenceStatus(List<LicenceDto> licenceDtos,
+                                      String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/cessation-status", HttpMethod.PUT, licenceDtos,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+    }
 
-    @PostMapping(value = "/v1/rfi-reply-bridge/",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<LicPremisesReqForInfoDto> routeRfiData(@RequestBody LicPremisesReqForInfoDto licPremisesReqForInfoDto,
-                                                               @RequestHeader("date") String date,
-                                                               @RequestHeader("authorization") String authorization,
-                                                               @RequestHeader("date-Secondary") String dateSec,
-                                                               @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<LicPremisesReqForInfoDto> routeRfiData(LicPremisesReqForInfoDto licPremisesReqForInfoDto,
+                                             String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/rfi-reply-bridge", HttpMethod.POST, licPremisesReqForInfoDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, LicPremisesReqForInfoDto.class);
+    }
 
-    @PostMapping(value = "/v1/hcsa-reschedule-appt/",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getUserCalendarByUserId(@RequestBody AppointmentDto appointmentDto,
-                                                                                 @RequestHeader("date") String date,
-                                                                                 @RequestHeader("authorization") String authorization,
-                                                                                 @RequestHeader("date-Secondary") String dateSec,
-                                                                                 @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<Map> getUserCalendarByUserId(AppointmentDto appointmentDto,
+                                             String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-reschedule-appt", HttpMethod.POST, appointmentDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Map.class);
+    }
 
-    @PostMapping(value = "/v1/hcsa-appt-refno",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> getAppointmentByApptRefNo(@RequestBody List<String> apptRefNos,
-                                                                                          @RequestHeader("date") String date,
-                                                                                          @RequestHeader("authorization") String authorization,
-                                                                                          @RequestHeader("date-Secondary") String dateSec,
-                                                                                          @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<Map> getAppointmentByApptRefNo(List<String> apptRefNos,
+                                                          String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-appt-refno", HttpMethod.POST, apptRefNos,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Map.class);
+    }
 
-    @PostMapping(value = "/v1/hcsa-app-insdate-up", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<ApptInspectionDateDto> apptFeDataUpdateCreateBe(@RequestBody ApptInspectionDateDto apptInspectionDateDto,
-                                                                        @RequestHeader("date") String date,
-                                                                        @RequestHeader("authorization") String authorization,
-                                                                        @RequestHeader("date-Secondary") String dateSec,
-                                                                        @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<ApptInspectionDateDto> apptFeDataUpdateCreateBe(ApptInspectionDateDto apptInspectionDateDto,
+                                     String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-app-insdate-up", HttpMethod.POST, apptInspectionDateDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptInspectionDateDto.class);
+    }
 
-    @PostMapping(value = "/v1/hcsa-task-assignment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<TaskDto>> createFeReplyTask(@RequestBody ApptFeConfirmDateDto apptFeConfirmDateDto,
-                                                         @RequestHeader("date") String date,
-                                                         @RequestHeader("authorization") String authorization,
-                                                         @RequestHeader("date-Secondary") String dateSec,
-                                                         @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<List> createFeReplyTask(ApptFeConfirmDateDto apptFeConfirmDateDto,
+                                                         String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-task-assignment", HttpMethod.POST, apptFeConfirmDateDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+    }
 
-    @PostMapping(value = "/v1/hcsa-inspect-nc-up", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<InspRectificationSaveDto> feCreateAndUpdateItemDoc(@RequestBody InspRectificationSaveDto inspRectificationSaveDto,
-                                                                           @RequestHeader("date") String date,
-                                                                           @RequestHeader("authorization") String authorization,
-                                                                           @RequestHeader("date-Secondary") String dateSec,
-                                                                           @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<InspRectificationSaveDto> feCreateAndUpdateItemDoc(InspRectificationSaveDto inspRectificationSaveDto,
+                                      String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-inspect-nc-up", HttpMethod.POST, inspRectificationSaveDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, InspRectificationSaveDto.class);
+    }
 
 
-    @PostMapping(value = "/v1/no-attach-emails", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> feSendEmail(@RequestBody EmailDto email,
-                                                                           @RequestHeader("date") String date,
-                                                                           @RequestHeader("authorization") String authorization,
-                                                                           @RequestHeader("date-Secondary") String dateSec,
-                                                                           @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<String> feSendEmail(EmailDto email,
+                                                   String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/no-attach-emails", HttpMethod.POST, email,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+    }
 
 
-    @GetMapping(value = "/v1/appt-public-holiday")
-    FeignResponseEntity<List<PublicHolidayDto>> getpublicHoliday(@RequestHeader("date") String date,
-                                                                 @RequestHeader("authorization") String authorization,
-                                                                 @RequestHeader("date-Secondary") String dateSec,
-                                                                 @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<List> getpublicHoliday(String date, String authorization,
+                                                      String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/appt-public-holiday", HttpMethod.GET, null,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+    }
 
-    @PutMapping(value = "/v1/appointment-status",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Void> updateUserCalendarStatus(@RequestBody ApptCalendarStatusDto apptCalDto,
-                                                       @RequestHeader("date") String date,
-                                                       @RequestHeader("authorization") String authorization,
-                                                       @RequestHeader("date-Secondary") String dateSec,
-                                                       @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<Void> updateUserCalendarStatus(ApptCalendarStatusDto apptCalDto,
+                                       String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/appointment-status", HttpMethod.PUT, apptCalDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Void.class);
+    }
 
-    @GetMapping(value = "/v1/new-inbox-msg-no", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> getMessageNo(@RequestHeader("date") String date,
-                                            @RequestHeader("authorization") String authorization,
-                                            @RequestHeader("date-Secondary") String dateSec,
-                                            @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<String> getMessageNo(String date,
+                                  String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/new-inbox-msg-no", HttpMethod.GET, null,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
+    }
 
-    @PostMapping(value = "/v1/hcsa-config-gol-risk", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<GobalRiskAccpetDto>  getGobalRiskAccpetDtoCallBeByGobalRiskAccpetDto(@RequestBody GobalRiskAccpetDto gobalRiskAccpetDto,
-                                                                     @RequestHeader("date") String date,
-                                                                     @RequestHeader("authorization") String authorization,
-                                                                     @RequestHeader("date-Secondary") String dateSec,
-                                                                     @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<GobalRiskAccpetDto>  getGobalRiskAccpetDtoCallBeByGobalRiskAccpetDto(GobalRiskAccpetDto gobalRiskAccpetDto,
+                                                                     String date, String authorization, String dateSec,
+                                                                     String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-config-gol-risk", HttpMethod.POST, gobalRiskAccpetDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, GobalRiskAccpetDto.class);
+    }
 
-    @PostMapping(value = "/v1/hcsa-query-appointment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<SearchResult<ReschApptGrpPremsQueryDto>> eicSearchApptReschPrem(@RequestBody SearchParam rescheduleParam,
-                                                                                        @RequestHeader("date") String date,
-                                                                                        @RequestHeader("authorization") String authorization,
-                                                                                        @RequestHeader("date-Secondary") String dateSec,
-                                                                                        @RequestHeader("authorization-Secondary") String authorizationSec);
+    public FeignResponseEntity<SearchResult> eicSearchApptReschPrem(SearchParam rescheduleParam,
+                                                     String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-query-appointment", HttpMethod.POST, rescheduleParam,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, SearchResult.class);
+    }
 }
