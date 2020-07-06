@@ -21,14 +21,14 @@ public class EicGatewayClient {
 
 	public FeignResponseEntity<String> saveSystemParameterFe(SystemParameterDto systemParameterDto, String date,
 	                                                      String authorization, String dateSec, String authorizationSec) {
-		return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/sys-params", HttpMethod.PUT, systemParameterDto,
+		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/sys-params", HttpMethod.PUT, systemParameterDto,
 				MediaType.APPLICATION_JSON, date, authorization,
 				dateSec, authorizationSec, String.class);
 	}
 
 	public FeignResponseEntity<MessageDto> syncMessageToFe(MessageDto messageDto, String date, String authorization,
 												  String dateSec, String authorizationSec) {
-		return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/message-configs", HttpMethod.POST, messageDto,
+		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/message-configs", HttpMethod.POST, messageDto,
 				MediaType.APPLICATION_JSON, date, authorization,
 				dateSec, authorizationSec, MessageDto.class);
 	}

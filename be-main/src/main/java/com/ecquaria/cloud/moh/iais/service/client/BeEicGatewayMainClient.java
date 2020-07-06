@@ -23,14 +23,14 @@ public class BeEicGatewayMainClient {
     public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto,
                                                           String date, String authorization, String dateSec,
                                                           String authorizationSec) {
-         return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/iais-application", HttpMethod.PUT, applicationDto,
+         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/iais-application", HttpMethod.PUT, applicationDto,
                  MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApplicationDto.class);
      }
 
     public FeignResponseEntity<InterMessageDto> saveInboxMessage(InterMessageDto interInboxDto,
                                                           String date, String authorization, String dateSec,
                                                           String authorizationSec) {
-        return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/iais-inter-inbox-message", HttpMethod.POST, interInboxDto,
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/iais-inter-inbox-message", HttpMethod.POST, interInboxDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, InterMessageDto.class);
     }
 

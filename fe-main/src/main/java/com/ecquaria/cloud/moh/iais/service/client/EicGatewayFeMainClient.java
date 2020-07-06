@@ -19,14 +19,14 @@ public class EicGatewayFeMainClient {
     public FeignResponseEntity<Boolean> updateApplicationStatus(RecallApplicationDto recallApplicationDto,
                                                                 String date, String authorization, String dateSec,
                                                                 String authorizationSec) {
-        return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/hcsa-app-recall", HttpMethod.POST, recallApplicationDto,
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-app-recall", HttpMethod.POST, recallApplicationDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Boolean.class);
     }
 
     public FeignResponseEntity<RecallApplicationDto> syncAccountDataFormFe(OrganizationDto organizationDto,
                                                                   String date, String authorization, String dateSec,
                                                                   String authorizationSec) {
-        return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/user-account-sync", HttpMethod.POST, organizationDto,
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/user-account-sync", HttpMethod.POST, organizationDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, RecallApplicationDto.class);
     }
 
@@ -34,14 +34,14 @@ public class EicGatewayFeMainClient {
     public FeignResponseEntity<RecallApplicationDto> recallAppChangeTask(RecallApplicationDto recallApplicationDto,
                                                                          String date, String authorization, String dateSec,
                                                                          String authorizationSec) {
-        return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/task-recall", HttpMethod.POST, recallApplicationDto,
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/task-recall", HttpMethod.POST, recallApplicationDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, RecallApplicationDto.class);
     }
 
     public FeignResponseEntity<String> saveFile(ProcessFileTrackDto processFileTrackDto,
                                          String date, String authorization, String dateSec,
                                          String authorizationSec) {
-        return IaisEGPHelper.callEicGateway(gateWayUrl + "/v1/file-sync-trackings", HttpMethod.POST, processFileTrackDto,
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/file-sync-trackings", HttpMethod.POST, processFileTrackDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
     }
 }

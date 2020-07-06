@@ -549,13 +549,41 @@ public final class IaisEGPHelper extends EGPHelper {
     /**
      * @description: The method to call EIC gateway by rest template
      *
-     * @author: Jinhua on 2020/7/2 17:28
+     * @author: Jinhua on 2020/7/6 11:27
      * @param: [url, httpMethod, httpBody, mediaType, date, authorization, dateSec, authorizationSec, responseCls]
-     * @return: com.ecquaria.cloudfeign.FeignResponseEntity<org.apache.poi.ss.formula.functions.T>
+     * @return: com.ecquaria.cloudfeign.FeignResponseEntity<T>
      */
-    public static <T> FeignResponseEntity<T> callEicGateway(String url, HttpMethod httpMethod, Object httpBody,
-                                            MediaType mediaType, String date, String authorization, String dateSec,
-                                            String authorizationSec, Class<T> responseCls) {
+    public static <T> FeignResponseEntity<T> callEicGatewayWithBody(String url, HttpMethod httpMethod, Object httpBody,
+                                                MediaType mediaType, String date, String authorization, String dateSec,
+                                                String authorizationSec, Class<T> responseCls) {
+        return callEicGatewayWithBody(url, httpMethod, httpBody, null, mediaType, date, authorization,
+                dateSec, authorizationSec, responseCls);
+    }
+
+    /**
+     * @description: The method to call EIC gateway by rest template
+     *
+     * @author: Jinhua on 2020/7/6 11:28
+     * @param: [url, httpMethod, params, mediaType, date, authorization, dateSec, authorizationSec, responseCls]
+     * @return: com.ecquaria.cloudfeign.FeignResponseEntity<T>
+     */
+    public static <T> FeignResponseEntity<T> callEicGatewayWithParam(String url, HttpMethod httpMethod, Map<String, Object> params,
+                                                                    MediaType mediaType, String date, String authorization, String dateSec,
+                                                                    String authorizationSec, Class<T> responseCls) {
+        return callEicGatewayWithBody(url, httpMethod, null, params, mediaType, date, authorization,
+                dateSec, authorizationSec, responseCls);
+    }
+
+    /**
+     * @description: The method to call EIC gateway by rest template
+     *
+     * @author: Jinhua on 2020/7/6 11:28
+     * @param: [url, httpMethod, httpBody, params, mediaType, date, authorization, dateSec, authorizationSec, responseCls]
+     * @return: com.ecquaria.cloudfeign.FeignResponseEntity<T>
+     */
+    public static <T> FeignResponseEntity<T> callEicGatewayWithBody(String url, HttpMethod httpMethod, Object httpBody, Map<String, Object> params,
+                                                                   MediaType mediaType, String date, String authorization, String dateSec,
+                                                                   String authorizationSec, Class<T> responseCls) {
         HttpHeaders header = getHttpHeadersForEic(mediaType, date, authorization,
                 dateSec, authorizationSec);
         HttpEntity entity = null;
@@ -565,8 +593,13 @@ public final class IaisEGPHelper extends EGPHelper {
             entity = new HttpEntity(header);
         }
         RestTemplate restTemplate = SpringContextHelper.getContext().getBean("restTemplate", RestTemplate.class);
-        ResponseEntity response = restTemplate.exchange(url, httpMethod,
-                entity, responseCls);
+        ResponseEntity response = null;
+        if (params != null && !params.isEmpty()) {
+            response = restTemplate.exchange(url, httpMethod, entity, responseCls, params);
+        } else {
+            response = restTemplate.exchange(url, httpMethod, entity, responseCls);
+        }
+
         FeignResponseEntity<T> resEnt = IaisEGPHelper.genFeignRespFromResp(response);
 
         return resEnt;
