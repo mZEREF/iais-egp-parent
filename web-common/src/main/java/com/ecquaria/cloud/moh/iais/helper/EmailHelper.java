@@ -86,9 +86,9 @@ public class EmailHelper {
 		return email;
 	}
 
-	public void sendEmail(String templateId, Map<String, Object> templateContent,String QueryCode,String reqRefNum, String applicaitonId){
+	public void sendEmail(String templateId, Map<String, Object> templateContent,String QueryCode,String reqRefNum, String applicaitonGroupId){
 		if(!StringUtil.isEmpty(templateId)){
-			SendEmailThread sendEmailThread = new SendEmailThread(templateId,applicaitonId,templateContent,mailSender,QueryCode,reqRefNum);
+			SendEmailThread sendEmailThread = new SendEmailThread(templateId,applicaitonGroupId,templateContent,mailSender,QueryCode,reqRefNum);
 			sendEmailThread.start();
 		}
 	}
