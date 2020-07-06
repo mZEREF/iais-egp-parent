@@ -10,18 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
@@ -637,7 +626,6 @@ public class WithOutRenewalDelegator {
         List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         List<AppSubmissionDto> notReNewappSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(notReNewLicIds);
-        List<AppSubmissionDto> rfcPersonnelAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         Boolean change = outRenewalService.isChange(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
         if (change) {
             for (AppSubmissionDto appSubmissionDto : notReNewappSubmissionDtos) {
@@ -673,19 +661,69 @@ public class WithOutRenewalDelegator {
                 appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
-                rfcPersonnelAppSubmissionDtos.add(appSubmissionDto);
             }
             rfcAppSubmissionDtos.addAll(notReNewappSubmissionDtos);
         }
         //change or update
-        //rfc personnel
-        AppSubmissionListDto appSubmissionListPersonnelDto = new AppSubmissionListDto();
-        String submissionPersonnelId = generateIdClient.getSeqId().getEntity();
-        Long personnelL = System.currentTimeMillis();
-        appSubmissionListPersonnelDto.setAppSubmissionDtos(rfcPersonnelAppSubmissionDtos);
-        appSubmissionListPersonnelDto.setEventRefNo(personnelL.toString());
-        eventBusHelper.submitAsyncRequest(appSubmissionListPersonnelDto, submissionPersonnelId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
-                EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, personnelL.toString(), bpc.process);
+        boolean replace = false;
+        for (int i = 0; i <newAppSvcRelatedInfoDtoList.size() ; i++) {
+            List<AppSvcCgoDto> newCgoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
+            List<AppSvcCgoDto> oldCgoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
+            if(newCgoList.size()==oldCgoList.size()){
+                for (int j = 0; j <newCgoList.size() ; j++) {
+                    String newIdNo = newCgoList.get(i).getIdNo();
+                    String oldIdNo = oldCgoList.get(i).getIdNo();
+                    if(!newIdNo.equals(oldIdNo)){
+                        replace = true;
+                    }
+                }
+            }
+
+            List<AppSvcPrincipalOfficersDto> newPoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcPrincipalOfficersDtoList();
+            List<AppSvcPrincipalOfficersDto> oldPoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcPrincipalOfficersDtoList();
+            if(newPoList.size()==oldPoList.size()){
+                for (int j = 0; j <newPoList.size() ; j++) {
+                    String newIdNo = newPoList.get(i).getIdNo();
+                    String oldIdNo = oldPoList.get(i).getIdNo();
+                    if(!newIdNo.equals(oldIdNo)){
+                        replace = true;
+                    }
+                }
+            }
+
+            List<AppSvcPrincipalOfficersDto> newMatList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcMedAlertPersonList();
+            List<AppSvcPrincipalOfficersDto> oldMatList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcMedAlertPersonList();
+            if(newMatList.size()==oldMatList.size()){
+                for (int j = 0; j <newMatList.size() ; j++) {
+                    String newIdNo = newMatList.get(i).getIdNo();
+                    String oldIdNo = oldMatList.get(i).getIdNo();
+                    if(!newIdNo.equals(oldIdNo)){
+                        replace = true;
+                    }
+                }
+            }
+            List<AppSvcDisciplineAllocationDto> newDpoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcDisciplineAllocationDtoList();
+            List<AppSvcDisciplineAllocationDto> oldDpoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcDisciplineAllocationDtoList();
+            if(newDpoList.size()==oldDpoList.size()){
+                for (int j = 0; j <newDpoList.size() ; j++) {
+                    String newIdNo = newDpoList.get(i).getIdNo();
+                    String oldIdNo = oldDpoList.get(i).getIdNo();
+                    if(!newIdNo.equals(oldIdNo)){
+                        replace = true;
+                    }
+                }
+            }
+
+        }
+        if(replace){
+            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+                appSubmissionDto.setAutoRfc(false);
+            }
+        }else {
+            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+                appSubmissionDto.setAutoRfc(true);
+            }
+        }
         AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
         Long l = System.currentTimeMillis();

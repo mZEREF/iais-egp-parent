@@ -644,11 +644,7 @@ public class InsRepServiceImpl implements InsRepService {
             }
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
         } else {
-            try{
-                updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-            }catch (Exception e){
-                log.info("sdaaaaaaaaaaaaaaaaaa");
-            }
+            updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             List<TaskDto> taskDtos = prepareTaskToAo2(taskDto, serviceId, applicationDto);
             taskService.createTasks(taskDtos);
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
