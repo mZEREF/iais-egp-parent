@@ -131,65 +131,54 @@
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
                                     <div class="panel-heading"><strong>Key Roles</strong></div>
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="table-gp">
-                                                <table class="table table-bordered">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td class="col-xs-6" align="right">Licensee Name (Company)</td>
-                                                        <td class="col-xs-6">&nbsp;${licenseeDto.name}</td>
-                                                    </tr>
-                                                    <c:forEach var="person" items="${licenseeKeyApptPersonDtos}">
-                                                        <tr>
-                                                            <td align="right">Authorised Person Name</td>
-                                                            <td>&nbsp;${person.name}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="right">Authorised Person ID</td>
-                                                            <td>&nbsp;${person.idNo} (${person.idType})</td>
-                                                        </tr>
+                                    <div class="gray-content-box" style="background-color:#FFFFFF">
+                                        <div class="license-info-gp">
+                                            <div class="license-info-row">
+                                                <div class="licnese-info">
+                                                    <p>Licensee: <strong>${licenseeDto.name}</strong> </p>
+                                                </div>
 
-                                                    </c:forEach>
-<%--                                                    <c:forEach var="personPo" items="${appSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList}">--%>
-<%--                                                        <tr>--%>
-<%--                                                            <td align="right">Authorised Person Name</td>--%>
-<%--                                                            <td> ${personPo.name}</td>--%>
-<%--                                                        </tr>--%>
-<%--                                                        <tr>--%>
-<%--                                                            <td align="right">Authorised Person ID</td>--%>
-<%--                                                            <td> ${personPo.idNo} (${personPo.idType})</td>--%>
-<%--                                                        </tr>--%>
-
-<%--                                                    </c:forEach>--%>
-<%--                                                    <c:forEach var="personCgo" items="${appSvcRelatedInfoDto.appSvcCgoDtoList}">--%>
-<%--                                                        <tr>--%>
-<%--                                                            <td align="right">Authorised Person Name</td>--%>
-<%--                                                            <td> ${personCgo.name}</td>--%>
-<%--                                                        </tr>--%>
-<%--                                                        <tr>--%>
-<%--                                                            <td align="right">Authorised Person ID</td>--%>
-<%--                                                            <td> ${personCgo.idNo} (${personCgo.idType})</td>--%>
-<%--                                                        </tr>--%>
-
-<%--                                                    </c:forEach>--%>
-<%--                                                    <c:forEach var="personMap" items="${appSvcRelatedInfoDto.appSvcMedAlertPersonList}">--%>
-<%--                                                        <tr>--%>
-<%--                                                            <td align="right">MedAlert Contact Person</td>--%>
-<%--                                                            <td> ${personMap.name}</td>--%>
-<%--                                                        </tr>--%>
-<%--                                                        <tr>--%>
-<%--                                                            <td align="right">MedAlert Contact Person ID</td>--%>
-<%--                                                            <td> ${personMap.idNo} (${personMap.idType})</td>--%>
-<%--                                                        </tr>--%>
-
-<%--                                                    </c:forEach>--%>
-
-                                                    </tbody>
-                                                </table>
                                             </div>
+                                            <div class="license-info-row">
+                                                <div class="licnese-info">
+                                                    <p>Authorised User 1: <strong>Mo Delan</strong> </p>
+                                                </div>
+
+                                            </div>
+                                            <div class="license-info-row">
+                                                <div class="licnese-info">
+                                                    <p>Authorised User 2: <strong>Linda Tan</strong> </p>
+                                                </div>
+
+                                            </div>
+
                                         </div>
                                     </div>
+<%--                                    <div class="row">--%>
+<%--                                        <div class="col-xs-12">--%>
+<%--                                            <div class="table-gp">--%>
+<%--                                                <table class="table table-bordered">--%>
+<%--                                                    <tbody>--%>
+<%--                                                    <tr>--%>
+<%--                                                        <td class="col-xs-6" align="right">Licensee Name (Company)</td>--%>
+<%--                                                        <td class="col-xs-6">&nbsp;${licenseeDto.name}</td>--%>
+<%--                                                    </tr>--%>
+<%--                                                    --%>
+<%--                                                    <c:forEach var="person" items="${licenseeKeyApptPersonDtos}">--%>
+<%--                                                        <tr>--%>
+<%--                                                            <td align="right">Authorised Person Name</td>--%>
+<%--                                                            <td>&nbsp;${person.name}</td>--%>
+<%--                                                        </tr>--%>
+<%--                                                        <tr>--%>
+<%--                                                            <td align="right">Authorised Person ID</td>--%>
+<%--                                                            <td>&nbsp;${person.idNo} (${person.idType})</td>--%>
+<%--                                                        </tr>--%>
+<%--                                                    </c:forEach>--%>
+<%--                                                    </tbody>--%>
+<%--                                                </table>--%>
+<%--                                            </div>--%>
+<%--                                        </div>--%>
+<%--                                    </div>--%>
                                 </div>
                             </div>
 

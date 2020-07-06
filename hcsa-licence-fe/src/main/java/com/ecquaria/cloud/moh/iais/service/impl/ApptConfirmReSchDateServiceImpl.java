@@ -531,6 +531,8 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         setCreateHistoryDto(processReSchedulingDto);
         //set some data to update inspection status
         setCreateInspectionStatus(processReSchedulingDto, InspectionConstants.INSPECTION_STATUS_RESCHEDULING_COMMON_POOL);
+        //create task
+        createApptDateTask(processReSchedulingDto, TaskConsts.TASK_PROCESS_URL_COMMON_POOL);
         //save eic record
         /*EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "confirmInspectionDate",
                 "hcsa-licence-web-internet", ApptInspectionDateDto.class.getName(), JsonUtil.parseToJson(apptInspectionDateDto));
@@ -545,8 +547,6 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         appEicClient.updateStatus(eicRequestTrackingDtos);*/
-        //create task
-        createApptDateTask(processReSchedulingDto, TaskConsts.TASK_PROCESS_URL_COMMON_POOL);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
