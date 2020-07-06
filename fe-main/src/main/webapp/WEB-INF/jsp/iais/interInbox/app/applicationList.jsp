@@ -100,7 +100,7 @@
                                          value="Application No."/>
                     <iais:sortableHeader needSort="true" field="APP_TYPE_DESC" value="Type"/>
                     <iais:sortableHeader needSort="true" field="SERVICE_ID" value="Service"/>
-                    <iais:sortableHeader needSort="true" field="STATUS" value="Status"/>
+                    <iais:sortableHeader needSort="true" field="STATUS_DESC" value="Status"/>
                     <iais:sortableHeader needSort="true" field="CREATED_DT"
                                          value="Submission Date"/>
                     <th style="width:15%;padding-bottom: 21px">Actions</th>
@@ -149,35 +149,86 @@
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Actions</p>
                                     <c:choose>
-                                        <c:when test="${app.status == 'APST038'
-                                                        || (app.applicationType == 'APTY006')
-                                                        || (app.status == 'APST007' && app.applicationType == 'APTY001')
-                                                        || app.status == 'APST006'}">
-                                            <select disabled>
-                                                <option>N/A</option>
-                                            </select>
+                                        <c:when test="${app.applicationType == 'APTY002'}">
+                                            <c:if test="${app.status == 'APST005' || app.status == 'APST006'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                        <option value="Appeal">Appeal</option>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST008'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="Continue">Continue</option>
+                                                    <option value="Delete">Delete</option>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST028' || app.status == 'APST007'
+                                                          || app.status == 'APST003'
+                                                          || app.status == 'APST001'
+                                                          || app.status == 'APST029'
+                                                          || app.status == 'APST023'
+                                                          || app.status == 'APST024'
+                                                          || app.status == 'APST012'
+                                                          || app.status == 'APST039'
+                                                          || app.status == 'APST011'
+                                                          || app.status == 'APST004'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="Withdraw">Withdraw</option>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST060'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="Continue">Continue</option>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST045'}">
+                                                <select disabled>
+                                                    <option>N/A</option>
+                                                </select>
+                                            </c:if>
+                                        </c:when>
+                                        <c:when test="${app.applicationType == 'APTY001'}">
+                                            <c:if test="${app.status == 'APST008'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="Continue">Continue</option>
+                                                    <option value="Delete">Delete</option>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST007' || app.status == 'APST002'
+                                                          || app.status == 'APST012' || app.status == 'APST038'
+                                                          || app.status == 'APST011'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="Withdraw">Withdraw</option>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST005' || app.status == 'APST006' || app.status == 'APST045'}">
+                                                <select disabled>
+                                                    <option>N/A</option>
+                                                </select>
+                                            </c:if>
+                                        </c:when>
+                                        <c:when test="${app.applicationType == 'APTY006'}">
+                                            <c:if test="${app.status == 'APST007' || app.status == 'APST005' || app.status == 'APST006'}">
+                                                <select disabled>
+                                                    <option>N/A</option>
+                                                </select>
+                                            </c:if>
+                                        </c:when>
+                                        <c:when test="${app.applicationType == 'APTY008'}">
+                                            <c:if test="${app.status == 'APST005'}">
+                                                <select disabled>
+                                                    <option>N/A</option>
+                                                </select>
+                                            </c:if>
                                         </c:when>
                                         <c:otherwise>
-                                            <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
-                                                <option value="" selected>Select</option>
-                                                <c:choose>
-                                                    <c:when test="${app.status == 'APST008'}">
-                                                        <option value="Continue">Continue</option>
-                                                        <option value="Delete">Delete</option>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <option value="Appeal">Appeal</option>
-                                                        <c:if test="${app.status != 'APST005' && app.status != 'APST006'}">
-                                                            <option value="Withdraw">Withdraw</option>
-                                                            <c:if test="${app.canRecall}">
-                                                                <option value="Recall">Recall</option>
-                                                            </c:if>
-                                                        </c:if>
-                                                        <c:if test="${app.status == 'APST060'}">
-                                                            <option value="Continue">Continue</option>
-                                                        </c:if>
-                                                    </c:otherwise>
-                                                </c:choose>
+                                            <select disabled>
+                                                <option>N/A</option>
                                             </select>
                                         </c:otherwise>
                                     </c:choose>
