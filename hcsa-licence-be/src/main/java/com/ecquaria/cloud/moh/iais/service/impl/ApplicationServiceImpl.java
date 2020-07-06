@@ -19,14 +19,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformatio
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
+import com.ecquaria.cloud.moh.iais.helper.ChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -37,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -67,9 +68,6 @@ public class ApplicationServiceImpl implements ApplicationService {
     private AppPremisesCorrClient appPremisesCorrClient;
 
     @Autowired
-    private MsgTemplateClient msgTemplateClient;
-
-    @Autowired
     private EmailClient emailClient;
 
     @Autowired
@@ -79,10 +77,10 @@ public class ApplicationServiceImpl implements ApplicationService {
     private InboxMsgService inboxMsgService;
 
     @Autowired
-    private SystemParamConfig systemParamConfig;
+    MsgTemplateClient msgTemplateClient;
 
     @Autowired
-    private EmailHelper emailHelper;
+    private SystemParamConfig systemParamConfig;
 
     @Autowired
     private EicClient eicClient;
@@ -216,61 +214,25 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public void alertSelfDeclNotification() {
         log.info("===>>>>alertSelfDeclNotification start");
-
         List<Integer> selfAssMtFlag = Arrays.asList(ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT, ApplicationConsts.SUBMITTED_RFI_SELF_ASSESSMENT);
 
         List<ApplicationGroupDto> groupDtoList = applicationClient.getPendingSubmitSelfAssGroup(selfAssMtFlag).getEntity();
 
-        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID).getEntity();
+        List<ApplicationGroupDto> afterFilterData = IaisCommonUtils.genNewArrayList();
+        Calendar calendar = Calendar.getInstance();
+        for (ApplicationGroupDto group : groupDtoList){
+            Date submitDate = group.getSubmitDt();
+            calendar.setTime(submitDate);
+            calendar.add(Calendar.DATE, 5);
 
-        if (autoEntity == null){
-            log.info("===>>>>alertSelfDeclNotification can not find message template ");
-            return;
-        }
-
-        String msgContent = autoEntity.getMessageContent();
-        Map<String,Object> param = new HashMap(1);
-        param.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-        param.put("DETAILS", "test");
-
-        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-        String serviceName = systemParamConfig.getInterServerName();
-        for (ApplicationGroupDto app : groupDtoList){
-            String id = app.getId();
-            String licId = app.getLicenseeId();
-            LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licId);
-            if (licenseeDto != null){
-                try {
-                    StringBuilder hrefLink = new StringBuilder();
-                    hrefLink.append("https://").append(serviceName).append("/hcsa-licence-web/eservice/INTERNET/MohSelfAssessmentSubmit?appGroupId=");
-                    hrefLink.append(id);
-
-                    param.put("APPLICANT_NAME",  StringUtil.viewHtml(licenseeDto.getName()));
-                    param.put("A_HREF", StringUtil.viewHtml(hrefLink.toString()));
-
-                    String mesContext= MsgUtil.getTemplateMessageByContent(msgContent, param);
-
-                    maskParams.put("appGroupId", id);
-                    InterMessageDto interMessageDto = new InterMessageDto();
-                    interMessageDto.setSubject(autoEntity.getTemplateName());
-                    interMessageDto.setMsgContent(autoEntity.getMessageContent());
-                    interMessageDto.setMsgContent(mesContext);
-                    interMessageDto.setUserId(licId);
-                    interMessageDto.setMaskParams(maskParams);
-                    interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-                    String refNo = inboxMsgService.getMessageNo();
-                    interMessageDto.setRefNo(refNo);
-                    interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-                    interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-                    interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-
-                    inboxMsgService.saveInterMessage(interMessageDto);
-                } catch (Exception e) {
-                    throw new IaisRuntimeException(StringUtil.changeForLog("create self assessment notification has error , group id " + id), e);
-                }
-
+            Date currentDate = new Date();
+            int betweenDay = DateUtil.daysBetween(submitDate, currentDate);
+            if (betweenDay > 5){
+                afterFilterData.add(group);
             }
         }
+
+        ChecklistHelper.sendNotificationToApplicant(afterFilterData);
 
         log.info("===>>>>alertSelfDeclNotification end");
     }

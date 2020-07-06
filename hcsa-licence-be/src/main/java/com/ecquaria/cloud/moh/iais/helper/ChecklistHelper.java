@@ -1,14 +1,19 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -18,8 +23,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.ChecklistConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -138,6 +146,70 @@ public final class ChecklistHelper {
             }
         }
     }
+
+    public static void sendNotificationToApplicant(List<ApplicationGroupDto> appGroup){
+        MsgTemplateClient msgTemplateClient = SpringContextHelper.getContext().getBean(MsgTemplateClient.class);
+        SystemParamConfig systemParamConfig = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
+        LicenseeService licenseeService = SpringContextHelper.getContext().getBean(LicenseeService.class);
+        InboxMsgService inboxMsgService = SpringContextHelper.getContext().getBean(InboxMsgService.class);
+
+        if (msgTemplateClient == null || systemParamConfig == null || licenseeService == null || inboxMsgService == null){
+            log.info("===>>>>alertSelfDeclNotification can not find bean");
+            return;
+        }
+
+        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID).getEntity();
+
+        if (autoEntity == null){
+            log.info("===>>>>alertSelfDeclNotification can not find message template ");
+            return;
+        }
+
+        String msgContent = autoEntity.getMessageContent();
+        Map<String,Object> param = new HashMap(1);
+        param.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+        param.put("DETAILS", "test");
+
+        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+        String serviceName = systemParamConfig.getInterServerName();
+        for (ApplicationGroupDto app : appGroup){
+            String id = app.getId();
+            String licId = app.getLicenseeId();
+            LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licId);
+            if (licenseeDto != null){
+                try {
+                    StringBuilder hrefLink = new StringBuilder();
+                    hrefLink.append("https://").append(serviceName).append("/hcsa-licence-web/eservice/INTERNET/MohSelfAssessmentSubmit?appGroupId=");
+                    hrefLink.append(id);
+
+                    param.put("APPLICANT_NAME",  StringUtil.viewHtml(licenseeDto.getName()));
+                    param.put("A_HREF", StringUtil.viewHtml(hrefLink.toString()));
+
+                    String mesContext= MsgUtil.getTemplateMessageByContent(msgContent, param);
+
+                    maskParams.put("appGroupId", id);
+                    InterMessageDto interMessageDto = new InterMessageDto();
+                    interMessageDto.setSubject(autoEntity.getTemplateName());
+                    interMessageDto.setMsgContent(autoEntity.getMessageContent());
+                    interMessageDto.setMsgContent(mesContext);
+                    interMessageDto.setUserId(licId);
+                    interMessageDto.setMaskParams(maskParams);
+                    interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+                    String refNo = inboxMsgService.getMessageNo();
+                    interMessageDto.setRefNo(refNo);
+                    interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+                    interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+                    interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+
+                    inboxMsgService.saveInterMessage(interMessageDto);
+                } catch (Exception e) {
+                    throw new IaisRuntimeException(StringUtil.changeForLog("create self assessment notification has error , group id " + id), e);
+                }
+
+            }
+        }
+    }
+
 
     public static void sendModifiedChecklistEmailToAOStage(String serviceId, String applicationType, String mailSender){
         EmailHelper emailHelper = SpringContextHelper.getContext().getBean(EmailHelper.class);
