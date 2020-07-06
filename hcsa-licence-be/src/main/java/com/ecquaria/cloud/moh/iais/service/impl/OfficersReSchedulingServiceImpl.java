@@ -151,8 +151,10 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     //filter fast tracking and the same premises
                     appNos = filterPremisesAndFast(appNos, reschedulingOfficerDto);
                     inspectorAppNoMap.put(userId, appNos);
+                    if(!IaisCommonUtils.isEmpty(appNos)) {
+                        appNoList.addAll(appNos);
+                    }
                 }
-
             }
         }
 
@@ -161,6 +163,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     private List<String> filterPremisesAndFast(List<String> appNos, ReschedulingOfficerDto reschedulingOfficerDto) {
         List<String> repeatAppNo = IaisCommonUtils.genNewArrayList();
+        List<String> applicationNos = IaisCommonUtils.genNewArrayList();
         Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
         if(samePremisesAppMap == null){
             samePremisesAppMap = IaisCommonUtils.genNewHashMap();
@@ -180,6 +183,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         List<String> appNoList = IaisCommonUtils.genNewArrayList();
                         appNoList.add(appNo);
                         samePremisesAppMap.put(appNo, appNoList);
+                        applicationNos.add(appNo);
                     } else {
                         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
                         //get all same premises by Group
@@ -191,11 +195,12 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                             samePremisesAppMap.put(appNo, appNoList);
                             repeatAppNo.addAll(appNoList);
                         }
+                        applicationNos.add(appNo);
                     }
                 }
             }
         }
-        return repeatAppNo;
+        return applicationNos;
     }
 
     private List<String> filterCancelAppByCorr(List<String> appNoList, List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
