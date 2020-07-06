@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
@@ -1103,19 +1104,7 @@ public class HcsaApplicationDelegator {
      */
     public void doDocument(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doDocument start ...."));
-//        //TODO:save file
-//        MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-//        String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-//        String dcrudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
-//        String crudActionValue = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_VALUE);
-//
-//        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
-//        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, crudActionValue);
-
-//        uploadFileClient.saveAppIntranetDocByAppIntranetDoc();
-
         String doDocument = ParamUtil.getString(bpc.request,"uploadFile");
-//        String interalFileId = ParamUtil.getString(bpc.request,"interalFileId");
         String interalFileId = ParamUtil.getMaskedString(bpc.request,"interalFileId");
         if(!StringUtil.isEmpty(interalFileId)){
             fillUpCheckListGetAppClient.deleteAppIntranetDocsById(interalFileId);
@@ -1240,12 +1229,12 @@ public class HcsaApplicationDelegator {
                 ParamUtil.setRequestAttr(bpc.request,"insRepDto",insRepDto);
                 String appType = applicationViewDto.getApplicationDto().getApplicationType();
                 ParamUtil.setRequestAttr(bpc.request,"appType",appType);
-                initAoRecommendation(correlationId,bpc);
+                initAoRecommendation(correlationId,bpc,applicationViewDto.getApplicationDto().getApplicationType());
             }
         }
     }
 
-    private void initAoRecommendation(String correlationId,BaseProcessClass bpc){
+    private void initAoRecommendation(String correlationId,BaseProcessClass bpc,String appType){
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
         AppPremisesRecommendationDto riskRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
@@ -1277,6 +1266,15 @@ public class HcsaApplicationDelegator {
         if (followRecommendationDto != null) {
             String followRemarks = followRecommendationDto.getRemarks();
             initRecommendationDto.setFollowUpAction(followRemarks);
+        }
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            String recommendation = appPremisesRecommendationDto.getRecomDecision();
+            if(InspectionReportConstants.RFC_APPROVED.equals(recommendation)){
+                initRecommendationDto.setPeriod(InspectionReportConstants.APPROVED);
+            }
+            if(InspectionReportConstants.RFC_REJECTED.equals(recommendation)){
+                initRecommendationDto.setPeriod(InspectionReportConstants.REJECTED);
+            }
         }
         ParamUtil.setSessionAttr(bpc.request, "appPremisesRecommendationDto", initRecommendationDto);
     }
@@ -2107,21 +2105,11 @@ public class HcsaApplicationDelegator {
             String recommendationOnlyShow = "";
             if(recomInNumber == null || recomInNumber == 0){
                 recommendationOnlyShow = "Reject";
-                //set DMS decision value
-//                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
-//                    ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionReject");
-//                }
             }else{
-//                codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
-//                recommendationOnlyShow = recomInNumber + " " + codeDesc;
                 recommendationOnlyShow = getRecommendationOnlyShowStr(recomInNumber);
                 if(isRequestForChange){
                     recommendationOnlyShow = "Approve";
                 }
-                //set DMS decision value
-//                if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
-//                    ParamUtil.setRequestAttr(bpc.request,"selectDecisionValue","decisionApproval");
-//                }
             }
             //PSO 0062307
             boolean needFillingBack = (RoleConsts.USER_ROLE_INSPECTIOR.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId) || broadcastAsoPso) && !ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status);
