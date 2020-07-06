@@ -28,7 +28,8 @@
     <input type="hidden" name="mohOfficerReSchedulingType" value="">
     <input type="hidden" id="inspectorCheck" name="inspectorCheck" value="${reschedulingOfficerDto.inspectorCheck}">
     <input type="hidden" id="workGroupCheck" name="workGroupCheck" value="${reschedulingOfficerDto.workGroupCheck}">
-    <input type="hidden" id="appCorrelationId" name="appCorrelationId" value="">
+    <input type="hidden" id="applicationNo" name="applicationNo" value="">
+    <input type="hidden" id="actionValue" name="actionValue" value="">
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
@@ -69,31 +70,48 @@
                       <iais:sortableHeader needSort="false" field="" value="Inspector(s)"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true" field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true" field="TASK_TYPE" value="Type of Task"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" field="" value="Service(s)"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:choose>
-                      <c:when test="${empty inspReSchSearchResult.rows}">
-                        <tr>
-                          <td colspan="7">
-                            <iais:message key="ACK018" escape="true"></iais:message>
-                          </td>
-                        </tr>
-                      </c:when>
-                      <c:otherwise>
-                        <c:forEach var="reschSearch" items="${inspReSchSearchResult.rows}" varStatus="status">
+                      <c:choose>
+                        <c:when test="${empty inspReSchSearchResult.rows}">
                           <tr>
-                            <td class="row_no"><c:out value="${(status.index + 1) + (inspReSchSearchParam.pageNo - 1) * inspReSchSearchParam.pageSize}"/></td>
-                            <td><c:out value="${reschSearch.hciName}"/></td>
-                            <td><c:out value="${reschSearch.submissionType}"/></td>
-                            <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
-                            <td><iais:code code="${pool.paymentStatus}"/></td>
-                            <td><iais:code code="${pool.paymentStatus}"/></td>
+                            <td colspan="7">
+                              <iais:message key="ACK018" escape="true"></iais:message>
+                            </td>
                           </tr>
-                        </c:forEach>
-                      </c:otherwise>
-                    </c:choose>
+                        </c:when>
+                        <c:otherwise>
+                          <c:forEach var="reschSearch" items="${inspReSchSearchResult.rows}" varStatus="status">
+                            <tr>
+                              <td class="row_no"><c:out value="${(status.index + 1) + (inspReSchSearchParam.pageNo - 1) * inspReSchSearchParam.pageSize}"/></td>
+                              <td><c:out value="${reschSearch.hciName}"/></td>
+                              <c:if test="${empty reschSearch.inspectors}">
+                                <td><c:out value="-"/></td>
+                              </c:if>
+                              <c:if test="${not empty reschSearch.inspectors}">
+                                <c:forEach var="inspector" items="${reschSearch.inspectors}">
+                                  <td><c:out value="${inspector}"/></td>
+                                </c:forEach>
+                              </c:if>
+                              <td><fmt:formatDate value='${reschSearch.inspectionDate}' pattern='dd/MM/yyyy HH:mm:ss'/></td>
+                              <c:if test="${empty reschSearch.serviceNames}">
+                                <td><c:out value="-"/></td>
+                              </c:if>
+                              <c:if test="${not empty reschSearch.serviceNames}">
+                                <c:forEach var="service" items="${reschSearch.serviceNames}">
+                                  <td><c:out value="${service}"/></td>
+                                </c:forEach>
+                              </c:if>
+                              <td>
+                                <button class="btn btn-secondary btn-md" type="button" onclick="javascript:officerReSchedulingAssign('<iais:mask name="applicationNo" value="${reschSearch.appNo}"/>')">Reschedule</button>
+                              </td>
+                            </tr>
+                          </c:forEach>
+                        </c:otherwise>
+                      </c:choose>
                     </tbody>
                   </table>
                 </div>
@@ -120,12 +138,6 @@
         $("#inspectorName" + workGroupCheck).show();
     });
 
-    function officerReSchedulingDo(appCorrelationId) {
-        showWaiting();
-        $("#appCorrelationId").val(appCorrelationId);
-        officerReSchedulingSubmit('assign');
-    }
-
     function officerReSchedulingClear() {
         $('#inspWorkGroup option:first').prop('selected', 'selected');
         $('#inspectorName option:first').prop('selected', 'selected');
@@ -136,6 +148,13 @@
         $("[name='mohOfficerReSchedulingType']").val(action);
         var mainPoolForm = document.getElementById('mainSearchForm');
         mainPoolForm.submit();
+    }
+
+    function officerReSchedulingAssign(applicationNo) {
+        showWaiting();
+        $("#applicationNo").val(applicationNo);
+        $("#actionValue").val('assign');
+        officerReSchedulingSubmit('assign');
     }
 
     function officerReSchedulingSearch() {
