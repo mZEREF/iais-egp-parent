@@ -229,7 +229,7 @@ public interface ApplicationClient {
     FeignResponseEntity<String> getBeData(@RequestBody List<String> grpids);
 
     @PutMapping(value = "/iais-application-be/application-be-withdrawal")
-    FeignResponseEntity<Void> saveWithdrawn();
+    FeignResponseEntity<List<ApplicationDto>> saveWithdrawn();
 
     @GetMapping(value = "/iais-application-be/corrId-appId/{appId}")
     FeignResponseEntity<String> getCorrIdByAppId(@PathVariable(name = "appId") String appId);

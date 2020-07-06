@@ -1623,6 +1623,7 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+
         //appeal save return fee
 
 

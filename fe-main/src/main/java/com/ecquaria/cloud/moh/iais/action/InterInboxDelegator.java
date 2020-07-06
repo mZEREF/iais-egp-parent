@@ -230,13 +230,14 @@ public class InterInboxDelegator {
         inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgStatus,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
+        List<SelectOption> inboxTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MSG_TEMPLATE_TYPE);
+//        MasterCodePair mcp = new MasterCodePair("message_type", "message_type_desc", inboxTypes);
+//        inboxParam.addMasterCode(mcp);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
-        for (InboxQueryDto inboxQueryDto:inboxQueryDtoList
-                ) {
+        for (InboxQueryDto inboxQueryDto:inboxQueryDtoList) {
             List<InboxMsgMaskDto> inboxMsgMaskDtoList = inboxService.getInboxMaskEntity(inboxQueryDto.getId());
             for (InboxMsgMaskDto inboxMsgMaskDto:inboxMsgMaskDtoList){
-
                 inboxQueryDto.setMsgContent(inboxQueryDto.getMsgContent().replaceAll("="+inboxMsgMaskDto.getParamValue(),
                         "="+MaskUtil.maskValue(inboxMsgMaskDto.getParamName(),inboxMsgMaskDto.getParamValue())));
             }
@@ -542,8 +543,11 @@ public class InterInboxDelegator {
         appParam.addFilter("licenseeId", interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         List<SelectOption> appTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_TYPE);
+        List<SelectOption> appStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_STATUS);
         MasterCodePair mcp = new MasterCodePair("app_type", "app_type_desc", appTypes);
+        MasterCodePair mcp_status = new MasterCodePair("status", "status_desc", appStatus);
         appParam.addMasterCode(mcp);
+        appParam.addMasterCode(mcp_status);
         SearchResult appResult = inboxService.appDoQuery(appParam);
         if(!StringUtil.isEmpty(appResult)){
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();

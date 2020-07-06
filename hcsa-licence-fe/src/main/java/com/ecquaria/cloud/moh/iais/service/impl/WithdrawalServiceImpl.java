@@ -96,10 +96,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDto(h.getApplicationNo()).getEntity();
             transform(appSubmissionDto,licenseeId);
             AppSubmissionDto newAppSubmissionDto = applicationClient.saveSubmision(appSubmissionDto).getEntity();
-            AppSubmissionDto appSubmissionDtoSave = applicationClient.saveApps(newAppSubmissionDto).getEntity();
-            List<ApplicationDto> applicationDtoList = appSubmissionDtoSave.getApplicationDtos();
-            String appId = applicationDtoList.get(0).getId();
-            h.setApplicationId(appId);
+            applicationClient.saveApps(newAppSubmissionDto).getEntity();
         });
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
@@ -116,9 +113,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                         try {
                             EmailDto emailDto = sendNotification(TEMPLATE_WITHDRAWAL_ID,msgInfoMap,h.getApplicationNo(),h.getLicenseeId());
                             sendInboxMessage(h.getApplicationNo(),h.getLicenseeId(),null,emailDto.getContent(),serviceId,emailDto.getSubject());
-                        } catch (IOException e) {
-                            log.error(e.getMessage(), e);
-                        } catch (TemplateException e) {
+                        } catch (Exception e) {
                             log.error(e.getMessage(), e);
                         }
                     }
