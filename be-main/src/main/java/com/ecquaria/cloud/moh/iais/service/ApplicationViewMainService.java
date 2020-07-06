@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -33,4 +34,6 @@ public interface ApplicationViewMainService {
     List<OrgUserDto> getUserNameById(List<String> userIdList);
 
     String getWrkGrpName(String id);
+
+    AppReturnFeeDto saveAppReturnFee(AppReturnFeeDto appReturnFeeDto);
 }

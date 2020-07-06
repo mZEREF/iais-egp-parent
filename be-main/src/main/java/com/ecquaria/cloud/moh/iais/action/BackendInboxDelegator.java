@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -483,19 +484,12 @@ public class BackendInboxDelegator {
                 applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
                 if(isAllSubmit){
-                    feAllUpdate = true;
                     //update current application status in db search result
                     updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
                     //get and set return fee
                     saveApplicationDtoList = hcsaConfigMainClient.returnFee(saveApplicationDtoList).getEntity();
-                    broadcastApplicationDto.setApplicationDtos(saveApplicationDtoList);
-                    broadcastApplicationDto.setRollBackApplicationDtos(saveApplicationDtoList);
-                    //update fe application status and return fee
-                    updateFeApplications(saveApplicationDtoList);
-                    //get current after set return fee application dto
-                    ApplicationDto currentApplicationDto = getCurrentApplicationDto(saveApplicationDtoList, broadcastApplicationDto.getApplicationDto().getId());
-                    //update broadcastApplicationDto
-                    broadcastApplicationDto.setApplicationDto(currentApplicationDto);
+                    //save return fee
+                    saveRejectReturnFee(saveApplicationDtoList);
                 }
             }
         }
@@ -510,8 +504,19 @@ public class BackendInboxDelegator {
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
-        if(broadcastApplicationDto.getApplicationDto() != null && !feAllUpdate){
-            applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+    }
+
+    private void saveRejectReturnFee(List<ApplicationDto> applicationDtos){
+        //save return fee
+        for(ApplicationDto applicationDto : applicationDtos){
+            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
+                AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
+                appReturnFeeDto.setReturnAmount(applicationDto.getReturnFee());
+                appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
+                applicationViewService.saveAppReturnFee(appReturnFeeDto);
+            }
         }
     }
 

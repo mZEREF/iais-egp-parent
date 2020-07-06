@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSupDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -242,5 +243,10 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     public String getWrkGrpName(String id) {
         WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(id).getEntity();
         return workingGroupDto.getGroupName();
+    }
+
+    @Override
+    public AppReturnFeeDto saveAppReturnFee(AppReturnFeeDto appReturnFeeDto) {
+        return applicationClient.saveAppReturnFee(appReturnFeeDto).getEntity();
     }
 }
