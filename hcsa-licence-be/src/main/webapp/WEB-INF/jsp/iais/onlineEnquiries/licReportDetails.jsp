@@ -603,7 +603,7 @@
                                                                 <p>&nbsp;Risk Level </p>
                                                             </td>
                                                             <td class="col-xs-4">
-                                                                &nbsp;${appPremisesRecommendationDto.riskLevel}<c:if test="${empty appPremisesRecommendationDto.riskLevel}">&nbsp;-</c:if>
+                                                                &nbsp;${insRepDto.riskLevel}<c:if test="${empty insRepDto.riskLevel}">&nbsp;-</c:if>
                                                             </td>
                                                             <td class="col-xs-4"></td>
                                                         </tr>

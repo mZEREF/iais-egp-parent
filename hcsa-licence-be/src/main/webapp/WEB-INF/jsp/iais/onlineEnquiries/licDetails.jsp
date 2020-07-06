@@ -349,7 +349,7 @@
                                                         <tr>
                                                             <td class="row_no">&nbsp;<c:out value="${status.index + 1}"/></td>
                                                             <td>
-                                                                <a onclick="doReportSearch('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,compliance.appPremCorrId)}','${status.index}')">Inspection Report</a>
+                                                                <a onclick="doReportSearch('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,compliance.appPremCorrId)}')">Inspection Report</a>
                                                             </td>
                                                             <td>
                                                                 <p>${compliance.riskTag}</p>
@@ -384,8 +384,8 @@
     </div>
 </form>
 <script type="text/javascript">
-    function doReportSearch(appPremCorrId,index){
-        showWaiting(); SOP.Crud.cfxSubmit("mainForm", "report",appPremCorrId,index);
+    function doReportSearch(appPremCorrId){
+        showWaiting(); SOP.Crud.cfxSubmit("mainForm", "report",appPremCorrId);
     }
     function doBack(){
         showWaiting(); SOP.Crud.cfxSubmit("mainForm", "back");
