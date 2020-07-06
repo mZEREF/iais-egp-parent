@@ -76,8 +76,10 @@
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                                     View CheckList
                                                 </button>
-                                                <br/>
-                                                <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
+                                                <button type="button" class="btn btn-primary" onclick="javascript: doListAhoc();">List Ahoc</button>
+                                            </div>
+                                            <div align="right">
+                                            <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -101,10 +103,13 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function doViewCheckList(){
-        $("#viewchk").val("viewchk");
+        $("#viewchk").val("");
         SOP.Crud.cfxSubmit("mainForm", "vewChkl");
     }
-
+    function doListAhoc(){
+        $("#viewchk").val("");
+        SOP.Crud.cfxSubmit("mainForm", "listAhoc");
+    }
     function doSubmit(){
         $("#viewchk").val("");
         showWaiting();

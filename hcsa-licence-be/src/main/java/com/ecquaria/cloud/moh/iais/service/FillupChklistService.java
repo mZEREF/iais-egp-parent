@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service;
 
 
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
@@ -93,4 +94,12 @@ public interface FillupChklistService {
     InspectionFillCheckListDto getInspectionFillCheckListDtoByInspectionFillCheckListDto(InspectionFillCheckListDto inspectionFillCheckListDto, Map<String,String> orgUserDtos);
 
     String getOtherOffGropByInspectionFillCheckListDtos(List<InspectionFillCheckListDto> inspectionFillCheckListDtos);
+
+    AdhocCheckListConifgDto getAdhocCheckListConifgDtoByCorId(String corId);
+
+    boolean editAhocByAdhocCheckListConifgDtoAndOldAdhocCheckListConifgDto(AdhocCheckListConifgDto adhocCheckListConifgDto,AdhocCheckListConifgDto adhocCheckListConifgDtoOld);
+
+    void sendModifiedChecklistEmailToAOStage(ApplicationViewDto appViewDto);
+
+    void saveAdhocDto(AdhocCheckListConifgDto adhocCheckListConifgDto);
 }

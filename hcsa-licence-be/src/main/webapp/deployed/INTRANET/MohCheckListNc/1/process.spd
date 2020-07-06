@@ -37,7 +37,7 @@
     <JavaCode defClass="" executor="" methodName="doSubmit_OnStepProcess_0" name="doSubmit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preViewCheckList" x="650" y="250">
+  <AutomaticStep defClass="" executor="" icon="" name="preViewCheckList" x="590" y="230">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -65,6 +65,33 @@
     <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="addAhoc" x="600" y="470">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="addAhoc_OnStepProcess_0" name="addAhoc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="editAhoc" processname="MohAdhocChecklist" project="INTRANET" version="-1" x="480" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="listAhocs" x="770" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="listAhocs_OnStepProcess_0" name="listAhocs_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="saveAhoc" x="780" y="470">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="deleteAhoc_OnStepProcess_0" name="deleteAhoc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="checkListPage" stageIndicator="" x="420" y="100">
@@ -86,6 +113,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="980" y="350">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="listAhoc" stageIndicator="" x="760" y="300">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -122,10 +155,10 @@
    <position>{(700,120)(341,46)(340,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preViewCheckList" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(700,120)(670,270)}</position>
+   <position>{(700,120)(610,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preViewCheckList" style="rectanular">
-   <position>{(670,270)(520,270)}</position>
+   <position>{(610,250)(520,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCheckList" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page1" style="rectanular">
    <position>{(520,270)(330,390)}</position>
@@ -151,6 +184,30 @@
   <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
    <position>{(390,220)(520,270)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/listAhocs" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(700,120)(790,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/listAhoc" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/listAhocs" style="rectanular">
+   <position>{(790,240)(780,320)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/listAhocs" linkstyle="Rectangle" name="" sourceName="/Steps/InvokeStep/editAhoc" style="rectanular">
+   <position>{(500,430)(664,319)(790,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/listAhoc" style="rectanular">
+   <position>{(780,320)(690,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/addAhoc" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(690,360)(620,490)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/editAhoc" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/addAhoc" style="rectanular">
+   <position>{(620,490)(500,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/saveAhoc" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(690,360)(800,490)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/pre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/saveAhoc" style="rectanular">
+   <position>{(800,490)(321,549)(340,120)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Pages/WebPage/confirm" componentIfTrue="/Steps/AutomaticStep/pre" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="830" y="100">
@@ -166,6 +223,12 @@
    <SwitchCase component="/Conditions/Condition/Cond1" value="&quot;next&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/pre" value="&quot;back&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/preViewCheckList" value="&quot;vewChkl&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/listAhocs" value="&quot;listAhoc&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="670" y="340">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/addAhoc" value="&quot;add&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/saveAhoc" value="&quot;delete&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

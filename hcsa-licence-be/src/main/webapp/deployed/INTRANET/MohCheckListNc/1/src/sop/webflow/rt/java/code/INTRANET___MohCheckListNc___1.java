@@ -59,4 +59,19 @@ public class INTRANET___MohCheckListNc___1 extends BaseProcessClass {
 	public void doSubmit_OnStepProcess_0() throws Exception {
 	// 		doSubmit->OnStepProcess
 	}
+
+	public void addAhoc_OnStepProcess_0() throws Exception {
+	// 		addAhoc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "addAhocs", this);
+	}
+
+	public void deleteAhoc_OnStepProcess_0() throws Exception {
+	// 		saveAhoc->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "saveAhocs", this);
+	}
+
+	public void listAhocs_OnStepProcess_0() throws Exception {
+	// 		listAhocs->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "listAhocs", this);
+	}
 }
