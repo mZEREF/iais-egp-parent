@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___MohServiceFeMenu___1 extends BaseProcessClass {
@@ -94,6 +95,16 @@ public class INTERNET___MohServiceFeMenu___1 extends BaseProcessClass {
 	public void doPage_OnStepProcess_0() throws Exception {
 	// 		doPage->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "doPage", this);
+	}
+
+	public void showLicensee_OnStepProcess_0() throws Exception {
+	// 		showLicensee->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "showLicensee", this);
+	}
+
+	public void backAppBefore_OnStepProcess_0() throws Exception {
+	// 		backAppBefore->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "backAppBefore", this);
 	}
 
 }

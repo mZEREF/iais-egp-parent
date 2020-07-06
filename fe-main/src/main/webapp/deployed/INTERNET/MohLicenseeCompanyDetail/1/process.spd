@@ -36,6 +36,13 @@
     <JavaCode defClass="" executor="" methodName="solo_OnStepProcess_0" name="solo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="backToMenu" x="360" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="backToMenu_OnStepProcess_0" name="backToMenu_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CompanyPage" stageIndicator="" x="360" y="370">
@@ -60,13 +67,13 @@
    <position>{(390,250)(380,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CompanyPage" style="oblique">
-   <position>{(380,390)(270,500)}</position>
+   <position>{(380,390)(300,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(270,500)(270,120)}</position>
+   <position>{(300,520)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Step2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(270,500)(100,500)}</position>
+   <position>{(300,520)(100,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Prepare" style="rectanular">
    <position>{(270,120)(450,120)}</position>
@@ -81,15 +88,19 @@
    <position>{(520,250)(510,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/SoloPage" style="oblique">
-   <position>{(510,390)(270,500)}</position>
+   <position>{(510,390)(300,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/backToMenu" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
+   <position>{(300,520)(380,560)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="250" y="480">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="280" y="500">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Prepare" value="&quot;refresh&quot;"/>
    <SwitchCase component="/Steps/InvokeStep/Step2" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/backToMenu" value="&quot;backToMenu&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_value" name="Switch2" x="430" y="100">
    <Description/>

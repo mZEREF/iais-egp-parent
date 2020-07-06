@@ -57,7 +57,7 @@
                 <p>Licensee: <strong>Greenwood Clinic</strong> </p>
               </div>
               <div class="license-edit">
-                <p><a href="#">View</a></p>
+                <p><a class="license-view">View</a></p>
               </div>
             </div>
             <div class="license-info-row">
@@ -65,7 +65,7 @@
                 <p>Authorised User 1: <strong>Mo Delan</strong> </p>
               </div>
               <div class="license-edit">
-                <p><a href="#">View</a></p>
+                <p><a class="license-view">View</a></p>
               </div>
             </div>
             <div class="license-info-row">
@@ -73,7 +73,7 @@
                 <p>Authorised User 2: <strong>Linda Tan</strong> </p>
               </div>
               <div class="license-edit">
-                <p><a href="#">View</a></p>
+                <p><a class="license-view">View</a></p>
               </div>
             </div>
 
@@ -125,4 +125,9 @@
   function cancelSaveDraft() {
 
   }
+
+  $(".license-view").click(function () {
+    $("input[name='switch_action_type']").val("showlicense");
+    $("#mainForm").submit();
+  })
 </script>

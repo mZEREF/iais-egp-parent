@@ -32,6 +32,10 @@ public class INTERNET___MohLicenseeCompanyDetail___1 extends BaseProcessClass {
 	// 		Solo->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "solo", this);
 	}
+	public void backToMenu_OnStepProcess_0() throws Exception {
+	// 		backToMenu->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "backToMenu", this);
+	}
 	
 
 }

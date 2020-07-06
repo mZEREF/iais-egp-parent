@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -11,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
@@ -49,12 +51,16 @@ public class LicenseeCompanyDelegate {
         log.debug("****preparePage Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
-        if("Company".equals(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()))){
+        String type = ParamUtil.getString(bpc.request,"licenseView");
+        if(type != null && !StringUtils.isEmpty(type) && "licensee".equals(type)){
+            ParamUtil.setSessionAttr(bpc.request,"backtype","licensee");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Solo");
+        }else if("Company".equals(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()))){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Company");
         }else{
+            ParamUtil.setSessionAttr(bpc.request,"backtype","solo");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Solo");
         }
-
     }
 
     public void company(BaseProcessClass bpc) {
@@ -72,8 +78,20 @@ public class LicenseeCompanyDelegate {
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
         ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
-
+        String backtype = (String)ParamUtil.getSessionAttr(bpc.request,"backtype");
+        ParamUtil.setRequestAttr(bpc.request,"backtype",backtype);
     }
 
+    public void backToMenu(BaseProcessClass bpc){
+        try {
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu/backAppBefore");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
+    }
 
 }

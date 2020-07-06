@@ -999,6 +999,23 @@ public class ServiceMenuDelegator {
         log.debug(StringUtil.changeForLog("the doBeforStart end ...."));
     }
 
+    public void backAppBefore(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the doBeforStart end ...."));
+    }
+
+    public void showLicensee(BaseProcessClass bpc) {
+        try {
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail")
+                    .append("?licenseView=licensee");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }catch (Exception e){
+            log.info(e.getMessage());
+        }
+    }
+
     private SearchResult getLicense(BaseProcessClass bpc,List<String> baselist){
         SearchParam searchParamGroup;
         searchParamGroup = new SearchParam(MenuLicenceDto.class.getName());

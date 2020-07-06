@@ -109,10 +109,17 @@
             </div>
         </div>
     </div>
+    <input hidden value="${backtype}" id="backtype">
 </form>
 <script type="text/javascript">
     $("#back").click(function () {
-        SOP.Crud.cfxSubmit("mainForm","back");
+        var backtype = $("#backtype").val();
+        if(backtype =='solo'){
+            SOP.Crud.cfxSubmit("mainForm","back");
+        }else{
+            SOP.Crud.cfxSubmit("mainForm","backToMenu");
+        }
+
     })
 
     $("#refresh").click(function () {
