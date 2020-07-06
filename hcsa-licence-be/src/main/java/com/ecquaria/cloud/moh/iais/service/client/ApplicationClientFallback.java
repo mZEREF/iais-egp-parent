@@ -553,7 +553,7 @@ public class ApplicationClientFallback implements ApplicationClient{
 
 
     @Override
-    public FeignResponseEntity<Void> saveWithdrawn() {
+    public FeignResponseEntity<List<ApplicationDto>> saveWithdrawn() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
