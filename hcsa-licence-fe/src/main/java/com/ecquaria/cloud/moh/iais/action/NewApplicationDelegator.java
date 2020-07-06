@@ -270,7 +270,6 @@ public class NewApplicationDelegator {
                 action = "premises";
             }
         }
-
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, action);
         log.info(StringUtil.changeForLog("the do prepare end ...."));
     }
@@ -3304,12 +3303,12 @@ public class NewApplicationDelegator {
                 List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
                 if(appSvcPrincipalOfficersDtoList==null){
                     if(mandatoryCount>0) {
-                        errorMap.put("error", "error");
+                        errorMap.put("error", "PO");
                         sB.append(serviceId);
                         log.info("PO null");
                     }
                 }else if(appSvcPrincipalOfficersDtoList.size()<mandatoryCount){
-                    errorMap.put("error", "error");
+                    errorMap.put("error", "PO");
                     sB.append(serviceId);
                     log.info("PO mandatoryCount");
                 }
@@ -3317,12 +3316,12 @@ public class NewApplicationDelegator {
                 List<AppSvcPersonnelDto> appSvcPersonnelDtoList = dto.getAppSvcPersonnelDtoList();
                 if(appSvcPersonnelDtoList==null){
                     if(mandatoryCount>0) {
-                        errorMap.put("error", "error");
+                        errorMap.put("error", "SVCPSN");
                         sB.append(serviceId);
                         log.info("SVCPSN null");
                     }
                 }else if(appSvcPersonnelDtoList.size()<mandatoryCount){
-                    errorMap.put("error", "error");
+                    errorMap.put("error", "SVCPSN");
                     sB.append(serviceId);
                     log.info("SVCPSN mandatoryCount");
                 }
@@ -3330,12 +3329,12 @@ public class NewApplicationDelegator {
                 List<AppSvcCgoDto> appSvcCgoDtoList = dto.getAppSvcCgoDtoList();
                 if(appSvcCgoDtoList==null){
                     if(mandatoryCount>0) {
-                        errorMap.put("error", "error");
+                        errorMap.put("error", "CGO");
                         sB.append(serviceId);
                         log.info("CGO null");
                     }
                 }else if(appSvcCgoDtoList.size()<mandatoryCount){
-                    errorMap.put("error", "error");
+                    errorMap.put("error", "CGO");
                     sB.append(serviceId);
                     log.info("CGO mandatoryCount");
                 }
@@ -3343,12 +3342,12 @@ public class NewApplicationDelegator {
                 List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = dto.getAppSvcMedAlertPersonList();
                 if(appSvcMedAlertPersonList==null){
                     if(mandatoryCount>0) {
-                        errorMap.put("error", "error");
+                        errorMap.put("error", "MAP");
                         sB.append(serviceId);
                         log.info("MAP null");
                     }
                 }else if(appSvcMedAlertPersonList.size()<mandatoryCount){
-                    errorMap.put("error", "error");
+                    errorMap.put("error", "MAP");
                     sB.append(serviceId);
                     log.info("MAP mandatoryCount");
                 }
@@ -3622,6 +3621,7 @@ public class NewApplicationDelegator {
     }
     private static void doPO( List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos, Map oneErrorMap ,List<AppSvcPrincipalOfficersDto> poDto,String serviceId,StringBuilder sB){
         if(poDto==null){
+            log.info("podto is null");
             if(hcsaSvcPersonnelDtos!=null){
                 for(HcsaSvcPersonnelDto every :hcsaSvcPersonnelDtos){
                     String psnType = every.getPsnType();
@@ -3824,7 +3824,7 @@ public class NewApplicationDelegator {
         if(flag){
             sB.append(serviceId);
         }
-
+        log.info(JsonUtil.parseToJson(oneErrorMap)+"oneErrorMap");
     }
 
     private void loadingCoMap( AppSubmissionDto appSubmissionDto,HttpServletRequest request){

@@ -366,22 +366,6 @@ public class UploadFileServiceImpl implements UploadFileService {
         List<AppFeeDetailsDto> appFeeDetails = applicationListDto.getAppFeeDetails();
 
         List<ApplicationListFileDto> applicationListFileDtoList=IaisCommonUtils.genNewArrayList();
-        for(ApplicationDto applicationDto : application){
-            String status = applicationDto.getStatus();
-            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(status)){
-                applicationDtoList.add(applicationDto);
-            }
-        }
-        for( ApplicationDto applicationDto : applicationDtoList){
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-        }
-        try {
-            log.info(applicationDtoList.toString());
-            applicationClient.saveApplicationDtos(applicationDtoList);
-            log.info("update application status");
-        }catch (Exception e){
-            log.error("update applcaition status is error",e);
-        }
         for(ApplicationGroupDto every :applicationGroup){
 
             Set<String> appliGrpPremisesIds=IaisCommonUtils.genNewHashSet();
@@ -599,6 +583,22 @@ public class UploadFileServiceImpl implements UploadFileService {
             applicationListFileDto.setAppGroupMiscs(appGroupMiscDtos);
             applicationListFileDto.setAppFeeDetails(appFeeDetailsDtos);
             applicationListFileDtoList.add(applicationListFileDto);
+        }
+        for(ApplicationDto applicationDto : application){
+            String status = applicationDto.getStatus();
+            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(status)){
+                applicationDtoList.add(applicationDto);
+            }
+        }
+        for( ApplicationDto applicationDto : applicationDtoList){
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+        }
+        try {
+            log.info(applicationDtoList.toString());
+            applicationClient.saveApplicationDtos(applicationDtoList);
+            log.info("update application status");
+        }catch (Exception e){
+            log.error("update applcaition status is error",e);
         }
         return applicationListFileDtoList;
 

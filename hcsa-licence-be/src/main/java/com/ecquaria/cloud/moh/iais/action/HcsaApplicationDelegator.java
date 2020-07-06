@@ -2247,7 +2247,7 @@ public class HcsaApplicationDelegator {
                     List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = appPremisesCorrClient.getAppPremisesCorrelationsByAppId(oldApplication.getId()).getEntity();
                     if(appPremisesCorrelationDtos != null && appPremisesCorrelationDtos.size()>0){
                         AppPremisesCorrelationDto appPremisesCorrelationDto = appPremisesCorrelationDtos.get(0);
-                        AppInsRepDto appInsRepDto = appPremisesCorrClient.appGrpPremises(appPremisesCorrelationDto.getAppGrpPremId()).getEntity();
+                        AppInsRepDto appInsRepDto = appPremisesCorrClient.appGrpPremises(appPremisesCorrelationDto.getId()).getEntity();
                         if(appInsRepDto != null){
                             String hciName = appInsRepDto.getHciName();
                             List<String> hciNames = IaisCommonUtils.genNewArrayList();

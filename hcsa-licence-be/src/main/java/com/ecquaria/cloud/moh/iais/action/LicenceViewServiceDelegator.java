@@ -776,6 +776,7 @@ public class LicenceViewServiceDelegator {
                 appGrpPrimaryDocDto.setDocName("-");
                 appGrpPrimaryDocDto.setDocSize(0);
                 appGrpPrimaryDocDto.setSvcComDocName(oldAppGrpPrimaryDocDtos.get(i).getSvcComDocName());
+                appGrpPrimaryDocDto.setFileRepoId(oldAppGrpPrimaryDocDtos.get(i).getFileRepoId());
                 appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
             }
         } else if (appGrpPrimaryDocDtos != null && oldAppGrpPrimaryDocDtos != null) {
@@ -793,6 +794,7 @@ public class LicenceViewServiceDelegator {
                     }else {
                         appGrpPrimaryDocDto.setSvcDocId(oldAppGrpPrimaryDocDtos.get(size-1+i).getSvcComDocId());
                     }
+                    appGrpPrimaryDocDto.setFileRepoId(oldAppGrpPrimaryDocDtos.get(size-1+i).getFileRepoId());
                     appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                 }
             }else if(oldSize<size){
@@ -807,6 +809,7 @@ public class LicenceViewServiceDelegator {
                     }else {
                         appGrpPrimaryDocDto.setSvcDocId(appGrpPrimaryDocDtos.get(oldSize-1+i).getSvcComDocId());
                     }
+                    appGrpPrimaryDocDto.setFileRepoId(appGrpPrimaryDocDtos.get(oldSize-1+i).getFileRepoId());
                     oldAppGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                 }
             }
@@ -825,6 +828,7 @@ public class LicenceViewServiceDelegator {
                 appSvcDocDto.setUpFileName(oldAppSvcDocDtoLit.get(i).getUpFileName());
                 appSvcDocDto.setDocName("-");
                 appSvcDocDto.setDocSize(0);
+                appSvcDocDto.setFileRepoId(oldAppSvcDocDtoLit.get(i).getFileRepoId());
                 appSvcDocDtoLit.add(appSvcDocDto);
             }
         } else if (appSvcDocDtoLit != null && oldAppSvcDocDtoLit != null) {
@@ -837,6 +841,7 @@ public class LicenceViewServiceDelegator {
                     appSvcDocDto.setDocName("-");
                     appSvcDocDto.setUpFileName(oldAppSvcDocDtoLit.get(size-1+i).getUpFileName());
                     appSvcDocDto.setSvcDocId(oldAppSvcDocDtoLit.get(size-1+i).getSvcDocId());
+                    appSvcDocDto.setFileRepoId(oldAppSvcDocDtoLit.get(size-1+i).getFileRepoId());
                     appSvcDocDtoLit.add(appSvcDocDto);
                 }
             }else if(oldSize<size){
@@ -845,6 +850,7 @@ public class LicenceViewServiceDelegator {
                     appSvcDocDto.setDocName("-");
                     appSvcDocDto.setSvcDocId(appSvcDocDtoLit.get(oldSize-1+i).getSvcDocId());
                     appSvcDocDto.setUpFileName(appSvcDocDtoLit.get(oldSize-1+i).getUpFileName());
+                    appSvcDocDto.setFileRepoId(appSvcDocDtoLit.get(oldSize-1+i).getFileRepoId());
                     oldAppSvcDocDtoLit.add(appSvcDocDto);
                 }
             }

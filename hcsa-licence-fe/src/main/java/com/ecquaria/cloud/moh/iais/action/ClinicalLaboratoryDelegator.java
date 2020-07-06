@@ -1882,7 +1882,7 @@ public class ClinicalLaboratoryDelegator {
                             String docName = appSvcDocDtoLit.get(i).getDocName();
                             String id = appSvcDocDtoLit.get(i).getSvcDocId();
                             if (docSize > 4 * 1024) {
-                                errorMap.put(id + "selectedFile", "UC_GENERAL_ERR0015");
+                                errorMap.put(id + "selectedFile", "UC_CHKLMD001_ERR007");
                             }
                             Boolean flag = Boolean.FALSE;
                             String substring = docName.substring(docName.lastIndexOf('.') + 1);
