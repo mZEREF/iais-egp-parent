@@ -231,66 +231,86 @@
         submit('search');
     })
 
-    function getAppByGroupId(applicationGroupNo, divid) {
-        if (!isInArray(dividajaxlist,divid)) {
-            dividajaxlist.push(divid);
-            $.post(
-                '/main-web/backend/appGroup.do',
-                {groupno: applicationGroupNo},
-                function (data, status) {
-                    var serviceName = data.serviceName;
-                    var res = data.ajaxResult;
-                    var url = data.appNoUrl;
-                    var taskList = data.taskList;
-                    var hastaskList = data.hastaskList;
-                    var html = '';
-                    html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
-                        '<td colspan="6" style="padding: 0px 8px !important;">' +
-                        '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
-                        '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
-                        '<thead>' +
-                        '<tr>';
-                    if (hastaskList == "true") {
+    function groupAjax(applicationGroupNo, divid) {
+        dividajaxlist.push(divid);
+        $.post(
+            '/main-web/backend/appGroup.do',
+            {groupno: applicationGroupNo},
+            function (data, status) {
+                var serviceName = data.serviceName;
+                var res = data.ajaxResult;
+                var url = data.appNoUrl;
+                var taskList = data.taskList;
+                var hastaskList = data.hastaskList;
+                var html = '';
+                html = '<tr style="background-color: #F3F3F3;" class="p" id="advfilterson' + divid + '">' +
+                    '<td colspan="6" style="padding: 0px 8px !important;">' +
+                    '<div class="accordian-body p-3 collapse in" id="row1" aria-expanded="true" style="">' +
+                    '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
+                    '<thead>' +
+                    '<tr>';
+                console.log(res)
+                if (hastaskList == "true") {
+                    var isshow = false;
+                    for (var i = 0; i < res.length; i++) {
+                        if(res[i].statusCode == 'APST002' || res[i].statusCode == 'APST010' || res[i].statusCode == 'APST011' ){
+                            isshow = true;
+                        }
+                    }
+                    if(isshow){
                         html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
+                    }else{
+                        html += '<th></th>'
                     }
 
-                    html += '<th>Application No.</th>' +
-                        '<th>Service</th>' +
-                        '<th>Licence Expiry Date</th>' +
-                        '<th>Application Status</th>' +
-                        '<th>HCI Code</th>' +
-                        '<th>HCI Address</th>' +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody>';
-                    console.log(res)
-                    for (var i = 0; i < res.length; i++) {
-                        var color = "black";
-                        if (res[i].timeLimitWarning == "black") {
-                            color = "black";
-                        } else if (res[i].timeLimitWarning == "red") {
-                            color = "red";
-                        } else if (res[i].timeLimitWarning == "amber") {
-                            color = "#DD9C00";
-                        }
-                        var address = res[i].address;
-                        html += '<tr style = "color : ' + color + ';">';
-                        if (hastaskList == "true") {
+                }
+
+                html += '<th>Application No.</th>' +
+                    '<th>Service</th>' +
+                    '<th>Licence Expiry Date</th>' +
+                    '<th>Application Status</th>' +
+                    '<th>HCI Code</th>' +
+                    '<th>HCI Address</th>' +
+                    '</tr>' +
+                    '</thead>' +
+                    '<tbody>';
+                for (var i = 0; i < res.length; i++) {
+                    var color = "black";
+                    if (res[i].timeLimitWarning == "black") {
+                        color = "black";
+                    } else if (res[i].timeLimitWarning == "red") {
+                        color = "red";
+                    } else if (res[i].timeLimitWarning == "amber") {
+                        color = "#DD9C00";
+                    }
+                    var address = res[i].address;
+                    html += '<tr style = "color : ' + color + ';">';
+                    if (hastaskList == "true") {
+                        if(res[i].statusCode == 'APST002' || res[i].statusCode == 'APST010' || res[i].statusCode == 'APST011' ){
                             html += '<td><input type="checkbox" name="taskId" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                         }
-                        html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>' + res[i].expiryDate + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res[i].status + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res[i].hciCode + '</p></td>' +
-                            '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + address + '</p></td>' +
-                            '</tr>';
+                        else{
+                            html += '<td></td>';
+                        }
                     }
-                    html += '</tbody></table></div></td></tr>';
-                    $('#advfilter' + divid).after(html);
+                    html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
+                        '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
+                        '<td><p class="visible-xs visible-sm table-row-title">License Expiry Date</p><p>' + res[i].expiryDate + '</p></td>' +
+                        '<td><p class="visible-xs visible-sm table-row-title">Application Status</p><p>' + res[i].status + '</p></td>' +
+                        '<td><p class="visible-xs visible-sm table-row-title">HCi Code</p><p>' + res[i].hciCode + '</p></td>' +
+                        '<td><p class="visible-xs visible-sm table-row-title">HCi Address</p><p>' + address + '</p></td>' +
+                        '</tr>';
                 }
-            )
-
+                html += '</tbody></table></div></td></tr>';
+                $('#advfilter' + divid).after(html);
+            }
+        )
+    }
+    function getAppByGroupId(applicationGroupNo, divid) {
+        console.log('getAppByGroupId start....');
+        if (!isInArray(dividajaxlist,divid)) {
+            console.log('getAppByGroupId isInArray...');
+            groupAjax(applicationGroupNo, divid);
         } else {
             var display = $('#advfilterson' + divid).css('display');
             console.log(display)

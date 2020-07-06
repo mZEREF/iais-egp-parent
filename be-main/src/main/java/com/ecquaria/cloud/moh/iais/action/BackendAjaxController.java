@@ -107,6 +107,7 @@ public class BackendAjaxController {
             for (InspectionAppInGroupQueryDto item:lastestResultList) {
                 HcsaServiceDto hcsaServiceDto = inspectionAssignTaskService.getHcsaServiceDtoByServiceId(item.getServiceId());
                 serviceNameMap.put(hcsaServiceDto.getId(),hcsaServiceDto.getSvcName());
+                item.setStatusCode(String.copyValueOf(item.getStatus().toCharArray()));
                 item.setStatus(MasterCodeUtil.getCodeDesc(item.getStatus()));
                 if(item.getHciCode()==null){
                     item.setHciCode("N/A");
