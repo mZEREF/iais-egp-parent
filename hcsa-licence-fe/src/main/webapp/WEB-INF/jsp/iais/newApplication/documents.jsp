@@ -81,7 +81,16 @@
                         <h3>${commonDoc.docTitle}</h3>
                         <div class="file-upload-gp">
                           <input class="hidden delFlag" type="hidden" name="${commDelFlag}" value="N"/>
-                          <span><a class="<c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${v.index}&fileRo${v.index}=<iais:mask name="fileRo${v.index}" value="${file.fileRepoId}"/>&fileRepoName=${file.docName}"  >${file.docName}</a></span>
+                          <span>
+                            <c:choose>
+                              <c:when test="${!file.passValidate}">
+                                <c:out value="${file.docName}"/>
+                              </c:when>
+                              <c:otherwise>
+                                <a class="<c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${v.index}&fileRo${v.index}=<iais:mask name="fileRo${v.index}" value="${file.fileRepoId}"/>&fileRepoName=${file.docName}"  >${file.docName}</a>
+                              </c:otherwise>
+                            </c:choose>
+                          </span>
                           <c:choose>
                             <c:when test="${file.docName == '' || file.docName == null }">
                               <span class="hidden delBtn">

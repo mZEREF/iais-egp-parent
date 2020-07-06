@@ -53,7 +53,16 @@
             <div class="fileContent" style="margin-bottom:1%;">
               <input class="hidden delFlag" type="hidden" name="${svcDelFlag}" value="N"/>
               <input type="hidden" name="docConfig" value=""/>
-              <span class="fileNameSpan"><a class="fileName <c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}"  >${svcDoc.docName}</a></span>&nbsp;&nbsp;
+              <span class="fileNameSpan">
+                <c:choose>
+                  <c:when test="${!svcDoc.passValidate}">
+                    ${svcDoc.docName}
+                  </c:when>
+                  <c:otherwise>
+                    <a class="fileName <c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${svcDoc.fileRepoId}"/>&fileRepoName=${svcDoc.docName}"  >${svcDoc.docName}</a>
+                  </c:otherwise>
+                </c:choose>
+              </span>&nbsp;&nbsp;
               <c:choose>
                 <c:when test="${svcDoc.docName == '' || svcDoc.docName == null }">
                                                     <span class="hidden delBtn">

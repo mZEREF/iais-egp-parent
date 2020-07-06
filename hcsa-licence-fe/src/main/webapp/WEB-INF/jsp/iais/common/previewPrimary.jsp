@@ -23,7 +23,18 @@
                                     <div class="field col-sm-4 control-label formtext"><label>  ${appGrpPrimaryDocDto.svcComDocName}</label></div>
                                     <span class="fileType" style="display:none">Docment1</span><span class="fileFilter" style="display:none">png</span><span class="fileMandatory" style="display:none">Yes</span>
                                     <div class="control col-sm-12">
-                                        <div class="fileList "><span class="filename server-site" id="130"><a class="test-btn" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a> (${appGrpPrimaryDocDto.docSize} KB)</span></div>
+                                        <div class="fileList ">
+                                            <span class="filename server-site" id="130">
+                                                <c:choose>
+                                                    <c:when test="${!appGrpPrimaryDocDto.passValidate}">
+                                                        ${appGrpPrimaryDocDto.docName}
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a>
+                                                    </c:otherwise>
+                                                </c:choose> (${appGrpPrimaryDocDto.docSize} KB)
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </c:forEach>

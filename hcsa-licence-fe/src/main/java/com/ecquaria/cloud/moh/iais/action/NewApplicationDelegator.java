@@ -873,7 +873,6 @@ public class NewApplicationDelegator {
                     errorMap.put(name, "UC_CHKLMD001_ERR001");
                 }
             }
-
         }
 
 
@@ -5258,7 +5257,13 @@ public class NewApplicationDelegator {
             if(!flag){
                 errorMap.put(keyName,"Wrong file type");
             }
+            String errMsg = errorMap.get(keyName);
+            if(StringUtil.isEmpty(errMsg)){
+                appGrpPrimaryDocDto.setPassValidate(true);
+            }
         }
+        appSubmissionDto.setAppGrpPrimaryDocDtos(appGrpPrimaryDocDtoList);
+        ParamUtil.setSessionAttr(request,APPSUBMISSIONDTO,appSubmissionDto);
     }
 
     private Map<String,List<HcsaSvcPersonnelDto>> getAllSvcAllPsnConfig(HttpServletRequest request){
@@ -5380,11 +5385,12 @@ public class NewApplicationDelegator {
     private void setLicseeAndPsnDropDown(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc){
         //set licenseeId
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+        Map<String,AppSvcPrincipalOfficersDto> licPersonMap = IaisCommonUtils.genNewHashMap();
         if(loginContext != null){
             appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
             List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
             //exchange order
-            Map<String,AppSvcPrincipalOfficersDto> licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(bpc.request,licPersonList);
+            licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(bpc.request,licPersonList);
             ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
             Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, PERSONSELECTMAP);
             if(personMap != null){
@@ -5397,6 +5403,7 @@ public class NewApplicationDelegator {
             }
         }else{
             appSubmissionDto.setLicenseeId("");
+            ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
             log.info(StringUtil.changeForLog("user info is empty....."));
         }
     }

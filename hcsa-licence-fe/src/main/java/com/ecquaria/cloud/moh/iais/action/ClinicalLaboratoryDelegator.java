@@ -1895,9 +1895,16 @@ public class ClinicalLaboratoryDelegator {
                             if (!flag) {
                                 errorMap.put(id + "selectedFile", "Wrong file type");
                             }
+                            String errMsg = errorMap.get(id + "selectedFile");
+                            if(StringUtil.isEmpty(errMsg)){
+                                appSvcDocDtoLit.get(i).setPassValidate(true);
+                            }
                         }
                     }
+                    appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtoLit);
                 }
+                appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
+                ParamUtil.setSessionAttr(request,NewApplicationDelegator.APPSUBMISSIONDTO,appSubmissionDto);
             }
         }
 
