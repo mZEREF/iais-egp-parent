@@ -1120,6 +1120,9 @@ public class NewApplicationHelper {
                     String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
                     person.setSpecialityHtml(specialtySelectStr);
                     person.setCgoPsn(true);
+                    psnDto.setSpcOptList(specialityOpts);
+                    psnDto.setSpecialityHtml(specialtySelectStr);
+                    psnDto.setNeedSpcOptList(true);
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType())){
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
