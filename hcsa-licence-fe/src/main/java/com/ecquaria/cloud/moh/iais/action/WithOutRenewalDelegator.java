@@ -407,15 +407,6 @@ public class WithOutRenewalDelegator {
 
                 ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
                 ParamUtil.setSessionAttr(bpc.request, "txnRefNo", txnRefNo);
-                List<AppSubmissionDto> otherAppSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("otherAppSubmissionDtos");
-                if (otherAppSubmissionDtos != null && !otherAppSubmissionDtos.isEmpty()) {
-                    String rfcGrpId = otherAppSubmissionDtos.get(0).getAppGrpId();
-                    ApplicationGroupDto rfcAppGrp = new ApplicationGroupDto();
-                    rfcAppGrp.setId(rfcGrpId);
-                    rfcAppGrp.setPmtRefNo(pmtRefNo);
-                    rfcAppGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
-                    serviceConfigService.updatePaymentStatus(rfcAppGrp);
-                }
                 //update status
                 ApplicationGroupDto appGrp = new ApplicationGroupDto();
                 appGrp.setId(groupId);
@@ -491,7 +482,6 @@ public class WithOutRenewalDelegator {
             log.error(StringUtil.changeForLog("interInboxUserDto null"));
         }
         Double total = 0d;
-        Double renewTotal = 0.0;
         AmendmentFeeDto amendmentFeeDto = new AmendmentFeeDto();
         amendmentFeeDto.setChangeInLicensee(Boolean.FALSE);
 
@@ -626,7 +616,6 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setLateFee(lateFee);
             appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFee));
             if (!StringUtil.isEmpty(amount)) {
-                renewTotal += amount;
                 total += amount;
                 appSubmissionDto.setAmount(amount - lateFee);
                 String amountStr = Formatter.formatterMoney(amount - lateFee);
@@ -726,11 +715,16 @@ public class WithOutRenewalDelegator {
         for (AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos) {
             appSubmissionDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
             appSubmissionDto.setAmountStr("$0");
+            appSubmissionDto.setAmount(0.0);
+            appSubmissionDto.setId(appSubmissionDtos3.get(0).getId());
+        }
+        for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+            appSubmissionDto.setAppGrpNo(appGrpNo);
+            appSubmissionDto.setAppGrpId(appSubmissionDtos3.get(0).getAppGrpId());
         }
         //set group no.
         bpc.request.getSession().setAttribute("rfcAppSubmissionDtos", rfcAppSubmissionDtos);
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
-        bpc.request.getSession().setAttribute("otherAppSubmissionDtos", appSubmissionDtos1);
         /*    ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);*/
         ParamUtil.setSessionAttr(bpc.request, "totalStr", totalStr);
         ParamUtil.setSessionAttr(bpc.request, "totalAmount", total);

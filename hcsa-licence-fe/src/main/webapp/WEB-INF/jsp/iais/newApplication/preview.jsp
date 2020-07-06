@@ -87,7 +87,7 @@
                                             </c:if>
                                             <div class="form-check">
                                                 <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
-                                                <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>I hereby certify that the information I provided is all correct and accurate</label>
+                                                <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span>I hereby certify that the information I provided is  correct and accurate</label>
                                             </div>
                                             <div>
                                                 <span id="error_fieldMandatory"  class="error-msg"></span>

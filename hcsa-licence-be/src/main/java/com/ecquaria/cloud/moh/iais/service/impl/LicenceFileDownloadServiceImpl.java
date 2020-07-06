@@ -72,6 +72,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -445,6 +446,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     try {
                         HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
                         appPremisesCorrelationDto.setRiskScore(entity.getRiskScore());
+                        appPremisesCorrelationDto.setRiskCalcDate(new Date());
                         log.info(StringUtil.changeForLog(" getHcsaRiskScoreDtoByHcsaRiskScoreDto ok" + entity.getRiskScore()));
                     }catch (Exception e){
                         log.error("getHcsaRiskScoreDtoByHcsaRiskScoreDto is error ",e);
