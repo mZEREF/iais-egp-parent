@@ -17,7 +17,7 @@
                 <div class="center-content">
                     <div class="intranet-content">
                         <div class="bg-title">
-                            <h2>Availablity</h2>
+                            <h2>Availability</h2>
                         </div>
 
                         <div class="form-group">
