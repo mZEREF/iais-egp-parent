@@ -139,7 +139,7 @@ public final class ChecklistHelper {
         }
     }
 
-    public static void sendModifiedChecklistEmailToAOStage(String serviceId, String applicationType, String mailSender, String licenseeId){
+    public static void sendModifiedChecklistEmailToAOStage(String serviceId, String applicationType, String mailSender){
         EmailHelper emailHelper = SpringContextHelper.getContext().getBean(EmailHelper.class);
         EmailClient emailClient = SpringContextHelper.getContext().getBean(EmailClient.class);
         HcsaConfigClient hcsaConfigClient = SpringContextHelper.getContext().getBean(HcsaConfigClient.class);
