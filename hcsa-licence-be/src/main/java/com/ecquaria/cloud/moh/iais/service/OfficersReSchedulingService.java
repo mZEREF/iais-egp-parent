@@ -39,7 +39,7 @@ public interface OfficersReSchedulingService {
       * @return: void
       * @Descripation: allInspectorFromGroupList
       */
-    void allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption);
+    List<String> allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption);
 
     /**
       * @author: shicheng

@@ -117,7 +117,8 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     }
 
     @Override
-    public void allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption) {
+    public List<String> allInspectorFromGroupList(ReschedulingOfficerDto reschedulingOfficerDto, List<SelectOption> workGroupOption) {
+        List<String> workGroupNos = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(workGroupOption)){
             Map<String, String> workGroupMap = reschedulingOfficerDto.getWorkGroupIdMap();
             Map<String, List<SelectOption>> inspectorByGroup = IaisCommonUtils.genNewHashMap();
@@ -127,9 +128,11 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 String workGroupId = workGroupMap.get(workGroupName);
                 List<SelectOption> inspectorOption = getInspectorByWorkGroupId(workGroupId, reschedulingOfficerDto, workGroupNo);
                 inspectorByGroup.put(workGroupNo, inspectorOption);
+                workGroupNos.add(workGroupNo);
             }
             reschedulingOfficerDto.setInspectorByGroup(inspectorByGroup);
         }
+        return workGroupNos;
     }
 
     @Override

@@ -80,6 +80,13 @@ public class OfficersReSchedulingDelegator {
         ParamUtil.setSessionAttr(bpc.request, "endHoursOption", null);
         ParamUtil.setSessionAttr(bpc.request, "workGroupOption", null);
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchResult", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchParam", null);
+        ParamUtil.setSessionAttr(bpc.request, "workGroupNos", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspectorOption1", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspectorOption2", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspectorOption3", null);
+        ParamUtil.setSessionAttr(bpc.request, "inspectorOption4", null);
     }
 
     /**
@@ -102,7 +109,16 @@ public class OfficersReSchedulingDelegator {
                 reschedulingOfficerDto.setWorkGroupCheck(workGroupOption.get(0).getValue());
             }
             //get all inspector by work group list
-            officersReSchedulingService.allInspectorFromGroupList(reschedulingOfficerDto, workGroupOption);
+            List<String> workGroupNos = officersReSchedulingService.allInspectorFromGroupList(reschedulingOfficerDto, workGroupOption);
+            //set session inspector options
+            Map<String, List<SelectOption>> inspectorByGroup = reschedulingOfficerDto.getInspectorByGroup();
+            if(inspectorByGroup != null){
+                for(Map.Entry<String, List<SelectOption>> map : inspectorByGroup.entrySet()){
+                    String groupNo = map.getKey();
+                    List<SelectOption> inspectorOption = map.getValue();
+                    ParamUtil.setSessionAttr(bpc.request, "inspectorOption" + groupNo, (Serializable) inspectorOption);
+                }
+            }
             //get Work Group Check and it's inspector, get appNo by inspector and some Filter conditions
             List<String> appNoList = officersReSchedulingService.getAppNoByInspectorAndConditions(reschedulingOfficerDto);
             searchParam = getSearchParamByFilter(searchParam, appNoList);
@@ -111,6 +127,7 @@ public class OfficersReSchedulingDelegator {
             searchResult = officersReSchedulingService.setInspectorsAndServices(searchResult, reschedulingOfficerDto);
             ParamUtil.setSessionAttr(bpc.request, "workGroupOption", (Serializable) workGroupOption);
             ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
+            ParamUtil.setSessionAttr(bpc.request, "workGroupNos", (Serializable) workGroupNos);
         }
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchResult", searchResult);
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchParam", searchParam);
@@ -184,6 +201,14 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingQuery(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingQuery start ...."));
+        SearchParam searchParam = getSearchParam(bpc);
+        ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
+        QueryHelp.setMainSql("inspectionQuery", "reschedulingSearch", searchParam);
+        SearchResult<ReschedulingOfficerQueryDto> searchResult = officersReSchedulingService.getOfficersSearch(searchParam);
+        searchResult = officersReSchedulingService.setInspectorsAndServices(searchResult, reschedulingOfficerDto);
+
+        ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchResult", searchResult);
+        ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchParam", searchParam);
     }
 
     /**

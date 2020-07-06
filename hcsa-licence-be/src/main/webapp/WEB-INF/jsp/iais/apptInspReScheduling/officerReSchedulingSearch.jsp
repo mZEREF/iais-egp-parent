@@ -26,6 +26,8 @@
   <form method="post" id="mainSearchForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="mohOfficerReSchedulingType" value="">
+    <input type="hidden" id="inspectorCheck" name="inspectorCheck" value="${reschedulingOfficerDto.inspectorCheck}">
+    <input type="hidden" id="workGroupCheck" name="workGroupCheck" value="${reschedulingOfficerDto.workGroupCheck}">
     <input type="hidden" id="appCorrelationId" name="appCorrelationId" value="">
     <div class="main-content">
       <div class="row">
@@ -34,17 +36,21 @@
             <div class="intranet-content">
               <iais:body>
                 <iais:section title="" id = "demoList">
-                  <div id="appComPoolSelect" class="collapse">
+                  <div id="officersReSchSearch" class="collapse">
                     <iais:row>
                       <iais:field value="Working Group"/>
                       <iais:value width="18">
-                          <iais:select name="inspWorkGroup" options="appTypeOption" firstOption="Please Select" value="${cPoolSearchParam.filters['application_type']}" ></iais:select>
+                          <iais:select name="reSchInspWorkGroup" options="workGroupOption" firstOption="Please Select" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Inspector Name"/>
                       <iais:value width="18">
-                          <iais:select name="inspectorName" options="appTypeOption" firstOption="Please Select" value="${cPoolSearchParam.filters['application_type']}" ></iais:select>
+                        <c:forEach var="workGroupNo" items="${workGroupNos}">
+                          <div id="workGroupNo${workGroupNo}" class="reSchGroup-inspector-option">
+                            <iais:select name="inspectorName${workGroupNo}" options="inspectorOption${workGroupNo}" firstOption="Please Select"></iais:select>
+                          </div>
+                        </c:forEach>
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">
@@ -53,22 +59,22 @@
                     </iais:action>
                   </div>
                 </iais:section>
-                <iais:pagination  param="cPoolSearchParam" result="cPoolSearchResult"/>
+                <iais:pagination  param="inspReSchSearchParam" result="inspReSchSearchResult"/>
                 <div class="table-gp">
                   <table class="table application-group">
                     <thead>
                     <tr align="center">
                       <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" field="GROUP_NO" value="HCI NAME"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true" field="HCI_NAME" value="HCI NAME"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="" value="Inspector(s)"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" field="COU" value="Date and Time of Inspection"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" field="COU" value="Type of Task"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true" field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true" field="TASK_TYPE" value="Type of Task"></iais:sortableHeader>
                       <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>
                     <c:choose>
-                      <c:when test="${empty cPoolSearchResult.rows}">
+                      <c:when test="${empty inspReSchSearchResult.rows}">
                         <tr>
                           <td colspan="7">
                             <iais:message key="ACK018" escape="true"></iais:message>
@@ -76,11 +82,11 @@
                         </tr>
                       </c:when>
                       <c:otherwise>
-                        <c:forEach var="pool" items="${cPoolSearchResult.rows}" varStatus="status">
+                        <c:forEach var="reschSearch" items="${inspReSchSearchResult.rows}" varStatus="status">
                           <tr>
-                            <td class="row_no"><c:out value="${(status.index + 1) + (cPoolSearchParam.pageNo - 1) * cPoolSearchParam.pageSize}"/></td>
-                            <td><iais:code code="${pool.applicationType}"/></td>
-                            <td><c:out value="${pool.submissionType}"/></td>
+                            <td class="row_no"><c:out value="${(status.index + 1) + (inspReSchSearchParam.pageNo - 1) * inspReSchSearchParam.pageSize}"/></td>
+                            <td><c:out value="${reschSearch.hciName}"/></td>
+                            <td><c:out value="${reschSearch.submissionType}"/></td>
                             <td><fmt:formatDate value='${pool.submitDt}' pattern='dd/MM/yyyy' /></td>
                             <td><iais:code code="${pool.paymentStatus}"/></td>
                             <td><iais:code code="${pool.paymentStatus}"/></td>
@@ -100,6 +106,19 @@
   </form>
 </div>
 <script type="text/javascript">
+    $(document).ready(function() {
+        var inspectorCheck = $("#inspectorCheck").val();
+        var workGroupCheck = $("#workGroupCheck").val();
+        $("#inspectorName" + workGroupCheck).val(inspectorCheck);
+        $(".reSchGroup-inspector-option").hide();
+        $("#inspectorName" + workGroupCheck).show();
+    });
+
+    $("#reSchInspWorkGroup").change(function reSchInspWorkGroupCheck() {
+        var workGroupCheck = $("#reSchInspWorkGroup").val();
+        $(".reSchGroup-inspector-option").hide();
+        $("#inspectorName" + workGroupCheck).show();
+    });
 
     function officerReSchedulingDo(appCorrelationId) {
         showWaiting();
