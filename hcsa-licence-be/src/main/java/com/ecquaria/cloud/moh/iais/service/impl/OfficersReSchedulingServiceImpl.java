@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQue
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +55,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Autowired
     private AppPremisesCorrClient appPremisesCorrClient;
+
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
@@ -167,6 +172,53 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     @Override
     public SearchResult<ReschedulingOfficerQueryDto> getOfficersSearch(SearchParam searchParam) {
         return inspectionTaskClient.officerReSchSearch(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<ReschedulingOfficerQueryDto> setInspectorsAndServices(SearchResult<ReschedulingOfficerQueryDto> searchResult, ReschedulingOfficerDto reschedulingOfficerDto) {
+        if(searchResult != null && !IaisCommonUtils.isEmpty(searchResult.getRows())){
+            for(ReschedulingOfficerQueryDto reschedulingOfficerQueryDto : searchResult.getRows()){
+                String appNo = reschedulingOfficerQueryDto.getAppNo();
+                Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
+                List<String> applicationNos = samePremisesAppMap.get(appNo);
+                List<String> inspectorNames = getInspectorsByAppNoList(applicationNos);
+                reschedulingOfficerQueryDto.setInspectors(inspectorNames);
+                List<String> serviceNames = getServiceNameByAppNoList(applicationNos);
+                reschedulingOfficerQueryDto.setServiceNames(serviceNames);
+            }
+        }
+        return searchResult;
+    }
+
+    private List<String> getServiceNameByAppNoList(List<String> applicationNos) {
+        List<String> serviceNames = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty (applicationNos)){
+            for(String appNo : applicationNos){
+                ApplicationDto applicationDto = applicationClient.getAppByNo(appNo).getEntity();
+                String serviceId = applicationDto.getServiceId();
+                HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+                String serviceName = hcsaServiceDto.getSvcName();
+                serviceNames.add(serviceName);
+            }
+        }
+        return serviceNames;
+    }
+
+    private List<String> getInspectorsByAppNoList(List<String> applicationNos) {
+        List<String> inspectorNames = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty (applicationNos)){
+            for(String appNo : applicationNos){
+                List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = inspectionTaskClient.getAppInspCorreByAppNoStatus(appNo, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                if(!IaisCommonUtils.isEmpty(appPremInspCorrelationDtoList)){
+                    for(AppPremInspCorrelationDto appPremInspCorrelationDto : appPremInspCorrelationDtoList){
+                        String userId = appPremInspCorrelationDto.getUserId();
+                        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+                        inspectorNames.add(orgUserDto.getDisplayName());
+                    }
+                }
+            }
+        }
+        return applicationNos;
     }
 
     private List<String> filterPremisesAndFast(List<String> appNos, ReschedulingOfficerDto reschedulingOfficerDto) {

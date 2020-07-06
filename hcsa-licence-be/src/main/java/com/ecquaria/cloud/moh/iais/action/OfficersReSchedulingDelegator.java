@@ -108,6 +108,7 @@ public class OfficersReSchedulingDelegator {
             searchParam = getSearchParamByFilter(searchParam, appNoList);
             QueryHelp.setMainSql("inspectionQuery", "reschedulingSearch",searchParam);
             searchResult = officersReSchedulingService.getOfficersSearch(searchParam);
+            searchResult = officersReSchedulingService.setInspectorsAndServices(searchResult, reschedulingOfficerDto);
             ParamUtil.setSessionAttr(bpc.request, "workGroupOption", (Serializable) workGroupOption);
             ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
         }

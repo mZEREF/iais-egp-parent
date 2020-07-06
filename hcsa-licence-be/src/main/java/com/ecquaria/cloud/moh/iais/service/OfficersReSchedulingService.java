@@ -58,4 +58,13 @@ public interface OfficersReSchedulingService {
       * @Descripation: getOfficersSearch
       */
     SearchResult<ReschedulingOfficerQueryDto> getOfficersSearch(SearchParam searchParam);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/6
+      * @Param: searchResult, reschedulingOfficerDto
+      * @return: SearchResult<ReschedulingOfficerQueryDto>
+      * @Descripation: setInspectorsAndServices
+      */
+    SearchResult<ReschedulingOfficerQueryDto> setInspectorsAndServices(SearchResult<ReschedulingOfficerQueryDto> searchResult, ReschedulingOfficerDto reschedulingOfficerDto);
 }
