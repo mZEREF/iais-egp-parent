@@ -166,8 +166,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Override
     public SearchResult<ReschedulingOfficerQueryDto> getOfficersSearch(SearchParam searchParam) {
-
-        return null;
+        return inspectionTaskClient.officerReSchSearch(searchParam).getEntity();
     }
 
     private List<String> filterPremisesAndFast(List<String> appNos, ReschedulingOfficerDto reschedulingOfficerDto) {
