@@ -644,7 +644,11 @@ public class InsRepServiceImpl implements InsRepService {
             }
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
         } else {
-            updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+            try{
+                updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+            }catch (Exception e){
+                log.info("sdaaaaaaaaaaaaaaaaaa");
+            }
             List<TaskDto> taskDtos = prepareTaskToAo2(taskDto, serviceId, applicationDto);
             taskService.createTasks(taskDtos);
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
@@ -709,7 +713,7 @@ public class InsRepServiceImpl implements InsRepService {
         if (historyExtDto == null) {
             ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
             updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
-            completedTask(taskDto,applicationNo);
+            completedTask(taskDto, applicationNo);
             HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
             String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
             List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
@@ -739,7 +743,7 @@ public class InsRepServiceImpl implements InsRepService {
             } else {
                 ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
                 updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
-                completedTask(taskDto,applicationNo);
+                completedTask(taskDto, applicationNo);
                 HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto1 = getHcsaSvcStageWorkingGroupDto(serviceId, 2, HcsaConsts.ROUTING_STAGE_INS, applicationDto);
                 String groupId1 = hcsaSvcStageWorkingGroupDto1.getGroupId();
                 List<TaskDto> taskDtos = prepareRoutBackTaskList(taskDto, userId, roleId, stageId);
@@ -758,7 +762,6 @@ public class InsRepServiceImpl implements InsRepService {
             String serviceId = applicationDto.getServiceId();
             String status = applicationDto.getStatus();
             String applicationNo = applicationDto.getApplicationNo();
-            String applicationType = applicationDto.getApplicationType();
             String taskKey = taskDto.getTaskKey();
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtosByAppNo = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationNo);
             String userId = null;
@@ -777,7 +780,7 @@ public class InsRepServiceImpl implements InsRepService {
                 }
             }
             String subStage = getSubStage(appPremisesCorrelationId, taskKey);
-            String nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;;
+            String nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
             ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, nextStatus);
             updateInspectionStatus(appPremisesCorrelationId, InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
             completedTask(taskDto, applicationNo);
@@ -907,16 +910,12 @@ public class InsRepServiceImpl implements InsRepService {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-
-
         log.info(StringUtil.changeForLog("taskDtos ===================>>>>>" + taskDtos.size()));
         taskService.createTasks(taskDtos);
         log.info(StringUtil.changeForLog("taskDtos ===================>>>>>Success" + taskDtos.size()));
         String data = applicationClient.getBeData(appGrpIds).getEntity();
         ApplicationListFileDto applicationListDto = JsonUtil.parseToObject(data, ApplicationListFileDto.class);
         log.info(StringUtil.changeForLog("applicationGroupId ===================>>>>>Success" + applicationListDto.getApplicationGroup().get(0).getId()));
-
-
         //eic save fe data
         //applicationClient.saveFeData(applicationListDto);
     }
@@ -937,7 +936,11 @@ public class InsRepServiceImpl implements InsRepService {
 
     private ApplicationDto updateApplicaitonStatus(ApplicationDto applicationDto, String appStatus) {
         applicationDto.setStatus(appStatus);
-        applicationService.updateFEApplicaiton(applicationDto);
+        try{
+            applicationService.updateFEApplicaiton(applicationDto);
+        }catch (Exception e){
+            log.info(StringUtil.changeForLog("========================eic error===================="));
+        }
         return updateApplicaiton(applicationDto);
     }
 
@@ -981,9 +984,14 @@ public class InsRepServiceImpl implements InsRepService {
     private List<TaskDto> prepareTaskToAo1(TaskDto taskDto, ApplicationDto applicationDto, HcsaSvcStageWorkingGroupDto dto) throws FeignException {
         String appNo = applicationDto.getApplicationNo();
         String userId = null;
-        Set<String> inspectors = taskService.getInspectiors(appNo, TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1, RoleConsts.USER_ROLE_AO1);
-        if (!inspectors.isEmpty()) {
-            userId = inspectors.iterator().next();
+        Set<String> ao1Report = taskService.getInspectiors(appNo, TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1, RoleConsts.USER_ROLE_AO1);
+        Set<String> ao1Email = taskService.getInspectiors(appNo, TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL, RoleConsts.USER_ROLE_AO1);
+        if (!ao1Report.isEmpty()) {
+            userId = ao1Report.iterator().next();
+            taskDto.setUserId(userId);
+        }
+        if (!ao1Email.isEmpty()) {
+            userId = ao1Email.iterator().next();
             taskDto.setUserId(userId);
         }
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();

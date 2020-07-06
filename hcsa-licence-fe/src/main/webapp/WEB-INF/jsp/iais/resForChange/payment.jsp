@@ -27,7 +27,7 @@
                                 <br/>
                                 <h2>Payment Summary</h2>
                                 <p >
-                                    Total amount due:${dAmount}
+                                    Total amount due: ${dAmount}
                                 </p>
                                 <table class="table">
                                     <thead>

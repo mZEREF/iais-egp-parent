@@ -586,7 +586,7 @@
             $("#selfPeriod").hide();
             const value = $("#periods").find("option:selected").text();
             $("#periodValue").html(value);
-        } else {
+        } else if(val != "Others" && recommation == 'IRE003' ) {
             $("#periodValue").html('Reject');
         }
 

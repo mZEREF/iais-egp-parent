@@ -33,11 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -1172,9 +1168,10 @@ public class RequestForChangeMenuDelegator {
     public void preparePersonnelBank(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prePayment start ...."));
         Double dAmount = 0.0;
+        String amount = Formatter.formatterMoney(dAmount);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getRequestAttr(bpc.request, "AppSubmissionDto");
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
-        bpc.request.getSession().setAttribute("dAmount", "$" + dAmount);
+        bpc.request.getSession().setAttribute("dAmount",amount);
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
 

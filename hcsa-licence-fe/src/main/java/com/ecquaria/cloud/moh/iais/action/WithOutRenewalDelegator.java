@@ -290,22 +290,16 @@ public class WithOutRenewalDelegator {
             } catch (CloneNotSupportedException e) {
                 log.error(e.getMessage());
             }
-
             appSubmissionService.setRiskToDto(appSubmissionDto);
         }
-
         RenewDto renewDto = new RenewDto();
-
         String parseToJson = JsonUtil.parseToJson(appSubmissionDtoList);
         log.info(StringUtil.changeForLog("without renewal submission json info " + parseToJson));
-
         if (!IaisCommonUtils.isEmpty(serviceNames)) {
             List<HcsaServiceDto> hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(serviceNames);
             ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         }
-
         renewDto.setAppSubmissionDtos(appSubmissionDtoList);
-
         List<AppSubmissionDto> cloneAppsbumissionDtos = IaisCommonUtils.genNewArrayList();
         CopyUtil.copyMutableObjectList(appSubmissionDtoList, cloneAppsbumissionDtos);
         ParamUtil.setSessionAttr(bpc.request, "oldSubmissionDtos", (Serializable) cloneAppsbumissionDtos);
@@ -489,6 +483,7 @@ public class WithOutRenewalDelegator {
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         List<AppSubmissionDto> rfcAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
+
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             appEditSelectDto.setPremisesEdit(true);
             appEditSelectDto.setServiceEdit(false);
@@ -682,6 +677,7 @@ public class WithOutRenewalDelegator {
             }
             rfcAppSubmissionDtos.addAll(notReNewappSubmissionDtos);
         }
+        //change or update
         //rfc personnel
         AppSubmissionListDto appSubmissionListPersonnelDto = new AppSubmissionListDto();
         String submissionPersonnelId = generateIdClient.getSeqId().getEntity();

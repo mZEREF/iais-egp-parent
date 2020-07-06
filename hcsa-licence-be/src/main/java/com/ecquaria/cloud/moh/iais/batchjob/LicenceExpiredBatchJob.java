@@ -56,6 +56,7 @@ public class LicenceExpiredBatchJob {
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
         String status = ApplicationConsts.LICENCE_STATUS_ACTIVE;
+        // get expired date == today de licence
         List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
         List<LicenceDto> licenceDtosForSave = IaisCommonUtils.genNewArrayList();
         List<String> ids = IaisCommonUtils.genNewArrayList();
@@ -68,6 +69,7 @@ public class LicenceExpiredBatchJob {
                     String svcName = licenceDto.getSvcName();
                     String licenceNo = licenceDto.getLicenceNo();
                     String licenseeId = licenceDto.getLicenseeId();
+                    //shi fou you qi ta de app zai zuo
                     Map<String, Boolean> stringBooleanMap = cessationBeService.listResultCeased(ids);
                     if (stringBooleanMap.get(id)) {
                         licenceDtosForSave.add(licenceDto);
@@ -86,13 +88,13 @@ public class LicenceExpiredBatchJob {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
         for (LicenceDto licenceDto : licenceDtos) {
             String licId = licenceDto.getId();
+            //pan daun shi dou you xin de licence sheng cheng
             LicenceDto newLicDto = hcsaLicenceClient.getLicdtoByOrgId(licId).getEntity();
             if (newLicDto == null) {
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_LAPSED);
             } else {
+                if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(newLicDto.getStatus()))
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_EXPIRY);
-                newLicDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
-                updateLicenceDtos.add(newLicDto);
             }
             licenceDto.setEndDate(date);
             updateLicenceDtos.add(licenceDto);
