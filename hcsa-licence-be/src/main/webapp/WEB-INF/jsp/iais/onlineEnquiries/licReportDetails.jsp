@@ -427,7 +427,7 @@
                                                             <p>&nbsp;Date of Inspection</p>
                                                         </td>
                                                         <td class="col-xs-8">
-                                                            &nbsp;<fmt:formatDate value="${insRepDto.inspectionDate}" pattern="dd/MM/yyyy"></fmt:formatDate> <c:if test="${empty insRepDto.inspectionDate}">-</c:if>
+                                                            &nbsp;<fmt:formatDate value="${insRepDto.inspectionDate}" pattern="dd/MM/yyyy"></fmt:formatDate><c:if test="${empty insRepDto.inspectionDate}">-</c:if>
                                                         </td>
                                                     </tr>
                                                     <tr>

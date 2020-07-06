@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -14,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDt
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -465,45 +465,22 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }
 
         //get reported By
-        List<String> listUserId = IaisCommonUtils.genNewArrayList();
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos= appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNo(applicationViewDto.getApplicationDto().getApplicationNo());
-        String userId ="";
-        String wkGrpId = "";
-        for (AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto:appPremisesRoutingHistoryDtos ){
-            try {
-                if(appPremisesRoutingHistoryDto.getWrkGrpId()!=null){
-                    wkGrpId = appPremisesRoutingHistoryDto.getWrkGrpId();
-                }
-                if(appPremisesRoutingHistoryDto.getAppStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW)||appPremisesRoutingHistoryDto.getAppStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION)){
-                    userId=appPremisesRoutingHistoryDto.getActionby();
-                    break;
-                }
-            }
-            catch (NullPointerException e){
-                log.error(e.getMessage(), e);
-            }
-        }
-        String reportBy="-";
-        if(!"".equals(userId)){
-            listUserId.add(userId);
-            List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
-            reportBy = userList.get(0).getDisplayName();
-        }
 
-        listUserId.clear();
+        Set<String> inspectior = taskService.getInspectiors(applicationDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT, RoleConsts.USER_ROLE_INSPECTIOR);
+        Set<String> ao1s=taskService.getInspectiors(applicationDto.getApplicationNo(),TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1, RoleConsts.USER_ROLE_AO1);
+        List<String> iteraterInspectior= IaisCommonUtils.genNewArrayList();
+        iteraterInspectior.addAll(inspectior);
+        List<String> iteraterAo1s= IaisCommonUtils.genNewArrayList();
+        iteraterAo1s.addAll(ao1s);
         //get inspection lead
-        List<String> leadId = organizationClient.getInspectionLead(wkGrpId).getEntity();
-        listUserId.addAll(leadId);
-        List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(listUserId).getEntity();
+        List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(iteraterInspectior).getEntity();
+        String reportBy = userList.get(0).getDisplayName();
+        List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(iteraterAo1s).getEntity();
         String leadName = leadList.get(0).getDisplayName();
-        inspectionReportDto.setReportedBy(reportBy);
-        inspectionReportDto.setReportNoteBy(leadName);
-        Set<String> inspectiors = taskService.getInspectiors(applicationDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, "INSPECTOR");
-        //get inspectiors
+
+        Set<String> inspectiors = taskService.getInspectiors(applicationDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
         List<String> inspectors = IaisCommonUtils.genNewArrayList();
-        for (String inspector : inspectiors) {
-            inspectors.add(inspector);
-        }
+        inspectors.addAll(inspectiors);
         List<OrgUserDto> inspectorList = organizationClient.retrieveOrgUserAccount(inspectors).getEntity();
         List<String> inspectorsName = IaisCommonUtils.genNewArrayList();
         for (OrgUserDto orgUserDto : inspectorList) {
@@ -511,7 +488,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             inspectorsName.add(displayName);
         }
         inspectionReportDto.setInspectors(inspectorsName);
-
+        inspectionReportDto.setReportedBy(reportBy);
+        inspectionReportDto.setReportNoteBy(leadName);
         inspectionReportDto.setServiceName(svcName);
         inspectionReportDto.setHciCode(applicationViewDto.getHciCode());
         inspectionReportDto.setHciName(appInsRepDto.getHciName());
