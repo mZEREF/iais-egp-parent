@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
@@ -104,12 +105,29 @@ public class OfficersReSchedulingDelegator {
             officersReSchedulingService.allInspectorFromGroupList(reschedulingOfficerDto, workGroupOption);
             //get Work Group Check and it's inspector, get appNo by inspector and some Filter conditions
             List<String> appNoList = officersReSchedulingService.getAppNoByInspectorAndConditions(reschedulingOfficerDto);
-
+            searchParam = getSearchParamByFilter(searchParam, appNoList);
+            QueryHelp.setMainSql("inspectionQuery", "reschedulingSearch",searchParam);
+            searchResult = officersReSchedulingService.getOfficersSearch(searchParam);
             ParamUtil.setSessionAttr(bpc.request, "workGroupOption", (Serializable) workGroupOption);
             ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
         }
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchResult", searchResult);
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchParam", searchParam);
+    }
+
+    private SearchParam getSearchParamByFilter(SearchParam searchParam, List<String> appNoList) {
+        StringBuilder sb = new StringBuilder("(");
+        for (int i = 0; i < appNoList.size(); i++) {
+            sb.append(":appNo")
+                    .append(i)
+                    .append(',');
+        }
+        String inSql = sb.substring(0, sb.length() - 1) + ")";
+        searchParam.addParam("application_no", inSql);
+        for (int i = 0; i < appNoList.size(); i++) {
+            searchParam.addFilter("appNo" + i, appNoList.get(i));
+        }
+        return searchParam;
     }
 
     /**

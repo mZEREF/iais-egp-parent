@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -22,6 +23,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -148,4 +150,7 @@ public interface InspectionTaskClient {
     @GetMapping(value = "/iais-appt-inspec-be/app-insp-corrt/{appNo}/{status}", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremInspCorrelationDto>> getAppInspCorreByAppNoStatus(@PathVariable(name = "appNo")String appNo,
                                                                                       @PathVariable(name = "status")String status);
+
+    @PostMapping(value = "/iais-appt-inspec-be/officer-rescheduling-search")
+    FeignResponseEntity<SearchResult<ReschedulingOfficerQueryDto>> officerReSchSearch(@RequestBody SearchParam searchParam);
 }

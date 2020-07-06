@@ -1,7 +1,10 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
@@ -46,4 +49,13 @@ public interface OfficersReSchedulingService {
       * @Descripation: getAppNoByInspectorAndConditions
       */
     List<String> getAppNoByInspectorAndConditions(ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/6
+      * @Param: searchParam
+      * @return: SearchResult<ReschedulingOfficerQueryDto>
+      * @Descripation: getOfficersSearch
+      */
+    SearchResult<ReschedulingOfficerQueryDto> getOfficersSearch(SearchParam searchParam);
 }
