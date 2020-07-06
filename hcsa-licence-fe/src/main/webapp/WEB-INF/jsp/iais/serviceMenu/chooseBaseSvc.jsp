@@ -133,12 +133,15 @@
         var defaultVal = '${appSvcRelatedInfoList == null || appSvcRelatedInfoList.size() == 0}';
         if(${noExistBaseLic}){
             if(defaultVal == 'true'){
-                $('.speSvcContent').each(function (v,k) {
+                $('.speSvcContent').each(function (k,v) {
                     $(this).find('.base-svc-content:eq(0) input[type="radio"]:eq(0)').prop('checked',true);
                 });
-
             }else{
-
+                $('.speSvcContent').each(function (k,v) {
+                    if( $(this).find('.form-check-input:checked').length == 0){
+                        $(this).find('.form-check-input:eq(0)').prop('checked',true);
+                    }
+                });
             }
         }else{
             if(defaultVal == 'true'){

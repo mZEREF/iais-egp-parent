@@ -541,7 +541,7 @@ public class ServiceMenuDelegator {
                     speSvcSort.add(HcsaServiceCacheHelper.getServiceById(item));
                 }
                 //spe
-                 Map<String ,String> necessaryBaseServiceList = necessaryBase(basecheckedlist,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
+                Map<String ,String> necessaryBaseServiceList = necessaryBase(basecheckedlist,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
                 List<String> extrabaselist = IaisCommonUtils.genNewArrayList();
                 extrabaselist.addAll(basecheckedlist);
                 List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedcheckedlist,allbaseService,hcsaServiceCorrelationDtoList);
@@ -568,17 +568,6 @@ public class ServiceMenuDelegator {
                         err = baseName.get(getKeyOrNull(necessaryBaseServiceList)) + " should be selected.";
                     }else{
                         for(Map.Entry<String, String> entry : necessaryBaseServiceList.entrySet()){
-                            for(List<String> relaSvcIdList:baseRelSpe.values()){
-                                for(int i =0; i<extrabaselist.size();i++){
-                                    String baseSvcId = extrabaselist.get(i);
-                                    if(relaSvcIdList.contains(baseSvcId)){
-                                        List<String> svcIds = IaisCommonUtils.genNewArrayList();
-                                        svcIds.add(baseSvcId);
-                                        extrabaselist.removeAll(svcIds);
-                                        continue;
-                                    }
-                                }
-                            }
                             err = "The chosen base service ";
                             err = err + baseName.get(extrabaselist.get(0));
                             err = err + " is not the prerequisite of ";
