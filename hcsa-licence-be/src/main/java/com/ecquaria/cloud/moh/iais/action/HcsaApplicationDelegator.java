@@ -1561,19 +1561,12 @@ public class HcsaApplicationDelegator {
                     applicationGroupDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
                     if(isAllSubmit){
-                        feAllUpdate = true;
                         //update current application status in db search result
                         updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
                         //get and set return fee
                         saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
-                        broadcastApplicationDto.setApplicationDtos(saveApplicationDtoList);
-                        broadcastApplicationDto.setRollBackApplicationDtos(saveApplicationDtoList);
-                        //update fe application status
-                        updateFeApplications(saveApplicationDtoList);
-                        //get current after set return fee application dto
-                        ApplicationDto currentApplicationDto = getCurrentApplicationDto(saveApplicationDtoList, broadcastApplicationDto.getApplicationDto().getId());
-                        //update broadcastApplicationDto
-                        broadcastApplicationDto.setApplicationDto(currentApplicationDto);
+                        //save return fee
+                        saveRejectReturnFee(saveApplicationDtoList);
                     }
                 }
             }else{
@@ -1592,9 +1585,7 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,bpc.process,submissionId);
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
-        if(broadcastApplicationDto.getApplicationDto() != null && !feAllUpdate){
-            applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
-        }
+        applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
         //appeal save return fee
 
 
@@ -1670,8 +1661,17 @@ public class HcsaApplicationDelegator {
         inboxMsgService.saveInterMessage(interMessageDto);
     }
 
-    private void appealSaveReturnFee(){
-        //ParamUtil.setSessionAttr(request,"isLateFeeAppealType",isLateFeeAppealType);
+    private void saveRejectReturnFee(List<ApplicationDto> applicationDtos){
+        //save return fee
+        for(ApplicationDto applicationDto : applicationDtos){
+            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
+                AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
+                appReturnFeeDto.setReturnAmount(applicationDto.getReturnFee());
+                appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
+                applicationService.saveAppReturnFee(appReturnFeeDto);
+            }
+        }
     }
 
     private EmailDto sendEmail(String msgId, Map<String, Object> msgInfoMap, String applicationNo, String licenseeId,String subjectSuppInfo) {
