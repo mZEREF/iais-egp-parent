@@ -1320,6 +1320,46 @@ public class HcsaApplicationDelegator {
             emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
             //send
             emailClient.sendNotification(emailDto).getEntity();
+        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
+            String mesContext = "Internal route back context";
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject("MOH IAIS – Internal Clarification for Renew Application");
+            emailDto.setSender(mailSender);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
+            //send
+            emailClient.sendNotification(emailDto).getEntity();
+        }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)){
+            String mesContext = "Internal route back context";
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject("MOH IAIS – Internal Clarification for Request for Information");
+            emailDto.setSender(mailSender);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
+            //send
+            emailClient.sendNotification(emailDto).getEntity();
+        }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+            String mesContext = "Internal route back context";
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject("MOH IAIS – Internal Clarification for Appeal Application");
+            emailDto.setSender(mailSender);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
+            //send
+            emailClient.sendNotification(emailDto).getEntity();
+        }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
+            String mesContext = "Internal route back context";
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject("MOH IAIS – Internal Clarification for Cessation Application");
+            emailDto.setSender(mailSender);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
+            //send
+            emailClient.sendNotification(emailDto).getEntity();
         }
     }
 
