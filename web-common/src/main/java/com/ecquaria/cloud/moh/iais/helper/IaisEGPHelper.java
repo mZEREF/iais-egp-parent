@@ -592,7 +592,7 @@ public final class IaisEGPHelper extends EGPHelper {
         } else {
             entity = new HttpEntity(header);
         }
-        RestTemplate restTemplate = SpringContextHelper.getContext().getBean("restTemplate", RestTemplate.class);
+        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity response = null;
         if (params != null && !params.isEmpty()) {
             response = restTemplate.exchange(url, httpMethod, entity, responseCls, params);
