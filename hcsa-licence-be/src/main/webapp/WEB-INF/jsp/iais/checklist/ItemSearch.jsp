@@ -204,8 +204,9 @@
                                 <a class="btn btn-primary next" href="javascript:void(0);"
                                    onclick="javascript: prepareClone();">Clone Checklist Item</a>
                                 <a class="btn btn-primary next" href="javascript:void(0);"
-                                   onclick="javascript: doUploadFile('checklistItem');">Upload Checklist Item</a>
-
+                                   onclick="javascript: doUploadFile('createData');">Upload Checklist Item</a>
+                                <a class="btn btn-primary next" href="javascript:void(0);"
+                                   onclick="javascript: doUploadFile('updateData');">Update Checklist Item</a>
 
 
                               </c:otherwise>

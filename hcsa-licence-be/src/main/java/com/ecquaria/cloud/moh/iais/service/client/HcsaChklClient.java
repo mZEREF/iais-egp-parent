@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ItemTemplate;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.RegulationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
@@ -92,7 +93,10 @@ public interface HcsaChklClient {
     FeignResponseEntity<Boolean> submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos);
 
     @PostMapping(path = "/iais-hcsa-checklist/item/items-upload", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> saveUploadItems(List<ChecklistItemDto> checklistItemList);
+    FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> saveUploadItems(List<ItemTemplate> checklistItemList);
+
+    @PostMapping(path = "/iais-hcsa-checklist/item/items-upload-update", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> updateUploadItems(List<ItemTemplate> checklistItemList);
 
     @PostMapping(path = "/iais-hcsa-checklist/config", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ChecklistConfigDto> submitConfig(ChecklistConfigDto checklistConfigDto);

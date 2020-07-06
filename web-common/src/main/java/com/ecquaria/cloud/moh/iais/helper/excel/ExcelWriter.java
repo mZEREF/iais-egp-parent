@@ -36,8 +36,6 @@ import java.util.Map;
  **/
 @Slf4j
 public final class ExcelWriter {
-    private static String EXCEL_TYPE_XSSF = "xlsx";
-
     /**
      * Cell color, locked status, hidden or not
      */
@@ -61,10 +59,19 @@ public final class ExcelWriter {
     public static File writerToExcel(final List<?> source, Class<?> sourceClz, String fileName) throws Exception {
         return writerToExcel(source, sourceClz, null, fileName, false, true, null, null);
     }
+
+    /**
+     * @param{file} This parameter represents an existing file
+     * @Author yichen
+     **/
     public static File writerToExcel(final List<?> source, Class<?> sourceClz, final File file, String fileName, boolean block, boolean headName) throws Exception {
         return writerToExcel(source, sourceClz, file, fileName, block, headName, null, null);
     }
 
+    /**
+     * @param{unlockCellMap} This parameter represents an columns that do not need to be locked
+     * @Author yichen
+     **/
     public static File writerToExcel(final List<?> source, Class<?> sourceClz, final File file, String fileName, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap) throws Exception {
         return writerToExcel(source, sourceClz, file, fileName, block, headName, unlockCellMap, null);
     }
@@ -134,7 +141,7 @@ public final class ExcelWriter {
         int startCellIndex = property.startRowIndex();
         int sheetAt = property.sheetAt();
         String sheetName = property.sheetName();
-        final String postFileName = FileUtils.generationFileName(fileName, EXCEL_TYPE_XSSF);
+        final String postFileName = FileUtils.generationFileName(fileName, FileUtils.EXCEL_TYPE_XSSF);
         boolean isNew = isNew(file);
 
         if (isNew){

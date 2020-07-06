@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ItemTemplate;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.RegulationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
@@ -166,7 +167,15 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
-    public FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> saveUploadItems(List<ChecklistItemDto> checklistItemList) {
+    public FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> saveUploadItems(List<ItemTemplate> checklistItemList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<IaisApiResult<List<ErrorMsgContent>>> updateUploadItems(List<ItemTemplate> checklistItemList) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

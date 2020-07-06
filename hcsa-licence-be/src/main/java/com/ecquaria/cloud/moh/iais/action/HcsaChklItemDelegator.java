@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ItemTemplate;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -133,6 +134,9 @@ public class HcsaChklItemDelegator {
     public void preUploadData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request, "switchUploadPage", "Checklist Item Upload");
+
+        String value = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        ParamUtil.setSessionAttr(request, ChecklistConstant.ITEM_UPLOAD_MODE, value);
     }
 
     /**
@@ -170,8 +174,16 @@ public class HcsaChklItemDelegator {
 
         File toFile = FileUtils.multipartFileToFile(file);
         try {
-            List<ChecklistItemDto> checklistItemDtoList = FileUtils.transformToJavaBean(toFile, ChecklistItemDto.class);
-            List<ErrorMsgContent> errorMsgContentList  = hcsaChklService.submitUploadItems(checklistItemDtoList);
+            List<ItemTemplate> itemTemplateList = FileUtils.transformToJavaBean(toFile, ItemTemplate.class);
+
+            String uploadMode = (String) ParamUtil.getSessionAttr(request, ChecklistConstant.ITEM_UPLOAD_MODE);
+            List<ErrorMsgContent> errorMsgContentList;
+            if ("createData".equals(uploadMode)){
+                errorMsgContentList = hcsaChklService.submitUploadItems(itemTemplateList);
+            }else{
+                errorMsgContentList = hcsaChklService.updateUploadItems(itemTemplateList);
+            }
+
             ChecklistHelper.replaceErrorMsgContentMasterCode(errorMsgContentList);
             FileUtils.deleteTempFile(toFile);
             ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
@@ -707,8 +719,13 @@ public class HcsaChklItemDelegator {
                     checkItemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getStatus()));
                 }
 
+                boolean blockExcel = true;
+                if (IaisCommonUtils.isEmpty(checkItemQueryDtoList)){
+                    blockExcel = false;
+                }
+
                 try {
-                    file = ExcelWriter.writerToExcel(checkItemQueryDtoList, CheckItemQueryDto.class, "Checklist_Items_Upload_Template");
+                    file = ExcelWriter.writerToExcel(checkItemQueryDtoList, CheckItemQueryDto.class, null, "Checklist_Items_Template", blockExcel, true);
                 } catch (Exception e) {
                     log.error("=======>fileHandler error >>>>>", e);
                 }

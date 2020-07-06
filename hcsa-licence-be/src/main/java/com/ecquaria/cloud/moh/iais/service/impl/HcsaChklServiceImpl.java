@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQuer
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ItemTemplate;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
@@ -111,8 +112,14 @@ public class HcsaChklServiceImpl implements HcsaChklService {
     }
 
     @Override
-    public List<ErrorMsgContent> submitUploadItems(List<ChecklistItemDto> uploadItems) {
+    public List<ErrorMsgContent> submitUploadItems(List<ItemTemplate> uploadItems) {
         IaisApiResult<List<ErrorMsgContent>> iaisApiResult = chklClient.saveUploadItems(uploadItems).getEntity();
+        return iaisApiResult.getEntity();
+    }
+
+    @Override
+    public List<ErrorMsgContent> updateUploadItems(List<ItemTemplate> updateItems) {
+        IaisApiResult<List<ErrorMsgContent>> iaisApiResult = chklClient.updateUploadItems(updateItems).getEntity();
         return iaisApiResult.getEntity();
     }
 
