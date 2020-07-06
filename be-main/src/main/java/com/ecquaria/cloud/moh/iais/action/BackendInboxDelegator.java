@@ -38,9 +38,11 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.RoleHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
@@ -93,6 +95,11 @@ public class BackendInboxDelegator {
     @Autowired
     private HcsaConfigMainClient hcsaConfigMainClient;
 
+    @Autowired
+    private EmailHelper emailHelper;
+
+    @Autowired
+    private RoleHelper roleHelper;
     //    private String application_no;
 //    private String application_type;
 //    private String application_status;
@@ -375,8 +382,20 @@ public class BackendInboxDelegator {
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
+        String decision = ApplicationConsts.PROCESSING_DECISION_VERIFIED;
+
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)){
+            if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
+                decision = InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT;
+            }else{
+                decision = ApplicationConsts.PROCESSING_DECISION_VERIFIED;
+            }
+        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+            decision = ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL;
+        }
+
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
-                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,"approval",taskDto.getRoleId());
+                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,decision,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
