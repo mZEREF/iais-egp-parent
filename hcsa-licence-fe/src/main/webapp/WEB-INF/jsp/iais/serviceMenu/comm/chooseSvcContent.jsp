@@ -7,6 +7,15 @@
         </h3>
     </div>
 </div>
+<c:forEach var="errMSg" items="${errList}" >
+    <div class="row">
+        <div class="col-xs-12 col-md-3">
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <span class="error-msg">${errMSg}</span>
+        </div>
+    </div>
+</c:forEach>
 <div class="row">
     <div class="col-xs-12 col-md-3">
     </div>

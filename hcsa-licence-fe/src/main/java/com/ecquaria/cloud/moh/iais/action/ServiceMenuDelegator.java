@@ -65,6 +65,7 @@ public class ServiceMenuDelegator {
     private static final String CHOOSE_ALIGN = "chooseAlign";
     private static final String CHOOSE_LICENCE = "chooseLic";
     private static final String ERROR_ATTR = "err";
+    private static final String ERROR_ATTR_LIST = "errList";
     private static final String BACK_ATTR = "back";
     private static final String NEXT = "next";
 
@@ -522,17 +523,17 @@ public class ServiceMenuDelegator {
                 baseSvcSort.add(HcsaServiceCacheHelper.getServiceById(item));
             }
             //base
-            Map<String ,String> specifiedName = IaisCommonUtils.genNewHashMap();
-            Map<String ,String> baseName = IaisCommonUtils.genNewHashMap();
-
-            for (HcsaServiceDto item:allbaseService
-                    ) {
-                baseName.put(item.getId(),item.getSvcName());
-            }
-            for (HcsaServiceDto item:allspecifiedService
-                    ) {
-                specifiedName.put(item.getId(),item.getSvcName());
-            }
+//            Map<String ,String> specifiedName = IaisCommonUtils.genNewHashMap();
+//            Map<String ,String> baseName = IaisCommonUtils.genNewHashMap();
+//
+//            for (HcsaServiceDto item:allbaseService
+//                    ) {
+//                baseName.put(item.getId(),item.getSvcName());
+//            }
+//            for (HcsaServiceDto item:allspecifiedService
+//                    ) {
+//                specifiedName.put(item.getId(),item.getSvcName());
+//            }
 
             if(sepcifiedchk != null){
                 List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
@@ -540,51 +541,137 @@ public class ServiceMenuDelegator {
                     sepcifiedcheckedlist.add(item);
                     speSvcSort.add(HcsaServiceCacheHelper.getServiceById(item));
                 }
-                //spe
-                Map<String ,String> necessaryBaseServiceList = necessaryBase(basecheckedlist,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
-                List<String> extrabaselist = IaisCommonUtils.genNewArrayList();
-                extrabaselist.addAll(basecheckedlist);
-                List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedcheckedlist,allbaseService,hcsaServiceCorrelationDtoList);
-                List<String> removeNecessary = IaisCommonUtils.genNewArrayList();
-                for (String extra: extrabaselist
-                        ) {
-                    for (HcsaServiceDto hc:hcsaServiceDtosMap
-                            ) {
-                        if(extra.equals(hc.getId())){
-                            removeNecessary.add(extra);
+                List<String> svcNameList = IaisCommonUtils.genNewArrayList();
+                //specified id,base name List
+                Map<String,List<String>> baseAlignSpec = IaisCommonUtils.genNewHashMap();
+                for(HcsaServiceCorrelationDto hcsaServiceCorrelationDto:hcsaServiceCorrelationDtoList){
+                    String specSvcId = hcsaServiceCorrelationDto.getSpecifiedSvcId();
+                    String baseSvcId = hcsaServiceCorrelationDto.getBaseSvcId();
+                    if(sepcifiedcheckedlist.contains(specSvcId)){
+                        List<String> baseSvcNameList = baseAlignSpec.get(specSvcId);
+                        if(IaisCommonUtils.isEmpty(baseSvcNameList)){
+                            baseSvcNameList = IaisCommonUtils.genNewArrayList();
                         }
+                        String baseSvcName = HcsaServiceCacheHelper.getServiceById(baseSvcId).getSvcName();
+                        baseSvcNameList.add(baseSvcName);
+                        baseAlignSpec.put(specSvcId,baseSvcNameList);
+                        svcNameList.add(baseSvcName);
                     }
                 }
-                List<String> allBaseSvcId = IaisCommonUtils.genNewArrayList();
-                for(HcsaServiceDto hcsaServiceDto:allbaseService){
-                    allBaseSvcId.add(hcsaServiceDto.getId());
+                String licenseeId = "";
+                LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+                if(loginContext != null){
+                    licenseeId = loginContext.getLicenseeId();
                 }
-                Map<String,List<String>> baseRelSpe = baseRelSpe(allBaseSvcId,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
-                extrabaselist.removeAll(removeNecessary);
-                if(necessaryBaseServiceList.size() > 0){
-                    //no match
-                    nextstep = currentPage;
-                    if(extrabaselist.size() == 0){
-                        err = baseName.get(getKeyOrNull(necessaryBaseServiceList)) + " should be selected.";
-                    }else{
-                        for(Map.Entry<String, String> entry : necessaryBaseServiceList.entrySet()){
-                            err = "The chosen base service ";
-                            err = err + baseName.get(extrabaselist.get(0));
-                            err = err + " is not the prerequisite of ";
-                            err = err + specifiedName.get(entry.getValue()) + ".";
+                List<AppAlignLicQueryDto> appAlignLicQueryDtos = appSubmissionService.getAppAlignLicQueryDto(licenseeId,svcNameList);
+                if(!IaisCommonUtils.isEmpty(appAlignLicQueryDtos)){
+                    boolean hasExistBase = false;
+                    for(AppAlignLicQueryDto appAlignLicQueryDto:appAlignLicQueryDtos){
+                        if(baseAlignSpec.size() == 0){
+                            hasExistBase = true;
                             break;
                         }
+                        baseAlignSpec.forEach((k,v)->{
+                            if(!IaisCommonUtils.isEmpty(v) && v.contains(appAlignLicQueryDto.getSvcName())){
+                                baseAlignSpec.remove(k);
+                                return;
+                            }
+                        });
                     }
-                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
-                }else{
-                    if (baseRelSpe.size() == 0){
-                        nextstep = currentPage;
-                        err = "There is no base service in specified services.";
-                        ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
-                    }else{
+                    if(hasExistBase){
                         nextstep = CHOOSE_BASE_SVC;
+                    }else{
+                        nextstep = currentPage;
+                        List<String> errMsgList = IaisCommonUtils.genNewArrayList();
+                        for(String specSvcId:baseAlignSpec.keySet()){
+                            String specSvcName =  HcsaServiceCacheHelper.getServiceById(specSvcId).getSvcName();
+                            String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
+                            errMsg = errMsg.replace("<service name>",specSvcName);
+                            String baseNameStr = baseAlignSpec.get(specSvcId).stream().collect(Collectors.joining(","));
+                            errMsg = errMsg.replace("<base service name>",baseNameStr);
+                            errMsgList.add(errMsg);
+                        }
+                        ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR_LIST, errMsgList);
+                    }
+                }else{
+                    //check align whether correct
+                    List<String> errMsgList = IaisCommonUtils.genNewArrayList();
+//                    String specSvcName = "";
+                    boolean flag = true;
+                    for(String specSvcId:baseAlignSpec.keySet()){
+                        List<String> baseSvcNameList = baseAlignSpec.get(specSvcId);
+                        if(!IaisCommonUtils.isEmpty(baseSvcNameList)){
+                            int i = 0;
+                            for(String baseSvcId:basechks){
+                                String baseSvcName = HcsaServiceCacheHelper.getServiceById(baseSvcId).getSvcName();
+                                if(baseSvcNameList.contains(baseSvcName)){
+                                    break;
+                                }
+                                if(i == basechks.length-1){
+                                    flag = false;
+                                    String specSvcName = HcsaServiceCacheHelper.getServiceById(specSvcId).getSvcName();
+                                    String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
+                                    errMsg =  errMsg.replace("<service name>",specSvcName);
+                                    String baseNameStr = baseSvcNameList.stream().collect(Collectors.joining(","));
+                                    errMsg = errMsg.replace("<base service name>",baseNameStr);
+                                    errMsgList.add(errMsg);
+                                }
+                                i++;
+                            }
+                        }
+                    }
+                    if(flag){
+                        nextstep = CHOOSE_BASE_SVC;
+                    }else{
+                        nextstep = currentPage;
+                        ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR_LIST, errMsgList);
                     }
                 }
+                //spe
+//                Map<String ,String> necessaryBaseServiceList = necessaryBase(basecheckedlist,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
+//                List<String> extrabaselist = IaisCommonUtils.genNewArrayList();
+//                extrabaselist.addAll(basecheckedlist);
+//                List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedcheckedlist,allbaseService,hcsaServiceCorrelationDtoList);
+//                List<String> removeNecessary = IaisCommonUtils.genNewArrayList();
+//                for (String extra: extrabaselist
+//                        ) {
+//                    for (HcsaServiceDto hc:hcsaServiceDtosMap
+//                            ) {
+//                        if(extra.equals(hc.getId())){
+//                            removeNecessary.add(extra);
+//                        }
+//                    }
+//                }
+//                List<String> allBaseSvcId = IaisCommonUtils.genNewArrayList();
+//                for(HcsaServiceDto hcsaServiceDto:allbaseService){
+//                    allBaseSvcId.add(hcsaServiceDto.getId());
+//                }
+//                Map<String,List<String>> baseRelSpe = baseRelSpe(allBaseSvcId,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
+//                extrabaselist.removeAll(removeNecessary);
+//                if(necessaryBaseServiceList.size() > 0){
+//                    //no match
+//                    nextstep = currentPage;
+//                    if(extrabaselist.size() == 0){
+//                        err = baseName.get(getKeyOrNull(necessaryBaseServiceList)) + " should be selected.";
+//                    }else{
+//                        for(Map.Entry<String, String> entry : necessaryBaseServiceList.entrySet()){
+//                            err = "The chosen base service ";
+//                            err = err + baseName.get(extrabaselist.get(0));
+//                            err = err + " is not the prerequisite of ";
+//                            err = err + specifiedName.get(entry.getValue()) + ".";
+//                            break;
+//                        }
+//                    }
+//                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+//                }else{
+//                    if (baseRelSpe.size() == 0){
+//                        nextstep = currentPage;
+//                        err = "There is no base service in specified services.";
+//                        ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+//                    }else{
+//                        nextstep = CHOOSE_BASE_SVC;
+//                    }
+//                }
             }else{
                 //new app
                 nextstep = CHOOSE_ALIGN;
