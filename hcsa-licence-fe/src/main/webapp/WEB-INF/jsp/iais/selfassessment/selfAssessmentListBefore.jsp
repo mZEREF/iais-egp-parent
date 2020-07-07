@@ -69,7 +69,7 @@
                         </div>
                         <div class="application-tab-footer">
 
-                            <c:if test="${!selfDeclAction eq 'rfi'}">
+                            <c:if test="${selfDeclAction eq 'new'}">
                                 <iais:action style="text-align:left;">
                                     <a  id="backLastPageId" ><em class="fa fa-angle-left"> </em> Back</a>
                                 </iais:action>
