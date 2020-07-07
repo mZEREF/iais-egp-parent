@@ -210,6 +210,11 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         return appNoList;
     }
 
+    @Override
+    public ApplicationDto getApplicationByAppNo(String applicationNo) {
+        return applicationClient.getAppByNo(applicationNo).getEntity();
+    }
+
     private List<String> getAppNoByGroup(Map<String, Map<String, String>> groupCheckUserIdMap, String workGroupCheck,
                                          Map<String, List<String>> inspectorAppNoMap, List<String> appNoList) {
         Map<String, String> checkUserId = groupCheckUserIdMap.get(workGroupCheck);

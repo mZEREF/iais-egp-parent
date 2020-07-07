@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -171,6 +172,13 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingStep(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingStep start ...."));
+        ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        if("choose".equals(actionValue)){
+            String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+            ApplicationDto applicationDto = officersReSchedulingService.getApplicationByAppNo(applicationNo);
+        }
+        ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
     }
 
     /**
@@ -183,12 +191,12 @@ public class OfficersReSchedulingDelegator {
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingSearch start ...."));
         SearchParam searchParam = getSearchParam(bpc, true);
         ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
-        List<SelectOption> workGroupOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "workGroupOption");
         String workGroupCheck = ParamUtil.getRequestString(bpc.request, "reSchInspWorkGroup");
         String inspectorCheck = ParamUtil.getRequestString(bpc.request, "inspectorName" + workGroupCheck);
         List<String> appNoList = officersReSchedulingService.appNoListByGroupAndUserCheck(reschedulingOfficerDto, workGroupCheck, inspectorCheck);
         searchParam = getSearchParamByFilter(searchParam, appNoList);
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
     }
 
     /**
@@ -231,6 +239,7 @@ public class OfficersReSchedulingDelegator {
 
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchResult", searchResult);
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
     }
 
     /**

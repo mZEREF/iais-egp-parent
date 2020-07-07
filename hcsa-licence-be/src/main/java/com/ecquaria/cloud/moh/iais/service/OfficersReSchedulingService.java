@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
@@ -76,4 +77,13 @@ public interface OfficersReSchedulingService {
       * @Descripation: appNoListByGroupAndUserCheck
       */
     List<String> appNoListByGroupAndUserCheck(ReschedulingOfficerDto reschedulingOfficerDto, String workGroupCheck, String inspectorCheck);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/7
+      * @Param: applicationNo
+      * @return: ApplicationDto
+      * @Descripation: getApplicationByAppNo
+      */
+    ApplicationDto getApplicationByAppNo(String applicationNo);
 }
