@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -177,6 +178,12 @@ public class OfficersReSchedulingDelegator {
         if("choose".equals(actionValue)){
             String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
             ApplicationDto applicationDto = officersReSchedulingService.getApplicationByAppNo(applicationNo);
+            String appType = applicationDto.getApplicationType();
+            if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
+                ParamUtil.setRequestAttr(bpc.request, "mohOfficerReSchedulingType", "audit");
+            } else {
+                ParamUtil.setRequestAttr(bpc.request, "mohOfficerReSchedulingType", "assign");
+            }
         }
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
     }
