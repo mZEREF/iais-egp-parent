@@ -16,7 +16,10 @@
         <div class="row">
         <div class="col-xs-12">
             <div class="center-content">
-
+                      <br/>
+                      <br/>
+                      <br/>
+                      <br/>
                     <div class="panel panel-default">
                         <div class="panel-heading" role="tab">
                             <h4 class="panel-title">Adhoc Item</h4>
@@ -26,9 +29,9 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th width="50%">Checklist Item</th>
-                                        <th width="40%">Answer Type</th>
-                                        <th width="10%">Risk Level</th>
+                                        <th width="50%"><p>Checklist Item</p></th>
+                                        <th width="40%"><p>Answer Type</p></th>
+                                        <th width="10%"><p>Risk Level</p></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -48,7 +51,7 @@
                                     </c:forEach>
                                     </c:if>
                                        <c:if test="${empty adhocCheckListAttr || empty adhocCheckListAttr.allAdhocItem}">
-                                           <tr> <td  colspan="3" align="center"> <iais:message key="ACK018" escape="true"/> </td>></tr>
+                                           <tr>  <td  colspan="3" align="center"> <p> <iais:message key="ACK018" escape="true"/></p> </td></tr>
                                        </c:if>
                                     </tbody>
                                 </table>
