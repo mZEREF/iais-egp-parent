@@ -571,12 +571,17 @@ public class ServiceMenuDelegator {
                             hasExistBase = true;
                             break;
                         }
-                        baseAlignSpec.forEach((k,v)->{
-                            if(!IaisCommonUtils.isEmpty(v) && v.contains(appAlignLicQueryDto.getSvcName())){
-                                baseAlignSpec.remove(k);
-                                return;
+                        String removeKey = "";
+                        for(String key:baseAlignSpec.keySet()){
+                            List<String> baseNames = baseAlignSpec.get(key);
+                            if(!IaisCommonUtils.isEmpty(baseNames) && baseNames.contains(appAlignLicQueryDto.getSvcName())){
+                                removeKey = key;
+                                break;
                             }
-                        });
+                        }
+                        if(!StringUtil.isEmpty(removeKey)){
+                            baseAlignSpec.remove(removeKey);
+                        }
                     }
                     if(hasExistBase){
                         nextstep = CHOOSE_BASE_SVC;
