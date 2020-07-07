@@ -153,8 +153,9 @@
     function officerReSchedulingAssign(applicationNo) {
         showWaiting();
         $("#applicationNo").val(applicationNo);
-        $("#actionValue").val('assign');
-        officerReSchedulingSubmit('assign');
+        $("#actionValue").val('choose');
+        var mainPoolForm = document.getElementById('mainSearchForm');
+        mainPoolForm.submit();
     }
 
     function officerReSchedulingSearch() {

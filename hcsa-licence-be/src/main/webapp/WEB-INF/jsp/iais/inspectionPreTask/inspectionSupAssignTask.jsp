@@ -174,16 +174,12 @@
     }
 
     function doInspectionSupAssignTaskNext() {
-        showWaiting();
         clearErrorMsg();
-        doValidation();
-        if (getErrorMsg()) {
-            dismissWaiting();
-        } else {
-            $("[name='actionValue']").val('confirm');
-            inspectionSupAssignTaskSubmit('confirm');
-        }
+        showWaiting();
+        $("[name='actionValue']").val('confirm');
+        inspectionSupAssignTaskSubmit('confirm');
     }
+
     function inspectionSupAssignTaskSubmit(action){
         $("[name='InspectionSupSearchSwitchType']").val(action);
         var mainPoolForm = document.getElementById('mainAssignForm');
