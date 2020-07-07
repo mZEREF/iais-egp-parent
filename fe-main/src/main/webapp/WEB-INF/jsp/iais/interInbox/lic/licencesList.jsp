@@ -111,7 +111,7 @@
                         <iais:sortableHeader needSort="true" field="LICENCE_NO"
                                              value="Licence No."/>
                         <iais:sortableHeader needSort="true" field="SVC_NAME" value="Type"/>
-                        <iais:sortableHeader needSort="true" field="STATUS" value="Status" style="width:9%;"/>
+                        <iais:sortableHeader needSort="true" field="LIC_STATUS_DESC" value="Status" style="width:9%;"/>
                         <iais:sortableHeader needSort="false" field="PREMISE" value="Premises" style="width:30%;"/>
                         <iais:sortableHeader needSort="true" field="START_DATE"
                                              value="Start Date"/>

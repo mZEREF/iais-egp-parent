@@ -272,6 +272,9 @@ public class InterInboxDelegator {
         SearchParam licParam = HalpSearchResultHelper.getSearchParam(request,"inboxLic");
         licParam.addFilter("licenseeId",interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
+        List<SelectOption> licStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_LICENCE_STATUS);
+        MasterCodePair mcp_status = new MasterCodePair("status", "LIC_STATUS_DESC", licStatus);
+        licParam.addMasterCode(mcp_status);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
         List<InboxLicenceQueryDto> inboxLicenceQueryDtoList = licResult.getRows();
         inboxLicenceQueryDtoList.stream().forEach(h -> {
@@ -282,7 +285,6 @@ public class InterInboxDelegator {
                 addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
                 h.setPremisesDtoList(addressList);
             }
-
         });
         if(!StringUtil.isEmpty(licResult)){
             ParamUtil.setSessionAttr(request,InboxConst.LIC_PARAM, licParam);
