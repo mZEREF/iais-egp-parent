@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -127,8 +128,14 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
                         "hcsa-licence-web-internet", ApptAppInfoShowDto.class.getName(), JsonUtil.parseToJson(apptAppInfoShowDto));
                 String eicRefNo = eicRequestTrackingDto.getRefNo();
-                Map<String, List<ApptUserCalendarDto>> apptInspDateMap = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
+                Map<String, List<ApptUserCalendarDto>> apptInspDateMap = IaisCommonUtils.genNewHashMap();
+                List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getEntity();
+                if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
+                    for(ApptRequestDto apptRequestDto : apptRequestDtos){
+                        apptInspDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
+                    }
+                }
                 //get eic record
                 eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
                 //update eic record status
@@ -318,8 +325,14 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptNewSystemDate",
                     "hcsa-licence-web-internet", AppointmentDto.class.getName(), JsonUtil.parseToJson(appointmentDto));
             String eicRefNo = eicRequestTrackingDto.getRefNo();
-            Map<String, List<ApptUserCalendarDto>> appInspDateMap = feEicGatewayClient.getUserCalendarByUserId(appointmentDto, signature.date(), signature.authorization(),
+            Map<String, List<ApptUserCalendarDto>> appInspDateMap = IaisCommonUtils.genNewHashMap();
+            List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getUserCalendarByUserId(appointmentDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
+            if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
+                for(ApptRequestDto apptRequestDto : apptRequestDtos){
+                    appInspDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
+                }
+            }
             //get eic record
             eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
             //update eic record status
@@ -747,8 +760,14 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
                         "hcsa-licence-web-internet", ApptAppInfoShowDto.class.getName(), JsonUtil.parseToJson(apptAppInfoShowDto));
                 String eicRefNo = eicRequestTrackingDto.getRefNo();
-                Map<String, List<ApptUserCalendarDto>> apptInspDateMap = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
+                Map<String, List<ApptUserCalendarDto>> apptInspDateMap = IaisCommonUtils.genNewHashMap();
+                List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getEntity();
+                if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
+                    for(ApptRequestDto apptRequestDto : apptRequestDtos){
+                        apptInspDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
+                    }
+                }
                 //get eic record
                 eicRequestTrackingDto = appEicClient.getPendingRecordByReferenceNumber(eicRefNo).getEntity();
                 //update eic record status
