@@ -479,7 +479,10 @@ public class RequestForChangeDelegator {
             ParamUtil.setRequestAttr(bpc.request,"reason",reason);
             if(file != null && file.getSize() != 0){
                 ParamUtil.setRequestAttr(bpc.request,"fileName",file.getOriginalFilename());
-                ParamUtil.setSessionAttr(bpc.request,"file",file);
+                if(error.get("selectedFileError") == null){
+                    log.info(StringUtil.changeForLog("The selectedFileError is null."));
+                    ParamUtil.setSessionAttr(bpc.request,"file",file);
+                }
             }
             log.info(StringUtil.changeForLog("The selectCheakboxs.toString() is -->:"+ArrayUtils.toString(selectCheakboxs)));
             ParamUtil.setRequestAttr(bpc.request,"selectCheakboxs",ArrayUtils.toString(selectCheakboxs));
