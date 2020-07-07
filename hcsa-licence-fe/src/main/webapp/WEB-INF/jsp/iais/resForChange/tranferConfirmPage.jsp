@@ -73,9 +73,9 @@
               <p>
               <div class="file-upload-gp">
               <input class="hidden delFlag" type="hidden" name="commDelFlag" value="N"/>
-              <span>${fileName}</span>
+              <span>${appPremisesSpecialDocDto.docName}</span>
               <c:choose>
-                <c:when test="${fileName == '' || fileName == null }">
+                <c:when test="${appPremisesSpecialDocDto.docName == '' || appPremisesSpecialDocDto.docName == null }">
                               <span class="hidden delBtn">
                                 &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
                               </span>
