@@ -27,7 +27,7 @@ public interface InsRepService {
     void updateFollowRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     void updateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto);
     List<SelectOption> getRiskOption(ApplicationViewDto applicationViewDto);
-    String getPeriodDefault(ApplicationViewDto applicationViewDto);
+    String getPeriodDefault(ApplicationViewDto applicationViewDto,TaskDto taskDto);
     List<String> getPeriods(ApplicationViewDto applicationViewDto);
     ApplicationViewDto getApplicationViewDto (String appNo);
     ApplicationDto updateApplicaiton(ApplicationDto applicationDto);

@@ -306,7 +306,7 @@ public class InsRepServiceImpl implements InsRepService {
             inspectionReportDto.setInspectypeRemarks("-");
         }
 
-        //noted  by
+        //noted by
         List<TaskDto> entity = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
         for (TaskDto dto : entity) {
             String roleId = dto.getRoleId();
@@ -492,20 +492,38 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
-    public String getPeriodDefault(ApplicationViewDto applicationViewDto) {
+    public String getPeriodDefault(ApplicationViewDto applicationViewDto,TaskDto taskDto) {
         String defaultOption = null;
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
         List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
         String svcCode = "";
+        Double riskScore = 0d;
         if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
             for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
                 svcCode = hcsaServiceDto.getSvcCode();
             }
         }
+        if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
+            HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+            hcsaRiskScoreDto.setAppType(applicationType);
+            if (!ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)) {
+                AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
+                hcsaRiskScoreDto.setLicId(appInsRepDto.getLicenceId());
+            } else {
+                List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+                applicationDtos.add(applicationViewDto.getApplicationDto());
+                hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+            }
+            hcsaRiskScoreDto.setServiceId(serviceId);
+            HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+            riskScore = entity.getRiskScore();
+        }
         RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
         riskAcceptiionDto.setScvCode(svcCode);
+        riskAcceptiionDto.setRiskScore(riskScore);
         List<RiskAcceptiionDto> listRiskAcceptiionDto = IaisCommonUtils.genNewArrayList();
         listRiskAcceptiionDto.add(riskAcceptiionDto);
         List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();

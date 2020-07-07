@@ -102,7 +102,7 @@ public class InsReportDelegator {
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> recommendationOption = getRecommendationOption(applicationType);
         List<SelectOption> processingDe = getProcessingDecision(appStatus);
-        String periodDefault = insRepService.getPeriodDefault(applicationViewDto);
+        String periodDefault = insRepService.getPeriodDefault(applicationViewDto,taskDto);
         ParamUtil.setSessionAttr(bpc.request, "periodDefault", periodDefault);
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
