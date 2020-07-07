@@ -5,8 +5,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
-import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * @Author: Hc
@@ -19,25 +20,10 @@ public class TemplateValidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         MsgTemplateDto msgTemplateDto = (MsgTemplateDto) ParamUtil.getSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO);
-        if ("MTTP001".equals(msgTemplateDto.getMessageType())
-                ||"MTTP004".equals(msgTemplateDto.getMessageType())
-                ||"MTTP003".equals(msgTemplateDto.getMessageType())){
-            String msgType = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
-            if ("MTTP002".equals(msgType)
-                    ||"MTTP005".equals(msgType)){
-                errMap.put("msgTypeErr","This operation is not allowed");
-            }
-        }
-        if ("DEMD001".equals(msgTemplateDto.getDeliveryMode())){
-            if ("MTTP001".equals(msgTemplateDto.getMessageType())
-                    ||"MTTP004".equals(msgTemplateDto.getMessageType())
-                    ||"MTTP003".equals(msgTemplateDto.getMessageType())){
-                String deliveryMode = ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
-                if ("DEMD002".equals(deliveryMode)){
-                    errMap.put("deliveryModeErr","This operation is not allowed");
-                }
-            }
-        }
+
+//        if(msgTemplateDto.getRecipient() == null){
+//            errMap.put("toRecipientsErr", MessageUtil.replaceMessage("GENERAL_ERR0006","To Recipients","field"));
+//        }
         return errMap;
     }
 }

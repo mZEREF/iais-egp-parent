@@ -119,7 +119,7 @@ public class TemplatesDelegator {
     }
 
     private String changeStringFormat(String rec){
-        StringBuffer bccDes = new StringBuffer();
+        StringBuffer bccDes = new StringBuffer(10);
         String[] BccList = rec.split(", ");
         for (String item:BccList
         ) {
@@ -144,9 +144,11 @@ public class TemplatesDelegator {
             msgTemplateDto.setMessageType(messageType);
             msgTemplateDto.setDeliveryMode(deliveryMode);
             ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_TEMPLATE_DTO, msgTemplateDto);
+
             String recipientString = String.join("#", msgTemplateDto.getRecipient());
             String ccrecipientString = String.join("#", msgTemplateDto.getCcrecipient());
             String bccrecipientString = String.join("#", msgTemplateDto.getBccrecipient());
+
             List<SelectOption> messageTypeSelectList = IaisCommonUtils.genNewArrayList();
             messageTypeSelectList.add(new SelectOption(messageType, messageTypeTxt));
             messageTypeSelectList.add(new SelectOption("MTTP001", "Alert"));
@@ -207,6 +209,21 @@ public class TemplatesDelegator {
             if (contentSize>8000) {
                 errorMap.put("messageContent","The content should not exceed 8000 words");
             }
+            String recipientString = "";
+            String ccrecipientString = "";
+            String bccrecipientString = "";
+            if(msgTemplateDto.getRecipient() != null){
+                recipientString = String.join("#", msgTemplateDto.getRecipient());
+            }
+            if(msgTemplateDto.getCcrecipient() != null){
+                ccrecipientString = String.join("#", msgTemplateDto.getCcrecipient());
+            }
+            if(msgTemplateDto.getBccrecipient() != null){
+                bccrecipientString = String.join("#", msgTemplateDto.getBccrecipient());
+            }
+            ParamUtil.setSessionAttr(bpc.request,"recipientString", recipientString);
+            ParamUtil.setSessionAttr(bpc.request,"ccrecipientString", ccrecipientString);
+            ParamUtil.setSessionAttr(bpc.request,"bccrecipientString", bccrecipientString);
             ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
             ParamUtil.setSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO,msgTemplateDto);
@@ -296,16 +313,32 @@ public class TemplatesDelegator {
         String[] recipient = ParamUtil.getStrings(request,"recipient");
         String[] ccrecipient = ParamUtil.getStrings(request,"ccrecipient");
         String[] bccrecipient = ParamUtil.getStrings(request,"bccrecipient");
-        List<String> recipientList = Arrays.asList(recipient);
-        List<String> ccrecipientList = Arrays.asList(ccrecipient);
-        List<String> bccrecipientList = Arrays.asList(bccrecipient);
+        if(recipient == null){
+            msgTemplateDto.setRecipient(null);
+        }else{
+            List<String> recipientList = Arrays.asList(recipient);
+            msgTemplateDto.setCcrecipient(recipientList);
+        }
+        if(ccrecipient == null){
+            msgTemplateDto.setCcrecipient(null);
+        }else{
+            List<String> ccrecipientList = Arrays.asList(ccrecipient);
+            msgTemplateDto.setCcrecipient(ccrecipientList);
+        }
+        if(bccrecipient == null){
+            msgTemplateDto.setBccrecipient(null);
+        }else{
+            List<String> bccrecipientList = Arrays.asList(bccrecipient);
+            msgTemplateDto.setBccrecipient(bccrecipientList);
+        }
+
         msgTemplateDto.setTemplateName(ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME));
         msgTemplateDto.setMessageContent(ParamUtil.getString(request, MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_CONTENT));
         msgTemplateDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM)));
         msgTemplateDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO)));
-        msgTemplateDto.setRecipient(recipientList);
-        msgTemplateDto.setBccrecipient(bccrecipientList);
-        msgTemplateDto.setCcrecipient(ccrecipientList);
+
+
+
     }
 
 }
