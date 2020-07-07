@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -47,4 +48,8 @@ public interface AppPremisesRoutingHistoryMainClient {
 
     @GetMapping(value = "/iais-application-history/secondRouteBack-history/{appNo}/{status}")
     FeignResponseEntity<AppPremisesRoutingHistoryDto> getSecondRouteBackHistoryByAppNo(@PathVariable("appNo") String appNo,@PathVariable("status") String status);
+
+    @GetMapping(value = "/iais-application-history/getAppPremisesRoutingHistoryExt/{appPremRhId}/{componentName}")
+    FeignResponseEntity<AppPremisesRoutingHistoryExtDto> getAppPremisesRoutingHistoryExtByHistoryAndComponentName(@PathVariable("appPremRhId") String appPremRhId, @PathVariable("componentName") String componentName);
+
 }

@@ -11,8 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecific
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Map;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wenkang
@@ -65,4 +66,10 @@ public interface HcsaConfigMainClient {
 
     @PostMapping(path = "/iais-hcsa-fee/returnable-fee",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> returnFee(@RequestBody List<ApplicationDto> applicationDtos);
+
+    @RequestMapping(path = "/hcsa-routing/stage-service-id-type-stage", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getStageName(@RequestParam("serviceId") String serviceId,
+                                                                   @RequestParam("stageId") String stageId,
+                                                                   @RequestParam("type") String type);
+
 }

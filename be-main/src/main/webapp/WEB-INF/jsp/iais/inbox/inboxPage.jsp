@@ -132,19 +132,12 @@
                                 <c:otherwise>
                                     <c:forEach var="pool" items="${supTaskSearchResult.rows}"
                                                varStatus="status">
-                                        <tr style="display: table-row;" id="advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"
-                                        <c:if test="${pool.applicationTypeCode == 'APTY001'}">
-                                            data-isShowCheck = "1"
-                                        </c:if>
-                                                <c:if test="${pool.applicationTypeCode != 'APTY001'}">
-                                                    data-isShowCheck = "0"
-                                                </c:if>
-                                            >
+                                        <tr style="display: table-row;" id="advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}">
                                             <td><c:out value="${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"/></td>
                                             <td><p style="width: 160px;"><c:out value="${pool.applicationGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
-                                                                                                 data-toggle="collapse" aria-expanded="false"
-                                                                                                 data-target="#advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"
-                                                                                                 onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}')"></a></p></td>
+                                                                                                                       data-toggle="collapse" aria-expanded="false"
+                                                                                                                       data-target="#advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"
+                                                                                                                       onclick="getAppByGroupId('${pool.applicationGroupNo}','${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}')"></a></p></td>
                                             <td><c:out value="${pool.applicationType}"/></td>
                                             <td><c:if test="${pool.count > 1}"><c:out value="Multiple"/></c:if><c:if test="${pool.count == 1}"><c:out value="Single"/></c:if></td>
                                             <td><c:out value="${pool.submitDate}"/></td>
@@ -239,7 +232,7 @@
     })
 
     function groupAjax(applicationGroupNo, divid) {
-        dividajaxlist.push(divid);
+
         $.post(
             '/main-web/backend/appGroup.do',
             {groupno: applicationGroupNo},
@@ -256,25 +249,8 @@
                     '<table class="table application-item" style="background-color: #F3F3F3;margin-bottom:0px;" >' +
                     '<thead>' +
                     '<tr>';
-                console.log(res)
                 if (hastaskList == "true") {
-                    var isshow = false;
-                    for (var i = 0; i < res.length; i++) {
-                        if(res[i].statusCode == 'APST002' || res[i].statusCode == 'APST010' || res[i].statusCode == 'APST011' ){
-                            isshow = true;
-                        }
-                    }
-                    var isappeal = $('#advfilter' + divid).attr("data-isShowCheck");
-                    console.log(isappeal == '1')
-                    if(isappeal == '1'){
-                        isshow = false;
-                    }
-                    if(isshow){
-                        html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
-                    }else{
-                        html += '<th></th>'
-                    }
-
+                    html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
                 }
 
                 html += '<th>Application No.</th>' +
@@ -298,12 +274,7 @@
                     var address = res[i].address;
                     html += '<tr style = "color : ' + color + ';">';
                     if (hastaskList == "true") {
-                        if((res[i].statusCode == 'APST002' || res[i].statusCode == 'APST010' || res[i].statusCode == 'APST011' ) && isappeal != '1'){
-                            html += '<td><input type="checkbox" name="taskId" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
-                        }
-                        else{
-                            html += '<td></td>';
-                        }
+                        html += '<td><input type="checkbox" name="taskId" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                     }
                     html += '<td><p class="visible-xs visible-sm table-row-title">Application No.</p><p><a class="applicationNoAHref" data-href=' + url[res[i].refNo] +' data-task=' + taskList[res[i].refNo] +  '>' + res[i].applicationNo + '</a></p></td>' +
                         '<td><p class="visible-xs visible-sm table-row-title">Service</p><p>' + serviceName[res[i].serviceId] + '<p></td>' +
@@ -314,18 +285,21 @@
                         '</tr>';
                 }
                 html += '</tbody></table></div></td></tr>';
+                console.log(dividajaxlist)
+                console.log(divid)
                 $('#advfilter' + divid).after(html);
+                dividajaxlist.push(divid);
             }
         )
+
+
     }
+
     function getAppByGroupId(applicationGroupNo, divid) {
-        console.log('getAppByGroupId start....');
         if (!isInArray(dividajaxlist,divid)) {
-            console.log('getAppByGroupId isInArray...');
             groupAjax(applicationGroupNo, divid);
         } else {
             var display = $('#advfilterson' + divid).css('display');
-            console.log(display)
             if (display == 'none') {
                 $('#advfilterson' + divid).show();
             } else {
@@ -405,7 +379,6 @@
 
 
     $(document).on("click",".applicationNoAHref",function(){
-        console.log('111')
         var href = this.getAttribute("data-href");
         var task = this.getAttribute("data-task");
         $.ajax({

@@ -18,9 +18,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
@@ -50,15 +52,22 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
 import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloudfeign.FeignException;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -88,6 +97,11 @@ public class BackendInboxDelegator {
     private GenerateIdClient generateIdClient;
 
     @Autowired
+    private OrganizationMainClient organizationMainClient;
+    @Autowired
+    private AppInspectionStatusMainClient appInspectionStatusMainClient;
+
+    @Autowired
     AppPremisesRoutingHistoryMainService appPremisesRoutingHistoryService;
 
     @Autowired
@@ -97,19 +111,20 @@ public class BackendInboxDelegator {
     private HcsaConfigMainClient hcsaConfigMainClient;
 
     @Autowired
+    private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
+
+    @Autowired
     private EmailHelper emailHelper;
 
     @Autowired
     private RoleHelper roleHelper;
-    //    private String application_no;
-//    private String application_type;
-//    private String application_status;
-//    private String hci_code;
-//    private String hci_address;
-//    private String hci_name;
-//    private List<String> applicationDtoIds;
-//    private SearchParam searchParamGroup;
-//    private List<TaskDto> commPools;
+
+    @Autowired
+    private EmailClient emailClient;
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
     public void start(BaseProcessClass bpc){
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<SelectOption> selectOptionArrayList = IaisCommonUtils.genNewArrayList();
@@ -299,18 +314,39 @@ public class BackendInboxDelegator {
                 String newCorrelationId = appPremisesCorrelationDto.getId();
                 ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
                 applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                String status = applicationDto.getStatus();
                 if(("trigger").equals(action)){
                     routeToDMS(bpc,applicationViewDto,taskDto);
                     successStatus = ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS;
 
                 }else if(RoleConsts.USER_ROLE_AO1.equals(loginContext.getCurRoleId())){
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 start ...."));
-                    routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
+                    if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)){
+                        try{
+                            replay(bpc,applicationViewDto,taskDto);
+                        }catch (Exception e){
+                            log.info(e.getMessage(),e);
+                        }
+
+                    }else{
+                        routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
+                    }
+
                     successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
                 }else if(RoleConsts.USER_ROLE_AO2.equals(loginContext.getCurRoleId())){
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
-                    routingTask(bpc,HcsaConsts.ROUTING_STAGE_AO3,ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03,RoleConsts.USER_ROLE_AO3,applicationViewDto,taskDto);
+                    if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)){
+                        try{
+                            replay(bpc,applicationViewDto,taskDto);
+                        }catch (Exception e){
+                            log.info(e.getMessage(),e);
+                        }
+
+                    }else{
+                        routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO3, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03, RoleConsts.USER_ROLE_AO3,applicationViewDto,taskDto);
+                    }
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 end ...."));
                     successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
                 }else if(RoleConsts.USER_ROLE_AO3.equals(loginContext.getCurRoleId())){
@@ -356,6 +392,74 @@ public class BackendInboxDelegator {
 
     }
 
+    /**
+     * StartStep: replay
+     *
+     * @param bpc
+     * @throws
+     */
+    private void replay(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
+        log.debug(StringUtil.changeForLog("the do replay start ...."));
+        String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
+        String getHistoryStatus = applicationViewDto.getApplicationDto().getStatus();
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(getHistoryStatus)){
+            getHistoryStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+        }else if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(getHistoryStatus)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+        }
+        log.info(StringUtil.changeForLog("----------- route back historyStatus : " + getHistoryStatus + "----------"));
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.getSecondRouteBackHistoryByAppNo(
+                applicationViewDto.getApplicationDto().getApplicationNo(),getHistoryStatus);
+        String wrkGrpId=appPremisesRoutingHistoryDto.getWrkGrpId();
+        String roleId=appPremisesRoutingHistoryDto.getRoleId();
+        String stageId=appPremisesRoutingHistoryDto.getStageId();
+        String userId=appPremisesRoutingHistoryDto.getActionby();
+        String subStageId = appPremisesRoutingHistoryDto.getSubStage();
+
+        if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_ASO.equals(stageId)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
+        }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_PSO.equals(stageId)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;
+        }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS;
+        }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_AO1.equals(stageId)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;
+        }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_AO2.equals(stageId)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+        }else if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(nextStatus) && HcsaConsts.ROUTING_STAGE_AO3.equals(stageId)){
+            nextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+        }
+
+        String routeHistoryId = appPremisesRoutingHistoryDto.getId();
+        AppPremisesRoutingHistoryExtDto historyExtDto = appPremisesRoutingHistoryMainClient.getAppPremisesRoutingHistoryExtByHistoryAndComponentName(routeHistoryId, ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW).getEntity();
+        if(historyExtDto == null){
+            rollBack(bpc,applicationViewDto,stageId,nextStatus,roleId,wrkGrpId,userId,taskDto);
+        }else{
+            String componentValue = historyExtDto.getComponentValue();
+            if("N".equals(componentValue)){
+                List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),
+                        stageId,applicationViewDto.getApplicationDto().getApplicationType());
+                if(hcsaSvcRoutingStageDtoList != null){
+                    HcsaSvcRoutingStageDto nextStage = hcsaSvcRoutingStageDtoList.get(0);
+                    String stageCode = nextStage.getStageCode();
+                    String routeNextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+                    String nextStageId = HcsaConsts.ROUTING_STAGE_AO2;
+                    if(RoleConsts.USER_ROLE_AO3.equals(stageCode)){
+                        nextStageId = HcsaConsts.ROUTING_STAGE_AO3;
+                        routeNextStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+                    }
+                    routingTask(bpc,nextStageId,routeNextStatus,stageCode,applicationViewDto,taskDto);
+                }else{
+                    log.error(StringUtil.changeForLog("RoutingStageDtoList is null"));
+                }
+            }else{
+                rollBack(bpc,applicationViewDto,stageId,nextStatus,roleId,wrkGrpId,userId,taskDto);
+            }
+        }
+        log.debug(StringUtil.changeForLog("the do replay end ...."));
+    }
+
     private void routingTask(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws FeignException, CloneNotSupportedException {
 
         //get the user for this applicationNo
@@ -384,24 +488,40 @@ public class BackendInboxDelegator {
             }
         }
 
+        //appeal save return fee
+        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
+            if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                String returnFee = appPremisesRecommendationDto.getRemarks();
+                if(!StringUtil.isEmpty(returnFee)){
+                    String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
+                    AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                    appReturnFeeDto.setApplicationNo(oldApplicationNo);
+                    appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
+                    appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
+                    applicationViewService.saveAppReturnFee(appReturnFeeDto);
+                }
+            }
+        }
         //complated this task and create the history
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
+        //need change
         String decision = ApplicationConsts.PROCESSING_DECISION_VERIFIED;
+        String currentStatus = applicationDto.getStatus();
 
-        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(currentStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(currentStatus)){
             if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
                 decision = InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT;
             }else{
                 decision = ApplicationConsts.PROCESSING_DECISION_VERIFIED;
             }
-        }else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
+        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(currentStatus)){
             decision = ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL;
         }
 
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
-                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,decision,taskDto.getRoleId());
+                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,null,decision,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
@@ -439,7 +559,11 @@ public class BackendInboxDelegator {
                 }else{
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
-            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)&&!applicationDto.isFastTracking()){
+            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+                if(applicationDto.isFastTracking()){
+                    TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
+                    broadcastOrganizationDto.setCreateTask(newTaskDto);
+                }
                 List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
                 applicationDtoList = removeFastTracking(applicationDtoList);
                 boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
@@ -461,7 +585,7 @@ public class BackendInboxDelegator {
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
-                        applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,"approval",taskDto.getRoleId());
+                        applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,null,null,taskDto.getRoleId());
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }else{
                 TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
@@ -470,7 +594,7 @@ public class BackendInboxDelegator {
             //add history for next stage start
             if(!ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)&&!ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,null,
-                        taskDto.getWkGrpId(),null,null,roleId);
+                        taskDto.getWkGrpId(),null,null,null,roleId);
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }
         }else{
@@ -586,13 +710,14 @@ public class BackendInboxDelegator {
     }
 
     private AppPremisesRoutingHistoryDto getAppPremisesRoutingHistory(String appNo, String appStatus,
-                                                                      String stageId,String subStageId,String wrkGrpId, String internalRemarks,String processDecision,
+                                                                      String stageId,String subStageId,String wrkGrpId, String internalRemarks,String externalRemarks,String processDecision,
                                                                       String roleId){
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
         appPremisesRoutingHistoryDto.setApplicationNo(appNo);
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setSubStage(subStageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setExternalRemarks(externalRemarks);
         appPremisesRoutingHistoryDto.setProcessDecision(processDecision);
         appPremisesRoutingHistoryDto.setAppStatus(appStatus);
         appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
@@ -788,12 +913,13 @@ public class BackendInboxDelegator {
      * @param bpc
      * @throws
      */
-    private void routeToDMS(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws CloneNotSupportedException {
+    public void routeToDMS(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do routeToDMS start ...."));
         ApplicationDto application = applicationViewDto.getApplicationDto();
         if(application != null){
             String appNo =  application.getApplicationNo();
             log.info(StringUtil.changeForLog("The appNo is -->:"+appNo));
+            //HcsaConsts.ROUTING_STAGE_INS
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =  appPremisesRoutingHistoryService.
                     getAppPremisesRoutingHistoryForCurrentStage(appNo,"14848A70-820B-EA11-BE7D-000C29F371DC",RoleConsts.USER_ROLE_INSPECTIOR);
             if(appPremisesRoutingHistoryDto == null){
@@ -801,8 +927,8 @@ public class BackendInboxDelegator {
                         getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_ASO);
             }
             if(appPremisesRoutingHistoryDto != null){
-                rollBack(taskDto,applicationViewDto, bpc,appPremisesRoutingHistoryDto.getStageId(),ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
-                        appPremisesRoutingHistoryDto.getRoleId(),appPremisesRoutingHistoryDto.getWrkGrpId(),appPremisesRoutingHistoryDto.getActionby());
+                rollBack(bpc,applicationViewDto,appPremisesRoutingHistoryDto.getStageId(),ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS,
+                        appPremisesRoutingHistoryDto.getRoleId(),appPremisesRoutingHistoryDto.getWrkGrpId(),appPremisesRoutingHistoryDto.getActionby(),taskDto);
             }else{
                 log.error(StringUtil.changeForLog("can not get the appPremisesRoutingHistoryDto ..."));
             }
@@ -812,31 +938,89 @@ public class BackendInboxDelegator {
         log.debug(StringUtil.changeForLog("the do routeToDMS end ...."));
     }
 
-    private void rollBack(TaskDto taskDto,ApplicationViewDto applicationViewDto,BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws  CloneNotSupportedException {
-        //get the user for this applicationNo
+
+    private void rollBack(BaseProcessClass bpc, ApplicationViewDto applicationViewDto,String stageId,String appStatus,String roleId ,String wrkGpId,String userId, TaskDto taskDto) throws CloneNotSupportedException {
+        //send internal route back email
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
 
         //complated this task and create the history
+        String refNo = taskDto.getRefNo();
+        String subStageId = null;
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
+        String processDecision = ParamUtil.getString(bpc.request,"nextStage");
+        String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
+        if(!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)){
+            processDecision = nextStageReplys;
+        }
+
+        String routeBackReview = (String)ParamUtil.getSessionAttr(bpc.request,"routeBackReview");
+        if("canRouteBackReview".equals(routeBackReview)){
+            AppPremisesRoutingHistoryExtDto appPremisesRoutingHistoryExtDto = new AppPremisesRoutingHistoryExtDto();
+            appPremisesRoutingHistoryExtDto.setComponentName(ApplicationConsts.APPLICATION_ROUTE_BACK_REVIEW);
+            String[] routeBackReviews =  ParamUtil.getStrings(bpc.request,"routeBackReview");
+            if(routeBackReviews!=null){
+                appPremisesRoutingHistoryExtDto.setComponentValue("Y");
+            }else{
+                appPremisesRoutingHistoryExtDto.setComponentValue("N");
+                //route back and route task processing
+                processDecision = ApplicationConsts.PROCESSING_DECISION_ROUTE_BACK_AND_ROUTE_TASK;
+            }
+            broadcastApplicationDto.setNewTaskHistoryExt(appPremisesRoutingHistoryExtDto);
+        }
+
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),
-                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),null,null,taskDto.getRoleId());
+                applicationDto.getStatus(),taskDto.getTaskKey(),null, taskDto.getWkGrpId(),internalRemarks,null,processDecision,taskDto.getRoleId());
         broadcastApplicationDto.setComplateTaskHistory(appPremisesRoutingHistoryDto);
         //update application status
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
         applicationDto.setStatus(appStatus);
         broadcastApplicationDto.setApplicationDto(applicationDto);
+        String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
+        String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId) && !ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appStatus)){
+            taskType = TaskConsts.TASK_TYPE_INSPECTION;
+            if(RoleConsts.USER_ROLE_AO1.equals(roleId)){
+                TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT_REVIEW_AO1;
+            }else if((!RoleConsts.USER_ROLE_AO2.equals(roleId)) &&
+                    (!RoleConsts.USER_ROLE_AO3.equals(roleId)) &&
+                    (!RoleConsts.USER_ROLE_ASO.equals(roleId)) &&
+                    (!RoleConsts.USER_ROLE_PSO.equals(roleId))
+            ){
+                TaskUrl = TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT;
+            }
+            subStageId = HcsaConsts.ROUTING_STAGE_POT;
+            //update inspector status
+            updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(),InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
+        }
+        //reply inspector
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appStatus)){
+            List<TaskDto> taskDtos = organizationMainClient.getTaskByAppNoStatus(applicationDto.getApplicationNo(), TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION).getEntity();
+            taskType = taskDtos.get(0).getTaskType();
+            TaskUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
+            subStageId = HcsaConsts.ROUTING_STAGE_PRE;
+            //update inspector status
+            updateInspectionStatus(applicationViewDto.getAppPremisesCorrelationId(),InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+        }
+        //DMS go to main flow
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(appStatus)){
+            taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
+            TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+        }
 
-        TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,TaskConsts.TASK_TYPE_MAIN_FLOW,
-                taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
+        TaskDto newTaskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,taskType,
+                taskDto.getRefNo(),wrkGpId, userId,new Date(),0,TaskUrl,roleId,
                 IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastOrganizationDto.setCreateTask(newTaskDto);
 
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,null,
-                taskDto.getWkGrpId(),null,null,roleId);
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,subStageId,
+                taskDto.getWkGrpId(),null,null,null,roleId);
         broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
 
         //save the broadcast
@@ -852,6 +1036,16 @@ public class BackendInboxDelegator {
 
         //0062460 update FE  application status.
         applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
-
     }
+
+    private void updateInspectionStatus(String appPremisesCorrelationId, String status) {
+        AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusMainClient.getAppInspectionStatusByPremId(appPremisesCorrelationId).getEntity();
+        if (appInspectionStatusDto != null) {
+            appInspectionStatusDto.setStatus(status);
+            appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appInspectionStatusMainClient.update(appInspectionStatusDto);
+        }
+    }
+
+
 }

@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -248,5 +249,13 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     @Override
     public AppReturnFeeDto saveAppReturnFee(AppReturnFeeDto appReturnFeeDto) {
         return applicationClient.saveAppReturnFee(appReturnFeeDto).getEntity();
+    }
+
+    @Override
+    public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId, String type) {
+
+        return   hcsaConfigClient.getStageName(serviceId,stageId,type).getEntity();
+
+
     }
 }

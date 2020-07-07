@@ -91,5 +91,7 @@ public interface OrganizationMainClient {
     @GetMapping(value = "/iais-licensee-be/licensee-by-id/{id}")
     FeignResponseEntity<LicenseeDto> getLicenseeDtoById (@PathVariable("id") String id);
 
+    @GetMapping(value = "/iais-task/stage-task-status",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getTaskByAppNoStatus(@RequestParam("appNo") String appNo, @RequestParam("taskStatus") String taskStatus, @RequestParam("processUrl") String processUrl);
 
 }

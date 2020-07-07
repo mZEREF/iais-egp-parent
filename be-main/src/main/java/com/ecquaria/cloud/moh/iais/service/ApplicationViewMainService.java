@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 
 import java.util.List;
@@ -36,4 +37,6 @@ public interface ApplicationViewMainService {
     String getWrkGrpName(String id);
 
     AppReturnFeeDto saveAppReturnFee(AppReturnFeeDto appReturnFeeDto);
+
+    List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId, String appType);
 }

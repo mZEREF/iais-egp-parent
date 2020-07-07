@@ -162,4 +162,12 @@ public class OrganizationMainClientFallback implements OrganizationMainClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<TaskDto>> getTaskByAppNoStatus(String appNo, String taskStatus, String processUrl) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }
