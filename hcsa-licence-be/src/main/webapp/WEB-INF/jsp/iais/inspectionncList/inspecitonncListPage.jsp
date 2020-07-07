@@ -103,7 +103,7 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function doViewCheckList(){
-        $("#viewchk").val("");
+        $("#viewchk").val("viewchk");
         SOP.Crud.cfxSubmit("mainForm", "vewChkl");
     }
     function doListAhoc(){

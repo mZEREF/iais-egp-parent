@@ -210,6 +210,7 @@ public class InspectionNcCheckListDelegator {
         CheckListFileDto fileDto = new CheckListFileDto();
         fileDto.setFileName(file.getOriginalFilename());;
         ParamUtil.setSessionAttr(mulReq,CHECKLISTFILEDTO,fileDto);*/
+
         if(!StringUtil.isEmpty(viewChkFlag)){
             /*serListDto = getDataFromPage(request);
             InspectionFillCheckListDto commonDto= getCommonDataFromPage(request);
@@ -218,7 +219,11 @@ public class InspectionNcCheckListDelegator {
             ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
             ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);*/
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
-        }else{
+        }else if("listAhoc".equalsIgnoreCase(crudActionValue)){
+            serListDto = getOtherInfo(mulReq);
+            serListDto.setCheckListTab("chkList");
+            ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
+        } else{
             serListDto = getOtherInfo(mulReq);
             ParamUtil.setSessionAttr(mulReq,SERLISTDTO,serListDto);
             TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(mulReq,"taskDto");

@@ -10,6 +10,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
+
     <form method="post" id="mainForm"  action=<%=process.runtime.continueURL()%>  class="form-horizontal" >
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="valProfiles" id="valProfiles" value=""/>

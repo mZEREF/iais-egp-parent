@@ -24,12 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.ChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
-import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
-import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -78,6 +73,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     private FillUpCheckListGetAppClient uploadFileClient;
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
+    @Autowired
+    private AdhocChecklistService adhocChecklistService;
     @Value("${iais.email.sender}")
     private String mailSender;
     @Override
@@ -1721,7 +1718,14 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public  AdhocCheckListConifgDto getAdhocCheckListConifgDtoByCorId(String corId){
-        return applicationClient.getAdhocConfigByAppPremCorrId(corId).getEntity();
+        AdhocCheckListConifgDto adhocCheckListConifgDto = applicationClient.getAdhocConfigByAppPremCorrId(corId).getEntity();
+        if(adhocCheckListConifgDto == null){
+            return adhocCheckListConifgDto;
+        }
+        if(adhocCheckListConifgDto.getAllAdhocItem() == null){
+            adhocCheckListConifgDto.setAllAdhocItem(new ArrayList<>(1));
+        }
+        return adhocCheckListConifgDto;
     }
 
     @Override
@@ -1789,16 +1793,13 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 adhocCheckListConifgDto.setOldId(adhocCheckListConifgDto.getId());
                 adhocCheckListConifgDto.setId(null);
                 adhocCheckListConifgDto.setVersion(adhocCheckListConifgDto.getVersion()+1);
-                List<AdhocChecklistItemDto> allAdhocItem =  adhocCheckListConifgDto.getAllAdhocItem();
-                adhocCheckListConifgDto = applicationClient.saveAppAdhocConfig(adhocCheckListConifgDto).getEntity();
-                if(IaisCommonUtils.isEmpty(allAdhocItem)){
-                    for(AdhocChecklistItemDto adhocChecklistItemDto : allAdhocItem){
-                        adhocChecklistItemDto.setAdhocConfId(adhocCheckListConifgDto.getId());
-                        adhocChecklistItemDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                        adhocChecklistItemDto.setId(null);
-                    }
-                    applicationClient.saveAdhocItems(allAdhocItem);
-                }
+                adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
+            }else {
+                adhocCheckListConifgDto.setId(null);
+                adhocCheckListConifgDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                adhocCheckListConifgDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                adhocCheckListConifgDto.setVersion(1);
+                adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
             }
         }
     }
