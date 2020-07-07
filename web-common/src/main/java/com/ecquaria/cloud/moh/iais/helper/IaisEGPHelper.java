@@ -612,14 +612,7 @@ public final class IaisEGPHelper extends EGPHelper {
                 dateSec, authorizationSec, List.class, contentCls);
     }
 
-    /**
-     * @description: The method to call EIC gateway by rest template
-     *
-     * @author: Jinhua on 2020/7/6 11:28
-     * @param: [url, httpMethod, httpBody, params, mediaType, date, authorization, dateSec, authorizationSec, responseCls]
-     * @return: com.ecquaria.cloudfeign.FeignResponseEntity<T>
-     */
-    public static <T> FeignResponseEntity<T> callEicGatewayWithBody(String url, HttpMethod httpMethod, Object httpBody, Map<String, Object> params,
+    private static <T> FeignResponseEntity<T> callEicGatewayWithBody(String url, HttpMethod httpMethod, Object httpBody, Map<String, Object> params,
                                                                    MediaType mediaType, String date, String authorization, String dateSec,
                                                                    String authorizationSec, Class<T> responseCls, Class contentCls) {
         HttpHeaders header = getHttpHeadersForEic(mediaType, date, authorization,
