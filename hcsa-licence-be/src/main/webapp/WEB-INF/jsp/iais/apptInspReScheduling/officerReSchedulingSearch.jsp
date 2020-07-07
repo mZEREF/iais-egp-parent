@@ -41,7 +41,7 @@
                     <iais:row>
                       <iais:field value="Working Group"/>
                       <iais:value width="18">
-                          <iais:select name="reSchInspWorkGroup" options="workGroupOption" firstOption="Please Select" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
+                          <iais:select name="reSchInspWorkGroup" options="workGroupOption" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
                       </iais:value>
                     </iais:row>
                     <iais:row>

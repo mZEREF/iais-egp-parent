@@ -29,9 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -191,6 +193,50 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             }
         }
         return searchResult;
+    }
+
+    @Override
+    public List<String> appNoListByGroupAndUserCheck(ReschedulingOfficerDto reschedulingOfficerDto, String workGroupCheck, String inspectorCheck) {
+        List<String> appNoList = IaisCommonUtils.genNewArrayList();
+        Map<String, Map<String, String>> groupCheckUserIdMap = reschedulingOfficerDto.getGroupCheckUserIdMap();
+        Map<String, List<String>> inspectorAppNoMap = reschedulingOfficerDto.getInspectorAppNoMap();
+        if(groupCheckUserIdMap != null && inspectorAppNoMap != null){
+            if(!StringUtil.isEmpty(inspectorCheck)){
+                appNoList = getAppNoByInspector(groupCheckUserIdMap, workGroupCheck, inspectorAppNoMap, inspectorCheck, appNoList);
+            } else {
+                appNoList = getAppNoByGroup(groupCheckUserIdMap, workGroupCheck, inspectorAppNoMap, appNoList);
+            }
+        }
+        return appNoList;
+    }
+
+    private List<String> getAppNoByGroup(Map<String, Map<String, String>> groupCheckUserIdMap, String workGroupCheck,
+                                         Map<String, List<String>> inspectorAppNoMap, List<String> appNoList) {
+        Map<String, String> checkUserId = groupCheckUserIdMap.get(workGroupCheck);
+        if(checkUserId != null){
+            for(Map.Entry<String, String> userIdMap : checkUserId.entrySet()){
+                String userId = userIdMap.getValue();
+                if(!StringUtil.isEmpty(userId)){
+                    List<String> appNos = inspectorAppNoMap.get(userId);
+                    appNoList.addAll(appNos);
+                }
+            }
+        }
+        Set<String> appNoSet = new HashSet<>(appNoList);
+        appNoList = new ArrayList<>(appNoSet);
+        return appNoList;
+    }
+
+    private List<String> getAppNoByInspector(Map<String, Map<String, String>> groupCheckUserIdMap, String workGroupCheck,
+                                             Map<String, List<String>> inspectorAppNoMap, String inspectorCheck, List<String> appNoList) {
+        Map<String, String> checkUserId = groupCheckUserIdMap.get(workGroupCheck);
+        if(checkUserId != null){
+            String userId = checkUserId.get(inspectorCheck);
+            if(!StringUtil.isEmpty(userId)){
+                appNoList = inspectorAppNoMap.get(userId);
+            }
+        }
+        return appNoList;
     }
 
     private List<String> getServiceNameByAppNoList(List<String> applicationNos) {

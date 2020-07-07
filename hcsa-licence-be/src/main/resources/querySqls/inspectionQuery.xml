@@ -241,6 +241,7 @@
             JOIN APP_PREMISES_RECOMMENDATION T4 ON T4.APP_PREM_CORRE_ID = T2.ID AND RECOM_TYPE = 'RETYPE006'
             WHERE 1 = 1
             <#if application_no??> and T1.APPLICATION_NO IN ${application_no}</#if>
+            <#if appNo??> and T1.APPLICATION_NO = :appNo</#if>
         ]]>
     </sql>
 </sqls>

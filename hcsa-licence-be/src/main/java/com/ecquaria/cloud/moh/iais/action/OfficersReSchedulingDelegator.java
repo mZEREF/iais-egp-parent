@@ -134,18 +134,33 @@ public class OfficersReSchedulingDelegator {
     }
 
     private SearchParam getSearchParamByFilter(SearchParam searchParam, List<String> appNoList) {
-        StringBuilder sb = new StringBuilder("(");
-        for (int i = 0; i < appNoList.size(); i++) {
-            sb.append(":appNo")
-                    .append(i)
-                    .append(',');
-        }
-        String inSql = sb.substring(0, sb.length() - 1) + ")";
-        searchParam.addParam("application_no", inSql);
-        for (int i = 0; i < appNoList.size(); i++) {
-            searchParam.addFilter("appNo" + i, appNoList.get(i));
+        appNoList = removeNull(appNoList);
+        if(!IaisCommonUtils.isEmpty(appNoList)) {
+            StringBuilder sb = new StringBuilder("(");
+            for (int i = 0; i < appNoList.size(); i++) {
+                sb.append(":appNo")
+                        .append(i)
+                        .append(',');
+            }
+            String inSql = sb.substring(0, sb.length() - 1) + ")";
+            searchParam.addParam("application_no", inSql);
+            for (int i = 0; i < appNoList.size(); i++) {
+                searchParam.addFilter("appNo" + i, appNoList.get(i));
+            }
+        } else {
+            searchParam.addFilter("appNo", "0",true);
         }
         return searchParam;
+    }
+
+    private List<String> removeNull(List<String> appNoList) {
+        for (int i = 0; i < appNoList.size(); i++) {
+            if(StringUtil.isEmpty(appNoList.get(i))){
+                appNoList.remove(i);
+                i--;
+            }
+        }
+        return appNoList;
     }
 
     /**
@@ -166,7 +181,14 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingSearch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingSearch start ...."));
-
+        SearchParam searchParam = getSearchParam(bpc, true);
+        ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
+        List<SelectOption> workGroupOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "workGroupOption");
+        String workGroupCheck = ParamUtil.getRequestString(bpc.request, "reSchInspWorkGroup");
+        String inspectorCheck = ParamUtil.getRequestString(bpc.request, "inspectorName" + workGroupCheck);
+        List<String> appNoList = officersReSchedulingService.appNoListByGroupAndUserCheck(reschedulingOfficerDto, workGroupCheck, inspectorCheck);
+        searchParam = getSearchParamByFilter(searchParam, appNoList);
+        ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchParam", searchParam);
     }
 
     /**

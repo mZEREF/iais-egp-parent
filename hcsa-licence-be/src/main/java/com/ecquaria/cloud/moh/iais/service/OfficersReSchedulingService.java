@@ -67,4 +67,13 @@ public interface OfficersReSchedulingService {
       * @Descripation: setInspectorsAndServices
       */
     SearchResult<ReschedulingOfficerQueryDto> setInspectorsAndServices(SearchResult<ReschedulingOfficerQueryDto> searchResult, ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/7
+      * @Param: reschedulingOfficerDto, workGroupCheck, inspectorCheck
+      * @return: List<String>
+      * @Descripation: appNoListByGroupAndUserCheck
+      */
+    List<String> appNoListByGroupAndUserCheck(ReschedulingOfficerDto reschedulingOfficerDto, String workGroupCheck, String inspectorCheck);
 }
