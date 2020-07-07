@@ -2,6 +2,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%
+  String webroot=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
+  String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
+%>
 <input style="display: none" value="${NOT_VIEW}" id="view">
 <c:set var="appEdit" value="${applicationViewDto.appEditSelectDto}"/>
 <div class="main-content">
@@ -597,6 +602,7 @@
                                         <div class="col-md-6">
                                           <div class="col-md-6">
                                             <span>${newLicenceDto.uenNo}</span>
+                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                           </div>
                                         </div>
                                       </div>
@@ -606,9 +612,9 @@
                                           Name of Licensee
                                         </div>
                                         <div class="col-md-6">
-                                          <div class="col-md-6">
+                                          <div class="col-md-6 ">
                                                 <span class="newVal " attr="${newLicenceDto.name}"><c:out value="${newLicenceDto.name}"/></span>
-
+                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                           </div>
                                           <div class="col-md-6">
                                                   <span class="oldVal " attr="${oldLicenceDto.name}" style="display: none"><c:out value="${oldLicenceDto.name}"/></span>
@@ -790,6 +796,7 @@
                                         <div class="col-md-6">
                                           <div class="col-md-6">
                                             <span class="newVal ">S8299230H</span>
+                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                           </div>
                                         </div>
                                       </div>
@@ -915,6 +922,7 @@
                                         <div class="col-md-6">
                                           <div  class="col-md-6">
                                             <span  class="newVal ">S8299230H</span>
+                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                           </div>
                                         </div>
                                       </div>
@@ -975,6 +983,7 @@
                                         <div class="col-md-6">
                                           <div class="col-md-6">
                                             <span >S4285224D</span>
+                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                           </div>
                                         </div>
                                       </div>

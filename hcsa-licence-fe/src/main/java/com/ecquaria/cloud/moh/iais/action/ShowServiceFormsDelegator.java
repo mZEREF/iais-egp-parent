@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -79,6 +80,7 @@ public class ShowServiceFormsDelegator {
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.SERVICEALLPSNCONFIGMAP, (Serializable) svcAllPsnConfig);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID, svcId);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE, actionTab);
+        log.info(StringUtil.changeForLog("serviceStepDto:"+ JsonUtil.parseToJson(serviceStepDto)));
         ParamUtil.setSessionAttr(bpc.request, SERVICESTEPDTO, (Serializable) serviceStepDto);
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.FORM_TAB,IaisEGPConstant.YES);
         log.debug(StringUtil.changeForLog("the do prepareSwitch end ...."));

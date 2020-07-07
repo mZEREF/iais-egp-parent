@@ -124,7 +124,7 @@
         if(${serviceStepDto.isStepEnd()}){
             if(${serviceStepDto.isServiceEnd()}){
                 <c:choose>
-                  <c:when test="${'APTY004' ==AppSubmissionDto.appType}">
+                  <c:when test="${'APTY004' ==AppSubmissionDto.appType && requestInformationConfig == null}">
                     submit('jump',null,null);
                   </c:when>
                   <c:otherwise>

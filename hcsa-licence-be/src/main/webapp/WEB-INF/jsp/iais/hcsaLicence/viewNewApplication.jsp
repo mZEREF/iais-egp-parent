@@ -13,7 +13,6 @@
   p {
     margin: 0 0 0px;
   }
-
 </style>
 <div class="panel-main-content">
   <input style="display: none" value="${NOT_VIEW}" id="view">
@@ -138,7 +137,7 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                     <div class="col-xs-6">
                       <span class="newVal " attr="${cgo.idNo}"><c:out value="${cgo.idNo}"/></span>
-
+                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                     </div>
                     <div class="col-xs-6">
                       <span class="oldVal" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}</span>
@@ -187,7 +186,7 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                     <div class="col-xs-6">
                       <span class="newVal " attr="${cgo.profRegNo}"><c:out value="${cgo.profRegNo}"/></span>
-
+                      <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                     </div>
                     <div class="col-xs-6">
                       <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}" style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/></span>
@@ -412,7 +411,8 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                       <div class="col-xs-6">
                         <span class="newVal " attr="${po.idNo}"><c:out value="${po.idNo}"/></span>
-                      </div>
+                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                    </div>
                       <div class="col-xs-6">
                         <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}</span>
                       </div>
@@ -927,7 +927,8 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                       <div class="col-xs-6">
                         <span class="newVal " attr="${appSvcMedAlertPerson.idNo}"><c:out value="${appSvcMedAlertPerson.idNo}"/></span>
-                      </div>
+                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                    </div>
                       <div class="col-xs-6">
                         <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}</span>
                       </div>
@@ -1072,10 +1073,38 @@
 <script type="text/javascript">
     $(document).ready(function(){
         var svcId = "";
-
+    <c:if test="${rfi=='rfi'}">
+        $('.panel-body').attr("style","background-color: #999999;");
+        </c:if>
     });
 
-
+    $('#primaryCheckbox').click(function () {
+      let jQuery = $(this).closest("div.panel-body");
+        let jQuery1 = jQuery.attr("style");
+        if(""==jQuery1){
+            jQuery.attr("style","background-color: #999999;");
+        }else {
+            jQuery.attr("style","");
+        }
+    });
+    $("#serviceCheckbox").click(function () {
+        let jQuery = $(this).closest("div.panel-body");
+        let jQuery1 = jQuery.attr("style");
+        if(""==jQuery1){
+            jQuery.attr("style","background-color: #999999;");
+        }else {
+            jQuery.attr("style","");
+        }
+    });
+    $("#premisesCheckbox").click(function () {
+        let jQuery = $(this).closest("div.panel-body");
+        let jQuery1 = jQuery.attr("style");
+        if(""==jQuery1){
+            jQuery.attr("style","background-color: #999999;");
+        }else {
+            jQuery.attr("style","");
+        }
+    });
     hightLightChangeVal('newVal', 'oldVal');
     function hightLightChangeVal(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {

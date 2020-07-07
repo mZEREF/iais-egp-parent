@@ -471,6 +471,8 @@ public class WithOutRenewalDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         List<AppSubmissionDto> rfcAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
+        List<AppSubmissionDto> autoAppSubmissionDtos=IaisCommonUtils.genNewArrayList();
+        List<AppSubmissionDto> noAutoAppSubmissionDtos=IaisCommonUtils.genNewArrayList();
         List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
 
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
@@ -569,7 +571,11 @@ public class WithOutRenewalDelegator {
                                 appSubmissionDtoByLicenceId.setAppGrpPrimaryDocDtos(null);
                                 RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
                                 requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
-                                rfcAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
+                                if(appSubmissionDtoByLicenceId.isAutoRfc()){
+                                    autoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
+                                }else {
+                                    noAutoAppSubmissionDtos.add(appSubmissionDtoByLicenceId);
+                                }
                             }
                         }
                     }
@@ -740,7 +746,20 @@ public class WithOutRenewalDelegator {
         }
         appFeeDetailsDto.setApplicationNo(appGrpNo + "-01");
         appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);
+        appSubmissionDtos1.addAll(noAutoAppSubmissionDtos);
         appSubmissionDtos1.addAll(rfcAppSubmissionDtos);
+     /*   if(!autoAppSubmissionDtos.isEmpty()){
+            AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
+            String autoSubmissionId = generateIdClient.getSeqId().getEntity();
+            Long auto = System.currentTimeMillis();
+            List<AppSubmissionDto> saveutoAppSubmissionDto = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoAppSubmissionDtos);
+            autoAppSubmissionListDto.setEventRefNo(auto.toString());
+            autoAppSubmissionListDto.setAppSubmissionDtos(saveutoAppSubmissionDto);
+            eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto,autoSubmissionId,EventBusConsts.SERVICE_NAME_APPSUBMIT,
+                    EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);
+        }*/
+
+
         List<AppSubmissionDto> appSubmissionDtos3 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos1);
         appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos3);
         appSubmissionListDto.setEventRefNo(l.toString());
@@ -829,7 +848,7 @@ public class WithOutRenewalDelegator {
             renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);
             renewDto.getAppSubmissionDtos().get(0).setEffectiveDateStr(renewEffectiveDate);
         }
-        if (renewDto != null) {
+      /*  if (renewDto != null) {
             List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -866,7 +885,7 @@ public class WithOutRenewalDelegator {
                     }
                 }
             }
-        }
+        }*/
         //go page3
         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
     }

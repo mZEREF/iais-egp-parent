@@ -3370,7 +3370,9 @@ public class NewApplicationDelegator {
         log.info(sB.toString());
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
         doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
+        log.info(JsonUtil.parseToJson(errorMap)+"doSvcDis");
         doSvcDisdolabory(errorMap,appSvcDisciplineAllocationDtoList,appSvcLaboratoryDisciplinesDtoList,serviceId,sB);
+        log.info(JsonUtil.parseToJson(errorMap)+"doSvcDisdolabory");
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
         Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList(),licPersonMap);
        log.info(JsonUtil.parseToJson(govenMap));
@@ -3529,6 +3531,7 @@ public class NewApplicationDelegator {
                 for(HcsaSvcPersonnelDto every:hcsaSvcPersonnelDtos){
                     String psnType = every.getPsnType();
                     if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)){
+                        log.info("PERSONNEL_PSN_TYPE_CGO null");
                         sB.append(serviceId);
                         return;
                     }
@@ -3586,7 +3589,7 @@ public class NewApplicationDelegator {
             for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : list){
                 String idNo = appSvcDisciplineAllocationDto.getIdNo();
                 if(StringUtil.isEmpty(idNo)){
-                    map.put("error","error");
+                    map.put("idNo","idNo empty");
                     sB.append(serviceId);
                     return;
                 }
@@ -3605,12 +3608,12 @@ public class NewApplicationDelegator {
 
             if(appSvcChckListDtoList!=null){
                 if(appSvcDislist==null){
-                    map.put("error","error");
+                    map.put("appSvcDislist","appSvcDislist null");
                     sB.append(serviceId);
                     return;
                 }else {
                     if( appSvcChckListDtoList.size()!=appSvcDislist.size()){
-                        map.put("error","error");
+                        map.put("appSvcChckListDtoListsize","size");
                         sB.append(serviceId);
                         return;
                     }
