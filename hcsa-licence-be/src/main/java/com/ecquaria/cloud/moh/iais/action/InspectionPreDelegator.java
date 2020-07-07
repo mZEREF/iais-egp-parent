@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import freemarker.template.TemplateException;
@@ -63,12 +64,16 @@ public class InspectionPreDelegator {
     private ApplicationViewService applicationViewService;
 
     @Autowired
-    private InspectionPreDelegator(InspectionPreTaskService inspectionPreTaskService, TaskService taskService,
-                                   AdhocChecklistService adhocChecklistService, ApplicationViewService applicationViewService){
+    private FillupChklistService fillupChklistService;
+
+    @Autowired
+    private InspectionPreDelegator(InspectionPreTaskService inspectionPreTaskService, TaskService taskService, AdhocChecklistService adhocChecklistService,
+                                   ApplicationViewService applicationViewService, FillupChklistService fillupChklistService){
         this.inspectionPreTaskService = inspectionPreTaskService;
         this.taskService = taskService;
         this.adhocChecklistService = adhocChecklistService;
         this.applicationViewService = applicationViewService;
+        this.fillupChklistService = fillupChklistService;
     }
 
     /**
@@ -319,6 +324,8 @@ public class InspectionPreDelegator {
         }
         if(inspectionChecklist == null){
             inspectionChecklist = adhocChecklistService.getInspectionChecklist((applicationDto));
+            ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
+            fillupChklistService.sendModifiedChecklistEmailToAOStage(applicationViewDto);
         }
         inspectionPreTaskService.routingTask(taskDto, inspectionPreTaskDto.getReMarks(), inspectionChecklist);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
@@ -341,6 +348,8 @@ public class InspectionPreDelegator {
         AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
         if(adhocCheckListConifgDto != null){
             adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
+            ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
+            fillupChklistService.sendModifiedChecklistEmailToAOStage(applicationViewDto);
         }
         inspectionPreTaskService.routingBack(taskDto, inspectionPreTaskDto, loginContext, premCheckItems);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
@@ -361,6 +370,8 @@ public class InspectionPreDelegator {
         AdhocCheckListConifgDto adhocCheckListConifgDto = (AdhocCheckListConifgDto) ParamUtil.getSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR);
         if(adhocCheckListConifgDto != null){
             adhocChecklistService.saveAdhocChecklist(adhocCheckListConifgDto);
+            ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
+            fillupChklistService.sendModifiedChecklistEmailToAOStage(applicationViewDto);
         }
         inspectionPreTaskService.routingAsoPsoBack(taskDto, inspectionPreTaskDto, loginContext);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
