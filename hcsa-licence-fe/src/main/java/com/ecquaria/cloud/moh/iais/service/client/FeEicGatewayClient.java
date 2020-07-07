@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
@@ -123,14 +124,18 @@ public class FeEicGatewayClient {
                                              String date, String authorization, String dateSec, String authorizationSec) {
         Map<String, Class> tranMap = IaisCommonUtils.genNewHashMap(1);
         tranMap.put("userClandars", ApptUserCalendarDto.class);
+        tranMap.put("startSlot", Date.class);
+        tranMap.put("endSlot", Date.class);
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-reschedule-appt", HttpMethod.POST, appointmentDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptRequestDto.class, tranMap);
     }
 
     public FeignResponseEntity<List> getAppointmentByApptRefNo(List<String> apptRefNos,
                                                                                String date, String authorization, String dateSec, String authorizationSec) {
-        Map<String, Class> tranMap = IaisCommonUtils.genNewHashMap(1);
+        Map<String, Class> tranMap = IaisCommonUtils.genNewHashMap(3);
         tranMap.put("userClandars", ApptUserCalendarDto.class);
+        tranMap.put("startSlot", Date.class);
+        tranMap.put("endSlot", Date.class);
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-appt-refno", HttpMethod.POST, apptRefNos,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptRequestDto.class, tranMap);
     }
