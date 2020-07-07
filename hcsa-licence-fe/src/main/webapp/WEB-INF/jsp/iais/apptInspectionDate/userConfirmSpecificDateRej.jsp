@@ -28,7 +28,7 @@
                 </div>
                 <iais:row>
                   <iais:value width="7">
-                    <p><label>The appointment date has been reject.</label></p>
+                    <p><label>The appointment date has been rejected.</label></p>
                   </iais:value>
                 </iais:row>
                 <iais:action >
