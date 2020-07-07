@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -120,14 +121,18 @@ public class FeEicGatewayClient {
 
     public FeignResponseEntity<List> getUserCalendarByUserId(AppointmentDto appointmentDto,
                                              String date, String authorization, String dateSec, String authorizationSec) {
+        Map<String, Class> tranMap = IaisCommonUtils.genNewHashMap(1);
+        tranMap.put("userClandars", ApptUserCalendarDto.class);
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-reschedule-appt", HttpMethod.POST, appointmentDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptRequestDto.class);
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptRequestDto.class, tranMap);
     }
 
     public FeignResponseEntity<List> getAppointmentByApptRefNo(List<String> apptRefNos,
                                                                                String date, String authorization, String dateSec, String authorizationSec) {
+        Map<String, Class> tranMap = IaisCommonUtils.genNewHashMap(1);
+        tranMap.put("userClandars", ApptUserCalendarDto.class);
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-appt-refno", HttpMethod.POST, apptRefNos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptRequestDto.class);
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptRequestDto.class, tranMap);
     }
 
     public FeignResponseEntity<ApptInspectionDateDto> apptFeDataUpdateCreateBe(ApptInspectionDateDto apptInspectionDateDto,

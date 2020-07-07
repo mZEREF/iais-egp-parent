@@ -40,6 +40,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class EmailHelper {
+	public static final String RECEIPT_TYPE_APP_GRP 				= "GRP";
+	public static final String RECEIPT_TYPE_APP 					= "APP";
+
 	@Autowired
 	private IaisSystemClient iaisSystemClient;
 	@Autowired
@@ -109,36 +112,37 @@ public class EmailHelper {
 	}
 
 	@Async("emailAsyncExecutor")
-	public void sendEmail(String templateId, Map<String, Object> templateContent,String queryCode,
-						  String reqRefNum, String applicaitonGroupId) throws IOException, TemplateException {
+	public void sendEmail(String templateId, Map<String, Object> templateContent, String queryCode,
+						  String reqRefNum, String refIdType, String refId) throws IOException, TemplateException {
 		List<String> receiptemail = IaisCommonUtils.genNewArrayList();
 		List<String> ccemail = IaisCommonUtils.genNewArrayList();
 		List<String> bccemail = IaisCommonUtils.genNewArrayList();
-		log.info(StringUtil.changeForLog("sendemail start... application is"+ applicaitonGroupId
+		log.info(StringUtil.changeForLog("sendemail start... ref type is " + StringUtil.nullToEmptyStr(refIdType)
+				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
 				+ "templateId is "+ templateId+"thread name is " + Thread.currentThread().getName()));
 
 		MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
 		EmailDto emailDto = new EmailDto();
 		String mesContext = "";
-		if (templateContent != null && !templateContent.isEmpty()){
+		if (templateContent != null && !templateContent.isEmpty()) {
 			mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
-		}else{
+		} else {
 			mesContext = msgTemplateDto.getMessageContent();
 		}
 
 		emailDto.setContent(mesContext);
 		emailDto.setSubject(msgTemplateDto.getTemplateName());
 		emailDto.setSender(this.mailSender);
-		if(msgTemplateDto.getRecipient()!= null && msgTemplateDto.getRecipient().size() > 0){
-			receiptemail = getRecript(msgTemplateDto.getRecipient(), applicaitonGroupId);
+		if (msgTemplateDto.getRecipient()!= null && msgTemplateDto.getRecipient().size() > 0) {
+			receiptemail = getRecript(msgTemplateDto.getRecipient(), refIdType, refId);
 			emailDto.setReceipts(receiptemail);
 		}
-		if(msgTemplateDto.getCcrecipient()!= null && msgTemplateDto.getCcrecipient().size() > 0){
-			ccemail = getRecript(msgTemplateDto.getCcrecipient(), applicaitonGroupId);
+		if (msgTemplateDto.getCcrecipient()!= null && msgTemplateDto.getCcrecipient().size() > 0) {
+			ccemail = getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId);
 			emailDto.setCcList(ccemail);
 		}
-		if(msgTemplateDto.getBccrecipient()!= null && msgTemplateDto.getBccrecipient().size() > 0){
-			bccemail = getRecript(msgTemplateDto.getBccrecipient(), applicaitonGroupId);
+		if (msgTemplateDto.getBccrecipient()!= null && msgTemplateDto.getBccrecipient().size() > 0) {
+			bccemail = getRecript(msgTemplateDto.getBccrecipient(), refIdType, refId);
 			emailDto.setBccList(bccemail);
 		}
 		if(queryCode != null){
@@ -157,47 +161,45 @@ public class EmailHelper {
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
 	}
 
-	public List<String> getRecript(List<String> role,String application){
+	public List<String> getRecript(List<String> role, String refType, String refId){
 		List<String> all = IaisCommonUtils.genNewArrayList();
 		List<String> organizationemail = IaisCommonUtils.genNewArrayList();
 		List<String> applicationemail = IaisCommonUtils.genNewArrayList();
 		List<String> licenceemail = IaisCommonUtils.genNewArrayList();
-		for (String item:role
-		) {
+		for (String item : role) {
 			List<String> list = Arrays.asList(item.split("-"));
-			if(list.size() > 1){
+			if (list.size() > 1) {
 				applicationemail.add(list.get(1));
-			}else{
-				if(licenceEmailString.contains(item)){
+			} else {
+				if (licenceEmailString.contains(item)) {
 					licenceemail.add(list.get(0));
-				}else{
+				} else {
 					organizationemail.add(list.get(0));
 				}
 			}
 		}
-		if (organizationemail.size() > 0){
+		if (organizationemail.size() > 0) {
 			List<String> email = IaisCommonUtils.genNewArrayList();
-			List<OrgUserDto> orgUserDtoList =taskOrganizationClient.retrieveOrgUserByroleId(organizationemail).getEntity();
+			List<OrgUserDto> orgUserDtoList = taskOrganizationClient.retrieveOrgUserByroleId(organizationemail).getEntity();
 			for (OrgUserDto item:orgUserDtoList
 			) {
 				email.add(item.getEmail());
 			}
 			all.addAll(email.stream().distinct().collect(Collectors.toList()));
 		}
-		if (applicationemail.size() > 0){
+		if (applicationemail.size() > 0) {
 			List<String> email = IaisCommonUtils.genNewArrayList();
-			List<AppGrpPersonnelDto> appGrpPersonnelDtos = taskApplicationClient.getPersonnelByRoleAndGrpid(applicationemail,application).getEntity();
+			List<AppGrpPersonnelDto> appGrpPersonnelDtos = taskApplicationClient.getPersonnelByRoleAndGrpid(applicationemail,refId).getEntity();
 			for (AppGrpPersonnelDto item:appGrpPersonnelDtos
 			) {
 				email.add(item.getEmailAddr());
 			}
 			all.addAll(email.stream().distinct().collect(Collectors.toList()));
 		}
-		if (licenceemail.size() > 0){
+		if (licenceemail.size() > 0) {
 			List<String> email = IaisCommonUtils.genNewArrayList();
 			List<KeyPersonnelDto> keyPersonnelDtos = hcsaLicenceClient.getKeyPersonnelByRole(licenceemail).getEntity();
-			for (KeyPersonnelDto item:keyPersonnelDtos
-			) {
+			for (KeyPersonnelDto item:keyPersonnelDtos ) {
 				email.add(item.getEmailAddr());
 			}
 			all.addAll(email.stream().distinct().collect(Collectors.toList()));
