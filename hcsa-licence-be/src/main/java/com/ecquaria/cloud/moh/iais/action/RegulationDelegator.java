@@ -250,16 +250,12 @@ public class RegulationDelegator {
             ChecklistHelper.replaceErrorMsgContentMasterCode(errorMsgContentList);
             ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-        }catch (IaisRuntimeException e){
+        }catch (IaisRuntimeException | BaseRuntimeException e){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             log.error(e.getMessage());
-        }catch (BaseRuntimeException e){
-            //may be will occur error when upload empty file
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-            log.error(e.getMessage());
-        }
+        }//may be will occur error when upload empty file
+
     }
 
     /**

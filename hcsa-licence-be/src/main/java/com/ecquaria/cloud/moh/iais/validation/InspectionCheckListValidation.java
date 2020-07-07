@@ -46,7 +46,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         otherinfoVad(serListDto,errMap);
         // validate file
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(request,"applicationViewDto");
-        long maxFile = applicationViewDto.getSystemMaxFileSize()*1024l;
+        long maxFile = applicationViewDto.getSystemMaxFileSize()* 1024L;
         List<String> fileTypes = Arrays.asList(applicationViewDto.getSystemFileType().split(","));
         if(serListDto!=null){
             if(serListDto.getAppPremisesSpecialDocDto() != null){

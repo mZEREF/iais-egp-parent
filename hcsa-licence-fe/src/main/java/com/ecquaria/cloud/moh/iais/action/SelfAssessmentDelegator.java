@@ -225,14 +225,14 @@ public class SelfAssessmentDelegator {
                 boolean retSubmit = selfAssessmentService.saveAllSelfAssessment(selfAssessmentList, applicationNumber).booleanValue();
                 if (retSubmit){
 
-                    log.info("retSubmit flag " , retSubmit);
+                    log.info(StringUtil.changeForLog("retSubmit flag " + retSubmit));
 
                     if (StringUtils.isEmpty(applicationNumber)){
                         String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
-                        selfAssessmentService.changePendingSelfAssMtStatus(groupId, true);
+                        selfAssessmentService.changePendingSelfAssMtStatus(groupId, Boolean.TRUE);
                     }else {
                         String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
-                        selfAssessmentService.changePendingSelfAssMtStatus(corrId, false);
+                        selfAssessmentService.changePendingSelfAssMtStatus(corrId, Boolean.FALSE);
                         ParamUtil.setSessionAttr(bpc.request, REDIRECT_TO_MAIN_FLAG, "Y");
 
                         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
@@ -260,10 +260,9 @@ public class SelfAssessmentDelegator {
     public Integer detailRange(HttpServletRequest request) {
         String selfAssessmentCorrId = ParamUtil.getMaskedString(request, SelfAssessmentConstant.SELF_ASSESSMENT_EACH_DETAIL_CORR_ID);
         Map<String, Integer> detailIndexMap = (Map<String, Integer>) ParamUtil.getSessionAttr(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_MAP);
-        int index = detailIndexMap != null
-                && detailIndexMap.containsKey(selfAssessmentCorrId)
+        return detailIndexMap != null
+                && detailIndexMap.get(selfAssessmentCorrId)!=null
                 ? detailIndexMap.get(selfAssessmentCorrId) : -1;
-        return index;
     }
 
     /**

@@ -353,8 +353,10 @@ public class RequestForChangeMenuDelegator {
             bpc.request.getSession().setAttribute("licenceDtoList", licenceDtoList);
         }
 
-        appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
-        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        if(appSubmissionDto!=null){
+            appSubmissionDto.setAppGrpPremisesDtoList(reloadPremisesDtoList);
+            appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+        }
         ParamUtil.setRequestAttr(bpc.request, RfcConst.RELOADPREMISES, reloadPremisesDtoList);
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setSessionAttr(bpc.request, "oldAppSubmissionDto", oldAppSubmissionDto);
@@ -1528,7 +1530,7 @@ public class RequestForChangeMenuDelegator {
                     if (appSvcLaboratoryDisciplinesDtoList != null) {
                         for (AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList) {
                             String premiseVal = appSvcLaboratoryDisciplinesDto.getPremiseVal();
-                            if (premisesIndexNo != premiseVal) {
+                            if (!premisesIndexNo.equals(premiseVal)) {
                                 appSvcLaboratoryDisciplinesDto.setPremiseVal(premisesIndexNo);
                             }
                         }

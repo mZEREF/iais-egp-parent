@@ -1130,10 +1130,10 @@ public class NewApplicationDelegator {
         //oldAppSubmissionDtos
         List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
         StringBuilder stringBuilder=new StringBuilder(10);
-        stringBuilder.append(appSubmissionDto.toString());
+        stringBuilder.append(appSubmissionDto);
         log.info(StringUtil.changeForLog("appSubmissionDto:"+stringBuilder.toString()));
         stringBuilder.setLength(0);
-        stringBuilder.append(oldAppSubmissionDto.toString());
+        stringBuilder.append(oldAppSubmissionDto);
         log.info(StringUtil.changeForLog("oldAppSubmissionDto:"+stringBuilder.toString()));
         Map<String, String> doComChangeMap = doComChange(appSubmissionDto,oldAppSubmissionDto);
         if(!doComChangeMap.isEmpty()){
@@ -2957,7 +2957,7 @@ public class NewApplicationDelegator {
                 premisesSel = offSitePremisesSelect[i];
             }
             String appType = appSubmissionDto.getAppType();
-            boolean newApp = !ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) && requestInformationConfig ==null;
+            boolean newApp =  requestInformationConfig ==null&&!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) ;
             if(newApp){
                 if(!StringUtil.isEmpty(premisesSel) && !premisesSel.equals("-1") && !premisesSel.equals(ApplicationConsts.NEW_PREMISES)){
                     appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premisesSel);
@@ -3824,7 +3824,7 @@ public class NewApplicationDelegator {
         if(flag){
             sB.append(serviceId);
         }
-        log.info(JsonUtil.parseToJson(oneErrorMap)+"oneErrorMap");
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(oneErrorMap)+"oneErrorMap"));
     }
 
     private void loadingCoMap( AppSubmissionDto appSubmissionDto,HttpServletRequest request){
@@ -4219,7 +4219,7 @@ public class NewApplicationDelegator {
 
     //todo:move to NewApplicationHelper
     public static Map<String, String> doValidatePremiss(BaseProcessClass bpc) {
-        log.info(StringUtil.changeForLog("the do doValidatePremiss start ...."));
+        log.info("the do doValidatePremiss start ....");
         //do validate one premiss
         List<String> list=IaisCommonUtils.genNewArrayList();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();

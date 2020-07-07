@@ -554,7 +554,7 @@ public class NewApplicationHelper {
             sBuffer.append(entry.getKey())
                     .append("=\"")
                     .append(entry.getValue())
-                    .append("\"");
+                    .append('\"');
         }
         sBuffer.append(" >");
         if(!StringUtil.isEmpty(firestOption)){

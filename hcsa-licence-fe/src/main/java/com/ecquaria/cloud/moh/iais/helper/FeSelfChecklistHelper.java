@@ -142,7 +142,7 @@ public final class FeSelfChecklistHelper {
                             selfAssessment.setSvcId(serviceInfo.getId());
                             SelfAssessmentConfig selfAssessmentConfig;
 
-                            if (selfAssessmentConfigMap.containsKey(svcCode)) {
+                            if (selfAssessmentConfigMap.get(svcCode)!=null) {
                                 selfAssessmentConfig = selfAssessmentConfigMap.get(svcCode);
                                 selfAssessmentConfig.getQuestion().addAll(answerData);
                             } else {

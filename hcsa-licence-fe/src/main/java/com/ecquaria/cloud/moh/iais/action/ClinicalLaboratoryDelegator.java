@@ -1705,7 +1705,7 @@ public class ClinicalLaboratoryDelegator {
             String[] officeTelNo = ParamUtil.getStrings(request, "officeTelNo");
             String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
             int length = assignSelect.length;
-            if (assignSelect != null && length > 0) {
+            if (length > 0) {
                 for (int i = 0; i < length; i++) {
                     AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
                     if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")) {

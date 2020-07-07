@@ -80,7 +80,7 @@ public class InspecUserRecUploadDelegator {
         List<String> sysFileTypes = null;
         if(sysFileTypeArr != null && sysFileTypeArr.length > 0){
             sysFileTypes = IaisCommonUtils.genNewArrayList();
-            StringBuffer recFileType = new StringBuffer();
+            StringBuilder recFileType = new StringBuilder();
             for(int i = 0; i < sysFileTypeArr.length; i++){
                 sysFileTypes.add(sysFileTypeArr[i]);
                 if(i == 0){

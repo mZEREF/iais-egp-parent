@@ -273,6 +273,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public void updateEgpUser(FeUserDto feUserDto) {
         ClientUser clientUser = userClient.findUser(feUserDto.getUserDomain(), feUserDto.getUserId()).getEntity();
+        String pwd = PasswordUtil.encryptPassword(feUserDto.getUserDomain(), IaisEGPHelper.generateRandomString(6), null);
         if (clientUser != null){
             clientUser.setSalutation(feUserDto.getSalutation());
             clientUser.setEmail(feUserDto.getEmail());
@@ -282,7 +283,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             clientUser.setContactNo(feUserDto.getOfficeTelNo());
 
             //prevent history simple pwd throw 500
-            String pwd = PasswordUtil.encryptPassword(feUserDto.getUserDomain(), IaisEGPHelper.generateRandomString(6), null);
             clientUser.setPassword(pwd);
 
             userClient.updateClientUser(clientUser);
@@ -297,7 +297,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             clientUser.setEmail(email);
             clientUser.setDisplayName(feUserDto.getFirstName()+feUserDto.getLastName());
 
-            String pwd = PasswordUtil.encryptPassword(feUserDto.getUserDomain(), IaisEGPHelper.generateRandomString(6), null);
 
             clientUser.setPassword(pwd);
             clientUser.setPasswordChallengeQuestion("A");

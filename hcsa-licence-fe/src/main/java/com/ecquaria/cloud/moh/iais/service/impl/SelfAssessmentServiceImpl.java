@@ -269,7 +269,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
         boolean hasError = apiResult.isHasError();
         if (hasError){
-            log.info("=========>>>>>>" + apiResult.getMessage());
+            log.info(StringUtil.changeForLog("=========>>>>>>" + apiResult.getMessage()));
             return false;
         }else {
             return true;

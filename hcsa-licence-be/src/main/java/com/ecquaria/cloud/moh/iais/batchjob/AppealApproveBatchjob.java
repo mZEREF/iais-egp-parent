@@ -103,6 +103,7 @@ public class AppealApproveBatchjob {
 //                        case ApplicationConsts.APPEAL_TYPE_OTHER :
 //                            appealOther(appealApplicaiton,rollBackApplication,applicationDto);
 //                            break;
+                              default:break;
                           }
                           appealOther(appealApplicaiton,rollBackApplication,applicationDto);
                       }
@@ -179,6 +180,7 @@ public class AppealApproveBatchjob {
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME :
                     applicationChangeHciName(appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto);
                     break;
+                default:break;
             }
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob appealApplicaiton is end ..."));
@@ -282,12 +284,14 @@ public class AppealApproveBatchjob {
         try {
 
 
-            String relateRecId = appealDto.getRelateRecId();
-            if(!StringUtil.isEmpty(relateRecId)){
-                ApplicationDto applicationDto = applicationClient.getApplicationById(relateRecId).getEntity();
-                if(applicationDto!=null){
+            if(appealDto!=null){
+                String relateRecId = appealDto.getRelateRecId();
+                if(!StringUtil.isEmpty(relateRecId)){
+                    ApplicationDto applicationDto = applicationClient.getApplicationById(relateRecId).getEntity();
+                    if(applicationDto!=null){
 
-                    sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME,"","",appealDto.getNewHciName());
+                        sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME,"","",appealDto.getNewHciName());
+                    }
                 }
             }
 

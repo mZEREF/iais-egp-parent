@@ -127,9 +127,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
             for(TaskDto td:commPools) {
                 if (td.getId().equals(inspecTaskCreAndAssDto.getTaskId())
                         && !IaisCommonUtils.isEmpty(inspectorCheckList)) {
-                    if(!StringUtil.isEmpty(inspectorCheckList.get(0).getValue())){
                         td.setUserId(inspectorCheckList.get(0).getValue());
-                    }
                         td.setDateAssigned(new Date());
                         td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                         updateTask(td);
@@ -138,7 +136,7 @@ public class InspectionMainAssignTaskServiceImpl implements InspectionMainAssign
                     ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                     applicationViewDto.setApplicationDto(applicationDto1);
                     createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);
-                    if(inspectorCheckList != null && inspectorCheckList.size() > 0){
+                    if(inspectorCheckList.size() > 0){
                         createTaskByInspectorList(inspectorCheckList, commPools, inspecTaskCreAndAssDto);
                         for(int i = 0; i < inspectorCheckList.size(); i++){
                             createAppPremisesRoutingHistory(applicationDto1.getApplicationNo(),applicationDto1.getStatus(), HcsaConsts.ROUTING_STAGE_INS,null);

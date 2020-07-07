@@ -245,7 +245,7 @@ public final class ChecklistHelper {
             if (!IaisCommonUtils.isEmpty(orgUserDtos)){
                 List<String> receiveEmail = orgUserDtos.stream().map(OrgUserDto::getEmail).collect(Collectors.toList());
 
-                log.info("=====address====>>>", receiveEmail);
+                log.info(StringUtil.changeForLog("=====address====>>>"+ receiveEmail));
 
                 try {
                     Map<String,Object> map = new HashMap(1);

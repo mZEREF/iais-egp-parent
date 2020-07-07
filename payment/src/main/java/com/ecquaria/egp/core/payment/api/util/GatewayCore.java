@@ -85,9 +85,9 @@ public class GatewayCore {
             String value = params.get(key);
 
             if (i == keys.size() - 1) {
-                prestr.append(key).append("=").append(value);
+                prestr.append(key).append('=').append(value);
             } else {
-                prestr.append(key).append("=").append(value).append("&");
+                prestr.append(key).append('=').append(value).append('&');
             }
         }
 
