@@ -298,7 +298,9 @@
     }
 
     function getAppByGroupId(applicationGroupNo, divid) {
-        console.log(getAppByGroupId)
+        console.log("getAppByGroupId")
+        console.log(dividajaxlist)
+        console.log(divid)
         if (!isInArray(dividajaxlist,divid)) {
             groupAjax(applicationGroupNo, divid);
         } else {
