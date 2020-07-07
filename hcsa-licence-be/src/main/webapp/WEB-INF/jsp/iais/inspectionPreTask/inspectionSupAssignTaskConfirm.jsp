@@ -74,21 +74,23 @@
                     </div>
                   </div>
                   <p></p>
-                  <c:if test="${'common' eq inspectionTaskPoolListDto.editHoursFlag}">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                  <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId || 'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
+                    <c:if test="${'common' eq inspectionTaskPoolListDto.editHoursFlag}">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                        </div>
+                        <div class="col-md-6">
+                          <c:if test="${empty inspectionTaskPoolListDto.inspManHours}">
+                            <span style="font-size: 16px"><c:out value="-"/></span>
+                          </c:if>
+                          <c:if test="${!empty inspectionTaskPoolListDto.inspManHours}">
+                            <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.inspManHours}"/></span>
+                          </c:if>
+                        </div>
                       </div>
-                      <div class="col-md-6">
-                        <c:if test="${empty inspectionTaskPoolListDto.inspManHours}">
-                          <span style="font-size: 16px"><c:out value="-"/></span>
-                        </c:if>
-                        <c:if test="${!empty inspectionTaskPoolListDto.inspManHours}">
-                          <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.inspManHours}"/></span>
-                        </c:if>
-                      </div>
-                    </div>
-                    <p></p>
+                      <p></p>
+                    </c:if>
                   </c:if>
                   <div class="row">
                     <div class="col-md-2">
@@ -121,15 +123,17 @@
                     </div>
                   </div>
                   <p></p>
-                  <div class="row">
-                    <div class="col-md-2">
-                      <label style="font-size: 16px">Inspection Type</label>
+                  <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId || 'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <label style="font-size: 16px">Inspection Type</label>
+                      </div>
+                      <div class="col-md-6">
+                        <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></span>
+                      </div>
                     </div>
-                    <div class="col-md-6">
-                      <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></span>
-                    </div>
-                  </div>
-                  <p></p>
+                    <p></p>
+                  </c:if>
                   <iais:action>
                     <a class="back" id="Back" onclick="javascript:doInspectionSupAssignTaskConfirmBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionSupAssignTaskConfirmSubmit()">Submit</button>

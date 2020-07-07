@@ -77,16 +77,18 @@
                     </div>
                   </div>
                   <p></p>
-                  <c:if test="${'common' eq inspectionTaskPoolListDto.editHoursFlag}">
-                    <div class="row">
-                      <div class="col-md-2">
-                        <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                  <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId || 'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
+                    <c:if test="${'common' eq inspectionTaskPoolListDto.editHoursFlag}">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label style="font-size: 16px">Estimated Effort for Inspection (Man Hours)</label>
+                        </div>
+                        <div class="col-md-2">
+                          <input type="text" maxlength="3" style="margin-bottom: 0px;" name="inspManHours" value="${inspectionTaskPoolListDto.inspManHours}"/>
+                          <span class="error-msg" name="iaisErrorMsg" id="error_inspManHours"></span><p></p>
+                        </div>
                       </div>
-                      <div class="col-md-2">
-                        <input type="text" maxlength="3" style="margin-bottom: 0px;" name="inspManHours" value="${inspectionTaskPoolListDto.inspManHours}"/>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_inspManHours"></span><p></p>
-                      </div>
-                    </div>
+                    </c:if>
                   </c:if>
                   <div class="row">
                     <div class="col-md-2">
@@ -136,15 +138,17 @@
                       </c:if>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col-md-2">
-                      <label style="font-size: 16px">Inspection Type</label>
+                  <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId || 'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <label style="font-size: 16px">Inspection Type</label>
+                      </div>
+                      <div class="col-md-6">
+                        <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></span>
+                      </div>
                     </div>
-                    <div class="col-md-6">
-                      <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.inspectionTypeName}"/></span>
-                    </div>
-                  </div>
-                  <p></p>
+                    <p></p>
+                  </c:if>
                   <iais:action >
                     <a class="back" id="Back" onclick="javascript:doInspectionSupAssignTaskBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">

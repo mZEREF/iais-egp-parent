@@ -126,15 +126,17 @@
                     </div>
                   </div>
                   <p></p>
-                  <div class="row">
-                    <div class="col-md-2">
-                      <label style="font-size: 16px">Inspection Type</label>
+                  <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId || 'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
+                    <div class="row">
+                      <div class="col-md-2">
+                        <label style="font-size: 16px">Inspection Type</label>
+                      </div>
+                      <div class="col-md-6">
+                        <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></span>
+                      </div>
                     </div>
-                    <div class="col-md-6">
-                      <span style="font-size: 16px"><c:out value="${inspecTaskCreAndAssDto.inspectionTypeName}"/></span>
-                    </div>
-                  </div>
-                  <p></p>
+                    <p></p>
+                  </c:if>
                   <iais:action >
                     <a class="back" id="Back" onclick="javascript:doInspectionAssignTaskConfirmBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
                     <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doInspectionAssignTaskConfirmSubmit()">Submit</button>
