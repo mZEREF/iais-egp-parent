@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.client.OrganizationBeClient;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -14,14 +15,21 @@ import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
 
 /**
  * @author: yichen
@@ -30,6 +38,7 @@ import java.util.stream.Collectors;
  */
 
 @Component
+@Slf4j
 public class EmailHelper {
 	@Autowired
 	private IaisSystemClient iaisSystemClient;
@@ -56,6 +65,19 @@ public class EmailHelper {
 		ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,
 		ApplicationConsts.PERSONNEL_PSN_TYPE_AP
 			);
+
+	@Bean(name = "emailAsyncExecutor")
+	public Executor asyncExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(50);
+		executor.setMaxPoolSize(50);
+		executor.setQueueCapacity(500);
+		executor.setThreadNamePrefix("EmailAsynchThread-");
+		executor.initialize();
+
+		return executor;
+	}
+
 	public MsgTemplateDto getMsgTemplate(String templateId){
 		return iaisSystemClient.getMsgTemplate(templateId).getEntity();
 	}
@@ -86,11 +108,53 @@ public class EmailHelper {
 		return email;
 	}
 
-	public void sendEmail(String templateId, Map<String, Object> templateContent,String QueryCode,String reqRefNum, String applicaitonGroupId){
-		if(!StringUtil.isEmpty(templateId)){
-			SendEmailThread sendEmailThread = new SendEmailThread(templateId,applicaitonGroupId,templateContent,mailSender,QueryCode,reqRefNum);
-			sendEmailThread.start();
+	@Async("emailAsyncExecutor")
+	public void sendEmail(String templateId, Map<String, Object> templateContent,String queryCode,
+						  String reqRefNum, String applicaitonGroupId) throws IOException, TemplateException {
+		List<String> receiptemail = IaisCommonUtils.genNewArrayList();
+		List<String> ccemail = IaisCommonUtils.genNewArrayList();
+		List<String> bccemail = IaisCommonUtils.genNewArrayList();
+		log.info(StringUtil.changeForLog("sendemail start... application is"+ applicaitonGroupId
+				+ "templateId is "+ templateId+"thread name is " + Thread.currentThread().getName()));
+
+		MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
+		EmailDto emailDto = new EmailDto();
+		String mesContext = "";
+		if (templateContent != null && !templateContent.isEmpty()){
+			mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
+		}else{
+			mesContext = msgTemplateDto.getMessageContent();
 		}
+
+		emailDto.setContent(mesContext);
+		emailDto.setSubject(msgTemplateDto.getTemplateName());
+		emailDto.setSender(this.mailSender);
+		if(msgTemplateDto.getRecipient()!= null && msgTemplateDto.getRecipient().size() > 0){
+			receiptemail = getRecript(msgTemplateDto.getRecipient(), applicaitonGroupId);
+			emailDto.setReceipts(receiptemail);
+		}
+		if(msgTemplateDto.getCcrecipient()!= null && msgTemplateDto.getCcrecipient().size() > 0){
+			ccemail = getRecript(msgTemplateDto.getCcrecipient(), applicaitonGroupId);
+			emailDto.setCcList(ccemail);
+		}
+		if(msgTemplateDto.getBccrecipient()!= null && msgTemplateDto.getBccrecipient().size() > 0){
+			bccemail = getRecript(msgTemplateDto.getBccrecipient(), applicaitonGroupId);
+			emailDto.setBccList(bccemail);
+		}
+		if(queryCode != null){
+			emailDto.setClientQueryCode(queryCode);
+		}else{
+			emailDto.setClientQueryCode("no queryCode");
+		}
+		if(reqRefNum != null){
+			emailDto.setReqRefNum(reqRefNum);
+		}else{
+			emailDto.setReqRefNum("no reqRefNum");
+		}
+		//send
+		this.emailSmsClient.sendEmail(emailDto,null);
+		log.info(StringUtil.changeForLog("sendemail end... queryCode is"+queryCode + "templateId is "
+				+ templateId+"thread name is " + Thread.currentThread().getName()));
 	}
 
 	public List<String> getRecript(List<String> role,String application){
@@ -138,6 +202,7 @@ public class EmailHelper {
 			}
 			all.addAll(email.stream().distinct().collect(Collectors.toList()));
 		}
+
 		return all;
 	}
 
