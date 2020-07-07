@@ -50,7 +50,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -537,9 +536,13 @@ public final class IaisEGPHelper extends EGPHelper {
         return header;
     }
 
-    public static FeignResponseEntity<T> genFeignRespFromResp(ResponseEntity<T> response) {
+    public static <T> FeignResponseEntity<T> genFeignRespFromResp(ResponseEntity<T> response, Class<T> responseCls) {
         FeignResponseEntity resEnt = new FeignResponseEntity();
         resEnt.setEntity(response.getBody());
+        if (response.getBody() != null && !(responseCls.isAssignableFrom(Map.class))
+                && (response.getBody() instanceof Map)) {
+            resEnt.setEntity(MiscUtil.tranMapToDto((Map) response.getBody(), responseCls));
+        }
         resEnt.setHeaders(response.getHeaders());
         resEnt.setStatusCode(response.getStatusCodeValue());
 
@@ -600,7 +603,7 @@ public final class IaisEGPHelper extends EGPHelper {
             response = restTemplate.exchange(url, httpMethod, entity, responseCls);
         }
 
-        FeignResponseEntity<T> resEnt = IaisEGPHelper.genFeignRespFromResp(response);
+        FeignResponseEntity<T> resEnt = IaisEGPHelper.genFeignRespFromResp(response, responseCls);
 
         return resEnt;
     }
