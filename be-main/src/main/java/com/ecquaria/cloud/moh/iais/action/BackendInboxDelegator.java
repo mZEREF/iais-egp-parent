@@ -365,15 +365,20 @@ public class BackendInboxDelegator {
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
         List<String> applicationDtoIds = IaisCommonUtils.genNewArrayList();
-        boolean feAllUpdate = false;
         applicationDtoIds.add(applicationDto.getApplicationNo());
 
         //judge the final status is Approve or Reject.
-        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
-            AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
-            if(appPremisesRecommendationDto!=null){
+        AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
+        String applicationType = applicationDto.getApplicationType();
+        if(appPremisesRecommendationDto!= null && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
+            if(!ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                 Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
                 if(null != recomInNumber && recomInNumber == 0){
+                    appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
+                }
+            }else{
+                String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+                if("reject".equals(recomDecision)){
                     appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
                 }
             }
@@ -385,13 +390,13 @@ public class BackendInboxDelegator {
         broadcastOrganizationDto.setComplateTask(taskDto);
         String decision = ApplicationConsts.PROCESSING_DECISION_VERIFIED;
 
-        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)){
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
             if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
                 decision = InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT;
             }else{
                 decision = ApplicationConsts.PROCESSING_DECISION_VERIFIED;
             }
-        }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+        }else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             decision = ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL;
         }
 
