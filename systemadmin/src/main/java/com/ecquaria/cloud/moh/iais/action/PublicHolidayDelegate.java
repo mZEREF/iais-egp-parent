@@ -55,24 +55,24 @@ public class PublicHolidayDelegate {
     @Autowired
     PublicHolidayService publicHolidayService;
 
-    private SearchParam holidaySearchParam ;
     /**
      * doStart
      * @param bpc
      */
     public void doStart(BaseProcessClass bpc){
         AuditTrailHelper.auditFunction("public holiday", "public holiday");
-        initSearchParam();
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        holidaySearchParam.addFilter("year", "%" + year + "%",true);
-    }
+        }
 
-    private void initSearchParam(){
-        holidaySearchParam = new SearchParam(PublicHolidayQueryDto.class.getName());
-        holidaySearchParam.setPageSize(10);
-        holidaySearchParam.setPageNo(1);
-        holidaySearchParam.setSort("ID", SearchParam.ASCENDING);
+    private SearchParam getSearchParam(HttpServletRequest request, boolean neednew){
+        SearchParam holidaySearchParam = (SearchParam) ParamUtil.getSessionAttr(request, "holidaySearchParam");
+        if(neednew){
+            holidaySearchParam = new SearchParam(PublicHolidayQueryDto.class.getName());
+            holidaySearchParam.setPageSize(10);
+            holidaySearchParam.setPageNo(1);
+            holidaySearchParam.setSort("ID", SearchParam.ASCENDING);
+        }
+        return holidaySearchParam;
+
     }
 
     /**
@@ -80,14 +80,19 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doPrepare(BaseProcessClass bpc){
+        SearchParam holidaySearchParam = getSearchParam(bpc.request,false);
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        holidaySearchParam.addFilter("year", "%" + year + "%",true);
+
         if(holidaySearchParam == null){
-            initSearchParam();
+            holidaySearchParam = getSearchParam(bpc.request,true);
         }
         QueryHelp.setMainSql("systemAdmin", "getHolidayList", holidaySearchParam);
         SearchResult<PublicHolidayQueryDto> HolidaySearchResult = publicHolidayService.getHoliday(holidaySearchParam);
 
         ParamUtil.setRequestAttr(bpc.request,"HolidaySearchResult",HolidaySearchResult);
-        ParamUtil.setRequestAttr(bpc.request,"holidaySearchParam",holidaySearchParam);
+        ParamUtil.setSessionAttr(bpc.request,"holidaySearchParam",holidaySearchParam);
         statusOption(bpc);
         yearOption(bpc,false);
 
@@ -288,7 +293,7 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doSearch(BaseProcessClass bpc){
-        initSearchParam();
+        SearchParam holidaySearchParam = getSearchParam(bpc.request,false);
         String description = ParamUtil.getString(bpc.request,"description");
         String year = ParamUtil.getString(bpc.request,"year");
         String nonWorking = ParamUtil.getString(bpc.request,"nonWorking");
@@ -323,10 +328,11 @@ public class PublicHolidayDelegate {
         }else{
             ParamUtil.setSessionAttr(bpc.request,"searchStatus",null);
         }
-
+        ParamUtil.setSessionAttr(bpc.request,"holidaySearchParam",holidaySearchParam);
     }
 
     public void searchPage(BaseProcessClass bpc){
+        SearchParam holidaySearchParam = getSearchParam(bpc.request,false);
         CrudHelper.doPaging(holidaySearchParam,bpc.request);
     }
 
@@ -337,6 +343,7 @@ public class PublicHolidayDelegate {
      * @throws IllegalAccessException
      */
     public void sortRecords(BaseProcessClass bpc){
+        SearchParam holidaySearchParam = getSearchParam(bpc.request,false);
         CrudHelper.doSorting(holidaySearchParam,bpc.request);
         System.out.println("111");
     }
