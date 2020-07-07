@@ -536,12 +536,19 @@ public final class IaisEGPHelper extends EGPHelper {
         return header;
     }
 
-    public static <T> FeignResponseEntity<T> genFeignRespFromResp(ResponseEntity<T> response, Class<T> responseCls) {
+    public static <T> FeignResponseEntity<T> genFeignRespFromResp(ResponseEntity<T> response, Class contentCls) {
         FeignResponseEntity resEnt = new FeignResponseEntity();
         resEnt.setEntity(response.getBody());
-        if (response.getBody() != null && !(responseCls.isAssignableFrom(Map.class))
-                && (response.getBody() instanceof Map)) {
-            resEnt.setEntity(MiscUtil.tranMapToDto((Map) response.getBody(), responseCls));
+        Object body = response.getBody();
+        if (body != null && (body instanceof List)) {
+            List bodyList = (List) body;
+            if (!IaisCommonUtils.isEmpty(bodyList) && bodyList.get(0) instanceof Map) {
+                List newList = IaisCommonUtils.genNewArrayList(bodyList.size());
+                bodyList.forEach(u -> {
+                    newList.add(MiscUtil.tranMapToDto((Map) u, contentCls));
+                });
+                resEnt.setEntity(newList);
+            }
         }
         resEnt.setHeaders(response.getHeaders());
         resEnt.setStatusCode(response.getStatusCodeValue());
@@ -560,7 +567,21 @@ public final class IaisEGPHelper extends EGPHelper {
                                                 MediaType mediaType, String date, String authorization, String dateSec,
                                                 String authorizationSec, Class<T> responseCls) {
         return callEicGatewayWithBody(url, httpMethod, httpBody, null, mediaType, date, authorization,
-                dateSec, authorizationSec, responseCls);
+                dateSec, authorizationSec, responseCls, null);
+    }
+
+    /**
+     * @description: The method to call EIC gateway by rest template to get List
+     *
+     * @author: Jinhua on 2020/7/7 10:10
+     * @param: [url, httpMethod, httpBody, mediaType, date, authorization, dateSec, authorizationSec, responseCls, contentCls]
+     * @return: com.ecquaria.cloudfeign.FeignResponseEntity<List>
+     */
+    public static FeignResponseEntity<List> callEicGatewayWithBodyForList(String url, HttpMethod httpMethod, Object httpBody,
+                                                                       MediaType mediaType, String date, String authorization, String dateSec,
+                                                                       String authorizationSec, Class contentCls) {
+        return callEicGatewayWithBody(url, httpMethod, httpBody, null, mediaType, date, authorization,
+                dateSec, authorizationSec, List.class, contentCls);
     }
 
     /**
@@ -574,7 +595,21 @@ public final class IaisEGPHelper extends EGPHelper {
                                                                     MediaType mediaType, String date, String authorization, String dateSec,
                                                                     String authorizationSec, Class<T> responseCls) {
         return callEicGatewayWithBody(url, httpMethod, null, params, mediaType, date, authorization,
-                dateSec, authorizationSec, responseCls);
+                dateSec, authorizationSec, responseCls, null);
+    }
+
+    /**
+     * @description: The method to call EIC gateway by rest template to get List
+     *
+     * @author: Jinhua on 2020/7/7 10:13
+     * @param: [url, httpMethod, params, mediaType, date, authorization, dateSec, authorizationSec, contentCls]
+     * @return: com.ecquaria.cloudfeign.FeignResponseEntity<java.util.List>
+     */
+    public static FeignResponseEntity<List> callEicGatewayWithParamForList(String url, HttpMethod httpMethod, Map<String, Object> params,
+                                                                             MediaType mediaType, String date, String authorization, String dateSec,
+                                                                             String authorizationSec, Class contentCls) {
+        return callEicGatewayWithBody(url, httpMethod, null, params, mediaType, date, authorization,
+                dateSec, authorizationSec, List.class, contentCls);
     }
 
     /**
@@ -586,7 +621,7 @@ public final class IaisEGPHelper extends EGPHelper {
      */
     public static <T> FeignResponseEntity<T> callEicGatewayWithBody(String url, HttpMethod httpMethod, Object httpBody, Map<String, Object> params,
                                                                    MediaType mediaType, String date, String authorization, String dateSec,
-                                                                   String authorizationSec, Class<T> responseCls) {
+                                                                   String authorizationSec, Class<T> responseCls, Class contentCls) {
         HttpHeaders header = getHttpHeadersForEic(mediaType, date, authorization,
                 dateSec, authorizationSec);
         HttpEntity entity = null;
@@ -602,8 +637,7 @@ public final class IaisEGPHelper extends EGPHelper {
         } else {
             response = restTemplate.exchange(url, httpMethod, entity, responseCls);
         }
-
-        FeignResponseEntity<T> resEnt = IaisEGPHelper.genFeignRespFromResp(response, responseCls);
+        FeignResponseEntity<T> resEnt = IaisEGPHelper.genFeignRespFromResp(response, contentCls);
 
         return resEnt;
     }
