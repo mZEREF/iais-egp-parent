@@ -146,6 +146,11 @@ public class InsReportAoDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
+        if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(applicationDto.getStatus())) {
+            insRepService.routTaskToRoutBackAo3(bpc, taskDto, applicationDto, appPremisesCorrelationId, appPremisesRecommendationDto.getProcessRemarks());
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            return;
+        }
         String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         insRepService.routingTaskToAo2(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks);
         ParamUtil.setSessionAttr(bpc.request, INSREPDTO, insRepDto);
@@ -199,7 +204,7 @@ public class InsReportAoDelegator {
     }
 
     private List<SelectOption> getProcessingDecision(String status) {
-        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(status)){
+        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(status)||ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
             List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
             SelectOption so1 = new SelectOption("submit", "Give Clarification");
             riskLevelResult.add(so1);
