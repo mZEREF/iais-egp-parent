@@ -1722,8 +1722,11 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(adhocCheckListConifgDto == null){
             return adhocCheckListConifgDto;
         }
-        if(adhocCheckListConifgDto.getAllAdhocItem() == null){
+        List<AdhocChecklistItemDto> adhocItemList = applicationClient.getAdhocByAppPremCorrId(corId).getEntity();
+        if(adhocItemList == null){
             adhocCheckListConifgDto.setAllAdhocItem(new ArrayList<>(1));
+        }else {
+            adhocCheckListConifgDto.setAllAdhocItem(adhocItemList);
         }
         return adhocCheckListConifgDto;
     }
