@@ -232,11 +232,13 @@
     })
 
     function groupAjax(applicationGroupNo, divid) {
-
+        console.log("groupajax")
+        dividajaxlist.push(divid);
         $.post(
             '/main-web/backend/appGroup.do',
             {groupno: applicationGroupNo},
             function (data, status) {
+                console.log("ajax start")
                 var serviceName = data.serviceName;
                 var res = data.ajaxResult;
                 var url = data.appNoUrl;
@@ -287,8 +289,8 @@
                 html += '</tbody></table></div></td></tr>';
                 console.log(dividajaxlist)
                 console.log(divid)
+                console.log("ajax end")
                 $('#advfilter' + divid).after(html);
-                dividajaxlist.push(divid);
             }
         )
 
@@ -296,9 +298,11 @@
     }
 
     function getAppByGroupId(applicationGroupNo, divid) {
+        console.log(getAppByGroupId)
         if (!isInArray(dividajaxlist,divid)) {
             groupAjax(applicationGroupNo, divid);
         } else {
+            console.log("show or hide")
             var display = $('#advfilterson' + divid).css('display');
             if (display == 'none') {
                 $('#advfilterson' + divid).show();
