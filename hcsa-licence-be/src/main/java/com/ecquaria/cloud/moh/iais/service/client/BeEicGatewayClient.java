@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspec
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRequest;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataResponse;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SyncDataBody;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.EventBusLicenceGroupDtos;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -92,8 +93,8 @@ public class BeEicGatewayClient {
 
     public FeignResponseEntity<List> createAppPremisesInspecApptDto(List<AppPremisesInspecApptDto> appPremisesInspecApptDtos,
                                                                     String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/inspec-sync-rectification", HttpMethod.POST, appPremisesInspecApptDtos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/inspec-sync-rectification", HttpMethod.POST, appPremisesInspecApptDtos,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppPremisesInspecApptDto.class);
     }
 
     public FeignResponseEntity<ApptFeConfirmDateDto> reSchedulingSaveFeDate(@RequestBody ApptFeConfirmDateDto apptFeConfirmDateDto,
@@ -117,8 +118,8 @@ public class BeEicGatewayClient {
 
     public FeignResponseEntity<List> compareFeData(BeSyncCompareDataRequest beSyncCompareDataRequest,
                                                String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-chklst-sync-comp", HttpMethod.POST, beSyncCompareDataRequest,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-chklst-sync-comp", HttpMethod.POST, beSyncCompareDataRequest,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, BeSyncCompareDataResponse.class);
     }
 
     public FeignResponseEntity<Void> saveSyncData(SyncDataBody syncDataBody, String date,
