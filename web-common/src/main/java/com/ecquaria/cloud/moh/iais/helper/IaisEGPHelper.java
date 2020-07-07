@@ -643,7 +643,12 @@ public final class IaisEGPHelper extends EGPHelper {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity response = null;
         if (params != null && !params.isEmpty()) {
-            response = restTemplate.exchange(url, httpMethod, entity, responseCls, params);
+            StringBuilder sb = new StringBuilder(url);
+            sb.append('?');
+            for (String key : params.keySet()) {
+                sb.append(key).append("={").append(key).append("}&");
+            }
+            response = restTemplate.exchange(sb.substring(0, sb.length() - 1), httpMethod, entity, responseCls, params);
         } else {
             response = restTemplate.exchange(url, httpMethod, entity, responseCls);
         }
