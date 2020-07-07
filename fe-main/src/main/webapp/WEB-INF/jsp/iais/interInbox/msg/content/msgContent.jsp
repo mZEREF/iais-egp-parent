@@ -33,6 +33,10 @@
     }
 
     function MsgContToMsgPage() {
-        submit("toMsg");
+        if ('${msgPage}' == "msgView") {
+            submit("toMsg");
+        }else {
+            submit("toArchive");
+        }
     }
 </script>

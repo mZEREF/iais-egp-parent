@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -171,6 +172,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
         String msgId = ParamUtil.getMaskedString(request,InboxConst.MSG_ACTION_ID);
+        String MsgPage = ParamUtil.getRequestString(request,"msg_page_action");
         String msgType = ParamUtil.getMaskedString(request,InboxConst.MSG_PAGE_TYPE);
         if(msgId==null){
             msgId= (String) ParamUtil.getSessionAttr(request,InboxConst.MSG_ACTION_ID);
@@ -178,10 +180,12 @@ public class InterInboxDelegator {
         if(msgType==null){
             msgType= (String) ParamUtil.getSessionAttr(request,InboxConst.MSG_PAGE_TYPE);
         }
-        if (MessageConstants.MESSAGE_TYPE_NOTIFICATION.equals(msgType)){
-            inboxService.updateMsgStatusTo(msgId,MessageConstants.MESSAGE_STATUS_READ);
-        }else{
-            inboxService.updateMsgStatusTo(msgId,MessageConstants.MESSAGE_STATUS_UNRESPONSE);
+        if ("msg_view".equals(MsgPage)){
+            if (MessageConstants.MESSAGE_TYPE_NOTIFICATION.equals(msgType)){
+                inboxService.updateMsgStatusTo(msgId,MessageConstants.MESSAGE_STATUS_READ);
+            }else{
+                inboxService.updateMsgStatusTo(msgId,MessageConstants.MESSAGE_STATUS_UNRESPONSE);
+            }
         }
         String msgContent = ParamUtil.getMaskedString(request,InboxConst.CRUD_ACTION_VALUE);
         if(msgContent==null){
