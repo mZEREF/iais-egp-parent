@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
@@ -435,11 +436,17 @@ public class RoundRobinCommPoolBatchJob {
         appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
         appointmentDto.setUsers(appointmentUserDtos);
         try {
-            FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
+            FeignResponseEntity<List<ApptRequestDto>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
             Map<String, Collection<String>> headers = result.getHeaders();
             //Has it been blown up
             if(headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
-                Map<String, List<ApptUserCalendarDto>> inspectionDateMap = result.getEntity();
+                Map<String, List<ApptUserCalendarDto>> inspectionDateMap = IaisCommonUtils.genNewHashMap();
+                List<ApptRequestDto> apptRequestDtos = result.getEntity();
+                if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
+                    for(ApptRequestDto apptRequestDto : apptRequestDtos){
+                        inspectionDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
+                    }
+                }
                 //save date, confirm appointment date and synchronization FE
                 saveSynchronApptDate(inspectionDateMap, premCorrIds, appointmentDto, auditTrailDto);
 

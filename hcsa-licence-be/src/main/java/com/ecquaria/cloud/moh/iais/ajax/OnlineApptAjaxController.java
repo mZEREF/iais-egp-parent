@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -130,11 +131,17 @@ public class OnlineApptAjaxController {
                     appointmentDto.setUsers(appointmentUserDtos);
                     apptInspectionDateDto.setAppointmentDto(appointmentDto);
                     try {
-                        FeignResponseEntity<Map<String, List<ApptUserCalendarDto>>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
+                        FeignResponseEntity<List<ApptRequestDto>> result = appointmentClient.getUserCalendarByUserId(appointmentDto);
                         Map<String, Collection<String>> headers = result.getHeaders();
                         //Has it been blown up
                         if(headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
-                            Map<String, List<ApptUserCalendarDto>> inspectionDateMap = result.getEntity();
+                            Map<String, List<ApptUserCalendarDto>> inspectionDateMap = IaisCommonUtils.genNewHashMap();
+                            List<ApptRequestDto> apptRequestDtos = result.getEntity();
+                            if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
+                                for(ApptRequestDto apptRequestDto : apptRequestDtos){
+                                    inspectionDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
+                                }
+                            }
                             apptInspectionDateDto = getShowTimeStringList(inspectionDateMap, apptInspectionDateDto);
                             map.put("buttonFlag", AppConsts.TRUE);
                             map.put("inspDateList", apptInspectionDateDto.getInspectionDate());
