@@ -181,4 +181,22 @@ public interface InspectionAssignTaskService {
     PoolRoleCheckDto getRoleOptionByKindPool(LoginContext loginContext, String poolName, PoolRoleCheckDto poolRoleCheckDto);
 
     AppStageSlaTrackingDto searchSlaTrackById(String appNo,String stageId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/7
+      * @Param: refNo
+      * @return: boolean
+      * @Descripation: applicantIsSubmit
+      */
+    boolean applicantIsSubmit(String refNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/7
+      * @Param: taskId, taskUserIds
+      * @return: void
+      * @Descripation: sendSelfCheckListEmail
+      */
+    void sendSelfCheckListEmail(String taskId, List<String> taskUserIds);
 }

@@ -18,6 +18,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
+import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
@@ -25,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
@@ -55,6 +59,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -71,6 +76,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClien
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -145,6 +151,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Autowired
     private AppEicClient appEicClient;
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
+    @Autowired
+    private EmailClient emailClient;
 
     @Autowired
     private SystemParamConfig systemParamConfig;
@@ -496,8 +508,68 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                             }
                         }
                     }
+                    //Self-Checklist
+                    boolean selfCheckListFlag = applicantIsSubmit(td.getRefNo());
+                    if(selfCheckListFlag) {
+                        String taskUserId = loginContext.getUserId();
+                        List<String> taskUserIds = IaisCommonUtils.genNewArrayList();
+                        taskUserIds.add(taskUserId);
+                        String taskId = td.getId();
+                        sendSelfCheckListEmail(taskId, taskUserIds);
+                    }
                 }
             }
+        }
+    }
+
+    @Override
+    public boolean applicantIsSubmit(String refNo) {
+        boolean flag = false;
+        List<SelfAssessment> selfAssessments = BeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(refNo);
+        if(!IaisCommonUtils.isEmpty(selfAssessments)){
+            //one refNo(appPremCorrId) --> one SelfAssessment
+            List<SelfAssessmentConfig> selfAssessmentConfigs = selfAssessments.get(0).getSelfAssessmentConfig();
+            if(!IaisCommonUtils.isEmpty(selfAssessmentConfigs)) {
+                for(SelfAssessmentConfig selfAssessmentConfig : selfAssessmentConfigs){
+                    if(selfAssessmentConfig == null){
+                        continue;
+                    }
+                    if(selfAssessmentConfig.isCommon()){
+                        List<PremCheckItem> premCheckItems = selfAssessmentConfig.getQuestion();
+                        if(!IaisCommonUtils.isEmpty(premCheckItems)){
+                            flag = true;
+                        }
+                    }
+                }
+            }
+        }
+        return flag;
+    }
+
+    @Override
+    public void sendSelfCheckListEmail(String taskId, List<String> taskUserIds) {
+        try{
+            if(!IaisCommonUtils.isEmpty(taskUserIds)){
+                List<String> addressList = IaisCommonUtils.genNewArrayList();
+                for(String userId : taskUserIds){
+                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+                    String address = orgUserDto.getEmail();
+                    if(!StringUtil.isEmpty(address)){
+                        addressList.add(address);
+                    }
+                }
+                if(!IaisCommonUtils.isEmpty(addressList)) {
+                    EmailDto emailDto = new EmailDto();
+                    emailDto.setContent("Self-Checklist Complete");
+                    emailDto.setSubject("MOH lAIS - Self-assessment Checklist Submission");
+                    emailDto.setSender(mailSender);
+                    emailDto.setReceipts(addressList);
+                    emailDto.setClientQueryCode(taskId);
+                    emailClient.sendNotification(emailDto);
+                }
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
     }
 
