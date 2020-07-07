@@ -189,7 +189,6 @@ public class OfficerOnlineEnquiriesDelegator {
                 count="0";
             }
         }
-        ParamUtil.setSessionAttr(request,"count", count);
         Map<String,Object> filter=IaisCommonUtils.genNewHashMap();
         List<String> licenseeIds=IaisCommonUtils.genNewArrayList();
         List<String> licenceIds=IaisCommonUtils.genNewArrayList();
@@ -235,6 +234,10 @@ public class OfficerOnlineEnquiriesDelegator {
             applicationParameter.setFilters(filter);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
             CrudHelper.doPaging(appParam,bpc.request);
+            String countOld= (String) ParamUtil.getSessionAttr(request,"count");
+            if(!countOld.equals(count)){
+                appParam.setPageNo(1);
+            }
             QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
             if (appParam != null) {
                 SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
@@ -302,6 +305,10 @@ public class OfficerOnlineEnquiriesDelegator {
             }
 
             CrudHelper.doPaging(licParam,bpc.request);
+            String countOld= (String) ParamUtil.getSessionAttr(request,"count");
+            if(!countOld.equals(count)){
+                licParam.setPageNo(1);
+            }
             QueryHelp.setMainSql(RFI_QUERY,"licenceQuery",licParam);
             SearchResult<RfiLicenceQueryDto> licResult =requestForInformationService.licenceDoQuery(licParam);
             SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
@@ -363,7 +370,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             ParamUtil.setRequestAttr(request,"SearchParam", licParam);
         }
-
+        ParamUtil.setSessionAttr(request,"count", count);
         // 		preBasicSearch->OnStepProcess
     }
 
