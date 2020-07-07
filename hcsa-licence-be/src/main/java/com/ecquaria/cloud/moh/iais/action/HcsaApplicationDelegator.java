@@ -1547,6 +1547,10 @@ public class HcsaApplicationDelegator {
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+                if(applicationDto.isFastTracking()){
+                    TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
+                    broadcastOrganizationDto.setCreateTask(newTaskDto);
+                }
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
                 applicationDtoList = removeFastTracking(applicationDtoList);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
