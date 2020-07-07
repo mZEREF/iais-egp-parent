@@ -559,7 +559,7 @@ public class NewApplicationHelper {
         sBuffer.append(" >");
         if(!StringUtil.isEmpty(firestOption)){
 //            sBuffer.append("<option value=\"\">"+ firestOption +"</option>");
-            sBuffer.append("<option value=\"\"")
+            sBuffer.append("<option value=\"\">")
                     .append(firestOption)
                     .append("</option>");
         }
