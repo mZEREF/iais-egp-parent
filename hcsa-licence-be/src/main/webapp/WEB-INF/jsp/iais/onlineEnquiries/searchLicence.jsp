@@ -39,9 +39,9 @@
                                 <iais:row>
                                     <iais:field value="Application No."/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <label>
-                                            <input type="text" maxlength="20" style="width:165%; font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
-                                        </label>
+
+                                        <input type="text" maxlength="20" style=" font-weight:normal;" name="application_no" value="${SearchParam.filters['appNo']}" />
+
                                     </div>
                                 </iais:row>
                                 <iais:row>
@@ -77,17 +77,17 @@
                                 <iais:row>
                                     <iais:field value="Licence No."/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <label>
-                                            <input type="text" maxlength="24" style="width:165%; font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
-                                        </label>
+
+                                            <input type="text" maxlength="24" style=" font-weight:normal;" name="licence_no" value="${SearchParam.filters['licence_no']}" />
+
                                     </div >
                                 </iais:row>
                                 <iais:row>
                                     <iais:field value="UEN No."/>
                                     <div class="col-sm-7 col-md-4 col-xs-10">
-                                        <label>
-                                            <input type="text" maxlength="10" style="width:165%; font-weight:normal;" name="uen_no" value="${SearchParam.filters['uen_no']}" />
-                                        </label>
+
+                                            <input type="text" maxlength="10" style=" font-weight:normal;" name="uen_no" value="${SearchParam.filters['uen_no']}" />
+                                        
                                     </div >
                                 </iais:row>
                                 <iais:row>
@@ -162,33 +162,33 @@
                                     <iais:row>
                                         <iais:field value="HCI Code"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label>
-                                                <input type="text" maxlength="7" style="width:165%; font-weight:normal;" name="hci_code" value="${SearchParam.filters['hciCode']}" />
-                                            </label>
+                                            
+                                                <input type="text" maxlength="7" style=" font-weight:normal;" name="hci_code" value="${SearchParam.filters['hciCode']}" />
+                                            
                                         </div >
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="HCI Name"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label>
-                                                <input type="text" maxlength="100" style="width:165%; font-weight:normal;" name="hci_name" value="${SearchParam.filters['hciName']}" />
-                                            </label>
+                                            
+                                                <input type="text" maxlength="100" style=" font-weight:normal;" name="hci_name" value="${SearchParam.filters['hciName']}" />
+                                            
                                         </div >
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="HCI Street Name"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label>
-                                                <input type="text" maxlength="32" style="width:165%; font-weight:normal;" name="hci_street_name" value="${SearchParam.filters['hciStreetName']}" />
-                                            </label>
+                                            
+                                                <input type="text" maxlength="32" style=" font-weight:normal;" name="hci_street_name" value="${SearchParam.filters['hciStreetName']}" />
+                                            
                                         </div >
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="HCI Postal Code"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label>
-                                                <input type="text" maxlength="6" style="width:165%; font-weight:normal;" name="hci_postal_code" value="${SearchParam.filters['hciPostalCode']}" />
-                                            </label>
+                                            
+                                                <input type="text" maxlength="6" style=" font-weight:normal;" name="hci_postal_code" value="${SearchParam.filters['hciPostalCode']}" />
+                                            
                                         </div >
                                     </iais:row>
 
@@ -213,25 +213,25 @@
                                     <iais:row>
                                         <iais:field value="Licensee ID"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label>
-                                                <input type="text" maxlength="10" style="width:165%; font-weight:normal;" name="licensee_idNo" value="${SearchParam.filters['licenseeIdNo']}" />
-                                            </label>
+                                            
+                                                <input type="text" maxlength="10" style=" font-weight:normal;" name="licensee_idNo" value="${SearchParam.filters['licenseeIdNo']}" />
+                                            
                                         </div >
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Licensee Name"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label>
-                                                <input type="text" maxlength="50" style="width:165%; font-weight:normal;" name="licensee_name" value="${SearchParam.filters['licenseeName']}" />
-                                            </label>
+                                            
+                                                <input type="text" maxlength="50" style=" font-weight:normal;" name="licensee_name" value="${SearchParam.filters['licenseeName']}" />
+                                            
                                         </div >
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Licensee Professional Regn No."/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label>
-                                                <input type="text" maxlength="20" style="width:165%; font-weight:normal;" name="licensee_regn_no" value="${SearchParam.filters['licenseeRegnNo']}" />
-                                            </label>
+                                            
+                                                <input type="text" maxlength="20" style=" font-weight:normal;" name="licensee_regn_no" value="${SearchParam.filters['licenseeRegnNo']}" />
+                                            
                                         </div >
                                     </iais:row>
                                 </iais:section>
@@ -255,17 +255,17 @@
                                     <iais:row>
                                         <iais:field value="Service Personnel ID"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label>
-                                                <input type="text" maxlength="10" style="width:165%; font-weight:normal;" name="personnelId" value="${SearchParam.filters['personnelId']}" />
-                                            </label>
+                                            
+                                                <input type="text" maxlength="10" style=" font-weight:normal;" name="personnelId" value="${SearchParam.filters['personnelId']}" />
+                                            
                                         </div >
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Service Personnel Name"/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label>
-                                                <input type="text" maxlength="50" style="width:165%; font-weight:normal;" name="personnelName" value="${SearchParam.filters['personnelName']}" />
-                                            </label>
+                                            
+                                                <input type="text" maxlength="50" style=" font-weight:normal;" name="personnelName" value="${SearchParam.filters['personnelName']}" />
+                                            
                                         </div >
                                     </iais:row>
                                     <iais:row>
@@ -279,9 +279,9 @@
                                     <iais:row>
                                         <iais:field value="Service Personnel Professional Regn No."/>
                                         <div class="col-sm-7 col-md-4 col-xs-10">
-                                            <label>
-                                                <input type="text" maxlength="20" style="width:165%; font-weight:normal;" name="personnelRegnNo" value="${SearchParam.filters['personnelRegnNo']}" />
-                                            </label>
+                                            
+                                                <input type="text" maxlength="20" style=" font-weight:normal;" name="personnelRegnNo" value="${SearchParam.filters['personnelRegnNo']}" />
+                                            
                                         </div >
                                     </iais:row>
                                 </iais:section>
