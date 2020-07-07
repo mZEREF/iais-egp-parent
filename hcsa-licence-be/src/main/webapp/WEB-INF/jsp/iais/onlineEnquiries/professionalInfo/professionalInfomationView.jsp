@@ -19,7 +19,7 @@
 %>
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
-        <input type="hidden" name="prRegNo" value="">
+        <input type="hidden" id="prRegNo" name="prRegNo" value="">
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="bg-title"><h2>Professional information</h2></div>
 
@@ -110,9 +110,10 @@
                 <td>
                     <label class="col-xs-0 col-md-5 control-label">Service Personnel Role</label>
                     <div class="col-sm-7 col-md-5 col-xs-6">
-                        <iais:select name="role" id="role" options="psnType"
-                                     firstOption="Please Select"
-                                     value="${param.role}"></iais:select>
+
+                        <iais:select name="role" id="role" codeCategory="CATE_ID_PERSONNEL_PSN_TYPE"
+                                     firstOption="Please Select" value="${param.role}"></iais:select>
+
                         <span id="error_role" name="iaisErrorMsg" class="error-msg"></span>
                     </div>
                 </td>
@@ -136,88 +137,98 @@
 
 
         <div>
-            <div class="tab-pane active" id="tabInbox" role="tabpanel">
-                <div class="tab-content">
-                    <div class="row">
-                        <br><br>
-                        <div class="col-xs-12">
-                            <div class="components">
-                                <iais:pagination param="professionalInfoSearch" result="professionalInfoResult"/>
-                                <div class="table-gp">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <td></td>
-                                            <iais:sortableHeader needSort="false" field="index"
-                                                                 value="S/N"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true" field="name"
-                                                                 value="Name"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true" field="prof_reg_no"
-                                                                 value="Professional Regn No"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true" field="practice_location"
-                                                                 value="Practice Location"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true" field="licence_no"
-                                                                 value="Active Licence"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true" field="service_name"
-                                                                 value="Service"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true" field="designation"
-                                                                 value="Designation"></iais:sortableHeader>
-                                            <iais:sortableHeader needSort="true" field="psn_type"
-                                                                 value="Service Personnel Role"></iais:sortableHeader>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <c:choose>
-                                            <c:when test="${empty professionalInfoResult.rows}">
+        <div class="tab-pane active" id="tabInbox" role="tabpanel">
+            <div class="tab-content">
+                <div class="row">
+                    <br><br>
+                    <div class="col-xs-12">
+                        <div class="components">
+                            <iais:pagination param="professionalInfoSearch" result="professionalInfoResult"/>
+                            <div class="table-gp">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <td></td>
+                                        <iais:sortableHeader needSort="false" field="index"
+                                                             value="S/N"></iais:sortableHeader>
+                                        <iais:sortableHeader needSort="true" field="name"
+                                                             value="Name"></iais:sortableHeader>
+                                        <iais:sortableHeader needSort="true" field="prof_reg_no"
+                                                             value="Professional Regn No"></iais:sortableHeader>
+                                        <iais:sortableHeader needSort="true" field="practice_location"
+                                                             value="Practice Location"></iais:sortableHeader>
+                                        <iais:sortableHeader needSort="true" field="licence_no"
+                                                             value="Active Licence"></iais:sortableHeader>
+                                        <iais:sortableHeader needSort="true" field="service_name"
+                                                             value="Service"></iais:sortableHeader>
+                                        <iais:sortableHeader needSort="true" field="designation"
+                                                             value="Designation"></iais:sortableHeader>
+                                        <iais:sortableHeader needSort="true" field="psn_type"
+                                                             value="Service Personnel Role"></iais:sortableHeader>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:choose>
+                                        <c:when test="${empty professionalInfoResult.rows}">
+                                            <tr>
+                                                <td colspan="6">
+                                                    <iais:message key="ACK018" escape="true"></iais:message>
+                                                </td>
+                                            </tr>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:forEach var="info" items="${professionalInfoResult.rows}"
+                                                       varStatus="status">
                                                 <tr>
-                                                    <td colspan="6">
-                                                        <iais:message key="ACK018" escape="true"></iais:message>
-                                                    </td>
+                                                    <td></td>
+                                                    <td>${status.index + 1}</td>
+                                                    <td>${info.name}</td>
+
+                                                    <td>
+                                                    <c:choose>
+                                                        <c:when test="${info.profRegNo != null}">
+                                                        <a onclick="viewPfDetails('<iais:mask name="prRegNo"
+                                                                                              value="${info.id}"/>')">${info.profRegNo}</a>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            -
+                                                        </c:otherwise>
+                                                    </c:choose>
+
+
+                                                    <td>${info.practiceLocation}</td>
+                                                    <td>${info.licence}</td>
+                                                    <td>${info.serviceName}</td>
+                                                    <td><iais:code code="${empty info.designation ? '-' : info.designation}"></iais:code></td>
+                                                    <td><iais:code code="${info.role}"></iais:code></td>
                                                 </tr>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <c:forEach var="info" items="${professionalInfoResult.rows}"
-                                                           varStatus="status">
-                                                    <tr>
-                                                        <td></td>
-                                                        <td>${status.index + 1}</td>
-                                                        <td>${info.name}</td>
-                                                        <td><a onclick="viewPfDetails('<iais:mask name="prRegNo"
-                                                                                                  value="${info.profRegNo}"/>')">${info.profRegNo}</a>
-                                                        </td>
-                                                        <td>${info.practiceLocation}</td>
-                                                        <td>${info.licence}</td>
-                                                        <td>${info.serviceName}</td>
-                                                        <td><iais:code code="${info.designation}"></iais:code></td>
-                                                        <td>${info.role}</td>
-                                                    </tr>
-                                                </c:forEach>
+                                            </c:forEach>
 
 
-                                            </c:otherwise>
-                                        </c:choose>
-                                        </tbody>
-                                    </table>
-                                    <div class="table-footnote">
-                                        <div class="row">
-                                            <div class="col-xs-6 col-md-8 text-right">
-                                                <br><br>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    </tbody>
+                                </table>
+                                <div class="table-footnote">
+                                    <div class="row">
+                                        <div class="col-xs-6 col-md-8 text-right">
+                                            <br><br>
 
 
-                                            </div>
                                         </div>
                                     </div>
-
-
                                 </div>
+
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-
         </div>
+
+
+    </div>
 
 
     </form>
@@ -227,6 +238,7 @@
 
 <script>
     function viewPfDetails(val) {
+        $('#prRegNo').val(val);
         SOP.Crud.cfxSubmit("mainForm", "viewPfDetails");
     }
 

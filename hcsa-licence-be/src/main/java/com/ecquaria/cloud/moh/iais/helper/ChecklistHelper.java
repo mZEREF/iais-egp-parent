@@ -147,6 +147,17 @@ public final class ChecklistHelper {
         }
     }
 
+    public static void sendEmailToApplicant(List<ApplicationGroupDto> appGroup){
+        MsgTemplateClient msgTemplateClient = SpringContextHelper.getContext().getBean(MsgTemplateClient.class);
+        EmailHelper emailHelper = SpringContextHelper.getContext().getBean(EmailHelper.class);
+        if (emailHelper == null || msgTemplateClient == null){
+            log.info("===>>>>alertSelfDeclNotification can not find bean");
+            return;
+        }
+
+        /*emailHelper.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, );*/
+    }
+
     public static void sendNotificationToApplicant(List<ApplicationGroupDto> appGroup){
         MsgTemplateClient msgTemplateClient = SpringContextHelper.getContext().getBean(MsgTemplateClient.class);
         SystemParamConfig systemParamConfig = SpringContextHelper.getContext().getBean(SystemParamConfig.class);

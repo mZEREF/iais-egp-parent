@@ -284,6 +284,11 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     }
 
     @Override
+    public PersonnelsDto getProfessionalInformationByKeyPersonnelId(String psnId) {
+        return hcsaLicenceClient.getProfessionalInformationByKeyPersonnelId(psnId).getEntity();
+    }
+
+    @Override
     public EnquiryInspectionReportDto getInsRepDto(ApplicationViewDto applicationViewDto,String licenceId)  {
         EnquiryInspectionReportDto inspectionReportDto = new EnquiryInspectionReportDto();
         List<PremisesDto> licPremisesDto=hcsaLicenceClient.getPremisess(licenceId).getEntity();

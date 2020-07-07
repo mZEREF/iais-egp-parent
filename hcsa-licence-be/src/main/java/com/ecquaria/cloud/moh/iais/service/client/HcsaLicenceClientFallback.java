@@ -167,6 +167,14 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
+    public FeignResponseEntity<PersonnelsDto> getProfessionalInformationByKeyPersonnelId(String psnId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<LicenceDto>> getLicDtosByLicNos(List<String> licenceNos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

@@ -98,6 +98,10 @@ public interface HcsaLicenceClient {
     @GetMapping(path= "/hcsa-licence/lic-corr-appId{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicAppCorrelationDto>> getLicCorrByappId(@PathVariable(value = "appId")String appId);
 
+    @GetMapping(path = "/hcsa-key-personnel/professional/{psnId}/information/",produces = { MediaType.APPLICATION_JSON_VALUE },
+            consumes = {MediaType.APPLICATION_JSON_VALUE})
+    FeignResponseEntity<PersonnelsDto> getProfessionalInformationByKeyPersonnelId(@PathVariable(value ="psnId" ) String psnId);
+
     @RequestMapping(path = "/hcsa-licence/licence-by-licno",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicDtosByLicNos(@RequestBody List<String> licenceNos);
 
