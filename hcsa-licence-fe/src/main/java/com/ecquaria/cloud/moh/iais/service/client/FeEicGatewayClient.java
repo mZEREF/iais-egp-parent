@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -15,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -47,8 +49,8 @@ public class FeEicGatewayClient {
                                                                 String authorizationSec) {
         Map<String, Object> param = IaisCommonUtils.genNewHashMap(1);
         param.put("corrData", corrDataJson);
-        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/v1/hcsa-app-officer", HttpMethod.GET, param,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+        return IaisEGPHelper.callEicGatewayWithParamForList(gateWayUrl + "/v1/hcsa-app-officer", HttpMethod.GET, param,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, String.class);
     }
 
     /**
@@ -92,8 +94,8 @@ public class FeEicGatewayClient {
     public FeignResponseEntity<List> routePaymentStatus(ApplicationGroupDto applicationGroupDto,
                                                    String date, String authorization,
                                                    String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/payment-status", HttpMethod.PUT, applicationGroupDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/payment-status", HttpMethod.PUT, applicationGroupDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, LicenceDto.class);
     }
 
 
@@ -105,8 +107,8 @@ public class FeEicGatewayClient {
      */
     public FeignResponseEntity<List> updateLicenceStatus(List<LicenceDto> licenceDtos,
                                       String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/cessation-status", HttpMethod.PUT, licenceDtos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/cessation-status", HttpMethod.PUT, licenceDtos,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, LicenceDto.class);
     }
 
     public FeignResponseEntity<LicPremisesReqForInfoDto> routeRfiData(LicPremisesReqForInfoDto licPremisesReqForInfoDto,
@@ -135,8 +137,8 @@ public class FeEicGatewayClient {
 
     public FeignResponseEntity<List> createFeReplyTask(ApptFeConfirmDateDto apptFeConfirmDateDto,
                                                          String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-task-assignment", HttpMethod.POST, apptFeConfirmDateDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-task-assignment", HttpMethod.POST, apptFeConfirmDateDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, TaskDto.class);
     }
 
     public FeignResponseEntity<InspRectificationSaveDto> feCreateAndUpdateItemDoc(InspRectificationSaveDto inspRectificationSaveDto,
@@ -155,8 +157,8 @@ public class FeEicGatewayClient {
 
     public FeignResponseEntity<List> getpublicHoliday(String date, String authorization,
                                                       String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/appt-public-holiday", HttpMethod.GET, null,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, List.class);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/appt-public-holiday", HttpMethod.GET, null,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, PublicHolidayDto.class);
     }
 
     public FeignResponseEntity<Void> updateUserCalendarStatus(ApptCalendarStatusDto apptCalDto,
