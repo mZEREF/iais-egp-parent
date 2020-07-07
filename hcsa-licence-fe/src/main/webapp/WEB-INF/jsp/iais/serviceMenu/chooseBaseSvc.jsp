@@ -159,6 +159,13 @@
                 $('.existing-base-content input[type="radio"]:checked').each(function () {
                     $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
                 });
+
+                $('.speSvcContent').each(function (k,v) {
+                    if( $(this).find('.form-check-input:checked').length == 0){
+                        $(this).find('.form-check-input:eq(0)').prop('checked',true);
+                        $(this).find('.existing-base-content:eq(0) input[type="radio"]:eq(0)').prop('checked',true);
+                    }
+                });
             }
         }
 
