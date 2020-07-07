@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -117,16 +118,16 @@ public class FeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, LicPremisesReqForInfoDto.class);
     }
 
-    public FeignResponseEntity<Map> getUserCalendarByUserId(AppointmentDto appointmentDto,
+    public FeignResponseEntity<List> getUserCalendarByUserId(AppointmentDto appointmentDto,
                                              String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-reschedule-appt", HttpMethod.POST, appointmentDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Map.class);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-reschedule-appt", HttpMethod.POST, appointmentDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptRequestDto.class);
     }
 
-    public FeignResponseEntity<Map> getAppointmentByApptRefNo(List<String> apptRefNos,
-                                                          String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-appt-refno", HttpMethod.POST, apptRefNos,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, Map.class);
+    public FeignResponseEntity<List> getAppointmentByApptRefNo(List<String> apptRefNos,
+                                                                               String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-appt-refno", HttpMethod.POST, apptRefNos,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptRequestDto.class);
     }
 
     public FeignResponseEntity<ApptInspectionDateDto> apptFeDataUpdateCreateBe(ApptInspectionDateDto apptInspectionDateDto,
