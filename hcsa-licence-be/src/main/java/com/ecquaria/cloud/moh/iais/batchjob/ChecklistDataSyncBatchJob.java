@@ -1,6 +1,9 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
+import com.ecquaria.cloud.job.executor.handler.IJobHandler;
+import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareData;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRequest;
@@ -18,7 +21,6 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -34,7 +36,7 @@ import java.util.stream.Collectors;
 
 @Delegator("checklistDataSyncBatchJob")
 @Slf4j
-public class ChecklistDataSyncBatchJob {
+public class ChecklistDataSyncBatchJob extends IJobHandler {
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
@@ -51,23 +53,6 @@ public class ChecklistDataSyncBatchJob {
     private String secretKey;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
-
-    /**
-     * StartStep: run
-     * @param bpc
-     * @throws IllegalAccessException
-     */
-    public void run(BaseProcessClass bpc) throws IllegalAccessException {
-        compareSyncRegulation();
-
-        compareSyncItem();
-
-        compareSyncConfig();
-
-        compareSyncSection();
-
-        compareSyncSectionItem();
-    }
 
     /**
      * StartStep: stop
@@ -220,6 +205,26 @@ public class ChecklistDataSyncBatchJob {
                     signature2.date(), signature2.authorization());
         }catch (Exception e){
             log.info(StringUtil.changeForLog("sync checklist data from be failure" + e.getMessage()), e);
+        }
+    }
+
+    @Override
+    public ReturnT<String> execute(String s) throws Exception {
+        try {
+            compareSyncRegulation();
+
+            compareSyncItem();
+
+            compareSyncConfig();
+
+            compareSyncSection();
+
+            compareSyncSectionItem();
+            return ReturnT.SUCCESS;
+        }catch (Throwable e) {
+            log.error(e.getMessage(), e);
+            JobLogger.log(e);
+            return ReturnT.FAIL;
         }
     }
 }

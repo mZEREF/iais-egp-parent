@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
+import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,13 @@ public class SelfDeclNotificationJobHandler extends IJobHandler {
 
 	@Override
 	public ReturnT<String> execute(String s) throws Exception {
-		applicationService.alertSelfDeclNotification();
-		return ReturnT.SUCCESS;
+		try {
+			applicationService.alertSelfDeclNotification();
+			return ReturnT.SUCCESS;
+		}catch (Throwable e) {
+			log.error(e.getMessage(), e);
+			JobLogger.log(e);
+			return ReturnT.FAIL;
+		}
 	}
 }
