@@ -132,7 +132,14 @@
                                 <c:otherwise>
                                     <c:forEach var="pool" items="${supTaskSearchResult.rows}"
                                                varStatus="status">
-                                        <tr style="display: table-row;" id="advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}">
+                                        <tr style="display: table-row;" id="advfilter${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"
+                                        <c:if test="${pool.applicationTypeCode == 'APTY001'}">
+                                            data-isShowCheck = "1"
+                                        </c:if>
+                                                <c:if test="${pool.applicationTypeCode != 'APTY001'}">
+                                                    data-isShowCheck = "0"
+                                                </c:if>
+                                            >
                                             <td><c:out value="${(status.index + 1) + (backendinboxSearchParam.pageNo - 1) * backendinboxSearchParam.pageSize}"/></td>
                                             <td><p style="width: 160px;"><c:out value="${pool.applicationGroupNo}"/><a class="accordion-toggle  collapsed" style="float: right"
                                                                                                  data-toggle="collapse" aria-expanded="false"
@@ -257,6 +264,11 @@
                             isshow = true;
                         }
                     }
+                    var isappeal = $('#advfilter' + divid).attr("data-isShowCheck");
+                    console.log(isappeal == '1')
+                    if(isappeal == '1'){
+                        isshow = false;
+                    }
                     if(isshow){
                         html += '<th><input type="checkbox" id="checkbox' + divid + '" onclick="chooseAllcheckBox(' + divid + ')" </th>';
                     }else{
@@ -286,7 +298,7 @@
                     var address = res[i].address;
                     html += '<tr style = "color : ' + color + ';">';
                     if (hastaskList == "true") {
-                        if(res[i].statusCode == 'APST002' || res[i].statusCode == 'APST010' || res[i].statusCode == 'APST011' ){
+                        if((res[i].statusCode == 'APST002' || res[i].statusCode == 'APST010' || res[i].statusCode == 'APST011' ) && isappeal != '1'){
                             html += '<td><input type="checkbox" name="taskId" value="' + taskList[res[i].refNo] + '" onclick="chooseFirstcheckBox(' + divid + ')"></td>'
                         }
                         else{

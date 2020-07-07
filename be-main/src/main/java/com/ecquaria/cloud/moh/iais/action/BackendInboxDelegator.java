@@ -710,7 +710,7 @@ public class BackendInboxDelegator {
                 }else{
                     item.setPaymentstatus(MasterCodeUtil.getCodeDesc(item.getPaymentstatus()));
                 }
-
+                item.setApplicationTypeCode(String.copyValueOf(item.getApplicationType().toCharArray()));
                 item.setApplicationType(MasterCodeUtil.getCodeDesc(item.getApplicationType()));
             }
 
