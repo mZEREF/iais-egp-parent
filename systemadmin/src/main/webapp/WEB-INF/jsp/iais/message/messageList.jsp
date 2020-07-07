@@ -82,7 +82,7 @@
                                 <%-- message entity--%>
                                 <c:forEach var = "msgQuery" items = "${msgSearchResult.rows}" varStatus="status">
                                     <tr>
-                                        <td class="row_no" style="width: 5px">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
+                                        <td align="left" class="row_no" style="width: 5px">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
                                         <td align="left" style="width: 5px"><c:out value="${msgQuery.domainType}"></c:out></td>
                                         <td align="left" style="width: 5px"><c:out value="${msgQuery.msgType}"></c:out></td>
                                         <td align="left" style="width: 5px"><c:out value="${msgQuery.module}"></c:out> </td>
