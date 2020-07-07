@@ -92,7 +92,7 @@
                 // }
                 //control curr
                 $baseLicContent.find('input[type="radio"]').prop('disabled',false);
-
+                $baseLicContent.find('.existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
                 if(init ==0){
                     $currSpecContent.removeClass('disable-point');
                 }
