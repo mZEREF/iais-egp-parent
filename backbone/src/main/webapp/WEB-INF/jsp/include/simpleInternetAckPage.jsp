@@ -20,23 +20,33 @@
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <div class="bg-title"><h2>Acknowledgement</h2></div>
 
-        <p><c:out value="${ackMsg}"></c:out></p>
+        <div class="container" >
+            <br>
+            <div class="bg-title"><h2>Acknowledgement</h2></div>
+
+            <p><c:out value="${ackMsg}"></c:out></p>
 
 
-        <c:choose>
-            <c:when test="${redirectFlag == 'Y'}">
-                <div class="text-right text-center-mobile">
-                    <a class="btn btn-primary next" href="/main-web/" >Done</a>
-                </div>
-            </c:when>
-            <c:otherwise>
-                <div class="text-right text-center-mobile">
-                    <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Done</a>
-                </div>
-            </c:otherwise>
-        </c:choose>
+            <c:choose>
+                <c:when test="${redirectFlag == 'Y'}">
+                    <div class="text-right text-center-mobile">
+                        <a class="btn btn-primary next" href="/main-web/" >Done</a>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="text-right text-center-mobile">
+                        <a class="btn btn-primary next" href="javascript:void(0);" onclick="javascript:doCancel();">Done</a>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+
+            <br>
+
+
+
+        </div>
+
 
     </form>
 </div>
