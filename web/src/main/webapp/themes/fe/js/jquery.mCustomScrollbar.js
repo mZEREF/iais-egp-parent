@@ -56,7 +56,7 @@ and dependencies (minified).
 		}else{
 			/* load jquery-mousewheel plugin (via CDN) if it's not present or not loaded via RequireJS
 			(works when mCustomScrollbar fn is called on window load) */
-			$.event.special.mousewheel;
+			$.event.special.mousewheel
 		}
 	}
 	init();
