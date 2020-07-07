@@ -125,6 +125,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     private void sendInboxMessage(String applicationNo,String licenseeId,HashMap<String, String> maskParams,String templateMessageByContent,String serviceId,String subject){
         InterMessageDto interMessageDto = new InterMessageDto();
+        HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         interMessageDto.setSubject(subject);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
@@ -133,7 +134,9 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         String refNo = feEicGatewayClient.getMessageNo(signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
         interMessageDto.setRefNo(refNo);
-        interMessageDto.setService_id(serviceId);
+        if(serviceDto != null){
+            interMessageDto.setService_id(serviceDto.getSvcCode()+"@");
+        }
         interMessageDto.setUserId(licenseeId);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         interMessageDto.setMsgContent(templateMessageByContent);
