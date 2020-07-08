@@ -32,7 +32,7 @@ public class MultipleSelectTag extends DivTagSupport {
         try {
             setName(null);
         } catch (JspException e) {
-            e.printStackTrace();
+            log.info(e.getMessage(),e);
         }
         setCssClass("");
         setStyle("");

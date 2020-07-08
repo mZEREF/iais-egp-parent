@@ -33,7 +33,7 @@ public class MasterCodeTag extends DivTagSupport {
         try {
             setCode("");
         } catch (JspException e) {
-            e.printStackTrace();
+            log.info(e.getMessage(),e);
         }
         setEmpty(false);
         setViewEmptyStr(false);
