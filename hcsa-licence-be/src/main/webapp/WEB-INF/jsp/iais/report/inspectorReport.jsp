@@ -596,8 +596,10 @@
 
         if (recommendationRfc == 'IRE007') {
             $("#periodValue").html('Approve');
-        } else if (recommendationRfc == 'IRE007') {
+        } else if (recommendationRfc == 'IRE008') {
             $("#periodValue").html('Reject');
+        }else {
+            $("#periodValue").html('');
         }
     }
 
