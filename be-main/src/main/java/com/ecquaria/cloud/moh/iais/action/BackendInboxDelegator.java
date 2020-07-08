@@ -506,7 +506,6 @@ public class BackendInboxDelegator {
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
-        //need change
         String decision = null;
         String currentStatus = applicationDto.getStatus();
         if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(currentStatus)){
