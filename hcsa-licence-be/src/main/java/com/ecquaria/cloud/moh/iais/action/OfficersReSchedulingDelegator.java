@@ -85,6 +85,7 @@ public class OfficersReSchedulingDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchResult", null);
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchParam", null);
         ParamUtil.setSessionAttr(bpc.request, "workGroupNos", null);
+        ParamUtil.setSessionAttr(bpc.request, "applicationDto", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectorOption1", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectorOption2", null);
         ParamUtil.setSessionAttr(bpc.request, "inspectorOption3", null);
@@ -177,6 +178,7 @@ public class OfficersReSchedulingDelegator {
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if("choose".equals(actionValue)){
             String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+            reschedulingOfficerDto.setAssignNo(applicationNo);
             ApplicationDto applicationDto = officersReSchedulingService.getApplicationByAppNo(applicationNo);
             String appType = applicationDto.getApplicationType();
             if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
@@ -257,6 +259,9 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingInsp(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingInsp start ...."));
+        ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
+        officersReSchedulingService.reScheduRoutingTask(reschedulingOfficerDto);
+        ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
     }
 
     /**
@@ -359,6 +364,11 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingSuccess(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingSuccess start ...."));
+        ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
+        String applicationNo = reschedulingOfficerDto.getAssignNo();
+        ApplicationDto applicationDto = officersReSchedulingService.getApplicationByAppNo(applicationNo);
+        ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
+        ParamUtil.setSessionAttr(bpc.request, "applicationDto", applicationDto);
     }
 
     private SearchParam getSearchParam(BaseProcessClass bpc){

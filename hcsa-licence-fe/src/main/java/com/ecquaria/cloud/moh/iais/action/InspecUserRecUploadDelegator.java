@@ -245,7 +245,8 @@ public class InspecUserRecUploadDelegator {
                 }
             }
             if (!flag) {
-                errorMap.put(errorKey, "GENERAL_ERR0018");
+                String sysFileType = systemParamConfig.getUploadFileType();
+                errorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType,"fileType"));
                 return errorMap;
             }
             if (file.getSize() / 1024 > 0) {

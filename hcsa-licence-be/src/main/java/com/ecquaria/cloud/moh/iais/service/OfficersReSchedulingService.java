@@ -86,4 +86,13 @@ public interface OfficersReSchedulingService {
       * @Descripation: getApplicationByAppNo
       */
     ApplicationDto getApplicationByAppNo(String applicationNo);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/8
+      * @Param: reschedulingOfficerDto
+      * @return: void
+      * @Descripation: reScheduRoutingTask
+      */
+    void reScheduRoutingTask(ReschedulingOfficerDto reschedulingOfficerDto);
 }
