@@ -37,8 +37,8 @@ public class GatewayConfig {
 	public static final String return_url = properties.getProperty("payment.return.url");
 
 	//"http://192.168.6.80:8088/egp/process/EGOV/CommPayment?";
-	//public static final String common_gateway_url = properties.getProperty("payment.gateway.url");
-	public static final String common_gateway_url = "/egov/process/EGPCLOUD/CommPayment?";
+	public static final String common_gateway_url = properties.getProperty("payment.gateway.url");
+	//public static final String common_gateway_url = "/payment-web/process/EGPCLOUD/CommPayment?";
 	
 	//"http://192.168.6.80:8088/egp/process/EGOV/PaymentGatewayService?";
 	public static final String common_gateway_service_url = properties.getProperty("payment.gateway.service.url");
