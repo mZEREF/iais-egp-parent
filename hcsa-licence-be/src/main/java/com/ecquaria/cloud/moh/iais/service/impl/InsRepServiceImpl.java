@@ -401,7 +401,7 @@ public class InsRepServiceImpl implements InsRepService {
         String remarks = appPremisesRecommendationDto.getRemarks();
         Integer version = 1;
         AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
-        if (oldAppPremisesRecommendationDto == null) {
+        if (oldAppPremisesRecommendationDto == null&&!StringUtil.isEmpty(remarks)) {
             appPremisesRecommendationDto.setVersion(version);
             appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             insRepClient.saveRecommendationData(appPremisesRecommendationDto);
@@ -1049,10 +1049,17 @@ public class InsRepServiceImpl implements InsRepService {
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         String schemeType = dto.getSchemeType();
         String groupId = dto.getGroupId();
-        if (SystemParameterConstants.ROUND_ROBIN.equals(schemeType)) {
+        String userId = null;
+        Set<String> ao2 = taskService.getInspectiors(applicationDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, RoleConsts.USER_ROLE_AO2);
+        if (!ao2.isEmpty()) {
+            userId = ao2.iterator().next();
+            taskDto.setUserId(userId);
+        }
+
+        if (StringUtil.isEmpty(userId)&&SystemParameterConstants.ROUND_ROBIN.equals(schemeType)) {
             TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
             taskDto.setUserId(taskDto1.getUserId());
-        } else {
+        } else if(StringUtil.isEmpty(userId) && SystemParameterConstants.COMMON_POOL.equals(schemeType)) {
             taskDto.setUserId(null);
         }
         taskDto.setId(null);

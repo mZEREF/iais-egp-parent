@@ -343,6 +343,8 @@ public class InsReportDelegator {
         insRepService.updateengageRecommendation(appPremisesRecommendationDto3);
         String followRemarks = appPremisesRecommendationDto3.getRemarks();
         if (!StringUtil.isEmpty(followRemarks)) {
+            appPremisesRecommendationDto3.setRemarks(followRemarks);
+        }else {
             appPremisesRecommendationDto3.setRemarks(null);
         }
         insRepService.updateFollowRecommendation(appPremisesRecommendationDto3);
