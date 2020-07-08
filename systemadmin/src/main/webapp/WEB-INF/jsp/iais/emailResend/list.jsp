@@ -94,13 +94,25 @@
                                                                    pattern="dd/MM/yyyy HH:mm"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="Failure"/></p>
+                                                <p>
+                                                    <c:choose>
+                                                        <c:when test="${item.status == 1}">Delivered</c:when><c:otherwise>Failed</c:otherwise>
+                                                    </c:choose>
+                                                 </p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.logMsg}"/></p>
+                                                <p>
+                                                    <c:choose>
+                                                        <c:when test="${item.status == 1}">NIL</c:when><c:otherwise>${item.logMsg}</c:otherwise>
+                                                    </c:choose>
+                                                </p>
                                             </td>
                                             <td>
-                                                <p><a onclick="edit('<iais:mask name="emailId" value="${item.notificationId}" />')">Resend</a></p>
+                                                <p>
+                                                    <c:choose>
+                                                        <c:when test="${item.status != 1}"><a onclick="edit('<iais:mask name="emailId" value="${item.clientQueryCode}" />')">Resend</a></c:when>
+                                                    </c:choose>
+                                                    </p>
                                             </td>
                                         </tr>
                                     </c:forEach>

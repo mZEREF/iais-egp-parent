@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
-import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
+import com.ecquaria.cloud.job.executor.handler.IJobHandler;
+import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.AttachmentDto;
@@ -15,6 +17,7 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.File;
@@ -32,9 +35,10 @@ import java.util.Map;
  * @author Guyin
  * @date 03/03/2020
  */
-@Delegator("SendMassEmailBatchjob")
+@JobHandler(value="SendMassEmailJobHandler")
+@Component
 @Slf4j
-public class SendMassEmailBatchjob {
+public class SendMassEmailJobHandler extends IJobHandler {
 
     @Autowired
     BlastManagementListService blastManagementListService;
@@ -48,57 +52,6 @@ public class SendMassEmailBatchjob {
     }
     public void doBatchJob(BaseProcessClass bpc) throws IOException, TemplateException{
 
-        log.debug(StringUtil.changeForLog("The SendMassEmailBatchjob is  start..." ));
-        //get need send email and sms
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        List<BlastManagementDto> blastManagementDto = blastManagementListService.getBlastBySendTime(df.format(new Date()));
-
-        //foreach get recipient and send
-        for (BlastManagementDto item:blastManagementDto
-             ) {
-            if(EMAIL.equals(item.getMode())){
-                EmailDto email = new EmailDto();
-                List<String> roleEmail = blastManagementListService.getEmailByRole(item.getRecipientsRole());
-                email.setContent(item.getMsgContent());
-                email.setSender(mailSender);
-                email.setSubject(item.getSubject());
-                email.setClientQueryCode(item.getId());
-                List<String> allemail = IaisCommonUtils.genNewArrayList();
-                if(!IaisCommonUtils.isEmpty(roleEmail)){
-                    allemail.addAll(roleEmail);
-                }
-                if(!IaisCommonUtils.isEmpty(item.getEmailAddress())){
-                    allemail.addAll(item.getEmailAddress());
-                }
-
-                email.setReceipts(allemail);
-                email.setReqRefNum(item.getId());
-                try{
-                    if(item.getAttachmentDtos() != null){
-                        Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
-                        for (AttachmentDto att: item.getAttachmentDtos()
-                             ) {
-                            emailMap.put(att.getDocName(),att.getData());
-                        }
-                        blastManagementListService.sendEmail(email,emailMap);
-                    }else{
-                        blastManagementListService.sendEmail(email,null);
-                    }
-                    if(item.getId() != null){
-                        //update mass email actual time
-                        blastManagementListService.setActual(item.getId());
-                    }
-                }catch (Exception e){
-                    log.error(StringUtil.changeForLog("error"));
-                }
-            }else{
-                List<String> mobile = blastManagementListService.getMobileByRole(item.getRecipientsRole());
-                sendSMS(item.getMessageId(), mobile,item.getMsgContent());
-            }
-
-        }
-
-        log.debug(StringUtil.changeForLog("SendMassEmailBatchjob end..." ));
     }
 
 
@@ -131,5 +84,63 @@ public class SendMassEmailBatchjob {
         }catch (Exception e){
             log.error(StringUtil.changeForLog("error"));
         }
+    }
+
+    @Override
+    public ReturnT<String> execute(String s) throws Exception {
+
+        log.debug(StringUtil.changeForLog("The SendMassEmailBatchjob is  start..." ));
+        //get need send email and sms
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<BlastManagementDto> blastManagementDto = blastManagementListService.getBlastBySendTime(df.format(new Date()));
+
+        //foreach get recipient and send
+        for (BlastManagementDto item:blastManagementDto
+        ) {
+            if(EMAIL.equals(item.getMode())){
+                EmailDto email = new EmailDto();
+                List<String> roleEmail = blastManagementListService.getEmailByRole(item.getRecipientsRole());
+                email.setContent(item.getMsgContent());
+                email.setSender(mailSender);
+                email.setSubject(item.getSubject());
+                email.setClientQueryCode(item.getId());
+                List<String> allemail = IaisCommonUtils.genNewArrayList();
+                if(!IaisCommonUtils.isEmpty(roleEmail)){
+                    allemail.addAll(roleEmail);
+                }
+                if(!IaisCommonUtils.isEmpty(item.getEmailAddress())){
+                    allemail.addAll(item.getEmailAddress());
+                }
+
+                email.setReceipts(allemail);
+                email.setReqRefNum(item.getId());
+                email.setClientQueryCode(item.getMessageId());
+                try{
+                    if(item.getAttachmentDtos() != null){
+                        Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
+                        for (AttachmentDto att: item.getAttachmentDtos()
+                        ) {
+                            emailMap.put(att.getDocName(),att.getData());
+                        }
+                        blastManagementListService.sendEmail(email,emailMap);
+                    }else{
+                        blastManagementListService.sendEmail(email,null);
+                    }
+                    if(item.getId() != null){
+                        //update mass email actual time
+                        blastManagementListService.setActual(item.getId());
+                    }
+                }catch (Exception e){
+                    return ReturnT.FAIL;
+                }
+            }else{
+                List<String> mobile = blastManagementListService.getMobileByRole(item.getRecipientsRole());
+                sendSMS(item.getMessageId(), mobile,item.getMsgContent());
+            }
+
+        }
+
+        log.debug(StringUtil.changeForLog("SendMassEmailBatchjob end..." ));
+        return ReturnT.SUCCESS;
     }
 }

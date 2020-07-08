@@ -26,7 +26,10 @@ public interface BlastManagementListService {
     void setSchedule(BlastManagementDto blastManagementDto);
     void deleteBlastList(List<String> list);
     BlastManagementDto getBlastById(String id);
+    BlastManagementDto getBlastByMsgId(String id);
     List<BlastManagementDto> getBlastBySendTime(String date);
+    List<BlastManagementDto> getSendedBlast();
+    List<BlastManagementDto> getSendedSMS();
     void setActual(String id);
     String getMessageId();
     void sendEmail(EmailDto emailDto, Map<String, byte[]> attachments);

@@ -79,10 +79,23 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     }
 
     @Override
+    public BlastManagementDto getBlastByMsgId(String id){
+        return blastManagementListClient.getBlastByMsgId(id).getEntity();
+    }
+    @Override
     public List<BlastManagementDto> getBlastBySendTime(String date){
         return blastManagementListClient.getBlastBySendTime(date).getEntity();
     }
 
+    @Override
+    public List<BlastManagementDto> getSendedBlast(){
+        return blastManagementListClient.getSendedBlast().getEntity();
+    }
+
+    @Override
+    public List<BlastManagementDto> getSendedSMS(){
+        return blastManagementListClient.getSendedSMS().getEntity();
+    }
     @Override
     public void setActual(String id){
         blastManagementListClient.setActual(id).getEntity();

@@ -488,13 +488,21 @@
 
     <sql key="failEmail"  remarks="failEmail">
         <![CDATA[
-			 SELECT
-            T1.notification_id,T1.REQUEST_REF_NO,T4.recipient_value as recipient,T1.sender,T1.subject,T1.status,T3.log_msg,T3.sent_time
+			SELECT DISTINCT
+            T1.notification_id,T1.REQUEST_REF_NO,SUBSTRING(RECIPIENT_VALUE_ALL,1, LEN(RECIPIENT_VALUE_ALL) - 1) recipient,T1.sender,T1.subject,T1.status,T3.log_msg,T3.sent_time,T1.client_query_code
             FROM notification T1
             LEFT JOIN notification_annex T2 ON T1.REQUEST_REF_NO = T2.request_ref_num
             LEFT JOIN notification_history T3 ON T3.notification_id = T1.notification_id
-            LEFT JOIN notification_recipient T4 ON T4.notification_id = T1.notification_id
-             WHERE T1.status = '3'
+            LEFT JOIN notification_recipient  ON notification_recipient.notification_id = T1.notification_id
+             CROSS APPLY
+			(
+				SELECT notification_recipient.RECIPIENT_VALUE + ', '
+				FROM notification_recipient
+				WHERE notification_recipient.notification_id = T1.notification_id
+				FOR XML PATH('')
+			) D (RECIPIENT_VALUE_ALL)
+            WHERE 1 = 1
+            <#if msg_id_in??> and client_query_code IN ${msg_id_in} </#if>
             <#if start??> AND T3.sent_time > CONVERT(datetime, :start, 103)</#if>
             <#if end??> AND T3.sent_time < CONVERT(datetime, :end, 103)</#if>
         ]]>

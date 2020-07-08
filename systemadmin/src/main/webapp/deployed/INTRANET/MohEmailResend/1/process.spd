@@ -37,9 +37,35 @@
     <JavaCode defClass="" executor="" methodName="doPage_OnStepProcess_0" name="doPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="send" x="360" y="500">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="send_OnStepProcess_0" name="send_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="240" y="260">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step2_OnStepProcess_0" name="step2_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page1" stageIndicator="" x="380" y="100">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Resend" stageIndicator="" x="360" y="320">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="Page2" stageIndicator="" x="240" y="500">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -66,14 +92,32 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/resend" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(540,120)(380,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/resend" style="oblique">
-   <position>{(380,240)(260,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(540,120)(570,240)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPage" style="oblique">
    <position>{(570,240)(260,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Resend" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/resend" style="rectanular">
+   <position>{(380,240)(380,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/send" style="rectanular">
+   <position>{(380,520)(260,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page2" style="rectanular">
+   <position>{(260,520)(260,280)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step2" style="rectanular">
+   <position>{(260,280)(260,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Resend" style="rectanular">
+   <position>{(380,340)(380,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/send" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
+   <position>{(380,430)(380,520)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepare" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(380,430)(260,120)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -83,6 +127,11 @@
    <SwitchCase component="/Steps/AutomaticStep/search" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/resend" value="&quot;resend&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doPage" value="&quot;page&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type_value" name="Switch2" x="360" y="410">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/send" value="&quot;send&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepare" value="&quot;back&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

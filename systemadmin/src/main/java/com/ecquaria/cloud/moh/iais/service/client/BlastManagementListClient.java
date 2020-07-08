@@ -38,8 +38,17 @@ public interface BlastManagementListClient {
     @GetMapping(value = "/iais-emails/blastList/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<BlastManagementDto> getBlastById(@PathVariable("id") String id);
 
+    @GetMapping(value = "/iais-emails/blastByMsgId/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<BlastManagementDto> getBlastByMsgId(@PathVariable("id") String id);
+
     @PostMapping(value = "/iais-emails/getBlastBySendTime", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<BlastManagementDto>> getBlastBySendTime(@RequestParam("date") String date);
+
+    @GetMapping(value = "/iais-emails/sendedBlast", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<BlastManagementDto>> getSendedBlast();
+
+    @GetMapping(value = "/iais-emails/sendedSMS", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<BlastManagementDto>> getSendedSMS();
 
     @PostMapping(value = "/iais-emails/setActual", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> setActual(@RequestParam("id") String id);

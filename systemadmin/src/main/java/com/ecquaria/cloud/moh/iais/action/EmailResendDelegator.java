@@ -5,9 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.AnnexDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailAttachMentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.AttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ResendListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -22,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.text.ParseException;
@@ -43,7 +43,8 @@ import java.util.Map;
 @Slf4j
 public class EmailResendDelegator {
 
-//    private SearchParam searchParam;
+    @Value("${iais.email.sender}")
+    private String mailSender;
 
     @Autowired
     BlastManagementListService blastManagementListService;
@@ -59,6 +60,8 @@ public class EmailResendDelegator {
      * @param bpc
      */
     public void prepare(BaseProcessClass bpc){
+        //search mass email
+        List<BlastManagementDto> blastManagementDtos = blastManagementListService.getSendedBlast();
         SearchParam searchParam = (SearchParam)ParamUtil.getSessionAttr(bpc.request,"resendSearchParam");
         if(searchParam == null){
             searchParam = new SearchParam(ResendListDto.class.getName());
@@ -66,6 +69,22 @@ public class EmailResendDelegator {
             searchParam.setPageNo(1);
             searchParam.setSort("sent_time", SearchParam.ASCENDING);
         }
+
+        StringBuilder sb = new StringBuilder("(");
+        int i =0;
+        for (BlastManagementDto item: blastManagementDtos) {
+            sb.append(":itemKey").append(i).append(',');
+            i++;
+        }
+        String inSql = sb.substring(0, sb.length() - 1) + ")";
+        searchParam.addParam("msg_id_in", inSql);
+        i = 0;
+        for (BlastManagementDto item: blastManagementDtos) {
+            searchParam.addFilter("itemKey" + i,
+                    item.getMessageId());
+            i ++;
+        }
+
         QueryHelp.setMainSql("systemAdmin", "failEmail",searchParam);
         SearchResult<ResendListDto> searchResult = blastManagementListService.resendList(searchParam);
         ParamUtil.setRequestAttr(bpc.request,"resendSearchResult",searchResult);
@@ -115,46 +134,8 @@ public class EmailResendDelegator {
     }
 
     public void resend(BaseProcessClass bpc){
-        String id =  ParamUtil.getMaskedString(bpc.request, "emailId");
-        EmailAttachMentDto emailAttachMentDto = blastManagementListService.getEmailById(id);
-        EmailDto email = new EmailDto();
-        email.setContent(emailAttachMentDto.getContent());
-        email.setSender(emailAttachMentDto.getSender());
-        email.setSubject(emailAttachMentDto.getSubject());
-        email.setClientQueryCode(emailAttachMentDto.getClientQueryCode());
-
-        if(!StringUtil.isEmpty(emailAttachMentDto.getRecipient())){
-            String[] recipient = emailAttachMentDto.getRecipient().split("&");
-            List<String> recipientList = IaisCommonUtils.genNewArrayList();
-            for (String item:recipient
-            ) {
-                recipientList.add(item);
-            }
-            email.setReceipts(recipientList);
-            email.setReqRefNum(emailAttachMentDto.getRequestRefNum());
-
-            if(emailAttachMentDto.getAnnexDtos() != null){
-                Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
-                for (AnnexDto item:emailAttachMentDto.getAnnexDtos()
-                ) {
-                    emailMap.put(item.getFileName(),item.getContent());
-                }
-
-                blastManagementListService.sendEmail(email,emailMap);
-            }else{
-                blastManagementListService.sendEmail(email,null);
-            }
-            blastManagementListService.setEmailResend(id);
-        }
-    }
-
-    /**
-     * edit
-     * @param bpc
-     */
-    public void edit(BaseProcessClass bpc){
-        String id =  ParamUtil.getString(bpc.request, "editBlast");
-        BlastManagementDto blastManagementDtoById = blastManagementListService.getBlastById(id);
+        String id =  ParamUtil.getString(bpc.request, "emailId");
+        BlastManagementDto blastManagementDtoById = blastManagementListService.getBlastByMsgId(id);
         String schedule = Formatter.formatDate(blastManagementDtoById.getSchedule());
         Calendar cal = Calendar.getInstance();
         cal.setTime(blastManagementDtoById.getSchedule());
@@ -162,14 +143,58 @@ public class EmailResendDelegator {
         int minute = cal.get(Calendar.MINUTE);
         ParamUtil.setSessionAttr(bpc.request,"hour",hour);
         ParamUtil.setSessionAttr(bpc.request,"minutes",minute);
-        ParamUtil.setSessionAttr(bpc.request,"edit",blastManagementDtoById);
-        String status;
         if(blastManagementDtoById.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
             blastManagementDtoById.setStatus("acitve");
         }else{
             blastManagementDtoById.setStatus("inacitve");
         }
         ParamUtil.setSessionAttr(bpc.request,"schedule",schedule);
+        ParamUtil.setSessionAttr(bpc.request,"resendBlastedit",blastManagementDtoById);
+        ParamUtil.setSessionAttr(bpc.request,"blastResendEmailId",id);
+    }
+
+    /**
+     * edit
+     * @param bpc
+     */
+    public void send(BaseProcessClass bpc){
+
+        BlastManagementDto blastManagementDtoById = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"resendBlastedit");
+        EmailDto email = new EmailDto();
+        List<String> roleEmail = blastManagementListService.getEmailByRole(blastManagementDtoById.getRecipientsRole());
+        email.setContent(blastManagementDtoById.getMsgContent());
+        email.setSender(mailSender);
+        email.setSubject(blastManagementDtoById.getSubject());
+        email.setClientQueryCode(blastManagementDtoById.getId());
+        List<String> allemail = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(roleEmail)){
+            allemail.addAll(roleEmail);
+        }
+        if(!IaisCommonUtils.isEmpty(blastManagementDtoById.getEmailAddress())){
+            allemail.addAll(blastManagementDtoById.getEmailAddress());
+        }
+
+        try{
+            if(blastManagementDtoById.getAttachmentDtos() != null){
+                Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
+                for (AttachmentDto att: blastManagementDtoById.getAttachmentDtos()
+                ) {
+                    emailMap.put(att.getDocName(),att.getData());
+                }
+                blastManagementListService.sendEmail(email,emailMap);
+            }else{
+                blastManagementListService.sendEmail(email,null);
+            }
+            if(blastManagementDtoById.getId() != null){
+                //update mass email actual time
+                blastManagementListService.setActual(blastManagementDtoById.getId());
+            }
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
+            String id = (String) ParamUtil.getSessionAttr(bpc.request,"blastResendEmailId");
+            blastManagementListService.setEmailResend(id);
+
     }
 
     /**
@@ -198,4 +223,13 @@ public class EmailResendDelegator {
         blastManagementListService.setSchedule(blastManagementDto);
     }
 
+
+
+    /**
+     * backToResend
+     * @param bpc
+     */
+    public void backToResend(BaseProcessClass bpc){
+
+    }
 }
