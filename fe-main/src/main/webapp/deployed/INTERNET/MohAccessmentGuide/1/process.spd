@@ -100,21 +100,21 @@
     <JavaCode defClass="" executor="" methodName="resumeDraftApp_OnStepProcess_0" name="resumeDraftApp_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="subDateMoh" x="1910" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="subDateMoh" x="1790" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="subDateMoh_OnStepProcess_0" name="subDateMoh_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="updateAdminPers" x="1990" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="updateAdminPers" x="2020" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="updateAdminPers_OnStepProcess_0" name="updateAdminPers_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="newApp1" x="1780" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="newApp1" x="1970" y="100">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -128,14 +128,14 @@
     <JavaCode defClass="" executor="" methodName="doRenewStep_OnStepProcess_0" name="doRenewStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doNewAppStep" x="1780" y="550">
+  <AutomaticStep defClass="" executor="" icon="" name="doNewAppStep" x="2160" y="440">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doNewAppStep_OnStepProcess_0" name="doNewAppStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="submitDateMohStep" x="1940" y="470">
+  <AutomaticStep defClass="" executor="" icon="" name="submitDateMohStep" x="1760" y="490">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -149,7 +149,7 @@
     <JavaCode defClass="" executor="" methodName="doAmenfLicStep_OnStepProcess_0" name="doAmenfLicStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doCeasLicStep" x="1580" y="560">
+  <AutomaticStep defClass="" executor="" icon="" name="doCeasLicStep" x="1610" y="480">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -226,14 +226,14 @@
     <JavaCode defClass="" executor="" methodName="doRenewPage_OnStepProcess_0" name="doRenewPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="renewLicPage" x="1320" y="240">
+  <AutomaticStep defClass="" executor="" icon="" name="renewLicPage" x="1320" y="250">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="renewLicPage_OnStepProcess_0" name="renewLicPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="renewLicSort" x="1340" y="350">
+  <AutomaticStep defClass="" executor="" icon="" name="renewLicSort" x="1390" y="350">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -320,6 +320,60 @@
     <JavaCode defClass="" executor="" methodName="addRemovePersonalSort_OnStepProcess_0" name="addRemovePersonalSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preChooseBaseSvc" x="2150" y="320">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preChooseBaseSvc_OnStepProcess_0" name="preChooseBaseSvc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preChooseAlign" x="2150" y="530">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preChooseAlign_OnStepProcess_0" name="preChooseAlign_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="preChooseLic" x="2150" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preChooseLic_OnStepProcess_0" name="preChooseLic_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doChooseService" x="2500" y="410">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doChooseService_OnStepProcess_0" name="doChooseService_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doChooseBaseSvc" x="2500" y="310">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doChooseBaseSvc_OnStepProcess_0" name="doChooseBaseSvc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doChooseLic" x="2510" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doChooseLic_OnStepProcess_0" name="doChooseLic_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="doChooseAlign" x="2510" y="530">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="doChooseAlign_OnStepProcess_0" name="doChooseAlign_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="beforeJump" x="3000" y="370">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="assessmentPage" stageIndicator="" x="460" y="100">
@@ -334,7 +388,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="subDateMohPage" stageIndicator="" x="1900" y="260">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="subDateMohPage" stageIndicator="" x="1760" y="260">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -353,12 +407,6 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ceaseLicPage" stageIndicator="" x="1500" y="250">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="newApp1Page" stageIndicator="" x="1750" y="240">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -418,6 +466,36 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="chooseLicence" stageIndicator="" x="2340" y="220">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="chooseBaseSvc" stageIndicator="" x="2340" y="310">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="chooseService" stageIndicator="" x="2340" y="420">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="chooseAlign" stageIndicator="" x="2350" y="530">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="appBeforeStart" stageIndicator="" x="2820" y="370">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -452,6 +530,7 @@
    <position>{(720,120)(1720,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic3_2" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+
    <position>{(720,120)(1620,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ceaseLic" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
@@ -464,19 +543,19 @@
    <position>{(720,120)(1860,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/subDateMoh" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(1930,120)}</position>
+   <position>{(720,120)(1810,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/updateAdminPers" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(2010,120)}</position>
+   <position>{(720,120)(2040,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/newApp1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(1800,120)}</position>
+   <position>{(720,120)(1990,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/updateAdminPersPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/updateAdminPers" style="oblique">
-   <position>{(2010,120)(2000,-10)}</position>
+   <position>{(2040,120)(2000,-10)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/subDateMohPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/subDateMoh" style="oblique">
-   <position>{(1930,120)(1920,280)}</position>
+   <position>{(1810,120)(1780,280)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/resumeDraftAppPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/resumeDraftApp" style="oblique">
    <position>{(1860,120)(1870,-40)}</position>
@@ -502,9 +581,6 @@
   <SynchronousLink destinationName="/Pages/WebPage/renewLicPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/renewLic" style="oblique">
    <position>{(1260,120)(1240,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/newApp1Page" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/newApp1" style="oblique">
-   <position>{(1800,120)(1770,260)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/amendLic1_1Page" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/amendLic1_1" style="oblique">
    <position>{(1330,120)(1320,-130)}</position>
   </SynchronousLink>
@@ -518,7 +594,7 @@
    <position>{(2000,-10)(2040,-230)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Direct" name="" sourceName="/Pages/WebPage/subDateMohPage" style="oblique">
-   <position>{(1920,280)(1950,390)}</position>
+   <position>{(1780,280)(1820,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Pages/WebPage/resumeDraftAppPage" style="oblique">
    <position>{(1870,-40)(1890,-490)}</position>
@@ -559,20 +635,17 @@
   <SynchronousLink destinationName="/Switches/Switch/Switch15" linkstyle="Direct" name="" sourceName="/Pages/WebPage/renewLicPage" style="oblique">
    <position>{(1240,260)(1260,430)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch18" linkstyle="Direct" name="" sourceName="/Pages/WebPage/newApp1Page" style="oblique">
-   <position>{(1770,260)(1810,430)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doRenewStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch14" style="oblique">
    <position>{(1080,430)(1150,560)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/submitDateMohStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(1950,390)(1960,490)}</position>
+   <position>{(1820,390)(1780,510)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doAmendLicStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch11" style="oblique">
    <position>{(930,-470)(1360,-1070)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCeasLicStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
-   <position>{(1540,380)(1600,580)}</position>
+   <position>{(1540,380)(1630,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doWithdrawalStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
    <position>{(880,390)(760,610)}</position>
@@ -587,7 +660,7 @@
    <position>{(1260,430)(1150,560)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doNewAppStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch18" style="oblique">
-   <position>{(1810,430)(1800,570)}</position>
+   <position>{(1990,370)(2180,460)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doAmendLicStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch12" style="oblique">
    <position>{(1050,-470)(1360,-1070)}</position>
@@ -620,10 +693,10 @@
    <position>{(1540,380)(1320,720)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch18" style="rectanular">
-   <position>{(1810,430)(1320,720)}</position>
+   <position>{(1990,370)(1320,720)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
-   <position>{(1950,390)(1320,720)}</position>
+   <position>{(1820,390)(1320,720)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
    <position>{(2040,-230)(940,-1300)}</position>
@@ -704,16 +777,16 @@
    <position>{(960,270)(980,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/renewLicPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch15" style="rectanular">
-   <position>{(1260,430)(1340,260)}</position>
+   <position>{(1260,430)(1340,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/renewLicSort" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch15" style="rectanular">
-   <position>{(1260,430)(1360,370)}</position>
+   <position>{(1260,430)(1410,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/renewLic" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/renewLicPage" style="rectanular">
-   <position>{(1340,260)(1260,120)}</position>
+   <position>{(1340,270)(1260,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/renewLic" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/renewLicSort" style="rectanular">
-   <position>{(1360,370)(1260,120)}</position>
+   <position>{(1410,370)(1260,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/removeServicePage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch11" style="rectanular">
    <position>{(930,-470)(940,-240)}</position>
@@ -781,6 +854,63 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/addRemovePersonalSort" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch8" style="rectanular">
    <position>{(1510,-480)(1520,-240)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preChooseAlign" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch18" style="oblique">
+   <position>{(1990,370)(2170,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preChooseBaseSvc" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch18" style="oblique">
+   <position>{(1990,370)(2170,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preChooseLic" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch18" style="oblique">
+   <position>{(1990,370)(2170,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/chooseLicence" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preChooseLic" style="rectanular">
+   <position>{(2170,240)(2360,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/chooseBaseSvc" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preChooseBaseSvc" style="rectanular">
+   <position>{(2170,340)(2360,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/chooseService" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doNewAppStep" style="rectanular">
+   <position>{(2180,460)(2360,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/chooseAlign" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preChooseAlign" style="rectanular">
+   <position>{(2170,550)(2370,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doChooseLic" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/chooseLicence" style="rectanular">
+   <position>{(2360,240)(2530,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doChooseBaseSvc" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/chooseBaseSvc" style="rectanular">
+   <position>{(2360,330)(2520,330)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doChooseService" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/chooseService" style="rectanular">
+   <position>{(2360,440)(2520,430)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doChooseAlign" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/chooseAlign" style="rectanular">
+   <position>{(2370,550)(2530,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch16" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doChooseLic" style="oblique">
+   <position>{(2530,240)(2700,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch16" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doChooseBaseSvc" style="oblique">
+   <position>{(2520,330)(2700,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch16" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doChooseService" style="oblique">
+   <position>{(2520,430)(2700,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch16" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doChooseAlign" style="oblique">
+   <position>{(2530,550)(2700,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/appBeforeStart" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch16" style="rectanular">
+   <position>{(2700,390)(2840,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/newApp1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch16" style="rectanular">
+   <position>{(2700,390)(1990,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/beforeJump" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/appBeforeStart" style="rectanular">
+   <position>{(2840,390)(3020,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch18" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/newApp1" style="rectanular">
+   <position>{(1990,120)(1990,370)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -813,7 +943,7 @@
    <SwitchCase component="/Steps/AutomaticStep/updateAdminPesStep" value="&quot;updateAdmin&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge2" value=""/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="guide_action_type" name="Switch4" x="1930" y="370">
+  <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="guide_action_type" name="Switch4" x="1800" y="370">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/submitDateMohStep" value="&quot;submieDateMoh&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value=""/>
@@ -893,10 +1023,18 @@
    <SwitchCase component="/Steps/AutomaticStep/renewLicPage" value="&quot;renewLicPage&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/renewLicSort" value="&quot;renewLicSort&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="guide_action_type" name="Switch18" x="1790" y="410">
+  <Switch defClass="" defaultComponent="/Merges/Merge/Merge1" executor="" icon="" leftOperand="crud_action_type_value" name="Switch18" x="1970" y="350">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/doNewAppStep" value="&quot;doNew&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doNewAppStep" value="&quot;chooseSvc&quot;"/>
    <SwitchCase component="/Merges/Merge/Merge1" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/preChooseAlign" value="&quot;chooseAlign&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preChooseBaseSvc" value="&quot;chooseBaseSvc&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/preChooseLic" value="&quot;chooseLic&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Pages/WebPage/appBeforeStart" executor="" icon="" leftOperand="switch_action_type" name="Switch16" x="2680" y="370">
+   <Description/>
+   <SwitchCase component="/Pages/WebPage/appBeforeStart" value="&quot;startApplication&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/newApp1" value="&quot;doBack&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

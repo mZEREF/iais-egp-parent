@@ -193,6 +193,36 @@ public class INTERNET___MohAccessmentGuide___1 extends BaseProcessClass {
 	public void doRenewPage_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doRenewPage", this);
 	}
+
+	public void preChooseBaseSvc_OnStepProcess_0 () throws Exception { 
+	
+		EngineHelper.delegate(DELEGATOR, "preChooseBaseSvc", this);
+	}
+
+	public void preChooseAlign_OnStepProcess_0 () throws Exception { 
+	
+		EngineHelper.delegate(DELEGATOR, "preChooseAlign", this);
+	}
+
+	public void preChooseLic_OnStepProcess_0 () throws Exception { 
+		EngineHelper.delegate(DELEGATOR, "preChooseLic", this);
+	}
+
+	public void doChooseLic_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doChooseLic", this);
+	}
+
+	public void doChooseBaseSvc_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doChooseBaseSvc", this);
+	}
+
+	public void doChooseService_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doChooseService", this);
+	}
+
+	public void doChooseAlign_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "doChooseAlign", this);
+	}
 	
 
 }

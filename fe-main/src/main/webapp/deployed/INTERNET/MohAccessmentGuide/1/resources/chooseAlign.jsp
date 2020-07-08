@@ -1,0 +1,1 @@
+<%@include file="/WEB-INF/jsp/iais/assessmentGuide/serviceMenu/chooseAlign.jsp"%>
