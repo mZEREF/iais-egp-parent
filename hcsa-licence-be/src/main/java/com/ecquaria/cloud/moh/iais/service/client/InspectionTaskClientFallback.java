@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
@@ -271,6 +272,14 @@ public class InspectionTaskClientFallback implements InspectionTaskClient {
 
     @Override
     public FeignResponseEntity<SearchResult<ReschedulingOfficerQueryDto>> officerReSchSearch(SearchParam searchParam) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<ReschedulingOfficerDto> reScheduleSaveRouteData(ReschedulingOfficerDto reschedulingOfficerDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

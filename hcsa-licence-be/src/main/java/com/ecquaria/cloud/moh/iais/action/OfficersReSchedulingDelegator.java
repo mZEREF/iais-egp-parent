@@ -259,7 +259,9 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingInsp(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingInsp start ...."));
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
+        reschedulingOfficerDto.setCurUserId(loginContext.getUserId());
         officersReSchedulingService.reScheduleRoutingTask(reschedulingOfficerDto);
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
     }
