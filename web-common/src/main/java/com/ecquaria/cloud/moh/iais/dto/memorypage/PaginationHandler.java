@@ -5,13 +5,14 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * PaginationHandler
@@ -225,7 +226,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         sb.append("if(!reg.test(pageNo)){");
         sb.append("$(\"#").append(pageNumTextName).append("\").val('');");
         sb.append( "return; ");
-        sb.append( "}");
+        sb.append( '}');
         sb.append( "if(pageNo != ''){if(pageNo > ");
         sb.append(totalPage);
         sb.append("){pageNo=").append(totalPage).append(";}").append(" else if(pageNo < 1){");
@@ -400,7 +401,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         StringBuilder sb = new StringBuilder();
         if (checkType == PaginationHandler.CHECK_TYPE_CHECKBOX) {
             sb.append("<input type=\"checkbox\" id=\"").append(paginationDiv).append("CheckAll");
-            sb.append("\" name=\"").append(paginationDiv).append("CheckAll").append("\"");
+            sb.append("\" name=\"").append(paginationDiv).append("CheckAll").append('\"');
             sb.append(" onclick=\"javascript:checkAllMemoryCheck('").append(paginationDiv).append("');\"");
             boolean allChecked = !displayData.isEmpty();
             for (PageRecords<T> pr : displayData) {

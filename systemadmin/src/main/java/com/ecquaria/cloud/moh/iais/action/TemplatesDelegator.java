@@ -119,7 +119,7 @@ public class TemplatesDelegator {
     }
 
     private String changeStringFormat(String rec){
-        StringBuffer bccDes = new StringBuffer(10);
+        StringBuilder bccDes = new StringBuilder(10);
         String[] BccList = rec.split(", ");
         for (String item:BccList
         ) {

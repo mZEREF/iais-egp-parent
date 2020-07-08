@@ -127,15 +127,15 @@ public final class CheckBoxTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
-        name = null;
-        labelName = "";
-        checkboxId = "";
-        codeCategory = null;
-        ariaInvalid = "";
-        labelClass = "";
-        forName = "";
-        spanClass = "";
-        value = "";
+        setName(null);
+        setLabelName("");
+        setCheckboxId("");
+        setCodeCategory(null);
+        setAriaInvalid("");
+        setLabelClass("");
+        setForName("");
+        setSpanClass("");
+        setValue("");
     }
 
 
@@ -207,7 +207,7 @@ public final class CheckBoxTag extends DivTagSupport {
                 }
             }else {
                 //in <c:forEach> style
-                html.append("<input name =\"" + name + "\"" + "id = \"" + checkboxId + "\"" + "type=\"checkbox\"" + "value=" + "\""  + value + "\"");
+                html.append("<input name =\"").append(name).append("\"").append("id = \"").append(checkboxId).append("\"").append("type=\"checkbox\"").append("value=").append("\"").append(value).append("\"");
             }
 
             html.append("</div>");

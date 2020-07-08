@@ -56,7 +56,7 @@
 }
 
 .checkbox-custom input[type=checkbox]:checked + label::after {
-    font-family: 'FontAwesome';
+    font-family: 'FontAwesome', sans-serif;
     content: "\F00C";
     color: #fff;
 }

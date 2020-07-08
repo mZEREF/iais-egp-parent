@@ -29,7 +29,11 @@ public class MultipleSelectTag extends DivTagSupport {
     @Override
     protected void init() {
         setId(null);
-        name = null;
+        try {
+            setName(null);
+        } catch (JspException e) {
+            e.printStackTrace();
+        }
         setCssClass("");
         setStyle("");
         setSelectValue("");
@@ -47,8 +51,8 @@ public class MultipleSelectTag extends DivTagSupport {
     public int doStartTag() throws JspException {
         try {
             if (StringUtil.isEmpty(cssClass) && StringUtil.isEmpty(style)) {
-                cssClass = "checkbox-custom check-primary";
-                style = "margin-left: 2px";
+                setCssClass("checkbox-custom check-primary");
+                setStyle("margin-left: 2px");
             }
             StringBuilder html = new StringBuilder();
             generateOptionHtml(html);

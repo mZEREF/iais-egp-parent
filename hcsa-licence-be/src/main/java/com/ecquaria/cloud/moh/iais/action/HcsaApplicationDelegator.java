@@ -1267,7 +1267,7 @@ public class HcsaApplicationDelegator {
             String followRemarks = followRecommendationDto.getRemarks();
             initRecommendationDto.setFollowUpAction(followRemarks);
         }
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)&&appPremisesRecommendationDto != null){
+        if(appPremisesRecommendationDto != null&&ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
             String recommendation = appPremisesRecommendationDto.getRecomDecision();
             if(InspectionReportConstants.RFC_APPROVED.equals(recommendation)){
                 initRecommendationDto.setPeriod(InspectionReportConstants.APPROVED);

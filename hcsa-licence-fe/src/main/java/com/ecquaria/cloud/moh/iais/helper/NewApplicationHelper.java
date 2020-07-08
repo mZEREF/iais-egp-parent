@@ -573,10 +573,10 @@ public class NewApplicationHelper {
                             .append(sp.getText())
                             .append("</option>");
                 }else{
-                    sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                    sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
                 }
             }else{
-                sBuffer.append("<option value=\""+sp.getValue()+"\">"+ sp.getText() +"</option>");
+                sBuffer.append("<option value=\"").append(sp.getValue()).append("\">").append(sp.getText()).append("</option>");
             }
         }
         sBuffer.append("</select>");
@@ -585,15 +585,15 @@ public class NewApplicationHelper {
         if(!StringUtil.isEmpty(classNameValue)){
             className =  classNameValue;
         }
-        sBuffer.append("<div class=\"nice-select "+className+"\" tabindex=\"0\">");
+        sBuffer.append("<div class=\"nice-select ").append(className).append("\" tabindex=\"0\">");
         if(!StringUtil.isEmpty(checkedVal)){
             String text = getTextByValue(selectOptionList,checkedVal);
-            sBuffer.append("<span selected=\"selected\" class=\"current\">"+ text +"</span>");
+            sBuffer.append("<span selected=\"selected\" class=\"current\">").append(text).append("</span>");
         }else{
             if(!StringUtil.isEmpty(firestOption)){
-                sBuffer.append("<span class=\"current\">"+firestOption+"</span>");
+                sBuffer.append("<span class=\"current\">").append(firestOption).append("</span>");
             }else{
-                sBuffer.append("<span class=\"current\">"+selectOptionList.get(0).getText()+"</span>");
+                sBuffer.append("<span class=\"current\">").append(selectOptionList.get(0).getText()).append("</span>");
             }
         }
         sBuffer.append("<ul class=\"list mCustomScrollbar _mCS_2 mCS_no_scrollbar\">")
@@ -603,23 +603,23 @@ public class NewApplicationHelper {
         if(!StringUtil.isEmpty(checkedVal)){
             for(SelectOption kv:selectOptionList){
                 if(checkedVal.equals(kv.getValue())){
-                    sBuffer.append("<li selected=\"selected\" data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
+                    sBuffer.append("<li selected=\"selected\" data-value=\"").append(kv.getValue()).append("\" class=\"option selected\">").append(kv.getText()).append("</li>");
                 }else{
-                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                    sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
                 }
             }
         }else if(!StringUtil.isEmpty(firestOption)){
-            sBuffer.append("<li data-value=\"\" class=\"option selected\">"+firestOption+"</li>");
+            sBuffer.append("<li data-value=\"\" class=\"option selected\">").append(firestOption).append("</li>");
             for(SelectOption kv:selectOptionList){
-                sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
             }
         }else{
             for(int i = 0;i<selectOptionList.size();i++){
                 SelectOption kv = selectOptionList.get(i);
                 if(i == 0){
-                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option selected\">"+kv.getText()+"</li>");
+                    sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option selected\">").append(kv.getText()).append("</li>");
                 }else{
-                    sBuffer.append(" <li data-value=\""+kv.getValue()+"\" class=\"option\">"+kv.getText()+"</li>");
+                    sBuffer.append(" <li data-value=\"").append(kv.getValue()).append("\" class=\"option\">").append(kv.getText()).append("</li>");
                 }
             }
         }
@@ -644,8 +644,7 @@ public class NewApplicationHelper {
         if(appSubmissionDto == null){
             return true;
         }
-        boolean isNewApp = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())
-                && !isRfi;
+        boolean isNewApp =  !isRfi&&ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType());
         boolean isOther = false;
 
         if(appSubmissionDto.isNeedEditController()){
@@ -1718,17 +1717,17 @@ public class NewApplicationHelper {
         if(file!=null){
             long size = file.getSize();
             String filename = file.getOriginalFilename();
-            String fileType=  filename.substring(filename.lastIndexOf(".")+1);
+            String fileType=  filename.substring(filename.lastIndexOf('.')+1);
             String s = fileType.toUpperCase();
             if(!fileTypes.contains(s)){
-                map.put("fileType",false);
+                map.put("fileType",Boolean.FALSE);
             }else {
-                map.put("fileType",true);
+                map.put("fileType",Boolean.TRUE);
             }
             if(size>fileSize){
-                map.put("fileSize",false);
+                map.put("fileSize",Boolean.FALSE);
             }else {
-                map.put("fileSize",true);
+                map.put("fileSize",Boolean.TRUE);
             }
         }
 

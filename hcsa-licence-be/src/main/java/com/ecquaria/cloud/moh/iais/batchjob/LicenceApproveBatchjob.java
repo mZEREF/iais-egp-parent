@@ -1535,7 +1535,7 @@ public class LicenceApproveBatchjob {
             licenceDto.setVersion(version);
             licenceDto.setFeeRetroNeeded(false);
             //0065635
-            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
+            if(applicationDto!=null&&ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_APPROVED);
             }else{
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);

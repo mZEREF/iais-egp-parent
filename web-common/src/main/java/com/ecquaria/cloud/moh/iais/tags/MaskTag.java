@@ -28,8 +28,17 @@ public class MaskTag extends DivTagSupport {
 
     @Override
     protected void init() {
-        value = "";
-        name = "";
+        try {
+            setValue("");
+        } catch (JspException e) {
+            e.printStackTrace();
+        }
+        try {
+            setName("");
+        } catch (JspException e) {
+            e.printStackTrace();
+        }
+
     }
 
     // Releases any resources we may have (or inherit)

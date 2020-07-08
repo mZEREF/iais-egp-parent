@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -37,9 +36,9 @@ public class HcsaServiceTag extends DivTagSupport{
 	@Override
 	protected void init() {
 		super.init();
-		value = null;
-		maskValue = false;
-		isSvcCode = false;
+		setValue(null);
+		setMaskValue(false);
+		setIsSvcCode(false);
 	}
 
 	@Override

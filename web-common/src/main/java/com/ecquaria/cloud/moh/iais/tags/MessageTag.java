@@ -3,10 +3,11 @@ package com.ecquaria.cloud.moh.iais.tags;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+import java.util.HashMap;
 
 
 /**
@@ -31,9 +32,9 @@ public final class MessageTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
-        key = null;
-        params = null;
-        escape = true;
+        setKey(null);
+        setParams(null);
+        setEscape(true);
     }
 
     // Releases any resources we may have (or inherit)

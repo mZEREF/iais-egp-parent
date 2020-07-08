@@ -85,9 +85,6 @@ public class PublicHolidayDelegate {
         int year = cal.get(Calendar.YEAR);
         holidaySearchParam.addFilter("year", "%" + year + "%",true);
 
-        if(holidaySearchParam == null){
-            holidaySearchParam = getSearchParam(bpc.request,true);
-        }
         QueryHelp.setMainSql("systemAdmin", "getHolidayList", holidaySearchParam);
         SearchResult<PublicHolidayQueryDto> HolidaySearchResult = publicHolidayService.getHoliday(holidaySearchParam);
 

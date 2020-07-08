@@ -572,10 +572,10 @@ public class ServiceMenuDelegator {
                             break;
                         }
                         String removeKey = "";
-                        for(String key:baseAlignSpec.keySet()){
-                            List<String> baseNames = baseAlignSpec.get(key);
+                        for(Map.Entry<String,List<String>> entry:baseAlignSpec.entrySet()){
+                            List<String> baseNames = entry.getValue();
                             if(!IaisCommonUtils.isEmpty(baseNames) && baseNames.contains(appAlignLicQueryDto.getSvcName())){
-                                removeKey = key;
+                                removeKey = entry.getKey();
                                 break;
                             }
                         }

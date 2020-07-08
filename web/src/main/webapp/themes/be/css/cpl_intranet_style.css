@@ -1179,7 +1179,7 @@ a.article, a.article:hover {
 }
 .profile-dropdown .profile-btn:after {
   content: "";
-  font-family: fontawesome;
+  font-family: fontawesome, sans-serif;
   font-weight: 400;
   font-size: 3rem;
   color: #333333;
@@ -5620,7 +5620,7 @@ table.control-grid > tbody > tr .repeatable-section-control-button button:active
 }
 .documentContent .section.control table > tbody > tr.incomplete .control .control-label > label:after {
   content: "";
-  font-family: fontawesome;
+  font-family: fontawesome, sans-serif;
   width: 22px;
   height: 22px;
   border: 0;

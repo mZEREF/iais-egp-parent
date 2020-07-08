@@ -30,7 +30,11 @@ public class MasterCodeTag extends DivTagSupport {
 
     // resets local state
     protected void init() {
-        code = "";
+        try {
+            setCode("");
+        } catch (JspException e) {
+            e.printStackTrace();
+        }
         setEmpty(false);
         setViewEmptyStr(false);
     }

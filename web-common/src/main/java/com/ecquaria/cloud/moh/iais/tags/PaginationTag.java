@@ -52,10 +52,10 @@ public class PaginationTag extends DivTagSupport {
         int pageSize = 0;
 
         if (StringUtil.isEmpty(param)) {
-            param = "searchParam";
+            setParam("searchParam");
         }
         if (StringUtil.isEmpty(result)) {
-            result = "searchResult";
+            setResult("searchResult");
         }
 
         Object obj = ParamUtil.getScopeAttr((HttpServletRequest)pageContext.getRequest(), param);
@@ -87,7 +87,7 @@ public class PaginationTag extends DivTagSupport {
     }
     private StringBuilder generateHtml(SearchResult<?> sr,int pageNo,int pageCount,int pageSize){
         if (StringUtil.isEmpty(jsFunc)) {
-            jsFunc = "changePage";
+            setJsFunc("changePage");
         }
         String pageNumTextName = "pageJumpNoText" + jsFunc;
         String jumpPageFuncName = "jumpToPage" + jsFunc;

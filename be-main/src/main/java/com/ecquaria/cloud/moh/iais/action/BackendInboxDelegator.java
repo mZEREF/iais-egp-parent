@@ -59,7 +59,6 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloudfeign.FeignException;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,7 +66,6 @@ import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -398,7 +396,7 @@ public class BackendInboxDelegator {
      * @param bpc
      * @throws
      */
-    private void replay(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
+    private void replay(BaseProcessClass bpc,ApplicationViewDto applicationViewDto,TaskDto taskDto) throws FeignException, CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do replay start ...."));
         String nextStatus = ApplicationConsts.APPLICATION_STATUS_REPLY;
         String getHistoryStatus = applicationViewDto.getApplicationDto().getStatus();

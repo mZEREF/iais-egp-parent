@@ -2,11 +2,12 @@ package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 
 /**
  * ConfirmDialogTag
@@ -31,15 +32,15 @@ public class ConfirmDialogTag extends TagSupport {
     private String cancelFunc;
     private boolean needEscapHtml;
 
-    public ConfirmDialogTag() {
+    public ConfirmDialogTag() throws JspException {
         super();
         init();
     }
 
     // resets local state
-    private void init() {
-        msg = "";
-        callBack = "";
+    private void init() throws JspException {
+        setMsg("");
+        setCallBack("");
         setPopupOrder("");
         setTitle("");
         setCancelFunc("");
@@ -56,7 +57,11 @@ public class ConfirmDialogTag extends TagSupport {
     @Override
     public void release() {
         super.release();
-        init();
+        try {
+            init();
+        } catch (JspException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -73,7 +78,7 @@ public class ConfirmDialogTag extends TagSupport {
         html.append("<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span");
         html.append(" aria-hidden=\"true\">&times;</span></button>");
         if (StringUtil.isEmpty(title)) {
-            title = "Confirmation Box";
+            setTitle("Confirmation Box");
         }
         html.append(" <h5 class=\"modal-title\" id=\"gridSystemModalLabel\">").append(StringUtil.viewHtml(title)).append("</h5></div>");
         html.append("<div class=\"modal-body\"><div class=\"row\">");
@@ -90,20 +95,20 @@ public class ConfirmDialogTag extends TagSupport {
         html.append("<div class=\"modal-footer\">");
         html.append("<button type=\"button\" class=\"");
         if (StringUtil.isEmpty(yesBtnCls)) {
-            yesBtnCls = "btn btn-primary";
+            setYesBtnCls("btn btn-primary");
         }
         html.append(yesBtnCls).append("\" onclick=\"javascript:");
         if (StringUtil.isEmpty(yesBtnDesc)) {
-            yesBtnDesc = "OK";
+            setYesBtnDesc("OK");
         }
         html.append("tagConfirmCallback").append(popupOrder).append("();\">").append(yesBtnDesc).append("</button>");
         if (needCancel) {
             if (StringUtil.isEmpty(cancelBtnDesc)) {
-                cancelBtnDesc = "Cancel";
+                setCancelBtnDesc("Cancel");
             }
             html.append("<button type=\"button\" class=\"");
             if (StringUtil.isEmpty(cancelBtnCls)) {
-                cancelBtnCls = "btn btn-secondary";
+                setCancelBtnCls("btn btn-secondary");
             }
             html.append(cancelBtnCls).append("\" data-dismiss=\"modal\"");
             if (!StringUtil.isEmpty(cancelFunc)) {

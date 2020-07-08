@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -136,8 +135,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Override
 	public Boolean isUnavailableTime(String groupShotName, Date startDate, Date endDate) {
 		ApptAppInfoShowDto reqParam = new ApptAppInfoShowDto();
-		reqParam.setGroupNames(Arrays.asList(groupShotName));
-		reqParam.setClsStatus(Arrays.asList(AppointmentConstants.CALENDAR_STATUS_RESERVED));
+		reqParam.setGroupNames(Collections.singletonList(groupShotName));
+		reqParam.setClsStatus(Collections.singletonList(AppointmentConstants.CALENDAR_STATUS_RESERVED));
 		reqParam.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
 
 

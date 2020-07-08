@@ -358,7 +358,7 @@ public class AppealServiceImpl implements AppealService {
             if(appFeeDetailsDto!=null){
                 try {
                     if(appFeeDetailsDto.getLaterFee()>0.0){
-                        request.getSession().setAttribute("lateFee",true);
+                        request.getSession().setAttribute("lateFee",Boolean.TRUE);
                     }
                 } catch (Exception  e) {
                     log.error(e.getMessage()+"------",e);
@@ -922,7 +922,7 @@ public class AppealServiceImpl implements AppealService {
                 }else {
                     appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
                 }
-                appPremisesSpecialDocDto.setDocSize(Integer.valueOf(Integer.parseInt(size.toString())));
+                appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
                 appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
 
             } catch (IOException e) {
@@ -940,7 +940,7 @@ public class AppealServiceImpl implements AppealService {
                     AppPremisesSpecialDocDto appPremisesSpecialDocDto=new AppPremisesSpecialDocDto();
                     appPremisesSpecialDocDto.setDocName(filename);
                     appPremisesSpecialDocDto.setMd5Code(s);
-                    appPremisesSpecialDocDto.setDocSize(Integer.valueOf(Integer.parseInt(size.toString())));
+                    appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
                     appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
                     if(loginContext!=null){
                         appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());

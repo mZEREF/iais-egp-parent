@@ -41,18 +41,17 @@ public final class FieldTag extends DivTagSupport {
     @Override
     protected void init() {
         super.init();
-        value = null;
-        required = false;
-        info = null;
-        index = null;
-        withCheckbox = false;
-        checkboxId = null;
-        checkboxName = null;
-        checkboxVal = null;
-        checked = false;
-        onclick = null;
-        width = 0;
-        mandatory = false;
+        setValue(null);
+        setRequired(false);
+        setInfo(null);
+        setWithCheckbox(false);
+        setCheckboxId(null);
+        setCheckboxName(null);
+        setCheckboxVal(null);
+        setChecked(false);
+        setOnclick(null);
+        setWidth(0);
+        setMandatory(false);
     }
 
     // Releases any resources we may have (or inherit)
@@ -132,7 +131,7 @@ public final class FieldTag extends DivTagSupport {
         html.append("<label class=\"checkbox-custom check-primary\">");
         html.append("<input type=\"checkbox\"");
         if (StringUtil.isEmpty(checkboxId)) {
-            checkboxId = MiscUtil.formatDummyId();
+            setCheckboxId(MiscUtil.formatDummyId());
         }
         html.append(" id=\"").append(checkboxId).append('\"');
         if (!StringUtil.isEmpty(checkboxName)) {
