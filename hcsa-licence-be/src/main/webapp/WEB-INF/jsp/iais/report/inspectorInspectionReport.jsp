@@ -271,6 +271,7 @@
         if (s == "" || s == null) {
             $("#error_submit").show();
         } else if ("submit" == s) {
+            showWaiting();
             $("#mainForm").submit();
             $("#error_submit").hide();
         }

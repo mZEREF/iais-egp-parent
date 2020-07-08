@@ -270,10 +270,12 @@
             $("#error_submit").show();
         } else if ("Approval" == s || "submit" == s) {
             $("[name='action_type']").val('approval');
+            showWaiting();
             $("#mainForm").submit();
             $("#error_submit").hide();
         } else if ("Reject" == s) {
             $("[name='action_type']").val('back');
+            showWaiting();
             $("#mainForm").submit();
             $("#error_submit").hide();
         }
