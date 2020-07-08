@@ -160,6 +160,23 @@ public class EmailResendDelegator {
     public void send(BaseProcessClass bpc){
 
         BlastManagementDto blastManagementDtoById = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"resendBlastedit");
+        String date = ParamUtil.getString(bpc.request, "date");
+        String HH = ParamUtil.getString(bpc.request, "HH");
+        String MM = ParamUtil.getString(bpc.request, "MM");
+        SimpleDateFormat newformat =  new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
+        Date schedule = new Date();
+        if(!StringUtil.isEmpty(date)){
+            try {
+                schedule = newformat.parse(date);
+                long time = schedule.getTime() + Long.parseLong(HH) * 60 * 60 * 1000 + Long.parseLong(MM) * 60 * 1000;
+                schedule.setTime(time);
+            } catch (ParseException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
+        blastManagementDtoById.setSchedule(schedule);
+        blastManagementListService.setSchedule(blastManagementDtoById);
+
         EmailDto email = new EmailDto();
         List<String> roleEmail = blastManagementListService.getEmailByRole(blastManagementDtoById.getRecipientsRole());
         email.setContent(blastManagementDtoById.getMsgContent());
@@ -196,34 +213,6 @@ public class EmailResendDelegator {
             blastManagementListService.setEmailResend(id);
 
     }
-
-    /**
-     * save
-     * @param bpc
-     */
-    public void save(BaseProcessClass bpc){
-        BlastManagementDto blastManagementDto = new BlastManagementDto();
-        String id = ParamUtil.getString(bpc.request, "blastid");
-        String date = ParamUtil.getString(bpc.request, "date");
-        String HH = ParamUtil.getString(bpc.request, "HH");
-        String MM = ParamUtil.getString(bpc.request, "MM");
-        blastManagementDto.setId(id);
-        SimpleDateFormat newformat =  new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
-        Date schedule = new Date();
-        if(!StringUtil.isEmpty(date)){
-            try {
-                schedule = newformat.parse(date);
-                long time = schedule.getTime() + Long.parseLong(HH) * 60 * 60 * 1000 + Long.parseLong(MM) * 60 * 1000;
-                schedule.setTime(time);
-            } catch (ParseException e) {
-                log.error(e.getMessage(), e);
-            }
-        }
-        blastManagementDto.setSchedule(schedule);
-        blastManagementListService.setSchedule(blastManagementDto);
-    }
-
-
 
     /**
      * backToResend
