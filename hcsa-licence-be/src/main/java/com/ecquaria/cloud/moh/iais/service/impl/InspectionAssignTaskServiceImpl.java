@@ -460,8 +460,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     @Override
-    public void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto,
-                                        ApplicationViewDto applicationViewDto, String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
+    public void assignTaskForInspectors(List<TaskDto> commPools, InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationViewDto applicationViewDto,
+                                        String internalRemarks, TaskDto taskDto, LoginContext loginContext) {
         List<SelectOption> inspectorCheckList = inspecTaskCreAndAssDto.getInspectorCheck();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appStatus = applicationDto.getStatus();
@@ -477,7 +477,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     List<String> taskUserIds = IaisCommonUtils.genNewArrayList();
                     taskUserIds.add(taskUserId);
                     ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                    assignReschedulingTask(td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto);
+                    assignReschedulingTask(td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto, inspecTaskCreAndAssDto.getInspManHours());
                 } else if(RoleConsts.USER_ROLE_BROADCAST.equals(td.getRoleId())){
                     //broadcast task assign
                     assignBroadcastTask(td, applicationDtos, auditTrailDto, loginContext);
@@ -575,7 +575,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
 
     @Override
     public void assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
-                                       ApplicationGroupDto applicationGroupDto) {
+                                       ApplicationGroupDto applicationGroupDto, String inspManHours) {
         //update
         td.setSlaDateCompleted(new Date());
         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
@@ -650,7 +650,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             List<ApplicationDto> applicationDtoList = getApplicationDtosByCorr(appPremisesCorrelationDtos);
             boolean allInPlaceFlag = allAppFromSamePremisesIsOk(applicationDtoList);
             if(allInPlaceFlag){
-                saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto, appHistoryId);
+                saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
                 //update App
                 ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
                 applicationDto1.setAuditTrailDto(auditTrailDto);
@@ -675,7 +675,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         } else {
             List<String> premCorrIds = IaisCommonUtils.genNewArrayList();
             premCorrIds.add(appPremCorrId);
-            saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto, appHistoryId);
+            saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
             //update App
             ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
             applicationDto1.setAuditTrailDto(auditTrailDto);
@@ -754,8 +754,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inboxMsgService.saveInterMessage(interMessageDto);
     }
 
-    private void saveInspectionDate(String appPremCorrId, List<TaskDto> taskDtoList, ApplicationDto applicationDto,
-                                    List<String> taskUserIds, List<String> premCorrIds, AuditTrailDto auditTrailDto, String appHistoryId) {
+    private void saveInspectionDate(String appPremCorrId, List<TaskDto> taskDtoList, ApplicationDto applicationDto, List<String> taskUserIds,
+                                    List<String> premCorrIds, AuditTrailDto auditTrailDto, String appHistoryId, String inspManHours) {
         AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(appPremCorrId).getEntity();
         appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
@@ -786,7 +786,12 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             apptAppInfoShowDto.setApplicationType(applicationDto.getApplicationType());
             apptAppInfoShowDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
             apptAppInfoShowDto.setServiceId(serviceId);
-            int manHours = getServiceManHours(tDto.getRefNo(), apptAppInfoShowDto);
+            int manHours;
+            if(StringUtil.isEmpty(inspManHours)){
+                manHours = getServiceManHours(tDto.getRefNo(), apptAppInfoShowDto);
+            } else {
+                manHours = Integer.parseInt(inspManHours);
+            }
             //Divide the time according to the number of people
             double hours = manHours;
             double peopleCount = taskUserIds.size();
@@ -1157,14 +1162,20 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         ApplicationViewDto applicationViewDto = searchByAppCorrId(inspecTaskCreAndAssDto.getAppCorrelationId());
         assignTaskForInspectors(commPools, inspecTaskCreAndAssDto, applicationViewDto, internalRemarks, taskDto, loginContext);
         if(!StringUtil.isEmpty(inspecTaskCreAndAssDto.getInspManHours())){
-            //create inspManHours recommendation
-            AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-            appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
-            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appPremisesRecommendationDto.setVersion(1);
-            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR);
-            appPremisesRecommendationDto.setRecomDecision(inspecTaskCreAndAssDto.getInspManHours());
-            appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            //create inspManHours recommendation or update
+            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
+            if(appPremisesRecommendationDto != null){
+                appPremisesRecommendationDto.setRecomDecision(inspecTaskCreAndAssDto.getInspManHours());
+                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            } else {
+                appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appPremisesRecommendationDto.setVersion(1);
+                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR);
+                appPremisesRecommendationDto.setRecomDecision(inspecTaskCreAndAssDto.getInspManHours());
+                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            }
             fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
         }
     }

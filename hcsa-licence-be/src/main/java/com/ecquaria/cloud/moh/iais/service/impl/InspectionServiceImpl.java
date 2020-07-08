@@ -433,7 +433,7 @@ public class InspectionServiceImpl implements InspectionService {
                             taskUserIds.add(so.getValue());
                         }
                         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                        inspectionAssignTaskService.assignReschedulingTask(td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto);
+                        inspectionAssignTaskService.assignReschedulingTask(td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto, null);
                     } else {
                         td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
                         td.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());

@@ -217,7 +217,14 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Override
     public void reScheduleRoutingTask(ReschedulingOfficerDto reschedulingOfficerDto) {
+        String appNo = reschedulingOfficerDto.getAssignNo();
+        Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
+        if(samePremisesAppMap != null) {
+            List<String> appNoList = samePremisesAppMap.get(appNo);
+            if(!IaisCommonUtils.isEmpty(appNoList)){
 
+            }
+        }
     }
 
     private List<String> getAppNoByGroup(Map<String, Map<String, String>> groupCheckUserIdMap, String workGroupCheck,

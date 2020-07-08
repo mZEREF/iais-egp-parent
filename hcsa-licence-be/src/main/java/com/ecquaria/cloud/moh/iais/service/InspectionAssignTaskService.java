@@ -97,7 +97,7 @@ public interface InspectionAssignTaskService {
       * @Descripation: 
       */
     void assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
-                                ApplicationGroupDto applicationGroupDto);
+                                ApplicationGroupDto applicationGroupDto, String inspManHours);
 
     /**
      * @author: shicheng
