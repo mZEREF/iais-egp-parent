@@ -177,7 +177,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 if(miEditNumFlag == 1){
                     errMap.put(serviceCode + "miEndDate", "ERR0016");
                 }
-            }else if("A".equals(level)&&mjEditNumFlag == 1){
+            }else if(mjEditNumFlag == 1&&"A".equals(level)){
                 errMap.put(serviceCode + "mjEndDate", "ERR0012");
             }
         }
@@ -366,7 +366,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                             errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0015");
                             fdto.setDoMiRightLowCountherr(true);
                         }
-                    }else if("A".equals(level)&&mjRightLowNumFlag){
+                    }else if(mjRightLowNumFlag&&"A".equals(level)){
                         errMap.put(serviceCode + "mjRightLowCaseCounth", "ERR0015");
                         fdto.setDoMjRightLowCountherr(true);
                     }
