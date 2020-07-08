@@ -3370,9 +3370,9 @@ public class NewApplicationDelegator {
         log.info(sB.toString());
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
         doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
-        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)+"doSvcDis"));
+        log.info(JsonUtil.parseToJson(errorMap)+"doSvcDis");
         doSvcDisdolabory(errorMap,appSvcDisciplineAllocationDtoList,appSvcLaboratoryDisciplinesDtoList,serviceId,sB);
-        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)+"doSvcDisdolabory"));
+        log.info(JsonUtil.parseToJson(errorMap)+"doSvcDisdolabory");
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
         Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList(),licPersonMap);
        log.info(JsonUtil.parseToJson(govenMap));

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
+import com.ecquaria.cloud.Application;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -21,9 +22,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
+import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
@@ -59,7 +63,17 @@ public class AppealApproveBatchjob {
     private EmailClient emailClient;
     @Value("${iais.email.sender}")
     private String mailSender;
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
 
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
     public void doBatchJob(BaseProcessClass bpc) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob is start ..."));
         List<AppealApproveGroupDto> appealApproveGroupDtos = appealService.getAppealApproveDtos();
@@ -198,9 +212,9 @@ public class AppealApproveBatchjob {
         AppPremisesRecommendationDto appPremisesRecommendationDto = appealApproveDto.getAppPremisesRecommendationDto();
         AppPremisesRecommendationDto newAppPremisesRecommendationDto = appealApproveDto.getNewAppPremisesRecommendationDto();
         if(applicationGroupDto!=null && appPremisesRecommendationDto !=null && newAppPremisesRecommendationDto!=null && appealApplicationDto!=null){
-            Integer recomInNumber = newAppPremisesRecommendationDto.getRecomInNumber();
-            if(recomInNumber == 1){
-                if(ApplicationConsts.APPLICATION_GROUP_STATUS_LICENCE_GENERATED.equals(applicationGroupDto.getStatus())){
+            String recomDecision = newAppPremisesRecommendationDto.getRecomDecision();
+            if("approve".equals(recomDecision)){
+
                     rollBackApplication.add(appealApplicationDto);
                     ApplicationDto newAppealApplicaitonDto = (ApplicationDto) CopyUtil.copyMutableObject(appealApplicationDto);
                     newAppealApplicaitonDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
@@ -210,18 +224,23 @@ public class AppealApproveBatchjob {
                     ApplicationGroupDto newAppealApplicationGroupDto = (ApplicationGroupDto) CopyUtil.copyMutableObject(applicationGroupDto);
                     newAppealApplicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
                     appealApplicationGroupDtos.add(newAppealApplicationGroupDto);
-                }
+
                 rollBackAppPremisesRecommendationDtos.add(appPremisesRecommendationDto);
                 AppPremisesRecommendationDto appwalAppPremisesRecommendationDto = (AppPremisesRecommendationDto) CopyUtil.copyMutableObject(appPremisesRecommendationDto);
-                appwalAppPremisesRecommendationDto.setRecomInNumber(newAppPremisesRecommendationDto.getRecomInNumber());
-                appwalAppPremisesRecommendationDto.setChronoUnit(newAppPremisesRecommendationDto.getChronoUnit());
+                appwalAppPremisesRecommendationDto.setRecomInNumber(appPremisesRecommendationDto.getRecomInNumber());
+                appwalAppPremisesRecommendationDto.setChronoUnit(appPremisesRecommendationDto.getChronoUnit());
                 appealAppPremisesRecommendationDtos.add(appwalAppPremisesRecommendationDto);
             }
 
         }else{
            log.error(StringUtil.changeForLog("This Applicaiton  can not get the ApplicationGroupDto "+ appealApproveDto.getApplicationDto().getApplicationNo()));
         }
-
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        for(ApplicationDto applicationDto : appealApplicaiton){
+            beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+        }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationRejection is end ..."));
     }
     private void applicationLateRenewFee(){
