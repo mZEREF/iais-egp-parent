@@ -194,6 +194,7 @@ public class InterInboxDelegator {
         }
         ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_CONTENT, msgContent);
         ParamUtil.setSessionAttr(request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,msgId);
+        ParamUtil.setRequestAttr(request,"msg_page_view", MsgPage);
         ParamUtil.setSessionAttr(request,"msgPageType",msgType);
         setNumInfoToRequest(request,interInboxUserDto);
     }
