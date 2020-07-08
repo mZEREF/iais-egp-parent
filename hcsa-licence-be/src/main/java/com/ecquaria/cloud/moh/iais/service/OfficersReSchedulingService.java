@@ -94,5 +94,5 @@ public interface OfficersReSchedulingService {
       * @return: void
       * @Descripation: reScheduRoutingTask
       */
-    void reScheduRoutingTask(ReschedulingOfficerDto reschedulingOfficerDto);
+    void reScheduleRoutingTask(ReschedulingOfficerDto reschedulingOfficerDto);
 }

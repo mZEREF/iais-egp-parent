@@ -260,7 +260,7 @@ public class OfficersReSchedulingDelegator {
     public void mohOfficerReSchedulingInsp(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingInsp start ...."));
         ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
-        officersReSchedulingService.reScheduRoutingTask(reschedulingOfficerDto);
+        officersReSchedulingService.reScheduleRoutingTask(reschedulingOfficerDto);
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
     }
 

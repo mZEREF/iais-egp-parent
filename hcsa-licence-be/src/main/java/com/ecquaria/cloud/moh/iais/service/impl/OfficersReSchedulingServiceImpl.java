@@ -216,7 +216,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     }
 
     @Override
-    public void reScheduRoutingTask(ReschedulingOfficerDto reschedulingOfficerDto) {
+    public void reScheduleRoutingTask(ReschedulingOfficerDto reschedulingOfficerDto) {
 
     }
 
