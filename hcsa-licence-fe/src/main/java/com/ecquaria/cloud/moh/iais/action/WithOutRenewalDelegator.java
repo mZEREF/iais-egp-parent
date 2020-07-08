@@ -747,8 +747,8 @@ public class WithOutRenewalDelegator {
         appFeeDetailsDto.setApplicationNo(appGrpNo + "-01");
         appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);
         appSubmissionDtos1.addAll(noAutoAppSubmissionDtos);
-        appSubmissionDtos1.addAll(rfcAppSubmissionDtos);
-     /*   if(!autoAppSubmissionDtos.isEmpty()){
+
+        if(!autoAppSubmissionDtos.isEmpty()){
             AppSubmissionListDto autoAppSubmissionListDto = new AppSubmissionListDto();
             String autoSubmissionId = generateIdClient.getSeqId().getEntity();
             Long auto = System.currentTimeMillis();
@@ -757,14 +757,15 @@ public class WithOutRenewalDelegator {
             autoAppSubmissionListDto.setAppSubmissionDtos(saveutoAppSubmissionDto);
             eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto,autoSubmissionId,EventBusConsts.SERVICE_NAME_APPSUBMIT,
                     EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);
-        }*/
-
+        }
 
         List<AppSubmissionDto> appSubmissionDtos3 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos1);
         appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos3);
         appSubmissionListDto.setEventRefNo(l.toString());
         eventBusHelper.submitAsyncRequest(appSubmissionListDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);
+        rfcAppSubmissionDtos.addAll(noAutoAppSubmissionDtos);
+        rfcAppSubmissionDtos.addAll(autoAppSubmissionDtos);
         for (AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos) {
             appSubmissionDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
             appSubmissionDto.setAmountStr("$0");

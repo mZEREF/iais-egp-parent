@@ -2037,7 +2037,7 @@ public class NewApplicationDelegator {
         }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
             newHciName = appGrpPremisesDto.getConveyanceVehicleNo();
         }
-        if(!oldHciName.equals(newHciName)){
+        if(!newHciName.equals(oldHciName)){
             return false;
         }
 
