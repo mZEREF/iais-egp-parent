@@ -31,12 +31,12 @@ public class MaskTag extends DivTagSupport {
         try {
             setValue("");
         } catch (JspException e) {
-            e.printStackTrace();
+            log.info(e.getMessage(),e);
         }
         try {
             setName("");
         } catch (JspException e) {
-            e.printStackTrace();
+            log.info(e.getMessage(),e);
         }
 
     }

@@ -60,7 +60,7 @@ public class ConfirmDialogTag extends TagSupport {
         try {
             init();
         } catch (JspException e) {
-            e.printStackTrace();
+            log.info(e.getMessage(),e);
         }
     }
 
