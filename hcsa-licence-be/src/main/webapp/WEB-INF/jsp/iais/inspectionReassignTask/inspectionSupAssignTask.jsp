@@ -65,19 +65,16 @@
 <script>
     function doInspectionSupAssignTaskBack() {
         clearErrorMsg();
+        showWaiting();
         $("[name='actionValue']").val('back');
         inspectionSupAssignTaskSubmit('back');
     }
 
     function doInspectionSupAssignTaskNext() {
         clearErrorMsg();
-        doValidation();
-        if (getErrorMsg()) {
-            dismissWaiting();
-        } else {
-            $("[name='actionValue']").val('confirm');
-            inspectionSupAssignTaskSubmit('confirm');
-        }
+        showWaiting();
+        $("[name='actionValue']").val('confirm');
+        inspectionSupAssignTaskSubmit('confirm');
     }
     function inspectionSupAssignTaskSubmit(action){
         $("[name='InspectionSupSearchSwitchType']").val(action);
