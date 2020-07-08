@@ -507,8 +507,11 @@ public class BackendInboxDelegator {
         taskDto =  completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
         //need change
-        String decision = ApplicationConsts.PROCESSING_DECISION_VERIFIED;
+        String decision = null;
         String currentStatus = applicationDto.getStatus();
+        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(currentStatus)){
+            decision = ApplicationConsts.PROCESSING_DECISION_REPLY;
+        }
 
         if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(currentStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(currentStatus)){
             if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
