@@ -1515,7 +1515,19 @@ public class NewApplicationHelper {
         return personKey;
     }
 
-
+    public static String getPhName(List<SelectOption> phDtos, String dateStr){
+        String result = "";
+        if(IaisCommonUtils.isEmpty(phDtos) || StringUtil.isEmpty(dateStr)){
+            return result;
+        }
+        for(SelectOption publicHolidayDto : phDtos){
+            if(dateStr.equals(publicHolidayDto.getValue())){
+                result = publicHolidayDto.getText();
+                break;
+            }
+        }
+        return result;
+    }
 
     //=============================================================================
     //private method

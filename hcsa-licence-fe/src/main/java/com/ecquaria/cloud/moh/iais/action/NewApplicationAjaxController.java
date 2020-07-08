@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -24,7 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -872,6 +877,21 @@ public class NewApplicationAjaxController {
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = (Map<String, AppGrpPremisesDto>) ParamUtil.getSessionAttr(request,NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP);
         AppGrpPremisesDto appGrpPremisesDto = licAppGrpPremisesDtoMap.get(premIndexNo);
         appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+        //set dayName
+        if(appGrpPremisesDto != null){
+            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+            if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)){
+                List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
+                for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto:appPremPhOpenPeriodDtos){
+                    String dayName = appPremPhOpenPeriodDto.getDayName();
+                    String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
+                    if(StringUtil.isEmpty(dayName) && !StringUtil.isEmpty(phDateStr)){
+                        dayName = NewApplicationHelper.getPhName(publicHolidayList,phDateStr);
+                        appPremPhOpenPeriodDto.setDayName(dayName);
+                    }
+                }
+            }
+        }
 
         licAppGrpPremisesDtoMap.put(premIndexNo,appGrpPremisesDto);
         ParamUtil.setSessionAttr(request, NewApplicationDelegator.LICAPPGRPPREMISESDTOMAP, (Serializable) licAppGrpPremisesDtoMap);

@@ -181,7 +181,7 @@ public class NewApplicationDelegator {
     private FeMessageClient feMessageClient;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
-    
+
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -3065,7 +3065,7 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setOnsiteStartFromMM(onsitePbHolDayStartMM);
                     appPremPhOpenPeriod.setOnsiteEndToHH(onsitePbHolDayEndHH);
                     appPremPhOpenPeriod.setOnsiteEndToMM(onsitePbHolDayEndMM);
-                    String phName = getPhName(publicHolidayDtos,onsitePubHoliday);
+                    String phName = NewApplicationHelper.getPhName(publicHolidayDtos,onsitePubHoliday);
                     appPremPhOpenPeriod.setDayName(phName);
                     if(!StringUtil.isEmpty(onsitePubHoliday)||!StringUtil.isEmpty(onsitePbHolDayStartHH) || !StringUtil.isEmpty(onsitePbHolDayStartMM)
                             ||!StringUtil.isEmpty(onsitePbHolDayEndHH) ||!StringUtil.isEmpty(onsitePbHolDayEndMM)){
@@ -3107,7 +3107,7 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setConvStartFromMM(convPbHolDayStartMM);
                     appPremPhOpenPeriod.setConvEndToHH(convPbHolDayEndHH);
                     appPremPhOpenPeriod.setConvEndToMM(convPbHolDayEndMM);
-                    String phName = getPhName(publicHolidayDtos,convPubHoliday);
+                    String phName = NewApplicationHelper.getPhName(publicHolidayDtos,convPubHoliday);
                     appPremPhOpenPeriod.setDayName(phName);
                     if(!StringUtil.isEmpty(convPubHoliday)||!StringUtil.isEmpty(convPbHolDayStartHH) || !StringUtil.isEmpty(convPbHolDayStartMM)
                             ||!StringUtil.isEmpty(convPbHolDayEndHH) ||!StringUtil.isEmpty(convPbHolDayEndMM)){
@@ -3147,7 +3147,7 @@ public class NewApplicationDelegator {
                     appPremPhOpenPeriod.setOffSiteStartFromMM(offSitePbHolDayStartMM);
                     appPremPhOpenPeriod.setOffSiteEndToHH(offSitePbHolDayEndHH);
                     appPremPhOpenPeriod.setOffSiteEndToMM(offSitePbHolDayEndMM);
-                    String phName = getPhName(publicHolidayDtos,offSitePubHoliday);
+                    String phName = NewApplicationHelper.getPhName(publicHolidayDtos,offSitePubHoliday);
                     appPremPhOpenPeriod.setDayName(phName);
                     if(!StringUtil.isEmpty(offSitePubHoliday)||!StringUtil.isEmpty(offSitePbHolDayStartHH) || !StringUtil.isEmpty(offSitePbHolDayStartMM)
                             ||!StringUtil.isEmpty(offSitePbHolDayEndHH) ||!StringUtil.isEmpty(offSitePbHolDayEndMM)){
@@ -5065,7 +5065,7 @@ public class NewApplicationDelegator {
                             String dayName = appPremPhOpenPeriodDto.getDayName();
                             String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
                             if(StringUtil.isEmpty(dayName) && !StringUtil.isEmpty(phDateStr)){
-                                dayName = getPhName(publicHolidayList,phDateStr);
+                                dayName = NewApplicationHelper.getPhName(publicHolidayList,phDateStr);
                                 appPremPhOpenPeriodDto.setDayName(dayName);
                             }
                         }
@@ -5282,22 +5282,6 @@ public class NewApplicationDelegator {
             svcAllPsnConfig = serviceConfigService.getAllSvcAllPsnConfig(svcStepConfigs, svcIds);
         }
         return svcAllPsnConfig;
-    }
-
-
-
-    private static String getPhName(List<SelectOption> phDtos, String dateStr){
-        String result = "";
-        if(IaisCommonUtils.isEmpty(phDtos) || StringUtil.isEmpty(dateStr)){
-            return result;
-        }
-        for(SelectOption publicHolidayDto : phDtos){
-            if(dateStr.equals(publicHolidayDto.getValue())){
-                result = publicHolidayDto.getText();
-                break;
-            }
-        }
-        return result;
     }
 
     private void loadingNewAppInfo(BaseProcessClass bpc){

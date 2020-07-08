@@ -590,7 +590,8 @@ public class ServiceMenuDelegator {
                         List<String> errMsgList = IaisCommonUtils.genNewArrayList();
                         for(String specSvcId:baseAlignSpec.keySet()){
                             String specSvcName =  HcsaServiceCacheHelper.getServiceById(specSvcId).getSvcName();
-                            String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
+//                            String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
+                            String errMsg = MessageUtil.getMessageDesc("NEW_ERR0008");
                             errMsg = errMsg.replace("<service name>",specSvcName);
                             String baseNameStr = baseAlignSpec.get(specSvcId).stream().collect(Collectors.joining(","));
                             errMsg = errMsg.replace("<base service name>",baseNameStr);
@@ -615,7 +616,8 @@ public class ServiceMenuDelegator {
                                 if(i == basechks.length-1){
                                     flag = false;
                                     String specSvcName = HcsaServiceCacheHelper.getServiceById(specSvcId).getSvcName();
-                                    String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
+//                                    String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
+                                    String errMsg = MessageUtil.getMessageDesc("NEW_ERR0008");
                                     errMsg =  errMsg.replace("<service name>",specSvcName);
                                     String baseNameStr = baseSvcNameList.stream().collect(Collectors.joining(","));
                                     errMsg = errMsg.replace("<base service name>",baseNameStr);
@@ -632,51 +634,6 @@ public class ServiceMenuDelegator {
                         ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR_LIST, errMsgList);
                     }
                 }
-                //spe
-//                Map<String ,String> necessaryBaseServiceList = necessaryBase(basecheckedlist,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
-//                List<String> extrabaselist = IaisCommonUtils.genNewArrayList();
-//                extrabaselist.addAll(basecheckedlist);
-//                List<HcsaServiceDto> hcsaServiceDtosMap = getBaseInSpe(sepcifiedcheckedlist,allbaseService,hcsaServiceCorrelationDtoList);
-//                List<String> removeNecessary = IaisCommonUtils.genNewArrayList();
-//                for (String extra: extrabaselist
-//                        ) {
-//                    for (HcsaServiceDto hc:hcsaServiceDtosMap
-//                            ) {
-//                        if(extra.equals(hc.getId())){
-//                            removeNecessary.add(extra);
-//                        }
-//                    }
-//                }
-//                List<String> allBaseSvcId = IaisCommonUtils.genNewArrayList();
-//                for(HcsaServiceDto hcsaServiceDto:allbaseService){
-//                    allBaseSvcId.add(hcsaServiceDto.getId());
-//                }
-//                Map<String,List<String>> baseRelSpe = baseRelSpe(allBaseSvcId,sepcifiedcheckedlist,hcsaServiceCorrelationDtoList);
-//                extrabaselist.removeAll(removeNecessary);
-//                if(necessaryBaseServiceList.size() > 0){
-//                    //no match
-//                    nextstep = currentPage;
-//                    if(extrabaselist.size() == 0){
-//                        err = baseName.get(getKeyOrNull(necessaryBaseServiceList)) + " should be selected.";
-//                    }else{
-//                        for(Map.Entry<String, String> entry : necessaryBaseServiceList.entrySet()){
-//                            err = "The chosen base service ";
-//                            err = err + baseName.get(extrabaselist.get(0));
-//                            err = err + " is not the prerequisite of ";
-//                            err = err + specifiedName.get(entry.getValue()) + ".";
-//                            break;
-//                        }
-//                    }
-//                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
-//                }else{
-//                    if (baseRelSpe.size() == 0){
-//                        nextstep = currentPage;
-//                        err = "There is no base service in specified services.";
-//                        ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
-//                    }else{
-//                        nextstep = CHOOSE_BASE_SVC;
-//                    }
-//                }
             }else{
                 //new app
                 nextstep = CHOOSE_ALIGN;
