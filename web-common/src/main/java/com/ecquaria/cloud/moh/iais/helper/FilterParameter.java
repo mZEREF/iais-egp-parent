@@ -1,10 +1,11 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
-import java.io.Serializable;
-import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.Map;
 
 /*
  *author: yichen
@@ -27,7 +28,7 @@ public final class FilterParameter {
 
     public static class Builder{
         private int pageNo = 1;
-        private int pageSize = 10;
+        private int pageSize = SysParamUtil.getDefaultPageSize();
         private Class<? extends Serializable> clz;
         private String searchAttr;
         private String resultAttr;

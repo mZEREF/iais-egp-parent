@@ -63,6 +63,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 import static org.eclipse.jdt.internal.compiler.util.Util.UTF_8;
@@ -333,7 +335,7 @@ public final class IaisEGPHelper extends EGPHelper {
         try {
             if(searchParam == null || isNew){
                 searchParam = new SearchParam(filter.getClz().getName());
-                searchParam.setPageSize(filter.getPageSize());
+                searchParam.setPageSize(SysParamUtil.getDefaultPageSize());
                 searchParam.setPageNo(filter.getPageNo());
                 searchParam.setSort(filter.getSortField(), SearchParam.ASCENDING);
                 ParamUtil.setSessionAttr(request, filter.getSearchAttr(), searchParam);
@@ -656,5 +658,29 @@ public final class IaisEGPHelper extends EGPHelper {
         FeignResponseEntity<T> resEnt = IaisEGPHelper.genFeignRespFromResp(response, contentCls);
 
         return resEnt;
+    }
+
+    public static Matcher matcherByRegex(String str, String regex){
+        if (StringUtils.isEmpty(str) || StringUtils.isEmpty(regex)){
+            throw new IaisRuntimeException("params is empty");
+        }
+
+        Pattern pattern= Pattern.compile(regex);
+        Matcher matcher= pattern.matcher(str);
+        return matcher;
+    }
+
+    public static String[] getPageSizeByStrings(String pageSizeStr) throws IaisRuntimeException{
+        if (StringUtils.isEmpty(pageSizeStr)){
+            throw new IaisRuntimeException("can not convert page size");
+        }
+
+        String regex = "\\{([^}]*)\\}";
+        Matcher matcher = matcherByRegex(pageSizeStr.trim(), regex);
+        if (!matcher.matches()){
+            return null;
+        }
+
+        return matcher.group(1).split("\\,");
     }
 }

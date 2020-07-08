@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author: yichen
@@ -144,9 +143,8 @@ public final class FileUtils {
         }
 
         String regex = "\\{([^}]*)\\}";
-        Pattern pattern= Pattern.compile(regex);
-        Matcher matcher= pattern.matcher(str);
-        if(!matcher.find()){
+        Matcher matcher = IaisEGPHelper.matcherByRegex(str.trim(), regex);
+        if (!matcher.matches()){
             return null;
         }
 

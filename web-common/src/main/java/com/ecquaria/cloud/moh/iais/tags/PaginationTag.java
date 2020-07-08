@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,7 +74,7 @@ public class PaginationTag extends DivTagSupport {
             if (pageSize != 0 && sr != null) {
                 int pageCount = sr.getPageCount(pageSize);
                 if (pageCount > 0) {
-                    StringBuilder sb =generateHtml(sr,pageNo,pageCount,pageSize);
+                    StringBuilder sb = generateHtml(sr,pageNo,pageCount,pageSize);
                     pageContext.getOut().print(sb.toString());
                 }
             }
@@ -105,26 +106,19 @@ public class PaginationTag extends DivTagSupport {
         sb.append("<div class=\"form-group\">");
         sb.append("<div class=\"col-xs-12 col-md-3\">");
         sb.append("<select class=\"table-select\" id = \"pageJumpNoPageSize\" name = \"pageJumpNoPageSize\" >");
-        if(pageSize==10){
-            sb.append("<option selected value=\"10\">10</option>");
-        }else{
-            sb.append("<option value=\"10\">10</option>");
+
+        //Don't catch null NullPointerException
+        int[] pageSizeArr = SysParamUtil.toPageSizeArray();
+        if (pageSizeArr != null && pageSizeArr.length > 0){
+            for (int s : pageSizeArr){
+                if (s == pageSize){
+                    sb.append("<option selected value=\"" + s + "\">" + s + "</option>");
+                }else {
+                    sb.append("<option value=\"" + s + "\">" + s +"</option>");
+                }
+            }
         }
-        if(pageSize==20){
-            sb.append("<option selected value=\"20\">20</option>");
-        }else{
-            sb.append("<option value=\"20\">20</option>");
-        }
-        if(pageSize==30){
-            sb.append("<option selected value=\"30\">30</option>");
-        }else{
-            sb.append("<option value=\"30\">30</option>");
-        }
-        if(pageSize==40){
-            sb.append("<option selected value=\"40\">40</option>");
-        }else{
-            sb.append("<option value=\"40\">40</option>");
-        }
+
         sb.append("</select>");
         sb.append("</div></div></p></div>");
 

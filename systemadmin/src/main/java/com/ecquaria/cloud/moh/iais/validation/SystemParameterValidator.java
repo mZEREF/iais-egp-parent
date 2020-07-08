@@ -7,10 +7,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 /**
  * @author: yichen
@@ -35,7 +37,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 			case SystemParameterConstants.PARAM_TYPE_MONTH:
 				break;
 			case SystemParameterConstants.PARAM_TYPE_PAGE_SIZE:
-				verifyPageSize(errMap, Integer.parseInt(editDto.getValue()));
+				verifyPageSize(errMap, editDto.getValue());
 			break;
 			case SystemParameterConstants.PARAM_TYPE_MAX_FILE_SIZE:
 				verifyFileUploadSize(errMap, Integer.parseInt(editDto.getValue()));
@@ -60,11 +62,35 @@ public class SystemParameterValidator implements CustomizeValidator {
 		return errMap;
 	}
 
-	private void verifyPageSize(Map<String, String> errorMap, int value){
-		boolean hasError = value < 10 || (value > 50) ? true : false;
-		if (hasError){
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.getMessageDesc("SYSPAM_ERROR0003"));
+	private void verifyPageSize(Map<String, String> errorMap, String value){
+		Matcher m = IaisEGPHelper.matcherByRegex(value, "\\{([^}]*)\\}");
+		if (m.matches()){
+			String[] values = IaisEGPHelper.getPageSizeByStrings(value);
+			try {
+				if (values.length != 5){
+					errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "System only allow user to enter 5 numbers");
+					return;
+				}
+
+				int[] to = new int[values.length];
+				for (int i = 0; i < values.length; i++){
+					int val = Integer.parseInt(values[i]);
+					if (val < 10 || val > 100){
+						errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The value the range from 10 to 100");
+						break;
+					}
+
+					to[i] = val;
+				}
+
+			}catch (NumberFormatException e){
+				errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "System only allow user to enter 5 numbers");
+				return;
+			}
+		}else {
+			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The value format should be {}");
 		}
+
 	}
 
 	private static void verifyUploadFileType(Map<String, String> errorMap, String value){
