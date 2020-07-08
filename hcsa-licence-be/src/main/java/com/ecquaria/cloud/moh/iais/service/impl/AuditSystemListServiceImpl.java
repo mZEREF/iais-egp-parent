@@ -609,6 +609,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             String svcCode = hcsaServiceDto.getSvcCode();
             appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
             appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
+            appSvcRelatedInfoDtoList.get(0).setHciCode(auditCombinationDto.getAuditTaskDataFillterDto().getHclCode());
             entity.setAppGrpNo(grpNo);
             entity.setAppType(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK);
             entity.setAmount(0.0);
