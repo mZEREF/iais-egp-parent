@@ -13,7 +13,13 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="bg-title">
-                        <h2><iais:message key="${successInfo}" escape="true"></iais:message></h2>
+                        <c:if test="${'Y' == rfiSuccessInfo}">
+                            <h2><span><c:out value="${successInfo}"></c:out></span></h2>
+                        </c:if>
+
+                        <c:if test="${'Y' != rfiSuccessInfo}">
+                            <h2><iais:message key="${successInfo}" escape="true"></iais:message></h2>
+                        </c:if>
                     </div>
                 </div>
                 <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>
