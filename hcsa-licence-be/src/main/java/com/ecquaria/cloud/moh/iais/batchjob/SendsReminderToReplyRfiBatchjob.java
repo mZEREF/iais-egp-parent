@@ -79,7 +79,10 @@ public class SendsReminderToReplyRfiBatchjob {
         try{
             for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
             ) {
-                if(rfi.getDueDateSubmission().compareTo(new Date())<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(rfi.getDueDateSubmission());
+                cal.add(Calendar.DAY_OF_MONTH, systemParamConfig.getRfiDueDay());
+                if(cal.getTime().compareTo(new Date())<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
                     reminder(rfi);
                 }
             }
@@ -150,7 +153,7 @@ public class SendsReminderToReplyRfiBatchjob {
         licPremisesReqForInfoDto.setReminder(licPremisesReqForInfoDto.getReminder()+1);
         Calendar cal = Calendar.getInstance();
         cal.setTime(licPremisesReqForInfoDto.getDueDateSubmission());
-        cal.add(Calendar.DAY_OF_MONTH, systemParamConfig.getRfiDueDay());
+        cal.add(Calendar.DAY_OF_MONTH, 7);
         licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_RETRIGGER);
         licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);
