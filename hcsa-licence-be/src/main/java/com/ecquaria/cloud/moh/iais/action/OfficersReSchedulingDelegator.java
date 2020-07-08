@@ -291,7 +291,7 @@ public class OfficersReSchedulingDelegator {
         Date startDate = getSpecificDate(specificStartDate, hoursOption, startHours);
         Date endDate = getSpecificDate(specificEndDate, endHoursOption, endHours);
         Map<String, String> errMap = null;
-        if(startDate != null&&endDate.before(startDate)){
+        if(startDate != null&&endDate != null&&endDate.before(startDate)){
             errMap = IaisCommonUtils.genNewHashMap();
             errMap.put("specificDate", "UC_INSP_ERR0007");
         } else {
