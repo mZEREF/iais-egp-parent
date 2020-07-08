@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.MohUenDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UenDto;
@@ -12,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
@@ -120,13 +122,16 @@ public class UenManagementServiceImpl implements UenManagementService {
             interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
             String mesNO = inboxMsgService.getMessageNo();
             interMessageDto.setRefNo(mesNO);
-            interMessageDto.setService_id(applicationDto.getServiceId());
+
             interMessageDto.setMsgContent(rfiEmailTemplateDto.getMessageContent());
             interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
             interMessageDto.setUserId(licenseeId);
             interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            inboxMsgService.saveInterMessage(interMessageDto);
-
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+            if(hcsaServiceDto!=null){
+                interMessageDto.setService_id(hcsaServiceDto.getSvcCode()+"@");
+                inboxMsgService.saveInterMessage(interMessageDto);
+            }
 
             EmailDto emailDto=new EmailDto();
             emailDto.setContent(mesContext);

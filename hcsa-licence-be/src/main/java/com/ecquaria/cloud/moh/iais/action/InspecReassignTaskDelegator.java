@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionSubPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
@@ -24,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -488,13 +490,18 @@ public class InspecReassignTaskDelegator {
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
         String refNo = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(refNo);
-        interMessageDto.setService_id(serviceId);
+
         interMessageDto.setUserId(licenseeId);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         interMessageDto.setMsgContent(templateMessageByContent);
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         interMessageDto.setMaskParams(maskParams);
-        inboxMsgService.saveInterMessage(interMessageDto);
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+        if(hcsaServiceDto!=null){
+            interMessageDto.setService_id(hcsaServiceDto.getSvcCode()+"@");
+            inboxMsgService.saveInterMessage(interMessageDto);
+        }
+
     }
 }
 

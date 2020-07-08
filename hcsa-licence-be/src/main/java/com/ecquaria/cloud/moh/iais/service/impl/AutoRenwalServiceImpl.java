@@ -220,7 +220,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 String messageNo = inboxMsgService.getMessageNo();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
                 InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(licenceDto.getId(), MessageConstants.MESSAGE_TYPE_NOTIFICATION,
-                        messageNo, hcsaServiceDto.getId(), templateMessageByContent, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
+                        messageNo, hcsaServiceDto.getSvcCode()+"@", templateMessageByContent, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
                 interMessageDto.setSubject("MOH IAIS – Licence is due to expiry");
                 HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();
                 mapParam.put("licenceId",licenceDto.getId());
@@ -306,7 +306,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 String messageNo = inboxMsgService.getMessageNo();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
                 InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(licenceDto.getId(), MessageConstants.MESSAGE_TYPE_NOTIFICATION,
-                        messageNo, hcsaServiceDto.getId(), templateMessageByContent, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
+                        messageNo, hcsaServiceDto.getSvcCode()+"@", templateMessageByContent, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
                 interMessageDto.setSubject("MOH IAIS – Licence is due to expiry");
                 inboxMsgService.saveInterMessage(interMessageDto);
             }

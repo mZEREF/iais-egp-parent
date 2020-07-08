@@ -796,14 +796,17 @@ public class LicenceApproveBatchjob {
             email.setClientQueryCode(applicationNo);
             email.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId()));
             licenceService.sendEmail(email);
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+            if(hcsaServiceDto!=null){
+                String messageNo = inboxMsgService.getMessageNo();
+                InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION, MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
+                        messageNo, hcsaServiceDto.getSvcCode()+'@', mesContext, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
+                HashMap<String, String> mapParam = IaisCommonUtils.genNewHashMap();
+                mapParam.put("appNo", applicationNo);
+                interMessageDto.setMaskParams(mapParam);
+                inboxMsgService.saveInterMessage(interMessageDto);
+            }
 
-            String messageNo = inboxMsgService.getMessageNo();
-            InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION, MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
-                    messageNo, serviceId, mesContext, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
-            HashMap<String, String> mapParam = IaisCommonUtils.genNewHashMap();
-            mapParam.put("appNo", applicationNo);
-            interMessageDto.setMaskParams(mapParam);
-            inboxMsgService.saveInterMessage(interMessageDto);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -1835,7 +1838,7 @@ public class LicenceApproveBatchjob {
         String refNo = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(refNo);
         if(serviceDto != null){
-            interMessageDto.setService_id(serviceDto.getSvcCode()+"@");
+            interMessageDto.setService_id(serviceDto.getSvcCode()+'@');
         }
         interMessageDto.setUserId(licenseeId);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);

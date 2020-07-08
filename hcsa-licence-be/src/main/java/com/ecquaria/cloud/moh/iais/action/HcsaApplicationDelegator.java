@@ -1073,7 +1073,11 @@ public class HcsaApplicationDelegator {
                 if(!StringUtil.isEmpty(oldApplicationNo) && premiseMiscDto != null){
                     HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                     String appealType = premiseMiscDto.getAppealType();
-                    sendAppealMessage(oldApplicationNo,licenseeId,maskParams,applicationDto.getServiceId(),appealType);
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
+                    if(hcsaServiceDto!=null){
+                        sendAppealMessage(oldApplicationNo,licenseeId,maskParams,hcsaServiceDto.getSvcCode()+"@",appealType);
+                    }
+
                 }
             }
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);

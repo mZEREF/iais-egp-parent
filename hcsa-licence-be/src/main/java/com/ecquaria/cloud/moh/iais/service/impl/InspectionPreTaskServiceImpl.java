@@ -277,7 +277,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
             String mesNO = inboxMsgService.getMessageNo();
             interMessageDto.setRefNo(mesNO);
-            interMessageDto.setService_id(serviceCode);
+            interMessageDto.setService_id(serviceCode+"@");
             String url;
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
             //Have you completed a self-assessment checklist?

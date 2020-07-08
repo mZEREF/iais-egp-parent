@@ -745,7 +745,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
         String mesNO = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(mesNO);
-        interMessageDto.setService_id(serviceCode);
+        interMessageDto.setService_id(serviceCode+"@");
         interMessageDto.setUserId(licenseeId);
         interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         interMessageDto.setMsgContent(templateMessageByContent);

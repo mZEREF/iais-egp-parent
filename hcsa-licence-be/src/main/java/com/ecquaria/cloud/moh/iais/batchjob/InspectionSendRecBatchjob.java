@@ -138,7 +138,7 @@ public class InspectionSendRecBatchjob {
                 interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
                 String mesNO = inboxMsgService.getMessageNo();
                 interMessageDto.setRefNo(mesNO);
-                interMessageDto.setService_id(serviceCode);
+                interMessageDto.setService_id(serviceCode+'@');
                 interMessageDto.setUserId(applicationGroupDto.getLicenseeId());
                 String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
                         MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appPremCorrId;
