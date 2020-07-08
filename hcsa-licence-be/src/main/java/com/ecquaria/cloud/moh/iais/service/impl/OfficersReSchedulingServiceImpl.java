@@ -2,7 +2,11 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -13,12 +17,16 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -63,6 +71,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
+    @Autowired
+    private TaskService taskService;
 
     @Override
     public List<SelectOption> getInspWorkGroupByLogin(LoginContext loginContext, ReschedulingOfficerDto reschedulingOfficerDto) {
@@ -218,13 +229,77 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     @Override
     public void reScheduleRoutingTask(ReschedulingOfficerDto reschedulingOfficerDto) {
         String appNo = reschedulingOfficerDto.getAssignNo();
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
         if(samePremisesAppMap != null) {
             List<String> appNoList = samePremisesAppMap.get(appNo);
+            List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
             if(!IaisCommonUtils.isEmpty(appNoList)){
-
+                for(String applicationNo : appNoList){
+                    //get application, task score
+                    ApplicationDto applicationDto = applicationClient.getAppByNo(applicationNo).getEntity();
+                    List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+                    applicationDtos.add(applicationDto);
+                    List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+                    hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+                    int taskScore = hcsaSvcStageWorkingGroupDtos.get(0).getCount();
+                    AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+                    List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremisesCorrelationDto.getId()).getEntity();
+                    if(!IaisCommonUtils.isEmpty(taskDtos)){
+                        taskDtoList.add(taskDtos.get(0));
+                        //create and update task
+                        reSchSaveTask(taskDtos, auditTrailDto, taskScore);
+                    }
+                }
             }
+            reschedulingOfficerDto.setSaveAppNoList(appNoList);
+            reschedulingOfficerDto.setTaskDtos(taskDtoList);
+            reschedulingOfficerDto.setAuditTrailDto(auditTrailDto);
+            inspectionTaskClient.reScheduleSaveRouteData(reschedulingOfficerDto);
         }
+    }
+
+    private void reSchSaveTask(List<TaskDto> taskDtos, AuditTrailDto auditTrailDto, int taskScore) {
+        List<TaskDto> saveTaskDtoList = IaisCommonUtils.genNewArrayList();
+        for(TaskDto taskDto : taskDtos){
+            taskDto.setSlaDateCompleted(new Date());
+            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+            taskDto.setAuditTrailDto(auditTrailDto);
+            taskService.updateTask(taskDto);
+            TaskDto saveTask = new TaskDto();
+            saveTask.setId(null);
+            saveTask.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+            saveTask.setPriority(taskDto.getPriority());
+            saveTask.setRefNo(taskDto.getRefNo());
+            saveTask.setScore(taskScore);
+            saveTask.setSlaAlertInDays(taskDto.getSlaAlertInDays());
+            saveTask.setSlaDateCompleted(null);
+            saveTask.setSlaInDays(taskDto.getSlaInDays());
+            saveTask.setSlaRemainInDays(null);
+            saveTask.setTaskKey(taskDto.getTaskKey());
+            saveTask.setTaskType(taskDto.getTaskType());
+            saveTask.setWkGrpId(taskDto.getWkGrpId());
+            saveTask.setUserId(null);
+            saveTask.setDateAssigned(new Date());
+            saveTask.setAuditTrailDto(auditTrailDto);
+            saveTask.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
+            saveTask.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+            saveTask.setApplicationNo(taskDto.getApplicationNo());
+            saveTaskDtoList.add(saveTask);
+        }
+        taskService.createTasks(saveTaskDtoList);
+    }
+
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
+        for(ApplicationDto applicationDto : applicationDtos){
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+        }
+        return hcsaSvcStageWorkingGroupDtos;
     }
 
     private List<String> getAppNoByGroup(Map<String, Map<String, String>> groupCheckUserIdMap, String workGroupCheck,
