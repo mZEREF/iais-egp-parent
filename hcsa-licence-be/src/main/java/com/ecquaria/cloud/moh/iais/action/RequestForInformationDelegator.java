@@ -309,7 +309,7 @@ public class RequestForInformationDelegator {
         }
         List<LicPremisesReqForInfoReplyDto> licPremisesReqForInfoReplyDtos=IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)) {
-            isNeedDoc = true;
+
             for(String infoTi :infoTitle){
                 LicPremisesReqForInfoReplyDto licPremisesReqForInfoReplyDto=new LicPremisesReqForInfoReplyDto();
                 licPremisesReqForInfoReplyDto.setTitle(infoTi);
