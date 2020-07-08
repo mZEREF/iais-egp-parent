@@ -592,9 +592,7 @@
             $("#periodValue").html(value);
         } else if(val != "Others" && recommation == 'IRE003' ) {
             $("#periodValue").html('Reject');
-        }
-
-        if (recommendationRfc == 'IRE007') {
+        } else if (recommendationRfc == 'IRE007') {
             $("#periodValue").html('Approve');
         } else if (recommendationRfc == 'IRE008') {
             $("#periodValue").html('Reject');

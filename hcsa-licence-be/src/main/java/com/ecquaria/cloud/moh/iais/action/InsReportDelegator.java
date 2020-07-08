@@ -238,6 +238,8 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setRecomDecision(recommendationRfc);
             appPremisesRecommendationDto.setRecomInDate(licDate);
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+            appPremisesRecommendationDto.setRecomInNumber(6);
+            appPremisesRecommendationDto.setPeriod("DTPE002");
             appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
         } else {
             appPremisesRecommendationDto.setRemarks(remarks);
