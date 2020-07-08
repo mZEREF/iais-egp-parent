@@ -411,7 +411,7 @@
                                     </td>
                                     <td class="col-xs-4">
                                         <iais:select cssClass="nice-select periods" name="periods" options="riskOption"
-                                                     firstOption="${periodDefault}"
+                                                     firstOption="Please Select"
                                                      onchange="javascirpt:changePeriod();"
                                                      value="${appPremisesRecommendationDto.period}"/>
                                         <span id="error_period" name="iaisErrorMsg" class="error-msg"></span>
@@ -561,6 +561,10 @@
 
 <script type="text/javascript">
 
+    $(function () {
+        console.log('----'+'${RECOMMENDATION_DTO.recommendation}');
+    })
+
     function insRepsubmit() {
         $("#mainForm").submit();
     }
@@ -592,10 +596,8 @@
 
         if (recommendationRfc == 'IRE007') {
             $("#periodValue").html('Approve');
-        } else if (recommendationRfc == 'IRE008') {
+        } else if (recommendationRfc == 'IRE007') {
             $("#periodValue").html('Reject');
-        }else {
-            $("#periodValue").html('');
         }
     }
 

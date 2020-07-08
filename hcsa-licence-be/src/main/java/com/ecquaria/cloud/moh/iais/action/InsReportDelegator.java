@@ -95,15 +95,17 @@ public class InsReportDelegator {
         }
         String appStatus = applicationViewDto.getApplicationDto().getStatus();
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
         if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(appStatus)|| ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(appStatus)) {
-            initRecommendation(correlationId, applicationViewDto, bpc);
+            appPremisesRecommendationDto = initRecommendation(correlationId, applicationViewDto, bpc);
         }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> recommendationOption = getRecommendationOption(applicationType);
         List<SelectOption> processingDe = getProcessingDecision(appStatus);
         String periodDefault = insRepService.getPeriodDefault(applicationViewDto,taskDto);
-        ParamUtil.setSessionAttr(bpc.request, "periodDefault", periodDefault);
+        appPremisesRecommendationDto.setPeriod(periodDefault);
+        ParamUtil.setRequestAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
         String reportClassBelow = "tab-pane";
@@ -280,7 +282,7 @@ public class InsReportDelegator {
         return appPremisesRecommendationDtos;
     }
 
-    private void initRecommendation(String correlationId, ApplicationViewDto applicationViewDto, BaseProcessClass bpc) {
+    private AppPremisesRecommendationDto initRecommendation(String correlationId, ApplicationViewDto applicationViewDto, BaseProcessClass bpc) {
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
         AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
@@ -315,14 +317,12 @@ public class InsReportDelegator {
             String engage = "on";
             initRecommendationDto.setEngageEnforcement(engage);
             initRecommendationDto.setEngageEnforcementRemarks(remarks);
-        } else {
-
         }
         if (followRecommendationDto != null) {
             String followRemarks = followRecommendationDto.getRemarks();
             initRecommendationDto.setFollowUpAction(followRemarks);
         }
-        ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, initRecommendationDto);
+        return initRecommendationDto;
     }
 
     private void saveRecommendations(List<AppPremisesRecommendationDto> appPremisesRecommendationDtoList) {
@@ -342,7 +342,7 @@ public class InsReportDelegator {
         }
         insRepService.updateengageRecommendation(appPremisesRecommendationDto3);
         String followRemarks = appPremisesRecommendationDto3.getRemarks();
-        if (StringUtil.isEmpty(followRemarks)) {
+        if (!StringUtil.isEmpty(followRemarks)) {
             appPremisesRecommendationDto3.setRemarks(null);
         }
         insRepService.updateFollowRecommendation(appPremisesRecommendationDto3);

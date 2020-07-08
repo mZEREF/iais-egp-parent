@@ -121,7 +121,6 @@ public class InsRepServiceImpl implements InsRepService {
     @Autowired
     private HcsaApplicationDelegator hcsaApplicationDelegator;
 
-
     private final String APPROVAL = "Approval";
     private final String REJECT = "Reject";
 
@@ -344,7 +343,11 @@ public class InsRepServiceImpl implements InsRepService {
         }
 
         inspectionReportDto.setServiceName(svcName);
-        inspectionReportDto.setHciCode(applicationViewDto.getHciCode());
+        String hciCode = applicationViewDto.getHciCode();
+        if(StringUtil.isEmpty(hciCode)){
+            hciCode = "-";
+        }
+        inspectionReportDto.setHciCode(hciCode);
         inspectionReportDto.setHciName(applicationViewDto.getHciName());
         inspectionReportDto.setHciAddress(applicationViewDto.getHciAddress());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
@@ -453,8 +456,6 @@ public class InsRepServiceImpl implements InsRepService {
             saveRecommendation(appPremisesRecommendationDto);
             return;
         }
-
-
     }
 
     @Override
@@ -533,7 +534,7 @@ public class InsRepServiceImpl implements InsRepService {
                 String count = String.valueOf(riskResultDto.getTimeCount());
                 Boolean dafLicture = riskResultDto.isDafLicture();
                 if (dafLicture) {
-                    defaultOption = count + " " + dateType;
+                    defaultOption = count +" "+ dateType ;
                 }
             }
         }
