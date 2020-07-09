@@ -192,7 +192,6 @@ public class MasterCodeDelegator {
                     errorMap.put("effectiveTo", "Effective Start Date cannot be later than Effective End Date");
                 }
             }
-
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
             return;
@@ -519,6 +518,7 @@ public class MasterCodeDelegator {
         if (!masterCodeId.isEmpty()) {
             MasterCodeDto masterCodeDto = masterCodeService.findMasterCodeByMcId(masterCodeId);
             List<SelectOption> mcStatusSelectList = IaisCommonUtils.genNewArrayList();
+            mcStatusSelectList.add(new SelectOption("", "Please Select"));
             mcStatusSelectList.add(new SelectOption("CMSTAT001", "Active"));
             mcStatusSelectList.add(new SelectOption("CMSTAT003", "Inactive"));
             ParamUtil.setRequestAttr(bpc.request, "mcStatusSelectList", mcStatusSelectList);
@@ -607,7 +607,6 @@ public class MasterCodeDelegator {
 
     private void getCategoryValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request) throws ParseException {
         masterCodeDto.setMasterCodeId(null);
-        masterCodeDto.setFilterValue(ParamUtil.getString(request, "codeCategoryFilterValue"));
         masterCodeDto.setCodeValue(ParamUtil.getString(request, "codeCategoryValue"));
         masterCodeDto.setCodeDescription(ParamUtil.getString(request, "codeCategoryDescription"));
         masterCodeDto.setStatus(ParamUtil.getString(request, "codeCategoryStatus"));
@@ -615,7 +614,6 @@ public class MasterCodeDelegator {
         masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, "codeCategorySequence")) ? 100 : ParamUtil.getInt(request, "codeCategorySequence"));
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, "categoryEsd")));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, "categoryEed")));
-//        masterCodeDto.setVersion(Float.parseFloat("1.0"));
         masterCodeDto.setIsEditable(0);
         masterCodeDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
     }

@@ -29,13 +29,19 @@
                             <label class="col-xs-12 col-md-4 control-label">Filter Value</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
                                 <p>${MasterCodeView.filterValue}</p>
-                                <input name="codeCategoryFilterValue" type="text" value="${MasterCodeView.filterValue}" hidden>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label">Version</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <p>${MasterCodeView.version}</p>
+                                <c:choose>
+                                    <c:when test="${empty MasterCodeView.version}">
+                                        <p>-</p>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p>${ MasterCodeView.version}</p>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                         <div class="form-group">
