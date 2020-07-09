@@ -1107,6 +1107,7 @@ public class RequestForChangeMenuDelegator {
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             if (appSubmissionDto != null) {
                 appSubmissionDto.setLicenseeId(licenseeId);
+                appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                 String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
@@ -1505,22 +1506,16 @@ public class RequestForChangeMenuDelegator {
                 requestForChangeService.svcDocToPresmise(appSubmissionDtoByLicenceId);
                 appSubmissionDtos.add(appSubmissionDtoByLicenceId);
             }
-
         }
-
-
         ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
-
         String submissionId = generateIdClient.getSeqId().getEntity();
         AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
         Long l = System.currentTimeMillis();
         appSubmissionListDto.setEventRefNo(l.toString());
         List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(appSubmissionDtos);
         appSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
-
         eventBusHelper.submitAsyncRequest(appSubmissionListDto, submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);
-
         ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos1);
         log.debug(StringUtil.changeForLog("the do doSubmit end ...."));
     }

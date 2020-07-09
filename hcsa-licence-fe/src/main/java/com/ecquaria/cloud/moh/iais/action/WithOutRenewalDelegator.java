@@ -686,6 +686,7 @@ public class WithOutRenewalDelegator {
                 }
             }
         }
+        String currentLicenceId = appSubmissionDtos.get(0).getLicenceId();
         String finalLicenseeId = licenseeId;
         idNoPsnTypeMap.forEach((idNo, psnTypes) -> {
             List<String> notReNewLicIds = IaisCommonUtils.genNewArrayList();
@@ -695,7 +696,7 @@ public class WithOutRenewalDelegator {
             for (LicKeyPersonnelDto dto : licByPerId) {
                 String licenceId = dto.getLicenceId();
                 String licseeId = dto.getLicenseeId();
-                if (finalLicenseeId.equals(licseeId)) {
+                if (finalLicenseeId.equals(licseeId)&&!notReNewLicIds.contains(licenceId)&&!currentLicenceId.equals(licenceId)) {
                     notReNewLicIds.add(licenceId);
                 }
             }

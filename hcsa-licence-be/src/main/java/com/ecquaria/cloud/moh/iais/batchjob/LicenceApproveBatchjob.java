@@ -1440,6 +1440,20 @@ public class LicenceApproveBatchjob {
             if (applicationGroupDto != null) {
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
+            //ceased    weilu
+            try {
+                String licenceNo = originLicenceDto.getLicenceNo();
+                String[] split = licenceNo.split("/");
+                if(split.length>5){
+                    String runningNoS = split[5];
+                    int runningNoI = Integer.parseInt(runningNoS);
+                    String runningNo = String.valueOf(runningNoI + 1);
+                    licenceDto.setCesedLicNo(runningNo);
+                }
+            }catch (Exception e){
+                log.info(StringUtil.changeForLog("============ceased licNo=================="));
+            }
+
         } else {
             if (applicationGroupDto != null) {
                 Date startDate = null;
@@ -1800,7 +1814,7 @@ public class LicenceApproveBatchjob {
         private LicenceGroupDto licenceGroupDto;
     }
 
-    public void createCessLicence(ApplicationGroupDto applicationGroupDto,GenerateResult generalGenerateResult ,GenerateResult groupGenerateResult){
+    public void createCessLicence(ApplicationGroupDto applicationGroupDto,GenerateResult generalGenerateResult  ,GenerateResult groupGenerateResult){
         List<LicenceGroupDto> licenceGroupDtos = IaisCommonUtils.genNewArrayList();
         List<ApplicationGroupDto> success = IaisCommonUtils.genNewArrayList();
         List<Map<String, String>> fail = IaisCommonUtils.genNewArrayList();
