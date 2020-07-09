@@ -45,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.BroadcastService;
 import com.ecquaria.cloud.moh.iais.service.LicenceFileDownloadService;
@@ -699,6 +700,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
             broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null,submissionId);
             broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null,submissionId);
+            //update fe application stauts
+            for(ApplicationDto applicationDto :requestForInfList){
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization());
+            }
 
         }
 
