@@ -1065,16 +1065,12 @@ public class HcsaApplicationDelegator {
         String applicationType = applicationDto.getApplicationType();
         try{
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
-                String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
+                String appealingFor = (String)ParamUtil.getSessionAttr(bpc.request, "appealingFor");
                 AppPremiseMiscDto premiseMiscDto = (AppPremiseMiscDto)ParamUtil.getSessionAttr(bpc.request, "premiseMiscDto");
-                if(!StringUtil.isEmpty(oldApplicationNo) && premiseMiscDto != null){
+                if(!StringUtil.isEmpty(appealingFor) && premiseMiscDto != null){
                     HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                     String appealType = premiseMiscDto.getAppealType();
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
-                    if(hcsaServiceDto!=null){
-                        sendAppealMessage(oldApplicationNo,licenseeId,maskParams,hcsaServiceDto.getSvcCode()+"@",appealType);
-                    }
-
+                    sendAppealMessage(appealingFor,licenseeId,maskParams,applicationDto.getServiceId(),appealType);
                 }
             }
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);
@@ -2266,6 +2262,7 @@ public class HcsaApplicationDelegator {
                     appealNo = oldApplication.getApplicationNo();
                     type = "application";
                     ParamUtil.setSessionAttr(request, "oldApplicationNo", oldApplication.getApplicationNo());
+                    ParamUtil.setSessionAttr(request, "appealingFor", oldApplication.getApplicationNo());
                 }
                 String appealType = premiseMiscDto.getAppealType();
                 if(ApplicationConsts.APPEAL_TYPE_LICENCE.equals(appealType)){
@@ -2274,6 +2271,7 @@ public class HcsaApplicationDelegator {
                     type = "licence";
                 }
                 ParamUtil.setSessionAttr(request, "appealNo", appealNo);
+                ParamUtil.setSessionAttr(request, "appealingFor", appealNo);
                 ParamUtil.setSessionAttr(request, "premiseMiscDto", premiseMiscDto);
                 ParamUtil.setSessionAttr(request, "type", type);
             }
