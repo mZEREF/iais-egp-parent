@@ -669,12 +669,16 @@ public class RequestForChangeMenuDelegator {
         selectOptions.add(s1);
         List<PersonnelListQueryDto> persons = requestForChangeService.getLicencePersonnelListQueryDto(licenseeId);
         if (!IaisCommonUtils.isEmpty(persons)) {
+            List<String> idNos = IaisCommonUtils.genNewArrayList();
             for (PersonnelListQueryDto dto : persons) {
                 String idNo = dto.getIdNo();
-                String name = dto.getName();
-                String idType = dto.getIdType();
-                SelectOption s = new SelectOption(idType + "," + idNo, name + "," + idNo + "," + idType);
-                selectOptions.add(s);
+                if(!idNos.contains(idNo)){
+                    idNos.add(idNo);
+                    String name = dto.getName();
+                    String idType = dto.getIdType();
+                    SelectOption s = new SelectOption(idType + "," + idNo, name + "," + idNo + "," + idType);
+                    selectOptions.add(s);
+                }
             }
         }
         return selectOptions;
@@ -1180,7 +1184,7 @@ public class RequestForChangeMenuDelegator {
         String amount = Formatter.formatterMoney(dAmount);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto)ParamUtil.getRequestAttr(bpc.request, "AppSubmissionDto");
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
-        bpc.request.getSession().setAttribute("dAmount",amount);
+        bpc.request.getSession().setAttribute("dAmount","$0.0");
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
 
