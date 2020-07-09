@@ -285,7 +285,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER);
                     applicationViewService.updateApplicaiton(applicationViewDto1.getApplicationDto());
                     AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremCorrIds.get(i)).getEntity();
-                    appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
+                    appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_INSPECTOR_LEAD_ROUTE_BACK_EMAIL);
                     appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     appInspectionStatusClient.update(appInspectionStatusDto1);
 
@@ -383,7 +383,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
                     applicationViewService.updateApplicaiton(applicationViewDto1.getApplicationDto());
                     AppInspectionStatusDto appInspectionStatusDto2 = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremCorrIdsNoNc.get(i)).getEntity();
-                    appInspectionStatusDto2.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY);
+                    appInspectionStatusDto2.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
                     appInspectionStatusDto2.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                     appInspectionStatusClient.update(appInspectionStatusDto2);
 
