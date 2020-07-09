@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -262,9 +264,165 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Override
     public AppointmentDto getInspDateValidateData(ReschedulingOfficerDto reschedulingOfficerDto) {
-        AppointmentDto appointmentDto = new AppointmentDto();
         String appNo = reschedulingOfficerDto.getAssignNo();
+        ApplicationDto applicationDto = applicationClient.getAppByNo(appNo).getEntity();
+        AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+        //get Applicant set start date and end date from appGroup
+        AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(appPremisesCorrelationDto.getId()).getEntity();
+        //specific date dto
+        appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
+        Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
+        List<String> premCorrIds = getPremIdsByAppNoList(samePremisesAppMap, appNo);
+        Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
+        List<String> serviceIds = IaisCommonUtils.genNewArrayList();
+        for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
+            if(!StringUtil.isEmpty(mapDate.getValue())){
+                serviceIds.add(mapDate.getValue());
+            }
+        }
+        //get Start date and End date when group no date
+        if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
+            appointmentDto.setServiceIds(serviceIds);
+            appointmentDto = hcsaConfigClient.getApptStartEndDateByService(appointmentDto).getEntity();
+        }
+        //get inspection date
+        //get Other Tasks From The Same Premises
+        List<TaskDto> taskDtoList = getAllTaskFromSamePremises(premCorrIds);
+        List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
+        for (TaskDto tDto : taskDtoList) {
+            AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
+            appointmentUserDto.setLoginUserId(orgUserDto.getUserId());
+            String workGroupId = tDto.getWkGrpId();
+            WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
+            appointmentUserDto.setWorkGrpName(workingGroupDto.getGroupName());
+            //get service id by task refno
+            String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
+            //get manHours by service and stage
+            ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
+            apptAppInfoShowDto.setApplicationType(applicationDto.getApplicationType());
+            apptAppInfoShowDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
+            apptAppInfoShowDto.setServiceId(serviceId);
+            int manHours = getServiceManHours(tDto.getRefNo(), apptAppInfoShowDto);
+            //Divide the time according to the number of people
+            List<TaskDto> sizeTask = organizationClient.getCurrTaskByRefNo(tDto.getRefNo()).getEntity();
+            double hours = manHours;
+            double peopleCount = sizeTask.size();
+            int peopleHours = (int) Math.ceil(hours/peopleCount);
+            appointmentUserDto.setWorkHours(peopleHours);
+            appointmentUserDtos.add(appointmentUserDto);
+        }
+        //If one person is doing multiple services at the same time, The superposition of time
+        appointmentUserDtos = getOnePersonBySomeService(appointmentUserDtos);
+        appointmentDto.setUsers(appointmentUserDtos);
         return appointmentDto;
+    }
+
+    private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
+        List<AppointmentUserDto> appointmentUserDtoList = null;
+        if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
+            for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
+                if(IaisCommonUtils.isEmpty(appointmentUserDtoList)){
+                    appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
+                    appointmentUserDtoList.add(appointmentUserDto);
+                } else {
+                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
+                }
+            }
+        }
+        return appointmentUserDtoList;
+    }
+
+    private List<AppointmentUserDto> filterRepetitiveUser(AppointmentUserDto appointmentUserDto, List<AppointmentUserDto> appointmentUserDtoList) {
+        List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
+        for(AppointmentUserDto appointmentUserDto1 : appointmentUserDtoList){
+            String loginUserId = appointmentUserDto.getLoginUserId();
+            String curLoginUserId = appointmentUserDto1.getLoginUserId();
+            if (loginUserId.equals(curLoginUserId)) {
+                int hours = appointmentUserDto.getWorkHours();
+                int curHours = appointmentUserDto1.getWorkHours();
+                int allHours = hours + curHours;
+                appointmentUserDto1.setWorkHours(allHours);
+            } else {
+                appointmentUserDtos.add(appointmentUserDto);
+            }
+        }
+        if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
+            for(AppointmentUserDto auDto : appointmentUserDtos){
+                if(auDto != null){
+                    appointmentUserDtoList.add(auDto);
+                }
+            }
+        }
+        return appointmentUserDtoList;
+    }
+
+    private int getServiceManHours(String refNo, ApptAppInfoShowDto apptAppInfoShowDto) {
+        int manHours;
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(refNo, InspectionConstants.RECOM_TYPE_INSP_MAN_HOUR).getEntity();
+        if(appPremisesRecommendationDto != null){
+            String hours = appPremisesRecommendationDto.getRecomDecision();
+            if(!StringUtil.isEmpty(hours)){
+                manHours = Integer.parseInt(hours);
+            } else {
+                manHours = hcsaConfigClient.getManHour(apptAppInfoShowDto).getEntity();
+            }
+        } else {
+            manHours = hcsaConfigClient.getManHour(apptAppInfoShowDto).getEntity();
+        }
+        return manHours;
+    }
+
+    private Map<String, String> getServiceIdsByCorrIdsFromPremises(List<String> premCorrIds) {
+        Map<String, String> serviceIds = applicationClient.getServiceIdsByCorrIdsFromPremises(premCorrIds).getEntity();
+        return serviceIds;
+    }
+
+    private List<TaskDto> getAllTaskFromSamePremises(List<String> premCorrIds) {
+        List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(premCorrIds)){
+            for(String appPremCorrId : premCorrIds){
+                boolean containIdFlag = listIsContainId(appPremCorrId, taskDtoList);
+                if(!containIdFlag) {
+                    List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
+                    if (!IaisCommonUtils.isEmpty(taskDtos)) {
+                        for (TaskDto taskDto : taskDtos) {
+                            if(taskDto != null) {
+                                taskDtoList.add(taskDto);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return taskDtoList;
+    }
+
+    private boolean listIsContainId(String appPremCorrId, List<TaskDto> taskDtoList) {
+        if(!IaisCommonUtils.isEmpty(taskDtoList) && !StringUtil.isEmpty(appPremCorrId)){
+            for(TaskDto taskDto : taskDtoList){
+                if(appPremCorrId.equals(taskDto.getRefNo())){
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
+        return false;
+    }
+
+    private List<String> getPremIdsByAppNoList(Map<String, List<String>> samePremisesAppMap, String appNo) {
+        List<String> premCorrIds = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(appNo) && samePremisesAppMap != null){
+            List<String> appNoList = samePremisesAppMap.get(appNo);
+            if(!IaisCommonUtils.isEmpty(appNoList)){
+                for(String applicationNo : appNoList){
+                    AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremCorrByAppNo(applicationNo).getEntity();
+                    premCorrIds.add(appPremisesCorrelationDto.getId());
+                }
+            }
+        }
+        return premCorrIds;
     }
 
     private void reSchSaveTask(List<TaskDto> taskDtos, AuditTrailDto auditTrailDto, int taskScore) {
