@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -257,6 +258,13 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             reschedulingOfficerDto.setAuditTrailDto(auditTrailDto);
             inspectionTaskClient.reScheduleSaveRouteData(reschedulingOfficerDto);
         }
+    }
+
+    @Override
+    public AppointmentDto getInspDateValidateData(ReschedulingOfficerDto reschedulingOfficerDto) {
+        AppointmentDto appointmentDto = new AppointmentDto();
+        String appNo = reschedulingOfficerDto.getAssignNo();
+        return appointmentDto;
     }
 
     private void reSchSaveTask(List<TaskDto> taskDtos, AuditTrailDto auditTrailDto, int taskScore) {

@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -14,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -288,41 +290,86 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingVali(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingVali start ...."));
+        ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         String specificStartDate = ParamUtil.getDate(bpc.request, "specificStartDate");
         String specificEndDate = ParamUtil.getDate(bpc.request, "specificEndDate");
         String startHours = ParamUtil.getRequestString(bpc.request, "startHours");
         String endHours = ParamUtil.getRequestString(bpc.request, "endHours");
         List<SelectOption> hoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "hoursOption");
         List<SelectOption> endHoursOption = (List<SelectOption>)ParamUtil.getSessionAttr(bpc.request, "endHoursOption");
-        AppointmentDto appointmentDto = new AppointmentDto();
+
+        //combination date
         Date startDate = getSpecificDate(specificStartDate, hoursOption, startHours);
         Date endDate = getSpecificDate(specificEndDate, endHoursOption, endHours);
-        Map<String, String> errMap = null;
-        if(startDate != null&&endDate != null&&endDate.before(startDate)){
-            errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("specificDate", "UC_INSP_ERR0007");
+        //set date do first validate not null
+        if(containValueInList(startHours, hoursOption)){
+            reschedulingOfficerDto.setStartHours(startHours);
         } else {
-            //todo get other info
-            if (startDate != null) {
-                appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
-            }
-            if (endDate != null) {
-                appointmentDto.setEndDate(Formatter.formatDateTime(endDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
-            }
-            try {
-                appointmentClient.validateUserCalendar(appointmentDto).getStatusCode();
-            } catch (Exception e) {
-                errMap = IaisCommonUtils.genNewHashMap();
-                errMap.put("specificDate", "UC_INSP_ERR0007");
+            reschedulingOfficerDto.setStartHours(null);
+        }
+        if(containValueInList(endHours, endHoursOption)){
+            reschedulingOfficerDto.setEndHours(endHours);
+        } else {
+            reschedulingOfficerDto.setEndHours(null);
+        }
+        if(startDate != null){
+            reschedulingOfficerDto.setSpecificStartDate(startDate);
+        }
+        if(endDate != null){
+            reschedulingOfficerDto.setSpecificEndDate(endDate);
+        }
+        if(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue)) {
+            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+        } else {
+            ValidationResult validationResult = WebValidationHelper.validateProperty(reschedulingOfficerDto, "reschedule");
+            if (validationResult.isHasErrors()) {
+                Map<String, String> errorMap = validationResult.retrieveAll();
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+            } else {
+                //second validate
+                Map<String, String> errMap = null;
+                if(startDate != null && endDate != null && endDate.before(startDate)){
+                    errMap = IaisCommonUtils.genNewHashMap();
+                    errMap.put("specificDate", "UC_INSP_ERR0007");
+                } else {
+                    AppointmentDto appointmentDto = officersReSchedulingService.getInspDateValidateData(reschedulingOfficerDto);
+                    if (startDate != null) {
+                        appointmentDto.setStartDate(Formatter.formatDateTime(startDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                    }
+                    if (endDate != null) {
+                        appointmentDto.setEndDate(Formatter.formatDateTime(endDate, AppConsts.DEFAULT_DATE_TIME_FORMAT));
+                    }
+                    try {
+                        appointmentClient.validateUserCalendar(appointmentDto).getStatusCode();
+                    } catch (Exception e) {
+                        errMap = IaisCommonUtils.genNewHashMap();
+                        errMap.put("specificDate", "UC_INSP_ERR0007");
+                    }
+                }
+                if(errMap != null) {
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                    ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+                } else {
+                    ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
+                }
             }
         }
-        if(errMap != null) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
-        } else {
-            ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.TRUE);
+        ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
+    }
+
+    private boolean containValueInList(String str, List<SelectOption> optionList) {
+        if(!StringUtil.isEmpty(str) && !IaisCommonUtils.isEmpty(optionList)){
+            for(SelectOption so : optionList){
+                if(str.equals(so.getValue())){
+                    return true;
+                }
+            }
         }
+        return false;
     }
 
     private Date getSpecificDate(String specificDate1, List<SelectOption> hoursOption, String hours) {

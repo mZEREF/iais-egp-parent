@@ -259,9 +259,10 @@ public class InspectionPreDelegator {
             //NOSONAR
             if(preInspRfiCheck.contains(InspectionConstants.SWITCH_ACTION_APPLICATION)){
                 Map<String, String> errorMap = validationResult.retrieveAll();
-                //rfiSelectValue
+                //rfiSelectValue and check value
                 String rfiSelectValue = ParamUtil.getRequestString(bpc.request, "rfiSelectValue");
-                if(StringUtil.isEmpty(rfiSelectValue)){
+                List<String> rfiUpWindowsCheck = (List<String>)ParamUtil.getSessionAttr(bpc.request, "rfiUpWindowsCheck");
+                if(StringUtil.isEmpty(rfiSelectValue) || IaisCommonUtils.isEmpty(rfiUpWindowsCheck)){
                     errorMap.put("nextStage", "Please select at least 1 section to unlock");
                     validationResult.setHasErrors(true);
                 }

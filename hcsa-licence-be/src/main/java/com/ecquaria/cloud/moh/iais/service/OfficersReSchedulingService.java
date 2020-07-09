@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -95,4 +96,13 @@ public interface OfficersReSchedulingService {
       * @Descripation: reScheduRoutingTask
       */
     void reScheduleRoutingTask(ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/9
+      * @Param: 
+      * @return: 
+      * @Descripation: 
+      */
+    AppointmentDto getInspDateValidateData(ReschedulingOfficerDto reschedulingOfficerDto);
 }

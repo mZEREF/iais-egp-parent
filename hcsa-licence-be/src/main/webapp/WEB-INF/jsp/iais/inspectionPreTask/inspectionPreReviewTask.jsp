@@ -341,7 +341,7 @@
 
 
     function inspectionPreTaskSubmit(action){
-        var selectDetail = $("#selectDetail").val();
+        var selectDetail = $("#selectDetail").text();
         if(selectDetail != null && selectDetail != ''){
             $('#rfiSelectValue').val(selectDetail);
         }
