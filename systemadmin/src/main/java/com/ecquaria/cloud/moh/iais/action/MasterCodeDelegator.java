@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
@@ -17,16 +19,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.FileUtils;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
+import com.ecquaria.egov.core.common.constants.AppConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,11 +49,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MasterCodeDelegator {
 
-    private final FilterParameter filterParameter = new FilterParameter.Builder()
-            .clz(MasterCodeQueryDto.class)
-            .searchAttr(MasterCodeConstants.SEARCH_PARAM)
-            .resultAttr(MasterCodeConstants.SEARCH_RESULT)
-            .sortField(MasterCodeConstants.MASTERCODE_SORT_COLUM).sortType(SearchParam.ASCENDING).build();
+//    private final FilterParameter filterParameter = new FilterParameter.Builder()
+//            .clz(MasterCodeQueryDto.class)
+//            .searchAttr(MasterCodeConstants.SEARCH_PARAM)
+//            .resultAttr(MasterCodeConstants.SEARCH_RESULT)
+//            .sortField(MasterCodeConstants.MASTERCODE_SORT_COLUM).sortType(SearchParam.ASCENDING).build();
 
 
     private final MasterCodeService masterCodeService;
@@ -82,7 +78,6 @@ public class MasterCodeDelegator {
         ParamUtil.setSessionAttr(request, MasterCodeConstants.SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(request, MasterCodeConstants.SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, null);
-        filterParameter.setFilters(null);
     }
 
     /**
@@ -107,7 +102,8 @@ public class MasterCodeDelegator {
         }
         ParamUtil.setRequestAttr(bpc.request, "allCodeCategory", mcCategorySelectList);
         ParamUtil.setRequestAttr(bpc.request, "codeStatus", selectCodeStatusList);
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
+//        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
+        SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, MasterCodeConstants.SEARCH_PARAM,MasterCodeQueryDto.class.getName(),MasterCodeConstants.MASTERCODE_SORT_COLUM,SearchParam.ASCENDING,false);
         QueryHelp.setMainSql(MasterCodeConstants.MSG_TEMPLATE_FILE, MasterCodeConstants.MSG_TEMPLATE_SQL, searchParam);
         SearchResult searchResult = masterCodeService.doQuery(searchParam);
         List<MasterCodeQueryDto> masterCodeQueryDtoList = searchResult.getRows();
@@ -227,60 +223,60 @@ public class MasterCodeDelegator {
         Date codeEffTo = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO));
         String codeStartDate = Formatter.formatDateTime(codeEffFrom, SystemAdminBaseConstants.DATE_FORMAT);
         String codeEndDate = Formatter.formatDateTime(codeEffTo, SystemAdminBaseConstants.DATE_FORMAT);
-        Map<String, Object> masterCodeMap = IaisCommonUtils.genNewHashMap();
+//        Map<String, Object> masterCodeMap = IaisCommonUtils.genNewHashMap();
+        SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request, MasterCodeConstants.SEARCH_PARAM,MasterCodeQueryDto.class.getName(),MasterCodeConstants.MASTERCODE_SORT_COLUM,SearchParam.ASCENDING,true);
         if (!StringUtil.isEmpty(categoryDescription) && !"Please Select".equals(categoryDescription)) {
-            masterCodeMap.put(MasterCodeConstants.MASTER_CODE_CATEGORY, categoryDescription);
+            searchParam.addFilter(MasterCodeConstants.MASTER_CODE_CATEGORY, categoryDescription,true);
         } else {
-            masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_CATEGORY);
+            searchParam.removeFilter(MasterCodeConstants.MASTER_CODE_CATEGORY);
         }
         if (!StringUtil.isEmpty(codeStatus) && !"Please Select".equals(codeStatus)) {
-            masterCodeMap.put(MasterCodeConstants.MASTER_CODE_STATUS, codeStatus);
+            searchParam.addFilter(MasterCodeConstants.MASTER_CODE_STATUS, codeStatus,true);
         } else {
-            masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_STATUS);
+            searchParam.removeFilter(MasterCodeConstants.MASTER_CODE_STATUS);
         }
         if (!StringUtil.isEmpty(codeDescription)) {
-            masterCodeMap.put(MasterCodeConstants.MASTER_CODE_DESCRIPTION, "%" + codeDescription + "%");
+            searchParam.addFilter(MasterCodeConstants.MASTER_CODE_DESCRIPTION, "%" + codeDescription + "%",true);
         } else {
-            masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_DESCRIPTION);
+            searchParam.removeFilter(MasterCodeConstants.MASTER_CODE_DESCRIPTION);
         }
         if (!StringUtil.isEmpty(codeValue)) {
-            masterCodeMap.put(MasterCodeConstants.MASTER_CODE_VALUE, "%" + codeValue + "%");
+            searchParam.addFilter(MasterCodeConstants.MASTER_CODE_VALUE, "%" + codeValue + "%",true);
         } else {
-            masterCodeMap.remove(MasterCodeConstants.MASTER_CODE_VALUE);
+            searchParam.removeFilter(MasterCodeConstants.MASTER_CODE_VALUE);
         }
         if (!StringUtil.isEmpty(filterValue)) {
-            masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE, "%" + filterValue + "%");
+            searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE, "%" + filterValue + "%",true);
         } else {
-            masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
+            searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         }
         if (codeEffFrom != null && codeEffTo != null) {
             if (codeEffFrom.compareTo(codeEffTo) <= 0) {
                 if (!StringUtil.isEmpty(codeStartDate)) {
-                    masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM, codeStartDate);
+                    searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM, codeStartDate,true);
                 } else {
-                    masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
+                    searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
                 }
                 if (!StringUtil.isEmpty(codeEndDate)) {
-                    masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO, codeEndDate);
+                    searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO, codeEndDate,true);
                 } else {
-                    masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
+                    searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
                 }
             } else {
                 ParamUtil.setRequestAttr(request, "ERR_EED", "Effective Start Date cannot be later than Effective End Date");
             }
         } else {
             if (!StringUtil.isEmpty(codeStartDate)) {
-                masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM, codeStartDate);
+                searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM, codeStartDate,true);
             } else {
-                masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
+                searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
             }
             if (!StringUtil.isEmpty(codeEndDate)) {
-                masterCodeMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO, codeEndDate);
+                searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO, codeEndDate,true);
             } else {
-                masterCodeMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
+                searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
             }
         }
-        filterParameter.setFilters(masterCodeMap);
     }
 
 
@@ -345,7 +341,8 @@ public class MasterCodeDelegator {
     public void doPaging(BaseProcessClass bpc) {
         logAboutStart("doPaging");
         HttpServletRequest request = bpc.request;
-        SearchResultHelper.doPage(request, filterParameter);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, MasterCodeConstants.SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(request,searchParam);
     }
 
     /**
@@ -425,7 +422,8 @@ public class MasterCodeDelegator {
     public void doSorting(BaseProcessClass bpc) {
         logAboutStart("doSorting");
         HttpServletRequest request = bpc.request;
-        SearchResultHelper.doSort(request, filterParameter);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(request, MasterCodeConstants.SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(request,searchParam);
     }
 
     /**
@@ -566,7 +564,13 @@ public class MasterCodeDelegator {
         }
         String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
         masterCodeDto.setCodeCategory(codeCategory);
+        masterCodeDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         masterCodeService.updateMasterCode(masterCodeDto);
+
+        masterCodeDto.setMasterCodeId(null);
+        masterCodeDto.setVersion(masterCodeDto.getVersion() + 1);
+        masterCodeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        masterCodeService.saveMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         ParamUtil.setRequestAttr(request, "UPDATED_DATE", new Date());
 
@@ -574,13 +578,10 @@ public class MasterCodeDelegator {
 
     private void getEditValueFromPage(MasterCodeDto masterCodeDto, HttpServletRequest request) throws ParseException {
         masterCodeDto.setCodeValue(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VALUE_ED));
-        masterCodeDto.setCodeCategory(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY_ED));
         masterCodeDto.setCodeDescription(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_DESCRIPTION_ED));
-        masterCodeDto.setFilterValue(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_FILTER_VALUE_ED));
         masterCodeDto.setStatus(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS_ED));
         masterCodeDto.setRemarks(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_REMARKS_ED));
         masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED)) ? null : ParamUtil.getInt(request, MasterCodeConstants.MASTER_CODE_SEQUENCE_ED));
-        masterCodeDto.setVersion(StringUtil.isEmpty(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_ED)) ? null : Float.parseFloat(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VERSION_ED)));
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_FROM_ED)));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_EFFECTIVE_TO_ED)));
         masterCodeDto.setIsEditable(0);

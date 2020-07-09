@@ -22,20 +22,33 @@
                         <div class="form-group">
                             <iais:field value="Master Code Category" required="true"/>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="category" type="text" value="${MasterCodeDto.codeCategory}" name="codeCategoryEd" readonly="readonly">
+                                <p>${MasterCodeDto.codeCategory}</p>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="description">Filter Value</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="filterValue" type="text" value="${MasterCodeDto.filterValue}" name="filterValueEd" readonly="readonly">
+                                <c:choose>
+                                    <c:when test="${empty MasterCodeDto.filterValue}">
+                                        <p>-</p>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p>${ MasterCodeDto.filterValue}</p>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-md-4 control-label" for="description">Version</label>
                             <div class="col-xs-8 col-sm-6 col-md-5">
-                                <input id="version" type="text" value="${MasterCodeDto.version}" name="codeVersionEd" readonly="readonly">
-                                <span id="error_version" name="iaisErrorMsg" class="error-msg"></span>
+                                <c:choose>
+                                    <c:when test="${empty MasterCodeDto.version}">
+                                       <p>-</p>
+                                    </c:when>
+                                    <c:otherwise>
+                                    <p>${ MasterCodeDto.version}</p>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                         <div class="form-group">
