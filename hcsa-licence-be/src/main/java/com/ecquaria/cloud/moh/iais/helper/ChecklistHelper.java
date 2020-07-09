@@ -240,6 +240,7 @@ public final class ChecklistHelper {
         HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
 
         if (dto != null){
+            log.info("HcsaSvcStageWorkingGroupDto not null");
             List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(dto.getId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             if (!IaisCommonUtils.isEmpty(orgUserDtos)){
                 List<String> receiveEmail = IaisCommonUtils.genNewArrayList();
@@ -251,6 +252,7 @@ public final class ChecklistHelper {
 
                 log.info(StringUtil.changeForLog("=====address====>>>"+ receiveEmail));
                 if(!IaisCommonUtils.isEmpty(receiveEmail)) {
+                    log.info("do send email");
                     try {
                         Map<String, Object> map = new HashMap(1);
                         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
