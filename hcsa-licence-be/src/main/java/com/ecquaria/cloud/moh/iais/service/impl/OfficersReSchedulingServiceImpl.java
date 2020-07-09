@@ -318,6 +318,11 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         return appointmentDto;
     }
 
+    @Override
+    public void reScheduleRoutingAudit(ReschedulingOfficerDto reschedulingOfficerDto) {
+
+    }
+
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
         List<AppointmentUserDto> appointmentUserDtoList = null;
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
