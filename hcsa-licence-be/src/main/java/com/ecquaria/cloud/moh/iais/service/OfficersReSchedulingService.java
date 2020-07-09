@@ -105,4 +105,13 @@ public interface OfficersReSchedulingService {
       * @Descripation: 
       */
     AppointmentDto getInspDateValidateData(ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/9
+      * @Param: reschedulingOfficerDto
+      * @return: void
+      * @Descripation: reScheduleRoutingAudit
+      */
+    void reScheduleRoutingAudit(ReschedulingOfficerDto reschedulingOfficerDto);
 }
