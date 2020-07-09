@@ -90,7 +90,7 @@
             <div class="form-group">
                 <iais:field value="Parameter Description:" required="true" />
                 <div class="col-md-3">
-                    <textarea cols="70" rows="7" name="description" id="description" maxlength="500"><c:out value="${parameterRequestDto.description}"></c:out></textarea>
+                    <textarea cols="70" rows="7" name="description" id="description" maxlength="1000"><c:out value="${parameterRequestDto.description}"></c:out></textarea>
                     <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
