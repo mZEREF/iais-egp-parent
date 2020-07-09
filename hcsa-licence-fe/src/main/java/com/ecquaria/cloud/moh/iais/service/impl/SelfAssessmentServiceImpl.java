@@ -368,14 +368,16 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             return;
         }
 
-        ApplicationDto app  = appList.get(0);
-        if (ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION.equals(app.getStatus())){
-            app.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
+        log.info(StringUtil.changeForLog("=====>>>>>>>>need update application size" + appList.size()));
+        for(ApplicationDto app : appList){
+            //change app status when rfi
+            if (ApplicationConsts.APPLICATION_STATUS_PENDING_CLARIFICATION.equals(app.getStatus())) {
+                app.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
+            }
             app.setSelfAssMtFlag(ApplicationConsts.SUBMITTED_SELF_ASSESSMENT);
-
-            log.info(StringUtil.changeForLog("update application info " + app));
-            applicationClient.updateApplication(app);
         }
+
+        applicationClient.updateApplicationList(appList);
     }
 
     @Override
