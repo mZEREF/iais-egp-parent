@@ -499,19 +499,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
     }
 
-    private void createInspectionGroupInfo(AuditTaskDataFillterDto temp) {
-        LicInspectionGroupDto dto = new LicInspectionGroupDto();
-        dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        dto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        dto = hcsaLicenceClient.createLicInspectionGroup(dto).getEntity();
-        LicPremInspGrpCorrelationDto dtocorre = new LicPremInspGrpCorrelationDto();
-        dtocorre.setInsGrpId(dto.getId());
-        dtocorre.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        dtocorre.setLicPremId(temp.getId());
-        dtocorre.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        hcsaLicenceClient.createLicInspectionGroupCorre(dtocorre);
-    }
-
     @Override
     public List<AuditTaskDataFillterDto> doRemove(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         List<AuditTaskDataFillterDto> removeList = IaisCommonUtils.genNewArrayList();

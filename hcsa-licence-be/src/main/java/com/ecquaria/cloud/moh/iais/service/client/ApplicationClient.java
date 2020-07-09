@@ -239,6 +239,8 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/application-refno-by-licId-HclCode",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> getRefNoByLicId(@RequestParam ("licId")String licId,@RequestParam ("HclCode")String HclCode);
 
+    @GetMapping(value = "/iais-application-be/finish-application-refno-by-licId-HclCode",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> getExistAppByLicId(@RequestParam ("licId")String licId,@RequestParam ("HclCode")String HclCode);
     @GetMapping(value = "/iais-apppremisescorrelation-be/app-premises-correlations/{appId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesCorrelationDto>> getAppPremisesCorrelationsByAppId(@PathVariable("appId") String appId);
 

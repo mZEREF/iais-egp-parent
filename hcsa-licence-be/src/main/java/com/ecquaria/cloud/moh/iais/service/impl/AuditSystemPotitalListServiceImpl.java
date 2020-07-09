@@ -1,13 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditFillterDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditSystemPotentialDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -136,6 +135,26 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         return rdtoList;
     }
 
+    @Override
+    public List<AuditTaskDataFillterDto> getCanInactiveAudit() {
+        SearchParam searchParam = getCanInactiveSearchParamFrom();
+        SearchResult<AuditTaskDataDto> searchResult = getAuditSysParam(searchParam);
+        if(searchResult != null && searchResult.getRows() != null){
+            List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
+            List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(auditTaskDataDtos.size());
+            for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
+                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,Boolean.FALSE,Boolean.FALSE,Boolean.FALSE));
+            }
+            return removeDuplicates(auditTaskDataFillterDtos);
+        }
+        return null;
+    }
+
+    public SearchParam getCanInactiveSearchParamFrom(){
+        SearchParam searchParam = new SearchParam(AuditTaskDataDto.class.getName());
+        QueryHelp.setMainSql("inspectionQuery", "aduitChangeStatusList", searchParam);
+        return searchParam;
+    }
 
     private List<AuditTaskDataFillterDto> inspectionFitter(SearchResult<AuditTaskDataDto> searchResult, AuditSystemPotentialDto dto) {
         List<AuditTaskDataDto> auditTaskDtos = searchResult.getRows();
@@ -358,5 +377,25 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             }
         }
         return serviceNameList;
+    }
+
+    @Override
+    public void inActiveAudit(AuditTaskDataFillterDto auditTaskDataFillterDto,AuditTrailDto intranet) {
+        LicPremisesAuditDto licPremisesAuditDto = hcsaLicenceClient.getLicPremAuditByGuid(auditTaskDataFillterDto.getAuditId()).getEntity();
+        licPremisesAuditDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+        licPremisesAuditDto.setAuditTrailDto(intranet);
+        hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto);
+        LicInspectionGroupDto licInspectionGroupDto =  new LicInspectionGroupDto();
+        licInspectionGroupDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+        licInspectionGroupDto.setAuditTrailDto(intranet);
+        licInspectionGroupDto.setId(auditTaskDataFillterDto.getInsGrpId());
+        hcsaLicenceClient.createLicInspectionGroup(licInspectionGroupDto);
+        LicPremInspGrpCorrelationDto licPremInspGrpCorrelationDto = new LicPremInspGrpCorrelationDto();
+        licPremInspGrpCorrelationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+        licPremInspGrpCorrelationDto.setInsGrpId(auditTaskDataFillterDto.getInsGrpId());
+        licPremInspGrpCorrelationDto.setId(auditTaskDataFillterDto.getLicPremGrpCorId());
+        licPremInspGrpCorrelationDto.setLicPremId(auditTaskDataFillterDto.getId());
+        licPremInspGrpCorrelationDto.setAuditTrailDto(intranet);
+        hcsaLicenceClient.createLicInspectionGroupCorre(licPremInspGrpCorrelationDto);
     }
 }
