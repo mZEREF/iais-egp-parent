@@ -213,7 +213,20 @@
                 </c:forEach>
               </c:if>
               <c:if test="${requestInformationConfig==null}">
-                <div class="row">
+                <c:set var="spDtoLength" value="${AppSvcPersonnelDtoList.size()}"/>
+                <c:if test="${spDtoLength == '0'}">
+                  <c:set var="spDtoLength" value="1"/>
+                </c:if>
+                <c:set var="needAddPsn" value="true"/>
+                <c:choose>
+                  <c:when test="${spHcsaSvcPersonnelDto.status =='CMSTAT003'}">
+                    <c:set var="needAddPsn" value="false"/>
+                  </c:when>
+                  <c:when test="${spDtoLength >= spHcsaSvcPersonnelDto.maximumCount}">
+                    <c:set var="needAddPsn" value="false"/>
+                  </c:when>
+                </c:choose>
+                <div id="addPsnDiv" class="row <c:if test="${!needAddPsn}">hidden</c:if>">
                   <div class="col-sm-5">
                     <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Service Personnel</span>
                   </div>
@@ -340,6 +353,11 @@
                   $('.personnel-content:last').after(data.sucInfo);
                   pageController($('.personnel-content:last'));
                   spRemove();
+                  //hidden add more
+                  var psnLength = $('.personnel-content').length;
+                  if(psnLength >='${spHcsaSvcPersonnelDto.maximumCount}'){
+                      $('#addPsnDiv').addClass('hidden');
+                  }
               }else{
                   $('.spErrorMsg').html(data.errInfo);
               }
@@ -391,6 +409,12 @@ var spRemove = function(){
         $('.personnel-content').each(function (k,v) {
             $(this).find('.assign-psn-item').html(k+1);
         });
+
+        //show add more
+        var psnLength = $('.personnel-content').length;
+        if(psnLength <'${spHcsaSvcPersonnelDto.maximumCount}'){
+            $('#addPsnDiv').removeClass('hidden');
+        }
     });
 }
 

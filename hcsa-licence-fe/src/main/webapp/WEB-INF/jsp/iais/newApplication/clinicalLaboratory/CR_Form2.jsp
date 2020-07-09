@@ -405,7 +405,20 @@
           </td>
         </tr>
         <c:if test="${'BLB'!=currentSvcCode && 'RDS'!=currentSvcCode && requestInformationConfig==null}">
-          <tr id="addInfo">
+          <c:set var="cgoDtoLength" value="${GovernanceOfficersList.size()}"/>
+          <c:if test="${cgoDtoLength == '0'}">
+            <c:set var="cgoDtoLength" value="1"/>
+          </c:if>
+          <c:set var="needAddPsn" value="true"/>
+          <c:choose>
+            <c:when test="${HcsaSvcPersonnel.status =='CMSTAT003'}">
+              <c:set var="needAddPsn" value="false"/>
+            </c:when>
+            <c:when test="${cgoDtoLength >= HcsaSvcPersonnel.maximumCount}">
+              <c:set var="needAddPsn" value="false"/>
+            </c:when>
+          </c:choose>
+          <tr id="addPsnDiv" class="<c:if test="${!needAddPsn}">hidden</c:if>">
             <td>
               <div class="col-sm-5 col-md-5">
                 <span class="addListBtn" style="color:deepskyblue;cursor:pointer;"><span style="margin-left: -14px">+ Add Another Clinical Governance Officer</span></span>
@@ -543,6 +556,11 @@
                             }
                         }
                     );
+                    //hidden add more
+                    var psnLength = $('.assignContent').length-1;
+                    if(psnLength >='${HcsaSvcPersonnel.maximumCount}'){
+                       $('#addPsnDiv').addClass('hidden');
+                    }
                 }else{
                     $('.errorMsg').html(data.errInfo);
                 }
@@ -583,7 +601,11 @@
             }
             $premContentEle.remove();
             $('.errorMsg').html("");
-
+            //show add more
+            var psnLength = $('.assignContent').length-1;
+            if(psnLength <'${HcsaSvcPersonnel.maximumCount}'){
+                $('#addPsnDiv').removeClass('hidden');
+            }
         });
 
     }

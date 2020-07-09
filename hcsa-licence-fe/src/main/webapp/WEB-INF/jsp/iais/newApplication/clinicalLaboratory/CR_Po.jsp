@@ -222,7 +222,20 @@
                 </c:forEach>
               </c:if>
               <c:if test="${requestInformationConfig==null}">
-                <div class="row">
+                <c:set var="poDtoLength" value="${ReloadPrincipalOfficers.size()}"/>
+                <c:if test="${poDtoLength == '0'}">
+                  <c:set var="poDtoLength" value="1"/>
+                </c:if>
+                <c:set var="needAddPsn" value="true"/>
+                <c:choose>
+                  <c:when test="${poHcsaSvcPersonnelDto.status =='CMSTAT003'}">
+                    <c:set var="needAddPsn" value="false"/>
+                  </c:when>
+                  <c:when test="${poDtoLength >= poHcsaSvcPersonnelDto.maximumCount}">
+                    <c:set var="needAddPsn" value="false"/>
+                  </c:when>
+                </c:choose>
+                <div class="row <c:if test="${!needAddPsn}">hidden</c:if>" id="addPsnDiv-po">
                   <div class="col-sm-4">
                     <span id="addPoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Principal Officer</span>
                   </div>
@@ -466,7 +479,20 @@
               </c:if>
             </div>
             <c:if test="${requestInformationConfig==null}">
-              <div class="row">
+              <c:set var="dpoDtoLength" value="${ReloadDeputyPrincipalOfficers.size()}"/>
+              <c:if test="${dpoDtoLength == '0'}">
+                <c:set var="dpoDtoLength" value="1"/>
+              </c:if>
+              <c:set var="needAddPsn" value="true"/>
+              <c:choose>
+                <c:when test="${dpoHcsaSvcPersonnelDto.status =='CMSTAT003'}">
+                  <c:set var="needAddPsn" value="false"/>
+                </c:when>
+                <c:when test="${dpoDtoLength >= dpoHcsaSvcPersonnelDto.maximumCount}">
+                  <c:set var="needAddPsn" value="false"/>
+                </c:when>
+              </c:choose>
+              <div class="row <c:if test="${!needAddPsn}">hidden</c:if>" id="addPsnDiv-dpo">
                 <div class="col-sm-5">
                   <span id="addDpoBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Deputy Principal Officer</span>
                 </div>
@@ -566,7 +592,6 @@
                     return;
                 }
                 fillPoData($poContentEle,data);
-
             },
             'error':function () {
 
@@ -701,6 +726,11 @@
                                 }
                             }
                         );
+                        //hidden add more
+                        var psnLength = $('.po-content').length-1;
+                        if(psnLength >='${poHcsaSvcPersonnelDto.maximumCount}'){
+                            $('#addPsnDiv-po').addClass('hidden');
+                        }
                     }else{
                         $('.poErrorMsg').html(data.errInfo);
                     }
@@ -739,6 +769,11 @@
                                 }
                             }
                         );
+                        //hidden add more
+                        var psnLength = $('.dpo-content').length-1;
+                        if(psnLength >='${dpoHcsaSvcPersonnelDto.maximumCount}'){
+                            $('#addPsnDiv-dpo').addClass('hidden');
+                        }
                     }else{
                         $('.dpoErrorMsg').html(data.errInfo);
                     }
@@ -874,6 +909,11 @@
             $('.po-content').each(function (k,v) {
                 $(this).find('.assign-psn-item').html(k);
             });
+            //show add more
+            var psnLength = $('.po-content').length-1;
+            if(psnLength <'${poHcsaSvcPersonnelDto.maximumCount}'){
+                $('#addPsnDiv-po').removeClass('hidden');
+            }
         });
 
     }
@@ -885,6 +925,11 @@
             $('.dpo-content').each(function (k,v) {
                 $(this).find('.assign-psn-item').html(k);
             });
+            //show add more
+            var psnLength = $('.dpo-content').length-1;
+            if(psnLength <'${dpoHcsaSvcPersonnelDto.maximumCount}'){
+                $('#addPsnDiv-dpo').removeClass('hidden');
+            }
         });
 
     }

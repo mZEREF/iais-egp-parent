@@ -207,7 +207,20 @@
             </div>
         </c:forEach>
         <c:if test="${requestInformationConfig==null}">
-            <div class="row">
+            <c:set var="mapDtoLength" value="${AppSvcMedAlertPsn.size()}"/>
+            <c:if test="${mapDtoLength == '0'}">
+                <c:set var="mapDtoLength" value="1"/>
+            </c:if>
+            <c:set var="needAddPsn" value="true"/>
+            <c:choose>
+                <c:when test="${mapHcsaSvcPersonnel.status =='CMSTAT003'}">
+                    <c:set var="needAddPsn" value="false"/>
+                </c:when>
+                <c:when test="${mapDtoLength >= mapHcsaSvcPersonnel.maximumCount}">
+                    <c:set var="needAddPsn" value="false"/>
+                </c:when>
+            </c:choose>
+            <div class="row <c:if test="${!needAddPsn}">hidden</c:if>" id="addPsnDiv" >
                 <div class="control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">
                         <div class="col-sm-3 control-label formtext col-md-5">
@@ -258,6 +271,11 @@
         $('.mapDelBtn').click(function () {
             $(this).closest('div.medAlertContent').remove();
             changePsnItem();
+            //show add more
+            var psnLength = $('.medAlertContent').length-1;
+            if(psnLength <'${mapHcsaSvcPersonnel.maximumCount}'){
+                $('#addPsnDiv').removeClass('hidden');
+            }
         });
     }
 
@@ -325,6 +343,11 @@
                                 }
                             }
                         );
+                        //hidden add more
+                        var psnLength = $('.medAlertContent').length-1;
+                        if(psnLength >='${mapHcsaSvcPersonnel.maximumCount}'){
+                            $('#addPsnDiv').addClass('hidden');
+                        }
                     }else{
                         $('.mapErrorMsg').html(data.errInfo);
                     }

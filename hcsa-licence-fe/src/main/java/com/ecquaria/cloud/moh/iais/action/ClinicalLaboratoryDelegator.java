@@ -1209,16 +1209,16 @@ public class ClinicalLaboratoryDelegator {
         log.debug(StringUtil.changeForLog("the do prePareMedAlertPerson start ...."));
         Map<String, List<HcsaSvcPersonnelDto>> svcConfigInfo = (Map<String, List<HcsaSvcPersonnelDto>>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.SERVICEALLPSNCONFIGMAP);
         String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
+        //min and max count
+        int mandatoryCount = 0;
+        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelList = serviceConfigService.getGOSelectInfo(currentSvcId, ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+        if (hcsaSvcPersonnelList != null && hcsaSvcPersonnelList.size() > 0) {
+            HcsaSvcPersonnelDto hcsaSvcPersonnelDto = hcsaSvcPersonnelList.get(0);
+            mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
+            ParamUtil.setSessionAttr(bpc.request, "mapHcsaSvcPersonnel", hcsaSvcPersonnelDto);
+        }
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         List<AppSvcPrincipalOfficersDto> medAlertPsnDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
-        int mandatoryCount = 0;
-        List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = svcConfigInfo.get(currentSvcId);
-        for (HcsaSvcPersonnelDto hcsaSvcPersonnelDto : hcsaSvcPersonnelDtoList) {
-            if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equalsIgnoreCase(hcsaSvcPersonnelDto.getPsnType())) {
-                mandatoryCount = hcsaSvcPersonnelDto.getMandatoryCount();
-                break;
-            }
-        }
         ParamUtil.setRequestAttr(bpc.request, "mandatoryCount", mandatoryCount);
         List<SelectOption> idTypeSelectList = NewApplicationHelper.getIdTypeSelOp();
         ParamUtil.setRequestAttr(bpc.request, DROPWOWN_IDTYPESELECT, idTypeSelectList);
