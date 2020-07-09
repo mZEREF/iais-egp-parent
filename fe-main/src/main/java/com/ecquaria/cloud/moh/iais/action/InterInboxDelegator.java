@@ -235,9 +235,9 @@ public class InterInboxDelegator {
         inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgStatus,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
-        List<SelectOption> inboxTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_MSG_TEMPLATE_TYPE);
-//        MasterCodePair mcp = new MasterCodePair("message_type", "message_type_desc", inboxTypes);
-//        inboxParam.addMasterCode(mcp);
+        List<SelectOption> inboxTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_INBOx_MESSAGE_TYPE);
+        MasterCodePair mcp = new MasterCodePair("message_type", "message_type_desc", inboxTypes);
+        inboxParam.addMasterCode(mcp);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxQueryDtoList) {
@@ -552,6 +552,7 @@ public class InterInboxDelegator {
         List<SelectOption> appTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_TYPE);
         List<SelectOption> appStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_STATUS);
         MasterCodePair mcp = new MasterCodePair("app_type", "app_type_desc", appTypes);
+        MasterCodePair mcp_service = new MasterCodePair("app_type", "app_type_desc", appTypes);
         MasterCodePair mcp_status = new MasterCodePair("status", "status_desc", appStatus);
         appParam.addMasterCode(mcp);
         appParam.addMasterCode(mcp_status);

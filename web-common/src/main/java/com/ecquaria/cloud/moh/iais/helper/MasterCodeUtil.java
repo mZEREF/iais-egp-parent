@@ -88,6 +88,7 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_TEMPLATE_ROLE   = "2C594569-0FB9-EA11-BE84-000C29F371DC";
 
     public static final String CATE_ID_SYSTEM_RISK_TYPE  = "110534B1-4967-EA11-BE7F-000C29F371DC";
+    public static final String CATE_ID_INBOx_MESSAGE_TYPE  = "D45AC717-945A-EA11-BE79-000C29D29DB0";
     public static final String CATE_ID_PERSONNEL_PSN_TYPE  = "6BC8C0B4-B182-EA11-BE82-000C29F371DC";
     /**
      * @description: refresh the master codes into cache
