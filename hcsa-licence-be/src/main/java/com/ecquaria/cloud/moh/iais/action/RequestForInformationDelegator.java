@@ -451,15 +451,15 @@ public class RequestForInformationDelegator {
         if(date==null){
             errorMap.put("Due_date","ERR0010");
         }else {
-            date= ParamUtil.getString(request, "Due_date");
-            dueDate=Formatter.parseDate(date);
-            date=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(dueDate);
+            String newDate= ParamUtil.getString(request, "Due_date");
+            dueDate=Formatter.parseDate(newDate);
+            newDate=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(dueDate);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
             Date tomorrow= calendar.getTime();
             String now=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(tomorrow);
-            if(date.compareTo(now) <0 ){
+            if(newDate.compareTo(now) <0 ){
                 errorMap.put("Due_date","Due Date should be a future Date.");
             }
         }
@@ -472,7 +472,7 @@ public class RequestForInformationDelegator {
 
         Calendar calendar = Calendar.getInstance();
         if(!StringUtil.isEmpty(date)){
-            dueDate= Formatter.parseDate(date);
+            dueDate=Formatter.parseDate(date);
         }
         else {
             calendar.add(Calendar.DATE,7);
