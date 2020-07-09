@@ -38,7 +38,6 @@
                                                     <div class="laboratory-disciplines">
                                                         <p><strong class="app-font-size-22">Laboratory Disciplines</strong></p>
                                                         <p>Please select the service disciplines you would like to apply at your premises.</p>
-                                                        <hr id="disciplineHr"/>
                                                         <%@include file="CR_Discipline.jsp"%>
                                                     </div>
                                                 </div>

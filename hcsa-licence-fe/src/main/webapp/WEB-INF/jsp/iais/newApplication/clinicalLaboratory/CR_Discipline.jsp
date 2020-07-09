@@ -45,7 +45,7 @@
   <c:set value="${appGrpPremisesDto.premisesIndexNo}" var="premIndexNo"/>
 
   <fieldset class="fieldset-content" id="fieldset-content" <c:if test="${AppSubmissionDto.needEditController && !isClickEdit}">disabled</c:if> >
-    <legend>Billing address</legend>
+    <legend></legend>
     <p><strong class="cgo-header">Premises ${status.index+1}</strong></p>
     <p>
       <strong class="cgo-header">
