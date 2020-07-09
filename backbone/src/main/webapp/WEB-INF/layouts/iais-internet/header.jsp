@@ -1,14 +1,17 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.constant.UrlConfig" %>
 <%
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
+    String internetWebSite = UrlConfig.getInstance().getInternetWebSite();
+    String internetInbox = UrlConfig.getInstance().getInternetInbox();
 %>
 <header>
 
     <div class="container">
         <div class="row">
             <div class="col-xs-10 col-lg-6">
-                <div class="logo-img"><a href="#"><img src="<%=webrooth%>img/moh-logo.svg" alt="Ministry of Health" width="235" height="64">
-                    <p class="logo-txt">Integrated Application and Inspection System</p></a></div>
+                <div class="logo-img"><a href="<%=internetWebSite%>"><img src="<%=webrooth%>img/moh-logo.svg" alt="Ministry of Health" width="235" height="64"></a>
+                    <a href="<%=internetInbox%>"><p class="logo-txt">Integrated Application and Inspection System</p></a></div>
             </div>
             <div class="col-xs-2 col-lg-6">
                 <ul class="list-inline hidden-xs hidden-sm">
