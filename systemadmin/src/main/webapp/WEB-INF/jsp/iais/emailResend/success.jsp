@@ -23,7 +23,7 @@
                     <div class="intranet-content">
                         <div class="bg-title">
                             <h2>
-                                <span>Email has sent.</span>
+                                <span>You have submitted send date and time.</span>
                             </h2>
                         </div>
                         <div class="row">

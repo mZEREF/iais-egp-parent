@@ -3,10 +3,9 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.system.AttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ResendListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -20,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -134,21 +134,30 @@ public class EmailResendDelegator {
     }
 
     public void resend(BaseProcessClass bpc){
-        String id =  ParamUtil.getString(bpc.request, "emailId");
-        BlastManagementDto blastManagementDtoById = blastManagementListService.getBlastByMsgId(id);
-        String schedule = Formatter.formatDate(blastManagementDtoById.getSchedule());
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(blastManagementDtoById.getSchedule());
-        int hour = cal.get(Calendar.HOUR);
-        int minute = cal.get(Calendar.MINUTE);
-        ParamUtil.setSessionAttr(bpc.request,"hour",hour);
-        ParamUtil.setSessionAttr(bpc.request,"minutes",minute);
+        String id =  ParamUtil.getMaskedString(bpc.request, "emailId");
+        BlastManagementDto blastManagementDtoById = new BlastManagementDto();
+        if(id == null || id.isEmpty()){
+            id = (String)ParamUtil.getSessionAttr(bpc.request,"BlastMsgId");
+            blastManagementDtoById = (BlastManagementDto) ParamUtil.getSessionAttr(bpc.request,"resendBlastedit");
+        }else{
+            blastManagementDtoById = blastManagementListService.getBlastByMsgId(id);
+            String schedule = Formatter.formatDate(blastManagementDtoById.getSchedule());
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(blastManagementDtoById.getSchedule());
+            int hour = cal.get(Calendar.HOUR);
+            int minute = cal.get(Calendar.MINUTE);
+            ParamUtil.setSessionAttr(bpc.request,"hour",hour);
+            ParamUtil.setSessionAttr(bpc.request,"minutes",minute);
+            ParamUtil.setSessionAttr(bpc.request,"schedule",schedule);
+        }
+        ParamUtil.setSessionAttr(bpc.request,"BlastMsgId",id);
+
         if(blastManagementDtoById.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
             blastManagementDtoById.setStatus("acitve");
         }else{
             blastManagementDtoById.setStatus("inacitve");
         }
-        ParamUtil.setSessionAttr(bpc.request,"schedule",schedule);
+
         ParamUtil.setSessionAttr(bpc.request,"resendBlastedit",blastManagementDtoById);
         ParamUtil.setSessionAttr(bpc.request,"blastResendEmailId",id);
     }
@@ -159,58 +168,65 @@ public class EmailResendDelegator {
      */
     public void send(BaseProcessClass bpc){
 
-        BlastManagementDto blastManagementDtoById = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"resendBlastedit");
+        BlastManagementDto blastManagementDto = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"resendBlastedit");
         String date = ParamUtil.getString(bpc.request, "date");
         String HH = ParamUtil.getString(bpc.request, "HH");
         String MM = ParamUtil.getString(bpc.request, "MM");
         SimpleDateFormat newformat =  new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
         Date schedule = new Date();
-        if(!StringUtil.isEmpty(date)){
-            try {
-                schedule = newformat.parse(date);
-                long time = schedule.getTime() + Long.parseLong(HH) * 60 * 60 * 1000 + Long.parseLong(MM) * 60 * 1000;
-                schedule.setTime(time);
-            } catch (ParseException e) {
-                log.error(e.getMessage(), e);
-            }
-        }
-        blastManagementDtoById.setSchedule(schedule);
-        blastManagementListService.setSchedule(blastManagementDtoById);
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 
-        EmailDto email = new EmailDto();
-        List<String> roleEmail = blastManagementListService.getEmailByRole(blastManagementDtoById.getRecipientsRole());
-        email.setContent(blastManagementDtoById.getMsgContent());
-        email.setSender(mailSender);
-        email.setSubject(blastManagementDtoById.getSubject());
-        email.setClientQueryCode(blastManagementDtoById.getId());
-        List<String> allemail = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(roleEmail)){
-            allemail.addAll(roleEmail);
+        if(HH == null){
+            blastManagementDto.setHH(null);
+            errMap.put("HH","The field is mandatory.");
+        }else if(!(StringUtils.isNumeric(HH) &&  Integer.parseInt(HH) < 24)){
+            blastManagementDto.setHH(HH);
+            errMap.put("HH","Field format is wrong");
         }
-        if(!IaisCommonUtils.isEmpty(blastManagementDtoById.getEmailAddress())){
-            allemail.addAll(blastManagementDtoById.getEmailAddress());
-        }
+        if(MM == null){
+            blastManagementDto.setMM(null);
 
-        try{
-            if(blastManagementDtoById.getAttachmentDtos() != null){
-                Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
-                for (AttachmentDto att: blastManagementDtoById.getAttachmentDtos()
-                ) {
-                    emailMap.put(att.getDocName(),att.getData());
+            errMap.put("HH","The field is mandatory.");
+        }else if(!(StringUtils.isNumeric(MM) &&  Integer.parseInt(MM) < 60)){
+            blastManagementDto.setMM(MM);
+            errMap.put("HH","Field format is wrong");
+        }
+        if(errMap.isEmpty()){
+            if(!StringUtil.isEmpty(date)){
+                try {
+                    schedule = newformat.parse(date);
+                    long time = schedule.getTime() + Long.parseLong(HH) * 60 * 60 * 1000 + Long.parseLong(MM) * 60 * 1000;
+                    schedule.setTime(time);
+                    blastManagementDto.setSchedule(schedule);
+                } catch (ParseException e) {
+                    log.error(e.getMessage(), e);
                 }
-                blastManagementListService.sendEmail(email,emailMap);
-            }else{
-                blastManagementListService.sendEmail(email,null);
             }
-            if(blastManagementDtoById.getId() != null){
-                //update mass email actual time
-                blastManagementListService.setActual(blastManagementDtoById.getId());
-            }
-        }catch (Exception e){
-            log.info(e.getMessage(),e);
         }
-            String id = (String) ParamUtil.getSessionAttr(bpc.request,"blastResendEmailId");
-            blastManagementListService.setEmailResend(id);
+        if(blastManagementDto.getSchedule() != null && HH != null && MM != null) {
+            SimpleDateFormat newfor = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
+            Date sch = new Date();
+            sch = blastManagementDto.getSchedule();
+            Date now = new Date();
+            if (sch.compareTo(now) < 0) {
+                errMap.put("date", "Send date and time cannot be earlier than now");
+            }
+        }
+        if(errMap.isEmpty()){
+            blastManagementDto.setActual(null);
+            blastManagementListService.setSchedule(blastManagementDto);
+            ParamUtil.setRequestAttr(bpc.request,"crud_action","suc");
+        }else{
+            ParamUtil.setSessionAttr(bpc.request,"hour",HH);
+            ParamUtil.setSessionAttr(bpc.request,"minutes",MM);
+            ParamUtil.setSessionAttr(bpc.request,"schedule",date);
+            ParamUtil.setSessionAttr(bpc.request,"resendBlastedit",blastManagementDto);
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setRequestAttr(bpc.request,"crud_action","err");
+        }
+
+        String id = (String) ParamUtil.getSessionAttr(bpc.request,"blastResendEmailId");
+        blastManagementListService.setEmailResend(id);
 
     }
 

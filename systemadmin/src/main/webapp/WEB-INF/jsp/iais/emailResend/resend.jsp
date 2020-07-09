@@ -40,12 +40,16 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="date" name="date"  value="${schedule}" />
+                                    <span id="error_date" name="iaisErrorMsg" class="error-msg"></span>
                                     <input type="text" value="${hour}" maxlength="2" style="width: 60px" name="HH"/>&nbsp;(HH)
                                     :
                                     <input type="text" value="${minutes}" maxlength="2" style="width: 60px"  name="MM"/>&nbsp;(MM)
-
+                                    <br>
+                                    <span id="error_HH" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
+
                             </iais:value>
+
                         </div>
                         <div class="form-group">
                             <label class="col-xs-4 col-md-4 control-label">Status</label>
