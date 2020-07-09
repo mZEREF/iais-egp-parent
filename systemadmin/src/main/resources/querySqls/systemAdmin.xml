@@ -501,7 +501,7 @@
 				WHERE notification_recipient.notification_id = T1.notification_id
 				FOR XML PATH('')
 			) D (RECIPIENT_VALUE_ALL)
-            WHERE T1.status = '3'
+            WHERE (T1.status = '3' or  T1.status = '1')
             <#if msg_id_in??> and client_query_code IN ${msg_id_in} </#if>
             <#if start??> AND T3.sent_time > CONVERT(datetime, :start, 103)</#if>
             <#if end??> AND T3.sent_time < CONVERT(datetime, :end, 103)</#if>

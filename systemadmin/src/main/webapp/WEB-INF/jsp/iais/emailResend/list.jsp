@@ -110,7 +110,7 @@
                                             <td>
                                                 <p>
                                                     <c:choose>
-                                                        <c:when test="${item.status != 1}"><a onclick="edit('<iais:mask name="emailId" value="${item.clientQueryCode}" />')">Resend</a></c:when>
+                                                        <c:when test="${item.status != 1}"><a onclick="edit('<iais:mask name="emailId" value="${item.clientQueryCode}" />','<iais:mask name="notiId" value="${item.notificationId}" />')">Resend</a></c:when>
                                                     </c:choose>
                                                     </p>
                                             </td>
@@ -125,12 +125,14 @@
             </div>
         </div>
         <input hidden id="emailId" name="emailId" value="">
+        <input hidden id="notiId" name="notiId" value="">
 
     </form>
 </div>
 <script type="text/javascript">
-    function edit(id) {
+    function edit(id,notiId) {
         $("#emailId").val(id);
+        $("#notiId").val(notiId);
         SOP.Crud.cfxSubmit("mainForm", "resend");
     }
 

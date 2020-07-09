@@ -53,6 +53,7 @@ public class EmailResendDelegator {
     DistributionListService distributionListService;
 
     public void start(BaseProcessClass bpc){
+        ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",null);
         AuditTrailHelper.auditFunction("EmailResendDelegator", "EmailResendDelegator");
     }
     /**
@@ -87,7 +88,7 @@ public class EmailResendDelegator {
 
         QueryHelp.setMainSql("systemAdmin", "failEmail",searchParam);
         SearchResult<ResendListDto> searchResult = blastManagementListService.resendList(searchParam);
-        ParamUtil.setRequestAttr(bpc.request,"resendSearchResult",searchResult);
+        ParamUtil.setSessionAttr(bpc.request,"resendSearchResult",searchResult);
         ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",searchParam);
 
     }
@@ -135,6 +136,7 @@ public class EmailResendDelegator {
 
     public void resend(BaseProcessClass bpc){
         String id =  ParamUtil.getMaskedString(bpc.request, "emailId");
+        String notiId =  ParamUtil.getMaskedString(bpc.request, "notiId");
         BlastManagementDto blastManagementDtoById = new BlastManagementDto();
         if(id == null || id.isEmpty()){
             id = (String)ParamUtil.getSessionAttr(bpc.request,"BlastMsgId");
@@ -151,6 +153,7 @@ public class EmailResendDelegator {
             ParamUtil.setSessionAttr(bpc.request,"schedule",schedule);
         }
         ParamUtil.setSessionAttr(bpc.request,"BlastMsgId",id);
+        ParamUtil.setSessionAttr(bpc.request,"notiId",notiId);
 
         if(blastManagementDtoById.getStatus().equals(AppConsts.COMMON_STATUS_ACTIVE)){
             blastManagementDtoById.setStatus("acitve");
@@ -215,6 +218,7 @@ public class EmailResendDelegator {
         if(errMap.isEmpty()){
             blastManagementDto.setActual(null);
             blastManagementListService.setSchedule(blastManagementDto);
+            ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",null);
             ParamUtil.setRequestAttr(bpc.request,"crud_action","suc");
         }else{
             ParamUtil.setSessionAttr(bpc.request,"hour",HH);
@@ -225,7 +229,7 @@ public class EmailResendDelegator {
             ParamUtil.setRequestAttr(bpc.request,"crud_action","err");
         }
 
-        String id = (String) ParamUtil.getSessionAttr(bpc.request,"blastResendEmailId");
+        String id = (String) ParamUtil.getSessionAttr(bpc.request,"notiId");
         blastManagementListService.setEmailResend(id);
 
     }
