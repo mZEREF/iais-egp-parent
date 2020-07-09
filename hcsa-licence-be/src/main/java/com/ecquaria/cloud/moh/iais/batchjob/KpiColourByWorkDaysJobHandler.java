@@ -383,6 +383,7 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
                     status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_AO1_EMAIL_VERIFY) ||
                     status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_CHECKLIST_EMAIL) ||
                     status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_NC_RECTIFICATION_EMAIL) ||
+                    status.equals(InspectionConstants.INSPECTION_STATUS_INSPECTOR_LEAD_ROUTE_BACK_EMAIL) ||
                     status.equals(InspectionConstants.INSPECTION_STATUS_PENDING_REVIEW_RECTIFICATION_NC)) {
                 subStage = HcsaConsts.ROUTING_STAGE_POT;
             }
