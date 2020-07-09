@@ -68,7 +68,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 			String[] values = IaisEGPHelper.getPageSizeByStrings(value);
 			try {
 				if (values.length != 5){
-					errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "System only allow user to enter 5 numbers");
+					errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.replaceMessage("GENERAL_ERR0021", "5", "len"));
 					return;
 				}
 
@@ -76,19 +76,23 @@ public class SystemParameterValidator implements CustomizeValidator {
 				for (int i = 0; i < values.length; i++){
 					int val = Integer.parseInt(values[i]);
 					if (val < 10 || val > 100){
-						errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The value the range from 10 to 100");
+						errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "GENERAL_ERR0022");
 						break;
 					}
 
 					to[i] = val;
 				}
 
+				if (!IaisEGPHelper.isAsc(to)){
+					errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "UC_CHKLMD001_ERR003");
+				}
+
 			}catch (NumberFormatException e){
-				errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "System only allow user to enter 5 numbers");
+				errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "UC_CHKLMD001_ERR003");
 				return;
 			}
 		}else {
-			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "The value format should be {}");
+			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "UC_CHKLMD001_ERR003");
 		}
 
 	}

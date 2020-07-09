@@ -26,6 +26,12 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.oval.ConstraintViolation;
+import net.sf.oval.Validator;
+import org.apache.commons.lang.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Collection;
@@ -33,11 +39,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import net.sf.oval.ConstraintViolation;
-import net.sf.oval.Validator;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * WebValidationHelper
@@ -157,7 +158,11 @@ public class WebValidationHelper {
                     }
                 }
             }
-            result.addMessages(customizeValidate(obj.getClass(), propertyName, result.isHasErrors()));
+
+            if (!result.isHasErrors()){
+                result.addMessages(customizeValidate(obj.getClass(), propertyName, result.isHasErrors()));
+            }
+
             saveAuditTrail(result);
         } catch (Exception e) {
             log.error(e.getMessage(), e);

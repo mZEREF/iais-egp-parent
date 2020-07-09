@@ -683,4 +683,33 @@ public final class IaisEGPHelper extends EGPHelper {
 
         return matcher.group(1).split("\\,");
     }
+
+
+    public static boolean isAsc(int[] to){
+        int min = to[0];
+        boolean order = true;
+        for (int i = 0; i < to.length; i++){
+            if (to[i] < min){
+                order = false;
+                break;
+            }else {
+                min = to[i];
+            }
+        }
+        return order;
+    }
+
+    public static boolean isDesc(int[] to){
+        int max = to[0];
+        boolean order = true;
+        for (int i = 0; i < to.length; i++){
+            if (to[i] > max){
+                order = false;
+                break;
+            }else {
+                max = to[i];
+            }
+        }
+        return order;
+    }
 }
