@@ -210,7 +210,7 @@
                t1.LIC_PREM_ID = t6.LIC_PREM_ID
                left join  (select * FROM lic_inspection_group WHERE lic_inspection_group.STATUS ='CMSTAT001') t7
                on  t6.INS_GRP_ID = t7.ID
-               WHERE   t4.STATUS = 'LICEST001' AND (STATUS = 'CMSTAT001' OR STATUS = 'AUTACPS001')
+               WHERE   t4.STATUS = 'LICEST001' AND (t1.STATUS = 'CMSTAT001' OR t1.STATUS = 'AUTACPS001')
         ]]>
     </sql>
 
