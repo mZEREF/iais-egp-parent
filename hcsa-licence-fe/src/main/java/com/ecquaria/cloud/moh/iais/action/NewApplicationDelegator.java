@@ -1360,7 +1360,7 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> personAppSubmissionDtos=IaisCommonUtils.genNewArrayList();
         if(appGrpPremisesDtoList!=null){
             int size = appGrpPremisesDtoList.size();
-            for(int i=0;i<size;i++){
+         /*   for(int i=0;i<size;i++){
                 List<LicenceDto> attribute =(List<LicenceDto>)bpc.request.getSession().getAttribute("selectLicence" + i);
                 if(attribute!=null){
                     for(LicenceDto licenceDto : attribute){
@@ -1382,7 +1382,7 @@ public class NewApplicationDelegator {
                         }
                     }
                 }
-            }
+            }*/
         }
         AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appSubmissionDto, oldAppSubmissionDto);
         if(!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation()){
@@ -1410,9 +1410,11 @@ public class NewApplicationDelegator {
                         boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
                         boolean equals=false;
                         String address = appSubmissionDto.getAppGrpPremisesDtoList().get(i).getAddress();
+                        String premisesIndexNo="";
                             if(groupLic){
                                 amendmentFeeDto.setChangeInLocation(equals);
                                 AppGrpPremisesDto appGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(i);
+                                 premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
                                 boolean b = compareHciName(appGrpPremisesDto, appSubmissionDto.getAppGrpPremisesDtoList().get(i));
                                 amendmentFeeDto.setChangeInHCIName(!b);
                                 String grpAddress = appGrpPremisesDto.getAddress();
@@ -1431,6 +1433,7 @@ public class NewApplicationDelegator {
                                 boolean b = compareHciName(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i));
                                 amendmentFeeDto.setChangeInHCIName(!b);
                                 amendmentFeeDto.setChangeInLocation(!equals);
+                                premisesIndexNo=appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
                             }
                             if(equals){
                                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
@@ -1444,11 +1447,13 @@ public class NewApplicationDelegator {
                             appSubmissionDtoByLicenceId.setAmount(amount);
                             AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(i);
                             List<AppGrpPremisesDto> appGrpPremisesDtos=new ArrayList<>(1);
-                            appGrpPremisesDtos.add(appGrpPremisesDto);
+                            AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto)CopyUtil.copyMutableObject(appGrpPremisesDto);
+                            appGrpPremisesDtos.add(copyMutableObject);
                             if(groupLic){
                                 appGrpPremisesDtos.get(0).setGroupLicenceFlag(string.getId() );
                             }
                             appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+                            appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
                             appSubmissionDtoByLicenceId.setAppGrpNo(appGroupNo);
                             appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
                             PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);

@@ -701,6 +701,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null,submissionId);
             broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null,submissionId);
             //update fe application stauts
+            log.info("update application stauts");
             for(ApplicationDto applicationDto :requestForInfList){
                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -791,7 +792,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 for(ApplicationDto application :v){
                     if (autoRfc) {
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                       /* application.setApplicationType(ApplicationConsts.APPLICATION_STATUS_APPROVED);*/
+
                     }else {
 
                     }
@@ -820,7 +821,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if (autoRfc) {
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                     }else {
-                      /*  application.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);*/
+
 
                     }
                     int i=v.size();

@@ -505,6 +505,7 @@ public class WithOutRenewalDelegator {
                                 appSubmissionService.transform(appSubmissionDtoByLicenceId, licenseeId);
                                 boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
                                 String address = appGrpPremisesDtoList.get(i).getAddress();
+                                String premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
                                 boolean equals;
                                 if (groupLic) {
                                     AppGrpPremisesDto oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(i);
@@ -533,11 +534,13 @@ public class WithOutRenewalDelegator {
                                 appSubmissionDtoByLicenceId.setAmount(0.0);
                                 AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
                                 List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
-                                appGrpPremisesDtos.add(appGrpPremisesDto);
+                                AppGrpPremisesDto copyMutableObject=(AppGrpPremisesDto)CopyUtil.copyMutableObject(appGrpPremisesDto);
+                                appGrpPremisesDtos.add(copyMutableObject);
                                 if (groupLic) {
                                     appGrpPremisesDtos.get(0).setGroupLicenceFlag(licenceDto.getId());
                                 }
                                 appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+                                appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
                                 appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);
                                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
                                 PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
