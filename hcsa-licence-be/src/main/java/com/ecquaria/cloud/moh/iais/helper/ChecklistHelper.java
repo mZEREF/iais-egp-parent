@@ -241,7 +241,7 @@ public final class ChecklistHelper {
 
         if (dto != null){
             log.info("HcsaSvcStageWorkingGroupDto not null");
-            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(dto.getId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(dto.getGroupId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             if (!IaisCommonUtils.isEmpty(orgUserDtos)){
                 List<String> receiveEmail = IaisCommonUtils.genNewArrayList();
                 for(OrgUserDto orgUserDto : orgUserDtos){
@@ -255,7 +255,7 @@ public final class ChecklistHelper {
                     log.info("do send email");
                     try {
                         Map<String, Object> map = new HashMap(1);
-                        map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+                        map.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
                         MsgTemplateDto msgTemplate = emailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
                         String subject = msgTemplate.getTemplateName();
@@ -267,6 +267,7 @@ public final class ChecklistHelper {
                         emailDto.setSubject(subject);
                         emailDto.setSender(mailSender);
                         emailDto.setReceipts(receiveEmail);
+                        emailDto.setClientQueryCode(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
                         emailClient.sendNotification(emailDto).getEntity();
                     } catch (IOException e) {
                         log.error(e.getMessage(), e);

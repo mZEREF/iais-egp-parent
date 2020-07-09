@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -125,14 +126,14 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
             curStage = taskDto.getTaskKey();
             int allWorkDays = 0;
             int allHolidays = 0;
-            Map<Integer, Integer> workAndNonMap = new HashMap();
-            Date startDate;
-            Date completeDate;
+            Map<Integer, Integer> workAndNonMap = IaisCommonUtils.genNewHashMap();
             List<TaskDto> taskDtoList = organizationClient.getOtherKpiTask(taskDto).getEntity();
             if(!(IaisCommonUtils.isEmpty(taskDtoList))){
                 List<Date> endDates = IaisCommonUtils.genNewArrayList();
                 List<Date> beginDates = IaisCommonUtils.genNewArrayList();
                 for(TaskDto tDto : taskDtoList){
+                    Date startDate;
+                    Date completeDate;
                     if(tDto.getDateAssigned() != null){
                         startDate = tDto.getDateAssigned();
                     } else {
@@ -143,6 +144,10 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
                     } else {
                         completeDate = new Date();
                     }
+                    log.info(StringUtil.changeForLog("startDate = " + Formatter.formatDateTime(startDate, "dd/MM/yyyy")));
+                    log.info(StringUtil.changeForLog("completeDate = " + Formatter.formatDateTime(completeDate, "dd/MM/yyyy")));
+                    JobLogger.log(StringUtil.changeForLog("startDate = " + Formatter.formatDateTime(startDate, "dd/MM/yyyy")));
+                    JobLogger.log(StringUtil.changeForLog("completeDate = " + Formatter.formatDateTime(completeDate, "dd/MM/yyyy")));
                     beginDates.add(startDate);
                     endDates.add(completeDate);
                     workAndNonWorkDays = getDaysWithoutAssignDay(workAndNonWorkDays, startDate, completeDate);
@@ -151,6 +156,8 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
                 Date beginDate = sortFirstDate(beginDates);
                 Set<Date> setDate = new HashSet<>(workAndNonWorkDays);
                 workAndNonWorkDays = new ArrayList<>(setDate);
+                log.info(StringUtil.changeForLog("workAndNonWorkDays = " + workAndNonWorkDays.toString()));
+                JobLogger.log(StringUtil.changeForLog("workAndNonWorkDays = " + workAndNonWorkDays.toString()));
                 //count work days
                 KpiCountDto kpiCountDto = new KpiCountDto();
                 kpiCountDto.setTaskDates(workAndNonWorkDays);
