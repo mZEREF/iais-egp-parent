@@ -41,7 +41,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author yi chen
@@ -243,29 +242,35 @@ public final class ChecklistHelper {
         if (dto != null){
             List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(dto.getId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
             if (!IaisCommonUtils.isEmpty(orgUserDtos)){
-                List<String> receiveEmail = orgUserDtos.stream().map(OrgUserDto::getEmail).collect(Collectors.toList());
+                List<String> receiveEmail = IaisCommonUtils.genNewArrayList();
+                for(OrgUserDto orgUserDto : orgUserDtos){
+                    if(!StringUtil.isEmpty(orgUserDto.getEmail())){
+                        receiveEmail.add(orgUserDto.getEmail());
+                    }
+                }
 
                 log.info(StringUtil.changeForLog("=====address====>>>"+ receiveEmail));
+                if(!IaisCommonUtils.isEmpty(receiveEmail)) {
+                    try {
+                        Map<String, Object> map = new HashMap(1);
+                        map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
 
-                try {
-                    Map<String,Object> map = new HashMap(1);
-                    map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+                        MsgTemplateDto msgTemplate = emailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
+                        String subject = msgTemplate.getTemplateName();
+                        String messageContent = msgTemplate.getMessageContent();
+                        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
 
-                    MsgTemplateDto msgTemplate = emailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
-                    String subject = msgTemplate.getTemplateName();
-                    String messageContent = msgTemplate.getMessageContent();
-                    String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-
-                    EmailDto emailDto=new EmailDto();
-                    emailDto.setContent(templateMessageByContent);
-                    emailDto.setSubject(subject);
-                    emailDto.setSender(mailSender);
-                    emailDto.setReceipts(receiveEmail);
-                    emailClient.sendNotification(emailDto).getEntity();
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                } catch (TemplateException e) {
-                    log.error(e.getMessage(), e);
+                        EmailDto emailDto = new EmailDto();
+                        emailDto.setContent(templateMessageByContent);
+                        emailDto.setSubject(subject);
+                        emailDto.setSender(mailSender);
+                        emailDto.setReceipts(receiveEmail);
+                        emailClient.sendNotification(emailDto).getEntity();
+                    } catch (IOException e) {
+                        log.error(e.getMessage(), e);
+                    } catch (TemplateException e) {
+                        log.error(e.getMessage(), e);
+                    }
                 }
             }
         }
