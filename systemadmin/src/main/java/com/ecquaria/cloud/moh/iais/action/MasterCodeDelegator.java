@@ -369,42 +369,50 @@ public class MasterCodeDelegator {
             return;
         }
         File toFile = FileUtils.multipartFileToFile(file);
-        List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
-        List<String> duplicateCode = IaisCommonUtils.genNewArrayList();
-        List<String> emptyCode = IaisCommonUtils.genNewArrayList();
-        List<String> filterCode = IaisCommonUtils.genNewArrayList();
-        boolean result = false;
-        for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
-            masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
-            if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())
-                    ||StringUtil.isEmpty(masterCodeToExcelDto.getStatus())
-                    ||StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom()))
-                    {
-                emptyCode.add(masterCodeToExcelDto.getCodeValue());
-                result = true;
-            }
-            if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
-//                if (masterCodeToExcelDto.getFilterValue().equals(masterCodeToExcelDto1.getCodeValue())){
-//                    filterCode.add(masterCodeToExcelDto.getCodeValue());
-//                }
-                if (filterCode.size() == 0){
+        try{
+            List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
+            List<String> duplicateCode = IaisCommonUtils.genNewArrayList();
+            List<String> emptyCode = IaisCommonUtils.genNewArrayList();
+            List<String> filterCode = IaisCommonUtils.genNewArrayList();
+            boolean result = false;
+            for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
+                if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())
+                        ||StringUtil.isEmpty(masterCodeToExcelDto.getStatus())
+                        ||StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom()))
+                        {
                     emptyCode.add(masterCodeToExcelDto.getCodeValue());
                     result = true;
                 }
+                if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
+                    masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
+                }
+                if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
+    //                if (masterCodeToExcelDto.getFilterValue().equals(masterCodeToExcelDto1.getCodeValue())){
+    //                    filterCode.add(masterCodeToExcelDto.getCodeValue());
+    //                }
+                    if (filterCode.size() == 0){
+                        emptyCode.add(masterCodeToExcelDto.getCodeValue());
+                        result = true;
+                    }
+                }
             }
-        }
-        if (result){
-            if (errorMap != null){
-                errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "There is an error in the file contents");
+            if (result){
+                if (errorMap != null){
+                    errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "There is an error in the file contents");
+                }
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
+                ParamUtil.setRequestAttr(request,"ERR_DUPLICATE_CODE",duplicateCode);
+                ParamUtil.setRequestAttr(request,"ERR_EMPTY_CODE",emptyCode);
+            }else{
+                masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
             }
+        }catch (Exception e){
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, MessageCodeKey.GENERAL_ERR0005);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
-            ParamUtil.setRequestAttr(request,"ERR_DUPLICATE_CODE",duplicateCode);
-            ParamUtil.setRequestAttr(request,"ERR_EMPTY_CODE",emptyCode);
-        }else{
-            masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }
     }
 
@@ -625,7 +633,7 @@ public class MasterCodeDelegator {
 
     private Map<String, String> validationFile(HttpServletRequest request, MultipartFile file){
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap(1);
-        if (file == null){
+        if (file.isEmpty()){
             errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "GENERAL_ERR0020");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
