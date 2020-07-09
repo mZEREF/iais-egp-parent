@@ -60,7 +60,7 @@ public class UploadDelegator {
                 log.error(e.getMessage(),e);
             }
         }
-        for(ApplicationListFileDto applicationListFileDto : parse){
+        /*for(ApplicationListFileDto applicationListFileDto : parse){
             List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
             List<ApplicationDto> application = applicationListFileDto.getApplication();
             for(ApplicationDto applicationDto : application){
@@ -79,7 +79,7 @@ public class UploadDelegator {
             }catch (Exception e){
                 log.error("update applcaition status is error",e);
             }
-        }
+        }*/
 
     }
 

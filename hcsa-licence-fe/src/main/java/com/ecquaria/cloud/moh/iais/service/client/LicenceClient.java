@@ -96,7 +96,7 @@ public interface LicenceClient {
     FeignResponseEntity<SearchResult<PremisesListQueryDto>> getPremises(@RequestBody SearchParam searchParam);
 
     @GetMapping(value = "/hcsa-licence/licence-dto-by-hci-code",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(@RequestParam("hciCode")String hciCode);
+    FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(@RequestParam("hciCode")String hciCode,@RequestParam("licenseeId") String licenseeId);
 
     @PostMapping(value = "/hcsa-licence-rfc/licence-by-person", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicKeyPersonnelDto>> getLicBypersonId(@RequestBody List<String> personIds);

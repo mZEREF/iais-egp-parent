@@ -226,7 +226,7 @@ public class RequestForChangeMenuDelegator {
         List<PremisesListQueryDto> rows = searchResult.getRows();
         for (PremisesListQueryDto premisesListQueryDto : rows) {
             StringBuilder stringBuilder = new StringBuilder();
-            List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(premisesListQueryDto.getHciCode());
+            List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(premisesListQueryDto.getHciCode(),licenseeId);
             for (LicenceDto licenceDto : licenceDtoByHciCode) {
                 stringBuilder.append(licenceDto.getSvcName()).append(',');
             }
@@ -319,7 +319,7 @@ public class RequestForChangeMenuDelegator {
             }
             for (AppGrpPremisesDto appGrpPremisesDto1 : appGrpPremisesDtoList) {
                 String hciCode = appGrpPremisesDto1.getHciCode();
-                List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode);
+                List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode,licenseeId);
                 appGrpPremisesDto1.setLicenceDtos(licenceDtoList);
             }
         }
@@ -355,7 +355,7 @@ public class RequestForChangeMenuDelegator {
         }
         if(premisesListQueryDto!=null){
             String hciCode = premisesListQueryDto.getHciCode();
-            List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode);
+            List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByHciCode(hciCode,licenseeId);
             bpc.request.getSession().setAttribute("licenceDtoList", licenceDtoList);
         }
 

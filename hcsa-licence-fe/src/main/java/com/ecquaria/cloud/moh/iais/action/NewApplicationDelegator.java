@@ -324,6 +324,9 @@ public class NewApplicationDelegator {
                 });
                 licAppGrpPremisesDtoMap = newLicAppGrpPremisesDtoMap;
             }
+        }else {
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            licenseeId = loginContext.getLicenseeId();
         }
 
         //premise select
@@ -397,9 +400,10 @@ public class NewApplicationDelegator {
 
             List<AppGrpPremisesDto> appGrpPremisesDtoList1 = appSubmissionDto.getAppGrpPremisesDtoList();
             String licenceNo = appSubmissionDto.getLicenceNo();
+
             for(int i=0;i<appGrpPremisesDtoList1.size();i++  ){
                 String hciCode = appGrpPremisesDtoList1.get(i).getHciCode();
-                List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode);
+                List<LicenceDto> licenceDtoByHciCode = requestForChangeService.getLicenceDtoByHciCode(hciCode,licenseeId);
                 for(LicenceDto licenceDto : licenceDtoByHciCode){
                     if(licenceDto.getLicenceNo().equals(licenceNo)){
                         licenceDtoByHciCode.remove(licenceDto);
@@ -2629,6 +2633,10 @@ public class NewApplicationDelegator {
         AppEditSelectDto appEditSelectDto = appSubmissionDto.getAppEditSelectDto();
         if(appEditSelectDto!=null){
             if(!appEditSelectDto.isPremisesEdit()){
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                    appGrpPremisesDto.setLicenceDtos(null);
+                }
                 if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto.getAppGrpPremisesDtoList())){
                     result.put("premiss","UC_CHKLMD001_ERR001");
                 }
@@ -3612,12 +3620,14 @@ public class NewApplicationDelegator {
                     sB.append(serviceId);
                     return;
                 }else {
-                    if( appSvcChckListDtoList.size()!=appSvcDislist.size()){
+                  /*  if( appSvcChckListDtoList.size()!=appSvcDislist.size()){
+                        log.info(appSvcChckListDtoList.size()+" appSvcChckListDtoList ");
+                        log.info(appSvcDislist.size()+" appSvcDislist ");
                         map.put("appSvcChckListDtoListsize","size");
                         sB.append(serviceId);
                         return;
                     }
-
+*/
                 }
             }
         }
@@ -5245,7 +5255,7 @@ public class NewApplicationDelegator {
             }
             long length = appGrpPrimaryDocDto.getRealDocSize();
             if(length>4*1024*1024){
-                errorMap.put(keyName,"UC_GENERAL_ERR0015");
+                errorMap.put(keyName,"UC_CHKLMD001_ERR007");
                 continue;
             }
             Boolean flag=Boolean.FALSE;

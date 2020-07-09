@@ -487,8 +487,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         requeOrNew(requestForInfList,applicationGroup,application);
         update(listApplicationDto,applicationGroup,application);
         log.info(StringUtil.changeForLog(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size()));
-
-
         log.info(StringUtil.changeForLog(requestForInfList.toString()+"requestForInfList size" +requestForInfList .size()));
         ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
@@ -786,7 +784,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                        /* application.setApplicationType(ApplicationConsts.APPLICATION_STATUS_APPROVED);*/
                     }else {
-                      /*  application.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);*/
 
                     }
                     int i=v.size();
@@ -813,7 +810,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 for(ApplicationDto application:v){
                     if (autoRfc) {
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                     /*   application.setApplicationType(ApplicationConsts.APPLICATION_STATUS_APPROVED);*/
                     }else {
                       /*  application.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);*/
 

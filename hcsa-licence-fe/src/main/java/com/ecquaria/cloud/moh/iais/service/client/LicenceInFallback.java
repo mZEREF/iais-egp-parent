@@ -188,7 +188,7 @@ public class LicenceInFallback implements LicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(String hciCode) {
+    public FeignResponseEntity<List<LicenceDto>> getLicenceDtoByHciCode(String hciCode,String lidenseeId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
