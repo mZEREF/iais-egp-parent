@@ -351,6 +351,7 @@ public class OfficersReSchedulingDelegator {
                         errMap = IaisCommonUtils.genNewHashMap();
                         errMap.put("specificDate", "UC_INSP_ERR0007");
                     }
+                    reschedulingOfficerDto.setAppointmentDto(appointmentDto);
                 }
                 if(errMap != null) {
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));

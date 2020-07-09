@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -77,6 +78,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private AppointmentClient appointmentClient;
 
     @Override
     public List<SelectOption> getInspWorkGroupByLogin(LoginContext loginContext, ReschedulingOfficerDto reschedulingOfficerDto) {
@@ -320,7 +324,27 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Override
     public void reScheduleRoutingAudit(ReschedulingOfficerDto reschedulingOfficerDto) {
+        String appNo = reschedulingOfficerDto.getAssignNo();
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        String apptRefNo = appointmentClient.saveManualUserCalendar(reschedulingOfficerDto.getAppointmentDto()).getEntity();
+        Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
+        if(samePremisesAppMap != null) {
+            List<String> appNoList = samePremisesAppMap.get(appNo);
+            if(!IaisCommonUtils.isEmpty(appNoList)){
+                for(String applicationNo : appNoList){
+                    List<String> userIds = IaisCommonUtils.genNewArrayList();
+                    ApplicationDto applicationDto = applicationClient.getAppByNo(applicationNo).getEntity();
+                    AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
 
+                    List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremisesCorrelationDto.getId()).getEntity();
+                    if(!IaisCommonUtils.isEmpty(taskDtos)){
+                        for(TaskDto taskDto : taskDtos){
+
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {

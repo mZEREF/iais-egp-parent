@@ -828,9 +828,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     private void saveSynchronApptDate(Map<String, List<ApptUserCalendarDto>> inspectionDateMap, List<String> appPremCorrIds, AppointmentDto appointmentDto, AuditTrailDto auditTrailDto) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         //save AppPremisesInspecApptDto
+        //cancel AppPremisesInspecApptDto
+        int reschedulingCount = updateAppPremisesInspecApptDtoList(appPremCorrIds, auditTrailDto);
         for(String appPremCorrId : appPremCorrIds) {
-            //cancel AppPremisesInspecApptDto
-            int reschedulingCount = updateAppPremisesInspecApptDtoList(appPremCorrIds, auditTrailDto);
             //create AppPremisesInspecApptDto
             for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
                 String apptRefNo = inspDateMap.getKey();
