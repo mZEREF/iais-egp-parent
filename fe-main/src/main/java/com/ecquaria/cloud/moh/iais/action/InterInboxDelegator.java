@@ -853,7 +853,7 @@ public class InterInboxDelegator {
         List<SelectOption> LicenceStatusList = IaisCommonUtils.genNewArrayList();
         LicenceStatusList.add(new SelectOption("All", "All"));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_ACTIVE, "Active"));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_OUTDATED, "Outdated"));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_IACTIVE, "Outdated"));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_EXPIRY, "Expired"));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_CEASED, "Ceased"));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_LAPSED, "Lapsed"));
