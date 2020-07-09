@@ -315,7 +315,7 @@ public class BlastManagementDelegator {
             }else{
                 String fileName = "";
                 StringBuilder stringBuilder = new StringBuilder();
-                if(blastManagementDto.getAttachmentDtos().size() > 0){
+                if(blastManagementDto.getAttachmentDtos() != null && blastManagementDto.getAttachmentDtos().size() > 0){
                     for (AttachmentDto item: blastManagementDto.getAttachmentDtos()
                     ) {
                         stringBuilder.append(item.getDocName()).append(',');
@@ -405,7 +405,7 @@ public class BlastManagementDelegator {
         BlastManagementDto blastManagementDto = (BlastManagementDto)ParamUtil.getSessionAttr(bpc.request,"blastManagementDto");
         String fileName = "";
         StringBuilder stringBuilder = new StringBuilder();
-        if(blastManagementDto.getAttachmentDtos().size() > 0){
+        if(blastManagementDto.getAttachmentDtos() != null && blastManagementDto.getAttachmentDtos().size() > 0){
             for (AttachmentDto item: blastManagementDto.getAttachmentDtos()
             ) {
                 stringBuilder.append(item.getDocName()).append(',');
@@ -587,6 +587,18 @@ public class BlastManagementDelegator {
         QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
         SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
         ParamUtil.setRequestAttr(bpc.request,"SearchResult",searchResult);
+    }
+
+    public void preview(BaseProcessClass bpc){
+        String id =  ParamUtil.getRequestString(bpc.request, "editBlast");
+        BlastManagementDto blastManagementDto = blastManagementListService.getBlastById(id);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(blastManagementDto.getSchedule());
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+        blastManagementDto.setMM(String.valueOf(minute));
+        blastManagementDto.setHH(String.valueOf(hour));
+        ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
     }
 
     private void setModeSelection(BaseProcessClass bpc){

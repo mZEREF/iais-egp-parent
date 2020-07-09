@@ -128,6 +128,13 @@
     <JavaCode defClass="" executor="" methodName="editBeforeFill_OnStepProcess_0" name="editBeforeFill_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Preview" x="840" y="220">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="preview_OnStepProcess_0" name="preview_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="list" stageIndicator="" x="350" y="100">
@@ -161,6 +168,12 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="writeSms" stageIndicator="" x="600" y="740">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="preview" stageIndicator="" x="840" y="340">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -251,13 +264,13 @@
    <position>{(60,540)(60,400)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch4" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/FillMessage" style="oblique">
-   <position>{(420,460)(430,580)}</position>
+   <position>{(420,460)(550,580)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(430,580)(430,680)}</position>
+   <position>{(550,580)(430,680)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Sms" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(430,580)(620,670)}</position>
+   <position>{(550,580)(620,670)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/writeSms" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Sms" style="rectanular">
    <position>{(620,670)(620,760)}</position>
@@ -287,10 +300,10 @@
    <position>{(240,760)(550,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/CreateBeforeFill" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(430,580)(310,310)}</position>
+   <position>{(550,580)(310,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/EditBeforeFill" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch4" style="oblique">
-   <position>{(430,580)(550,310)}</position>
+   <position>{(550,580)(550,310)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/CreateBeforeFill" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
    <position>{(820,670)(310,310)}</position>
@@ -313,6 +326,15 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/FillMessage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch6" style="rectanular">
    <position>{(430,390)(420,460)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Preview" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(490,120)(860,240)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/preview" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Preview" style="rectanular">
+   <position>{(860,240)(860,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Pages/WebPage/preview" style="oblique">
+   <position>{(860,360)(240,120)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/Step1" componentIfTrue="/Steps/AutomaticStep/Step2" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="40" y="740">
@@ -330,6 +352,7 @@
    <SwitchCase component="/Steps/AutomaticStep/Edit" value="&quot;edit&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Search" value="&quot;search&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/AuditTrial" value="&quot;audit&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Preview" value=" &quot;preview&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/WriteMessage" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="220" y="740">
    <Description/>
@@ -342,7 +365,7 @@
    <SwitchCase component="/Steps/AutomaticStep/SelectRecipients" value=""/>
    <SwitchCase component="/Steps/AutomaticStep/Step1" value="&quot;back&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="410" y="560">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="530" y="560">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Step1" value="&quot;Email&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Sms" value="&quot;SMS&quot;"/>

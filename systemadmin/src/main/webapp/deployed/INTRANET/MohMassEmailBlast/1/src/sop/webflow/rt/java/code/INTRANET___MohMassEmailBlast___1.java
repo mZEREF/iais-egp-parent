@@ -11,6 +11,7 @@
  */
 package sop.webflow.rt.java.code;
 import com.ecquaria.cloud.helper.EngineHelper;
+
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohMassEmailBlast___1 extends BaseProcessClass {
@@ -103,6 +104,11 @@ public class INTRANET___MohMassEmailBlast___1 extends BaseProcessClass {
 	public void editBeforeFill_OnStepProcess_0() throws Exception {
 	// 		EditBeforeFill->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "editBeforeFill", this); 
+	}
+
+	public void preview_OnStepProcess_0() throws Exception {
+	// 		Preview->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "preview", this); 
 	}
 
 }

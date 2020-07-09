@@ -132,7 +132,10 @@
                                                 <p><iais:code code="${item.status}"></iais:code></p>
                                             </td>
                                             <td>
-                                                <p><a onclick="edit('${item.id}')">Edit</a></p>
+                                                <p>
+                                                    <a onclick="edit('${item.id}')">Edit</a>
+                                                    <a onclick="preview('${item.id}')">Preview</a>
+                                                </p>
                                             </td>
                                         </tr>
                                     </c:forEach>
@@ -180,7 +183,10 @@
         $("#editBlast").val(id);
         SOP.Crud.cfxSubmit("mainForm", "edit");
     }
-
+    function preview(id) {
+        $("#editBlast").val(id);
+        SOP.Crud.cfxSubmit("mainForm", "preview");
+    }
     function audit(id) {
         $("#editBlast").val(id);
         SOP.Crud.cfxSubmit("mainForm", "audit");
