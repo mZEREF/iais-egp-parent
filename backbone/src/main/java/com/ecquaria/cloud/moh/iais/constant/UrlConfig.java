@@ -16,6 +16,10 @@ public class UrlConfig {
     private String internetWebSite;
     @Value("${moh.internet.inbox}")
     private String internetInbox;
+    @Value("${moh.intranet.websit}")
+    private String intranetWebSite;
+    @Value("${moh.intranet.inbox}")
+    private String intranetInbox;
 
     public UrlConfig() {
     }
@@ -28,5 +32,11 @@ public class UrlConfig {
     }
     public String getInternetInbox() {
         return this.internetInbox;
+    }
+    public String getIntranetWebSite() {
+        return this.intranetWebSite;
+    }
+    public String getIntranetInbox() {
+        return this.intranetInbox;
     }
 }
