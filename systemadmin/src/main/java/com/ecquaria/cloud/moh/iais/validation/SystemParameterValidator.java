@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -63,6 +64,10 @@ public class SystemParameterValidator implements CustomizeValidator {
 	}
 
 	private void verifyPageSize(Map<String, String> errorMap, String value){
+		if (StringUtils.isEmpty(value)){
+			return;
+		}
+
 		Matcher m = IaisEGPHelper.matcherByRegex(value, "\\{([^}]*)\\}");
 		if (m.matches()){
 			String[] values = IaisEGPHelper.getPageSizeByStrings(value);

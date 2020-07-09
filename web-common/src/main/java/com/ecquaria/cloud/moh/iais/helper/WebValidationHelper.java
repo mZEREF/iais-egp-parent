@@ -159,9 +159,7 @@ public class WebValidationHelper {
                 }
             }
 
-            if (!result.isHasErrors()){
-                result.addMessages(customizeValidate(obj.getClass(), propertyName, result.isHasErrors()));
-            }
+            result.addMessages(customizeValidate(obj.getClass(), propertyName, result.isHasErrors()));
 
             saveAuditTrail(result);
         } catch (Exception e) {
