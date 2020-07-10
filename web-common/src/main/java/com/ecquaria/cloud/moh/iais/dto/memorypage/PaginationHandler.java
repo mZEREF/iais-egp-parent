@@ -1,12 +1,9 @@
 package com.ecquaria.cloud.moh.iais.dto.memorypage;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
-import com.hazelcast.util.JsonUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,7 +43,6 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     private int checkType;
     private ArrayList<PageRecords<T>> allData = IaisCommonUtils.genNewArrayList();
     private ArrayList<PageRecords<T>> displayData = IaisCommonUtils.genNewArrayList();
-    private SystemParamConfig sysParam = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
 
     public PaginationHandler(String paginationDiv, String recordsDiv) {
         this.paginationDiv = paginationDiv;
@@ -54,8 +50,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.pageSize = SysParamUtil.getDefaultPageSize();
         this.currentPageNo = 1 ;
         doPaging();
-        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr",
-                JsonUtil.toJson(this));
+        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
         checkAllHtml();
     }
 
@@ -66,8 +61,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.pageSize = SysParamUtil.getDefaultPageSize();
         this.currentPageNo = 1 ;
         doPaging();
-        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr",
-                JsonUtil.toJson(this));
+        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
         checkAllHtml();
     }
 
@@ -78,8 +72,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         setAllData(allData);
         this.currentPageNo = 1 ;
         doPaging();
-        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr",
-                JsonUtil.toJson(this));
+        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
         checkAllHtml();
     }
 
