@@ -414,7 +414,7 @@ public class RequestForChangeDelegator {
                     } else {
                         // appSubmissionDto.setIsNeedNewLicNo("1");
                         for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
-                            String premise = appGrpPremisesDto.getTranferSelect();
+                            String premise = appGrpPremisesDto.getPremisesIndexNo();
                             boolean isSelect  = isSelect(selectCheakboxs,premise);
                             if(isSelect){
                                 appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
