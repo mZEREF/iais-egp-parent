@@ -121,7 +121,30 @@
                                                 <div class="table-gp">
                                                     <table class="table table-bordered">
                                                         <tbody>
-                                                        -
+                                                        <tr>
+                                                            <td class="col-xs-6" align="right">Name</td>
+                                                            <td class="col-xs-6">&nbsp;Tan Ah Kow</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Salutation</td>
+                                                            <td>&nbsp;DR</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">ID Type</td>
+                                                            <td>&nbsp;NRIC</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">ID No</td>
+                                                            <td>&nbsp;S123456789I</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Designation</td>
+                                                            <td>&nbsp;Director</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Designation Appointment Date</td>
+                                                            <td>&nbsp;01/01/2020</td>
+                                                        </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>

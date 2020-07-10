@@ -3,17 +3,25 @@ package com.ecquaria.egp.core.payment.runtime;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.ServerConfig;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
+import com.ecquaria.egp.core.payment.api.config.GatewayConstants;
 import ecq.commons.helper.StringHelper;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sop.config.ConfigUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -21,9 +29,19 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+@Service
 public class PaymentBaiduriProxy extends PaymentProxy {
+	@Autowired
+	PaymentClient paymentClient;
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentBaiduriProxy.class);
     
@@ -53,12 +71,25 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			String secureHash = hashAllFields(fields, DEFAULT_SECURE_HASH_TYPE);
 			fields.put("vpc_SecureHash", secureHash);
 			fields.put("vpc_SecureHashType", DEFAULT_SECURE_HASH_TYPE);
-		} catch (UnsupportedEncodingException e1) {
+		} catch (UnsupportedEncodingException | NoSuchAlgorithmException e1) {
 			logger.debug(e1.getMessage());
 			throw new PaymentException(e1);
-		} catch (NoSuchAlgorithmException e1) {
-			logger.debug(e1.getMessage());
-			throw new PaymentException(e1);
+		}
+		HttpServletRequest request = bpc.request;
+
+		String amo = fields.get(GatewayConstants.AMOUNT_KEY);
+		String payMethod = fields.get(GatewayConstants.PYMT_DESCRIPTION_KEY);
+		String reqNo = fields.get(GatewayConstants.SVCREF_NO);
+		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
+			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
+
+			double amount = Double.parseDouble(amo);
+			paymentRequestDto.setAmount(amount);
+			paymentRequestDto.setPayMethod(payMethod);
+			paymentRequestDto.setReqDt(new Date());
+			paymentRequestDto.setReqRefNo(reqNo);
+			paymentClient.saveHcsaPaymentResquset(paymentRequestDto);
+
 		}
 
 		try {
@@ -78,7 +109,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 
 			throw new PaymentException(e);
 		}
-		
+
 	}
 
 	@Override
@@ -93,7 +124,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
-		
+		HttpServletRequest request = bpc.request;
+
 		String response = "payment success";
 		setPaymentResponse(response);
 		String secureHashType = fields.remove("vpc_SecureHashType");
@@ -113,7 +145,13 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 //				setReceiptStatus(status);
 				setPaymentTransStatus(status);
 //				String message = fields.get("vpc_Message");
-				
+				PaymentDto paymentDto = new PaymentDto();
+				paymentDto.setAmount(Double.parseDouble(fields.get(GatewayConstants.AMOUNT_KEY)));
+				paymentDto.setReqRefNo(fields.get(GatewayConstants.SVCREF_NO));
+				paymentDto.setInvoiceNo(fields.get(GatewayConstants.CPS_REFNO));
+				paymentDto.setPmtStatus(status);
+				PaymentDto paymentDtoSave = paymentClient.saveHcsaPayment(paymentDto).getEntity();
+
 				// update the data's status and time;
 			}else{
 				hashValidated="Invalid Hash";
@@ -121,6 +159,25 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			}
 			bpc.request.setAttribute("baiduriHash", hashValidated);
 		} catch (Exception e) {
+
+			throw new PaymentException(e);
+		}
+
+		try {
+			StringBuilder bud = new StringBuilder();
+			String bigsURL ="https://" + request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment";
+			bud.append(bigsURL).append('?');
+			appendQueryFields(bud, fields);
+
+
+			RedirectUtil.redirect(bud.toString(), bpc.request, bpc.response);
+			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
+		} catch (UnsupportedEncodingException e) {
+			logger.debug(e.getMessage());
+
+			throw new PaymentException(e);
+		} catch (IOException e) {
+			logger.debug(e.getMessage());
 
 			throw new PaymentException(e);
 		}
