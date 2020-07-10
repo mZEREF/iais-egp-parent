@@ -143,7 +143,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             List<AuditTaskDataDto> auditTaskDataDtos = searchResult.getRows();
             List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(auditTaskDataDtos.size());
             for(AuditTaskDataDto auditTaskDataDto : auditTaskDataDtos){
-                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,Boolean.FALSE,Boolean.FALSE,Boolean.FALSE));
+                auditTaskDataFillterDtos.add(getAuditTaskDataFillterDto(auditTaskDataDto,Boolean.FALSE,Boolean.TRUE,Boolean.FALSE));
             }
             return removeDuplicates(auditTaskDataFillterDtos);
         }
@@ -388,6 +388,10 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         LicInspectionGroupDto licInspectionGroupDto =  new LicInspectionGroupDto();
         licInspectionGroupDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         licInspectionGroupDto.setAuditTrailDto(intranet);
+        if(StringUtil.isEmpty(auditTaskDataFillterDto.getInsGrpId()) || StringUtil.isEmpty(auditTaskDataFillterDto.getLicPremGrpCorId())){
+            log.info(StringUtil.changeForLog("----dirty data aduit id is "+ auditTaskDataFillterDto.getAuditId()) +"----------");
+            return;
+        }
         licInspectionGroupDto.setId(auditTaskDataFillterDto.getInsGrpId());
         hcsaLicenceClient.createLicInspectionGroup(licInspectionGroupDto);
         LicPremInspGrpCorrelationDto licPremInspGrpCorrelationDto = new LicPremInspGrpCorrelationDto();
