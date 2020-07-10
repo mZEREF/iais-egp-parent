@@ -141,7 +141,7 @@ function initMemoryPage(paginationDiv, checkType, pageNo) {
         pageNum : pageNo
     };
     $.ajax({
-        data:"name=memPaging",
+        data:data,
         type:"GET",
         dataType: 'json',
         url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do",
@@ -170,7 +170,7 @@ function changeMemoryPage(paginationDiv, checkType, pageNo) {
         pageNum : pageNo
     };
     $.ajax({
-        data:"name=memPaging",
+        data:data,
         type:"GET",
         dataType: 'json',
         url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPage.do",
