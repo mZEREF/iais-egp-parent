@@ -216,3 +216,22 @@ function memoryCheckBoxChange(paginationDiv, obj) {
         $(checkAllId).removeAttr("checked");
     }
 }
+
+function memoryPageSizeChange(paginationDiv, newSize) {
+    var data = {
+        pageDiv : paginationDiv,
+        newSize : newSize
+    };
+    $.ajax({
+        data:data,
+        type:"GET",
+        dataType: 'json',
+        url:BASE_CONTEXT_PATH + "/commonAjax/changeMemoryPageSize.do",
+        error:function(res){
+            $("#iaisErrorFlag").val('Error:Exception');
+        },
+        success:function(res){
+            confirmChangeMemoryPage(res);
+        }
+    });
+}
