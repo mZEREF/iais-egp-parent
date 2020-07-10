@@ -37,6 +37,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     private String allCheckHtml;
     private String paginationDiv;
     private String recordsDiv;
+    private int[] pageSizeDrop;
     private boolean needRowNum;
     private boolean checkInTrail;
     private boolean checkBoxDisable;
@@ -48,6 +49,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.paginationDiv = paginationDiv;
         this.recordsDiv = recordsDiv;
         this.pageSize = SysParamUtil.getDefaultPageSize();
+        this.pageSizeDrop = SysParamUtil.toPageSizeArray();
         this.currentPageNo = 1 ;
         doPaging();
         ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
@@ -59,6 +61,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.recordsDiv = recordsDiv;
         this.checkType = checkType;
         this.pageSize = SysParamUtil.getDefaultPageSize();
+        this.pageSizeDrop = SysParamUtil.toPageSizeArray();
         this.currentPageNo = 1 ;
         doPaging();
         ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
@@ -69,6 +72,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.paginationDiv = paginationDiv;
         this.recordsDiv = recordsDiv;
         this.pageSize = SysParamUtil.getDefaultPageSize();
+        this.pageSizeDrop = SysParamUtil.toPageSizeArray();
         setAllData(allData);
         this.currentPageNo = 1 ;
         doPaging();
@@ -141,25 +145,16 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         sb.append("<div class=\"form-group\">");
         sb.append("<div class=\"col-xs-12 col-md-3\">");
         sb.append("<select class=\"table-select\" id = \"pageJumpNoPageSize\" name = \"pageJumpNoPageSize\" >");
-        if (pageSize == 10) {
+        if (pageSizeDrop != null && pageSizeDrop.length > 0) {
+            for (int siz : pageSizeDrop) {
+                if (pageSize == siz) {
+                    sb.append("<option selected value=\"").append(siz).append("\">").append(siz).append("</option>");
+                } else {
+                    sb.append("<option value=\"").append(siz).append("\">").append(siz).append("</option>");
+                }
+            }
+        } else {
             sb.append("<option selected value=\"10\">10</option>");
-        } else {
-            sb.append("<option value=\"10\">10</option>");
-        }
-        if (pageSize == 20) {
-            sb.append("<option selected value=\"20\">20</option>");
-        } else {
-            sb.append("<option value=\"20\">20</option>");
-        }
-        if (pageSize == 30) {
-            sb.append("<option selected value=\"30\">30</option>");
-        } else {
-            sb.append("<option value=\"30\">30</option>");
-        }
-        if (pageSize == 40) {
-            sb.append("<option selected value=\"40\">40</option>");
-        } else {
-            sb.append("<option value=\"40\">40</option>");
         }
         sb.append("</select>");
         sb.append("</div></div></p></div>");
