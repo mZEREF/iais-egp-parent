@@ -141,7 +141,7 @@
     function officerReSchedulingClear() {
         $('#inspWorkGroup option:first').prop('selected', 'selected');
         $('#inspectorName option:first').prop('selected', 'selected');
-        $("#appComPoolSelect .current").text("Please Select");
+        $("#officersReSchSearch .current").text("Please Select");
     }
 
     function officerReSchedulingSubmit(action){
