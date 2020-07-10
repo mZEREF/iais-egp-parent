@@ -6,14 +6,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * PaginationHandler
@@ -359,7 +357,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         if (allData != null && allData.size() > 0) {
             for (int i = allData.size() - 1; i >= 0; i--) {
                 PageRecords<T> pr = allData.get(i);
-                if (pr.checked) {
+                if (pr.isChecked()) {
                     allData.remove(i);
                 }
             }
@@ -379,7 +377,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     public ArrayList<T> getAllCheckedData() {
         ArrayList<T> list = IaisCommonUtils.genNewArrayList();
         for (PageRecords<T> pr : allData) {
-            if (pr.checked) {
+            if (pr.isChecked()) {
                 list.add(pr.getRecord());
             }
         }
@@ -390,7 +388,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     public ArrayList<T> getDisplayCheckedData() {
         ArrayList<T> list = IaisCommonUtils.genNewArrayList();
         for (PageRecords<T> pr : displayData) {
-            if (pr.checked) {
+            if (pr.isChecked()) {
                 list.add(pr.getRecord());
             }
         }
@@ -406,7 +404,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
             sb.append(" onclick=\"javascript:checkAllMemoryCheck('").append(paginationDiv).append("');\"");
             boolean allChecked = !displayData.isEmpty();
             for (PageRecords<T> pr : displayData) {
-                if (!pr.checked) {
+                if (!pr.isChecked()) {
                     allChecked = false;
                     break;
                 }
@@ -439,33 +437,4 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", null);
     }
 
-    public static class PageRecords<T extends Serializable> implements Serializable {
-        private static final long serialVersionUID = 6003157429959104172L;
-
-        private boolean checked;
-        private long id;
-        private T record;
-
-        private PageRecords(T obj) {
-            SecureRandom number = new SecureRandom();
-            id = number.nextLong();
-            this.record = obj;
-        }
-        public boolean isChecked() {
-            return checked;
-        }
-        public long getId() {
-            return id;
-        }
-        public void setId(long id) {
-            this.id = id;
-        }
-        public void setChecked(boolean checked) {
-            this.checked = checked;
-        }
-        public T getRecord() {
-            return record;
-        }
-
-    }
 }
