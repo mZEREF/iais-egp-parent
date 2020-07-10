@@ -636,6 +636,7 @@ public class LicenceApproveBatchjob {
                 }
                 List<ApplicationDto> applicationDtos = getApplicationDtos(applicationListDtos);
                 ApplicationDto firstApplicationDto = applicationDtos.get(0);
+                String applicationType = firstApplicationDto.getApplicationType();
                 //to check this applicaiton is approve
                 //get recommedation logic
                 AppPremisesRecommendationDto appPremisesRecommendationDto = getAppPremisesRecommendationDto(applicationListDtos);
@@ -648,7 +649,7 @@ public class LicenceApproveBatchjob {
                     break;
                 }
                 String originLicenceId = firstApplicationDto.getOriginLicenceId();
-                LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
+                LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId,applicationType);
                 log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
                 if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(firstApplicationDto.getApplicationType())){
                     superLicDto.setOriginLicenceDto(originLicenceDto);
@@ -828,13 +829,17 @@ public class LicenceApproveBatchjob {
     }
 
 
-    private LicenceDto deleteOriginLicenceDto(String organizationId) {
+    private LicenceDto deleteOriginLicenceDto(String organizationId,String appType) {
         LicenceDto result = null;
         if (!StringUtil.isEmpty(organizationId)) {
             result = licenceService.getLicenceDto(organizationId);
             if (result != null) {
-                result.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
-                log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> active: " + organizationId));
+                if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)){
+                    result.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
+                }else {
+                    result.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+                    log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> active: " + organizationId));
+                }
             }else {
                 result = licenceService.getCeasedGroupLicDto(organizationId);
                 log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> ceased:" + organizationId));
@@ -934,7 +939,8 @@ public class LicenceApproveBatchjob {
 //                    }
                 }
                 String originLicenceId = applicationDto.getOriginLicenceId();
-                LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId);
+                String applicationType = applicationDto.getApplicationType();
+                LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId,applicationType);
                 log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
                 if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
                     superLicDto.setOriginLicenceDto(originLicenceDto);
@@ -1442,18 +1448,19 @@ public class LicenceApproveBatchjob {
             }
             //ceased    weilu
             try {
+               // G/20/0107/01/CLB/001/205
                 String licenceNo = originLicenceDto.getLicenceNo();
                 String[] split = licenceNo.split("/");
                 if(split.length>5){
                     String runningNoS = split[5];
-                    int runningNoI = Integer.parseInt(runningNoS);
-                    String runningNo = String.valueOf(runningNoI + 1);
-                    licenceDto.setCesedLicNo(runningNo);
+                    Integer runningNoI = Integer.parseInt(runningNoS);
+                    String s = seqNumber(runningNoI+1, 3);
+                    String ceasedLicNo = split[0]+"/"+split[1]+"/"+split[2]+"/"+split[3]+"/"+split[4]+"/"+s+"/"+split[6];
+                    licenceDto.setCesedLicNo(ceasedLicNo);
                 }
             }catch (Exception e){
                 log.info(StringUtil.changeForLog("============ceased licNo=================="));
             }
-
         } else {
             if (applicationGroupDto != null) {
                 Date startDate = null;
@@ -1860,5 +1867,15 @@ public class LicenceApproveBatchjob {
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         interMessageDto.setMaskParams(maskParams);
         inboxMsgService.saveInterMessage(interMessageDto);
+    }
+    private synchronized String seqNumber(Integer number ,Integer length){
+        StringBuilder strB=new StringBuilder();
+        String numStr = number.toString();
+        char zero = "0".charAt(0);
+        for(int i=0;i<length-numStr.length();i++){
+            strB.append(zero);
+        }
+        strB.append(numStr);
+        return strB.toString();
     }
 }
