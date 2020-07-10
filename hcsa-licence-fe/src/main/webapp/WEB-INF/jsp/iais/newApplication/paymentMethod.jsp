@@ -36,7 +36,7 @@
     </div>
     <divc class="col-xs-3">
         <%--<img src="/hcsa-licence-web/img/PereOceanGIRO.png" width="66" height="25" alt="GIRO">--%>
-        <img src="<%=webroot1%>img/PereOceanGIRO.png" width="36" height="30" alt="GIRO">
+        <img src="<%=webroot1%>img/PereOceanGIRO.png" width="66" height="25" alt="GIRO">
     </divc>
 </div>
 <div class="col-xs-12">
