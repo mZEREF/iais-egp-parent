@@ -579,10 +579,10 @@ public class BlastManagementDelegator {
     }
 
     public void auditTrial(BaseProcessClass bpc){
-        String id =  ParamUtil.getString(bpc.request, "editBlast");
+        String msgid =  ParamUtil.getString(bpc.request, "editBlast");
         SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
-        auditSearchParam.setSort("history_id", SearchParam.ASCENDING);
-        auditSearchParam.addFilter("refNum", id,true);
+        auditSearchParam.setSort("sent_time", SearchParam.ASCENDING);
+        auditSearchParam.addFilter("client_query_code", msgid,true);
         CrudHelper.doPaging(auditSearchParam,bpc.request);
         QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
         SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
@@ -598,6 +598,23 @@ public class BlastManagementDelegator {
         int minute = cal.get(Calendar.MINUTE);
         blastManagementDto.setMM(String.valueOf(minute));
         blastManagementDto.setHH(String.valueOf(hour));
+
+        if(EMAIL.equals(blastManagementDto.getMode())) {
+            String fileName = "";
+            StringBuilder stringBuilder = new StringBuilder();
+            if (blastManagementDto.getAttachmentDtos() != null && blastManagementDto.getAttachmentDtos().size() > 0) {
+                for (AttachmentDto item : blastManagementDto.getAttachmentDtos()
+                ) {
+                    stringBuilder.append(item.getDocName()).append(',');
+                }
+                fileName = stringBuilder.substring(0, stringBuilder.length() - 1);
+            }
+            if (StringUtil.isEmpty(fileName)) {
+                ParamUtil.setRequestAttr(bpc.request, "fileName", "N/A");
+            } else {
+                ParamUtil.setRequestAttr(bpc.request, "fileName", fileName);
+            }
+        }
         ParamUtil.setRequestAttr(bpc.request,"edit",blastManagementDto);
     }
 

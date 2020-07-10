@@ -53,7 +53,14 @@
                                         <c:forEach var="item" items="${SearchResult.rows}" varStatus="status">
                                             <tr style="display: table-row;">
                                                 <td>
-                                                    <p><c:out value="${item.type}"/></p>
+                                                    <p><c:choose>
+                                                        <c:when test="${item.type == 1}">
+                                                            Email
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            SMS
+                                                        </c:otherwise>
+                                                    </c:choose></p>
                                                 </td>
                                                 <td>
                                                     <p><c:out value="${item.recipient}"/></p>
@@ -65,7 +72,7 @@
                                                     <p><c:out value="${item.subject}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><c:out value="${item.content}"/></p>
+                                                    <div class="panel-body"><c:out value="${item.content}"/></div>
                                                 </td>
                                                 <td>
                                                     <p><c:out value="${item.numberAttempts}"/></p>
@@ -86,6 +93,11 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -93,3 +105,10 @@
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+
+<script type="text/javascript">
+    $("#back").click(function () {
+        $("#crud_action_type_value").val("back")
+        SOP.Crud.cfxSubmit("mainForm");
+    })
+</script>

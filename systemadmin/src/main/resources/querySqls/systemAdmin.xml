@@ -437,7 +437,7 @@
 
     <sql key="queryBlastManagementList"  remarks="blast management list">
         <![CDATA[
-            SELECT T1.ID,T1.MSG_CONTENT,T1.SUBJECT,T1.MSG_NAME,T2.DISTRIBUTION_NAME,T1.DELIVERY_MODE,T1.SCHEDULE_SEND_DATE,
+            SELECT T1.ID,T1.MSG_CONTENT,T1.MESSAGE_ID,T1.SUBJECT,T1.MSG_NAME,T2.DISTRIBUTION_NAME,T1.DELIVERY_MODE,T1.SCHEDULE_SEND_DATE,
             T1.ACTUAL_SEND_DATE,T1.STATUS,SUBSTRING(DOC_NAME,1, LEN(DOC_NAME) - 1) DOC_NAME,T1.CREATED_BY,T1.CREATED_DT
             FROM email_sms_blast T1
             LEFT JOIN distribution T2 ON T1.DISTRIBUTION_ID = T2.ID
@@ -461,13 +461,21 @@
     <sql key="audit"  remarks="audit">
         <![CDATA[
             SELECT
-            T1.notification_id,T3.history_id,T1.notification_type,T1.recipient,T1.sender,T1.subject,T1.content,T1.number_of_attempts,
+            T1.notification_id,T3.history_id,T1.notification_type,SUBSTRING(RECIPIENT_VALUE_ALL,1, LEN(RECIPIENT_VALUE_ALL) - 1) recipient,T1.sender,T1.subject,T1.content,T1.number_of_attempts,
             T2.file_name,T3.log_msg,T3.sent_time
             FROM notification T1
             left JOIN notification_annex T2 ON T1.REQUEST_REF_NO = T2.request_ref_num
             left JOIN notification_history T3 ON T1.notification_id = T3.notification_id
+            LEFT JOIN notification_recipient  ON notification_recipient.notification_id = T1.notification_id
+             CROSS APPLY
+			(
+				SELECT notification_recipient.RECIPIENT_VALUE + ', '
+				FROM notification_recipient
+				WHERE notification_recipient.notification_id = T1.notification_id
+				FOR XML PATH('')
+			) D (RECIPIENT_VALUE_ALL)
             WHERE  1 = 1
-            <#if refNum??> AND T1.REQUEST_REF_NO =:refNum</#if>
+            <#if client_query_code??> AND T1.client_query_code =:client_query_code</#if>
         ]]>
     </sql>
 

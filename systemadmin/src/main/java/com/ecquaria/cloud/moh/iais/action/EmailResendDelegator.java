@@ -70,20 +70,21 @@ public class EmailResendDelegator {
             searchParam.setPageNo(1);
             searchParam.setSort("sent_time", SearchParam.ASCENDING);
         }
-
-        StringBuilder sb = new StringBuilder("(");
-        int i =0;
-        for (BlastManagementDto item: blastManagementDtos) {
-            sb.append(":itemKey").append(i).append(',');
-            i++;
-        }
-        String inSql = sb.substring(0, sb.length() - 1) + ")";
-        searchParam.addParam("msg_id_in", inSql);
-        i = 0;
-        for (BlastManagementDto item: blastManagementDtos) {
-            searchParam.addFilter("itemKey" + i,
-                    item.getMessageId());
-            i ++;
+        if(!(blastManagementDtos == null || blastManagementDtos.size() == 0)){
+            StringBuilder sb = new StringBuilder("(");
+            int i =0;
+            for (BlastManagementDto item: blastManagementDtos) {
+                sb.append(":itemKey").append(i).append(',');
+                i++;
+            }
+            String inSql = sb.substring(0, sb.length() - 1) + ")";
+            searchParam.addParam("msg_id_in", inSql);
+            i = 0;
+            for (BlastManagementDto item: blastManagementDtos) {
+                searchParam.addFilter("itemKey" + i,
+                        item.getMessageId());
+                i ++;
+            }
         }
 
         QueryHelp.setMainSql("systemAdmin", "failEmail",searchParam);
@@ -218,6 +219,8 @@ public class EmailResendDelegator {
         if(errMap.isEmpty()){
             blastManagementDto.setActual(null);
             blastManagementListService.setSchedule(blastManagementDto);
+            String id = (String) ParamUtil.getSessionAttr(bpc.request,"notiId");
+            blastManagementListService.setEmailResend(id);
             ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",null);
             ParamUtil.setRequestAttr(bpc.request,"crud_action","suc");
         }else{
@@ -228,9 +231,6 @@ public class EmailResendDelegator {
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(bpc.request,"crud_action","err");
         }
-
-        String id = (String) ParamUtil.getSessionAttr(bpc.request,"notiId");
-        blastManagementListService.setEmailResend(id);
 
     }
 

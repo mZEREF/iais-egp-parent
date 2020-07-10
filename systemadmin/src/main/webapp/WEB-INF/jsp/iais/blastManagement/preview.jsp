@@ -27,36 +27,67 @@
                         </div>
                         <div class="form-group">
                             <iais:field value="Message ID"/>
-                                <div class="col-xs-4 col-sm-4 col-md-4">
-                                    <label >${edit.messageId}</label>
-                                </div>
+                                    <p class="col-xs-4 col-md-4 control-label">${edit.messageId}</p>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Message Name" required="true"/>
-                                    <label  class="col-xs-0 col-md-4 control-label">${edit.getMsgName()}</label>
+                            <iais:field value="Message Name" />
+                                    <p  class="col-xs-4 col-md-4 control-label">${edit.getMsgName()}</p>
                         </div>
 
                         <div class="form-group">
-                            <iais:field value="Mode of Delivery" required="true"/>
-                                    <label  class="col-xs-0 col-md-4 control-label">${edit.mode}</label>
+                            <iais:field value="Mode of Delivery" />
+                                    <p  class="col-xs-4 col-md-4 control-label">${edit.mode}</p>
                         </div>
 
                         <div class="form-group">
-                            <iais:field value="Send date and time" required="true"/>
-                                    <label  class="col-xs-0 col-md-4 control-label"><fmt:formatDate value="${edit.schedule}"
-                                                           pattern="dd/MM/yyyy HH:mm:ss"/></label>
+                            <iais:field value="Send date and time" />
+                                    <p  class="col-xs-4 col-md-4 control-label"><fmt:formatDate value="${edit.schedule}"
+                                                           pattern="dd/MM/yyyy HH:mm:ss"/></p>
                         </div>
                         <div class="form-group">
-                            <iais:field value="Status" required="true"/>
-                                    <label class="col-xs-0 col-md-4 control-label"><iais:code code="${edit.status}"></iais:code> </label>
+                            <iais:field value="Status" />
+                                    <p class="col-xs-4 col-md-4 control-label"><iais:code code="${edit.status}"></iais:code> </p>
                         </div>
 
                         <c:choose>
                             <c:when test='${"Email".equals(edit.mode)}'>
+                                <div class="form-group">
+                                    <iais:field value="Subject" />
+                                        <p class="col-xs-4 col-md-4 control-label">${edit.getSubject()}</p>
+                                </div>
 
+                                <div class="form-group">
+                                    <iais:field value="Content" />
+                                    <div class="col-xs-8 col-md-8 panel-body">
+                                                ${edit.getMsgContent()}
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <iais:field value="File" />
+                                        <p class="col-xs-4 col-md-4 control-label"><c:out value="${fileName}"/></p>
+                                </div>
+
+                                <div class="form-group">
+                                    <iais:field value="Distribution Name" />
+                                        <p class="col-xs-4 col-md-4 control-label">${edit.distributionName}</p>
+                                </div>
                             </c:when>
                             <c:otherwise>
+                                <div class="form-group">
+                                    <iais:field value="Header"/>
+                                    <p class="col-xs-4 col-md-4 control-label" >${edit.getSubject()}</p>
+                                </div>
 
+                                <div class="form-group">
+                                    <iais:field value="Distribution Name" />
+                                        <p class="col-xs-4 col-md-4 control-label">${edit.distributionName}</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <iais:field value="Text" />
+                                            <p  class="col-xs-8 col-md-8 control-label">${edit.msgContent}</p>
+                                </div>
                             </c:otherwise>
                         </c:choose>
                     </div>
@@ -75,28 +106,8 @@
 
 
 <script type="text/javascript">
-    $('#saveDis').click(function () {
-        $("#crud_action_type_value").val("next")
-        SOP.Crud.cfxSubmit("mainForm");
-    });
-
     $("#back").click(function () {
         $("#crud_action_type_value").val("back")
         SOP.Crud.cfxSubmit("mainForm");
     })
-
-    function changeFlow(mode) {
-        if(mode == "SMS"){
-            $("#smsFlow").addClass("flowDisplay");
-            $("#smsFlow").removeClass("flowHidden");
-            $("#emailFlow").addClass("flowHidden");
-            $("#emailFlow").removeClass("flowDisplay");
-        }else{
-            $("#smsFlow").addClass("flowHidden");
-            $("#smsFlow").removeClass("flowDisplay");
-            $("#emailFlow").addClass("flowDisplay");
-            $("#emailFlow").removeClass("flowHidden");
-        }
-    }
-
 </script>

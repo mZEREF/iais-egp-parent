@@ -110,7 +110,7 @@
                                                         value="${(status.index + 1) + (blastSearchParam.pageNo - 1) * blastSearchParam.pageSize}"/></p>
                                             </td>
                                             <td>
-                                                <p><a onclick="audit('${item.id}')"><c:out value="${item.msgName}"/></a>
+                                                <p><a onclick="preview('${item.id}')"><c:out value="${item.msgName}"/></a>
                                                 </p>
                                             </td>
                                             <td>
@@ -134,7 +134,7 @@
                                             <td>
                                                 <p>
                                                     <a onclick="edit('${item.id}')">Edit</a>
-                                                    <a onclick="preview('${item.id}')">Preview</a>
+                                                    <a onclick="audit('${item.messageId}')">Audit</a>
                                                 </p>
                                             </td>
                                         </tr>
