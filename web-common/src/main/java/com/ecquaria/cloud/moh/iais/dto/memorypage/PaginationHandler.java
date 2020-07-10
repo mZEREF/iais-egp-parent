@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+import com.hazelcast.util.JsonUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,7 +54,8 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.pageSize = SysParamUtil.getDefaultPageSize();
         this.currentPageNo = 1 ;
         doPaging();
-        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
+        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr",
+                JsonUtil.toJson(this));
         checkAllHtml();
     }
 
@@ -64,7 +66,8 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         this.pageSize = SysParamUtil.getDefaultPageSize();
         this.currentPageNo = 1 ;
         doPaging();
-        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
+        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr",
+                JsonUtil.toJson(this));
         checkAllHtml();
     }
 
@@ -75,7 +78,8 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         setAllData(allData);
         this.currentPageNo = 1 ;
         doPaging();
-        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr", this);
+        ParamUtil.setSessionAttr(MiscUtil.getCurrentRequest(), paginationDiv + "__SessionAttr",
+                JsonUtil.toJson(this));
         checkAllHtml();
     }
 
