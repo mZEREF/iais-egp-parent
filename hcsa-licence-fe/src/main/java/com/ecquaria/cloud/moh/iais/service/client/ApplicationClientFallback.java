@@ -201,6 +201,14 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
+    public FeignResponseEntity<AppSubmissionDto> gainSubmissionDto(String appNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<AppGrpPremisesEntityDto> getAppGrpPremise(String appPreId){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
