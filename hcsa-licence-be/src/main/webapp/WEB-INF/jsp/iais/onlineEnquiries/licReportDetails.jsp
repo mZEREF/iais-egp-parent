@@ -111,6 +111,45 @@
                                         </div>
                                     </div>
                                 </div>
+                                <c:if test="${empty organizationLicDto.licenseeKeyApptPersonDtos}">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading"><strong>Board Members</strong></div>
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="table-gp">
+                                                    <table class="table table-bordered">
+                                                        <tbody>
+                                                        <tr>
+                                                            <td class="col-xs-6" align="right">Name</td>
+                                                            <td class="col-xs-6">&nbsp;Tan Ah Kow</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Salutation</td>
+                                                            <td>&nbsp;Dr</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">ID Type</td>
+                                                            <td>&nbsp;NRIC</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">ID No</td>
+                                                            <td>&nbsp;S123456789I</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Designation</td>
+                                                            <td>&nbsp;Director</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="right">Designation Appointment Date</td>
+                                                            <td>&nbsp;01/01/2020</td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:if>
 
                                 <c:forEach var="member" items="${organizationLicDto.licenseeKeyApptPersonDtos}" varStatus="status">
 

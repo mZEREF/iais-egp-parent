@@ -127,7 +127,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td align="right">Salutation</td>
-                                                            <td>&nbsp;DR</td>
+                                                            <td>&nbsp;Dr</td>
                                                         </tr>
                                                         <tr>
                                                             <td align="right">ID Type</td>

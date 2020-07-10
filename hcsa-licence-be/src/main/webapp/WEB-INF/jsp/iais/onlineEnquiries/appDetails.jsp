@@ -131,39 +131,33 @@
                                 <div class="panel panel-default">
                                     <!-- Default panel contents -->
                                     <div class="panel-heading"><strong>Key Roles</strong></div>
-                                    <div class="gray-content-box" style="background-color:#FFFFFF">
-                                        <div class="license-info-gp">
-                                            <div class="license-info-row">
-                                                <div class="licnese-info">
-                                                    <p>Licensee: <strong>${licenseeDto.name}</strong> </p>
-                                                </div>
 
-                                            </div>
-                                            <div class="license-info-row">
-                                                <div class="licnese-info">
-                                                    <p>Authorised User 1: <strong>Mo Delan</strong> </p>
-                                                </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="table-gp">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="col-xs-6" align="right">Licensee Name (Company)</td>
+                                                        <td class="col-xs-6">&nbsp;${licenseeDto.name}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Authorised Person Name</td>
+                                                        <td>&nbsp;Mo Delan</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Authorised Person ID</td>
+                                                        <td>&nbsp;S0002491J (NRIC)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Authorised Person Name</td>
+                                                        <td>&nbsp;Shun Qiu</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td align="right">Authorised Person ID</td>
+                                                        <td>&nbsp;S7290054E (NRIC)</td>
+                                                    </tr>
 
-                                            </div>
-                                            <div class="license-info-row">
-                                                <div class="licnese-info">
-                                                    <p>Authorised User 2: <strong>Linda Tan</strong> </p>
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-<%--                                    <div class="row">--%>
-<%--                                        <div class="col-xs-12">--%>
-<%--                                            <div class="table-gp">--%>
-<%--                                                <table class="table table-bordered">--%>
-<%--                                                    <tbody>--%>
-<%--                                                    <tr>--%>
-<%--                                                        <td class="col-xs-6" align="right">Licensee Name (Company)</td>--%>
-<%--                                                        <td class="col-xs-6">&nbsp;${licenseeDto.name}</td>--%>
-<%--                                                    </tr>--%>
-<%--                                                    --%>
 <%--                                                    <c:forEach var="person" items="${licenseeKeyApptPersonDtos}">--%>
 <%--                                                        <tr>--%>
 <%--                                                            <td align="right">Authorised Person Name</td>--%>
@@ -174,11 +168,11 @@
 <%--                                                            <td>&nbsp;${person.idNo} (${person.idType})</td>--%>
 <%--                                                        </tr>--%>
 <%--                                                    </c:forEach>--%>
-<%--                                                    </tbody>--%>
-<%--                                                </table>--%>
-<%--                                            </div>--%>
-<%--                                        </div>--%>
-<%--                                    </div>--%>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

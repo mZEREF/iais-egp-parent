@@ -140,8 +140,8 @@
                                         <span style="font-weight:normal;" id="error_expiry_date" name="iaisErrorMsg" class="error-msg" ></span>
                                     </div >
                                 </iais:row>
-
-                            </iais:section>
+                                </iais:section>
+                            </div>
                         </div>
                     </div>
                     </c:if>

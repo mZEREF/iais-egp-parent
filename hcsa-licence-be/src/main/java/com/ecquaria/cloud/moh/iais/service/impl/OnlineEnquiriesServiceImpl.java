@@ -361,16 +361,21 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 svcName = hcsaServiceDto.getSvcName();
             }
         }
-        HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
-        hcsaRiskScoreDto.setAppType(applicationType);
-        hcsaRiskScoreDto.setLicId(licenceId);
-        List<ApplicationDto> applicationDtos = new ArrayList<>(1);
-        applicationDtos.add(applicationDto);
-        hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
-        hcsaRiskScoreDto.setServiceId(serviceId);
-        HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
-        String riskLevel = entity.getRiskLevel();
-        inspectionReportDto.setRiskLevel(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
+        try{
+            HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+            hcsaRiskScoreDto.setAppType(applicationType);
+            hcsaRiskScoreDto.setLicId(licenceId);
+            List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+            applicationDtos.add(applicationDto);
+            hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+            hcsaRiskScoreDto.setServiceId(serviceId);
+            HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+            String riskLevel = entity.getRiskLevel();
+            inspectionReportDto.setRiskLevel(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
+        }catch (Exception e){
+            inspectionReportDto.setRiskLevel("-");
+            log.info(e.getMessage(),e);
+        }
 
         List<HcsaSvcSubtypeOrSubsumedDto> subsumedDtos = hcsaConfigClient.listSubCorrelationFooReport(serviceId).getEntity();
         List<String> subsumedServices = IaisCommonUtils.genNewArrayList();
