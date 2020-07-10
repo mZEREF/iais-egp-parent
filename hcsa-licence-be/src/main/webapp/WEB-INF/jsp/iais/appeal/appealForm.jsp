@@ -3,14 +3,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div class="main-content">
+  <div class="container">
   <form id="mainForm" enctype="multipart/form-data" style="margin-left: 15%" class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
     <c:set value="${applicationViewDto.applicationDto}" var="applicationDto"/>
-
   <div class="form-group">
     <div class="col-xs-12 col-md-10" style="margin-left: 1%">
+      <h1 style="border-bottom: none;margin-top:60px;">Appeal Form</h1>
       <label style="font-size: 25px">You are appealing for:</label>
     </div>
 
@@ -95,10 +96,10 @@
         <div class="document-upload-list">
           <div class="file-upload-gp">
             <div class="fileContent col-xs-2">
-              <c:if test="${!empty appealSpecialDocDto}">
-                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${appealSpecialDocDto.fileRepoId}"/>&fileRepoName=${appealSpecialDocDto.docName}.${appealSpecialDocDto.docType}"
+              <c:if test="${not empty appealSpecialDocDto}">
+                <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo&fileRo=<iais:mask name="fileRo"  value="${appealSpecialDocDto.fileRepoId}"/>&fileRepoName=${appealSpecialDocDto.docName}"
                    title="Download" class="downloadFile"><c:out
-                        value="${appealSpecialDocDto.docName}.${appealSpecialDocDto.docType}"></c:out></a>
+                        value="${appealSpecialDocDto.docName}"></c:out></a>
               </c:if>
             </div>
           </div>
@@ -111,6 +112,7 @@
     <br>
     <br> <br> <br>
   </form>
+  </div>
 </div>
 <style>
   .mandatory{

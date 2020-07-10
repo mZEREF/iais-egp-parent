@@ -15,15 +15,15 @@
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-<%--  <c:set value="${applicationViewDto.applicationDto}" var="applicationDto"/>--%>
-<%--  <c:choose>--%>
-<%--    <c:when test="${applicationDto.applicationType == 'APTY001'}">--%>
-<%--      <%@include file="../appeal/appealForm.jsp"%>--%>
-<%--    </c:when>--%>
-<%--    <c:otherwise>--%>
+  <c:set value="${applicationViewDto.applicationDto}" var="applicationDto"/>
+  <c:choose>
+    <c:when test="${applicationDto.applicationType == 'APTY001'}">
+      <%@include file="../appeal/appealForm.jsp"%>
+    </c:when>
+    <c:otherwise>
       <%@include file="viewPremises.jsp"%>
-<%--    </c:otherwise>--%>
-<%--  </c:choose>--%>
+    </c:otherwise>
+  </c:choose>
 </form>
 <style>
 
