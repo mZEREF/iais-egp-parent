@@ -17,10 +17,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptAppInfoShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -35,12 +37,14 @@ import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -83,6 +87,12 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Autowired
     private AppointmentClient appointmentClient;
+
+    @Value("${iais.email.sender}")
+    private String mailSender;
+
+    @Autowired
+    private EmailClient emailClient;
 
     @Override
     public List<SelectOption> getInspWorkGroupByLogin(LoginContext loginContext, ReschedulingOfficerDto reschedulingOfficerDto) {
@@ -238,6 +248,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
     @Override
     public void reScheduleRoutingTask(ReschedulingOfficerDto reschedulingOfficerDto) {
         String appNo = reschedulingOfficerDto.getAssignNo();
+        ApplicationDto appDto = getApplicationByAppNo(appNo);
+        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(appDto.getAppGrpId()).getEntity();
+        String licenseeId = applicationGroupDto.getLicenseeId();
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
         if(samePremisesAppMap != null) {
@@ -265,6 +278,17 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
             reschedulingOfficerDto.setTaskDtos(taskDtoList);
             reschedulingOfficerDto.setAuditTrailDto(auditTrailDto);
             inspectionTaskClient.reScheduleSaveRouteData(reschedulingOfficerDto);
+            try {
+                EmailDto emailDto = new EmailDto();
+                emailDto.setContent("Please contact the respective MOH officer to reschedule your appointment.");
+                emailDto.setSubject("MOH IAIS - Moh Officer Rescheduling");
+                emailDto.setSender(mailSender);
+                emailDto.setClientQueryCode(appDto.getId());
+                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                emailClient.sendNotification(emailDto);
+            } catch (Exception e) {
+                log.info(e.getMessage(), e);
+            }
         }
     }
 

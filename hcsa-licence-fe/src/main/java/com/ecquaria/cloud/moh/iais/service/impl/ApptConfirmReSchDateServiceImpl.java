@@ -242,7 +242,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         } else if (ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_PENDING_FE.equals(appStatus)) {
             EmailDto emailDto = new EmailDto();
             emailDto.setContent("Please contact the respective MOH officer to reschedule your appointment.");
-            emailDto.setSubject("MOH IAIS - Applicant Rescheduling Rejected");
+            emailDto.setSubject("MOH IAIS - Applicant Rescheduling Rejected For Moh Officer(s)");
             emailDto.setSender(mailSender);
             emailDto.setClientQueryCode(applicationDto.getId());
             processReSchedulingDto.setEmailDto(emailDto);
