@@ -210,9 +210,9 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         sb.append("<script type=\"text/javascript\">");
         sb.append("$(\"#pageJumpNoText\").keyup(function(){var str=$(this).val();var newstr='';");
         sb.append("for(i=0;i<str.length;i++){var j=str.charCodeAt(i);if(j>47&&j<58){newstr+=String.fromCharCode(j);}}");
-        sb.append("$(this).val(newstr);});");
-        sb.append("function ").append(jumpPageFuncName).append("(){");
-        sb.append("var pageNo = $(\"#").append(pageNumTextName).append("\").val();");
+        sb.append("$(this).val(newstr);");
+        sb.append(jumpPageFuncName).append("(newstr);});");
+        sb.append("function ").append(jumpPageFuncName).append("(pageNo){");
         sb.append("var reg = /^\\d+$/;");
         sb.append("if(!reg.test(pageNo)){");
         sb.append("$(\"#").append(pageNumTextName).append("\").val('');");
