@@ -134,4 +134,13 @@ public interface ApptInspectionDateService {
       * @Descripation: saveAuditInspectionDate
       */
     void saveAuditInspectionDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/10
+      * @Param: apptInspectionDateDto
+      * @return: void
+      * @Descripation: saveAppUserCorrelation
+      */
+    void saveAppUserCorrelation(ApptInspectionDateDto apptInspectionDateDto);
 }

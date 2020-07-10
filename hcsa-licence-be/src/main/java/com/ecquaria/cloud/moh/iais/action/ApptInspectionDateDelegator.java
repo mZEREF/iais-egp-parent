@@ -268,6 +268,7 @@ public class ApptInspectionDateDelegator {
                 apptInspectionDateService.saveSystemInspectionDate(apptInspectionDateDto, applicationViewDto);
             }
         }
+        apptInspectionDateService.saveAppUserCorrelation(apptInspectionDateDto);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", apptInspectionDateDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
     }

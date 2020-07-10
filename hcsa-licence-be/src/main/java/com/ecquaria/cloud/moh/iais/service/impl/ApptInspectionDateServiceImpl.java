@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentUserDto;
@@ -334,6 +335,23 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             taskDtoList.add(tDto);
         }
         taskService.createTasks(taskDtoList);
+    }
+
+    @Override
+    public void saveAppUserCorrelation(ApptInspectionDateDto apptInspectionDateDto) {
+        List<TaskDto> taskDtos = apptInspectionDateDto.getTaskDtos();
+        if(!IaisCommonUtils.isEmpty(taskDtos)){
+            List<AppPremInspCorrelationDto> appPremInspCorrelationDtos = IaisCommonUtils.genNewArrayList();
+            for(TaskDto taskDto : taskDtos){
+                AppPremInspCorrelationDto appPremInspCorrelationDto = new AppPremInspCorrelationDto();
+                appPremInspCorrelationDto.setId(null);
+                appPremInspCorrelationDto.setUserId(taskDto.getUserId());
+                appPremInspCorrelationDto.setApplicationNo(taskDto.getApplicationNo());
+                appPremInspCorrelationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                appPremInspCorrelationDtos.add(appPremInspCorrelationDto);
+            }
+            inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtos);
+        }
     }
 
     private String getActionButtonFlagByTasks(List<TaskDto> taskDtos) {
