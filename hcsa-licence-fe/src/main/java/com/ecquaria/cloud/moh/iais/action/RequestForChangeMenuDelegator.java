@@ -515,6 +515,8 @@ public class RequestForChangeMenuDelegator {
         String licenseeId = loginContext.getLicenseeId();
         String psnTypeSearch = ParamUtil.getRequestString(bpc.request, "psnType");
         SearchParam searchParam = SearchResultHelper.getSearchParam(bpc.request, filterParameter, true);
+        searchParam.setPageSize(0);
+        searchParam.setPageNo(0);
         String personName = ParamUtil.getRequestString(bpc.request, "perName");
         if (!StringUtil.isEmpty(personName)) {
             searchParam.addFilter("personName", "%" + personName + "%", true);
