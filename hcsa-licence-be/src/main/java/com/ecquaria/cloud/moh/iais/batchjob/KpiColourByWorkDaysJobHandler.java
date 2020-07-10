@@ -139,7 +139,7 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
                     } else {
                         startDate = new Date();
                     }
-                    if(taskDto.getSlaDateCompleted() != null){
+                    if(tDto.getSlaDateCompleted() != null){
                         completeDate = tDto.getSlaDateCompleted();
                     } else {
                         completeDate = new Date();
