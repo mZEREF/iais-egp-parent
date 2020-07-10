@@ -78,7 +78,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		HttpServletRequest request = bpc.request;
 
 		String amo = fields.get(GatewayConstants.AMOUNT_KEY);
-		String payMethod = fields.get(GatewayConstants.PYMT_DESCRIPTION_KEY);
+		String payMethod = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get(GatewayConstants.SVCREF_NO);
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
 			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
@@ -145,11 +145,17 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 //				setReceiptStatus(status);
 				setPaymentTransStatus(status);
 //				String message = fields.get("vpc_Message");
+
+				String gateway_ref_no = fields.get(GatewayConstants.CPS_REFNO);
+				String input_charset = fields.get(GatewayConstants.INPUT_CHARSET);
+				String pymt_status = fields.get(GatewayConstants.PYMT_STATUS);
+				String ref_no = fields.get(GatewayConstants.SVCREF_NO);
+				String amount = fields.get(GatewayConstants.AMOUNT_KEY);
 				PaymentDto paymentDto = new PaymentDto();
-				paymentDto.setAmount(Double.parseDouble(fields.get(GatewayConstants.AMOUNT_KEY)));
-				paymentDto.setReqRefNo(fields.get(GatewayConstants.SVCREF_NO));
-				paymentDto.setInvoiceNo(fields.get(GatewayConstants.CPS_REFNO));
-				paymentDto.setPmtStatus(status);
+				paymentDto.setAmount(Double.parseDouble(amount));
+				paymentDto.setReqRefNo(ref_no);
+				paymentDto.setInvoiceNo(gateway_ref_no);
+				paymentDto.setPmtStatus(pymt_status);
 				PaymentDto paymentDtoSave = paymentClient.saveHcsaPayment(paymentDto).getEntity();
 
 				// update the data's status and time;
