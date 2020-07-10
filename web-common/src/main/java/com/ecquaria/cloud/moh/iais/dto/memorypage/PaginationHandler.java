@@ -128,7 +128,6 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
 
     public String generatePaginationHtml() {
         StringBuilder sb = new StringBuilder();
-        String pageNumTextName = "pageJumpNoText" + paginationDiv;
         String jumpPageFuncName = "jumpToPage" + paginationDiv;
         String functionParam = "('" + paginationDiv + "'," + checkType + ",";
 
@@ -144,7 +143,8 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         sb.append(" items");
         sb.append("<div class=\"form-group\">");
         sb.append("<div class=\"col-xs-12 col-md-3\">");
-        sb.append("<select class=\"table-select\" id = \"pageJumpNoPageSize\" name = \"pageJumpNoPageSize\" >");
+        sb.append("<select class=\"table-select\" id=\"memPageSize").append(paginationDiv);
+        sb.append("\" name=\"memPageSize").append(paginationDiv).append("\">");
         if (pageSizeDrop != null && pageSizeDrop.length > 0) {
             for (int siz : pageSizeDrop) {
                 if (pageSize == siz) {
@@ -208,21 +208,14 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         sb.append("</ul></div></div></div>");
 
         sb.append("<script type=\"text/javascript\">");
-        sb.append("$(\"#pageJumpNoText\").keyup(function(){var str=$(this).val();var newstr='';");
-        sb.append("for(i=0;i<str.length;i++){var j=str.charCodeAt(i);if(j>47&&j<58){newstr+=String.fromCharCode(j);}}");
-        sb.append("$(this).val(newstr);");
-        sb.append(jumpPageFuncName).append("(newstr);});");
         sb.append("function ").append(jumpPageFuncName).append("(pageNo){");
-        sb.append("var reg = /^\\d+$/;");
-        sb.append("if(!reg.test(pageNo)){");
-        sb.append("$(\"#").append(pageNumTextName).append("\").val('');");
-        sb.append( "return; ");
-        sb.append( '}');
         sb.append( "if(pageNo != ''){if(pageNo > ");
         sb.append(totalPage);
         sb.append("){pageNo=").append(totalPage).append(";}").append(" else if(pageNo < 1){");
         sb.append("pageNo=1;}");
         sb.append(JS_FUNCTION_NAME).append(functionParam).append("pageNo);}}");
+        sb.append("$('#").append("memPageSize").append(paginationDiv).append("').change(function() {");
+        sb.append("memoryPageSizeChange('").append(paginationDiv).append("', this.value);});");
         sb.append("</script>");
 
         this.paginationHtml = sb.toString();
