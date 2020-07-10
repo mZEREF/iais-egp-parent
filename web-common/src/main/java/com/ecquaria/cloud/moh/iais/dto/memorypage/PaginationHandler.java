@@ -9,8 +9,8 @@ import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -424,7 +424,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
 
     public void preLoadingPage() {
         @SuppressWarnings("unchecked")
-        Set<String> set = (Set<String>) ParamUtil.getRequestAttr(MiscUtil.getCurrentRequest(),
+        HashSet<String> set = (HashSet<String>) ParamUtil.getRequestAttr(MiscUtil.getCurrentRequest(),
                 "memoryPagingLoading__Flag_Attr");
         if (set == null) {
             set = IaisCommonUtils.genNewHashSet();
