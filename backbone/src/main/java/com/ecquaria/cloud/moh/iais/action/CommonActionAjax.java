@@ -26,12 +26,30 @@ public class CommonActionAjax {
     @RequestMapping(value="changeMemoryPage.do", method = RequestMethod.GET)
     public @ResponseBody Map<String,Object> changeMemoryPage(HttpServletRequest request,
                                    HttpServletResponse response)  {
-        Map<String,Object> map = new HashMap();
+
 
         int pageNo = ParamUtil.getInt(request, "pageNum", 1);
         String pageDiv = ParamUtil.getString(request, "pageDiv");
         String checkIdStr = ParamUtil.getString(request, "checkId");
         PaginationHandler<?> handler = (PaginationHandler<?>) ParamUtil.getSessionAttr(request, pageDiv + "__SessionAttr");
+
+        return changeMemoryPageImpl(pageNo, pageDiv, checkIdStr, handler);
+    }
+
+    @RequestMapping(value="changeMemoryPageSize.do", method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> changeMemoryPageSize(HttpServletRequest request,
+                                                             HttpServletResponse response)  {
+        String pageDiv = ParamUtil.getString(request, "pageDiv");
+        int pageSize = ParamUtil.getInt(request, "newSize");
+        PaginationHandler<?> handler = (PaginationHandler<?>) ParamUtil.getSessionAttr(request, pageDiv + "__SessionAttr");
+        handler.setPageSize(pageSize);
+        return changeMemoryPageImpl(1, pageDiv, null, handler);
+    }
+
+    private Map<String,Object> changeMemoryPageImpl(int pageNo, String pageDiv, String checkIdStr,
+                                                    PaginationHandler<?> handler) {
+        Map<String,Object> map = new HashMap();
+
         // Update Checked
         if (!StringUtil.isEmpty(checkIdStr) && handler.getDisplayData() != null && !handler.getDisplayData().isEmpty()) {
             String[] checkIds = checkIdStr.split(",");
