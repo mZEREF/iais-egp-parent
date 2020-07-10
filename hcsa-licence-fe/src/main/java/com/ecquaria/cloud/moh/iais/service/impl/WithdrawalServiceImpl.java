@@ -94,15 +94,17 @@ public class WithdrawalServiceImpl implements WithdrawalService {
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
         withdrawnDtoList.forEach(h -> {
             String licenseeId = h.getLicenseeId();
-            AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDto(h.getApplicationNo()).getEntity();
+            AppSubmissionDto appSubmissionDto = applicationClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
             transform(appSubmissionDto,licenseeId);
             AppSubmissionDto newAppSubmissionDto = applicationClient.saveSubmision(appSubmissionDto).getEntity();
+            List<ApplicationDto> applicationDtoList = newAppSubmissionDto.getApplicationDtos();
+            h.setNewApplicationId(applicationDtoList.get(0).getId());
             applicationClient.saveApps(newAppSubmissionDto).getEntity();
         });
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
             withdrawnDtoList.forEach(h -> {
-                AppSubmissionDto appSubmissionDto = applicationClient.getAppSubmissionDto(h.getApplicationNo()).getEntity();
+                AppSubmissionDto appSubmissionDto = applicationClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
                 if (appSubmissionDto != null){
                     String serviceId = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceId();
                     if (!StringUtil.isEmpty(serviceId)){
