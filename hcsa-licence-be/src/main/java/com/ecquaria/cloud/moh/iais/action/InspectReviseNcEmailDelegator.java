@@ -126,8 +126,10 @@ public class InspectReviseNcEmailDelegator {
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
         List<InspectionFillCheckListDto> commonList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
         InspectionFillCheckListDto commonDto = null;
+        List<InspectionFillCheckListDto> inspectionFillCheckListDtos = new ArrayList<>(2);
         if(commonList!=null && !commonList.isEmpty()){
             commonDto = commonList.get(0);
+            inspectionFillCheckListDtos.add(commonDto);
         }
         InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
         AdCheckListShowDto adchklDto =insepctionNcCheckListService.getAdhocCheckListDto(appPremCorrId);
@@ -139,6 +141,7 @@ public class InspectReviseNcEmailDelegator {
         //  change service checklist data
         if(serListDto != null){
             List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
+            inspectionFillCheckListDtos.addAll(fdtoList);
             if(fdtoList != null && fdtoList.size() >0){
                 for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList) {
                     insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
@@ -147,6 +150,9 @@ public class InspectReviseNcEmailDelegator {
         }
         //set num
         fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
+
+        //comparative data for sef and check list nc
+        fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
@@ -410,16 +416,21 @@ public class InspectReviseNcEmailDelegator {
 
     public InspectionFillCheckListDto getCommonDataFromPage(HttpServletRequest request){
         InspectionFillCheckListDto cDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,COM_DTO);
-        List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
-        for(InspectionCheckQuestionDto temp:checkListDtoList){
-            String answer = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrad");
-            String remark = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comremark");
-            String rectified = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrec");
-            temp.setRectified(!StringUtil.isEmpty(rectified)&&"No".equals(answer));
-            temp.setChkanswer(answer);
-            temp.setRemark(remark);
+        if(cDto!=null&&cDto.getCheckList()!=null&&!cDto.getCheckList().isEmpty()) {
+            List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
+            for (InspectionCheckQuestionDto temp : checkListDtoList) {
+                String answer = temp.getChkanswer();
+                if (!temp.isNcSelfAnswer()) {
+                    answer = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comrad");
+                    temp.setChkanswer(answer);
+                }
+                String remark = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comremark");
+                String rectified = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comrec");
+                temp.setRectified(!StringUtil.isEmpty(rectified) && "No".equals(answer));
+                temp.setRemark(remark);
+            }
+            fillupChklistService.fillInspectionFillCheckListDto(cDto);
         }
-        fillupChklistService.fillInspectionFillCheckListDto(cDto);
         return cDto;
     }
 
@@ -712,7 +723,11 @@ public class InspectReviseNcEmailDelegator {
     }
 
     public void getServiceData(InspectionCheckQuestionDto temp,InspectionFillCheckListDto fdto,HttpServletRequest request){
-        String answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rad");
+        String answer = temp.getChkanswer();
+        if(!temp.isNcSelfAnswer()){
+            answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rad");
+            temp.setChkanswer(answer);
+        }
         String remark = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"remark");
         String rectified = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rec");
         if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
@@ -720,7 +735,6 @@ public class InspectReviseNcEmailDelegator {
         }else{
             temp.setRectified(false);
         }
-        temp.setChkanswer(answer);
         temp.setRemark(remark);
     }
 

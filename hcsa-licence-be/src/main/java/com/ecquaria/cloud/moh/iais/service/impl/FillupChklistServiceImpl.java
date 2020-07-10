@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.ChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.*;
@@ -1806,4 +1807,80 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             }
         }
     }
+
+    @Override
+    public void changeDataForNc( List<InspectionFillCheckListDto> inspectionFillCheckListDtos,String refNo){
+        if(IaisCommonUtils.isEmpty(inspectionFillCheckListDtos)){
+            return;
+        }
+        List<SelfAssessment> selfAssessments = BeSelfChecklistHelper.receiveSelfAssessmentDataByCorrId(refNo);
+        if(IaisCommonUtils.isEmpty(selfAssessments)){
+            return;
+        }
+
+        List<SelfAssessmentConfig> selfAssessmentConfigs = selfAssessments.get(0).getSelfAssessmentConfig();
+        if(!IaisCommonUtils.isEmpty(selfAssessmentConfigs)) {
+            for(InspectionFillCheckListDto inspectionFillCheckListDto : inspectionFillCheckListDtos){
+                for(SelfAssessmentConfig selfAssessmentConfig : selfAssessmentConfigs){
+                    if(selfAssessmentConfig != null){
+                        if(inspectionFillCheckListDto.getConfigId().equalsIgnoreCase(selfAssessmentConfig.getConfigId())){
+                            List<PremCheckItem> question =  selfAssessmentConfig.getQuestion();
+                            if(!IaisCommonUtils.isEmpty(question)){
+                                List<PremCheckItem> ncQs = getNcQs(question);
+                               if( !IaisCommonUtils.isEmpty(ncQs)){
+                                   if(IaisCommonUtils.isEmpty(inspectionFillCheckListDto.getCheckList())){
+                                       setSefNcAnswerToSevCheckList(ncQs,inspectionFillCheckListDto.getSectionDtoList());
+                                   }else {
+                                       setSefNcAnswerToCheckList(ncQs,inspectionFillCheckListDto.getCheckList());
+                                   }
+                               }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+   private  List<PremCheckItem> getNcQs( List<PremCheckItem> question){
+       List<PremCheckItem> ncQs = new ArrayList<>(2);
+       for(PremCheckItem premCheckItem : question){
+           if("NO".equalsIgnoreCase(premCheckItem.getAnswer())){
+               ncQs.add(premCheckItem);
+           }
+       }
+       return ncQs;
+   }
+    private void setSefNcAnswerToSevCheckList( List<PremCheckItem> ncQs,List<SectionDto> sectionDtoList){
+        if(IaisCommonUtils.isEmpty(sectionDtoList)){
+            return;
+        }
+        for(SectionDto sectionDto : sectionDtoList){
+            List<ItemDto> itemDtos =  sectionDto.getItemDtoList();
+            if(!IaisCommonUtils.isEmpty(itemDtos)){
+                for(ItemDto itemDto :itemDtos){
+                    for(PremCheckItem premCheckItem : ncQs){
+                        InspectionCheckQuestionDto incqDto =  itemDto.getIncqDto();
+                       if( itemDto.getItemId().equalsIgnoreCase(premCheckItem.getChecklistItemId())){
+                           incqDto.setAnswer("No");
+                           incqDto.setNcSelfAnswer(true);
+                       }
+                    }
+                }
+            }
+        }
+    }
+    private void setSefNcAnswerToCheckList( List<PremCheckItem> ncQs, List<InspectionCheckQuestionDto> checkQuestionDtos){
+               for(InspectionCheckQuestionDto itemDto : checkQuestionDtos){
+                    for(PremCheckItem premCheckItem : ncQs){
+                        if(itemDto.getItemId().equalsIgnoreCase(premCheckItem.getChecklistItemId())){
+                            itemDto.setChkanswer("No");
+                            itemDto.setNcSelfAnswer(true);
+                        }
+                    }
+            }
+        }
+
 }

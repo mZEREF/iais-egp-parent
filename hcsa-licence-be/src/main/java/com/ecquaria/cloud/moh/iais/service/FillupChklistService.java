@@ -102,4 +102,6 @@ public interface FillupChklistService {
     void sendModifiedChecklistEmailToAOStage(ApplicationViewDto appViewDto);
 
     void saveAdhocDto(AdhocCheckListConifgDto adhocCheckListConifgDto);
+
+    void changeDataForNc( List<InspectionFillCheckListDto> inspectionFillCheckListDtos,String refNo);
 }
