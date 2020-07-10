@@ -1065,11 +1065,12 @@ public class HcsaApplicationDelegator {
         String applicationType = applicationDto.getApplicationType();
         try{
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
-                String appealingFor = (String)ParamUtil.getSessionAttr(bpc.request, "appealingFor");
                 AppPremiseMiscDto premiseMiscDto = (AppPremiseMiscDto)ParamUtil.getSessionAttr(bpc.request, "premiseMiscDto");
-                if(!StringUtil.isEmpty(appealingFor) && premiseMiscDto != null){
+                if(premiseMiscDto != null){
+                    String appealingFor = premiseMiscDto.getRelateRecId();
                     HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-                    String appealType = premiseMiscDto.getAppealType();
+                    maskParams.put("appealingFor",appealingFor);
+                    String appealType = (String)ParamUtil.getSessionAttr(bpc.request, "type");
                     sendAppealMessage(appealingFor,licenseeId,maskParams,applicationDto.getServiceId(),appealType);
                 }
             }
