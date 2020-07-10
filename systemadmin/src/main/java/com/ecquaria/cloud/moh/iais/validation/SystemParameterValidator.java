@@ -21,33 +21,46 @@ import java.util.regex.Matcher;
  * @description:
  */
 public class SystemParameterValidator implements CustomizeValidator {
+	private final static String VALUE_TYPE_INT = "Int";
+	private final static String VALUE_TYPE_STRING = "String";
 
 
 	@Override
 	public Map<String, String> validate(HttpServletRequest httpServletRequest) {
 		Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
 		SystemParameterDto editDto = (SystemParameterDto) ParamUtil.getSessionAttr(httpServletRequest, SystemParameterConstants.PARAMETER_REQUEST_DTO);
-		if (editDto == null){
+		if (editDto == null || StringUtils.isEmpty(editDto.getValue())){
 			return errMap;
 		}
 
-		String paramType = editDto.getParamType();
+		String value = editDto.getValue();
+		String valueType = editDto.getValueType();
+		int number = 0;
+		if (VALUE_TYPE_INT.equalsIgnoreCase(valueType)){
+			try {
+				number = Integer.parseInt(value);
+			}catch (NumberFormatException e){
+				errMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "UC_CHKLMD001_ERR003");
+				return errMap;
+			}
+		}
 
+		String paramType = editDto.getParamType();
 		switch (paramType){
 			case SystemParameterConstants.PARAM_TYPE_REMINDER:
 			case SystemParameterConstants.PARAM_TYPE_MONTH:
 				break;
 			case SystemParameterConstants.PARAM_TYPE_PAGE_SIZE:
-				verifyPageSize(errMap, editDto.getValue());
+				verifyPageSize(errMap, value);
 			break;
 			case SystemParameterConstants.PARAM_TYPE_MAX_FILE_SIZE:
-				verifyFileUploadSize(errMap, Integer.parseInt(editDto.getValue()));
+				verifyFileUploadSize(errMap, number);
 			break;
 			case SystemParameterConstants.PARAM_TYPE_AUDIT_TRAIL_SEARCH_WEEK:
-				verifyAuditTrailWeek(errMap, Integer.parseInt(editDto.getValue()));
+				verifyAuditTrailWeek(errMap, number);
 			break;
 			case SystemParameterConstants.PARAM_TYPE_FILE_TYPE_FOR_UPLOADING:
-				verifyUploadFileType(errMap, editDto.getValue());
+				verifyUploadFileType(errMap, value);
 				break;
 
 			/*case SystemParameterConstants.PARAM_TYPE_YES:
@@ -64,10 +77,6 @@ public class SystemParameterValidator implements CustomizeValidator {
 	}
 
 	private void verifyPageSize(Map<String, String> errorMap, String value){
-		if (StringUtils.isEmpty(value)){
-			return;
-		}
-
 		Matcher m = IaisEGPHelper.matcherByRegex(value, "\\{([^}]*)\\}");
 		if (m.matches()){
 			String[] values = IaisEGPHelper.getPageSizeByStrings(value);

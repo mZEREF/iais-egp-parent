@@ -154,7 +154,36 @@ public final class ChecklistHelper {
             return;
         }
 
-        /*emailHelper.sendEmail(MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, );*/
+        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT).getEntity();
+        if (autoEntity == null){
+            log.info("===>>>>alertSelfDeclNotification can not find message template ");
+            return;
+        }
+
+        String msgContent = autoEntity.getMessageContent();
+        Map<String,Object> param = new HashMap(1);
+        param.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+
+        param.put("serviceName", "test");
+        param.put("APPLICANT_NAME", "test");
+
+
+/*
+
+        String subject = msgTemplate.getTemplateName();
+        String messageContent = msgTemplate.getMessageContent();
+        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+
+        EmailDto emailDto = new EmailDto();
+        emailDto.setContent(templateMessageByContent);
+        emailDto.setSubject(subject);
+        emailDto.setSender(mailSender);
+        emailDto.setReceipts(receiveEmail);
+        emailDto.setClientQueryCode(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
+        emailClient.sendNotification(emailDto).getEntity();*/
+
+
+
     }
 
     public static void sendNotificationToApplicant(List<ApplicationGroupDto> appGroup){
