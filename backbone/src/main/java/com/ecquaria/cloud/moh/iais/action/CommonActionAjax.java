@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.moh.iais.common.base.TableRowHtmlGenerater;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.memorypage.PageRecords;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,13 +35,13 @@ public class CommonActionAjax {
         // Update Checked
         if (!StringUtil.isEmpty(checkIdStr) && handler.getDisplayData() != null && !handler.getDisplayData().isEmpty()) {
             String[] checkIds = checkIdStr.split(",");
-            for (PaginationHandler.PageRecords cu : handler.getDisplayData()) {
+            for (PageRecords cu : handler.getDisplayData()) {
                 cu.setChecked(false);
             }
             if (checkIds.length > 1) {
                 for (int i = 1; i < checkIds.length; i++) {
                     long id = Long.parseLong(checkIds[i]);
-                    for (PaginationHandler.PageRecords row : handler.getDisplayData()) {
+                    for (PageRecords row : handler.getDisplayData()) {
                         if (row.getId() == id) {
                             row.setChecked(true);
                         }
@@ -52,7 +53,7 @@ public class CommonActionAjax {
         StringBuilder sb = new StringBuilder();
         boolean allChecked = !handler.getDisplayData().isEmpty();
         for (int i = 0; i < handler.getDisplayData().size(); i++) {
-            PaginationHandler.PageRecords pr = handler.getDisplayData().get(i);
+            PageRecords pr = handler.getDisplayData().get(i);
             Object obj = pr.getRecord();
             if (obj instanceof TableRowHtmlGenerater) {
                 int startLength = sb.length();
