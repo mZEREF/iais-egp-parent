@@ -14,11 +14,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ProcessReSchedulingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -220,17 +222,31 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
     @Override
     public void rejectReschedulingDate(ProcessReSchedulingDto processReSchedulingDto) {
-        ApplicationDto applicationDto = processReSchedulingDto.getApplicationDto();
-        String appStatus = applicationDto.getStatus();
-        if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_APPLICANT.equals(appStatus)){
-            //todo email
-
-        } else if (ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_PENDING_FE.equals(appStatus)) {
-            //todo email
-
-        }
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+
+        ApplicationDto applicationDto = processReSchedulingDto.getApplicationDto();
+        ApplicationGroupDto applicationGroupDto = applicationClient.getApplicationGroup(applicationDto.getAppGrpId()).getEntity();
+        String appStatus = applicationDto.getStatus();
+        if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_APPLICANT.equals(appStatus)){
+            try{
+                EmailDto emailDto = new EmailDto();
+                emailDto.setContent("Please contact the respective MOH officer to reschedule your appointment.");
+                emailDto.setSubject("MOH IAIS - Applicant Rescheduling Rejected");
+                emailDto.setSender(mailSender);
+                emailDto.setClientQueryCode(applicationDto.getId());
+                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(applicationGroupDto.getLicenseeId()));
+            } catch (Exception e){
+                log.info(e.getMessage(),e);
+            }
+        } else if (ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_PENDING_FE.equals(appStatus)) {
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent("Please contact the respective MOH officer to reschedule your appointment.");
+            emailDto.setSubject("MOH IAIS - Applicant Rescheduling Rejected");
+            emailDto.setSender(mailSender);
+            emailDto.setClientQueryCode(applicationDto.getId());
+            processReSchedulingDto.setEmailDto(emailDto);
+        }
         //Exclude a selected date
         List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
