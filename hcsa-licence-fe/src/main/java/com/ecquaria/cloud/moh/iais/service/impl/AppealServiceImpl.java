@@ -49,23 +49,14 @@ import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
-
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -151,9 +142,9 @@ public class AppealServiceImpl implements AppealService {
         }else {
             licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
         }
-        CommonsMultipartFile file =( CommonsMultipartFile) req.getSession().getAttribute("file");
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) req.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String saveDraftId =(String) req.getSession().getAttribute("saveDraftNo");
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto=(AppPremisesSpecialDocDto)req.getSession().getAttribute("appPremisesSpecialDocDto");
         String appealingFor =  request.getParameter("appealingFor");
         String isDelete = request.getParameter("isDelete");
         String reasonSelect = request.getParameter("reasonSelect");
@@ -165,24 +156,37 @@ public class AppealServiceImpl implements AppealService {
         CommonsMultipartFile selectedFile =(CommonsMultipartFile) request.getFile("selectedFile");
         if(selectedFile!=null&&selectedFile.getSize()>0){
             String filename = selectedFile.getOriginalFilename();
-            req.getSession().setAttribute("file",selectedFile);
             req.setAttribute("filename",filename);
             byte[] bytes = selectedFile.getBytes();
-            Long size = selectedFile.getSize();
+            Long size = selectedFile.getSize()/1024;
             appealPageDto.setFileName(filename);
             appealPageDto.setFileSize(size);
             appealPageDto.setFile(bytes);
+            if(appPremisesSpecialDocDto==null){
+                appPremisesSpecialDocDto=new AppPremisesSpecialDocDto();
+            }
+            appPremisesSpecialDocDto.setDocName(selectedFile.getOriginalFilename());
+            if(size < 5*1024){
+                appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
+                String s = FileUtil.genMd5FileChecksum(selectedFile.getBytes());
+                appPremisesSpecialDocDto.setMd5Code(s);
+                try {
+                    String fileToRepo = serviceConfigService.saveFileToRepo(selectedFile);
+                    appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
+                    appPremisesSpecialDocDto.setSubmitBy(licenseeId);
+                    req.getSession().setAttribute("appPremisesSpecialDocDto",appPremisesSpecialDocDto);
+                }catch ( Exception e){
+                    log.error(e.getMessage(),e);
+                }
+            }
+            appealPageDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
         }
-        else if(file!=null&&file.getSize()>0){
+        else if(appPremisesSpecialDocDto!=null&&appPremisesSpecialDocDto.getDocSize()>0){
             if(Y.equals(isDelete)){
-                String filename = file.getOriginalFilename();
-                req.getSession().setAttribute("file",file);
+                String filename = appPremisesSpecialDocDto.getDocName();
                 req.setAttribute("filename",filename);
-                Long size = file.getSize();
-                byte[] bytes = file.getBytes();
                 appealPageDto.setFileName(filename);
-                appealPageDto.setFileSize(size);
-                appealPageDto.setFile(bytes);
+                appealPageDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
             }
         }
         if(N.equals(isDelete)){
@@ -270,16 +274,12 @@ public class AppealServiceImpl implements AppealService {
                 appPremiseMiscDto.setReason(appealReason);
                 appPremiseMiscDto.setRemarks(remarks);
                 String appealFor = appealPageDto.getAppealFor();
+                AppPremisesSpecialDocDto appPremisesSpecialDocDto = appealPageDto.getAppPremisesSpecialDocDto();
                 String type = appealPageDto.getType();
-                byte[] file = appealPageDto.getFile();
-                if(file!=null){
-                    String fileName = appealPageDto.getFileName();
-                    File updateFile=new File(fileName);
-                    inputStreamToFile(updateFile,file);
-                    FileItem fileItem = getFileItem(updateFile, fileName);
-                    CommonsMultipartFile commonsMultipartFile=new CommonsMultipartFile(fileItem);
-                    request.getSession().setAttribute("file",commonsMultipartFile);
+                if(appPremisesSpecialDocDto!=null){
+                    String fileName = appPremisesSpecialDocDto.getDocName();
                     request.getSession().setAttribute("filename",fileName);
+                    request.getSession().setAttribute("appPremisesSpecialDocDto",appPremisesSpecialDocDto);
                 }
                 if(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)){
                     List<AppSvcCgoDto> appSvcCgoDto = appealPageDto.getAppSvcCgoDto();
@@ -297,10 +297,7 @@ public class AppealServiceImpl implements AppealService {
                         HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
                         List<SelectOption> list = AppealDelegator.genSpecialtySelectList(serviceByServiceName.getSvcCode());
                         ParamUtil.setSessionAttr(request, "SpecialtySelectList",(Serializable)  list);
-
                     }
-
-
                 }
                 typeApplicationOrLicence(request,type,appealFor);
                 request.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
@@ -374,8 +371,8 @@ public class AppealServiceImpl implements AppealService {
                 hciNames.add(hciName);
                 List<String >hciAddress=IaisCommonUtils.genNewArrayList();
                 hciAddress.add(hciAddres);
-                request.getSession().setAttribute("hciAddress",hciAddress);
-                request.getSession().setAttribute("hciNames",hciNames);
+                request.getSession().setAttribute("hciAddress",(Serializable)hciAddress);
+                request.getSession().setAttribute("hciNames",(Serializable)hciNames);
             }
 
             List<String> list=IaisCommonUtils.genNewArrayList();
@@ -467,11 +464,11 @@ public class AppealServiceImpl implements AppealService {
             appConfigClient.getServiceType(serviceId,"CGO");
         }
         String isDelete = request.getParameter("isDelete");
-        CommonsMultipartFile sessionFile =( CommonsMultipartFile)  req.getSession().getAttribute("file");
+        AppPremisesSpecialDocDto appPremisesSpecialDocDto= (AppPremisesSpecialDocDto)req.getSession().getAttribute("appPremisesSpecialDocDto");
         CommonsMultipartFile file=(CommonsMultipartFile) request.getFile("selectedFile");
         if(file!=null&&file.getSize()>0){
             long size = file.getSize()/1024;
-            req.getSession().setAttribute("file",file);
+            req.getSession().setAttribute("appPremisesSpecialDocDto",appPremisesSpecialDocDto);
             if(size>5*1024){
                 map.put("file","UC_GENERAL_ERR0015");
             }
@@ -484,14 +481,13 @@ public class AppealServiceImpl implements AppealService {
             }
 
         }
-        else if(sessionFile!=null&&sessionFile.getSize()>0){
+        else if(appPremisesSpecialDocDto!=null&&appPremisesSpecialDocDto.getDocSize()>0){
             if (Y.equals(isDelete)) {
-                long size = sessionFile.getSize()/1024;
+                long size = appPremisesSpecialDocDto.getDocSize();
                 if(size>5*1024){
                     map.put("file","UC_GENERAL_ERR0015");
                 }
-
-                String filename = sessionFile.getOriginalFilename();
+                String filename = appPremisesSpecialDocDto.getDocName();
                 String fileType=  filename.substring(filename.lastIndexOf('.')+1);
                 //todo change
                 if(!"PDF".equalsIgnoreCase(fileType)&&!"PNG".equalsIgnoreCase(fileType)&&
@@ -648,7 +644,6 @@ public class AppealServiceImpl implements AppealService {
         appealPageDto.setAppSvcCgoDto(appSvcCgoDtos);
         if (ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME.equals(reasonSelect)) {
             appealPageDto.setNewHciName(proposedHciName);
-
         }
         appealPageDto.setRemarks(remarks);
 
@@ -745,10 +740,8 @@ public class AppealServiceImpl implements AppealService {
         try {
             sendEmail(request);
             sendAdminEmail(request);
-        } catch (IOException e) {
+        } catch (Exception e) {
            log.error(e.getMessage(),e);
-        } catch (TemplateException e) {
-         log.error(e.getMessage(),e);
         }
         return s;
     }
@@ -846,10 +839,8 @@ public class AppealServiceImpl implements AppealService {
         try {
             sendEmail(request);
             sendAdminEmail(request);
-        } catch (IOException e) {
+        } catch (Exception e) {
           log.error(e.getMessage(),e);
-        } catch (TemplateException e) {
-            log.error(e.getMessage(),e);
         }
         //todo send email
         return s;
@@ -899,9 +890,7 @@ public class AppealServiceImpl implements AppealService {
         AppPremisesSpecialDocDto sessionAppPremisesSpecialDoc =(AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
         String reasonSelect = request.getParameter("reasonSelect");
         String licenceYear = request.getParameter("licenceYear");
-        String selectHciNames = request.getParameter("selectHciName");
         String proposedHciName = request.getParameter("proposedHciName");
-        CommonsMultipartFile sessionFile =( CommonsMultipartFile)  req.getSession().getAttribute("file");
         String isDelete = request.getParameter("isDelete");
         String remarks = request.getParameter("remarks");
         String othersReason = request.getParameter("othersReason");
@@ -928,33 +917,7 @@ public class AppealServiceImpl implements AppealService {
             } catch (IOException e) {
                log.error(e.getMessage(),e);
             }
-
-        }
-        else if(sessionFile!=null&&sessionFile.getSize()>0&&selectedFile!=null){
-            if(Y.equals(isDelete)){
-                try {
-                    String fileToRepo = serviceConfigService.saveFileToRepo(selectedFile);
-                    Long size= selectedFile.getSize()/1024;
-                    String filename = selectedFile.getOriginalFilename();
-                    String s = FileUtil.genMd5FileChecksum(selectedFile.getBytes());
-                    AppPremisesSpecialDocDto appPremisesSpecialDocDto=new AppPremisesSpecialDocDto();
-                    appPremisesSpecialDocDto.setDocName(filename);
-                    appPremisesSpecialDocDto.setMd5Code(s);
-                    appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
-                    appPremisesSpecialDocDto.setFileRepoId(fileToRepo);
-                    if(loginContext!=null){
-                        appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
-                    }else {
-                        appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
-                    }
-
-                    appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
-
-                }catch (Exception e){
-                    log.error(e.getMessage(),e);
-                }
-            }
-        }else if(sessionAppPremisesSpecialDoc!=null&&Y.equals(isDelete)){
+        } else if(sessionAppPremisesSpecialDoc!=null&&Y.equals(isDelete)){
             AppPremisesSpecialDocDto appPremisesSpecialDocDto=new AppPremisesSpecialDocDto();
             appPremisesSpecialDocDto.setDocName(sessionAppPremisesSpecialDoc.getDocName());
             appPremisesSpecialDocDto.setMd5Code(sessionAppPremisesSpecialDoc.getMd5Code());
@@ -965,7 +928,9 @@ public class AppealServiceImpl implements AppealService {
                 appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
             }
             appPremisesSpecialDocDto.setDocSize(sessionAppPremisesSpecialDoc.getDocSize());
-            appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
+            if(sessionAppPremisesSpecialDoc.getFileRepoId()!=null){
+                appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
+            }
         }
 
         appealDto.setRemarks(remarks);
@@ -1067,69 +1032,5 @@ public class AppealServiceImpl implements AppealService {
     }
 
 
-    private FileItem getFileItem(File file, String fieldName){
-        FileItemFactory factory = new DiskFileItemFactory(16, null);
-        FileItem  item = factory.createItem(fieldName, "text/plain", true, file.getName());
-        int bytesRead = 0;
-        byte[] buffer = new byte[8192];
-        FileInputStream fis = null;
-        OutputStream os = null;
-        try {
-            fis = new FileInputStream(file);
-            os = item.getOutputStream();
-            while((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
-                os.write(buffer, 0, bytesRead);
-            }
-        } catch(IOException e) {
-          log.error("error",e);
-        } finally {
-            try {
-                if(os != null) {
-                    os.close();
-                }
-                if(fis != null) {
-                    fis.close();
-                }
-            } catch (IOException e) {
-                log.error("error",e);
-            }
-        }
-
-        return item;
-    }
-
-    private static void inputStreamToFile(InputStream ins, File file) {
-        FileOutputStream os = null;
-        try {
-            os = new FileOutputStream(file);
-            int bytesRead = 0;
-            byte[] buffer = new byte[1024];
-            while((bytesRead = ins.read(buffer)) != -1) {
-                os.write(buffer, 0, bytesRead);
-            }
-        }catch(Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }finally {
-            try {
-                if(os != null) {
-                    os.close();
-                }
-                if(ins != null) {
-                    ins.close();
-                }
-            }catch(IOException e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        }
-    }
-    private static void inputStreamToFile(File file,byte [] bytes) {
-        FileOutputStream os = null;
-        try {
-            os = new FileOutputStream(file);
-            os.write(bytes);
-        }catch (Exception e){
-
-        }
-    }
 
 }

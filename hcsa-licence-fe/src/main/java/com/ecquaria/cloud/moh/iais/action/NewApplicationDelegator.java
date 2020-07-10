@@ -1139,7 +1139,13 @@ public class NewApplicationDelegator {
         stringBuilder.setLength(0);
         stringBuilder.append(oldAppSubmissionDto);
         log.info(StringUtil.changeForLog("oldAppSubmissionDto:"+stringBuilder.toString()));
-        Map<String, String> doComChangeMap = doComChange(appSubmissionDto,oldAppSubmissionDto);
+        Map<String, String> doComChangeMap=IaisCommonUtils.genNewHashMap();
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+            AppSubmissionDto oldSubmitAppSubmissionDto =(AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"oldSubmitAppSubmissionDto");
+            doComChangeMap = doComChange(appSubmissionDto,oldSubmitAppSubmissionDto);
+        }else {
+            doComChangeMap = doComChange(appSubmissionDto,oldAppSubmissionDto);
+        }
         if(!doComChangeMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",doComChangeMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
@@ -2643,18 +2649,36 @@ public class NewApplicationDelegator {
                     appGrpPremisesDto.setLicenceDtos(null);
                 }
                 if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto.getAppGrpPremisesDtoList())){
+                   log.info(StringUtil.changeForLog("appGrpPremisesDto"+JsonUtil.parseToJson(appSubmissionDto.getAppGrpPremisesDtoList())));
+                    log.info(StringUtil.changeForLog("oldappGrpPremisesDto"+JsonUtil.parseToJson(oldAppSubmissionDto.getAppGrpPremisesDtoList())));
+
                     result.put("premiss","UC_CHKLMD001_ERR001");
                 }
             }
-
+            List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
+            if(dtoAppGrpPrimaryDocDtos!=null){
+                for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : dtoAppGrpPrimaryDocDtos){
+                    appGrpPrimaryDocDto.setPassValidate(true);
+                }
+            }
+            List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos1 = appSubmissionDto.getAppGrpPrimaryDocDtos();
+            if(dtoAppGrpPrimaryDocDtos1!=null){
+                for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : dtoAppGrpPrimaryDocDtos1){
+                    appGrpPrimaryDocDto.setPassValidate(true);
+                }
+            }
             if(!appEditSelectDto.isDocEdit()){
                 if(!appSubmissionDto.getAppGrpPrimaryDocDtos().equals(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())){
-                        result.put("document","UC_CHKLMD001_ERR001");
+                    log.info(StringUtil.changeForLog("appGrpPrimaryDocDto"+JsonUtil.parseToJson(appSubmissionDto.getAppGrpPrimaryDocDtos())));
+                    log.info(StringUtil.changeForLog("oldAppGrpPrimaryDocDto"+JsonUtil.parseToJson(oldAppSubmissionDto.getAppGrpPrimaryDocDtos())));
+                    result.put("document","UC_CHKLMD001_ERR001");
                 }
             }
 
             if(!appEditSelectDto.isServiceEdit()){
                 if(!appSubmissionDto.getAppSvcRelatedInfoDtoList().equals(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())){
+                    log.info(StringUtil.changeForLog("AppSvcRelatedInfoDtoList"+JsonUtil.parseToJson(appSubmissionDto.getAppSvcRelatedInfoDtoList())));
+                    log.info(StringUtil.changeForLog("oldAppSvcRelatedInfoDtoList"+JsonUtil.parseToJson(oldAppSubmissionDto.getAppSvcRelatedInfoDtoList())));
                     result.put("serviceId","UC_CHKLMD001_ERR001");
                 }
             }
