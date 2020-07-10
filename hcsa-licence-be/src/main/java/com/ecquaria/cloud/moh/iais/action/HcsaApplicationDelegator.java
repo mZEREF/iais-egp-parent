@@ -1076,6 +1076,7 @@ public class HcsaApplicationDelegator {
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);
         }catch (Exception e){
             log.error(StringUtil.changeForLog("send application RfiAndEmail error"));
+            log.error(e.getMessage(),e);
         }
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
     }
