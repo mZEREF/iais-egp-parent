@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremInspCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
@@ -80,26 +81,35 @@ public class MohSkipInspApptBatchJob {
         List<TaskDto> taskDtos = organizationClient.getActiveTaskByUrl(TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE).getEntity();
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         if(!IaisCommonUtils.isEmpty(taskDtos)){
-            for(TaskDto taskDto : taskDtos){
-                taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
-                taskDto.setAuditTrailDto(intranet);
-                try{
-                    taskService.updateTask(taskDto);
-                    String appPremCorrId = taskDto.getRefNo();
-                    //update be Application
-                    ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
-                    applicationDto.setAuditTrailDto(intranet);
-                    ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
-                    //update fe Application
-                    applicationDto1.setAuditTrailDto(intranet);
-                    applicationService.updateFEApplicaiton(applicationDto1);
-                    //update inspection status
-                    updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
-                    AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                    createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, new Date());
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
+            List<AppPremInspCorrelationDto> appPremInspCorrelationDtos = IaisCommonUtils.genNewArrayList();
+            try{
+                for(TaskDto taskDto : taskDtos){
+                    taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+                    taskDto.setAuditTrailDto(intranet);
+                        taskService.updateTask(taskDto);
+                        String appPremCorrId = taskDto.getRefNo();
+                        //update be Application
+                        ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+                        applicationDto.setAuditTrailDto(intranet);
+                        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS);
+                        //update fe Application
+                        applicationDto1.setAuditTrailDto(intranet);
+                        applicationService.updateFEApplicaiton(applicationDto1);
+                        //update inspection status
+                        updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
+                        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                        createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, new Date());
+                        AppPremInspCorrelationDto appPremInspCorrelationDto = new AppPremInspCorrelationDto();
+                        appPremInspCorrelationDto.setId(null);
+                        appPremInspCorrelationDto.setUserId(taskDto.getUserId());
+                        appPremInspCorrelationDto.setApplicationNo(taskDto.getApplicationNo());
+                        appPremInspCorrelationDto.setAuditTrailDto(intranet);
+                        appPremInspCorrelationDtos.add(appPremInspCorrelationDto);
+
                 }
+                inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtos);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
         }
     }
