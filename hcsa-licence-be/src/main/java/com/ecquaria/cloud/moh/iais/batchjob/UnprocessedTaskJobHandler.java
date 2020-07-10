@@ -1,6 +1,9 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
-import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
+import com.ecquaria.cloud.job.executor.handler.IJobHandler;
+import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -9,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppStageSlaTracki
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.HcsaSvcKpiDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -26,7 +30,7 @@ import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import sop.webflow.rt.api.BaseProcessClass;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,9 +42,10 @@ import java.util.Map;
  * @author Guyin
  * @date 12/04/2019
  */
-@Delegator("NotifyUnprocessedTaskBatchjob")
+@JobHandler(value="unprocessedTaskJobHandler")
+@Component
 @Slf4j
-public class NotifyUnprocessedTaskBatchjob {
+public class UnprocessedTaskJobHandler extends IJobHandler {
     @Autowired
     private TaskService taskService;
     @Autowired
@@ -70,12 +75,9 @@ public class NotifyUnprocessedTaskBatchjob {
 
     @Autowired
     KpiAndReminderService kpiAndReminderService;
-    public void doBatchJob(BaseProcessClass bpc) throws IOException, TemplateException{
-
+    @Override
+    public ReturnT<String> execute(String s) throws IOException, TemplateException{
         log.debug(StringUtil.changeForLog("The NotifyUnprocessedTaskBatchjob is  start..." ));
-
-
-        log.debug(StringUtil.changeForLog("Unprocessed Task Notification to Officer..." ));
         List<TaskEmailDto> taskEmailDtoList = IaisCommonUtils.genNewArrayList();
         taskEmailDtoList = taskService.getEmailNotifyList();
 
@@ -83,7 +85,6 @@ public class NotifyUnprocessedTaskBatchjob {
         InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(EMAILMPLATEID);
 
         String templateHtml = inspectionEmailTemplateDto.getMessageContent();
-
         if(taskEmailDtoList != null) {
             for (TaskEmailDto item : taskEmailDtoList
             ) {
@@ -102,7 +103,6 @@ public class NotifyUnprocessedTaskBatchjob {
                     //get current stage worked days
                     int days = 0;
                     if(!StringUtil.isEmpty(stage)) {
-
                         AppStageSlaTrackingDto appStageSlaTrackingDto = inspectionAssignTaskService.searchSlaTrackById(applicationDto.getApplicationNo(), stage);
                         if (appStageSlaTrackingDto != null) {
                             days = appStageSlaTrackingDto.getKpiSlaDays();
@@ -122,26 +122,49 @@ public class NotifyUnprocessedTaskBatchjob {
                         remThreshold = hcsaSvcKpiDto.getRemThreshold();
                     }
 
-                    if(days == remThreshold){
-                        //send email to leader and admin
-                        List<String> email = IaisCommonUtils.genNewArrayList();
-                        email.add(item.getLeaderEmailAddr());
-                        sendEmail(item,applicationDto,email);
-                    }else if(days == kpi){
-                        //send email to officer
-                        List<String> email = IaisCommonUtils.genNewArrayList();
-                        email.add(item.getUserEmail());
-                        sendEmail(item,applicationDto,email);
+                    if(days > remThreshold){
+                        //judge is email sent
+                        JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess leader").getEntity();
+                        if(jobRemindMsgTrackingDto == null){
+                            //send email to leader and admin
+                            List<String> email = IaisCommonUtils.genNewArrayList();
+                            email.add(item.getLeaderEmailAddr());
+                            sendEmail(item,applicationDto,email);
+                            //record email sent
+                            JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
+                            List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
+                            createjob.setMsgKey("unprocess leader");
+                            createjob.setRefNo(item.getId());
+                            createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            list.add(createjob);
+                            systemBeLicClient.createJobRemindMsgTrackingDtos(list);
+                        }
+                    }else if(days > kpi){
+                        //judge is email sent
+                        JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDto(item.getId(),"unprocess officer").getEntity();
+                        if(jobRemindMsgTrackingDto == null){
+                            //send email to officer
+                            List<String> email = IaisCommonUtils.genNewArrayList();
+                            email.add(item.getUserEmail());
+                            sendEmail(item,applicationDto,email);
+                            //record email sent
+                            JobRemindMsgTrackingDto createjob = new JobRemindMsgTrackingDto();
+                            List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
+                            createjob.setMsgKey("unprocess officer");
+                            createjob.setRefNo(item.getId());
+                            createjob.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                            list.add(createjob);
+                            systemBeLicClient.createJobRemindMsgTrackingDtos(list);
+                        }
                     }
 
                 }
-
             }
         }
 
 
         log.debug(StringUtil.changeForLog("Unprocessed Task Notification end..." ));
-
+        return ReturnT.SUCCESS;
 
     }
 
