@@ -2,21 +2,19 @@ package com.ecquaria.egp.core.payment.runtime;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.ServerConfig;
+import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
-import com.ecquaria.egp.core.payment.api.config.GatewayConstants;
 import ecq.commons.helper.StringHelper;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.config.ConfigUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -40,8 +38,7 @@ import java.util.Map;
 
 @Service
 public class PaymentBaiduriProxy extends PaymentProxy {
-	@Autowired
-	PaymentClient paymentClient;
+
 
     private static final Logger logger = LoggerFactory.getLogger(PaymentBaiduriProxy.class);
     
@@ -77,18 +74,18 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		}
 		HttpServletRequest request = bpc.request;
 
-		String amo = fields.get(GatewayConstants.AMOUNT_KEY);
+		String amo = fields.get("vpc_Amount");
 		String payMethod = fields.get("vpc_OrderInfo");
-		String reqNo = fields.get(GatewayConstants.SVCREF_NO);
+		String reqNo = fields.get("vpc_MerchTxnRef");
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
 			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
 
-			double amount = Double.parseDouble(amo);
+			double amount = Double.parseDouble(amo)/100;
 			paymentRequestDto.setAmount(amount);
 			paymentRequestDto.setPayMethod(payMethod);
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
-			paymentClient.saveHcsaPaymentResquset(paymentRequestDto);
+			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 
 		}
 
@@ -119,6 +116,10 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			throw new PaymentException("Continue token is null.");
 		}
 		setContinueToken(continueToken);
+
+		String gateway_ref_no = this.getPaymentData().getPaymentTrans().getTransNo();
+		String ref_no = this.getPaymentData().getSvcRefNo();
+		double amount = this.getPaymentData().getAmount();
 		
 		Map<String, String> fields = getResponseFieldsMap(bpc);
 		
@@ -146,17 +147,13 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 				setPaymentTransStatus(status);
 //				String message = fields.get("vpc_Message");
 
-				String gateway_ref_no = fields.get(GatewayConstants.CPS_REFNO);
-				String input_charset = fields.get(GatewayConstants.INPUT_CHARSET);
-				String pymt_status = fields.get(GatewayConstants.PYMT_STATUS);
-				String ref_no = fields.get(GatewayConstants.SVCREF_NO);
-				String amount = fields.get(GatewayConstants.AMOUNT_KEY);
+
 				PaymentDto paymentDto = new PaymentDto();
-				paymentDto.setAmount(Double.parseDouble(amount));
+				paymentDto.setAmount(amount);
 				paymentDto.setReqRefNo(ref_no);
 				paymentDto.setInvoiceNo(gateway_ref_no);
-				paymentDto.setPmtStatus(pymt_status);
-				PaymentDto paymentDtoSave = paymentClient.saveHcsaPayment(paymentDto).getEntity();
+				paymentDto.setPmtStatus(status);
+				PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
 				// update the data's status and time;
 			}else{
@@ -170,14 +167,14 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		}
 
 		try {
+			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
+
 			StringBuilder bud = new StringBuilder();
 			String bigsURL ="https://" + request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment";
 			bud.append(bigsURL).append('?');
 			appendQueryFields(bud, fields);
 
-
 			RedirectUtil.redirect(bud.toString(), bpc.request, bpc.response);
-			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 		} catch (UnsupportedEncodingException e) {
 			logger.debug(e.getMessage());
 

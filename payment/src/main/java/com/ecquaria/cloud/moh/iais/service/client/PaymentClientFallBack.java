@@ -1,11 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -14,23 +12,26 @@ import java.util.List;
  * @date 12/10/2019 4:59 PM
  */
 
-public class PaymentClientFallBack {
+public class PaymentClientFallBack implements PaymentClient{
 
-    FeignResponseEntity<ApplicationViewDto> saveHcsaPayment(PaymentDto paymentDto){
+    @Override
+    public FeignResponseEntity<PaymentDto> saveHcsaPayment(PaymentDto paymentDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<ApplicationViewDto> saveHcsaPaymentResquset(PaymentRequestDto paymentReqDto){
+    @Override
+    public FeignResponseEntity<PaymentRequestDto> saveHcsaPaymentResquset(PaymentRequestDto paymentReqDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    FeignResponseEntity<ApplicationViewDto> isTxnRef(List<String> txnRefNo){
+    @Override
+    public FeignResponseEntity<List<String>> isTxnRef(List<String> txnRefNo){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
