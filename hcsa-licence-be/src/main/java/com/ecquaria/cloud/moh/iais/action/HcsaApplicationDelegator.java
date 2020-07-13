@@ -1551,7 +1551,7 @@ public class HcsaApplicationDelegator {
                     broadcastOrganizationDto.setCreateTask(newTaskDto);
                 }
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
-                applicationDtoList = removeFastTracking(applicationDtoList);
+                applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
                 if(isAllSubmit){
@@ -1589,7 +1589,7 @@ public class HcsaApplicationDelegator {
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
                 List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
                 CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
-                applicationDtoList = removeFastTracking(applicationDtoList);
+                applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
                         ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 if(isAllSubmit || applicationDto.isFastTracking()){
@@ -1756,10 +1756,13 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private List<ApplicationDto> removeFastTracking(List<ApplicationDto> applicationDtos){
+    private List<ApplicationDto> removeFastTrackingAndTransfer(List<ApplicationDto> applicationDtos){
         List<ApplicationDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
          for (ApplicationDto applicationDto : applicationDtos){
+             if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(applicationDto.getStatus())){
+                 continue;
+             }
              if(!applicationDto.isFastTracking()){
                  result.add(applicationDto);
              }

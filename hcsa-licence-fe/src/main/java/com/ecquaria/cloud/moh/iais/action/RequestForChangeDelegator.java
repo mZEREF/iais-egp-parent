@@ -393,10 +393,10 @@ public class RequestForChangeDelegator {
                     newLicenseeId = licenseeDto.getId();
                 }
                 log.info(StringUtil.changeForLog("The newLicenseeId is -->:"+newLicenseeId));
-                 appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
+                appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                 appSubmissionDto.setLicenseeId(newLicenseeId);
-                appSubmissionDto.setAutoRfc(true);
+                appSubmissionDto.setAutoRfc(false);
                 FeeDto feeDto = getTransferFee();
                 if(feeDto != null){
                     Double amount = feeDto.getTotal();
@@ -405,23 +405,20 @@ public class RequestForChangeDelegator {
                     log.info(StringUtil.changeForLog("The appSubmissionDto.getAppGrpPremisesDtoList().size() is -->:"
                             +appSubmissionDto.getAppGrpPremisesDtoList().size()));
                     if (selectCheakboxs.length == appSubmissionDto.getAppGrpPremisesDtoList().size()) {
-                        // appSubmissionDto.setIsNeedNewLicNo("0");
                         for (AppGrpPremisesDto appGrpPremisesDto: appSubmissionDto.getAppGrpPremisesDtoList()) {
                             appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                            appGrpPremisesDto.setGroupLicenceFlag("1");
-
+                            appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER);
                         }
                     } else {
-                        // appSubmissionDto.setIsNeedNewLicNo("1");
                         for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
                             String premise = appGrpPremisesDto.getPremisesIndexNo();
                             boolean isSelect  = isSelect(selectCheakboxs,premise);
                             if(isSelect){
                                 appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
-                                appGrpPremisesDto.setGroupLicenceFlag("1");
+                                appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER);
                             }else {
                                 appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                                appGrpPremisesDto.setGroupLicenceFlag("2");
+                                appGrpPremisesDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN);
                             }
                         }
                     }
