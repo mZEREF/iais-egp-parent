@@ -172,7 +172,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 
 //			StringBuilder bud = new StringBuilder();
-			String results="?result="+ MaskUtil.maskValue("result",MaskUtil.maskValue("result",status))+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",ref_no)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",gateway_ref_no);
+			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",ref_no)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",gateway_ref_no);
 			String bigsUrl ="https://" + request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment"+results;
 //			bud.append(bigsURL).append('?');
 //			appendQueryFields(bud, fields);
