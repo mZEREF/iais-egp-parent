@@ -91,10 +91,16 @@ public class LicenceExpiredBatchJob {
             //pan daun shi dou you xin de licence sheng cheng
             LicenceDto newLicDto = hcsaLicenceClient.getLicdtoByOrgId(licId).getEntity();
             if (newLicDto == null) {
+                log.info("===================new is null====================");
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_LAPSED);
             } else {
+                log.info("===================new is not null====================");
                 if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(newLicDto.getStatus())){
+                    log.info("===================new is active ====================");
                     licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_EXPIRY);
+                }else {
+                    log.info("===================new is not null but errornew"+newLicDto.getLicenceNo()+"====================");
+                    licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_LAPSED);
                 }
             }
             licenceDto.setEndDate(date);
@@ -107,9 +113,11 @@ public class LicenceExpiredBatchJob {
                 log.info(StringUtil.changeForLog("============="+status+"======================"));
             }
         }
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        log.info(StringUtil.changeForLog("==========================update be success======================"));
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
+        log.info(StringUtil.changeForLog("==========================update fe success======================"));
     }
 }
