@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ProcessReSchedulingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschApptGrpPremsQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -22,13 +23,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * EicGatewayClient
@@ -191,7 +191,7 @@ public class FeEicGatewayClient {
 
     public FeignResponseEntity<SearchResult> eicSearchApptReschPrem(SearchParam rescheduleParam,
                                                      String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-query-appointment", HttpMethod.POST, rescheduleParam,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, SearchResult.class);
+        return IaisEGPHelper.callEicGatewayWithBodyForSearchResult(gateWayUrl + "/v1/hcsa-query-appointment", HttpMethod.POST, rescheduleParam,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ReschApptGrpPremsQueryDto.class);
     }
 }
