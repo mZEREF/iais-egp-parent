@@ -6,6 +6,7 @@ import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUti
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import sop.config.ConfigUtil;
+import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
@@ -170,7 +172,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 
 			StringBuilder bud = new StringBuilder();
-			String bigsURL ="https://" + request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment";
+			String results="?result="+ MaskUtil.maskValue("result",MaskUtil.maskValue("result",status))+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",ref_no)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",gateway_ref_no);
+			String bigsURL ="https://" + request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment"+results;
 			bud.append(bigsURL).append('?');
 			appendQueryFields(bud, fields);
 
