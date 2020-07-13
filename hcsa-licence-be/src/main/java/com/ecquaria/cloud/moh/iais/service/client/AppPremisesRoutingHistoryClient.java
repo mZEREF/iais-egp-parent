@@ -39,6 +39,12 @@ public interface AppPremisesRoutingHistoryClient {
                                                                                                      @PathVariable("stageId") String stageId,
                                                                                                      @PathVariable("roleId") String roleId);
 
+    @RequestMapping(path = "/iais-application-history/appPremisesRoutingHistory/{appNo}/{stageId}/{roleId}/{appStatus}" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppPremisesRoutingHistorysByAppNoAndStageId(@PathVariable("appNo") String appNo,
+                                                                                                     @PathVariable("stageId") String stageId,
+                                                                                                     @PathVariable("roleId") String roleId,
+                                                                                                     @PathVariable("appStatus") String appStatus);
+
     @RequestMapping(path = "/iais-application-history/appUserHistory/{appNo}/{actionBy}" ,method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremisesRoutingHistoryDto> getAppHistoryByAppNoAndActionBy(@PathVariable("appNo") String appNo,
                                                                                       @PathVariable("actionBy") String actionBy);

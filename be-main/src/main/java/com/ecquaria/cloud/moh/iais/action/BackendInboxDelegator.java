@@ -921,7 +921,7 @@ public class BackendInboxDelegator {
             log.info(StringUtil.changeForLog("The appNo is -->:"+appNo));
             //HcsaConsts.ROUTING_STAGE_INS
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto =  appPremisesRoutingHistoryService.
-                    getAppPremisesRoutingHistoryForCurrentStage(appNo,"14848A70-820B-EA11-BE7D-000C29F371DC",RoleConsts.USER_ROLE_INSPECTIOR);
+                    getAppPremisesRoutingHistoryForCurrentStage(appNo,"14848A70-820B-EA11-BE7D-000C29F371DC",RoleConsts.USER_ROLE_INSPECTIOR,ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
             if(appPremisesRoutingHistoryDto == null){
                 appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.
                         getAppPremisesRoutingHistoryForCurrentStage(appNo,HcsaConsts.ROUTING_STAGE_ASO);

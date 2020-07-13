@@ -46,6 +46,11 @@ public class AppPremisesRoutingHistoryServiceImpl implements AppPremisesRoutingH
     }
 
     @Override
+    public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId, String roleId, String appStatus) {
+        return appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorysByAppNoAndStageId(appNo,stageId,roleId,appStatus).getEntity();
+    }
+
+    @Override
     public AppPremisesRoutingHistoryDto getAppHistoryByAppNoAndActionBy(String appNo, String actionBy) {
         return appPremisesRoutingHistoryClient.getAppHistoryByAppNoAndActionBy(appNo,actionBy).getEntity();
     }

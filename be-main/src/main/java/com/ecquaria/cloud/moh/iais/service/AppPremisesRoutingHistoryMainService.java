@@ -11,5 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 public interface AppPremisesRoutingHistoryMainService {
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId) ;
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId, String roleId) ;
+    public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId, String roleId, String appStatus) ;
     public AppPremisesRoutingHistoryDto getSecondRouteBackHistoryByAppNo(String appNo,String status);
 }
