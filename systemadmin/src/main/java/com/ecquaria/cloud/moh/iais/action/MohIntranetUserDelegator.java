@@ -14,10 +14,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserUpLoadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
@@ -93,6 +95,10 @@ public class MohIntranetUserDelegator {
     public void prepareData(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         prepareOption(bpc);
+        String deleteMod = (String)ParamUtil.getRequestAttr(request, "deleteMod");
+        if(!StringUtil.isEmpty(deleteMod)){
+            ParamUtil.setRequestAttr(request,"deleteMod","no");
+        }
         List<SelectOption> statusOption = getStatusOption();
         List<SelectOption> roleOption = getRoleOption();
         List<SelectOption> privilegeOption = getprivilegeOption();
@@ -212,24 +218,14 @@ public class MohIntranetUserDelegator {
         String userDomain = orgUserDto.getUserDomain();
         String userId = orgUserDto.getUserId();
         ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, userDomain);
-        if(clientUser!=null){
-            if (clientUser.isFirstTimeLoginNo()) {
-                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
-                intranetUserService.updateOrgUser(orgUserDto);
-                deleteEgpUser(userDomain, userId);
-                return;
-            } else {
-                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
-                intranetUserService.updateOrgUser(orgUserDto);
-                clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
-                intranetUserService.updateEgpUser(clientUser);
-                return;
-            }
-        }else {
+        if (clientUser != null && clientUser.isFirstTimeLoginNo()) {
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
             intranetUserService.updateOrgUser(orgUserDto);
-            return;
+            deleteEgpUser(userDomain, userId);
+        }else {
+            ParamUtil.setRequestAttr(request,"deleteMod","no");
         }
+        return;
     }
 
     public void prepareAddRole(BaseProcessClass bpc) {
@@ -359,7 +355,7 @@ public class MohIntranetUserDelegator {
                     errorMap.put("userId", "This user is already in Deactivated status.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
-                } else if (IntranetUserConstant.DEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status) &&!IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+                } else if (IntranetUserConstant.DEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
@@ -371,7 +367,7 @@ public class MohIntranetUserDelegator {
                     errorMap.put("userId", "This user is already in Active status.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
-                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) &&!IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+                } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
@@ -395,15 +391,14 @@ public class MohIntranetUserDelegator {
                     errorMap.put("userId", "This user is already in Active status.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     return;
-                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) &&!IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+                } else if (IntranetUserConstant.UNLOCK.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
                     intranetUserService.updateEgpUser(clientUser);
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
                     return;
-                }
-                else if (IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
+                } else if (IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
                     errorMap.put("userId", "Terminated users cannot be reactivated.");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
@@ -564,7 +559,6 @@ public class MohIntranetUserDelegator {
         intranetUserService.saveEgpUser(clientUser);
     }
 
-
     private void editEgpUser(OrgUserDto orgUserDto) {
         String userId = orgUserDto.getUserId();
         String userDomain = orgUserDto.getUserDomain();
@@ -641,6 +635,7 @@ public class MohIntranetUserDelegator {
         //ele
         List list = root.elements();
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
+        List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < list.size(); i++) {
             Element element = (Element) list.get(i);
             String userId = element.element("userId").getText();
@@ -678,85 +673,102 @@ public class MohIntranetUserDelegator {
             orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
             orgUserDto.setStatus(status);
             orgUserDto.setAvailable(Boolean.FALSE);
-            orgUserDtos.add(orgUserDto);
-        }
-        List<StringBuilder> results = IaisCommonUtils.genNewArrayList();
-        Map<String,OrgUserDto> map = IaisCommonUtils.genNewHashMap();
-        for (OrgUserDto orgUserDto : orgUserDtos) {
-            StringBuilder valiant = valiant(orgUserDto);
-            map.put(orgUserDto.getUserId(),orgUserDto);
-            results.add(valiant);
-        }
-        int mapSize = map.size();
-        int dtoSize = orgUserDtos.size();
-        if(mapSize!=dtoSize){
-            results.get(0).append("Contains duplicate user information");
-        }
 
-        if (!StringUtil.isEmpty(results.get(0))) {
-            bpc.request.setAttribute("results", results);
-            return;
+            OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
+            orgUserUpLoadDto.setUserId(userId);
+            List<String> valiant = valiant(orgUserDto);
+            if (IaisCommonUtils.isEmpty(valiant)) {
+                valiant.add("add success !");
+                orgUserDtos.add(orgUserDto);
+            }
+            orgUserUpLoadDto.setMsg(valiant);
+            orgUserUpLoadDtos.add(orgUserUpLoadDto);
         }
-        intranetUserService.createIntranetUsers(orgUserDtos);
-        StringBuilder sb = new StringBuilder("import success!");
-        results.add(sb);
-        bpc.request.setAttribute("results", results);
+        if (!IaisCommonUtils.isEmpty(orgUserDtos)) {
+            for (OrgUserDto orgUserDto : orgUserDtos) {
+                try {
+                    saveEgpUser(orgUserDto);
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    log.info(StringUtil.changeForLog("========================egpUser================"));
+                }
+
+            }
+            intranetUserService.createIntranetUsers(orgUserDtos);
+        }
+        bpc.request.setAttribute("orgUserUpLoadDtos", orgUserUpLoadDtos);
     }
 
 
-    private StringBuilder valiant(OrgUserDto orgUserDto) {
-        StringBuilder sb = new StringBuilder();
+    private List<String> valiant(OrgUserDto orgUserDto) {
+        List<String> errors = IaisCommonUtils.genNewArrayList();
         String userId = orgUserDto.getUserId();
         if (!StringUtil.isEmpty(userId)) {
             if (!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")) {
-                sb.append("UserId is Alphanumeric. ");
+                String error = "UserId is Alphanumeric.";
+                errors.add(error);
             } else {
                 OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
                 if (intranetUserByUserId != null) {
                     String valiuserId = intranetUserByUserId.getUserId();
                     if (userId.equals(valiuserId)) {
-                        sb.append("UserId is exist. ");
+                        String error = "UserId is exist.";
+                        errors.add(error);
                     }
                 }
             }
         } else {
-            sb.append("UserId must be not empty. ");
+            String error = "UserId is a mandatory field..";
+            errors.add(error);
         }
         String userDomain = orgUserDto.getUserDomain();
         if (StringUtil.isEmpty(userDomain)) {
-            sb.append("UserDomain must be not empty. ");
+            String error = "UserDomain is a mandatory field.";
+            errors.add(error);
         }
         String displayName = orgUserDto.getDisplayName();
         if (StringUtil.isEmpty(displayName)) {
-            sb.append("DisplayName must be not empty. ");
+            String error = "DisplayName is a mandatory field.";
+            errors.add(error);
         }
         Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
         if (accountActivateDatetime == null) {
-            sb.append("ActivateDate must be not empty. ");
+            String error = "ActivateDate is a mandatory field.";
+            errors.add(error);
         }
         Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
         if (accountDeactivateDatetime == null) {
-            sb.append("DeactivateDate must be not empty. ");
+            String error = "endDate is a mandatory field.";
+            errors.add(error);
         }
         if (accountDeactivateDatetime != null && accountActivateDatetime != null) {
             boolean after = accountDeactivateDatetime.after(accountActivateDatetime);
             if (!after) {
-                sb.append("Effective End Date must be after Effective Start Date. ");
+                String error = "Effective End Date must be after Effective Start Date.";
+                errors.add(error);
             }
         }
         String lastName = orgUserDto.getLastName();
         if (StringUtil.isEmpty(lastName)) {
-            sb.append("LastName must be not empty. ");
+            String error = "LastName is a mandatory field.";
+            errors.add(error);
         }
         String firstName = orgUserDto.getFirstName();
         if (StringUtil.isEmpty(firstName)) {
-            sb.append("FirstName must be not empty. ");
+            String error = "FirstName is a mandatory field.";
+            errors.add(error);
         }
         String email = orgUserDto.getEmail();
         if (StringUtil.isEmpty(email)) {
-            sb.append("Email must be not empty. ");
+            String error = "Email is a mandatory field.";
+            errors.add(error);
+        } else {
+            if (!ValidationUtils.isEmail(email)) {
+                String error = "Email is not  correct.";
+                errors.add(error);
+            }
         }
-        return sb;
+        return errors;
     }
 
 
