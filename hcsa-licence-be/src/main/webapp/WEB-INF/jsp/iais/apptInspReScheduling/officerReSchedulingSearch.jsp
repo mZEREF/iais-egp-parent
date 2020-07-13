@@ -37,42 +37,39 @@
             <div class="intranet-content">
               <iais:body>
                 <iais:section title="" id = "demoList">
-                  <div id="officersReSchSearch" class="collapse">
-                    <iais:row>
-                      <iais:field value="Working Group"/>
-                      <iais:value width="18">
-                          <iais:select name="reSchInspWorkGroup" options="workGroupOption" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
-                      </iais:value>
-                    </iais:row>
-                    <iais:row>
-                      <iais:field value="Inspector Name"/>
-                      <iais:value width="18">
-                        <c:forEach var="workGroupNo" items="${workGroupNos}">
-                          <div id="workGroupNo${workGroupNo}" class="reSchGroup-inspector-option">
-                            <iais:select name="inspectorName${workGroupNo}" options="inspectorOption${workGroupNo}" firstOption="Please Select"></iais:select>
-                          </div>
-                        </c:forEach>
-                      </iais:value>
-                    </iais:row>
-                    <iais:action style="text-align:right;">
-                      <button name="clearBtn" class="btn btn-secondary" type="button" onclick="javascript:officerReSchedulingClear()">Clear</button>
-                      <button name="searchBtn" class="btn btn-primary" type="button" onclick="javascript:officerReSchedulingSearch()">Search</button>
-                    </iais:action>
-                  </div>
+                  <iais:row>
+                    <iais:field value="Working Group"/>
+                    <iais:value width="18">
+                      <iais:select name="reSchInspWorkGroup" options="workGroupOption" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
+                    </iais:value>
+                  </iais:row>
+                  <iais:row>
+                    <iais:field value="Inspector Name"/>
+                    <iais:value width="18">
+                      <c:forEach var="workGroupNo" items="${workGroupNos}">
+                        <div id="workGroupNo${workGroupNo}">
+                          <iais:select name="inspectorName${workGroupNo}" options="inspectorOption${workGroupNo}" firstOption="Please Select"></iais:select>
+                        </div>
+                      </c:forEach>
+                    </iais:value>
+                  </iais:row>
+                  <iais:action style="text-align:right;">
+                    <button name="searchBtn" class="btn btn-primary" type="button" onclick="javascript:officerReSchedulingSearch()">Search</button>
+                  </iais:action>
                 </iais:section>
                 <iais:pagination  param="inspReSchSearchParam" result="inspReSchSearchResult"/>
                 <div class="table-gp">
                   <table class="table application-group">
                     <thead>
-                    <tr align="center">
-                      <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" field="HCI_NAME" value="HCI NAME"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="" value="Inspector(s)"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true" field="TASK_TYPE" value="Type of Task"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="" value="Service(s)"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
-                    </tr>
+                      <tr align="center">
+                        <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="HCI_NAME" value="HCI NAME"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="" value="Inspector(s)"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="TASK_TYPE" value="Type of Task"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="" value="Service(s)"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
+                      </tr>
                     </thead>
                     <tbody>
                       <c:choose>
@@ -128,21 +125,21 @@
         var inspectorCheck = $("#inspectorCheck").val();
         var workGroupCheck = $("#workGroupCheck").val();
         $("#inspectorName" + workGroupCheck).val(inspectorCheck);
-        $(".reSchGroup-inspector-option").hide();
-        $("#inspectorName" + workGroupCheck).show();
+        $("#reSchInspWorkGroup option").each(function(){
+            var value = $(this).val();
+            $("#workGroupNo" + value).addClass("hidden");
+        });
+        $("#workGroupNo" + workGroupCheck).removeClass("hidden");
     });
 
     $("#reSchInspWorkGroup").change(function reSchInspWorkGroupCheck() {
         var workGroupCheck = $("#reSchInspWorkGroup").val();
-        $(".reSchGroup-inspector-option").hide();
-        $("#inspectorName" + workGroupCheck).show();
+        $("#reSchInspWorkGroup option").each(function(){
+            var value = $(this).val();
+            $("#workGroupNo" + value).addClass("hidden");
+        });
+        $("#workGroupNo" + workGroupCheck).removeClass("hidden");
     });
-
-    function officerReSchedulingClear() {
-        $('#inspWorkGroup option:first').prop('selected', 'selected');
-        $('#inspectorName option:first').prop('selected', 'selected');
-        $("#officersReSchSearch .current").text("Please Select");
-    }
 
     function officerReSchedulingSubmit(action){
         $("[name='mohOfficerReSchedulingType']").val(action);
