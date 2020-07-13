@@ -89,21 +89,26 @@
                                 <td><c:out value="-"/></td>
                               </c:if>
                               <c:if test="${not empty reschSearch.inspectors}">
-                                <c:forEach var="inspector" items="${reschSearch.inspectors}">
-                                  <td><c:out value="${inspector}"/></td>
-                                </c:forEach>
+                                <td>
+                                  <c:forEach var="inspector" items="${reschSearch.inspectors}">
+                                    <c:out value="${inspector}"/><br>
+                                  </c:forEach>
+                                </td>
                               </c:if>
-                              <td><fmt:formatDate value='${reschSearch.inspectionDate}' pattern='dd/MM/yyyy HH:mm:ss'/></td>
+                              <td><fmt:formatDate value = "${reschSearch.inspectionDate}" pattern = "dd/MM/yyyy HH:mm:ss"/></td>
+                              <td><c:out value="${reschSearch.taskType}"/></td>
                               <c:if test="${empty reschSearch.serviceNames}">
                                 <td><c:out value="-"/></td>
                               </c:if>
                               <c:if test="${not empty reschSearch.serviceNames}">
-                                <c:forEach var="service" items="${reschSearch.serviceNames}">
-                                  <td><c:out value="${service}"/></td>
-                                </c:forEach>
+                                <td>
+                                  <c:forEach var="service" items="${reschSearch.serviceNames}">
+                                    <c:out value="${service}"/><br>
+                                  </c:forEach>
+                                </td>
                               </c:if>
                               <td>
-                                <button class="btn btn-secondary btn-md" type="button" onclick="javascript:officerReSchedulingAssign('<iais:mask name="applicationNo" value="${reschSearch.appNo}"/>')">Reschedule</button>
+                                <button class="btn btn-secondary btn-md" type="button" onclick="javascript:officerReSchedulingAssign('<iais:mask name="applicationNo" value="${reschSearch.appNo}"/>', '${reschSearch.taskType}')">Reschedule</button>
                               </td>
                             </tr>
                           </c:forEach>
@@ -147,12 +152,16 @@
         mainPoolForm.submit();
     }
 
-    function officerReSchedulingAssign(applicationNo) {
+    function officerReSchedulingAssign(applicationNo, taskType) {
         showWaiting();
         $("#applicationNo").val(applicationNo);
-        $("#actionValue").val('choose');
-        var mainPoolForm = document.getElementById('mainSearchForm');
-        mainPoolForm.submit();
+        if("Inspection" == taskType){
+            $("#actionValue").val('assign');
+            officerReSchedulingSubmit('assign');
+        } else if ("Audit" == taskType){
+            $("#actionValue").val('audit');
+            officerReSchedulingSubmit('audit');
+        }
     }
 
     function officerReSchedulingSearch() {

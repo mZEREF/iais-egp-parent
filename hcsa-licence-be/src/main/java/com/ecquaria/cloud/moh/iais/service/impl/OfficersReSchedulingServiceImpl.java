@@ -184,7 +184,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 if (inspectorAppNoMap == null) {
                     inspectorAppNoMap = IaisCommonUtils.genNewHashMap();
                 }
-
+                List<String> repeatAppNo = IaisCommonUtils.genNewArrayList();
                 for (SelectOption selectOption : inspectorOption) {
                     String inspectorValue = selectOption.getValue();
                     String userId = userIdMap.get(inspectorValue);
@@ -192,7 +192,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     //filter rescheduling time limit
                     List<String> appNos = filterTimeLimit(appPremInspCorrelationDtoList);
                     //filter fast tracking and the same premises
-                    appNos = filterPremisesAndFast(appNos, reschedulingOfficerDto);
+                    appNos = filterPremisesAndFast(appNos, reschedulingOfficerDto, repeatAppNo);
                     inspectorAppNoMap.put(userId, appNos);
                     if(!IaisCommonUtils.isEmpty(appNos)) {
                         appNoList.addAll(appNos);
@@ -676,11 +676,10 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 }
             }
         }
-        return applicationNos;
+        return inspectorNames;
     }
 
-    private List<String> filterPremisesAndFast(List<String> appNos, ReschedulingOfficerDto reschedulingOfficerDto) {
-        List<String> repeatAppNo = IaisCommonUtils.genNewArrayList();
+    private List<String> filterPremisesAndFast(List<String> appNos, ReschedulingOfficerDto reschedulingOfficerDto, List<String> repeatAppNo) {
         List<String> applicationNos = IaisCommonUtils.genNewArrayList();
         Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
         if(samePremisesAppMap == null){
@@ -718,6 +717,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 }
             }
         }
+        reschedulingOfficerDto.setSamePremisesAppMap(samePremisesAppMap);
         return applicationNos;
     }
 

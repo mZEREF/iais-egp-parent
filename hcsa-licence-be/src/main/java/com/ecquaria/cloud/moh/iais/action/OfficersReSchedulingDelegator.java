@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -177,18 +176,6 @@ public class OfficersReSchedulingDelegator {
     public void mohOfficerReSchedulingStep(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingStep start ...."));
         ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
-        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
-        if("choose".equals(actionValue)){
-            String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
-            reschedulingOfficerDto.setAssignNo(applicationNo);
-            ApplicationDto applicationDto = officersReSchedulingService.getApplicationByAppNo(applicationNo);
-            String appType = applicationDto.getApplicationType();
-            if(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(appType)){
-                ParamUtil.setRequestAttr(bpc.request, "mohOfficerReSchedulingType", "audit");
-            } else {
-                ParamUtil.setRequestAttr(bpc.request, "mohOfficerReSchedulingType", "assign");
-            }
-        }
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
     }
 
