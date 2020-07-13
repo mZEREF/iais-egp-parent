@@ -482,8 +482,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             endDate = validateTime(errorMap, onsiteEndHH, onsiteEndMM, endDate, "onsiteEndMM", i);
                         }
                         if(!StringUtil.isEmpty(onsiteStartHH)&&!StringUtil.isEmpty(onsiteStartMM)&&!StringUtil.isEmpty(onsiteEndHH)&&!StringUtil.isEmpty(onsiteEndMM)){
-                            if(endDate<startDate){
-                                errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR008");
+                            if(endDate!=0){
+                                if(endDate<startDate){
+                                    errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR008");
+                                }
                             }
                         }
 
@@ -767,8 +769,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             conEndDate = validateTime(errorMap, conEndHH, conEndMM, conEndDate, "conEndMM", i);
                         }
                         if(!StringUtil.isEmpty(conStartHH)&&!StringUtil.isEmpty(conStartMM)&&!StringUtil.isEmpty(conEndHH)&&!StringUtil.isEmpty(conEndMM)){
-                            if(conEndDate<conStartDate){
-                                errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR008");
+                            if(0!=conEndDate){
+                                if(conEndDate<conStartDate){
+                                    errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR008");
+                                }
                             }
                         }
 
@@ -1062,11 +1066,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             endDate = validateTime(errorMap, offSiteEndHH, offSiteEndMM, endDate, "offSiteEndMM", i);
                         }
                         if(!StringUtil.isEmpty(offSiteStartHH)&&!StringUtil.isEmpty(offSiteStartMM)&&!StringUtil.isEmpty(offSiteEndHH)&&!StringUtil.isEmpty(offSiteEndMM)){
-                            if(endDate<startDate){
-                                errorMap.put("offSiteEndMM"+i,"UC_CHKLMD001_ERR008");
+                            if(endDate!=0){
+                                if(endDate<startDate){
+                                    errorMap.put("offSiteEndMM"+i,"UC_CHKLMD001_ERR008");
+                                }
                             }
                         }
-
                         //set  time
                         String errorStartMM = errorMap.get("offSiteStartMM"+i);
                         String errorEndMM = errorMap.get("offSiteEndMM"+i);

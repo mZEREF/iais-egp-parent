@@ -480,7 +480,6 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             String appType = appSubmissionDto.getAppType();
-            String appGrpNo = requestForChangeService.getApplicationGroupNumber(appType);
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             if (appGrpPremisesDtoList != null) {
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
@@ -541,7 +540,6 @@ public class WithOutRenewalDelegator {
                                 }
                                 appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
                                 appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
-                                appSubmissionDtoByLicenceId.setAppGrpNo(appGrpNo);
                                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
                                 PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
                                 if (preOrPostInspectionResultDto == null) {
@@ -568,6 +566,8 @@ public class WithOutRenewalDelegator {
                                     appSubmissionDtoByLicenceId.setAutoRfc(true);
                                 } else {
                                     appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+                                    appSubmissionDtoByLicenceId.setAutoRfc(false);
+                                    appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                                 }
                                 appSubmissionDtoByLicenceId.setAppGrpPrimaryDocDtos(null);
                                 RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
@@ -790,7 +790,9 @@ public class WithOutRenewalDelegator {
         String appGrpNo = appSubmissionDtos.get(0).getAppGrpNo();
         appSubmissionDtos1.addAll(appSubmissionDtos);
         /*      ApplicationGroupDto applicationGroupDto = appSubmissionService.createApplicationDataByWithOutRenewal(renewDto);*/
-
+        for(AppSubmissionDto appSubmissionDto : noAutoAppSubmissionDtos){
+            appSubmissionDto.setAppGrpNo(appGrpNo);
+        }
         appFeeDetailsDto.setApplicationNo(appGrpNo + "-01");
         appSubmissionService.saveAppFeeDetails(appFeeDetailsDto);
         appSubmissionDtos1.addAll(noAutoAppSubmissionDtos);
@@ -800,6 +802,10 @@ public class WithOutRenewalDelegator {
             String autoSubmissionId = generateIdClient.getSeqId().getEntity();
             Long auto = System.currentTimeMillis();
             List<AppSubmissionDto> saveutoAppSubmissionDto = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoAppSubmissionDtos);
+            String autoGrpNo = saveutoAppSubmissionDto.get(0).getAppGrpNo();
+            for(AppSubmissionDto appSubmissionDto : autoAppSubmissionDtos){
+                appSubmissionDto.setAppGrpNo(autoGrpNo);
+            }
             autoAppSubmissionListDto.setEventRefNo(auto.toString());
             autoAppSubmissionListDto.setAppSubmissionDtos(saveutoAppSubmissionDto);
             eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto, autoSubmissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,

@@ -797,7 +797,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                     }
                     int i=v.size();
-                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(application.getStatus())){
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(application.getStatus()) || ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         requestForChange++;
                     }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(application.getStatus())){
                         requestForChange--;
@@ -825,7 +825,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                     }
                     int i=v.size();
-                    if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)){
+                    if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING) || ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         reNew++;
                     }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(application.getStatus())){
                         reNew--;
@@ -844,7 +844,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }else {
                 for(ApplicationDto application :v){
                     int i=v.size();
-                    if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)){
+                    if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING) || ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         j++;
                     }
                     if(j==i){ list.addAll(v); }

@@ -59,16 +59,41 @@
                                     <div class="col-md-6">
                                       <label>Premises ${status.index+1} </label>
                                     </div>
+                                  </div>
+
+                                  <div class="row">
+                                    <div class="col-md-6">
+                                      Premises Type
+                                    </div>
                                     <div class="col-md-6">
                                       <div class="col-md-6">
-                                            <span class="newVal " attr="${appGrpPremDto.premisesType}"><c:out value="${appGrpPremDto.premisesType}"/></span>
-
+                                        <span class="newVal " attr="${appGrpPremDto.premisesType}">
+                                          <c:if test="${appGrpPremDto.premisesType=='OFFSIET'}">
+                                            Off-site
+                                          </c:if>
+                                         <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">
+                                            On-site
+                                         </c:if>
+                                          <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">
+                                            Conveyance
+                                         </c:if>
                                       </div>
                                       <div class="col-md-6">
-                                        <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}" style="display: none"><c:out value="${ppSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"/></span>
+                                        <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}" style="display: none">
+                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='OFFSIET'}">
+                                             Off-site
+                                           </c:if>
+                                         <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='ONSITE'}">
+                                           On-site
+                                         </c:if>
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='CONVEYANCE'}">
+                                            Conveyance
+                                          </c:if>
+                                        </span>
                                       </div>
                                     </div>
                                   </div>
+
                                   <c:if test="${'CONVEYANCE'==appGrpPremDto.premisesType}">
                                     <div class="row">
                                       <div class="col-md-6">

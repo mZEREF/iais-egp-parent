@@ -149,9 +149,6 @@
           <div class="col-xs-12 col-md-2" >
             <input type="text" disabled name="mix-principalOfficer" value="${PO.maximumCount}" placeholder="maximum count">
           </div>
-          <div class="col-xs-12 col-md-2 form-check" >   <input disabled class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
-          </div>
         </div>
       </div>
 
@@ -167,9 +164,6 @@
           <div class="col-xs-12 col-md-2">
             <input  type="text" disabled name="mix-DeputyPrincipalOfficer" value="${DPO.maximumCount}"  placeholder="maximum count">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input disabled class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
-          </div>
         </div>
       </div>
 
@@ -183,9 +177,6 @@
           </div>
           <div class="col-xs-12 col-md-2">
             <input disabled type="text" name="mix-ClinicalGovernanceOfficer" value="${CGO.maximumCount}"  placeholder="maximum count">
-          </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input  disabled class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
       </div>
@@ -201,9 +192,6 @@
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ServicePersonnel" disabled value="${SVCPSN.maximumCount}"  placeholder="maximum count">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input disabled class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
-          </div>
         </div>
       </div>
 
@@ -215,9 +203,6 @@
           <div class="col-xs-12 col-md-4">
             <input  readonly id="NumberDocument" type="text">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" disabled="disabled" aria-invalid="false">
-            <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
-          </div>
         </div>
       </div>
 
@@ -227,9 +212,6 @@
             be Uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input readonly id="DescriptionDocument" type="text">
-          </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input disabled class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
       </div>
@@ -241,9 +223,6 @@
           <div class="col-xs-12 col-md-4">
             <input readonly id="Numberfields" type="text">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" disabled type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
-          </div>
         </div>
       </div>
 
@@ -252,9 +231,6 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info field to be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input disabled id="DescriptionGeneral" type="text">
-          </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input disabled class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
       </div>

@@ -185,9 +185,6 @@
           <div class="col-xs-12 col-md-2" >
             <input type="text" name="mix-principalOfficer" value="${PO.maximumCount}" placeholder="maximum count">
           </div>
-          <div class="col-xs-12 col-md-2 form-check" >   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
-          </div>
         </div>
       </div>
 
@@ -201,9 +198,6 @@
           </div>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-DeputyPrincipalOfficer" value="${DPO.maximumCount}"  placeholder="maximum count">
-          </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
       </div>
@@ -219,9 +213,6 @@
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ClinicalGovernanceOfficer" value="${CGO.maximumCount}"  placeholder="maximum count">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
-          </div>
         </div>
       </div>
 
@@ -236,9 +227,6 @@
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-ServicePersonnel" value="${SVCPSN.maximumCount}"  placeholder="maximum count">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
-          </div>
         </div>
       </div>
 
@@ -252,9 +240,6 @@
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="mix-MedalertPerson" value="${MAP.maximumCount}"  placeholder="maximum count">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
-          </div>
         </div>
       </div>
 
@@ -264,9 +249,6 @@
             uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument" type="text" value="${NumberDocument}" name="NumberDocument" maxlength="2">
-          </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" <c:if test="${documentMandatory==true}"> checked="checked"</c:if> id="NumberDocumentMandatory"  type="checkbox"  name="NumberDocumentMandatory" aria-invalid="false">
-            <label for="NumberDocumentMandatory" class="form-check-label" ><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
       </div>
@@ -278,9 +260,6 @@
           <div class="col-xs-12 col-md-4">
             <input id="DescriptionDocument" type="text" value="${DescriptionDocument}" name="DescriptionDocument" maxlength="255">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input" <c:if test="${documentMandatory==true}"> checked="checked"</c:if> id="DescriptionDocumentMandatory" type="checkbox" name="DescriptionDocumentMandatory" aria-invalid="false">
-            <label for="DescriptionDocumentMandatory" class="form-check-label"><span class="check-square"></span>Mandatory</label>
-          </div>
         </div>
       </div>
 
@@ -291,9 +270,6 @@
           <div class="col-xs-12 col-md-4">
             <input id="Numberfields" type="text" name="Numberfields" maxlength="2" value="${comDocConfigDtoSize}">
           </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="NumberfieldsMandatory" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
-          </div>
         </div>
       </div>
 
@@ -302,9 +278,6 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info field to be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="DescriptionGeneral" type="text" name="DescriptionGeneral" maxlength="255" value="${comDocConfigDtosTitle}">
-          </div>
-          <div class="col-xs-12 col-md-2 form-check">   <input class="form-check-input"  type="checkbox" name="Conveyance" aria-invalid="false">
-            <label class="form-check-label"><span class="check-square"></span>Mandatory</label>
           </div>
         </div>
       </div>

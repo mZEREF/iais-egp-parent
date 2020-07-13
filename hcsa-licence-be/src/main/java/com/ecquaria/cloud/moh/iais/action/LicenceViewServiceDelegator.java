@@ -110,7 +110,8 @@ public class LicenceViewServiceDelegator {
     public void PrepareViewData(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData start ..."));
         String rfi = bpc.request.getParameter("rfi");
-        if (!StringUtil.isEmpty(rfi)) {
+        String requestRfi = (String)bpc.request.getAttribute("rfi");
+        if (!StringUtil.isEmpty(rfi)||!StringUtil.isEmpty(requestRfi)) {
             bpc.request.setAttribute("rfi", "rfi");
         }
         bpc.request.getSession().removeAttribute(NOT_VIEW);
@@ -478,6 +479,7 @@ public class LicenceViewServiceDelegator {
         }
         if (!StringUtil.isEmpty(errorMsg)) {
             isSuccess = "N";
+            bpc.request.setAttribute("rfi","rfi");
         }
         ParamUtil.setRequestAttr(bpc.request, "successMsg", successMsg);
         ParamUtil.setRequestAttr(bpc.request, "isSuccess", isSuccess);

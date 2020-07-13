@@ -243,7 +243,7 @@ public class NewApplicationDelegator {
             //init session and data
             initSession(bpc);
         }
-        initOldSession(bpc);
+    /*    initOldSession(bpc);*/
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
@@ -340,12 +340,6 @@ public class NewApplicationDelegator {
             log.info(StringUtil.changeForLog("svcId not null"));
             Set<String> premisesType  = IaisCommonUtils.genNewHashSet();
             premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
-//            if(appSubmissionDto.isOnlySpecifiedSvc()){
-//                List<String> baseSvcIds = appSubmissionDto.getExistBaseServiceList();
-//                premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(baseSvcIds);
-//            }else{
-//                premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
-//            }
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }else{
             log.error(StringUtil.changeForLog("do not have select the services"));
@@ -573,17 +567,6 @@ public class NewApplicationDelegator {
 
         //gen dto
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
-      /*  if( appSubmissionDto.getAppGrpPremisesDtoList()!=null){
-            int size = appSubmissionDto.getAppGrpPremisesDtoList().size();
-            for(int i=0;i<size;i++){
-                String[] licenceNames = ParamUtil.getMaskedStrings(bpc.request, "licenceName"+i);
-                // selcet licence to do
-                if(licenceNames!=null){
-                    List<String> list = Arrays.asList(licenceNames);
-                    bpc.request.getSession().setAttribute("selectLicence"+i,list);
-                }
-            }
-        }*/
 
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
 
@@ -631,7 +614,7 @@ public class NewApplicationDelegator {
             List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
             List<String> premisesHciList = appSubmissionService.getHciFromPendAppAndLic(appSubmissionDto.getLicenseeId(),hcsaServiceDtos);
             ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.PREMISES_HCI_LIST, (Serializable) premisesHciList);
-            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
+            AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
 
             Map<String, String> errorMap= requestForChangeService.doValidatePremiss(appSubmissionDto,oldAppSubmissionDto,premisesHciList,keywords,isRfi);
             String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
@@ -1129,7 +1112,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
 
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
         String appGrpNo = appSubmissionDto.getAppGrpNo();
         //oldAppSubmissionDtos
         List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
@@ -1139,8 +1122,7 @@ public class NewApplicationDelegator {
         stringBuilder.setLength(0);
         stringBuilder.append(oldAppSubmissionDto);
         log.info(StringUtil.changeForLog("oldAppSubmissionDto:"+stringBuilder.toString()));
-        Map<String, String> doComChangeMap= doComChange(appSubmissionDto,oldAppSubmissionDto);
-
+        Map<String, String>   doComChangeMap= doComChange(appSubmissionDto,oldAppSubmissionDto);
         if(!doComChangeMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",doComChangeMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
@@ -1166,23 +1148,9 @@ public class NewApplicationDelegator {
         }*/
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
-        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
-            AppSubmissionDto submitAppSubmissionDto=  (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,"submitAppSubmissionDto");
-            AppSubmissionDto oldSubmitAppSubmissionDto =(AppSubmissionDto)  bpc.request.getSession().getAttribute("oldSubmitAppSubmissionDto");
-            List<AppGrpPremisesDto> appGrpPremisesDtoList1 = submitAppSubmissionDto.getAppGrpPremisesDtoList();
-            List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList1){
-                String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-                appGrpPremisesDto=   appGrpPremisesDtoList.get(0);
-                appGrpPremisesDto.setPremisesIndexNo(premisesIndexNo);
-            }
-            appSubmissionRequestInformationDto.setAppSubmissionDto(submitAppSubmissionDto);
-            appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldSubmitAppSubmissionDto);
-        }else {
-            appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
-            appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
-        }
 
+        appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
+        appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
 
         //update message status
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
@@ -3220,12 +3188,12 @@ public class NewApplicationDelegator {
         //
         List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
         Map<String,AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
-        Map<String, String> poMap = NewApplicationHelper.doValidatePo(poDto,licPersonMap);
+       /* Map<String, String> poMap = NewApplicationHelper.doValidatePo(poDto,licPersonMap);
         if(!poMap.isEmpty()){
             previewAndSubmitMap.put("po","UC_CHKLMD001_ERR001");
             String poMapStr = JsonUtil.parseToJson(poMap);
             log.info(StringUtil.changeForLog("poMap json str:"+poMapStr));
-        }
+        }*/
         //
         List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST);
         Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList,licPersonMap);
@@ -5188,6 +5156,7 @@ public class NewApplicationDelegator {
     }
 
     private void initOldSession(BaseProcessClass bpc) throws CloneNotSupportedException {
+        AppSubmissionDto test1= (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "oldSubmitAppSubmissionDto");
         if(appSubmissionDto != null){
             appSubmissionDto = NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
@@ -5254,7 +5223,8 @@ public class NewApplicationDelegator {
                 ParamUtil.setSessionAttr(bpc.request,"oldSubmitAppSubmissionDto",oldAppSubmissionDto);
 
             }
-
+            AppSubmissionDto test= (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
+            log.info("");
         }
 
     }
