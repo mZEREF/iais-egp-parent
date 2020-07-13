@@ -176,6 +176,11 @@ public class OfficersReSchedulingDelegator {
     public void mohOfficerReSchedulingStep(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingStep start ...."));
         ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        if("assign".equals(actionValue) || "audit".equals(actionValue)) {
+            String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+            reschedulingOfficerDto.setAssignNo(applicationNo);
+        }
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
     }
 
