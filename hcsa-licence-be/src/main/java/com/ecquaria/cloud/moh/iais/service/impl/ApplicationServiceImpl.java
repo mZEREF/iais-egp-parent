@@ -14,8 +14,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -26,19 +26,16 @@ import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.ChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
-import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +45,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -86,9 +82,6 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private EicClient eicClient;
-
-    @Autowired
-    private LicenseeService licenseeService;
 
     @Value("${spring.application.name}")
     private String currentApp;
@@ -216,25 +209,20 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public void alertSelfDeclNotification() {
         log.info("===>>>>alertSelfDeclNotification start");
-        List<Integer> selfAssMtFlag = Arrays.asList(ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT, ApplicationConsts.SUBMITTED_RFI_SELF_ASSESSMENT);
 
-        List<ApplicationGroupDto> groupDtoList = applicationClient.getPendingSubmitSelfAssGroup(selfAssMtFlag).getEntity();
+        int rdr = systemParamConfig.getReminderSelfDecl();
+        int rdrDay = systemParamConfig.getReminderSelfDeclDay();
 
-        List<ApplicationGroupDto> afterFilterData = IaisCommonUtils.genNewArrayList();
-        Calendar calendar = Calendar.getInstance();
-        for (ApplicationGroupDto group : groupDtoList){
-            Date submitDate = group.getSubmitDt();
-            calendar.setTime(submitDate);
-            calendar.add(Calendar.DATE, 5);
+        List<Integer> assMts = Arrays.asList(ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT, ApplicationConsts.SUBMITTED_RFI_SELF_ASSESSMENT);
 
-            Date currentDate = new Date();
-            int betweenDay = DateUtil.daysBetween(submitDate, currentDate);
-            if (betweenDay > 5){
-                afterFilterData.add(group);
-            }
-        }
+        Map<String, Object> params = IaisCommonUtils.genNewHashMap();
+        params.put("assMtFlag", assMts);
+        params.put("reminderPeriod", rdr);
+        params.put("reminderDay", rdrDay);
 
-        ChecklistHelper.sendNotificationToApplicant(afterFilterData);
+        List<SelfAssMtEmailDto> allAssLt = applicationClient.getPendingSubmitSelfAss(params).getEntity();
+
+
 
         log.info("===>>>>alertSelfDeclNotification end");
     }

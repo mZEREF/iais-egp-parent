@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.NotificateApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -279,8 +280,9 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/application/grp-premises/{appPreId}")
     FeignResponseEntity<AppGrpPremisesEntityDto> getAppGrpPremise(@PathVariable(name = "appPreId")String appPreId);
 
-    @PostMapping(value = "iais-application-be/application/pending/self-assessment/group-id", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ApplicationGroupDto>> getPendingSubmitSelfAssGroup(@RequestBody List<Integer> selfAssMtFlag);
+    @PostMapping(value = "iais-application-be/application/pending-reminder/self-assessment/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<SelfAssMtEmailDto>> getPendingSubmitSelfAss(@RequestBody Map<String, Object> params);
+
     @GetMapping(value = "/iais-application-be/application-list-by-application-no",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getApplicationDtosByApplicationNo(@RequestParam("applicationNo")String applicationNo);
     @PostMapping(value = "/iais-licence-view/app-edit-selsect-by-application-ids",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)

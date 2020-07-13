@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListFi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.NotificateApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
@@ -656,7 +657,7 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity<List<ApplicationGroupDto>> getPendingSubmitSelfAssGroup(List<Integer> selfAssMtFlag) {
+    public FeignResponseEntity<List<SelfAssMtEmailDto>> getPendingSubmitSelfAss(Map<String, Object> params) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
