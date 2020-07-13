@@ -130,6 +130,7 @@
     }
 
     function doClearMsg(){
+        $("[name='inboxAdvancedSearch']").val("");
         $("#inboxType option:first").prop("selected", 'selected').val("All");
         $("#inboxService option:first").prop("selected", 'selected').val("All");
         $("#inboxType .current").text("Select a type");
