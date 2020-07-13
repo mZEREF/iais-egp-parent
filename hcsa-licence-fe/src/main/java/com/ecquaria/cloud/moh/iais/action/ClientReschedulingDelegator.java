@@ -110,7 +110,7 @@ public class ClientReschedulingDelegator {
         StringBuilder stringBuilder=new StringBuilder();
         for (String appSt: AppointmentUtil.getNoReschdulingAppStatus()
              ) {
-            stringBuilder.append(appSt).append(',');
+            stringBuilder.append(appSt).append("','");
         }
         rescheduleParam.addParam("appStatus_reschedule", "(app.status not in('"+stringBuilder.toString()+"'))");
         rescheduleParam.addParam("RESCHEDULE_COUNT", "(insAppt.RESCHEDULE_COUNT <"+systemParamConfig.getRescheduleMaxCount()+")");
