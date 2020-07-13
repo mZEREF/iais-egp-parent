@@ -63,7 +63,7 @@ public interface HcsaChklClient {
     FeignResponseEntity<IaisApiResult<ChecklistItemDto>> saveChklItem(ChecklistItemDto itemDto);
 
     @GetMapping(path = "/iais-hcsa-checklist/regulation/regulation-clauses-distinct")
-    FeignResponseEntity<List<String>> listRegulationClauseNo();
+    FeignResponseEntity<List<HcsaChklSvcRegulationDto>> listRegulationClauseNo();
 
     @PostMapping(value = "/iais-regulation/regulation", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<IaisApiResult<HcsaChklSvcRegulationDto>> createRegulation(@RequestBody HcsaChklSvcRegulationDto regulationDto);

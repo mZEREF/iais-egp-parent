@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.CheckItemQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ItemTemplate;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
@@ -188,7 +189,7 @@ public class HcsaChklItemDelegator {
             FileUtils.deleteTempFile(toFile);
             ParamUtil.setRequestAttr(request, "messageContent", errorMsgContentList);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-        }catch (IaisRuntimeException e){
+        }catch (Exception e){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR011"));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             log.error(e.getMessage(), e);
@@ -296,13 +297,13 @@ public class HcsaChklItemDelegator {
     private void preSelectOption(HttpServletRequest request){
         List<SelectOption> clauseSelect = IaisCommonUtils.genNewArrayList();
 
-        List<String> strings = hcsaChklService.listRegulationClauseNo();
-        for(String s : strings){
-            clauseSelect.add(new SelectOption(s, s));
+        List<HcsaChklSvcRegulationDto> regulations = hcsaChklService.listRegulationClause();
+        for(HcsaChklSvcRegulationDto i : regulations){
+            clauseSelect.add(new SelectOption(i.getId(), i.getClauseNo()));
         }
 
+        ParamUtil.setSessionAttr(request, "regulationSelectDetail", (Serializable) regulations);
         ParamUtil.setRequestAttr(request, "clauseSelect", clauseSelect);
-
     }
 
     /**
@@ -356,16 +357,14 @@ public class HcsaChklItemDelegator {
             itemDto = new ChecklistItemDto();
         }
         String itemId = ParamUtil.getMaskedString(request, HcsaChecklistConstants.PARAM_CHKL_ITEM_ID);
-        String clause = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
-        String desc = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_DESC);
+        String regulationId = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_REGULATION_CLAUSE);
         String chklItem = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_CHECKLIST_ITEM);
         String riskLevel = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_RISK_LEVEL);
         String answerType = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_ANSWER_TYPE);
         String status = ParamUtil.getString(request, HcsaChecklistConstants.PARAM_STATUS);
 
         itemDto.setItemId(itemId);
-        itemDto.setRegulationClauseNo(clause);
-        itemDto.setRegulationClause(desc);
+        itemDto.setRegulationId(regulationId);
         itemDto.setRiskLevel(riskLevel);
         itemDto.setStatus(status);
         itemDto.setChecklistItem(chklItem);
@@ -693,6 +692,21 @@ public class HcsaChklItemDelegator {
         }
 
     }
+
+    @GetMapping(value = "checklist-item-clause")
+    public @ResponseBody String getRegulationClauseById(HttpServletRequest request, HttpServletResponse response){
+        String regulationId = request.getParameter("regulationId");
+        List<HcsaChklSvcRegulationDto> regulations = (List<HcsaChklSvcRegulationDto>) ParamUtil.getSessionAttr(request, "regulationSelectDetail");
+        if (!StringUtil.isEmpty(regulationId) && !IaisCommonUtils.isEmpty(regulations)){
+            for (HcsaChklSvcRegulationDto i : regulations){
+                if (regulationId.equals(i.getId())){
+                    return i.getClause();
+                }
+            }
+        }
+        return "-";
+    }
+
 
     /**
     * @author: yichen 

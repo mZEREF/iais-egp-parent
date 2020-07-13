@@ -51,7 +51,7 @@
           <div class="form-group">
             <iais:field value="Regulation" ></iais:field>
             <div class="col-xs-5 col-md-3">
-              <input type="text" name="regulationClause" maxlength="2000" value="${regulationClause}"/>
+              <input type="text" name="regulationClause" maxlength="8000" value="${regulationClause}"/>
               <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
             </div>
           </div>

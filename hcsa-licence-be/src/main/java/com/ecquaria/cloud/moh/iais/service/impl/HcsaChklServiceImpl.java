@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQuer
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ItemTemplate;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -76,10 +77,9 @@ public class HcsaChklServiceImpl implements HcsaChklService {
 
     @Override
 
-    public List<String> listRegulationClauseNo() {
+    public List<HcsaChklSvcRegulationDto> listRegulationClause() {
         return chklClient.listRegulationClauseNo().getEntity();
     }
-
 
     @Override
     public Boolean submitCloneItem(List<ChecklistItemDto> hcsaChklItemDtos) {

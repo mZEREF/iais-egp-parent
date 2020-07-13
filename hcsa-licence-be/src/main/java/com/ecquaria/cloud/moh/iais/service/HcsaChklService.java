@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ItemTemplate;
 import com.ecquaria.cloud.moh.iais.common.dto.message.ErrorMsgContent;
 import org.springframework.stereotype.Service;
@@ -62,11 +63,11 @@ public interface HcsaChklService {
     IaisApiResult<ChecklistItemDto> saveChklItem(ChecklistItemDto itemDto);
 
     /**
-     * list de-weight regulation clause number
+     * list de-weight regulation
      * backend method: listRegulationClauseNo
      * @return
      */
-    List<String> listRegulationClauseNo();
+    List<HcsaChklSvcRegulationDto> listRegulationClause();
 
     /**
      * submit clone item

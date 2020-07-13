@@ -87,7 +87,7 @@ public class HcsaChklFallback implements HcsaChklClient{
     }
 
     @Override
-    public FeignResponseEntity<List<String>> listRegulationClauseNo() {
+    public FeignResponseEntity<List<HcsaChklSvcRegulationDto>> listRegulationClauseNo() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

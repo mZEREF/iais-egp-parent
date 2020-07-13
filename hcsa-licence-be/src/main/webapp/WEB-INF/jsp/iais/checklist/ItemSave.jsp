@@ -44,8 +44,18 @@
                         <div class="col-xs-5 col-md-3">
                             <iais:field value="Regulation Clause Number" required="true"></iais:field>
                             <div class="col-xs-5 col-md-3">
-                                <iais:select name="regulationClauseNo"  options="clauseSelect" firstOption="Please Select"  value="${itemRequestAttr.regulationClauseNo}"></iais:select>
-                                <span id="error_regulationClauseNo" name="iaisErrorMsg" class="error-msg"></span>
+                                <iais:select name="regulationClauseNo" onchange="displayRegulation()" options="clauseSelect" firstOption="Please Select"  value="${itemRequestAttr.regulationId}"></iais:select>
+                                <span id="error_regulationId" name="iaisErrorMsg" class="error-msg"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-5 col-md-3">
+                            <iais:field value="Regulation" required="false"></iais:field>
+                            <div class="col-xs-5 col-md-3">
+                                <textarea cols="70" rows="7" name="regulationClause" id="regulationClause"  readonly maxlength="8000"></textarea>
+                                <span id="error_regulationClause" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                     </div>
@@ -118,6 +128,37 @@
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <script>
+
+    if (window.attachEvent) {
+        window.attachEvent("onload", init);
+    } else if (window.addEventListener) {
+        window.addEventListener("load", init, false);
+    }
+
+    function init() {
+        var regulationId = $("select[name='regulationClauseNo']").val();
+        if (regulationId == undefined || regulationId == ''){
+            $('#regulationClause').val('-');
+        }else {
+            displayRegulation()
+        }
+    }
+
+    function displayRegulation() {
+        var regulationId = $("select[name='regulationClauseNo']").val();
+        $.ajax({
+            type: "GET",
+            url: '${pageContext.request.contextPath}/checklist-item-clause',
+            data: {regulationId : regulationId},
+            success: function (data) {
+                $('#regulationClause').val(data);
+            },
+            error: function (msg) {
+                alert("error");
+            }
+        });
+    }
+
     function doSubmit(itemId){
         SOP.Crud.cfxSubmit("mainForm", "saveChecklistItem", itemId);
     }

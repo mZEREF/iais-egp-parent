@@ -49,7 +49,7 @@
             <div class="form-group">
                 <iais:field value="Regulations" required="true" />
                 <div class="col-xs-5 col-md-3" >
-                    <textarea cols="70" rows="7" name="regulationClause" id="regulationClause" maxlength="2000"><c:out value="${regulationAttr.clause}"> </c:out></textarea>
+                    <textarea cols="70" rows="7" name="regulationClause" id="regulationClause" maxlength="8000"><c:out value="${regulationAttr.clause}"> </c:out></textarea>
                     <span id="error_clause" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
