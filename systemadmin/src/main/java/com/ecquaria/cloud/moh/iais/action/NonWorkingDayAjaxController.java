@@ -58,12 +58,9 @@ public class NonWorkingDayAjaxController {
         if(nonWorkingDateDto != null) {
             if (!nonWorkingDateDto.isProhibit()) {
                 nonWorkingDateListByWorkGroupId.remove(nonWorkingDateDto);
-
-                String shortName = (String) ParamUtil.getSessionAttr(request, CURRENT_SHORT_NAME);
                 String amAvailability = ParamUtil.getString(request, AM_AVAILABILITY__ATTR);
                 String pmAvailability = ParamUtil.getString(request, PM_AVAILABILITY__ATTR);
 
-                nonWorkingDateDto.setShortName(shortName);
                 nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
                 int am = "Y".equals(amAvailability) ? 0x1 : 0x0;

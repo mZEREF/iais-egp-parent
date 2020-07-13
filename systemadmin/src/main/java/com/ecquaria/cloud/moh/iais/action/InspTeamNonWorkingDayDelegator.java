@@ -118,13 +118,15 @@ public class InspTeamNonWorkingDayDelegator {
 		String shotId = ParamUtil.getString(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT);
 
 		if (shotId != null){
-			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(shotId);
+			String groupName = inspSupAddAvailabilityService.getWorkGroupById(shotId).getGroupName();
+			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(groupName);
 			ParamUtil.setSessionAttr(request, CURRENT_SHORT_ID, shotId);
 		}else {
 			Optional<WorkingGroupQueryDto> wrkOtional = Optional.ofNullable(workingGroupQueryList.get(0));
 			if (wrkOtional.isPresent()){
 				String defualtGroupId = wrkOtional.get().getId();
-				nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(defualtGroupId);
+				String groupName = inspSupAddAvailabilityService.getWorkGroupById(defualtGroupId).getGroupName();
+				nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(groupName);
 				ParamUtil.setSessionAttr(request, CURRENT_SHORT_ID, defualtGroupId);
 			}
 		}
@@ -138,8 +140,9 @@ public class InspTeamNonWorkingDayDelegator {
 
 		if (IaisCommonUtils.isEmpty(nonWorkingDateListByWorkGroupId)){
 			String groupId = (String)ParamUtil.getSessionAttr(request, CURRENT_SHORT_ID);
+			String groupName = inspSupAddAvailabilityService.getWorkGroupById(groupId).getGroupName();
 			saveWeekend(groupId);
-			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(groupId);
+			nonWorkingDateListByWorkGroupId = appointmentService.getNonWorkingDateListByWorkGroupId(groupName);
 		}
 
 		ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
@@ -159,7 +162,8 @@ public class InspTeamNonWorkingDayDelegator {
 			nonWorkingDateDto.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
 			nonWorkingDateDto.setRecursivceDate(wkrDays.get(i));
 			nonWorkingDateDto.setDesc("");
-			nonWorkingDateDto.setShortName(groupId);
+			String groupName = inspSupAddAvailabilityService.getWorkGroupById(groupId).getGroupName();
+			nonWorkingDateDto.setShortName(groupName);
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
 			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
@@ -189,6 +193,7 @@ public class InspTeamNonWorkingDayDelegator {
 			nonWorkingDateDto.setSrcSystemId(AppointmentConstants.APPT_SRC_SYSTEM_PK_ID);
 			nonWorkingDateDto.setRecursivceDate(wkrDays.get(i));
 			nonWorkingDateDto.setDesc("");
+			nonWorkingDateDto.setShortName(groupName);
 			nonWorkingDateDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 			nonWorkingDateDto.setStartAt(Time.valueOf(AM_START));
 			nonWorkingDateDto.setEndAt(Time.valueOf(PM_END));
@@ -224,9 +229,13 @@ public class InspTeamNonWorkingDayDelegator {
 
 		}
 
+		//sort
 		for (Map.Entry<String, ApptNonWorkingDateDto> entry : map.entrySet()) {
 			retList.add(entry.getValue());
 		}
+		retList.add(retList.get(0));
+		retList.remove(0);
+
 
 		return retList;
 	}
