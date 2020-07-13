@@ -200,7 +200,7 @@
                                             </c:if>
                                             <c:if test="${app.status == 'APST007' || app.status == 'APST002'
                                                           || app.status == 'APST012' || app.status == 'APST038'
-                                                          || app.status == 'APST011'}">
+                                                          || app.status == 'APST011' || app.status == 'APST023'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <option value="Withdraw">Withdraw</option>
