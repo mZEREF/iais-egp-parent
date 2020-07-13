@@ -299,9 +299,11 @@ public interface ApplicationClient  {
     FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcIdStr") String svcIdStr);
     @GetMapping(value = "/appeal/licence-appeal-or-cessation-by-licence-id")
     FeignResponseEntity<Boolean> isLiscenceAppealOrCessation(@RequestParam("licenceId") String licenceId);
-
-
+    @GetMapping(value = "/appeal/apppremisemisc-by-appIdOrLicenceId",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppPremiseMiscDto> getAppPremiseMiscDtoByAppId(@RequestParam("appIdOrLicenceId")String appIdOrLicenceId);
 
     @PostMapping(value = "/iais-application/fe-application-dto-list",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> saveApplicationDtos(@RequestBody List<ApplicationDto> applicationDtos);
+    @GetMapping(value = "/iais-application/application-by-corrId",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationDto> getApplicationByCorrId(@RequestParam("corrId")String corrId);
 }

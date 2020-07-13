@@ -312,12 +312,19 @@ public class AppealServiceImpl implements AppealService {
         }
         String appealingFor = ParamUtil.getMaskedString(request, APPEALING_FOR);
         String type  = request.getParameter(TYPE);
+        initRfi(request,appealingFor);
         typeApplicationOrLicence(request,type,appealingFor);
         request.getSession().setAttribute(APPEALING_FOR,appealingFor);
         request.getSession().setAttribute(TYPE,type);
 
     }
 
+    private void  initRfi(HttpServletRequest request,String appealingFor){
+        AppPremiseMiscDto entity = applicationClient.getAppPremiseMiscDtoByAppId(appealingFor).getEntity();
+        if(entity!=null){
+            requetForInformationGetMessage(request,entity);
+        }
+    }
     private void typeApplicationOrLicence(HttpServletRequest request,String type,String appealingFor){
         if (LICENCE.equals(type)) {
             LicenceDto licenceDto = licenceClient.getLicBylicId(appealingFor).getEntity();
@@ -387,9 +394,6 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("applicationNo",applicationNo);
             request.setAttribute("applicationDto",applicationDto);
             String status = applicationDto.getStatus();
-            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
-                requetForInformationGetMessage(request);
-            }
             if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status)){
                 request.getSession().setAttribute("applicationAPPROVED","APPROVED");
             }
@@ -507,11 +511,11 @@ public class AppealServiceImpl implements AppealService {
         }
         String appealReason = appealPageDto.getAppealReason();
         String id = (String)request.getSession().getAttribute("id");
-        Boolean flag = applicationClient.isAppealEligibility(id).getEntity();
+       /* Boolean flag = applicationClient.isAppealEligibility(id).getEntity();
         if(!flag){
             map.put("submit","An appeal has already been submitted for this licence/application");
             return;
-        }
+        }*/
         if (StringUtil.isEmpty(appealReason)){
             map.put("reason","UC_CHKLMD001_ERR001");
         }else {
@@ -653,11 +657,10 @@ public class AppealServiceImpl implements AppealService {
 
 
     private String licencePresmises(HttpServletRequest request,String  licenceId){
-
         LicenceDto licenceDto = licenceClient.getLicBylicId(licenceId).getEntity();
-        ApplicationDto entity1 = applicationClient.getApplicationsByLicenceId(licenceId).getEntity();
+        ApplicationDto entity1 =(ApplicationDto) request.getSession().getAttribute("rfiApplication");
         String licenseeId = licenceDto.getLicenseeId();
-
+        String rfi =(String)request.getSession().getAttribute("rfi");
         List<ApplicationDto> applicationDtoListlist=IaisCommonUtils.genNewArrayList();
         List<PremisesDto> premisess = licenceClient.getPremisesDto(licenceDto.getId()).getEntity();
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
@@ -679,19 +682,17 @@ public class AppealServiceImpl implements AppealService {
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
             applicationDto.setApplicationType(ApplicationConsts.APPLICATION_TYPE_APPEAL);
             applicationDto.setVersion(1);
-            if(entity1!=null){
-                String status = entity1.getStatus();
-                if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
-                    applicationDto.setVersion(entity1.getVersion()+1);
-                    //if not need new group
-                    applicationGroupDto.setId(entity1.getAppGrpId());
-                    applicationGroupDto.setGroupNo(entity1.getApplicationNo().substring(0,entity1.getApplicationNo().lastIndexOf('-')));
-                    applicationDto.setApplicationNo(entity1.getApplicationNo());
-                    applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
-                    s=entity1.getApplicationNo();
-                }
-
+            if("rfi".equals(rfi)){
+                applicationDto.setVersion(entity1.getVersion()+1);
+                //if not need new group
+                applicationGroupDto.setId(entity1.getAppGrpId());
+                applicationGroupDto.setGroupNo(entity1.getApplicationNo().substring(0,entity1.getApplicationNo().lastIndexOf('-')));
+                applicationDto.setApplicationNo(entity1.getApplicationNo());
+                applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
+                s=entity1.getApplicationNo();
+                entity1.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
+                applicationClient.updateApplication(entity1);
             }
             List<String> svcNames=IaisCommonUtils.genNewArrayList();
             svcNames.add(licenceDto.getSvcName());
@@ -769,10 +770,9 @@ public class AppealServiceImpl implements AppealService {
     }
 
     private String applicationPresmies(HttpServletRequest request, String applicationId){
-
         ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
         String grpId = applicationDto.getAppGrpId();
-
+        String rfi =(String) request.getSession().getAttribute("rfi");
         ApplicationGroupDto entity = applicationClient.getApplicationGroup(grpId).getEntity();
         String appNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_APPEAL).getEntity();
         StringBuilder stringBuilder =new StringBuilder(appNo);
@@ -802,9 +802,7 @@ public class AppealServiceImpl implements AppealService {
 
         applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
         applicationDto1.setServiceId(applicationDto.getServiceId());
-        String status = applicationDto.getStatus();
         applicationDto1.setVersion(1);
-
         List<ApplicationDto> list=IaisCommonUtils.genNewArrayList();
         list.add(applicationDto1);
         appealDto.setApplicationGroupDto(applicationGroupDto);
@@ -813,16 +811,18 @@ public class AppealServiceImpl implements AppealService {
         appealDto.setApplicationDto(list);
         appealDto.setAppealType(ApplicationConsts.APPEAL_TYPE_APPLICAITON);
         //if infomation
-        if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(status)){
+        if("rfi".equals(rfi)){
             applicationDto1.setVersion(applicationDto.getVersion()+1);
             //if need new group
-            applicationGroupDto.setId(applicationDto.getId());
+            applicationGroupDto.setId(applicationDto.getAppGrpId());
             applicationGroupDto.setGroupNo(applicationDto.getAppGrpId().substring(0,applicationDto.getApplicationNo().lastIndexOf('-')));
             applicationDto1.setApplicationNo(applicationDto.getApplicationNo());
             appealDto.setAppealType("APPEAL006");
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
             s=applicationDto.getApplicationNo();
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
+            applicationClient.updateApplication(applicationDto);
         }
 
         if(appSvcCgoDtos!=null&&!appSvcCgoDtos.isEmpty()){
@@ -846,20 +846,7 @@ public class AppealServiceImpl implements AppealService {
         return s;
     }
 
-    private void requetForInformationGetMessage(HttpServletRequest request){
-        ApplicationDto applicationDto =(ApplicationDto) request.getAttribute("applicationDto");
-        String id = applicationDto.getId();
-        String appGrpId = applicationDto.getAppGrpId();
-        List<String> appPremisCorreIds=IaisCommonUtils.genNewArrayList();
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.listAppPremisesCorrelation(id).getEntity();
-        if(appPremisesCorrelationDtos!=null){
-            for(AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos){
-                String appPremisesCorrelationDtoId = appPremisesCorrelationDto.getId();
-                appPremisCorreIds.add(appPremisesCorrelationDtoId);
-            }
-        }
-        String entity = applicationClient.getRequestForInfo(id).getEntity();
-        AppPremiseMiscDto appPremiseMiscDto = applicationClient.getAppPremisesMisc(entity).getEntity();
+    private void requetForInformationGetMessage(HttpServletRequest request, AppPremiseMiscDto appPremiseMiscDto){
         String reason = appPremiseMiscDto.getReason();
         String appPremCorreId = appPremiseMiscDto.getAppPremCorreId();
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = applicationClient.getAppPremisesSpecialDocDtoByCorreId(appPremCorreId).getEntity();
@@ -868,18 +855,23 @@ public class AppealServiceImpl implements AppealService {
             request.getSession().setAttribute("filename",docName);
             request.getSession().setAttribute("appPremisesSpecialDocDto",appPremisesSpecialDocDto);
         }
-
+        ApplicationDto entity = applicationClient.getApplicationByCorrId(appPremCorreId).getEntity();
         if(ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)){
-            List<AppSvcCgoDto> appSvcCgoDtos = applicationClient.getAppGrpPersonnelByGrpId(appGrpId).getEntity();
-            ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
-            List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
-            SelectOption sp0 = new SelectOption("-1", "Select Personnel");
-            cgoSelectList.add(sp0);
-            SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
-            cgoSelectList.add(sp1);
-            ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
-            ParamUtil.setSessionAttr(request, "GovernanceOfficersList", (Serializable) appSvcCgoDtos);
+            if(entity!=null){
+                String appGrpId = entity.getAppGrpId();
+                List<AppSvcCgoDto> appSvcCgoDtos = applicationClient.getAppGrpPersonnelByGrpId(appGrpId).getEntity();
+                ParamUtil.setRequestAttr(request, "CgoMandatoryCount", appSvcCgoDtos.size());
+                List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
+                SelectOption sp0 = new SelectOption("-1", "Select Personnel");
+                cgoSelectList.add(sp0);
+                SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+                cgoSelectList.add(sp1);
+                ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
+                ParamUtil.setSessionAttr(request, "GovernanceOfficersList", (Serializable) appSvcCgoDtos);
+            }
         }
+        request.getSession().setAttribute("rfi","rfi");
+        request.getSession().setAttribute("rfiApplication",entity);
         request.setAttribute("appPremiseMiscDto",appPremiseMiscDto);
     }
 

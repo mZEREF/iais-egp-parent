@@ -116,6 +116,7 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("CgoSelectList");
         bpc.getSession().removeAttribute("SpecialtySelectList");
         bpc.getSession().removeAttribute("IdTypeSelect");
+        bpc.getSession().removeAttribute("rfiApplication");
         log.info("end**************start************");
     }
 

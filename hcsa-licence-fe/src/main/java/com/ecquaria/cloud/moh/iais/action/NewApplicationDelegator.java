@@ -239,11 +239,11 @@ public class NewApplicationDelegator {
         //for loading Service Config
         boolean flag = loadingServiceConfig(bpc);
         log.info(StringUtil.changeForLog("The loadingServiceConfig -->:"+flag));
-        initOldSession(bpc);
         if(flag){
             //init session and data
             initSession(bpc);
         }
+        initOldSession(bpc);
         log.info(StringUtil.changeForLog("the do Start end ...."));
     }
 
@@ -1139,13 +1139,8 @@ public class NewApplicationDelegator {
         stringBuilder.setLength(0);
         stringBuilder.append(oldAppSubmissionDto);
         log.info(StringUtil.changeForLog("oldAppSubmissionDto:"+stringBuilder.toString()));
-        Map<String, String> doComChangeMap=IaisCommonUtils.genNewHashMap();
-        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
-            AppSubmissionDto oldSubmitAppSubmissionDto =(AppSubmissionDto)ParamUtil.getSessionAttr(bpc.request,"oldSubmitAppSubmissionDto");
-            doComChangeMap = doComChange(appSubmissionDto,oldSubmitAppSubmissionDto);
-        }else {
-            doComChangeMap = doComChange(appSubmissionDto,oldAppSubmissionDto);
-        }
+        Map<String, String> doComChangeMap= doComChange(appSubmissionDto,oldAppSubmissionDto);
+
         if(!doComChangeMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"Msg",doComChangeMap);
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
@@ -2651,7 +2646,6 @@ public class NewApplicationDelegator {
                 if(!appSubmissionDto.getAppGrpPremisesDtoList().equals(oldAppSubmissionDto.getAppGrpPremisesDtoList())){
                    log.info(StringUtil.changeForLog("appGrpPremisesDto"+JsonUtil.parseToJson(appSubmissionDto.getAppGrpPremisesDtoList())));
                     log.info(StringUtil.changeForLog("oldappGrpPremisesDto"+JsonUtil.parseToJson(oldAppSubmissionDto.getAppGrpPremisesDtoList())));
-
                     result.put("premiss","UC_CHKLMD001_ERR001");
                 }
             }
@@ -5168,11 +5162,9 @@ public class NewApplicationDelegator {
                 //set oldAppSubmission when rfi,rfc,renew
                 AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
-            /*    ParamUtil.setSessionAttr(bpc.request,"oldSubmitAppSubmissionDto",oldAppSubmissionDto);*/
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
                 AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
                 ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.OLDAPPSUBMISSIONDTO,oldAppSubmissionDto);
-             /*   ParamUtil.setSessionAttr(bpc.request,"oldSubmitAppSubmissionDto",oldAppSubmissionDto);*/
             }
         }
         AppEditSelectDto changeSelectDto1 = appSubmissionDto.getChangeSelectDto()==null?new AppEditSelectDto():appSubmissionDto.getChangeSelectDto();
