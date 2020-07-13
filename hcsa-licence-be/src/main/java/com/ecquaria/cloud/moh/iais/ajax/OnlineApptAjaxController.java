@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -135,8 +136,8 @@ public class OnlineApptAjaxController {
                         Map<String, Collection<String>> headers = result.getHeaders();
                         //Has it been blown up
                         if(headers != null && StringUtil.isEmpty(headers.get("fusing"))) {
-                            Map<String, List<ApptUserCalendarDto>> inspectionDateMap = IaisCommonUtils.genNewHashMap();
                             List<ApptRequestDto> apptRequestDtos = result.getEntity();
+                            Map<String, List<ApptUserCalendarDto>> inspectionDateMap = new LinkedHashMap<>(apptRequestDtos.size());
                             if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
                                 for(ApptRequestDto apptRequestDto : apptRequestDtos){
                                     inspectionDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
