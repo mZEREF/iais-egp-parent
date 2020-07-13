@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -35,6 +36,21 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.egp.api.EGPHelper;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpEntity;
@@ -49,22 +65,6 @@ import org.sqlite.date.FastDateFormat;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.servlet.webflow.HttpHandler;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 import static org.eclipse.jdt.internal.compiler.util.Util.UTF_8;
@@ -602,6 +602,20 @@ public final class IaisEGPHelper extends EGPHelper {
                                                                        String authorizationSec, Class contentCls) {
         return callEicGatewayWithBody(url, httpMethod, httpBody, null, mediaType, date, authorization,
                 dateSec, authorizationSec, List.class, contentCls);
+    }
+
+    /**
+     * @description: The method to call EIC gateway by rest template to get Search Result
+     *
+     * @author: Jinhua on 2020/7/7 10:10
+     * @param: [url, httpMethod, httpBody, mediaType, date, authorization, dateSec, authorizationSec, responseCls, contentCls]
+     * @return: com.ecquaria.cloudfeign.FeignResponseEntity<List>
+     */
+    public static FeignResponseEntity<SearchResult> callEicGatewayWithBodyForSearchResult(String url, HttpMethod httpMethod, Object httpBody,
+                                                                          MediaType mediaType, String date, String authorization, String dateSec,
+                                                                          String authorizationSec, Class contentCls) {
+        return callEicGatewayWithBody(url, httpMethod, httpBody, null, mediaType, date, authorization,
+                dateSec, authorizationSec, SearchResult.class, contentCls);
     }
 
     /**
