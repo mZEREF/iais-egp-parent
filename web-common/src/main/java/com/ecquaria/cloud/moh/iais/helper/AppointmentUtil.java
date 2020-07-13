@@ -24,7 +24,8 @@ public class AppointmentUtil {
                 ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_APPLICANT,
                 ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT,
                 ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_PENDING_FE,
-                ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING
+                ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING,
+                ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED
         };
     }
 }

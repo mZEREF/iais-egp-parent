@@ -191,7 +191,20 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 
     @Override
     public void cancel(BaseProcessClass bpc) throws PaymentException {
-		String bigsUrl ="https://" + bpc.request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment";
+		Map<String, String> fields = null;
+		try {
+			fields = getFieldsMap(bpc);
+			String secureHash = hashAllFields(fields, DEFAULT_SECURE_HASH_TYPE);
+			fields.put("vpc_SecureHash", secureHash);
+			fields.put("vpc_SecureHashType", DEFAULT_SECURE_HASH_TYPE);
+		} catch (UnsupportedEncodingException | NoSuchAlgorithmException e1) {
+			logger.debug(e1.getMessage());
+			throw new PaymentException(e1);
+		}
+
+		String reqNo = fields.get("vpc_MerchTxnRef");
+		String results="?result="+MaskUtil.maskValue("result","success")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt",DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","");
+		String bigsUrl ="https://" + bpc.request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment"+results;
 
 		try {
 			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
