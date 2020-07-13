@@ -150,15 +150,15 @@ public class CessationEffectiveDateBatchjob {
                         }
                     }
                 }
-                try {
-                    //update and send email
-                    updateLicencesStatusAndSendMails(licenceDtos, date);
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
-                //update appGrp
-                updateAppGroups(applicationGroupDtosCesead);
             }
+            try {
+                //update and send email
+                updateLicencesStatusAndSendMails(licenceDtos, date);
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+            }
+            //update appGrp
+            updateAppGroups(applicationGroupDtosCesead);
         }
     }
 
