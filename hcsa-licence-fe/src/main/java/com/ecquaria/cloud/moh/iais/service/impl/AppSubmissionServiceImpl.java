@@ -616,6 +616,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return licenceClient.getLicPremisesById(id).getEntity();
     }
 
+    @Override
+    public Boolean isNewLicensee(String licenseeId) {
+        return licenceClient.checkIsNewLicsee(licenseeId).getEntity();
+    }
+
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return appSvcRelatedInfoDtos.get(0);

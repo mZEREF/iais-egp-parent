@@ -128,4 +128,6 @@ public interface LicenceClient {
     @GetMapping(value = "/hcsa-licence/other-licensee-premises")
     FeignResponseEntity<Boolean> getOtherLicseePremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("premisesHci")String premisesHci);
 
+    @GetMapping(value = "/hcsa-licence//check-new-licensee")
+    FeignResponseEntity<Boolean> checkIsNewLicsee(@RequestParam("licenseeId") String licenseeId);
 }

@@ -61,4 +61,5 @@ public interface AppSubmissionService {
     List<AppGrpPremisesEntityDto> getPendAppPremises(String licenseeId,List<HcsaServiceDto> hcsaServiceDtos);
     List<AppAlignLicQueryDto> getAppAlignLicQueryDto(String licenseeId,List<String> svcNames);
     List<AppGrpPremisesDto> getLicPremisesInfo(String id);
+    Boolean isNewLicensee(String licenseeId);
 }
