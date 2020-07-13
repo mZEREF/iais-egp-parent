@@ -160,7 +160,7 @@ public class TemplatesDelegator {
 
             List<SelectOption> deliveryModeSelectList = IaisCommonUtils.genNewArrayList();
             deliveryModeSelectList.add(new SelectOption(deliveryMode, deliveryModeTxt));
-            deliveryModeSelectList.add(new SelectOption("DEMD001", "Mail"));
+            deliveryModeSelectList.add(new SelectOption("DEMD001", "Email"));
             deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
             deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
             List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_TEMPLATE_ROLE);
