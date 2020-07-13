@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -31,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -169,6 +169,11 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Override
     public List<String> getAppNoByInspectorAndConditions(ReschedulingOfficerDto reschedulingOfficerDto) {
+        //get not in appStatus
+        String[] appStatusStr = AppointmentUtil.getNoReschdulingAppStatus();
+        List<String> appStatusList = IaisCommonUtils.genNewArrayList();
+        Collections.addAll(appStatusList, appStatusStr);
+
         List<String> appNoList = IaisCommonUtils.genNewArrayList();
         String workGroupCheck = reschedulingOfficerDto.getWorkGroupCheck();
         Map<String, Map<String, String>> groupCheckUserIdMap = reschedulingOfficerDto.getGroupCheckUserIdMap();
@@ -192,7 +197,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     //filter rescheduling time limit
                     List<String> appNos = filterTimeLimit(appPremInspCorrelationDtoList);
                     //filter fast tracking and the same premises
-                    appNos = filterPremisesAndFast(appNos, reschedulingOfficerDto, repeatAppNo);
+                    appNos = filterPremisesAndFast(appNos, reschedulingOfficerDto, repeatAppNo, appStatusList);
                     inspectorAppNoMap.put(userId, appNos);
                     if(!IaisCommonUtils.isEmpty(appNos)) {
                         appNoList.addAll(appNos);
@@ -680,7 +685,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         return inspectorNames;
     }
 
-    private List<String> filterPremisesAndFast(List<String> appNos, ReschedulingOfficerDto reschedulingOfficerDto, List<String> repeatAppNo) {
+    private List<String> filterPremisesAndFast(List<String> appNos, ReschedulingOfficerDto reschedulingOfficerDto, List<String> repeatAppNo, List<String> appStatusList) {
         List<String> applicationNos = IaisCommonUtils.genNewArrayList();
         Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
         if(samePremisesAppMap == null){
@@ -696,19 +701,21 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     ApplicationDto applicationDto = applicationClient.getAppByNo(appNo).getEntity();
                     boolean fastTracking = applicationDto.isFastTracking();
                     if(fastTracking){
-                        repeatAppNo.add(appNo);
-                        //put same Premises Application No or Fast tracking Map
-                        List<String> appNoList = IaisCommonUtils.genNewArrayList();
-                        appNoList.add(appNo);
-                        samePremisesAppMap.put(appNo, appNoList);
-                        applicationNos.add(appNo);
+                        if(!appStatusList.contains(applicationDto.getStatus())){
+                            repeatAppNo.add(appNo);
+                            //put same Premises Application No or Fast tracking Map
+                            List<String> appNoList = IaisCommonUtils.genNewArrayList();
+                            appNoList.add(appNo);
+                            samePremisesAppMap.put(appNo, appNoList);
+                            applicationNos.add(appNo);
+                        }
                     } else {
                         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
                         //get all same premises by Group
                         List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = appPremisesCorrClient.getAppPremisesCorrelationsByPremises(appPremisesCorrelationDto.getId()).getEntity();
                         //put same Premises Application No or Fast tracking Map
                         List<String> appNoList = IaisCommonUtils.genNewArrayList();
-                        appNoList = filterCancelAppByCorr(appNoList, appPremisesCorrelationDtos);
+                        appNoList = filterCancelAppByCorr(appNoList, appPremisesCorrelationDtos, appStatusList);
                         if(!IaisCommonUtils.isEmpty(appNoList)) {
                             samePremisesAppMap.put(appNo, appNoList);
                             repeatAppNo.addAll(appNoList);
@@ -722,15 +729,20 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         return applicationNos;
     }
 
-    private List<String> filterCancelAppByCorr(List<String> appNoList, List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
+    private List<String> filterCancelAppByCorr(List<String> appNoList, List<AppPremisesCorrelationDto> appPremisesCorrelationDtos, List<String> appStatusList) {
         if(!IaisCommonUtils.isEmpty(appPremisesCorrelationDtos)){
+            boolean addFlag = true;
             for(int i = 0; i < appPremisesCorrelationDtos.size(); i++){
                 String applicationId = appPremisesCorrelationDtos.get(i).getApplicationId();
                 ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
-                if(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED.equals(applicationDto.getStatus())){
-                    appPremisesCorrelationDtos.remove(i);
-                    i--;
-                } else {
+                if(appStatusList.contains(applicationDto.getStatus())){
+                    addFlag = false;
+                }
+            }
+            if(!addFlag) {
+                for (int i = 0; i < appPremisesCorrelationDtos.size(); i++) {
+                    String applicationId = appPremisesCorrelationDtos.get(i).getApplicationId();
+                    ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
                     appNoList.add(applicationDto.getApplicationNo());
                 }
             }
