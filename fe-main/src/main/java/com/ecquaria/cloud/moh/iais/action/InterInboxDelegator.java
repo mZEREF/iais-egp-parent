@@ -113,6 +113,8 @@ public class InterInboxDelegator {
      */
     public void toMsgPage(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("Step ---> toMsgPage"));
+        HttpServletRequest request = bpc.request;
+        HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
     }
 
     public void msgDoPage(BaseProcessClass bpc){
@@ -131,7 +133,14 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
+        SearchParam inboxParam = null;
+        String page = ParamUtil.getRequestString(request,"msg_action_type");
+        if("msgToArchive".equals(page)){
+            inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
+        }else{
+            inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
+        }
+//        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
         inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgArchiverStatus,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
@@ -231,7 +240,13 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         prepareMsgSelectOption(request);
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
-        SearchParam inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
+        SearchParam inboxParam = null;
+        String page = ParamUtil.getRequestString(request,"msg_action_type");
+        if("toMsgPage".equals(page)){
+            inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg",true);
+        }else{
+            inboxParam = HalpSearchResultHelper.getSearchParam(request,"inboxMsg");
+        }
         inboxParam.addFilter("userId", interInboxUserDto.getLicenseeId(),true);
         inboxParam.addFilter(InboxConst.MESSAGE_STATUS, msgStatus,true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.MESSAGE_QUERY_KEY,inboxParam);
