@@ -268,6 +268,15 @@ public class OfficerOnlineEnquiriesDelegator {
                                 List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
                                 reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
                                 reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
+                                for (PremisesDto premisesDto:premisesDtoList
+                                     ) {
+                                    String appAddress=MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode());
+                                    String licAddress=MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
+                                    if(appAddress.equals(licAddress)){
+                                        reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
+                                        reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
+                                    }
+                                }
                                 reqForInfoSearchListDto.setLicenceStatus(licStatus);
                                 reqForInfoSearchListDto.setLicenceNo(lic.getLicenceNo());
                                 reqForInfoSearchListDto.setStartDate(lic.getStartDate());
@@ -347,7 +356,13 @@ public class OfficerOnlineEnquiriesDelegator {
                                 List<String> addressList = IaisCommonUtils.genNewArrayList();
                                 for (PremisesDto premisesDto:premisesDtoList
                                 ) {
-                                    addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                                    String appAddress=MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode());
+                                    String licAddress=MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
+                                    if(appAddress.equals(licAddress)){
+                                        reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
+                                        reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
+                                    }
+                                    addressList.add(licAddress);
                                     reqForInfoSearchListDto.setAddress(addressList);
                                 }
                                 reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
@@ -892,7 +907,13 @@ public class OfficerOnlineEnquiriesDelegator {
                                 List<String> addressList = IaisCommonUtils.genNewArrayList();
                                 for (PremisesDto premisesDto:premisesDtoList
                                 ) {
-                                    addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                                    String appAddress=MiscUtil.getAddress(rfiApplicationQueryDto.getBlkNo(),rfiApplicationQueryDto.getStreetName(),rfiApplicationQueryDto.getBuildingName(),rfiApplicationQueryDto.getFloorNo(),rfiApplicationQueryDto.getUnitNo(),rfiApplicationQueryDto.getPostalCode());
+                                    String licAddress=MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode());
+                                    if(appAddress.equals(licAddress)){
+                                        reqForInfoSearchListDto.setHciCode(premisesDto.getHciCode());
+                                        reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
+                                    }
+                                    addressList.add(licAddress);
                                     reqForInfoSearchListDto.setAddress(addressList);
                                 }
                                 reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
