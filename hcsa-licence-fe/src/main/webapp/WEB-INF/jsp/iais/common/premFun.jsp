@@ -443,6 +443,9 @@
     var fillForm = function (premisesType,data,$Ele) {
         var $premSelect = $Ele;
         if('onSite' == premisesType){
+            //init localWithOther
+            $premSelect.find('.other-lic-content input[type="radio"]').prop('checked',false);
+
             $premSelect.find('input[name="'+premisesType+'HciName"]').val(data.hciName);
             $premSelect.find('input[name="'+premisesType+'PostalCode"]').val(data.postalCode);
             $premSelect.find('input[name="'+premisesType+'BlkNo"]').val(data.blkNo);

@@ -33,12 +33,12 @@
                 </div>
                 <br/>
             </c:if>
-            <c:if test="${!appSelectSvc.chooseBaseSvc}">
-                <div class="disabledPart">
-                    <%@include file="comm/chooseAlignContent.jsp"%>
-                </div>
-                <br/>
-            </c:if>
+            <%--<c:if test="${!appSelectSvc.chooseBaseSvc}">--%>
+                <%--<div class="disabledPart">--%>
+                    <%--<%@include file="comm/chooseAlignContent.jsp"%>--%>
+                <%--</div>--%>
+                <%--<br/>--%>
+            <%--</c:if>--%>
             <div>
                 <%@include file="comm/chooseLicContent.jsp"%>
             </div>

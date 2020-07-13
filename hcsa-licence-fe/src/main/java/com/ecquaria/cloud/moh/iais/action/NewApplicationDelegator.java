@@ -57,6 +57,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
+import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
@@ -5288,13 +5289,28 @@ public class NewApplicationDelegator {
     private void loadingNewAppInfo(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("the do loadingSpecifiedInfo start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos2 = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,ServiceMenuDelegator.APP_SVC_RELATED_INFO_LIST);
-        if(appSvcRelatedInfoDtos2 != null && appSubmissionDto == null){
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,ServiceMenuDelegator.APP_SVC_RELATED_INFO_LIST);
+        AppSelectSvcDto appSelectSvcDto = (AppSelectSvcDto) ParamUtil.getSessionAttr(bpc.request,ServiceMenuDelegator.APP_SELECT_SERVICE);
+        if(appSvcRelatedInfoDtos != null && appSubmissionDto == null && appSelectSvcDto != null){
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos2);
+            List<HcsaServiceDto> hcsaServiceDtos = appSelectSvcDto.getBaseSvcDtoList();
+            //add other service
+            appSvcRelatedInfoDtos = NewApplicationHelper.addOtherSvcInfo(appSvcRelatedInfoDtos,hcsaServiceDtos,true);
+            log.info(StringUtil.changeForLog("appSvcRelatedInfoDto size:")+appSvcRelatedInfoDtos.size());
+            appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
 
-            String premisesId = appSvcRelatedInfoDtos2.get(0).getLicPremisesId();
+            String premisesId = "";
+            if(appSelectSvcDto.isBasePage() && !appSelectSvcDto.isAlignPage()){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    if(!appSvcRelatedInfoDto.getBaseServiceId().equals(appSvcRelatedInfoDto.getServiceId())){
+                        premisesId = appSvcRelatedInfoDto.getLicPremisesId();
+                        break;
+                    }
+                }
+            }else{
+                premisesId = appSvcRelatedInfoDtos.get(0).getLicPremisesId();
+            }
             if(!StringUtil.isEmpty(premisesId)){
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionService.getLicPremisesInfo(premisesId);
                 for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){

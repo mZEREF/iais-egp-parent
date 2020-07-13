@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
@@ -1528,6 +1529,72 @@ public class NewApplicationHelper {
         }
         return result;
     }
+
+    public static List<AppSvcRelatedInfoDto> addOtherSvcInfo(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,List<HcsaServiceDto> hcsaServiceDtos,boolean needSort){
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            List<HcsaServiceDto> otherSvcDtoList = IaisCommonUtils.genNewArrayList();
+            for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+                String svcCode = hcsaServiceDto.getSvcCode();
+                int i = 0;
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    if(svcCode.equals(appSvcRelatedInfoDto.getServiceCode())){
+                        break;
+                    }
+                    if(i == appSvcRelatedInfoDtos.size()-1){
+                        otherSvcDtoList.add(hcsaServiceDto);
+                    }
+                    i++;
+                }
+            }
+            //create other appSvcDto
+            if(!IaisCommonUtils.isEmpty(otherSvcDtoList)){
+                for(HcsaServiceDto hcsaServiceDto:otherSvcDtoList){
+                    AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+                    appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
+                    appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                    appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
+                    appSvcRelatedInfoDto.setServiceType(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE);
+                    appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                }
+            }
+            if(needSort){
+                sortAppSvcRelatDto(appSvcRelatedInfoDtos);
+            }
+        }
+        return appSvcRelatedInfoDtos;
+    }
+
+    public static void sortAppSvcRelatDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+            List<AppSvcRelatedInfoDto> baseDtos = IaisCommonUtils.genNewArrayList();
+            List<AppSvcRelatedInfoDto> specDtos = IaisCommonUtils.genNewArrayList();
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                String serviceType = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode()).getSvcType();
+                if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceType)){
+                    baseDtos.add(appSvcRelatedInfoDto);
+                }else if (ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(serviceType)){
+                    specDtos.add(appSvcRelatedInfoDto);
+                }
+            }
+            baseDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+            specDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+            baseDtos.addAll(specDtos);
+            appSvcRelatedInfoDtos = baseDtos;
+        }
+    }
+
+    public static String getPremisesHci(AppAlignLicQueryDto item){
+        String premisesHci = "";
+        if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(item.getPremisesType())) {
+            premisesHci = item.getHciName() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+        } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(item.getPremisesType())) {
+            premisesHci = item.getVehicleNo() + IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+        } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(item.getPremisesType())) {
+            premisesHci = IaisCommonUtils.genPremisesKey(item.getPostalCode(), item.getBlkNo(), item.getFloorNo(), item.getUnitNo());
+        }
+        return premisesHci;
+    }
+
 
     //=============================================================================
     //private method

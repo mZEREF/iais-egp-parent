@@ -294,8 +294,8 @@
                         </iais:value>
                     </iais:row>
                     <iais:row cssClass="other-lic-content">
-                        <iais:field value="Are you co-locating with another licensee?" mandatory="true" width="12"/>
-                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-6">
+                        <iais:field value="Are you co-locating with another licensee? " mandatory="true" width="12" style="width:34%;"/>
+                        <iais:value cssClass="col-xs-7 col-sm-4 col-md-6" style="margin-left:-2%;">
                             <input type="hidden" name="onSiteIsOtherLic" value="${appGrpPremisesDto.locateWithOthers}"/>
                             <div class="form-check col-sm-3">
                                 <input <c:if test="${'1'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "1" aria-invalid="false">
@@ -305,7 +305,9 @@
                                 <input <c:if test="${'0'==appGrpPremisesDto.locateWithOthers}">checked="checked"</c:if> class="form-check-input other-lic"  type="radio" name="otherLicence${status.index}" value = "0" aria-invalid="false">
                                 <label class="form-check-label" ><span class="check-circle"></span>No</label>
                             </div>
-                            <span class="error-msg " name="iaisErrorMsg" id="error_isOtherLic${status.index}"></span>
+                            <div class="col-sm-12">
+                                <span class="error-msg " name="iaisErrorMsg" id="error_isOtherLic${status.index}"></span>
+                            </div>
                         </iais:value>
 
                     </iais:row>

@@ -36,4 +36,6 @@ public class AppSelectSvcDto implements Serializable {
 
     private boolean licPage;
 
+    private boolean newLicensee;
+
 }
