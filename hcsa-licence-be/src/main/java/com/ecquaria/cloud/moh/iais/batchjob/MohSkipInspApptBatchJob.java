@@ -104,6 +104,7 @@ public class MohSkipInspApptBatchJob {
                         appPremInspCorrelationDto.setUserId(taskDto.getUserId());
                         appPremInspCorrelationDto.setApplicationNo(taskDto.getApplicationNo());
                         appPremInspCorrelationDto.setAuditTrailDto(intranet);
+                        appPremInspCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                         appPremInspCorrelationDtos.add(appPremInspCorrelationDto);
 
                 }

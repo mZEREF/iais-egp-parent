@@ -426,6 +426,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 appPremInspCorrelationDto.setUserId(userId);
                 appPremInspCorrelationDto.setApplicationNo(applicationNo);
                 appPremInspCorrelationDto.setAuditTrailDto(auditTrailDto);
+                appPremInspCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 appPremInspCorrelationDtos.add(appPremInspCorrelationDto);
             }
             inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtos);

@@ -233,7 +233,7 @@ public class RoundRobinCommPoolBatchJob {
             AppPremInspCorrelationDto appPremInspCorrelationDto = new AppPremInspCorrelationDto();
             appPremInspCorrelationDto.setApplicationNo(applicationDto.getApplicationNo());
             appPremInspCorrelationDto.setId(null);
-            appPremInspCorrelationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            appPremInspCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             appPremInspCorrelationDto.setUserId(taskUserId);
             appPremInspCorrelationDto.setAuditTrailDto(auditTrailDto);
             appPremInspCorrelationDtoList.add(appPremInspCorrelationDto);
