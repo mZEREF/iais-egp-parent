@@ -171,13 +171,13 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		try {
 			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 
-			StringBuilder bud = new StringBuilder();
+//			StringBuilder bud = new StringBuilder();
 			String results="?result="+ MaskUtil.maskValue("result",MaskUtil.maskValue("result",status))+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",ref_no)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",gateway_ref_no);
-			String bigsURL ="https://" + request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment"+results;
-			bud.append(bigsURL).append('?');
-			appendQueryFields(bud, fields);
+			String bigsUrl ="https://" + request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment"+results;
+//			bud.append(bigsURL).append('?');
+//			appendQueryFields(bud, fields);
 
-			RedirectUtil.redirect(bud.toString(), bpc.request, bpc.response);
+			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
 		} catch (UnsupportedEncodingException e) {
 			logger.debug(e.getMessage());
 
@@ -191,8 +191,14 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 
     @Override
     public void cancel(BaseProcessClass bpc) throws PaymentException {
+		String bigsUrl ="https://" + bpc.request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment";
 
-    }
+		try {
+			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
+		} catch (IOException e) {
+			logger.info(e.getMessage(),e);
+		}
+	}
 
     @SuppressWarnings("rawtypes")
 	private Map<String, String> getResponseFieldsMap(BaseProcessClass bpc) {
