@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -128,9 +129,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
                         "hcsa-licence-web-internet", ApptAppInfoShowDto.class.getName(), JsonUtil.parseToJson(apptAppInfoShowDto));
                 String eicRefNo = eicRequestTrackingDto.getRefNo();
-                Map<String, List<ApptUserCalendarDto>> apptInspDateMap = IaisCommonUtils.genNewHashMap();
                 List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getEntity();
+                Map<String, List<ApptUserCalendarDto>> apptInspDateMap = new LinkedHashMap<>(apptRequestDtos.size());
                 if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
                     for(ApptRequestDto apptRequestDto : apptRequestDtos){
                         apptInspDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
@@ -325,9 +326,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptNewSystemDate",
                     "hcsa-licence-web-internet", AppointmentDto.class.getName(), JsonUtil.parseToJson(appointmentDto));
             String eicRefNo = eicRequestTrackingDto.getRefNo();
-            Map<String, List<ApptUserCalendarDto>> appInspDateMap = IaisCommonUtils.genNewHashMap();
             List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getUserCalendarByUserId(appointmentDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
+            Map<String, List<ApptUserCalendarDto>> appInspDateMap = new LinkedHashMap<>(apptRequestDtos.size());
             if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
                 for(ApptRequestDto apptRequestDto : apptRequestDtos){
                     appInspDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
@@ -760,9 +761,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
                 EicRequestTrackingDto eicRequestTrackingDto = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT, "com.ecquaria.cloud.moh.iais.service.impl.ApplicantConfirmInspDateServiceImpl", "getApptSystemDate",
                         "hcsa-licence-web-internet", ApptAppInfoShowDto.class.getName(), JsonUtil.parseToJson(apptAppInfoShowDto));
                 String eicRefNo = eicRequestTrackingDto.getRefNo();
-                Map<String, List<ApptUserCalendarDto>> apptInspDateMap = IaisCommonUtils.genNewHashMap();
                 List<ApptRequestDto> apptRequestDtos = feEicGatewayClient.getAppointmentByApptRefNo(apptRefNos, signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization()).getEntity();
+                Map<String, List<ApptUserCalendarDto>> apptInspDateMap = new LinkedHashMap<>(apptRequestDtos.size());
                 if(!IaisCommonUtils.isEmpty(apptRequestDtos)){
                     for(ApptRequestDto apptRequestDto : apptRequestDtos){
                         apptInspDateMap.put(apptRequestDto.getApptRefNo(), apptRequestDto.getUserClandars());
