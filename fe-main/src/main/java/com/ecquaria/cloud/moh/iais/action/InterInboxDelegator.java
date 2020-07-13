@@ -560,10 +560,10 @@ public class InterInboxDelegator {
         if(!StringUtil.isEmpty(appResult)){
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
             inboxAppQueryDtoList.forEach(h ->{
-//                RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
-//                recallApplicationDto.setAppId(h.getId());
-//                recallApplicationDto.setAppNo(h.getApplicationNo());
-                h.setCanRecall(Boolean.TRUE);
+                RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
+                recallApplicationDto.setAppId(h.getId());
+                recallApplicationDto.setAppNo(h.getApplicationNo());
+                h.setCanRecall(inboxService.canRecallApplication(recallApplicationDto));
             });
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);
@@ -828,6 +828,7 @@ public class InterInboxDelegator {
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_DRAFT, "Draft"));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_RECALLED, "Recalled"));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION, "Pending Clarification"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST, "Pending Internal Clarification"));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, "Pending Screening"));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION, "Pending Inspection"));
         appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING, "Pending Appointment Scheduling"));
