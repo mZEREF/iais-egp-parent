@@ -569,6 +569,11 @@ public final class IaisEGPHelper extends EGPHelper {
             String json = JsonUtil.parseToJson(body);
             List list = JsonUtil.parseToList(json, contentCls);
             resEnt.setEntity(list);
+        } else if (body instanceof SearchResult) {
+            SearchResult sr = (SearchResult) body;
+            List resultList = sr.getRows();
+            String json = JsonUtil.parseToJson(resultList);
+            sr.setRows(JsonUtil.parseToList(json, contentCls));
         }
         resEnt.setHeaders(response.getHeaders());
         resEnt.setStatusCode(response.getStatusCodeValue());
