@@ -5,6 +5,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * LicenseeClientFallback
@@ -27,5 +28,12 @@ public class LicenseeClientFallback {
 
     public ResponseEntity<List<String>> getLicenseeMobiles(String licenseeId) {
         return null;
+    }
+
+    public FeignResponseEntity<List<String>> getEmailAddressListByLicenseeId(@RequestBody List<String> licenseeIdList) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
     }
 }

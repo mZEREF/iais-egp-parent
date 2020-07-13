@@ -1,12 +1,12 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.moh.iais.client.AppEicClient;
-import com.ecquaria.cloud.moh.iais.client.EicClient;
-import com.ecquaria.cloud.moh.iais.client.HcsaServiceClient;
-import com.ecquaria.cloud.moh.iais.client.LicEicClient;
-import com.ecquaria.cloud.moh.iais.client.LicmEicClient;
-import com.ecquaria.cloud.moh.iais.client.OnlineApptEicClient;
-import com.ecquaria.cloud.moh.iais.client.OrgEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicmEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.OnlineApptEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;

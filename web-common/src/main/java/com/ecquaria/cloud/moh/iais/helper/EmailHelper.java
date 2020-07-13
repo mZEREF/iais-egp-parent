@@ -1,10 +1,9 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
-import com.ecquaria.cloud.moh.iais.client.IaisSystemClient;
-import com.ecquaria.cloud.moh.iais.client.OrganizationBeClient;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -12,7 +11,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.EmailService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -42,23 +44,29 @@ import org.springframework.stereotype.Component;
 public class EmailHelper {
 	public static final String RECEIPT_TYPE_APP_GRP 				= "GRP";
 	public static final String RECEIPT_TYPE_APP 					= "APP";
+	public static final String RECEIPT_TYPE_LICENCE_ID              = "LIC";
+
+	private static final String RECEIPT_ROLE_LICENSEE               = "EM-LIC";
+	private static final String RECEIPT_ROLE_AUTHORISED_PERSON      = "EM-AP";
 
 	@Autowired
 	private IaisSystemClient iaisSystemClient;
 	@Autowired
-	private OrganizationBeClient organizationBeClient;
+	private LicenseeClient licenseeClient;
 	@Value("${iais.email.sender}")
 	private String mailSender;
 	@Autowired
-	EmailService emailService;
+	private EmailService emailService;
 	@Autowired
-	EmailSmsClient emailSmsClient;
+	private EmailSmsClient emailSmsClient;
 	@Autowired
 	TaskOrganizationClient taskOrganizationClient;
 	@Autowired
-	TaskApplicationClient taskApplicationClient;
+	private HcsaAppClient hcsaAppClient;
 	@Autowired
-	HcsaLicenceClient hcsaLicenceClient;
+	private TaskApplicationClient taskApplicationClient;
+	@Autowired
+	private HcsaLicenceClient hcsaLicenceClient;
 	private static List<String> licenceEmailString =  Arrays.asList(
 		ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,
 		ApplicationConsts.PERSONNEL_PSN_TYPE_PO,
@@ -86,7 +94,7 @@ public class EmailHelper {
 	}
 
 	public List<String> getEmailAddressListByLicenseeId(List<String> licenseeIdList){
-		return organizationBeClient.getEmailAddressListByLicenseeId(licenseeIdList).getEntity();
+		return licenseeClient.getEmailAddressListByLicenseeId(licenseeIdList).getEntity();
 	}
 
 	//Method to retrieve All officers by role
@@ -156,7 +164,7 @@ public class EmailHelper {
 			emailDto.setReqRefNum("no reqRefNum");
 		}
 		//send
-		this.emailSmsClient.sendEmail(emailDto,null);
+		emailSmsClient.sendEmail(emailDto,null);
 		log.info(StringUtil.changeForLog("sendemail end... queryCode is"+queryCode + "templateId is "
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
 	}
@@ -166,6 +174,13 @@ public class EmailHelper {
 		List<String> organizationemail = IaisCommonUtils.genNewArrayList();
 		List<String> applicationemail = IaisCommonUtils.genNewArrayList();
 		List<String> licenceemail = IaisCommonUtils.genNewArrayList();
+		if (RECEIPT_TYPE_APP_GRP.equals(refType)) {
+
+		} else if (RECEIPT_TYPE_APP.equals(refType)) {
+
+		} else {
+
+		}
 		for (String item : role) {
 			List<String> list = Arrays.asList(item.split("-"));
 			if (list.size() > 1) {
@@ -208,4 +223,18 @@ public class EmailHelper {
 		return all;
 	}
 
+	private List<String> getRecriptAppGrp(List<String> roles, String appGrpId) {
+		List<String> list = IaisCommonUtils.genNewArrayList();
+		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpById(appGrpId).getEntity();
+		for (String role : roles) {
+			if (RECEIPT_ROLE_LICENSEE.equals(role)) {
+				List<String> mails = IaisEGPHelper.getLicenseeEmailAddrs(grpDto.getLicenseeId());
+				list.addAll(mails);
+			} else if (RECEIPT_ROLE_AUTHORISED_PERSON.equals(role)) {
+
+			}
+		}
+
+		return list;
+	}
 }

@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.client;
+package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
@@ -14,21 +14,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Shicheng
- * @date 2020/5/19 15:31
- **/
-@FeignClient(name = "iais-appointment", configuration = FeignConfiguration.class,
-        fallback = AppEicClientFallback.class)
-public interface OnlineApptEicClient {
+ * LicmEicClient
+ *
+ * @author Jinhua
+ * @date 2020/4/20 17:00
+ */
+@FeignClient(name = "hcsa-config", configuration = FeignConfiguration.class,
+        fallback = EicClientFallback.class)
+public interface LicmEicClient {
     @GetMapping(path = "/eicTracking/{moduleName}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<EicRequestTrackingDto>> getPendingRecords(@PathVariable("moduleName") String moduleName);
 
     @PutMapping(path = "/eicTracking", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String, String>> updateStatus(@RequestBody List<EicRequestTrackingDto> dtoList);
 
+    @PutMapping(path = "/eicTracking/eic-request", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Map<String, String>> saveEicTrack(@RequestBody EicRequestTrackingDto eicRequestTrackingDto);
+
     @GetMapping(path = "/eicTracking/{referenceNumber}/eic-ref-num", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<EicRequestTrackingDto> getPendingRecordByReferenceNumber(@PathVariable("referenceNumber") String referenceNumber);
 
-    @PutMapping(path = "/eicTracking/eic-request", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<Map<String, String>> saveEicTrack(@RequestBody EicRequestTrackingDto eicRequestTrackingDto);
 }

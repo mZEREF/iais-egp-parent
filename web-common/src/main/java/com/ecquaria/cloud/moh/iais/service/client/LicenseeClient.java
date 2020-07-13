@@ -5,9 +5,12 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * TaskOrganizationClient
@@ -26,4 +29,7 @@ public interface LicenseeClient {
 
     @GetMapping(value = "/iais-licensee/user-mobile-nos/{licenseeId}")
     ResponseEntity<List<String>> getLicenseeMobiles(@PathVariable(name = "licenseeId") String licenseeId);
+
+    @PostMapping(value = "/iais-licensee/user-account/email-address", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getEmailAddressListByLicenseeId(@RequestBody List<String> licenseeIdList);
 }

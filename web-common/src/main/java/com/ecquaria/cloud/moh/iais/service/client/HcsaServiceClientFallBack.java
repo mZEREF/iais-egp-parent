@@ -1,4 +1,4 @@
-package com.ecquaria.cloud.moh.iais.client;
+package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
