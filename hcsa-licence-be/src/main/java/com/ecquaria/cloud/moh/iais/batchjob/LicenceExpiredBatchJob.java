@@ -93,8 +93,9 @@ public class LicenceExpiredBatchJob {
             if (newLicDto == null) {
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_LAPSED);
             } else {
-                if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(newLicDto.getStatus()))
-                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_EXPIRY);
+                if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(newLicDto.getStatus())){
+                    licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_EXPIRY);
+                }
             }
             licenceDto.setEndDate(date);
             updateLicenceDtos.add(licenceDto);

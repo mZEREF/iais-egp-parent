@@ -71,6 +71,7 @@ public class CessationEffectiveDateBatchjob {
         Date date = new Date();
         List<LicenceDto> licenceDtos = IaisCommonUtils.genNewArrayList();
         List<ApplicationGroupDto> applicationGroupDtos = cessationClient.listAppGrpForCess().getEntity();
+        log.info(StringUtil.changeForLog("====================appGrpGtos  size=================="+applicationGroupDtos.size()));
         List<ApplicationGroupDto> applicationGroupDtosCesead = IaisCommonUtils.genNewArrayList();
         if (!IaisCommonUtils.isEmpty(applicationGroupDtos)) {
             for (ApplicationGroupDto applicationGroupDto : applicationGroupDtos) {
@@ -115,6 +116,7 @@ public class CessationEffectiveDateBatchjob {
                                 newApplicationListDtoLists.add(applicationListDto);
                             }
                         }
+                        log.info(StringUtil.changeForLog("====================newApplicationListDtoLists  size=================="+newApplicationListDtoLists.size()));
                         applicationLicenceDto.setApplicationListDtoList(newApplicationListDtoLists);
                         LicenceApproveBatchjob.GenerateResult groupGenerateResult = licenceApproveBatchjob.generateGroupLicence(applicationLicenceDto, hcsaServiceDtos);
                         licenceApproveBatchjob.createCessLicence(applicationGroupDto, null, groupGenerateResult);
@@ -153,11 +155,24 @@ public class CessationEffectiveDateBatchjob {
             }
             try {
                 //update and send email
+                log.info(StringUtil.changeForLog("====================licenceDtos  size=================="+licenceDtos.size()));
+                if(!IaisCommonUtils.isEmpty(licenceDtos)){
+                    for(LicenceDto licenceDto : licenceDtos){
+                        String id = licenceDto.getId();
+                        log.info(StringUtil.changeForLog("====================licence id =================="+id));
+                    }
+                }
                 updateLicencesStatusAndSendMails(licenceDtos, date);
             }catch (Exception e){
                 log.error(e.getMessage(), e);
             }
             //update appGrp
+            if(!IaisCommonUtils.isEmpty(applicationGroupDtosCesead)){
+                for(ApplicationGroupDto applicationGroupDto : applicationGroupDtosCesead){
+                    String id = applicationGroupDto.getId();
+                    log.info(StringUtil.changeForLog("====================licence id =================="+id));
+                }
+            }
             updateAppGroups(applicationGroupDtosCesead);
         }
     }
