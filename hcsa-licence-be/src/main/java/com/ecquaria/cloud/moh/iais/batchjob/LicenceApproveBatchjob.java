@@ -1459,6 +1459,7 @@ public class LicenceApproveBatchjob {
                     licenceDto.setCesedLicNo(ceasedLicNo);
                 }
             }catch (Exception e){
+                log.error(e.getMessage(),e);
                 log.info(StringUtil.changeForLog("============ceased licNo=================="));
             }
         } else {
