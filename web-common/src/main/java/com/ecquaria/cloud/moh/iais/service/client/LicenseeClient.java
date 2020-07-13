@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
@@ -32,4 +33,7 @@ public interface LicenseeClient {
 
     @PostMapping(value = "/iais-licensee/user-account/email-address", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getEmailAddressListByLicenseeId(@RequestBody List<String> licenseeIdList);
+
+    @GetMapping(value = "/iais-licensee/getPersonByid/{id}")
+    FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getPersonByid(@PathVariable(name = "id") String id);
 }

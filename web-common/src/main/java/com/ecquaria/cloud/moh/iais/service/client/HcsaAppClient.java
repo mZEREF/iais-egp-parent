@@ -19,4 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface HcsaAppClient {
     @GetMapping(value = "/hcsa-app-common/app-grp/{appGroupId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> getAppGrpById(@PathVariable("appGroupId") String appGroupId);
+
+    @GetMapping(value = "/hcsa-app-common/app-grp-appId/{appId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<ApplicationGroupDto> getAppGrpByAppId(@PathVariable("appId") String appId);
 }

@@ -2,9 +2,8 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -21,10 +20,11 @@ import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +48,7 @@ public class EmailHelper {
 
 	private static final String RECEIPT_ROLE_LICENSEE               = "EM-LIC";
 	private static final String RECEIPT_ROLE_AUTHORISED_PERSON      = "EM-AP";
+	private static final String RECEIPT_ROLE_ASSIGNED_ASO           = "EM-A-ASO";
 
 	@Autowired
 	private IaisSystemClient iaisSystemClient;
@@ -169,72 +170,64 @@ public class EmailHelper {
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
 	}
 
-	public List<String> getRecript(List<String> role, String refType, String refId){
+	public List<String> getRecript(List<String> role, String refType, String refId) {
 		List<String> all = IaisCommonUtils.genNewArrayList();
-		List<String> organizationemail = IaisCommonUtils.genNewArrayList();
-		List<String> applicationemail = IaisCommonUtils.genNewArrayList();
-		List<String> licenceemail = IaisCommonUtils.genNewArrayList();
 		if (RECEIPT_TYPE_APP_GRP.equals(refType)) {
-
+			all.addAll(getRecriptAppGrp(role, refId));
 		} else if (RECEIPT_TYPE_APP.equals(refType)) {
 
 		} else {
 
 		}
-		for (String item : role) {
-			List<String> list = Arrays.asList(item.split("-"));
-			if (list.size() > 1) {
-				applicationemail.add(list.get(1));
-			} else {
-				if (licenceEmailString.contains(item)) {
-					licenceemail.add(list.get(0));
-				} else {
-					organizationemail.add(list.get(0));
-				}
-			}
-		}
-		if (organizationemail.size() > 0) {
-			List<String> email = IaisCommonUtils.genNewArrayList();
-			List<OrgUserDto> orgUserDtoList = taskOrganizationClient.retrieveOrgUserByroleId(organizationemail).getEntity();
-			for (OrgUserDto item:orgUserDtoList
-			) {
-				email.add(item.getEmail());
-			}
-			all.addAll(email.stream().distinct().collect(Collectors.toList()));
-		}
-		if (applicationemail.size() > 0) {
-			List<String> email = IaisCommonUtils.genNewArrayList();
-			List<AppGrpPersonnelDto> appGrpPersonnelDtos = taskApplicationClient.getPersonnelByRoleAndGrpid(applicationemail,refId).getEntity();
-			for (AppGrpPersonnelDto item:appGrpPersonnelDtos
-			) {
-				email.add(item.getEmailAddr());
-			}
-			all.addAll(email.stream().distinct().collect(Collectors.toList()));
-		}
-		if (licenceemail.size() > 0) {
-			List<String> email = IaisCommonUtils.genNewArrayList();
-			List<KeyPersonnelDto> keyPersonnelDtos = hcsaLicenceClient.getKeyPersonnelByRole(licenceemail).getEntity();
-			for (KeyPersonnelDto item:keyPersonnelDtos ) {
-				email.add(item.getEmailAddr());
-			}
-			all.addAll(email.stream().distinct().collect(Collectors.toList()));
-		}
+
 
 		return all;
 	}
 
-	private List<String> getRecriptAppGrp(List<String> roles, String appGrpId) {
-		List<String> list = IaisCommonUtils.genNewArrayList();
+	private Collection<String> getRecriptAppGrp(List<String> roles, String appGrpId) {
+		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpById(appGrpId).getEntity();
+		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
 		for (String role : roles) {
-			if (RECEIPT_ROLE_LICENSEE.equals(role)) {
-				List<String> mails = IaisEGPHelper.getLicenseeEmailAddrs(grpDto.getLicenseeId());
-				list.addAll(mails);
-			} else if (RECEIPT_ROLE_AUTHORISED_PERSON.equals(role)) {
+			if (RECEIPT_ROLE_ASSIGNED_ASO.equals(role)) {
 
 			}
 		}
 
-		return list;
+		return set;
+	}
+
+	private Collection<String> getRecriptApp(List<String> roles, String appId) {
+		Set<String> set = IaisCommonUtils.genNewHashSet();
+		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppId(appId).getEntity();
+		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
+		for (String role : roles) {
+			if (RECEIPT_ROLE_ASSIGNED_ASO.equals(role)) {
+
+			}
+		}
+
+		return set;
+	}
+
+	private Collection<String> getRecrptLicensee(List<String> roles, String licenseeId) {
+		Set<String> set = IaisCommonUtils.genNewHashSet();
+		for (String role : roles) {
+			if (RECEIPT_ROLE_LICENSEE.equals(role)) {
+				List<String> mails = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
+				set.addAll(mails);
+			} else if (RECEIPT_ROLE_AUTHORISED_PERSON.equals(role)) {
+				List<LicenseeKeyApptPersonDto> pers = licenseeClient.getPersonByid(licenseeId).getEntity();
+				if (!IaisCommonUtils.isEmpty(pers)) {
+					pers.forEach(p -> {
+						if (StringUtil.isEmpty(p.getEmailAddr())) {
+							set.add(p.getEmailAddr());
+						}
+					});
+				}
+			}
+		}
+
+		return set;
 	}
 }
