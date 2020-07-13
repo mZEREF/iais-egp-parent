@@ -348,6 +348,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 appPremInspCorrelationDto.setUserId(taskDto.getUserId());
                 appPremInspCorrelationDto.setApplicationNo(taskDto.getApplicationNo());
                 appPremInspCorrelationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                appPremInspCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 appPremInspCorrelationDtos.add(appPremInspCorrelationDto);
             }
             inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtos);
