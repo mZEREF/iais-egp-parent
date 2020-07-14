@@ -16,7 +16,7 @@ import java.util.List;
  * @Program: iais-egp
  * @Create: 2019-12-10 15:17
  **/
-public class MasterCodeClientFallback implements MasterCodeClient{
+public class SaMasterCodeClientFallback implements SaMasterCodeClient{
 
     @Override
     public FeignResponseEntity<SearchResult<MasterCodeQueryDto>> doQuery(SearchParam searchParam) {

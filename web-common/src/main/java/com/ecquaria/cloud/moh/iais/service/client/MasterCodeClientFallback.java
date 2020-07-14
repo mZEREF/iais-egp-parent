@@ -12,8 +12,10 @@ import org.springframework.http.HttpHeaders;
  * @author Jinhua
  * @date 2019/11/25 21:42
  */
-public class MasterCodeClientFallback {
-    public FeignResponseEntity<SearchResult<MasterCodeView>> retrieveErrorMsgs(SearchParam param) {
+public class MasterCodeClientFallback implements MasterCodeClient{
+
+    @Override
+    public FeignResponseEntity<SearchResult<MasterCodeView>> retrieveMasterCodes(SearchParam param) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

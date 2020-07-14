@@ -7,7 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeToExcelDto;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
-import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
+import com.ecquaria.cloud.moh.iais.service.client.SaMasterCodeClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,66 +23,66 @@ import java.util.List;
 public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Autowired
-    private MasterCodeClient masterCodeClient;
+    private SaMasterCodeClient saMasterCodeClient;
 
     @Override
     public SearchResult<MasterCodeQueryDto> doQuery(SearchParam param) {
-        return masterCodeClient.doQuery(param).getEntity();
+        return saMasterCodeClient.doQuery(param).getEntity();
     }
 
     @Override
     public List<MasterCodeToExcelDto> findAllMasterCode() {
-        return masterCodeClient.findAllMasterCode().getEntity();
+        return saMasterCodeClient.findAllMasterCode().getEntity();
     }
 
     @Override
     public MasterCodeDto saveMasterCode(MasterCodeDto masterCode) {
-        return masterCodeClient.saveMasterCode(masterCode).getEntity();
+        return saMasterCodeClient.saveMasterCode(masterCode).getEntity();
     }
 
     @Override
     public MasterCodeDto updateMasterCode(MasterCodeDto masterCode) {
-        return masterCodeClient.updateMasterCode(masterCode).getEntity();
+        return saMasterCodeClient.updateMasterCode(masterCode).getEntity();
     }
 
     @Override
     public void deleteMasterCodeById(String id) {
-        masterCodeClient.delMasterCode(id).getEntity();
+        saMasterCodeClient.delMasterCode(id).getEntity();
     }
 
     @Override
     public List<String> suggestCodeDescription(String codeDescription) {
-        return masterCodeClient.suggestCodeDescription(codeDescription).getEntity();
+        return saMasterCodeClient.suggestCodeDescription(codeDescription).getEntity();
     }
 
     @Override
     public MasterCodeDto findMasterCodeByMcId(String id) {
-        return masterCodeClient.getMasterCodeById(id).getEntity();
+        return saMasterCodeClient.getMasterCodeById(id).getEntity();
     }
 
     @Override
     public String findCodeCategoryByDescription(String description) {
-        return masterCodeClient.getCodeCategoryByDescription(description).getEntity();
+        return saMasterCodeClient.getCodeCategoryByDescription(description).getEntity();
     }
 
     @Override
     public List<MasterCodeCategoryDto> getAllCodeCategory() {
-        return masterCodeClient.getAllMasterCodeCategory().getEntity();
+        return saMasterCodeClient.getAllMasterCodeCategory().getEntity();
     }
 
     @Override
     public boolean masterCodeKeyIsExist(String masterCodekey) {
-        return masterCodeClient.masterCodeKeyIsExist(masterCodekey).getEntity();
+        return saMasterCodeClient.masterCodeKeyIsExist(masterCodekey).getEntity();
     }
 
     @Override
     public Boolean saveMasterCodeList(List<MasterCodeToExcelDto> masterCodeToExcelDtoList) {
-        return masterCodeClient.saveMasterCodeExcel(masterCodeToExcelDtoList).getEntity();
+        return saMasterCodeClient.saveMasterCodeExcel(masterCodeToExcelDtoList).getEntity();
     }
 
     @Override
     public String findCodeKeyByDescription(String description) {
-        return masterCodeClient.getCodeKeyByDescription(description).getEntity();
+        return saMasterCodeClient.getCodeKeyByDescription(description).getEntity();
     }
 
 }
