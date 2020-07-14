@@ -6,17 +6,18 @@
         <div class="form-check-gp">
             <div class="row">
                 <div class="col-xs-12">
-                    <table class="table discipline-table">
-                        <thead style="text-decoration: none">
-                        <tr>
-                            <th>Premises</th>
-                            <th>Laboratory Disciplines</th>
-                            <th>Clinical Governance Officers</th>
-                        </tr>
-                        </thead>
-                        <c:forEach var="appGrpPrem" items="${appGrpPremisesDtoList}" varStatus="status">
+                    <c:if test="${!empty reloadDisciplineAllocationMap}">
+                        <table class="table discipline-table">
+                            <thead style="text-decoration: none">
+                            <tr>
+                                <th>Premises</th>
+                                <th>Laboratory Disciplines</th>
+                                <th>Clinical Governance Officers</th>
+                            </tr>
+                            </thead>
+                            <c:forEach var="appGrpPrem" items="${appGrpPremisesDtoList}" varStatus="status">
                             <c:set var="reloadMapValue" value="${appGrpPrem.premisesIndexNo}"/>
-                        <tbody>
+                            <tbody>
                             <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[reloadMapValue]}" varStatus="stat">
                             <tr>
                                 <c:if test="${stat.first}">
@@ -32,8 +33,9 @@
                                 </td>
                             </tr>
                             </c:forEach>
-                        </c:forEach>
-                    </table>
+                            </c:forEach>
+                        </table>
+                    </c:if>
                 </div>
 
             </div>

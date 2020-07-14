@@ -254,13 +254,14 @@ public class ServiceMenuDelegator {
         log.info(StringUtil.changeForLog("prepareData start ..."));
         String action = (String) ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
         if(StringUtil.isEmpty(action)){
+            log.info(StringUtil.changeForLog("action is empty"));
             action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
             if(StringUtil.isEmpty(action)){
                 action = CHOOSE_SERVICE;
             }
         }
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,action);
-        log.info(StringUtil.changeForLog("prepareData start ..."));
+        log.info(StringUtil.changeForLog("prepareData end ..."));
     }
 
 
@@ -511,6 +512,7 @@ public class ServiceMenuDelegator {
         List<HcsaServiceDto> baseSvcSort = IaisCommonUtils.genNewArrayList();
         List<HcsaServiceDto> speSvcSort = IaisCommonUtils.genNewArrayList();
         if(basechks == null){
+            log.info(StringUtil.changeForLog("basechks is null ..."));
             List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
             //no base service
             if(sepcifiedchk != null){
@@ -541,6 +543,7 @@ public class ServiceMenuDelegator {
                 ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
             }
         }else{
+            log.info(StringUtil.changeForLog("basechks is not null ..."));
             for (String item:basechks) {
                 basecheckedlist.add(item);
                 baseSvcSort.add(HcsaServiceCacheHelper.getServiceById(item));
@@ -559,7 +562,9 @@ public class ServiceMenuDelegator {
 //            }
 
             if(sepcifiedchk != null){
+                log.info(StringUtil.changeForLog("sepcifiedchk is not null ..."));
                 List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtoList =  serviceConfigService.getCorrelation();
+                log.info(StringUtil.changeForLog("hcsaServiceCorrelationDtoList size:"+hcsaServiceCorrelationDtoList.size()));
                 for (String item:sepcifiedchk) {
                     sepcifiedcheckedlist.add(item);
                     speSvcSort.add(HcsaServiceCacheHelper.getServiceById(item));
@@ -585,15 +590,13 @@ public class ServiceMenuDelegator {
                 LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
                 if(loginContext != null){
                     licenseeId = loginContext.getLicenseeId();
+                }else{
+                    log.info(StringUtil.changeForLog("can not found licenseeId"));
                 }
                 List<AppAlignLicQueryDto> appAlignLicQueryDtos = appSubmissionService.getAppAlignLicQueryDto(licenseeId,svcNameList);
                 if(!IaisCommonUtils.isEmpty(appAlignLicQueryDtos)){
                     boolean hasExistBase = false;
                     for(AppAlignLicQueryDto appAlignLicQueryDto:appAlignLicQueryDtos){
-                        if(baseAlignSpec.size() == 0){
-                            hasExistBase = true;
-                            break;
-                        }
                         String removeKey = "";
                         for(Map.Entry<String,List<String>> entry:baseAlignSpec.entrySet()){
                             List<String> baseNames = entry.getValue();
@@ -606,6 +609,10 @@ public class ServiceMenuDelegator {
                             baseAlignSpec.remove(removeKey);
                         }
                     }
+                    if(baseAlignSpec.size() == 0){
+                        hasExistBase = true;
+                    }
+                    log.info(StringUtil.changeForLog("has existing base："+hasExistBase));
                     if(hasExistBase){
                         nextstep = CHOOSE_BASE_SVC;
                     }else{
@@ -686,7 +693,7 @@ public class ServiceMenuDelegator {
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
 
                 }else if(nextstep.equals(CHOOSE_ALIGN)){
-
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                 }
             }else{
                 //todo logic
@@ -700,6 +707,7 @@ public class ServiceMenuDelegator {
                 ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM,searchParam);
             }
         }
+        log.info(StringUtil.changeForLog("do choose svc next step:"+nextstep));
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, nextstep);
         //test

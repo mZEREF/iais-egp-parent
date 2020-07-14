@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.util.CopyUtil;
@@ -38,6 +39,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -720,7 +722,7 @@ public class NewApplicationHelper {
                 for(AppSvcChckListDto appSvcChckListDto:appSvcChckListDtoList){
                     AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto = null;
                     String chkSvcId = appSvcChckListDto.getChkLstConfId();
-                    if(!StringUtil.isEmpty(chkSvcId)){
+                    if(!StringUtil.isEmpty(chkSvcId) && !IaisCommonUtils.isEmpty(allocationDto)){
                         log.info(StringUtil.changeForLog("allocationDto size:"+allocationDto.size()));
                         for(AppSvcDisciplineAllocationDto allocation:allocationDto){
                             if(premisesIndexNo.equals(allocation.getPremiseVal()) && chkSvcId.equals(allocation.getChkLstConfId())){
@@ -1569,17 +1571,26 @@ public class NewApplicationHelper {
             List<AppSvcRelatedInfoDto> baseDtos = IaisCommonUtils.genNewArrayList();
             List<AppSvcRelatedInfoDto> specDtos = IaisCommonUtils.genNewArrayList();
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                String serviceType = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode()).getSvcType();
+                String svcCode = appSvcRelatedInfoDto.getServiceCode();
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(svcCode);
+                String serviceType = hcsaServiceDto.getSvcType();
+                appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
                 if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceType)){
                     baseDtos.add(appSvcRelatedInfoDto);
                 }else if (ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(serviceType)){
                     specDtos.add(appSvcRelatedInfoDto);
                 }
             }
-            baseDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
-            specDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
-            baseDtos.addAll(specDtos);
-            appSvcRelatedInfoDtos = baseDtos;
+            List<AppSvcRelatedInfoDto> newAppSvcDto = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(baseDtos)){
+                baseDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+                newAppSvcDto.addAll(baseDtos);
+            }
+            if(!IaisCommonUtils.isEmpty(specDtos)){
+                specDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+                newAppSvcDto.addAll(specDtos);
+            }
+            appSvcRelatedInfoDtos = newAppSvcDto;
         }
     }
 
@@ -1595,6 +1606,26 @@ public class NewApplicationHelper {
         return premisesHci;
     }
 
+    public static boolean isAllFieldNull(AppSvcPrincipalOfficersDto person) throws Exception {
+        boolean result = true;
+        if(person != null){
+            PersonFieldDto personFieldDto = MiscUtil.transferEntityDto(person,PersonFieldDto.class);
+            if("-1".equals(personFieldDto.getSpeciality())){
+                personFieldDto.setSpeciality(null);
+            }
+            Class psnClsa = personFieldDto.getClass();
+            Field[] fs = psnClsa.getDeclaredFields();
+            for(Field f:fs){
+                f.setAccessible(true);
+                Object value = IaisCommonUtils.getFieldValue(personFieldDto, f);
+                if(!StringUtil.isEmpty(value)){
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
 
     //=============================================================================
     //private method

@@ -717,11 +717,18 @@
                 currPhForm = $premContent.find('.new-premise-form-off-site');
             }
             var phHtml = currPhForm.find('.pubHolidayContent').get(0).outerHTML;
+            console.log(phHtml);
             //remove
             currPhForm.find('.pubHolidayContent').remove();
-            $.each(phList,function (k,v) {
+            if(phList.length>0){
+                $.each(phList,function (k,v) {
+                    currPhForm.find('.phFormMarkPoint').after(phHtml);
+                });
+            }else{
                 currPhForm.find('.phFormMarkPoint').after(phHtml);
-            });
+            }
+
+
             //$("#qipa250").attr('id','newQipa250');
         }
     }

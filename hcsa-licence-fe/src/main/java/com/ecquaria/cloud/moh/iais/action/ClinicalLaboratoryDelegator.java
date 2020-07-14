@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
@@ -429,12 +430,13 @@ public class ClinicalLaboratoryDelegator {
      * @param bpc
      * @throws
      */
-    public void prepareView(BaseProcessClass bpc) {
+    public void prepareView(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the do prepareView start ...."));
         String iframeId = ParamUtil.getString(bpc.request, "iframeId");
         String maskName = ParamUtil.getString(bpc.request, "maskName");
         String svcId = ParamUtil.getMaskedString(bpc.request, maskName);
         if (!StringUtil.isEmpty(svcId)) {
+            log.info(StringUtil.changeForLog("get current svc info...."));
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, svcId);
             List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
             appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
@@ -444,9 +446,110 @@ public class ClinicalLaboratoryDelegator {
                 poAndDpo.sort((h1,h2)->h2.getPsnType().compareTo(h1.getPsnType()));
                 appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(poAndDpo);
             }
-            ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO);
             Map<String, List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto, svcId);
+            //64688
+            //
+            if(reloadDisciplineAllocationMap != null){
+
+
+            }
+            for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto:hcsaServiceStepSchemesByServiceId){
+                switch (hcsaServiceStepSchemeDto.getStepCode()){
+                    case HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS:
+                        List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                        if(!IaisCommonUtils.isEmpty(appSvcCgoDtos)){
+                            List<AppSvcCgoDto> reloadDto = IaisCommonUtils.genNewArrayList();
+                            for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
+                                AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(appSvcCgoDto,AppSvcPrincipalOfficersDto.class);
+                                boolean isAllFieldNull = NewApplicationHelper.isAllFieldNull(appSvcPrincipalOfficersDto);
+                                if(!isAllFieldNull){
+                                    reloadDto.add(appSvcCgoDto);
+                                }
+                            }
+                            if(IaisCommonUtils.isEmpty(reloadDto)){
+                                appSvcRelatedInfoDto.setAppSvcCgoDtoList(null);
+                            }else{
+                                appSvcRelatedInfoDto.setAppSvcCgoDtoList(reloadDto);
+                            }
+                        }
+                        break;
+                    case HcsaConsts.STEP_PRINCIPAL_OFFICERS:
+                        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+                        if(!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
+                            List<AppSvcPrincipalOfficersDto> reloadDto = IaisCommonUtils.genNewArrayList();
+                            removeEmptyPsn(appSvcPrincipalOfficersDtos,reloadDto);
+                            if(IaisCommonUtils.isEmpty(reloadDto)){
+                                appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(null);
+                            }else{
+                                appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(reloadDto);
+                            }
+                        }
+                        break;
+                    case HcsaConsts.STEP_SERVICE_PERSONNEL:
+                        List<AppSvcPersonnelDto> appSvcPersonnelDtos = appSvcRelatedInfoDto.getAppSvcPersonnelDtoList();
+                        if(!IaisCommonUtils.isEmpty(appSvcPersonnelDtos)){
+                            List<AppSvcPersonnelDto> reloadDto = IaisCommonUtils.genNewArrayList();
+                            for(AppSvcPersonnelDto appSvcPersonnelDto:appSvcPersonnelDtos){
+                                AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(appSvcPersonnelDto,AppSvcPrincipalOfficersDto.class);
+                                boolean isAllFieldNull = NewApplicationHelper.isAllFieldNull(appSvcPrincipalOfficersDto);
+                                if(!isAllFieldNull){
+                                    reloadDto.add(appSvcPersonnelDto);
+                                }
+                            }
+                            if(IaisCommonUtils.isEmpty(reloadDto)){
+                                appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(null);
+                            }else{
+                                appSvcRelatedInfoDto.setAppSvcPersonnelDtoList(reloadDto);
+                            }
+                        }
+                        break;
+                    case HcsaConsts.STEP_MEDALERT_PERSON:
+                        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+                        if(!IaisCommonUtils.isEmpty(appSvcMedAlertPersonList)){
+                            List<AppSvcPrincipalOfficersDto> reloadDto = IaisCommonUtils.genNewArrayList();
+                            removeEmptyPsn(appSvcMedAlertPersonList,reloadDto);
+                            if(IaisCommonUtils.isEmpty(reloadDto)){
+                                appSvcRelatedInfoDto.setAppSvcMedAlertPersonList(null);
+                            }else{
+                                appSvcRelatedInfoDto.setAppSvcMedAlertPersonList(reloadDto);
+                            }
+                        }
+                        break;
+                    case HcsaConsts.STEP_LABORATORY_DISCIPLINES:
+                        break;
+                    case HcsaConsts.STEP_DISCIPLINE_ALLOCATION:
+                        Map<String, List<AppSvcDisciplineAllocationDto>> newReloadMap = IaisCommonUtils.genNewHashMap();
+                        for(String key:reloadDisciplineAllocationMap.keySet()){
+                            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtos = reloadDisciplineAllocationMap.get(key);
+                            if(!IaisCommonUtils.isEmpty(appSvcDisciplineAllocationDtos)){
+                                List<AppSvcDisciplineAllocationDto> newAllocationDto = IaisCommonUtils.genNewArrayList();
+                                for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto:appSvcDisciplineAllocationDtos){
+                                    String cgoName = appSvcDisciplineAllocationDto.getCgoSelName();
+                                    if(!StringUtil.isEmpty(cgoName)){
+                                        newAllocationDto.add(appSvcDisciplineAllocationDto);
+                                    }
+                                }
+                                if(newAllocationDto.size() != 0){
+                                    newReloadMap.put(key,newAllocationDto);
+                                }
+                            }
+                        }
+                        if(newReloadMap.size() == 0){
+                            reloadDisciplineAllocationMap = null;
+                        }else{
+                            reloadDisciplineAllocationMap = newReloadMap;
+                        }
+
+                        break;
+                    case HcsaConsts.STEP_DOCUMENTS:
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             ParamUtil.setSessionAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
             ParamUtil.setSessionAttr(bpc.request, "iframeId", iframeId);
         }
@@ -2245,6 +2348,15 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         return newArrs;
+    }
+
+    private void removeEmptyPsn(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos,List<AppSvcPrincipalOfficersDto> reloadDto) throws Exception {
+        for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcPrincipalOfficersDtos){
+            boolean isAllFieldNull = NewApplicationHelper.isAllFieldNull(appSvcPrincipalOfficersDto);
+            if(!isAllFieldNull){
+                reloadDto.add(appSvcPrincipalOfficersDto);
+            }
+        }
     }
 
 }
