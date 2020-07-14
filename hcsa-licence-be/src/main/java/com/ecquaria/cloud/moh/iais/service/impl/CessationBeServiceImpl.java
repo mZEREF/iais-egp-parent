@@ -298,7 +298,7 @@ public class CessationBeServiceImpl implements CessationBeService {
         String curRoleId = loginContext.getCurRoleId();
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_ASO);
         List<HcsaSvcStageWorkingGroupDto> taskConfig = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-        for(ApplicationDto applicationDto :applicationDtos){
+        for(ApplicationDto applicationDto :applicationDtos) {
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
             appPremisesRoutingHistoryDto.setRoleId(curRoleId);
             appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
@@ -311,6 +311,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             List<AppPremisesRoutingHistoryDto> asoHistory = IaisCommonUtils.genNewArrayList();
             asoHistory.add(appPremisesRoutingHistoryDto);
             taskService.createHistorys(asoHistory);
+        }
             TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos, HcsaConsts.ROUTING_STAGE_AO3, RoleConsts.USER_ROLE_AO3, IaisEGPHelper.getCurrentAuditTrailDto());
             List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
             taskService.createTasks(taskDtos);
@@ -319,8 +320,6 @@ public class CessationBeServiceImpl implements CessationBeService {
             appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(taskConfig.get(0).getGroupId());
             taskService.createHistorys(appPremisesRoutingHistoryDtos);
         }
-
-    }
 
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId) {
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
