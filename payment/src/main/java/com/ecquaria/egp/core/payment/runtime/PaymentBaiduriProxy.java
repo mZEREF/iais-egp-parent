@@ -276,7 +276,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		return fields;
 	}
 
-	private String hashAllFields(Map<String, String> fields, String secureHashType) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	private String hashAllFields(Map<String, String> fields, String secureHashType) throws NoSuchAlgorithmException {
 		// create a list and sort it
 		List<String> fieldNames = new ArrayList<String>(fields.keySet());
 		Collections.sort(fieldNames);

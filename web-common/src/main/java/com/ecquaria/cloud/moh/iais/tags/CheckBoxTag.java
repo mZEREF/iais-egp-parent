@@ -207,7 +207,7 @@ public final class CheckBoxTag extends DivTagSupport {
                 }
             }else {
                 //in <c:forEach> style
-                html.append("<input name =\"").append(name).append("\"").append("id = \"").append(checkboxId).append("\"").append("type=\"checkbox\"").append("value=").append("\"").append(value).append("\"");
+                html.append("<input name =\"").append(name).append('\"').append("id = \"").append(checkboxId).append('\"').append("type=\"checkbox\"").append("value=").append('\"').append(value).append('\"');
             }
 
             html.append("</div>");

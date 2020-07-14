@@ -51,7 +51,7 @@ public final class FieldTag extends DivTagSupport {
         setChecked(false);
         setOnclick(null);
         setWidth(0);
-        setMandatory(false);
+        setMandatory(Boolean.FALSE);
     }
 
     // Releases any resources we may have (or inherit)
