@@ -296,22 +296,22 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         }
         if (!StringUtil.isEmpty(dto.getLastInspectionEnd())) {
             try {
-                dtostartDate = Formatter.parseDate(dto.getLastInspectionEnd());
+                dtoEndDate = Formatter.parseDate(dto.getLastInspectionEnd());
             } catch (Exception e) {
                 log.debug(e.toString());
                 return Boolean.FALSE;
             }
         }
         if (dtostartDate != null && dtoEndDate == null) {
-            if (startDate != null && dtostartDate.getTime() > startDate.getTime()) {
+            if (startDate != null && dateCompareDate(startDate,dtostartDate)) {
                 return Boolean.TRUE;
             }
         } else if (dtostartDate == null && dtoEndDate != null) {
-            if (endDate != null && dtoEndDate.getTime() < endDate.getTime()) {
+            if (endDate != null &&  dateCompareDate(dtoEndDate, dtoEndDate)) {
                 return Boolean.TRUE;
             }
         } else {
-            if (startDate != null && endDate != null &&dtoEndDate != null && dtostartDate != null &&dtoEndDate.getTime() < endDate.getTime() && dtostartDate.getTime() > startDate.getTime()) {
+            if (startDate != null && endDate != null &&dtoEndDate != null && dtostartDate != null &&  dateCompareDate(dtoEndDate, dtoEndDate) &&  dateCompareDate(startDate,dtostartDate)) {
                 return Boolean.TRUE;
             }
         }
@@ -319,7 +319,9 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         return Boolean.FALSE;
     }
 
-
+    private  boolean dateCompareDate(Date date,Date date2){
+        return date2.compareTo(date) >= 0 ||  Formatter.formatDate(date).equalsIgnoreCase(Formatter.formatDate(date2)) ;
+    }
     private SearchResult<AuditTaskDataDto> getAuditSysParam(SearchParam searchParam) {
         return hcsaLicenceClient.searchSysAduit(searchParam).getEntity();
     }
