@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
@@ -122,6 +123,8 @@ public class BackendInboxDelegator {
 
     @Value("${iais.email.sender}")
     private String mailSender;
+
+    static private String APPSTATUSCATEID = "BEE661EE-220C-EA11-BE7D-000C29F371DC";
 
     public void start(BaseProcessClass bpc){
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -794,8 +797,32 @@ public class BackendInboxDelegator {
                 searchParamAjax.removeFilter("hci_code");
             }
             if(!StringUtil.isEmpty(application_status)){
-                searchParamGroup.addFilter("application_status", application_status,true);
-                searchParamAjax.addFilter("application_status", application_status,true);
+                List<MasterCodeView> masterCodeViews = MasterCodeUtil.retrieveByCategory(APPSTATUSCATEID);
+                String codeValue = MasterCodeUtil.getCodeDesc(application_status);
+                int statusi =0;
+                StringBuilder builder = new StringBuilder("(");
+                for (MasterCodeView item:masterCodeViews
+                ) {
+                    if(codeValue.equals(item.getCodeValue())){
+                        builder.append(":statusKey").append(statusi).append(',');
+                        statusi++;
+                    }
+                }
+                String appStatusSql = builder.substring(0, builder.length() - 1) + ")";
+                searchParamGroup.addParam("application_status", appStatusSql);
+                searchParamAjax.addParam("application_status", appStatusSql);
+                statusi =0;
+                for (MasterCodeView item:masterCodeViews
+                ) {
+                    if(codeValue.equals(item.getCodeValue())){
+                        searchParamGroup.addFilter("statusKey" + statusi,
+                                item.getCode());
+                        searchParamAjax.addFilter("statusKey" + statusi,
+                                item.getCode());
+                        statusi++;
+                    }
+                }
+                ParamUtil.setRequestAttr(bpc.request, "application_status", application_status);
             }else{
                 searchParamGroup.removeFilter("application_status");
                 searchParamAjax.removeFilter("application_status");

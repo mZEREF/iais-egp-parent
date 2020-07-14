@@ -106,7 +106,7 @@
                 <#if remises_corr_id_in??> and CONVERT(NVARCHAR(36), T5.corrid) IN ${remises_corr_id_in} </#if>
                 <#if application_no??> and (T5.APPLICATION_NO like :application_no)</#if>
                 <#if application_type??> and T5.APP_TYPE = :application_type</#if>
-                <#if application_status??> and T5.STATUS = :application_status</#if>
+                <#if application_status??> and T5.STATUS IN ${application_status}</#if>
                 <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
                 <#if address??> and (T5.address like :address)</#if>
                 <#if hci_name??> and (T5.HCI_NAME like :hci_name)</#if>
@@ -150,7 +150,7 @@
                 <#if groupNo??> and T5.GROUP_NO = :groupNo</#if>
                 <#if application_no??> and (T5.APPLICATION_NO like :application_no)</#if>
                 <#if application_type??> and T5.APP_TYPE = :application_type</#if>
-                <#if application_status??> and T5.STATUS = :application_status</#if>
+                <#if application_status??> and T5.STATUS IN ${application_status}</#if>
                 <#if hci_code??> and charindex(:hci_code, T5.HCI_CODE) >0 </#if>
                 <#if sub_date??> and T5.SUBMIT_DT >= :sub_date</#if>
                  <#if address??> and (T5.address like :address)</#if>

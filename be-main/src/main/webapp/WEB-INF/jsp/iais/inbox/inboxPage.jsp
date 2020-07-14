@@ -83,7 +83,7 @@
                                 <iais:select name="application_status" options="appStatusOption"
                                              cssClass="application_status"
                                              firstOption="Please Select"
-                                             value="${backendinboxSearchParam.filters['application_status']}"></iais:select>
+                                             value="${application_status}"></iais:select>
                             </div>
                         </div>
                     </div>
