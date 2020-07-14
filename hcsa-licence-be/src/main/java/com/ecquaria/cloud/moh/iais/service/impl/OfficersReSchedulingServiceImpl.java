@@ -584,31 +584,36 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     private void reSchSaveTask(List<TaskDto> taskDtos, AuditTrailDto auditTrailDto, int taskScore) {
         List<TaskDto> saveTaskDtoList = IaisCommonUtils.genNewArrayList();
+        //filter by common be one
+        List<String> repetitiveAppNo = IaisCommonUtils.genNewArrayList();
         for(TaskDto taskDto : taskDtos){
             taskDto.setSlaDateCompleted(new Date());
             taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
             taskDto.setAuditTrailDto(auditTrailDto);
             taskService.updateTask(taskDto);
-            TaskDto saveTask = new TaskDto();
-            saveTask.setId(null);
-            saveTask.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
-            saveTask.setPriority(taskDto.getPriority());
-            saveTask.setRefNo(taskDto.getRefNo());
-            saveTask.setScore(taskScore);
-            saveTask.setSlaAlertInDays(taskDto.getSlaAlertInDays());
-            saveTask.setSlaDateCompleted(null);
-            saveTask.setSlaInDays(taskDto.getSlaInDays());
-            saveTask.setSlaRemainInDays(null);
-            saveTask.setTaskKey(taskDto.getTaskKey());
-            saveTask.setTaskType(taskDto.getTaskType());
-            saveTask.setWkGrpId(taskDto.getWkGrpId());
-            saveTask.setUserId(null);
-            saveTask.setDateAssigned(new Date());
-            saveTask.setAuditTrailDto(auditTrailDto);
-            saveTask.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_REPORT);
-            saveTask.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
-            saveTask.setApplicationNo(taskDto.getApplicationNo());
-            saveTaskDtoList.add(saveTask);
+            if(!repetitiveAppNo.contains(taskDto.getApplicationNo())) {
+                repetitiveAppNo.add(taskDto.getApplicationNo());
+                TaskDto saveTask = new TaskDto();
+                saveTask.setId(null);
+                saveTask.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+                saveTask.setPriority(taskDto.getPriority());
+                saveTask.setRefNo(taskDto.getRefNo());
+                saveTask.setScore(taskScore);
+                saveTask.setSlaAlertInDays(taskDto.getSlaAlertInDays());
+                saveTask.setSlaDateCompleted(null);
+                saveTask.setSlaInDays(taskDto.getSlaInDays());
+                saveTask.setSlaRemainInDays(null);
+                saveTask.setTaskKey(taskDto.getTaskKey());
+                saveTask.setTaskType(taskDto.getTaskType());
+                saveTask.setWkGrpId(taskDto.getWkGrpId());
+                saveTask.setUserId(null);
+                saveTask.setDateAssigned(new Date());
+                saveTask.setAuditTrailDto(auditTrailDto);
+                saveTask.setProcessUrl(TaskConsts.TASK_PROCESS_URL_RESCHEDULING_COMMON_POOL);
+                saveTask.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+                saveTask.setApplicationNo(taskDto.getApplicationNo());
+                saveTaskDtoList.add(saveTask);
+            }
         }
         taskService.createTasks(saveTaskDtoList);
     }
