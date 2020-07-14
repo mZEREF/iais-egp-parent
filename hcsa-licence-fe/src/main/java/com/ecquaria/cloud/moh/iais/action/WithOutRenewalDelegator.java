@@ -746,7 +746,7 @@ public class WithOutRenewalDelegator {
                     try {
                         NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
                     } catch (CloneNotSupportedException e) {
-                        e.printStackTrace();
+                       log.error(e.getMessage(),e);
                     }
                     appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                     appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);

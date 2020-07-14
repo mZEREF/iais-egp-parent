@@ -31,8 +31,7 @@
                         <div class="input-group">
                             <input class="form-control" placeholder="Search Your Keywords" value="${personName}" type="text"
                                    placeholder="Licence no." name="personName">
-                            <span class="input-group-btn"><button class="btn btn-default buttonsearch"><i
-                                    class="fa fa-search"></i></button></span>
+                            <span class="input-group-btn"><button class="btn btn-default buttonsearch"><i class="fa fa-search"></i></button></span>
                         </div>
                     </div>
                 </div>
@@ -40,8 +39,6 @@
 
 
                 <div class="table-gp">
-                    <%--                    <iais:pagination param="PersonnelSearchParam" result="PersonnelSearchResult"/>--%>
-                    <%--                                        <div id="personPagDiv"></div>--%>
                     <div id="personPagDiv"></div>
                     <table class="table">
                         <thead>

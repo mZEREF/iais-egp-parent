@@ -1458,7 +1458,7 @@ public class LicenceApproveBatchjob {
                 String[] split = licenceNo.split("/");
                 if(split.length>5){
                     String runningNoS = split[5];
-                    Integer runningNoI = Integer.parseInt(runningNoS);
+                    Integer runningNoI = Integer.valueOf(Integer.parseInt(runningNoS));
                     String s = seqNumber(runningNoI+1, 3);
                     String ceasedLicNo = split[0]+"/"+split[1]+"/"+split[2]+"/"+split[3]+"/"+split[4]+"/"+s+"/"+split[6];
                     licenceDto.setCesedLicNo(ceasedLicNo);

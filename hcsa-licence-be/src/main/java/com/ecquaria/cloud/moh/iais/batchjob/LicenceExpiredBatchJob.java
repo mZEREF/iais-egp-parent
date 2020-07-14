@@ -99,7 +99,7 @@ public class LicenceExpiredBatchJob {
                     log.info("===================new is active ====================");
                     licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_EXPIRY);
                 }else {
-                    log.info("===================new is not null but errornew"+newLicDto.getLicenceNo()+"====================");
+                    log.info("===================new is not null but errornew=======================");
                     licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_LAPSED);
                 }
             }

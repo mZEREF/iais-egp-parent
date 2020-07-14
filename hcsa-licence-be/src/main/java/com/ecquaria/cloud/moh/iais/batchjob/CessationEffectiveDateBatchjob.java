@@ -146,7 +146,9 @@ public class CessationEffectiveDateBatchjob {
                                             updateLicencesStatusAndSendMails(specLicenceDto, date);
                                         }
                                     }
-                                    licenceDtos.addAll(specLicenceDto);
+                                    if(!IaisCommonUtils.isEmpty(specLicenceDto)){
+                                        licenceDtos.addAll(specLicenceDto);
+                                    }
                                 }
                             }
                         }

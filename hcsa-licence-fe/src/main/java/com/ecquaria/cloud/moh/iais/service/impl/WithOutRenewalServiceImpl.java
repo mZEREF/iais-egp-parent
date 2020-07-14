@@ -53,7 +53,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     }
 
     @Override
-    public Boolean isReplace(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+    public boolean isReplace(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         for (int i = 0; i < newAppSvcRelatedInfoDtoList.size(); i++) {
             List<AppSvcCgoDto> newCgoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
             List<AppSvcCgoDto> oldCgoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
@@ -62,7 +62,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                     String newIdNo = newCgoList.get(i).getIdNo();
                     String oldIdNo = oldCgoList.get(i).getIdNo();
                     if (!newIdNo.equals(oldIdNo)) {
-                        return true;
+                       return true;
                     }
                 }
             } else {
@@ -101,16 +101,16 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     }
 
     @Override
-    public Boolean isUpdate(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+    public boolean isUpdate(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         for (int i = 0; i < newAppSvcRelatedInfoDtoList.size(); i++) {
             List<AppSvcCgoDto> newCgoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
             List<AppSvcCgoDto> oldCgoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
             if (newCgoList.size() == oldCgoList.size()) {
+                AppSvcCgoDto newAppSvcCgoDtoE = new AppSvcCgoDto();
+                AppSvcCgoDto oldAppSvcCgoDtoE = new AppSvcCgoDto();
                 for (int j = 0; j < newCgoList.size(); j++) {
                     AppSvcCgoDto newAppSvcCgoDto = newCgoList.get(j);
                     AppSvcCgoDto oldAppSvcCgoDto = oldCgoList.get(j);
-                    AppSvcCgoDto newAppSvcCgoDtoE = new AppSvcCgoDto();
-                    AppSvcCgoDto oldAppSvcCgoDtoE = new AppSvcCgoDto();
                     newAppSvcCgoDtoE.setName(newAppSvcCgoDto.getName());
                     newAppSvcCgoDtoE.setDesignation(newAppSvcCgoDto.getDesignation());
                     newAppSvcCgoDtoE.setProfessionType(newAppSvcCgoDto.getProfessionType());
@@ -139,12 +139,12 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
             List<AppSvcPrincipalOfficersDto> newPoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcPrincipalOfficersDtoList();
             List<AppSvcPrincipalOfficersDto> oldPoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcPrincipalOfficersDtoList();
             if (newPoList.size() == oldPoList.size()) {
+                AppSvcPrincipalOfficersDto newPoE = new AppSvcPrincipalOfficersDto();
+                AppSvcPrincipalOfficersDto oldPoE = new AppSvcPrincipalOfficersDto();
                 for (int j = 0; j < newPoList.size(); j++) {
                     AppSvcPrincipalOfficersDto newPoDto = newPoList.get(j);
                     AppSvcPrincipalOfficersDto oldPoDto = oldPoList.get(j);
                     if (newPoDto.isPoPsn() && oldPoDto.isPoPsn()) {
-                        AppSvcPrincipalOfficersDto newPoE = new AppSvcPrincipalOfficersDto();
-                        AppSvcPrincipalOfficersDto oldPoE = new AppSvcPrincipalOfficersDto();
                         newPoE.setName(newPoDto.getName());
                         newPoE.setDesignation(newPoDto.getDesignation());
                         newPoE.setMobileNo(newPoDto.getMobileNo());
@@ -206,6 +206,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     @Override
     public List<String> isUpdateCgo(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         List<String> idNos = IaisCommonUtils.genNewArrayList();
+        AppSvcCgoDto newAppSvcCgoDtoE = new AppSvcCgoDto();
+        AppSvcCgoDto oldAppSvcCgoDtoE = new AppSvcCgoDto();
         for (int i = 0; i < newAppSvcRelatedInfoDtoList.size(); i++) {
             List<AppSvcCgoDto> newCgoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
             List<AppSvcCgoDto> oldCgoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
@@ -213,8 +215,6 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                 for (int j = 0; j < newCgoList.size(); j++) {
                     AppSvcCgoDto newAppSvcCgoDto = newCgoList.get(j);
                     AppSvcCgoDto oldAppSvcCgoDto = oldCgoList.get(j);
-                    AppSvcCgoDto newAppSvcCgoDtoE = new AppSvcCgoDto();
-                    AppSvcCgoDto oldAppSvcCgoDtoE = new AppSvcCgoDto();
                     newAppSvcCgoDtoE.setName(newAppSvcCgoDto.getName());
                     newAppSvcCgoDtoE.setDesignation(newAppSvcCgoDto.getDesignation());
                     newAppSvcCgoDtoE.setProfessionType(newAppSvcCgoDto.getProfessionType());
@@ -249,6 +249,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     @Override
     public List<String> isUpdatePo(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         List<String> idNos = IaisCommonUtils.genNewArrayList();
+        AppSvcPrincipalOfficersDto newPoE = new AppSvcPrincipalOfficersDto();
+        AppSvcPrincipalOfficersDto oldPoE = new AppSvcPrincipalOfficersDto();
         for (int i = 0; i < newAppSvcRelatedInfoDtoList.size(); i++) {
             List<AppSvcPrincipalOfficersDto> newPoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcPrincipalOfficersDtoList();
             List<AppSvcPrincipalOfficersDto> oldPoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcPrincipalOfficersDtoList();
@@ -261,8 +263,6 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                     String idNo = newPoDto.getIdNo();
                     String idNo1 = oldPoDto.getIdNo();
                     if (psnType.equals(psnType1)) {
-                        AppSvcPrincipalOfficersDto newPoE = new AppSvcPrincipalOfficersDto();
-                        AppSvcPrincipalOfficersDto oldPoE = new AppSvcPrincipalOfficersDto();
                         newPoE.setName(newPoDto.getName());
                         newPoE.setDesignation(newPoDto.getDesignation());
                         newPoE.setMobileNo(newPoDto.getMobileNo());
@@ -286,6 +286,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     @Override
     public List<String> isUpdateDpo(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         List<String> idNos = IaisCommonUtils.genNewArrayList();
+        AppSvcPrincipalOfficersDto newDpoE = new AppSvcPrincipalOfficersDto();
+        AppSvcPrincipalOfficersDto oldDpoE = new AppSvcPrincipalOfficersDto();
         for (int i = 0; i < newAppSvcRelatedInfoDtoList.size(); i++) {
             List<AppSvcPrincipalOfficersDto> newPoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcPrincipalOfficersDtoList();
             List<AppSvcPrincipalOfficersDto> oldPoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcPrincipalOfficersDtoList();
@@ -298,8 +300,6 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                     String psnType = newPoDto.getPsnType();
                     String psnType1 = oldPoDto.getPsnType();
                     if (psnType.equals(psnType1)) {
-                        AppSvcPrincipalOfficersDto newDpoE = new AppSvcPrincipalOfficersDto();
-                        AppSvcPrincipalOfficersDto oldDpoE = new AppSvcPrincipalOfficersDto();
                         newDpoE.setName(newPoDto.getName());
                         newDpoE.setDesignation(newPoDto.getDesignation());
                         newDpoE.setMobileNo(newPoDto.getMobileNo());
@@ -323,6 +323,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     @Override
     public List<String> isUpdateMat(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         List<String> idNos = IaisCommonUtils.genNewArrayList();
+        AppSvcPrincipalOfficersDto newMatE = new AppSvcPrincipalOfficersDto();
+        AppSvcPrincipalOfficersDto oldMatE = new AppSvcPrincipalOfficersDto();
         for (int i = 0; i < newAppSvcRelatedInfoDtoList.size(); i++) {
             List<AppSvcPrincipalOfficersDto> newMatList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcMedAlertPersonList();
             List<AppSvcPrincipalOfficersDto> oldMatList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcMedAlertPersonList();
@@ -330,8 +332,6 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                 for (int j = 0; j < newMatList.size(); j++) {
                     AppSvcPrincipalOfficersDto newMatDto = newMatList.get(j);
                     AppSvcPrincipalOfficersDto oldMatDto = oldMatList.get(j);
-                    AppSvcPrincipalOfficersDto newMatE = new AppSvcPrincipalOfficersDto();
-                    AppSvcPrincipalOfficersDto oldMatE = new AppSvcPrincipalOfficersDto();
                     String idNo = newMatDto.getIdNo();
                     String idNo1 = oldMatDto.getIdNo();
                     newMatE.setName(newMatDto.getName());
