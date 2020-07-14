@@ -982,7 +982,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto auDto : appointmentUserDtos){
                 if(auDto != null){
-
                     appointmentUserDtoList.add(auDto);//NOSONAR
                 }
             }
