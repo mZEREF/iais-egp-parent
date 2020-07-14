@@ -123,16 +123,6 @@
                                                                                   hidden> The field is mandatory.</span>
                                                                         </iais:value>
                                                                     </iais:row>
-                                                                    <c:if test="${appType!='APTY007'}">
-                                                                        <iais:row>
-                                                                            <iais:field value="Recommendation"
-                                                                                        required="false"/>
-                                                                            <iais:value width="10">
-                                                                                <p><iais:code
-                                                                                        code="${appPremisesRecommendationDto.period}"/></p>
-                                                                            </iais:value>
-                                                                        </iais:row>
-                                                                    </c:if>
                                                                     <c:if test="${applicationViewDto.applicationDto.applicationType=='APTY002'}">
                                                                         <iais:row>
                                                                             <iais:field value="Licence Start Date"
@@ -146,6 +136,16 @@
                                                                                 <c:if test="${empty applicationViewDto.recomLiceStartDate}">
                                                                                     <p>-</p>
                                                                                 </c:if>
+                                                                            </iais:value>
+                                                                        </iais:row>
+                                                                    </c:if>
+                                                                    <c:if test="${appType!='APTY007'}">
+                                                                        <iais:row>
+                                                                            <iais:field value="Recommendation"
+                                                                                        required="false"/>
+                                                                            <iais:value width="10">
+                                                                                <p><iais:code
+                                                                                        code="${appPremisesRecommendationDto.period}"/></p>
                                                                             </iais:value>
                                                                         </iais:row>
                                                                     </c:if>

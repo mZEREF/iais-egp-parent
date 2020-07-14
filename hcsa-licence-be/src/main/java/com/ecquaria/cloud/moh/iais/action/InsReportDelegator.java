@@ -332,7 +332,6 @@ public class InsReportDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto2 = appPremisesRecommendationDtoList.get(1);
         AppPremisesRecommendationDto appPremisesRecommendationDto3 = appPremisesRecommendationDtoList.get(2);
 
-
         if (!StringUtil.isEmpty(appPremisesRecommendationDto1.getRecommendation())) {
             insRepService.updateRecommendation(appPremisesRecommendationDto1);
         }
@@ -342,7 +341,7 @@ public class InsReportDelegator {
         } else {
             appPremisesRecommendationDto2.setRemarks(null);
         }
-        insRepService.updateengageRecommendation(appPremisesRecommendationDto3);
+        insRepService.updateengageRecommendation(appPremisesRecommendationDto2);
         String followRemarks = appPremisesRecommendationDto3.getRemarks();
         if (!StringUtil.isEmpty(followRemarks)) {
             appPremisesRecommendationDto3.setRemarks(followRemarks);

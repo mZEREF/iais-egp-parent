@@ -298,25 +298,28 @@ public class CessationBeServiceImpl implements CessationBeService {
         String curRoleId = loginContext.getCurRoleId();
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_ASO);
         List<HcsaSvcStageWorkingGroupDto> taskConfig = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
-        appPremisesRoutingHistoryDto.setRoleId(curRoleId);
-        appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
-        appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.PROCESSING_DECISION_VERIFIED);
-        appPremisesRoutingHistoryDto.setApplicationNo(applicationDtos.get(0).getApplicationNo());
-        appPremisesRoutingHistoryDto.setActionby(loginContext.getUserId());
-        appPremisesRoutingHistoryDto.setAppStatus(applicationDtos.get(0).getStatus());
-        appPremisesRoutingHistoryDto.setAuditTrailDto(AuditTrailDto.getThreadDto());
-        appPremisesRoutingHistoryDto.setWrkGrpId(taskConfig.get(0).getGroupId());
-        List<AppPremisesRoutingHistoryDto> asoHistory = IaisCommonUtils.genNewArrayList();
-        asoHistory.add(appPremisesRoutingHistoryDto);
-        taskService.createHistorys(asoHistory);
-        TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos, HcsaConsts.ROUTING_STAGE_AO3, RoleConsts.USER_ROLE_AO3, IaisEGPHelper.getCurrentAuditTrailDto());
-        List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
-        taskService.createTasks(taskDtos);
-        List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
-        appPremisesRoutingHistoryDtos.get(0).setActionby(loginContext.getUserId());
-        appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(taskConfig.get(0).getGroupId());
-        taskService.createHistorys(appPremisesRoutingHistoryDtos);
+        for(ApplicationDto applicationDto :applicationDtos){
+            AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+            appPremisesRoutingHistoryDto.setRoleId(curRoleId);
+            appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_ASO);
+            appPremisesRoutingHistoryDto.setProcessDecision(ApplicationConsts.PROCESSING_DECISION_VERIFIED);
+            appPremisesRoutingHistoryDto.setApplicationNo(applicationDto.getApplicationNo());
+            appPremisesRoutingHistoryDto.setActionby(loginContext.getUserId());
+            appPremisesRoutingHistoryDto.setAppStatus(applicationDto.getStatus());
+            appPremisesRoutingHistoryDto.setAuditTrailDto(AuditTrailDto.getThreadDto());
+            appPremisesRoutingHistoryDto.setWrkGrpId(taskConfig.get(0).getGroupId());
+            List<AppPremisesRoutingHistoryDto> asoHistory = IaisCommonUtils.genNewArrayList();
+            asoHistory.add(appPremisesRoutingHistoryDto);
+            taskService.createHistorys(asoHistory);
+            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtos, HcsaConsts.ROUTING_STAGE_AO3, RoleConsts.USER_ROLE_AO3, IaisEGPHelper.getCurrentAuditTrailDto());
+            List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+            taskService.createTasks(taskDtos);
+            List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
+            appPremisesRoutingHistoryDtos.get(0).setActionby(loginContext.getUserId());
+            appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(taskConfig.get(0).getGroupId());
+            taskService.createHistorys(appPremisesRoutingHistoryDtos);
+        }
+
     }
 
     private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId) {

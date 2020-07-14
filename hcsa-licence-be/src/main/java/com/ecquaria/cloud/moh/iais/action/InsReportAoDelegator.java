@@ -123,7 +123,6 @@ public class InsReportAoDelegator {
         String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        AppPremisesRecommendationDto appPremisesRecommendationDto = (AppPremisesRecommendationDto)ParamUtil.getSessionAttr(bpc.request, RECOMMENDATION_DTO);
         log.debug(StringUtil.changeForLog("the saveAoRecommendation start ...."));
         ParamUtil.setRequestAttr(bpc.request,IntranetUserConstant.ISVALID,IntranetUserConstant.TRUE);
         insRepService.routBackTaskToInspector(taskDto,applicationDto,appPremisesCorrelationId,historyRemarks);
@@ -141,7 +140,7 @@ public class InsReportAoDelegator {
         if(fastTracking!=null){
             applicationDto.setFastTracking(true);
         }
-        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(applicationDto.getStatus())){
+        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(applicationDto.getStatus())){
             insRepService.routTaskToRoutBack(bpc,taskDto, applicationDto, appPremisesCorrelationId,appPremisesRecommendationDto.getProcessRemarks());
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
@@ -204,7 +203,7 @@ public class InsReportAoDelegator {
     }
 
     private List<SelectOption> getProcessingDecision(String status) {
-        if(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK.equals(status)||ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
+        if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)||ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
             List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
             SelectOption so1 = new SelectOption("submit", "Give Clarification");
             riskLevelResult.add(so1);

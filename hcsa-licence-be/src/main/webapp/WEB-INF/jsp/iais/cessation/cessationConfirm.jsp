@@ -239,12 +239,12 @@
                 <div class="form-check">
                     <ul>
                         <li>
-                            <p>The licensee must notify the Director of Medical Services in writing at least 30 days before
+                            <p> The Applicant must notify the Director of Medical Services in writing at least 30 days before
                                 the cessation of operation, letting, sale or disposal of his private hospital, medical
                                 clinic or clinical laboratory.</p>
                         </li>
                         <li>
-                            <p> Any licensee of a licensed healthcare institution (For e.g a medical clinic) who intends to
+                            <p> Any Applicant of a licensed healthcare institution (For e.g a medical clinic) who intends to
                                 cease operating the medical clinic shall take all measures as are reasonable and necessary
                                 to ensure that the medical records of every patient are properly transferred to the medical
                                 clinic or other healthcare institution to which such patient is to be transferred.</p>

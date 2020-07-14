@@ -429,6 +429,11 @@ public class WithOutRenewalDelegator {
             List<AppGrpPremisesDto> newAppGrpPremisesDtoList = newAppSubmissionDtos.get(0).getAppGrpPremisesDtoList();
             Boolean replacePerson = outRenewalService.isReplace(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
             Boolean updatePerson = outRenewalService.isUpdate(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+            List<AppSvcPrincipalOfficersDto> poAndDpo = newAppSvcRelatedInfoDtoList.get(0).getAppSvcPrincipalOfficersDtoList();
+            if(!IaisCommonUtils.isEmpty(poAndDpo)){
+                poAndDpo.sort((h1,h2)->h2.getPsnType().compareTo(h1.getPsnType()));
+                newAppSvcRelatedInfoDtoList.get(0).setAppSvcPrincipalOfficersDtoList(poAndDpo);
+            }
             boolean eqGrpPremisesResult = eqGrpPremises(newAppGrpPremisesDtoList, oldAppGrpPremisesDtoList);
             if (replacePerson || updatePerson || eqGrpPremisesResult) {
                 ParamUtil.setRequestAttr(bpc.request, "changeRenew", "Y");
@@ -895,7 +900,7 @@ public class WithOutRenewalDelegator {
             if (date.before(new Date())) {
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-                errorMap.put("rfcEffectiveDate", "Please select a future time.");
+                errorMap.put("rfcEffectiveDate", "Please select future date.");
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 return;
             }
