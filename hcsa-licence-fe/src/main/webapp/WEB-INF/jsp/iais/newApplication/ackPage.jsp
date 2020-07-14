@@ -17,6 +17,8 @@
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type"  value=""/>
+    <input type="hidden" name="appGroupId" value="${AppSubmissionDto.appGrpId}"/>
+    <input type="hidden" name="selfDeclAction" value="new"/>
     <div class="main-content">
         <div class="container">
             <div class="row center">
