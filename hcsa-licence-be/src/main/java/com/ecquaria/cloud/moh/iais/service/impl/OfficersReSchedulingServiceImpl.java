@@ -203,6 +203,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         appNoList.addAll(appNos);
                     }
                 }
+                reschedulingOfficerDto.setInspectorAppNoMap(inspectorAppNoMap);
             }
         }
 
