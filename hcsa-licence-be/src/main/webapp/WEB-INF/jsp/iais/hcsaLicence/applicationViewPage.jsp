@@ -241,7 +241,8 @@
                                                     <c:if test="${isAppealType}">
                                                         <div id="appealRecommendation">
                                                             <iais:row>
-                                                                <iais:field value="Recommendation" required="true"/>
+                                                                <div id="appealRecommendationTrue"><iais:field value="Recommendation" required="true"/></div>
+                                                                <div id="appealRecommendationFalse" class="hidden"><iais:field value="Recommendation" required="false"/></div>
                                                                 <iais:value width="10">
                                                                     <c:choose>
                                                                         <c:when test="${isAso || isPso}">
@@ -625,22 +626,30 @@
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').addClass('hidden');
+            $('#appealRecommendationFalse').addClass('hidden');
+            $('#appealRecommendationTrue').removeClass('hidden');
         } else if (selectValue == "PROCRB") {
             $('#rollBackDropdown').removeClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#routeBackReviewBox').removeClass('hidden');
             $('#comments').addClass('hidden');
+            $('#appealRecommendationFalse').addClass('hidden');
+            $('#appealRecommendationTrue').removeClass('hidden');
         } else if (selectValue == "PROCRFI") {
             $('#verifiedDropdown').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
             $('#comments').removeClass('hidden');
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
+            $('#appealRecommendationTrue').addClass('hidden');
+            $('#appealRecommendationFalse').removeClass('hidden');
         } else {
             $('#comments').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
             $('#verifiedDropdown').addClass('hidden');
             $('#routeBackReviewBox').addClass('hidden');
+            $('#appealRecommendationFalse').addClass('hidden');
+            $('#appealRecommendationTrue').removeClass('hidden');
         }
     });
 

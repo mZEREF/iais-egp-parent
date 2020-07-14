@@ -141,7 +141,10 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 //normal flow
                 String nextStage = ParamUtil.getRequestString(request, "nextStage");
                 //verify appeal type
-                appealTypeValidate(errMap,request,applicationType,roleId);
+                if(!ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
+                    //appeal rfi recommendation is not required
+                    appealTypeValidate(errMap,request,applicationType,roleId);
+                }
                 if (StringUtil.isEmpty(nextStage)) {
                     errMap.put("nextStage", "The field is mandatory.");
                 } else {
