@@ -367,6 +367,7 @@ public class InboxServiceImpl implements InboxService {
     public Map<String, String> appealIsApprove(String licenceId, String type) {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         List<String> endStatusList = IaisCommonUtils.getAppPendingStatus();
+        endStatusList.add("APST005");
         if("licence".equals(type)){
             List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
             if(!IaisCommonUtils.isEmpty(apps)){

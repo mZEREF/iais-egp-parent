@@ -768,7 +768,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         Map<ApplicationGroupDto,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
         for (ApplicationGroupDto every : applicationGroup) {
             List<ApplicationDto> applicationslist=IaisCommonUtils.genNewArrayList();
-
             for (ApplicationDto application : applicationList) {
                 if (every.getId().equals(application.getAppGrpId())) {
                     applicationslist.add(application);
@@ -789,15 +788,18 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }else {
 
                 }
+                List<ApplicationDto> applicationDtoList=IaisCommonUtils.genNewArrayList();
                 for(ApplicationDto application :v){
                     if (autoRfc) {
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-
                     }else {
 
                     }
                     int i=v.size();
-                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(application.getStatus()) || ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(application.getStatus()) ){
+                        requestForChange++;
+                        applicationDtoList.add(application);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         requestForChange++;
                     }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(application.getStatus())){
                         requestForChange--;
@@ -805,7 +807,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(requestForChange==i){
 
                         if(!autoRfc){
-                            list.addAll(v);
+                            list.addAll(applicationDtoList);
                         }
 
                     }
@@ -817,37 +819,43 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 }else {
 
                 }
+                List<ApplicationDto> applicationDtoList=IaisCommonUtils.genNewArrayList();
                 for(ApplicationDto application:v){
                     if (autoRfc) {
                         application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                     }else {
 
-
                     }
                     int i=v.size();
-                    if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING) || ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
+                    if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING) ){
+                        reNew++;
+                        applicationDtoList.add(application);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         reNew++;
                     }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(application.getStatus())){
                         reNew--;
                     }
 
                     if(reNew==i){
-
                         if(!autoRfc){
                             //all reNew application
-                            list.addAll(v);
+                            list.addAll(applicationDtoList);
                         }
                     }
                 }
 
 
             }else {
+                List<ApplicationDto> applicationDtoList=IaisCommonUtils.genNewArrayList();
                 for(ApplicationDto application :v){
                     int i=v.size();
-                    if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING) || ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
+                    if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING) ){
+                        j++;
+                        applicationDtoList.add(application);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         j++;
                     }
-                    if(j==i){ list.addAll(v); }
+                    if(j==i){ list.addAll(applicationDtoList); }
                 }
             }
 

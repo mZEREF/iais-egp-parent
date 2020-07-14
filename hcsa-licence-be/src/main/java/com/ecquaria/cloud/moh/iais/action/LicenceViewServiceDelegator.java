@@ -135,14 +135,15 @@ public class LicenceViewServiceDelegator {
                     bpc.request.setAttribute("oldLicenceDto", oldLicenceDto);
                 }
 
-                List<AppSubmissionDto> entity = hcsaLicenceClient.getAppSubmissionDtos(list).getEntity();
-                if (!entity.isEmpty()) {
-                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.get(0).getAppSvcRelatedInfoDtoList();
+                AppSubmissionDto entity = hcsaLicenceClient.getAppSubmissionDto(list.get(0)).getEntity();
+                if (entity!=null) {
+                    List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = entity.getAppSvcRelatedInfoDtoList();
                     if (appSvcRelatedInfoDtoList != null && !appSvcRelatedInfoDtoList.isEmpty()) {
                         String serviceName = appSvcRelatedInfoDtoList.get(0).getServiceName();
                         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
                         appSvcRelatedInfoDtoList.get(0).setServiceId(hcsaServiceDto.getId());
-                        appSubmissionDto.setOldAppSubmissionDto(entity.get(0));
+                        premiseTrans(entity);
+                        appSubmissionDto.setOldAppSubmissionDto(entity);
                     }
 
                 }
@@ -1109,5 +1110,34 @@ public class LicenceViewServiceDelegator {
         oldAppGrpPrimaryDocDtos.clear();
         appGrpPrimaryDocDtos.addAll(sortAppGrpPrimaryDocDtos);
         oldAppGrpPrimaryDocDtos.addAll(sortOldAppGrpPrimaryDocDtos);
+    }
+
+    private void premiseTrans(AppSubmissionDto appSubmissionDto){
+        if(appSubmissionDto==null){
+            return;
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(appGrpPremisesDtoList==null || appGrpPremisesDtoList.isEmpty()){
+            return;
+        }
+        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+            String premisesType = appGrpPremisesDto.getPremisesType();
+            if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType)){
+                appGrpPremisesDto.setStreetName(appGrpPremisesDto.getOffSiteStreetName());
+                appGrpPremisesDto.setPostalCode(appGrpPremisesDto.getOffSitePostalCode());
+                appGrpPremisesDto.setBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
+                appGrpPremisesDto.setFloorNo(appGrpPremisesDto.getOffSiteFloorNo());
+                appGrpPremisesDto.setUnitNo(appGrpPremisesDto.getOffSiteUnitNo());
+                appGrpPremisesDto.setAddrType(appGrpPremisesDto.getOffSiteAddressType());
+            }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premisesType)){
+                appGrpPremisesDto.setStreetName(appGrpPremisesDto.getConveyanceStreetName());
+                appGrpPremisesDto.setPostalCode(appGrpPremisesDto.getConveyancePostalCode());
+                appGrpPremisesDto.setBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
+                appGrpPremisesDto.setFloorNo(appGrpPremisesDto.getConveyanceFloorNo());
+                appGrpPremisesDto.setUnitNo(appGrpPremisesDto.getConveyanceUnitNo());
+                appGrpPremisesDto.setAddrType(appGrpPremisesDto.getConveyanceAddressType());
+            }
+        }
+
     }
 }

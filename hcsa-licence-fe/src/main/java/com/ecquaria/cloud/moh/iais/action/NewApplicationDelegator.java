@@ -1116,7 +1116,7 @@ public class NewApplicationDelegator {
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
         String appGrpNo = appSubmissionDto.getAppGrpNo();
         //oldAppSubmissionDtos
-        List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
+//        List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
         StringBuilder stringBuilder=new StringBuilder(10);
         stringBuilder.append(appSubmissionDto);
         log.info(StringUtil.changeForLog("appSubmissionDto:"+stringBuilder.toString()));
@@ -1139,25 +1139,16 @@ public class NewApplicationDelegator {
             return;
         }
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-      /*  for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtoByGroupNo){
-            appSubmissionDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
-            appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
-            appSubmissionRequestInformationDto.setOldAppSubmissionDto(appSubmissionDto1);
-            appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
-
-        }*/
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
 
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
-
         //update message status
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         appSubmissionService.updateMsgStatus(msgId,MessageConstants.MESSAGE_STATUS_RESPONSE);
         applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);
-       /* appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
+      /*  appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
         ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
@@ -3370,12 +3361,12 @@ public class NewApplicationDelegator {
         log.info(sB.toString());
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = dto.getAppSvcDisciplineAllocationDtoList();
         doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
-        log.info(JsonUtil.parseToJson(errorMap)+"doSvcDis");
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)+"doSvcDis"));
         doSvcDisdolabory(errorMap,appSvcDisciplineAllocationDtoList,appSvcLaboratoryDisciplinesDtoList,serviceId,sB);
         log.info(JsonUtil.parseToJson(errorMap)+"doSvcDisdolabory");
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
         Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList(),licPersonMap);
-       log.info(JsonUtil.parseToJson(govenMap));
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(govenMap)));
         if(!govenMap.isEmpty()){
             sB.append(serviceId);
             log.info("govenMap is error");
@@ -4023,10 +4014,6 @@ public class NewApplicationDelegator {
             if(appSubmissionDto!=null){
                 if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
                     requestForChangeService.svcDocToPresmise(appSubmissionDto);
-                    AppSubmissionDto oldSubmitAppSubmissionDto =(AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
-                    AppSubmissionDto newSubmitAppSubmissionDto =(AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDto);
-                    bpc.request.getSession().setAttribute("submitAppSubmissionDto",newSubmitAppSubmissionDto);
-                    bpc.request.getSession().setAttribute("oldSubmitAppSubmissionDto",oldSubmitAppSubmissionDto);
                     List<AppGrpPremisesDto> appGrpPremisesDtoList= appSubmissionService.getAppGrpPremisesDto(appNo);
                     List<String> ids=IaisCommonUtils.genNewArrayList();
                     String premisesIndexNo=null;

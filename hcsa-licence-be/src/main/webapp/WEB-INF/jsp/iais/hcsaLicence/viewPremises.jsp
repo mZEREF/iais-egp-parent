@@ -466,9 +466,16 @@
                                       </div>
                                     </div>
                                   </div>
-                                  <c:forEach items="${appGrpPremDto.appPremPhOpenPeriodList}"
-                                             var="appPremPhOpenPeriod" varStatus="statu">
-
+                                  <c:choose>
+                                    <c:when test="${!empty appGrpPremDto.appPremPhOpenPeriodList}">
+                                      <c:set var="phLength" value="${appGrpPremDto.appPremPhOpenPeriodList.size()-1}"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                      <c:set var="phLength" value="0"/>
+                                    </c:otherwise>
+                                  </c:choose>
+                                  <c:forEach varStatus="statu"  begin="0" end="${phLength}">
+                                    <c:set var="appPremPhOpenPeriod" value="${appGrpPremDto.appPremPhOpenPeriodList[statu.index]}"/>
                                     <div class="row">
                                       <div class="col-md-6">
                                         Select Public Holiday
@@ -491,14 +498,12 @@
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-6">
-                                             <span class="newVal "
-                                                   attr="${appPremPhOpenPeriod.convStartFromHH}"><c:out
-                                                     value="${appPremPhOpenPeriod.convStartFromHH} : ${appPremPhOpenPeriod.convStartFromMM}"/></span>
+                                             <span class="newVal " attr="${appPremPhOpenPeriod.startFrom}">
+                                               <fmt:formatDate value="${appPremPhOpenPeriod.startFrom}" pattern="HH : mm"></fmt:formatDate></span>
                                         </div>
                                         <div class="col-md-6">
-                                          <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH}" style="display: none">
-                                            <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromHH} : ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].convStartFromMM}"/></span>
-
+                                          <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" style="display: none">
+                                             <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" pattern="HH : mm"></fmt:formatDate>
                                         </div>
                                       </div>
                                     </div>

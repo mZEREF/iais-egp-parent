@@ -212,4 +212,6 @@ public interface HcsaLicenceClient {
     FeignResponseEntity<List<ApplicationViewHciNameDto>> getApplicationViewHciNameDtoByHciName(@RequestParam(name = "hciName") String hciName, @RequestParam(name = "licensee") String licensee);
     @PostMapping(value = "/hcsa-licence/application-view-by-address",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationViewHciNameDto>> getApplicationViewHciNameDtoByAddress(@RequestBody Map<String,String> map);
+    @GetMapping(value = "/hcsa-licence/licence-submission", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(@RequestParam(value = "licenceId" ) String licenceId);
 }
