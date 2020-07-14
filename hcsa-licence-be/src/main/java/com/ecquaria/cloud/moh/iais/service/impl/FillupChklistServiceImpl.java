@@ -1389,21 +1389,22 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(inspectionFillCheckListDto == null){
             return inspectionFillCheckListDto;
         }
-        int userNum = orgUserDtos.size();
-        if(userNum > 1){
-            inspectionFillCheckListDto.setMoreOneDraft(true);
-        }
+
         List<InspectionCheckQuestionDto>  inspectionCheckQuestionDtos = inspectionFillCheckListDto.getCheckList();
 
         if(IaisCommonUtils.isEmpty( inspectionCheckQuestionDtos)){
             return inspectionFillCheckListDto;
         }
-        inspectionFillCheckListDto.setStringInspectionCheckQuestionDtoMap( getStringInspectionCheckQuestionDtoMapByList( inspectionCheckQuestionDtos));
 
         List<AppPremInsDraftDto> appPremInsDraftDtos =   fillUpCheckListGetAppClient.getInspDraftAnswer(getCheckListIdsByInspectionCheckQuestionDtos(inspectionFillCheckListDto.getPreCheckId())).getEntity();
         if(IaisCommonUtils.isEmpty(appPremInsDraftDtos)){
             return inspectionFillCheckListDto;
         }else {
+            int userNum = orgUserDtos.size();
+            if(userNum > 1){
+                inspectionFillCheckListDto.setMoreOneDraft(true);
+            }
+            inspectionFillCheckListDto.setStringInspectionCheckQuestionDtoMap( getStringInspectionCheckQuestionDtoMapByList( inspectionCheckQuestionDtos));
             inspectionFillCheckListDto.setOtherInspectionOfficer(getOtherOffs(appPremInsDraftDtos));
             List<InspectionCheckListAnswerDto> answerDtos = getInspectionCheckListAnswerDtosByAppPremInsDraftDtos(appPremInsDraftDtos);
             for(InspectionCheckQuestionDto inspectionCheckQuestionDto :  inspectionCheckQuestionDtos ){
@@ -1529,16 +1530,13 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             return adCheckListShowDto;
         }
 
-        int userNum = orgUserDtos.size();
-        if(userNum > 1){
-            adCheckListShowDto.setMoreOneDraft(true);
-        }
-
         List<AdhocNcCheckItemDto> adItemList =  adCheckListShowDto.getAdItemList();
 
         if(IaisCommonUtils.isEmpty(adItemList)){
             return adCheckListShowDto;
         }
+
+
         List<String> itemList = new ArrayList<>(adItemList.size());
         for(AdhocNcCheckItemDto adhocNcCheckItemDto : adItemList){
             itemList.add(adhocNcCheckItemDto.getId());
@@ -1548,6 +1546,10 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(IaisCommonUtils.isEmpty(adhocDraftDtos)){
             return  adCheckListShowDto;
         }else {
+            int userNum = orgUserDtos.size();
+            if(userNum > 1){
+                adCheckListShowDto.setMoreOneDraft(true);
+            }
             // Distinguish between different answers
             for(AdhocNcCheckItemDto adhocNcCheckItemDto : adItemList) {
                 List<AdhocDraftDto> adhocDraftDtosOne = new ArrayList<>(1);

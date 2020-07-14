@@ -318,8 +318,8 @@
                                                                   </div>
                                                               </td>
                                                               <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status && adchklDto.moreOneDraft}">
-                                                                 <c:if test="${empty item.adhocAnswerForDifDto}"> <td>-</td></c:if>
-                                                                  <c:if test="${not empty item.adhocAnswerForDifDto}">
+                                                                 <c:if test="${empty item.adhocAnswerForDifDtos}"> <td>-</td></c:if>
+                                                                  <c:if test="${not empty item.adhocAnswerForDifDtos}">
                                                                           <td>  <a data-toggle="modal" data-target="#DeleteTemplateModalDifference${item.id}">Difference</a> </td>
                                                                           <div class="modal fade" id="DeleteTemplateModalDifference$${item.id}" tabindex="-1" role="dialog" aria-labelledby="regOutsideWindow" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                                                                               <div class="modal-dialog" role="document">
@@ -337,7 +337,7 @@
                                                                                                       <th width="40%">Remark</th>
                                                                                                       <th width="20%">Rectified</th>
                                                                                                   </tr>
-                                                                                                  <c:forEach var = "itemAnswerForDifDto" items = "${item.answerForDifDtos}" varStatus="difDtoStatus">
+                                                                                                  <c:forEach var = "itemAnswerForDifDto" items = "${item.adhocAnswerForDifDtos}" varStatus="difDtoStatus">
                                                                                                       <tr>
                                                                                                           <td>${itemAnswerForDifDto.submitName}</td>
                                                                                                           <td>${itemAnswerForDifDto.answer}</td>
