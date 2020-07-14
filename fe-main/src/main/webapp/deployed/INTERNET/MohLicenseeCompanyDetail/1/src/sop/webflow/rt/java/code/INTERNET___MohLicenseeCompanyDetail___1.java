@@ -36,6 +36,18 @@ public class INTERNET___MohLicenseeCompanyDetail___1 extends BaseProcessClass {
 	// 		backToMenu->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "backToMenu", this);
 	}
+	public void licensee_OnStepProcess_0() throws Exception {
+	// 		Licensee->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "licensee", this);
+	}
+	public void authorised_OnStepProcess_0() throws Exception {
+	// 		Authorised->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "authorised", this);
+	}
+	public void medAlert_OnStepProcess_0() throws Exception {
+	// 		MedAlert->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "medAlert", this);
+	}
 	
 
 }

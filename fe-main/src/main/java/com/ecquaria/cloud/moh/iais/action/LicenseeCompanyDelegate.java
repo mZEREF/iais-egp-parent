@@ -52,13 +52,11 @@ public class LicenseeCompanyDelegate {
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
         String type = ParamUtil.getString(bpc.request,"licenseView");
-        if(type != null && !StringUtils.isEmpty(type) && "licensee".equals(type)){
-            ParamUtil.setSessionAttr(bpc.request,"backtype","licensee");
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Solo");
+        if(type != null && !StringUtils.isEmpty(type) ){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,type);
         }else if("Company".equals(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()))){
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Company");
         }else{
-            ParamUtil.setSessionAttr(bpc.request,"backtype","solo");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,"Solo");
         }
     }
@@ -78,8 +76,37 @@ public class LicenseeCompanyDelegate {
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
         ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
-        String backtype = (String)ParamUtil.getSessionAttr(bpc.request,"backtype");
-        ParamUtil.setRequestAttr(bpc.request,"backtype",backtype);
+    }
+
+    public void licensee(BaseProcessClass bpc) {
+        log.debug("****preparePage Process ****");
+        LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+        List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDto = orgUserManageService.getPersonById(loginContext.getLicenseeId());
+        ParamUtil.setRequestAttr(bpc.request,"person",licenseeKeyApptPersonDto);
+        ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
+
+    }
+
+    public void authorised(BaseProcessClass bpc) {
+        log.debug("****preparePage Process ****");
+        LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDto = orgUserManageService.getPersonById(loginContext.getLicenseeId());
+        if(licenseeKeyApptPersonDto!= null && licenseeKeyApptPersonDto.size() > 0){
+            LicenseeKeyApptPersonDto licenseeper = licenseeKeyApptPersonDto.get(0);
+            String nric = "XXXX"+licenseeper.getIdNo().substring(3) + "(NRIC)";
+            ParamUtil.setRequestAttr(bpc.request,"nric",nric);
+            ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeper);
+        }
+
+
+    }
+
+    public void medAlert(BaseProcessClass bpc) {
+        log.debug("****preparePage Process ****");
+        LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+        ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
     }
 
     public void backToMenu(BaseProcessClass bpc){

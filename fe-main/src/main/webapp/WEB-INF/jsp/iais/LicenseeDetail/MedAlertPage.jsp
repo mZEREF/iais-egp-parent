@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dashboard-page-title">
-                        <h1>Licensee Details</h1>
+                        <h1>MedAlert Contact Person</h1>
                     </div>
                 </div>
             </div>
@@ -113,7 +113,7 @@
 </form>
 <script type="text/javascript">
     $("#back").click(function () {
-        SOP.Crud.cfxSubmit("mainForm","back");
+        SOP.Crud.cfxSubmit("mainForm","backToMenu");
     })
 
     $("#refresh").click(function () {

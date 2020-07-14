@@ -43,6 +43,27 @@
     <JavaCode defClass="" executor="" methodName="backToMenu_OnStepProcess_0" name="backToMenu_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Licensee" x="600" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="licensee_OnStepProcess_0" name="licensee_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Authorised" x="700" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="authorised_OnStepProcess_0" name="authorised_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="MedAlert" x="780" y="230">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="medAlert_OnStepProcess_0" name="medAlert_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="CompanyPage" stageIndicator="" x="360" y="370">
@@ -52,6 +73,24 @@
    <probepoint type="none"/>
   </WebPage>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="SoloPage" stageIndicator="" x="490" y="370">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="LicenseePage" stageIndicator="" x="590" y="370">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="AuthorisedPage" stageIndicator="" x="680" y="370">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="MedAlertPage" stageIndicator="" x="770" y="370">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -67,13 +106,13 @@
    <position>{(390,250)(380,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/CompanyPage" style="oblique">
-   <position>{(380,390)(300,520)}</position>
+   <position>{(380,390)(270,490)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Prepare" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(300,520)(270,120)}</position>
+   <position>{(270,490)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/Step2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(300,520)(100,500)}</position>
+   <position>{(270,490)(100,500)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Prepare" style="rectanular">
    <position>{(270,120)(450,120)}</position>
@@ -88,15 +127,42 @@
    <position>{(520,250)(510,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/SoloPage" style="oblique">
-   <position>{(510,390)(300,520)}</position>
+   <position>{(510,390)(270,490)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/backToMenu" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(300,520)(380,560)}</position>
+   <position>{(270,490)(380,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Licensee" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(450,120)(620,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Authorised" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(450,120)(720,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/MedAlert" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
+   <position>{(450,120)(800,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/LicenseePage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Licensee" style="rectanular">
+   <position>{(620,250)(610,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/AuthorisedPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Authorised" style="rectanular">
+   <position>{(720,250)(700,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/MedAlertPage" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/MedAlert" style="rectanular">
+   <position>{(800,250)(790,390)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/LicenseePage" style="oblique">
+   <position>{(610,390)(270,490)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/AuthorisedPage" style="oblique">
+   <position>{(700,390)(270,490)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/MedAlertPage" style="oblique">
+   <position>{(790,390)(270,490)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
-  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="280" y="500">
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="250" y="470">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Prepare" value="&quot;refresh&quot;"/>
    <SwitchCase component="/Steps/InvokeStep/Step2" value="&quot;back&quot;"/>
@@ -106,6 +172,9 @@
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Company" value="&quot;Company&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Solo" value="&quot;Solo&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Licensee" value="&quot;Licensee&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/Authorised" value="&quot;Authorised&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/MedAlert" value="&quot;MedAlert&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
