@@ -950,16 +950,15 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
-        //NOSONAR
-        List<AppointmentUserDto> appointmentUserDtoList = null;
+
+        List<AppointmentUserDto> appointmentUserDtoList = null;//NOSONAR
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
                 if(IaisCommonUtils.isEmpty(appointmentUserDtoList)){
                     appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
-                    //NOSONAR
-                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
+                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);//NOSONAR
                 }
             }
         }
@@ -983,8 +982,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto auDto : appointmentUserDtos){
                 if(auDto != null){
-                    //NOSONAR
-                    appointmentUserDtoList.add(auDto);
+
+                    appointmentUserDtoList.add(auDto);//NOSONAR
                 }
             }
         }
