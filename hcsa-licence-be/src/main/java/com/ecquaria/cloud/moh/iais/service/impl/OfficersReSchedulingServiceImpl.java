@@ -222,6 +222,8 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
                 List<String> applicationNos = samePremisesAppMap.get(appNo);
                 List<String> inspectorNames = getInspectorsByAppNoList(applicationNos);
+                Set<String> inspectorNameSet = new HashSet<>(inspectorNames);
+                inspectorNames = new ArrayList<>(inspectorNameSet);
                 reschedulingOfficerQueryDto.setInspectors(inspectorNames);
                 List<String> serviceNames = getServiceNameByAppNoList(applicationNos);
                 reschedulingOfficerQueryDto.setServiceNames(serviceNames);
