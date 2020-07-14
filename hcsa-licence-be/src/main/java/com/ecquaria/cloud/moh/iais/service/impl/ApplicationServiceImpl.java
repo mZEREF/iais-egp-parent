@@ -288,43 +288,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             interMessageDto.setMaskParams(mapParam);
             inboxMsgService.saveInterMessage(interMessageDto);
         }
-        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVAL_OFFICE_ROUTES_ID).getEntity();
-            if(msgTemplateDto != null){
-
-                String username = licenseeDto.getName();
-                String approvalOfficerName = loginContext.getUserName();
-
-                Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-                tempMap.put("userName",StringUtil.viewHtml(username));
-                tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
-                tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-                tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
-
-                String mesContext = null;
-                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
-
-                EmailDto emailDto = new EmailDto();
-                emailDto.setContent(mesContext);
-                emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo);
-                emailDto.setSender(mailSender);
-                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
-                //send
-                emailClient.sendNotification(emailDto).getEntity();
-            }
-        }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-            String username = licenseeDto.getName();
-            String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
-            String approvalOfficerName = loginContext.getUserName();
-            tempMap.put("userName",StringUtil.viewHtml(username));
-            tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
-            tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-            tempMap.put("approvalOfficerName",StringUtil.viewHtml(approvalOfficerName));
-            String subject = " " + applicationNo;
-            sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_INSPECTION_IS_IDENTIFIED,subject,licenseeId,appGrpId);
-        }
     }
 
     //send email helper
