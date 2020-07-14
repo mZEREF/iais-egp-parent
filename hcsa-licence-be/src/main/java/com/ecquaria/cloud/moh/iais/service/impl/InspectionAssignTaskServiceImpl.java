@@ -700,7 +700,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     private boolean allAppFromSamePremisesIsOk(List<ApplicationDto> applicationDtoList) {
         boolean allInPlaceFlag = false;
         if(!IaisCommonUtils.isEmpty(applicationDtoList)){
-            int allAppSize = applicationDtoList.size();
+            int allAppSize = applicationDtoList.size() - 1;
             int reSchAppSize = 0;
             for(ApplicationDto applicationDto : applicationDtoList){
                 String appStatus = applicationDto.getStatus();
