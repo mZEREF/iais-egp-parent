@@ -191,6 +191,8 @@
                 </c:when>
             </c:choose>
         </div>
+        <iais:confirm msg="Please select at least one application"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+
     </form>
 </div>
 <script type="text/javascript">
@@ -218,7 +220,9 @@
         $("#inspector_name option:first").prop("selected", 'selected');
         $("#searchCondition .current").text("Please Select");
     })
-
+    function cancel() {
+        $('#support').modal('hide');
+    }
     function submit(action) {
         showWaiting();
         $("[name='SearchSwitchType']").val(action);
@@ -327,7 +331,7 @@
             showWaiting();
             submit('approve');
         } else {
-            alert('Please select at least one application');
+            $('#support').modal('show');
         }
 
     }
@@ -338,7 +342,7 @@
             showWaiting();
             submit('approve');
         } else {
-            alert('Please select at least one application');
+            $('#support').modal('show');
         }
 
     }
