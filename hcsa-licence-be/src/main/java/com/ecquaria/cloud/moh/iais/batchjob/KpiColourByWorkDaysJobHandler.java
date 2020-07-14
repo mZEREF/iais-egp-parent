@@ -156,8 +156,12 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
                 Date beginDate = sortFirstDate(beginDates);
                 Set<Date> setDate = new HashSet<>(workAndNonWorkDays);
                 workAndNonWorkDays = new ArrayList<>(setDate);
-                log.info(StringUtil.changeForLog("workAndNonWorkDays = " + workAndNonWorkDays.toString()));
-                JobLogger.log(StringUtil.changeForLog("workAndNonWorkDays = " + workAndNonWorkDays.toString()));
+                StringBuilder sb = new StringBuilder("workAndNonWorkDays = ");
+                for(Date date : workAndNonWorkDays){
+                    sb.append(Formatter.formatDateTime(date, "dd-MM-yyyy HH:mm:ss"));
+                }
+                log.info(StringUtil.changeForLog(sb.toString()));
+                JobLogger.log(StringUtil.changeForLog(sb.toString()));
                 //count work days
                 KpiCountDto kpiCountDto = new KpiCountDto();
                 kpiCountDto.setTaskDates(workAndNonWorkDays);
@@ -354,8 +358,12 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
         Map<Integer, Integer> workAndNonMapS = appointmentClient.getWorkAndNonMap(kpiCountDto).getEntity();
         if(workAndNonMapS != null && workAndNonMapS.size() > 0) {
             for (Map.Entry<Integer, Integer> map : workAndNonMapS.entrySet()) {
-                allWorkDays = allWorkDays + map.getKey();
-                allHolidays = allHolidays + map.getValue();
+                if(map.getKey() != null){
+                    allWorkDays = allWorkDays + map.getKey();
+                }
+                if(map.getValue() != null){
+                    allHolidays = allHolidays + map.getValue();
+                }
             }
         }
         workAndNonMap.put(allWorkDays, allHolidays);
