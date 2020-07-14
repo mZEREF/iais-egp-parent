@@ -1148,6 +1148,12 @@ public class NewApplicationDelegator {
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         appSubmissionService.updateMsgStatus(msgId,MessageConstants.MESSAGE_STATUS_RESPONSE);
        /* applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);*/
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+           if(oldAppSubmissionDto!=null){
+               oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcDocDtoLit(null);
+           }
+
+        }
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
