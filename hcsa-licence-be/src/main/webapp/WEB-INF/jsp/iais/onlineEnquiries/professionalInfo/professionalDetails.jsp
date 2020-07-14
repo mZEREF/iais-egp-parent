@@ -64,17 +64,15 @@
                           <td align="right">Designation</td>
                           <td>&nbsp;<iais:code code="${empty professionalInfo.keyPersonnelDto.idNo ? '-' : professionalInfo.keyPersonnelDto.designation}"></iais:code></td>
                         </tr>
-                        <tr>
-                          <td align="right">Mobile No</td>
-                          <td>&nbsp;<c:out value="${empty professionalInfo.keyPersonnelDto.mobileNo ? '-' : professionalInfo.keyPersonnelDto.mobileNo}"></c:out></td>
-                        </tr>
-                        <tr>
-                          <td align="right">Email Address</td>
-                          <td>&nbsp;<c:out value="${empty professionalInfo.keyPersonnelDto.emailAddr ? '-' : professionalInfo.keyPersonnelDto.emailAddr}"></c:out></td>
-                        </tr>
 
 
                         <c:if test="${professionalInfo.licKeyPersonnelDto.psnType eq 'CGO'}">
+
+                          <tr>
+                            <td align="right">Professional Type</td>
+                            <td>&nbsp;<iais:code code="${empty professionalInfo.keyPersonnelExtDto.professionType ? '-' : professionalInfo.keyPersonnelExtDto.professionType}"></iais:code></td>
+                          </tr>
+
                           <tr>
                             <td align="right">Professional Registration No</td>
                             <td>&nbsp;<c:out value="${empty professionalInfo.keyPersonnelExtDto.profRegNo ? '-' : professionalInfo.keyPersonnelExtDto.profRegNo}"></c:out></td>
@@ -92,6 +90,14 @@
 
                         </c:if>
 
+                        <tr>
+                          <td align="right">Mobile No</td>
+                          <td>&nbsp;<c:out value="${empty professionalInfo.keyPersonnelDto.mobileNo ? '-' : professionalInfo.keyPersonnelDto.mobileNo}"></c:out></td>
+                        </tr>
+                        <tr>
+                          <td align="right">Email Address</td>
+                          <td>&nbsp;<c:out value="${empty professionalInfo.keyPersonnelDto.emailAddr ? '-' : professionalInfo.keyPersonnelDto.emailAddr}"></c:out></td>
+                        </tr>
 
                         <c:if test="${professionalInfo.licKeyPersonnelDto.psnType eq 'MAP'}">
                           <tr>
