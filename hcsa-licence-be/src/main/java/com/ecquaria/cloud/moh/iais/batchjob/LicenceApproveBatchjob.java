@@ -300,9 +300,9 @@ public class LicenceApproveBatchjob {
         }
         for (ApplicationDto applicationDto : applicationDtos) {
             if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(applicationDto.getStatus())){
-                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
-            }else{
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN_GENERATED);
+            }else{
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
             }
 
             result.add(applicationDto);
@@ -1572,11 +1572,11 @@ public class LicenceApproveBatchjob {
             }
         }
         List<ApplicationDto> applicationDtos1 = IaisCommonUtils.genNewArrayList();
-        if (applicationDto != null) {
-            applicationDtos1.add(applicationDto);
-        }
+
         if (applicationDtos != null) {
             applicationDtos1.addAll(applicationDtos);
+        }else if (applicationDto != null) {
+                applicationDtos1.add(applicationDto);
         }
         licenceDto.setApplicationDtos(applicationDtos1);
         log.info(StringUtil.changeForLog("The  getLicenceDto end ..."));
