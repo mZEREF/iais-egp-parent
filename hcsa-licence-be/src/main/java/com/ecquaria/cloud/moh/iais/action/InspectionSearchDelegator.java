@@ -104,7 +104,7 @@ public class InspectionSearchDelegator {
         SearchParam searchParam = getSearchParam(bpc);
         SearchResult<InspectionSubPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "supTaskSearchResult");
         //First search
-        if(searchResult == null || IaisCommonUtils.isEmpty(searchResult.getRows())) {
+        if(searchResult == null) {
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             PoolRoleCheckDto poolRoleCheckDto = new PoolRoleCheckDto();
             poolRoleCheckDto = inspectionAssignTaskService.getRoleOptionByKindPool(loginContext, AppConsts.SUPERVISOR_POOL, poolRoleCheckDto);

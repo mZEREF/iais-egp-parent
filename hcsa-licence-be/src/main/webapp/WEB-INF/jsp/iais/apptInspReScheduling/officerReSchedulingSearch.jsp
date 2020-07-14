@@ -130,6 +130,9 @@
         var inspectorCheck = $("#inspectorCheck").val();
         var workGroupCheck = $("#workGroupCheck").val();
         $("#inspectorName" + workGroupCheck).val(inspectorCheck);
+        alert("#inspectorName" + workGroupCheck);
+        alert(workGroupCheck);
+        alert(inspectorCheck);
         $("#reSchInspWorkGroup option").each(function(){
             var value = $(this).val();
             $("#workGroupNo" + value).addClass("hidden");

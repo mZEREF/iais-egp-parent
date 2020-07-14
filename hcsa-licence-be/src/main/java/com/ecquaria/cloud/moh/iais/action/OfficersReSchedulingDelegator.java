@@ -101,11 +101,12 @@ public class OfficersReSchedulingDelegator {
      */
     public void mohOfficerReSchedulingPer(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the mohOfficerReSchedulingPer start ...."));
+        ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
         SearchParam searchParam = getSearchParam(bpc);
         SearchResult<ReschedulingOfficerQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "inspReSchSearchResult");
-        if(searchResult == null || IaisCommonUtils.isEmpty(searchResult.getRows())){
+        if(searchResult == null){
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            ReschedulingOfficerDto reschedulingOfficerDto = new ReschedulingOfficerDto();
+            reschedulingOfficerDto = new ReschedulingOfficerDto();
             //get all inspection work group
             List<SelectOption> workGroupOption = officersReSchedulingService.getInspWorkGroupByLogin(loginContext, reschedulingOfficerDto);
             if(!IaisCommonUtils.isEmpty(workGroupOption)) {
@@ -135,6 +136,7 @@ public class OfficersReSchedulingDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchResult", searchResult);
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchParam", searchParam);
+        ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
     }
 
     private SearchParam getSearchParamByFilter(SearchParam searchParam, List<String> appNoList) {

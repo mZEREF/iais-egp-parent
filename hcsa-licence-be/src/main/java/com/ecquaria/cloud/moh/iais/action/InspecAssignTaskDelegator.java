@@ -100,7 +100,7 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorPre start ...."));
         SearchParam searchParam = getSearchParam(bpc);
         SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
-        if(searchResult == null || IaisCommonUtils.isEmpty(searchResult.getRows())){
+        if(searchResult == null){
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             PoolRoleCheckDto poolRoleCheckDto = new PoolRoleCheckDto();
             poolRoleCheckDto = inspectionAssignTaskService.getRoleOptionByKindPool(loginContext, AppConsts.COMMON_POOL, poolRoleCheckDto);
