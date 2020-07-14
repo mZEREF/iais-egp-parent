@@ -1,7 +1,10 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -68,6 +71,9 @@ public class EmailHelper {
 	private TaskApplicationClient taskApplicationClient;
 	@Autowired
 	private HcsaLicenceClient hcsaLicenceClient;
+	@Value("${iais.current.domain}")
+	private String currentDomain;
+
 	private static List<String> licenceEmailString =  Arrays.asList(
 		ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,
 		ApplicationConsts.PERSONNEL_PSN_TYPE_PO,
@@ -197,10 +203,11 @@ public class EmailHelper {
 		return set;
 	}
 
-	private Collection<String> getRecriptApp(List<String> roles, String appId) {
+	private Collection<String> getRecriptApp(List<String> roles, String appNo) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
-		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppId(appId).getEntity();
+		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
+
 		for (String role : roles) {
 			if (RECEIPT_ROLE_ASSIGNED_ASO.equals(role)) {
 
@@ -225,6 +232,32 @@ public class EmailHelper {
 						}
 					});
 				}
+			}
+		}
+
+		return set;
+	}
+
+	private Collection<String> getAssignedOfficer(List<String> roles, String appNo) {
+		Set<String> set = IaisCommonUtils.genNewHashSet();
+		Set<String> userIds = IaisCommonUtils.genNewHashSet();
+		if (!AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+			return set;
+		}
+		List<AppPremisesRoutingHistoryDto> hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
+		if (IaisCommonUtils.isEmpty(hisList)) {
+			return set;
+		}
+		Map<String, List<String>> userMap = IaisCommonUtils.genNewHashMap();
+		for (AppPremisesRoutingHistoryDto his : hisList) {
+			if (userMap.get(his.getRoleId()) == null) {
+				userMap.put(his.getRoleId(), IaisCommonUtils.genNewArrayList());
+			}
+			userMap.get(his.getRoleId()).add(his.getActionby());
+		}
+		for (String role : roles) {
+			if (RECEIPT_ROLE_ASSIGNED_ASO.equals(role) && userMap.get(RoleConsts.USER_ROLE_ASO) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_ASO));
 			}
 		}
 
