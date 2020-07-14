@@ -8,7 +8,7 @@
         <div class="navigation-gp">
             <div class="row">
                 <%@ include file="../common/dashboardDropDown.jsp" %>
-                <div style="margin-top: 20px;margin-left: 2%" >
+                <div style="margin-top: 20px;margin-left: 4%" >
                     <h1>Appeal Form</h1>
                 </div>
             </div>

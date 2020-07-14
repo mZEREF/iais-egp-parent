@@ -689,10 +689,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
                         String postalCode = appGrpPremisesDtoList.get(i).getPostalCode();
                         if (!StringUtil.isEmpty(postalCode)) {
-                            if (!postalCode.matches("^[0-9]{6}$")) {
+                            if(postalCode.length()<6){
                                 errorMap.put("postalCode"+i, "NEW_ERR0004");
+                            } else if (!postalCode.matches("^[0-9]{6}$")) {
+                                errorMap.put("postalCode"+i, "CHKLMD001_ERR003");
                             }else {
-
                                 if(!StringUtil.isEmpty(stringBuilder.toString())){
                                     stringBuilder.append(postalCode);
                                     if(list.contains(stringBuilder.toString())){
@@ -945,8 +946,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         if(StringUtil.isEmpty(conveyancePostalCode)){
                             errorMap.put("conveyancePostalCode"+i,"UC_CHKLMD001_ERR001");
                         }else {
-                            if(!conveyancePostalCode.matches("^[0-9]{6}$")){
+                            if(conveyancePostalCode.length()<6){
                                 errorMap.put("conveyancePostalCode"+i, "NEW_ERR0004");
+                            }else if(!conveyancePostalCode.matches("^[0-9]{6}$")){
+                                errorMap.put("conveyancePostalCode"+i, "CHKLMD001_ERR003");
                             }else {
                                 if(!StringUtil.isEmpty(stringBuilder.toString())){
                                     stringBuilder.append(conveyancePostalCode);
@@ -983,25 +986,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
                     }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premiseType)){
 
-                        String offSitePostalCode = appGrpPremisesDtoList.get(i).getOffSitePostalCode();
-                        if (!StringUtil.isEmpty(offSitePostalCode)) {
-                            if (!offSitePostalCode.matches("^[0-9]{6}$")) {
-                                errorMap.put("offSitePostalCode"+i, "NEW_ERR0004");
-                            }else {
 
-                                if(!StringUtil.isEmpty(stringBuilder.toString())){
-                                    stringBuilder.append(offSitePostalCode);
-                                    if(list.contains(stringBuilder.toString())){
-                                        errorMap.put("offSitePostalCode"+i,"There is a duplicated entry for this premises address");
-
-                                    }else {
-                                        list.add(stringBuilder.toString());
-                                    }
-                                }
-                            }
-                        }else {
-                            errorMap.put("offSitePostalCode"+i, "UC_CHKLMD001_ERR001");
-                        }
 
                         String offSiteStreetName = appGrpPremisesDtoList.get(i).getOffSiteStreetName();
                         if(StringUtil.isEmpty(offSiteStreetName)){
@@ -1043,10 +1028,30 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                             }
                             if(!empty&&!empty1&&!empty2){
-                                stringBuilder.append(appGrpPremisesDtoList.get(i).getFloorNo())
-                                        .append(appGrpPremisesDtoList.get(i).getBlkNo())
-                                        .append(appGrpPremisesDtoList.get(i).getUnitNo());
+                                stringBuilder.append(appGrpPremisesDtoList.get(i).getOffSiteFloorNo())
+                                        .append(appGrpPremisesDtoList.get(i).getOffSiteBlockNo())
+                                        .append(appGrpPremisesDtoList.get(i).getOffSiteUnitNo());
                             }
+                        }
+                        String offSitePostalCode = appGrpPremisesDtoList.get(i).getOffSitePostalCode();
+                        if (!StringUtil.isEmpty(offSitePostalCode)) {
+                            if(offSitePostalCode.length()<6){
+                                errorMap.put("offSitePostalCode"+i, "NEW_ERR0004");
+                            }else if (!offSitePostalCode.matches("^[0-9]{6}$")) {
+                                errorMap.put("offSitePostalCode"+i, "CHKLMD001_ERR003");
+                            }else {
+                                if(!StringUtil.isEmpty(stringBuilder.toString())){
+                                    stringBuilder.append(offSitePostalCode);
+                                    if(list.contains(stringBuilder.toString())){
+                                        errorMap.put("offSitePostalCode"+i,"There is a duplicated entry for this premises address");
+
+                                    }else {
+                                        list.add(stringBuilder.toString());
+                                    }
+                                }
+                            }
+                        }else {
+                            errorMap.put("offSitePostalCode"+i, "UC_CHKLMD001_ERR001");
                         }
                         String offSiteStartHH = appGrpPremisesDtoList.get(i).getOffSiteStartHH();
                         String offSiteStartMM = appGrpPremisesDtoList.get(i).getOffSiteStartMM();

@@ -290,4 +290,7 @@ public interface ApplicationClient {
 
     @PostMapping (path = "/iais-appt-inspec-be/appt-Resch-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<ReschApptGrpPremsQueryDto>> searchApptReschGrpPrems(@RequestBody SearchParam searchParam);
+    @PostMapping(value = "/iais-application/rfi-be-aoolication",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity updateApplicationOfRfi(@RequestBody List<ApplicationDto> rfiApplications);
+
 }

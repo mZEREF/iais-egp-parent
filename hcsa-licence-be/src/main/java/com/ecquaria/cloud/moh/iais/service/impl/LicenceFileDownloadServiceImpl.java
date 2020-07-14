@@ -709,7 +709,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization());
             }
-
+            log.info("update be application status");
+            if(!requestForInfList.isEmpty()){
+                applicationClient.updateApplicationOfRfi(requestForInfList);
+            }
         }
 
     }

@@ -1147,8 +1147,8 @@ public class NewApplicationDelegator {
         //update message status
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         appSubmissionService.updateMsgStatus(msgId,MessageConstants.MESSAGE_STATUS_RESPONSE);
-        applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);
-      /*  appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);*/
+       /* applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);*/
+        appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         // ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
         ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
@@ -1319,32 +1319,6 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         List<AppSubmissionDto> appSubmissionDtos=IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> personAppSubmissionDtos=IaisCommonUtils.genNewArrayList();
-        if(appGrpPremisesDtoList!=null){
-            int size = appGrpPremisesDtoList.size();
-         /*   for(int i=0;i<size;i++){
-                List<LicenceDto> attribute =(List<LicenceDto>)bpc.request.getSession().getAttribute("selectLicence" + i);
-                if(attribute!=null){
-                    for(LicenceDto licenceDto : attribute){
-                        Boolean otherLicenceOperation = requestForChangeService.isOtherOperation(licenceDto.getId());
-                        if(!otherLicenceOperation){
-                            ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
-                            ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
-                            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
-                            return ;
-                        }
-                        if(grpPremiseIsChange){
-                            List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
-                            if(!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)){
-                                ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
-                                ParamUtil.setRequestAttr(bpc.request,ACKSTATUS,"error");
-                                ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
-                                return ;
-                            }
-                        }
-                    }
-                }
-            }*/
-        }
         AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appSubmissionDto, oldAppSubmissionDto);
         if(!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation()){
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1659,8 +1633,8 @@ public class NewApplicationDelegator {
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = n.get(0).getAppSvcMedAlertPersonList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = o.get(0).getAppSvcMedAlertPersonList();
         if(appSvcMedAlertPersonList!=null&&oldAppSvcMedAlertPersonList!=null){
-            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonDtos = copyAppSvcPo(appSvcMedAlertPersonList);
-            List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonDtos = copyAppSvcPo(oldAppSvcMedAlertPersonList);
+            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonDtos = copyMedaler(appSvcMedAlertPersonList);
+            List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonDtos = copyMedaler(oldAppSvcMedAlertPersonList);
             n.get(0).setAppSvcMedAlertPersonList(appSvcMedAlertPersonDtos);
             o.get(0).setAppSvcMedAlertPersonList(oldAppSvcMedAlertPersonDtos);
         }
@@ -1822,7 +1796,7 @@ public class NewApplicationDelegator {
         return appSubmissionDtoList;
     }
 
-    private void changeCgoInfo( List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList, List<AppSubmissionDto> appSubmissionDtoList){
+ /*   private void changeCgoInfo( List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList, List<AppSubmissionDto> appSubmissionDtoList){
         if(appSubmissionDtoList.isEmpty()){
             return;
         }
@@ -1918,7 +1892,7 @@ public class NewApplicationDelegator {
             }
         }
 
-    }
+    }*/
     private boolean eqCgo( List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList) throws  Exception{
        if(appSvcCgoDtoList!=null&&oldAppSvcCgoDtoList!=null){
            List<AppSvcCgoDto> n = copyAppSvcCgo(appSvcCgoDtoList);
@@ -1947,13 +1921,14 @@ public class NewApplicationDelegator {
             appSvcCgoDto.setSpecialityHtml(null);
             appSvcCgoDto.setCgoIndexNo(null);
             appSvcCgoDto.setAssignSelect(null);
+            appSvcCgoDto.setOfficeTelNo(null);
         }
         return n;
     }
     private boolean eqMeadrter(  List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList,  List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList1) throws  Exception{
         if(appSvcMedAlertPersonList!=null&&oldAppSvcMedAlertPersonList1!=null){
-            List<AppSvcPrincipalOfficersDto> n=copyAppSvcPo(appSvcMedAlertPersonList);
-            List<AppSvcPrincipalOfficersDto> o=copyAppSvcPo(oldAppSvcMedAlertPersonList1);
+            List<AppSvcPrincipalOfficersDto> n=copyMedaler(appSvcMedAlertPersonList);
+            List<AppSvcPrincipalOfficersDto> o=copyMedaler(oldAppSvcMedAlertPersonList1);
 
             if(!n.equals(o)){
                 return true;
@@ -1976,6 +1951,25 @@ public class NewApplicationDelegator {
         }
         return false;
     }
+    private List<AppSvcPrincipalOfficersDto> copyMedaler( List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList) throws Exception{
+        List<AppSvcPrincipalOfficersDto> n=(List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(appSvcMedAlertPersonList);
+        for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto: n){
+            appSvcPrincipalOfficersDto.setCgoPsn(false);
+            appSvcPrincipalOfficersDto.setPoPsn(false);
+            appSvcPrincipalOfficersDto.setDpoPsn(false);
+            appSvcPrincipalOfficersDto.setMapPsn(false);
+            appSvcPrincipalOfficersDto.setLicPerson(false);
+            appSvcPrincipalOfficersDto.setSelectDropDown(false);
+            appSvcPrincipalOfficersDto.setNeedSpcOptList(false);
+            appSvcPrincipalOfficersDto.setSpecialityHtml(null);
+            appSvcPrincipalOfficersDto.setSpcOptList(null);
+            appSvcPrincipalOfficersDto.setCgoIndexNo(null);
+            appSvcPrincipalOfficersDto.setAssignSelect(null);
+            appSvcPrincipalOfficersDto.setOfficeTelNo(null);
+        }
+        return n;
+    }
+
     private List<AppSvcPrincipalOfficersDto>  copyAppSvcPo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList) throws  Exception{
         List<AppSvcPrincipalOfficersDto> n=(List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(appSvcPrincipalOfficersDtoList);
         for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : n){
@@ -1990,6 +1984,7 @@ public class NewApplicationDelegator {
             appSvcPrincipalOfficersDto.setSpcOptList(null);
             appSvcPrincipalOfficersDto.setCgoIndexNo(null);
             appSvcPrincipalOfficersDto.setAssignSelect(null);
+            appSvcPrincipalOfficersDto.setPreferredMode(null);
         }
         return n;
     }
@@ -3085,7 +3080,6 @@ public class NewApplicationDelegator {
                     String convPbHolDayStartMMName = premValue[i]+"conveyancePbHolDayStartMM"+j;
                     String convPbHolDayEndHHName = premValue[i]+"conveyancePbHolDayEndHH"+j;
                     String convPbHolDayEndMMName = premValue[i]+"conveyancePbHolDayEndMM"+j;
-
                     String convPubHoliday = ParamUtil.getDate(request, convPubHolidayName);
                     String convPbHolDayStartHH = ParamUtil.getString(request, convPbHolDayStartHHName);
                     String convPbHolDayStartMM = ParamUtil.getString(request, convPbHolDayStartMMName);
@@ -3178,14 +3172,7 @@ public class NewApplicationDelegator {
             coMap.put("premises","premises");
         }
         //
-        List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
         Map<String,AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
-       /* Map<String, String> poMap = NewApplicationHelper.doValidatePo(poDto,licPersonMap);
-        if(!poMap.isEmpty()){
-            previewAndSubmitMap.put("po","UC_CHKLMD001_ERR001");
-            String poMapStr = JsonUtil.parseToJson(poMap);
-            log.info(StringUtil.changeForLog("poMap json str:"+poMapStr));
-        }*/
         //
         List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, ClinicalLaboratoryDelegator.GOVERNANCEOFFICERSDTOLIST);
         Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList,licPersonMap);
@@ -3196,9 +3183,7 @@ public class NewApplicationDelegator {
         }
         //
         Map<String, List<HcsaSvcPersonnelDto>> allSvcAllPsnConfig = getAllSvcAllPsnConfig(bpc.request);
-
         List<AppSvcRelatedInfoDto> dto = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-
         ServiceStepDto serviceStepDto = new ServiceStepDto();
         for(int i=0;i< dto.size();i++ ){
             String serviceId = dto.get(i).getServiceId();
@@ -3212,9 +3197,6 @@ public class NewApplicationDelegator {
                 log.info(StringUtil.changeForLog("map json str:"+mapStr));
             }
         }
-
-
-
         Map<String,String> documentMap=IaisCommonUtils.genNewHashMap();
         documentValid(bpc.request,documentMap);
         doCommomDocument(bpc.request,documentMap);
@@ -3226,7 +3208,6 @@ public class NewApplicationDelegator {
         }else {
             coMap.put("document","document");
         }
-
         if(!StringUtil.isEmpty(sB.toString())){
             previewAndSubmitMap.put("serviceId",sB.toString());
             coMap.put("information","");

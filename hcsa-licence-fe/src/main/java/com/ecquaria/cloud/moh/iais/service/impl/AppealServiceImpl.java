@@ -223,6 +223,7 @@ public class AppealServiceImpl implements AppealService {
                 appPremiseMiscDto.setNewHciName(proposedHciName);
             }
             req.setAttribute(APPEALING_FOR, appealingFor);
+            appPremiseMiscDto.setOtherReason(othersReason);
             req.setAttribute("appPremiseMiscDto", appPremiseMiscDto);
             return null;
         }
@@ -813,15 +814,16 @@ public class AppealServiceImpl implements AppealService {
         appealDto.setAppealType(ApplicationConsts.APPEAL_TYPE_APPLICAITON);
         //if infomation
         if ("rfi".equals(rfi)) {
-            applicationDto1.setVersion(applicationDto.getVersion() + 1);
+            ApplicationDto rfiApplication = (ApplicationDto) request.getSession().getAttribute("rfiApplication");
+            applicationDto1.setVersion(rfiApplication.getVersion() + 1);
             //if need new group
-            applicationGroupDto.setId(applicationDto.getAppGrpId());
-            applicationGroupDto.setGroupNo(applicationDto.getAppGrpId().substring(0, applicationDto.getApplicationNo().lastIndexOf('-')));
-            applicationDto1.setApplicationNo(applicationDto.getApplicationNo());
+            applicationGroupDto.setId(rfiApplication.getAppGrpId());
+            applicationGroupDto.setGroupNo(rfiApplication.getApplicationNo().substring(0,rfiApplication.getApplicationNo().lastIndexOf("-")));
+            applicationDto1.setApplicationNo(rfiApplication.getApplicationNo());
             appealDto.setAppealType("APPEAL006");
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
-            s = applicationDto.getApplicationNo();
+            s = rfiApplication.getApplicationNo();
             applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
             applicationClient.updateApplication(applicationDto);
         }

@@ -398,13 +398,6 @@
 
         showSpecialty();
 
-
-        if('APTY005' == '${AppSubmissionDto.appType}' && 'true' != '${isClickEdit}'){
-            disabledAll();
-            //nice-select
-         /*   $('div.nice-select').addClass('disabled');*/
-        }
-
         doEdit();
 
         $('#control--runtime--0').children().remove("hr")
