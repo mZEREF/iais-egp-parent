@@ -690,7 +690,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
     }
 
     private List<String> getAppPremCorrIdByList(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
-        List<String> appPremCorrIds = IaisCommonUtils.getAppPendingStatus();
+        List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
         for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
             appPremCorrIds.add(appPremisesCorrelationDto.getId());
         }
