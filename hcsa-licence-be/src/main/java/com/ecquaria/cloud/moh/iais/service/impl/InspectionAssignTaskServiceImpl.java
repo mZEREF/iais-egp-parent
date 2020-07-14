@@ -741,7 +741,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_APPT_INSPECTION_DATE);
+        interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_INSP_FE_RE_SCHEDULING);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
         String mesNO = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(mesNO);
