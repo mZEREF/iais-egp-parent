@@ -746,7 +746,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                     addFlag = false;
                 }
             }
-            if(!addFlag) {
+            if(addFlag) {
                 for (int i = 0; i < appPremisesCorrelationDtos.size(); i++) {
                     String applicationId = appPremisesCorrelationDtos.get(i).getApplicationId();
                     ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
