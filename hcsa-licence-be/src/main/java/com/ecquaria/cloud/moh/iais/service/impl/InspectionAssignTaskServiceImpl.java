@@ -96,6 +96,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -648,9 +649,11 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(appPremCorrId);
             List<String> premCorrIds = getAppPremCorrIdByList(appPremisesCorrelationDtos);
             List<ApplicationDto> applicationDtoList = getApplicationDtosByCorr(appPremisesCorrelationDtos);
+            //get all users
+            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtoList, taskUserIds, applicationDto);
             boolean allInPlaceFlag = allAppFromSamePremisesIsOk(applicationDtoList);
             if(allInPlaceFlag){
-                saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
+                saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
                 //update App
                 ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
                 applicationDto1.setAuditTrailDto(auditTrailDto);
@@ -675,7 +678,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         } else {
             List<String> premCorrIds = IaisCommonUtils.genNewArrayList();
             premCorrIds.add(appPremCorrId);
-            saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
+            //get all users
+            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtos, taskUserIds, applicationDto);
+            saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
             //update App
             ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
             applicationDto1.setAuditTrailDto(auditTrailDto);
@@ -687,6 +692,27 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
             createMessage(url, serviceCode, submitDt, licenseeId, maskParams);
         }
+    }
+
+    private Map<String, String> getSchedulingUsersByAppList(List<ApplicationDto> applicationDtoList, List<String> taskUserIds, ApplicationDto appDto) {
+        Map<String, String> apptUserIdSvrIdMap = IaisCommonUtils.genNewHashMap();
+        if(!IaisCommonUtils.isEmpty(applicationDtoList)){
+            for(ApplicationDto applicationDto : applicationDtoList){
+                String appNo = applicationDto.getApplicationNo();
+                List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = inspectionTaskClient.getAppInspCorreByAppNoStatus(appNo, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                if(!IaisCommonUtils.isEmpty(appPremInspCorrelationDtoList)){
+                    for(AppPremInspCorrelationDto appPremInspCorrelationDto : appPremInspCorrelationDtoList){
+                        apptUserIdSvrIdMap.put(appPremInspCorrelationDto.getUserId(), applicationDto.getServiceId());
+                    }
+                }
+            }
+            for(String userId : taskUserIds){
+                if(!StringUtil.isEmpty(userId)){
+                    apptUserIdSvrIdMap.put(userId, appDto.getServiceId());
+                }
+            }
+        }
+        return apptUserIdSvrIdMap;
     }
 
     private List<String> getAppPremCorrIdByList(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
@@ -754,17 +780,18 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inboxMsgService.saveInterMessage(interMessageDto);
     }
 
-    private void saveInspectionDate(String appPremCorrId, List<TaskDto> taskDtoList, ApplicationDto applicationDto, List<String> taskUserIds,
+    private void saveInspectionDate(String appPremCorrId, List<TaskDto> taskDtoList, ApplicationDto applicationDto, Map<String, String> apptUserIdSvrIdMap,
                                     List<String> premCorrIds, AuditTrailDto auditTrailDto, String appHistoryId, String inspManHours) {
         AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(appPremCorrId).getEntity();
         appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-        Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
         List<String> serviceIds = IaisCommonUtils.genNewArrayList();
-        for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
-            if(!StringUtil.isEmpty(mapDate.getValue())){
-                serviceIds.add(mapDate.getValue());
+        for (Map.Entry<String, String> map : apptUserIdSvrIdMap.entrySet()) {
+            if(!StringUtil.isEmpty(map.getValue())){
+                serviceIds.add(map.getValue());
             }
         }
+        Set<String> serviceIdSet = new HashSet<>(serviceIds);
+        serviceIds = new ArrayList<>(serviceIdSet);
         //get Start date and End date when group no date
         if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
             appointmentDto.setServiceIds(serviceIds);
@@ -772,15 +799,16 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         }
         //get inspection date
         List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
-        for (TaskDto tDto : taskDtoList) {
+        TaskDto tDto = taskDtoList.get(0);
+        for (Map.Entry<String, String> map : apptUserIdSvrIdMap.entrySet()) {
             AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
-            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(map.getKey()).getEntity();
             appointmentUserDto.setLoginUserId(orgUserDto.getUserId());
             String workGroupId = tDto.getWkGrpId();
             WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
             appointmentUserDto.setWorkGrpName(workingGroupDto.getGroupName());
             //get service id by task refno
-            String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
+            String serviceId = map.getValue();
             //get manHours by service and stage
             ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
             apptAppInfoShowDto.setApplicationType(applicationDto.getApplicationType());
@@ -794,7 +822,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             }
             //Divide the time according to the number of people
             double hours = manHours;
-            double peopleCount = taskUserIds.size();
+            double peopleCount = apptUserIdSvrIdMap.size();
             int peopleHours = (int) Math.ceil(hours/peopleCount);
             appointmentUserDto.setWorkHours(peopleHours);
             appointmentUserDtos.add(appointmentUserDto);
