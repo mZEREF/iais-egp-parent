@@ -198,6 +198,8 @@ public class OfficersReSchedulingDelegator {
         String inspectorCheck = ParamUtil.getRequestString(bpc.request, "inspectorName" + workGroupCheck);
         List<String> appNoList = officersReSchedulingService.appNoListByGroupAndUserCheck(reschedulingOfficerDto, workGroupCheck, inspectorCheck);
         searchParam = getSearchParamByFilter(searchParam, appNoList);
+        reschedulingOfficerDto.setInspectorCheck(inspectorCheck);
+        reschedulingOfficerDto.setWorkGroupCheck(workGroupCheck);
         ParamUtil.setSessionAttr(bpc.request, "inspReSchSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);
     }

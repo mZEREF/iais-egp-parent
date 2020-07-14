@@ -224,6 +224,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 List<String> inspectorNames = getInspectorsByAppNoList(applicationNos);
                 Set<String> inspectorNameSet = new HashSet<>(inspectorNames);
                 inspectorNames = new ArrayList<>(inspectorNameSet);
+                Collections.sort(inspectorNames);
                 reschedulingOfficerQueryDto.setInspectors(inspectorNames);
                 List<String> serviceNames = getServiceNameByAppNoList(applicationNos);
                 reschedulingOfficerQueryDto.setServiceNames(serviceNames);
@@ -726,8 +727,8 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         if(!IaisCommonUtils.isEmpty(appNoList)) {
                             samePremisesAppMap.put(appNo, appNoList);
                             repeatAppNo.addAll(appNoList);
+                            applicationNos.add(appNo);
                         }
-                        applicationNos.add(appNo);
                     }
                 }
             }
