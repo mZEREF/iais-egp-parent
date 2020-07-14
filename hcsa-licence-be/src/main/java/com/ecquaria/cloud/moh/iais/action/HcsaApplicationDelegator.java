@@ -1331,7 +1331,7 @@ public class HcsaApplicationDelegator {
             String mesContext = "Internal route back context";
             EmailDto emailDto = new EmailDto();
             emailDto.setContent(mesContext);
-            emailDto.setSubject("MOH IAIS – Internal Clarification for Request for Information");
+            emailDto.setSubject("MOH IAIS – Internal Clarification for Request for Change");
             emailDto.setSender(mailSender);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
