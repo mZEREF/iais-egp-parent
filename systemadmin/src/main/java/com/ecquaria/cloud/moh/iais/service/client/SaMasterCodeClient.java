@@ -25,7 +25,7 @@ import java.util.List;
  * @author Hc
  * @date 2019/12/10
  */
-@FeignClient(name = "system-admin", configuration = FeignConfiguration.class, fallback = SaMasterCodeClient.class)
+@FeignClient(name = "system-admin", configuration = FeignConfiguration.class, fallback = SaMasterCodeClientFallback.class)
 public interface SaMasterCodeClient {
 
     @PostMapping(path = "/iais-mastercode/masterCode-param", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
