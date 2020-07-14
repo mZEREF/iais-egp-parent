@@ -280,8 +280,8 @@ public interface ApplicationClient {
     @GetMapping(value = "/iais-application-be/application/grp-premises/{appPreId}")
     FeignResponseEntity<AppGrpPremisesEntityDto> getAppGrpPremise(@PathVariable(name = "appPreId")String appPreId);
 
-    @PostMapping(value = "iais-application-be/application/pending-reminder/self-assessment/", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<SelfAssMtEmailDto>> getPendingSubmitSelfAss(@RequestBody Map<String, Object> params);
+    @GetMapping(value = "iais-application-be/application/pending-reminder/self-assessment/")
+    FeignResponseEntity<List<SelfAssMtEmailDto>> getPendingSubmitSelfAss();
 
     @GetMapping(value = "/iais-application-be/application-list-by-application-no",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getApplicationDtosByApplicationNo(@RequestParam("applicationNo")String applicationNo);

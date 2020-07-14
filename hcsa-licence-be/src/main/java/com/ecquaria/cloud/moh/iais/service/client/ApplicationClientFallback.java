@@ -657,7 +657,7 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity<List<SelfAssMtEmailDto>> getPendingSubmitSelfAss(Map<String, Object> params) {
+    public FeignResponseEntity<List<SelfAssMtEmailDto>> getPendingSubmitSelfAss() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

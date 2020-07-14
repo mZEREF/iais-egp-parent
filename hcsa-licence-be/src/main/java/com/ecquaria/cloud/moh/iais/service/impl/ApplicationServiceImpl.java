@@ -1,9 +1,9 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -34,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -44,7 +46,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -100,6 +101,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Value("${iais.email.sender}")
     private String mailSender;
+
+    @Autowired
+    private EmailHelper emailHelper;
 
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
@@ -209,21 +213,20 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public void alertSelfDeclNotification() {
         log.info("===>>>>alertSelfDeclNotification start");
-
-        int rdr = systemParamConfig.getReminderSelfDecl();
-        int rdrDay = systemParamConfig.getReminderSelfDeclDay();
-
-        List<Integer> assMts = Arrays.asList(ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT, ApplicationConsts.SUBMITTED_RFI_SELF_ASSESSMENT);
-
-        Map<String, Object> params = IaisCommonUtils.genNewHashMap();
-        params.put("assMtFlag", assMts);
-        params.put("reminderPeriod", rdr);
-        params.put("reminderDay", rdrDay);
-
-        List<SelfAssMtEmailDto> allAssLt = applicationClient.getPendingSubmitSelfAss(params).getEntity();
-
-
-
+        List<SelfAssMtEmailDto> allAssLt = applicationClient.getPendingSubmitSelfAss().getEntity();
+        final String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT;
+        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+        for (SelfAssMtEmailDto i : allAssLt){
+            String reqRefNum = i .getAppNumber();
+            String randomStr = IaisEGPHelper.generateRandomString(26);
+            try {
+                emailHelper.sendEmail(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, EmailHelper.RECEIPT_TYPE_APP, reqRefNum);
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            } catch (TemplateException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
         log.info("===>>>>alertSelfDeclNotification end");
     }
 
