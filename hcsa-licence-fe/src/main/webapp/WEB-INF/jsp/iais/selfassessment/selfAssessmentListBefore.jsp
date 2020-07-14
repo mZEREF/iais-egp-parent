@@ -68,12 +68,17 @@
                             </table>
                         </div>
                         <div class="application-tab-footer">
+                            <iais:action style="text-align:left;">
+                                <c:choose>
+                                    <c:when test="${selfDeclAction eq 'new'}">
+                                        <a  id="backLastPageId" ><em class="fa fa-angle-left"> </em> Back</a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a  id="backLink"  href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initMsgView"><em class="fa fa-angle-left"> </em> Back</a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </iais:action>
 
-                            <c:if test="${selfDeclAction eq 'new'}">
-                                <iais:action style="text-align:left;">
-                                    <a  id="backLastPageId" ><em class="fa fa-angle-left"> </em> Back</a>
-                                </iais:action>
-                            </c:if>
 
                             <td>
                                 <div class="text-right text-center-mobile">
