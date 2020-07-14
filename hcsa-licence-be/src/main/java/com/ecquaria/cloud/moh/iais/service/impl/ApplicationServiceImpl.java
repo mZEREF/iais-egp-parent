@@ -235,6 +235,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                                        LoginContext loginContext, String externalRemarks) throws IOException, TemplateException {
         //send message to FE user.
         String messageNo = inboxMsgService.getMessageNo();
+        String applicationType = applicationDto.getApplicationType();
         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
         String editSelect = "";
         //judge premises amend or licence amend
@@ -279,7 +280,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
-        if(hcsaServiceDto!=null){
+        if(hcsaServiceDto!=null && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION+applicationNo,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
                     messageNo,hcsaServiceDto.getSvcCode()+"@",templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
             HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();
@@ -287,8 +288,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             interMessageDto.setMaskParams(mapParam);
             inboxMsgService.saveInterMessage(interMessageDto);
         }
-        //new application send email
-        String applicationType = applicationDto.getApplicationType();
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
             MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVAL_OFFICE_ROUTES_ID).getEntity();
             if(msgTemplateDto != null){
