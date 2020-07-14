@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -17,7 +18,7 @@
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_type"  value=""/>
-    <input type="hidden" name="appGroupId" value="${AppSubmissionDto.appGrpId}"/>
+    <input type="hidden" name="appGroupId" value="<iais:mask name="appGroupId" value="${AppSubmissionDto.appGrpId}"/>"/>
     <input type="hidden" name="selfDeclAction" value="new"/>
     <div class="main-content">
         <div class="container">
