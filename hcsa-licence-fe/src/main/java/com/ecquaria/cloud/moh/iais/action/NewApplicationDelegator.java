@@ -5297,7 +5297,7 @@ public class NewApplicationDelegator {
             List<HcsaServiceDto> hcsaServiceDtos = appSelectSvcDto.getBaseSvcDtoList();
             //add other service
             appSvcRelatedInfoDtos = NewApplicationHelper.addOtherSvcInfo(appSvcRelatedInfoDtos,hcsaServiceDtos,true);
-            log.info(StringUtil.changeForLog("appSvcRelatedInfoDto size:")+appSvcRelatedInfoDtos.size());
+            log.info(StringUtil.changeForLog("appSvcRelatedInfoDto size:"+appSvcRelatedInfoDtos.size()));
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
 
             String premisesId = "";
