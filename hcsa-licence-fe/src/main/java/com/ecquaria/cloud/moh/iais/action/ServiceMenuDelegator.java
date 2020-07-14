@@ -1121,12 +1121,12 @@ public class ServiceMenuDelegator {
         log.debug(StringUtil.changeForLog("the doBeforStart end ...."));
     }
 
-    public void showLicensee(BaseProcessClass bpc) {
+    public void showLicensee(BaseProcessClass bpc,String type) {
         try {
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail")
-                    .append("?licenseView=licensee");
+                    .append("?licenseView=").append(type);
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }catch (Exception e){
