@@ -389,7 +389,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
         licInspectionGroupDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
         licInspectionGroupDto.setAuditTrailDto(intranet);
         if(StringUtil.isEmpty(auditTaskDataFillterDto.getInsGrpId()) || StringUtil.isEmpty(auditTaskDataFillterDto.getLicPremGrpCorId())){
-            log.info(StringUtil.changeForLog("----dirty data aduit id is "+ auditTaskDataFillterDto.getAuditId()) +"----------");
+            log.info(StringUtil.changeForLog("----dirty data aduit id is "+ auditTaskDataFillterDto.getAuditId() +"----------"));
             return;
         }
         licInspectionGroupDto.setId(auditTaskDataFillterDto.getInsGrpId());
