@@ -27,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -71,9 +70,10 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
     private String mailSender;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
-    @Autowired
-    OrganizationClient organizationClient;
+    @Value("iais.system.rfc.sms.reminder")
+    String reminderMaxNum;
+    @Value("iais.system.rfc.sms.reminder.day")
+    String reminderMaxDay;
 
     @Override
     public ReturnT<String> execute(String s) throws Exception {
@@ -81,7 +81,13 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtos= requestForInformationService.getAllReqForInfo();
             for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
             ) {
-                if(rfi.getDueDateSubmission().compareTo(new Date())<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(rfi.getDueDateSubmission());
+                cal.add(Calendar.DAY_OF_MONTH, systemParamConfig.getRfiDueDay());
+                Calendar cal1 = Calendar.getInstance();
+                cal1.setTime(rfi.getRequestDate());
+                cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay));
+                if(cal.getTime().compareTo(new Date())<0&&rfi.getReminder()<=Integer.parseInt(reminderMaxNum)&&cal1.getTime().compareTo(new Date())>0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
                     reminder(rfi);
                 }
             }
@@ -100,10 +106,10 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         String applicantName=licenseeDto.getName();
-        HashMap<String,String> mapPrem= IaisCommonUtils.genNewHashMap();
+        HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licenseeId);
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
-        map.put("APPLICANT_NAME", StringUtil.viewHtml(applicantName));
+        map.put("APPLICANT_NAME",StringUtil.viewHtml(applicantName));
         map.put("APPLICATION_NUMBER",StringUtil.viewHtml(licPremisesReqForInfoDto.getLicenceNo()));
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;
@@ -152,8 +158,8 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
 
         licPremisesReqForInfoDto.setReminder(licPremisesReqForInfoDto.getReminder()+1);
         Calendar cal = Calendar.getInstance();
-        cal.setTime(licPremisesReqForInfoDto.getDueDateSubmission());
-        cal.add(Calendar.DAY_OF_MONTH, systemParamConfig.getRfiDueDay());
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_MONTH, 1);
         licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_RETRIGGER);
         licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);

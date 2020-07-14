@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -52,6 +51,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
@@ -74,12 +74,15 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * RoundRobinCommPoolBatchJob
@@ -226,8 +229,8 @@ public class RoundRobinCommPoolBatchJob {
         AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT, td.getTaskKey(), null,
                 InspectionConstants.PROCESS_DECI_PENDING_APPLICANT_ACCEPT_INSPECTION_DATE, td.getRoleId(), null, td.getWkGrpId());
         String appHistoryId = appPremisesRoutingHistoryDto.getId();
-        List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = IaisCommonUtils.genNewArrayList();
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = IaisCommonUtils.genNewArrayList();
         for(String taskUserId : taskUserIds){
             //create appInspCorrelation and task
             AppPremInspCorrelationDto appPremInspCorrelationDto = new AppPremInspCorrelationDto();
@@ -286,9 +289,11 @@ public class RoundRobinCommPoolBatchJob {
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = getAppPremisesCorrelationsByPremises(appPremCorrId);
             List<String> premCorrIds = getAppPremCorrIdByList(appPremisesCorrelationDtos);
             List<ApplicationDto> applicationDtoList = getApplicationDtosByCorr(appPremisesCorrelationDtos);
+            //get all users
+            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtoList, taskUserIds, applicationDto);
             boolean allInPlaceFlag = allAppFromSamePremisesIsOk(applicationDtoList);
             if(allInPlaceFlag){
-                saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto,appHistoryId);
+                saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId);
                 //update App
                 ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
                 applicationDto1.setAuditTrailDto(auditTrailDto);
@@ -313,7 +318,9 @@ public class RoundRobinCommPoolBatchJob {
         } else {
             List<String> premCorrIds = IaisCommonUtils.genNewArrayList();
             premCorrIds.add(appPremCorrId);
-            saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, taskUserIds, premCorrIds, auditTrailDto,appHistoryId);
+            //get all users
+            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtos, taskUserIds, applicationDto);
+            saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId);
             //update App
             ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
             applicationDto1.setAuditTrailDto(auditTrailDto);
@@ -328,7 +335,7 @@ public class RoundRobinCommPoolBatchJob {
     }
 
     private List<String> getAppPremCorrIdByList(List<AppPremisesCorrelationDto> appPremisesCorrelationDtos) {
-        List<String> appPremCorrIds = IaisCommonUtils.getAppPendingStatus();
+        List<String> appPremCorrIds = IaisCommonUtils.genNewArrayList();
         for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
             appPremCorrIds.add(appPremisesCorrelationDto.getId());
         }
@@ -338,7 +345,7 @@ public class RoundRobinCommPoolBatchJob {
     private boolean allAppFromSamePremisesIsOk(List<ApplicationDto> applicationDtoList) {
         boolean allInPlaceFlag = false;
         if(!IaisCommonUtils.isEmpty(applicationDtoList)){
-            int allAppSize = applicationDtoList.size();
+            int allAppSize = applicationDtoList.size() - 1;
             int reSchAppSize = 0;
             for(ApplicationDto applicationDto : applicationDtoList){
                 String appStatus = applicationDto.getStatus();
@@ -379,7 +386,7 @@ public class RoundRobinCommPoolBatchJob {
         }
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_APPT_INSPECTION_DATE);
+        interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_INSP_FE_RE_SCHEDULING);
         interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
         String mesNO = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(mesNO);
@@ -392,17 +399,18 @@ public class RoundRobinCommPoolBatchJob {
         inboxMsgService.saveInterMessage(interMessageDto);
     }
 
-    private void saveInspectionDate(String appPremCorrId, List<TaskDto> taskDtoList, ApplicationDto applicationDto,
-                                    List<String> taskUserIds, List<String> premCorrIds, AuditTrailDto auditTrailDto,String appHistoryId) {
+    private void saveInspectionDate(String appPremCorrId, List<TaskDto> taskDtoList, ApplicationDto applicationDto, Map<String, String> apptUserIdSvrIdMap,
+                                    List<String> premCorrIds, AuditTrailDto auditTrailDto, String appHistoryId) {
         AppointmentDto appointmentDto = inspectionTaskClient.getApptStartEndDateByAppCorrId(appPremCorrId).getEntity();
         appointmentDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-        Map<String, String> corrIdServiceIdMap = getServiceIdsByCorrIdsFromPremises(premCorrIds);
         List<String> serviceIds = IaisCommonUtils.genNewArrayList();
-        for (Map.Entry<String, String> mapDate : corrIdServiceIdMap.entrySet()) {
-            if(!StringUtil.isEmpty(mapDate.getValue())){
-                serviceIds.add(mapDate.getValue());
+        for (Map.Entry<String, String> map : apptUserIdSvrIdMap.entrySet()) {
+            if(!StringUtil.isEmpty(map.getValue())){
+                serviceIds.add(map.getValue());
             }
         }
+        Set<String> serviceIdSet = new HashSet<>(serviceIds);
+        serviceIds = new ArrayList<>(serviceIdSet);
         //get Start date and End date when group no date
         if (appointmentDto.getStartDate() == null && appointmentDto.getEndDate() == null) {
             appointmentDto.setServiceIds(serviceIds);
@@ -410,15 +418,16 @@ public class RoundRobinCommPoolBatchJob {
         }
         //get inspection date
         List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
-        for (TaskDto tDto : taskDtoList) {
+        TaskDto tDto = taskDtoList.get(0);
+        for (Map.Entry<String, String> map : apptUserIdSvrIdMap.entrySet()) {
             AppointmentUserDto appointmentUserDto = new AppointmentUserDto();
-            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(tDto.getUserId()).getEntity();
+            OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(map.getKey()).getEntity();
             appointmentUserDto.setLoginUserId(orgUserDto.getUserId());
             String workGroupId = tDto.getWkGrpId();
             WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
             appointmentUserDto.setWorkGrpName(workingGroupDto.getGroupName());
             //get service id by task refno
-            String serviceId = corrIdServiceIdMap.get(tDto.getRefNo());
+            String serviceId = map.getValue();
             //get manHours by service and stage
             ApptAppInfoShowDto apptAppInfoShowDto = new ApptAppInfoShowDto();
             apptAppInfoShowDto.setApplicationType(applicationDto.getApplicationType());
@@ -427,7 +436,7 @@ public class RoundRobinCommPoolBatchJob {
             int manHours = getServiceManHours(tDto.getRefNo(), apptAppInfoShowDto);
             //Divide the time according to the number of people
             double hours = manHours;
-            double peopleCount = taskUserIds.size();
+            double peopleCount = apptUserIdSvrIdMap.size();
             int peopleHours = (int) Math.ceil(hours/peopleCount);
             appointmentUserDto.setWorkHours(peopleHours);
             appointmentUserDtos.add(appointmentUserDto);
@@ -460,9 +469,9 @@ public class RoundRobinCommPoolBatchJob {
     private void saveSynchronApptDate(Map<String, List<ApptUserCalendarDto>> inspectionDateMap, List<String> appPremCorrIds, AppointmentDto appointmentDto, AuditTrailDto auditTrailDto) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         //save AppPremisesInspecApptDto
+        //cancel AppPremisesInspecApptDto
+        int reschedulingCount = updateAppPremisesInspecApptDtoList(appPremCorrIds, auditTrailDto);
         for(String appPremCorrId : appPremCorrIds) {
-            int reschedulingCount = updateAppPremisesInspecApptDtoList(appPremCorrIds, auditTrailDto);
-
             //create AppPremisesInspecApptDto
             for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
                 String apptRefNo = inspDateMap.getKey();
@@ -517,7 +526,6 @@ public class RoundRobinCommPoolBatchJob {
             List<AppPremisesInspecApptDto> appPremisesInspecApptDtos = inspectionTaskClient.getSystemDtosByAppPremCorrId(appPremCorrId).getEntity();
             if (!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)) {
                 List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
-
                 List<AppPremisesInspecApptDto> appPremisesInspecApptDtoUpdateList = IaisCommonUtils.genNewArrayList();
                 AppPremisesInspecApptDto apptDto = appPremisesInspecApptDtos.get(0);
                 reschedulingCount = apptDto.getReschedulingCount() + 1;
@@ -581,22 +589,22 @@ public class RoundRobinCommPoolBatchJob {
     }
 
     private List<AppointmentUserDto> getOnePersonBySomeService(List<AppointmentUserDto> appointmentUserDtos) {
-        List<AppointmentUserDto> appointmentUserDtoList = null;
+
+        List<AppointmentUserDto> appointmentUserDtoList = null;//NOSONAR
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto appointmentUserDto : appointmentUserDtos){
                 if(IaisCommonUtils.isEmpty(appointmentUserDtoList)){
                     appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
                     appointmentUserDtoList.add(appointmentUserDto);
                 } else {
-                    appointmentUserDtoList = IaisCommonUtils.genNewArrayList();
-                    filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);
+                    appointmentUserDtoList = filterRepetitiveUser(appointmentUserDto, appointmentUserDtoList);//NOSONAR
                 }
             }
         }
         return appointmentUserDtoList;
     }
 
-    private void filterRepetitiveUser(AppointmentUserDto appointmentUserDto, List<AppointmentUserDto> appointmentUserDtoList) {
+    private List<AppointmentUserDto> filterRepetitiveUser(AppointmentUserDto appointmentUserDto, List<AppointmentUserDto> appointmentUserDtoList) {
         List<AppointmentUserDto> appointmentUserDtos = IaisCommonUtils.genNewArrayList();
         for(AppointmentUserDto appointmentUserDto1 : appointmentUserDtoList){
             String loginUserId = appointmentUserDto.getLoginUserId();
@@ -613,10 +621,11 @@ public class RoundRobinCommPoolBatchJob {
         if(!IaisCommonUtils.isEmpty(appointmentUserDtos)){
             for(AppointmentUserDto auDto : appointmentUserDtos){
                 if(auDto != null){
-                    appointmentUserDtoList.add(auDto);
+                    appointmentUserDtoList.add(auDto);//NOSONAR
                 }
             }
         }
+        return appointmentUserDtoList;
     }
 
     private Map<String, String> getServiceIdsByCorrIdsFromPremises(List<String> premCorrIds) {
@@ -682,5 +691,24 @@ public class RoundRobinCommPoolBatchJob {
         return appPremisesRoutingHistoryDto;
     }
 
-
+    private Map<String, String> getSchedulingUsersByAppList(List<ApplicationDto> applicationDtoList, List<String> taskUserIds, ApplicationDto appDto) {
+        Map<String, String> apptUserIdSvrIdMap = IaisCommonUtils.genNewHashMap();
+        if(!IaisCommonUtils.isEmpty(applicationDtoList)){
+            for(ApplicationDto applicationDto : applicationDtoList){
+                String appNo = applicationDto.getApplicationNo();
+                List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = inspectionTaskClient.getAppInspCorreByAppNoStatus(appNo, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                if(!IaisCommonUtils.isEmpty(appPremInspCorrelationDtoList)){
+                    for(AppPremInspCorrelationDto appPremInspCorrelationDto : appPremInspCorrelationDtoList){
+                        apptUserIdSvrIdMap.put(appPremInspCorrelationDto.getUserId(), applicationDto.getServiceId());
+                    }
+                }
+            }
+            for(String userId : taskUserIds){
+                if(!StringUtil.isEmpty(userId)){
+                    apptUserIdSvrIdMap.put(userId, appDto.getServiceId());
+                }
+            }
+        }
+        return apptUserIdSvrIdMap;
+    }
 }

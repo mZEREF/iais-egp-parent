@@ -119,8 +119,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		}
 		setContinueToken(continueToken);
 
-		String gateway_ref_no = this.getPaymentData().getPaymentTrans().getTransNo();
-		String ref_no = this.getPaymentData().getSvcRefNo();
+		String transNo = this.getPaymentData().getPaymentTrans().getTransNo();
+		String refNo = this.getPaymentData().getSvcRefNo();
 		double amount = this.getPaymentData().getAmount();
 		
 		Map<String, String> fields = getResponseFieldsMap(bpc);
@@ -152,8 +152,9 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 
 				PaymentDto paymentDto = new PaymentDto();
 				paymentDto.setAmount(amount);
-				paymentDto.setReqRefNo(ref_no);
-				paymentDto.setInvoiceNo(gateway_ref_no);
+				paymentDto.setReqRefNo(refNo);
+				paymentDto.setTxnRefNo(transNo);
+				paymentDto.setInvoiceNo(fields.get("vpc_ReceiptNo"));
 				paymentDto.setPmtStatus(status);
 				PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
@@ -172,7 +173,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 
 //			StringBuilder bud = new StringBuilder();
-			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",ref_no)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",gateway_ref_no);
+			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
 			String bigsUrl ="https://" + request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment"+results;
 //			bud.append(bigsURL).append('?');
 //			appendQueryFields(bud, fields);
@@ -203,7 +204,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		}
 
 		String reqNo = fields.get("vpc_MerchTxnRef");
-		String results="?result="+MaskUtil.maskValue("result","success")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt",DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","");
+		String results="?result="+MaskUtil.maskValue("result","cancelled")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt",DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","");
 		String bigsUrl ="https://" + bpc.request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment"+results;
 
 		try {
