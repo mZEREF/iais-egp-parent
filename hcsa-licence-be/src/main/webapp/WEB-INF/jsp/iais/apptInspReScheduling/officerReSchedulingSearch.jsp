@@ -129,10 +129,14 @@
     $(document).ready(function() {
         var inspectorCheck = $("#inspectorCheck").val();
         var workGroupCheck = $("#workGroupCheck").val();
-        $("#inspectorName" + workGroupCheck).val(inspectorCheck);
-        alert("#inspectorName" + workGroupCheck);
-        alert(workGroupCheck);
-        alert(inspectorCheck);
+        var numbers = $("#inspectorName" + workGroupCheck).find("option");
+        for (var j = 1; j < numbers.length; j++) {
+            if ($(numbers[j]).val() == inspectorCheck) {
+                $(numbers[j]).attr("selected", "selected");
+                var inspName = $(numbers[j]).text();
+                $("#workGroupNo" + workGroupCheck + " .current").text(inspName);
+            }
+        }
         $("#reSchInspWorkGroup option").each(function(){
             var value = $(this).val();
             $("#workGroupNo" + value).addClass("hidden");
