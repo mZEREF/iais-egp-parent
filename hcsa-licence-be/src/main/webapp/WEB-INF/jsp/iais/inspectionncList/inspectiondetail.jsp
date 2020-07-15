@@ -230,6 +230,7 @@
         $('#litterFileId').val("");
         $("#error_litterFile").html("");
         $('#error_litterFile_Show').html("");
+        $("#selectedFileView").val('');
     }
 
 
