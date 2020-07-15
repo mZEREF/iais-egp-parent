@@ -604,7 +604,6 @@
     }
 
     var fillPhForm = function (premisesType,phList,$Ele) {
-        console.log("phList"+phList);
         var $currPrem = $Ele;
         if(premisesType == 'onSite') {
             $currPrem = $Ele.find('.new-premise-form-on-site');
@@ -616,7 +615,6 @@
         if(phList != null && phList.length>0){
             $currPrem.find('.pubHolidayContent').each(function (k, v) {
                 var currData = phList[k];
-                console.log("currData"+currData);
                 fillFormData(premisesType,currData,$(this));
             });
         }else{
