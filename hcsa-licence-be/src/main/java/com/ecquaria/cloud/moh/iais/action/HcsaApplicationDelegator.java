@@ -1512,6 +1512,12 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto.setRollBackApplicationDto((ApplicationDto) CopyUtil.copyMutableObject(applicationDto));
         String oldStatus = applicationDto.getStatus();
         applicationDto.setStatus(appStatus);
+        //cessation
+        if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)&&ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
+            applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN);
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN);
+            applicationDto.setNeedNewLicNo(true);
+        }
         broadcastApplicationDto.setApplicationDto(applicationDto);
         // send the task
         if(!StringUtil.isEmpty(stageId)){
