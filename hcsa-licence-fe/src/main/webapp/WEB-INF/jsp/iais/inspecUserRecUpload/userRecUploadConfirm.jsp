@@ -23,6 +23,7 @@
       <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
       <input type="hidden" name="inspecUserRecUploadType" value="">
       <input type="hidden" id="actionValue" name="actionValue" value="">
+      <input type="hidden" id="maxFileSize" name="maxFileSize" value="${inspSetMaskValueDto.sqlFileSize}">
       <input type="hidden" id="fileId" name="fileId" value="">
       <div class="main-content">
         <div class="row">
@@ -143,15 +144,36 @@
     }
 
     function doUserRecUploadConfirmUpload() {
-        showWaiting();
         $("#recFileUpload").trigger('click');
         dismissWaiting();
     }
 
     function doUserRecUploadConfirmFile(value) {
         showWaiting();
-        $("#actionValue").val('add');
-        userRecUploadConfirmSubmit('add');
+        var maxFileSize = $("#maxFileSize").val();
+        var error = validateUploadSizeMaxOrEmpty(maxFileSize, "recFileUpload");
+        if (error == "N"){
+            $('#error_recFile').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            dismissWaiting();
+        } else {
+            $("#actionValue").val('add');
+            userRecUploadConfirmSubmit('add');
+        }
+    }
+
+    function validateUploadSizeMaxOrEmpty(maxSize,selectedFileId) {
+        var fileId= '#'+selectedFileId;
+        var fileV = $( fileId).val();
+        var file = $(fileId).get(0).files[0];
+        if(fileV == null || fileV == "" ||file==null|| file==undefined){
+            return "E";
+        }
+        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+        fileSize = parseInt(fileSize);
+        if(fileSize>= maxSize){
+            return "N";
+        }
+        return "Y";
     }
 
     function getFileName(o) {
