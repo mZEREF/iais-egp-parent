@@ -76,14 +76,22 @@ public class TemplatesDelegator {
             msgDto.setDeliveryMode(MasterCodeUtil.getCodeDesc(msgDto.getDeliveryMode()));
             if(!StringUtil.isEmpty(msgDto.getBcc())){
                 msgDto.setBcc(changeStringFormat(msgDto.getBcc()));
+            }else{
+                msgDto.setBcc("N/A");
             }
             if(!StringUtil.isEmpty(msgDto.getCc())){
                 msgDto.setCc(changeStringFormat(msgDto.getCc()));
+            }else{
+                msgDto.setCc("N/A");
             }
             if(!StringUtil.isEmpty(msgDto.getRec())){
                 msgDto.setRec(changeStringFormat(msgDto.getRec()));
+            }else{
+                msgDto.setRec("N/A");
             }
-
+            if(msgDto.getProcess() == null || msgDto.getProcess().isEmpty()){
+                msgDto.setProcess("N/A");
+            }
         }
 
         if(!StringUtil.isEmpty(searchResult)){
@@ -119,14 +127,18 @@ public class TemplatesDelegator {
     }
 
     private String changeStringFormat(String rec){
-        StringBuilder bccDes = new StringBuilder(10);
+        StringBuilder bccDes = new StringBuilder(100);
         String[] BccList = rec.split(", ");
         for (String item:BccList
         ) {
-            bccDes.append(item).append("</br>");
+            String str = "EM-" + (item);
+            String full = MasterCodeUtil.getCodeDesc(str);
+            bccDes.append(full).append("</br>");
         }
         return bccDes.toString();
     }
+
+
 
     public void prepareSwitch(BaseProcessClass bpc){
 
@@ -317,7 +329,7 @@ public class TemplatesDelegator {
             msgTemplateDto.setRecipient(null);
         }else{
             List<String> recipientList = Arrays.asList(recipient);
-            msgTemplateDto.setCcrecipient(recipientList);
+            msgTemplateDto.setRecipient(recipientList);
         }
         if(ccrecipient == null){
             msgTemplateDto.setCcrecipient(null);
