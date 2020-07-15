@@ -527,6 +527,7 @@ public class HcsaApplicationDelegator {
         String roleId = taskDto.getRoleId();
         String successInfo = MessageCodeKey.ACK003;
         String nextStage = ParamUtil.getString(bpc.request,"nextStage");
+        String nextStageReplys = ParamUtil.getString(bpc.request,"nextStageReplys");
         String verified = "";
         String rollBack = "";
         if(ApplicationConsts.PROCESSING_DECISION_VERIFIED.equals(nextStage)){
@@ -591,6 +592,11 @@ public class HcsaApplicationDelegator {
                 //AO3 DMS
                 successInfo = MessageCodeKey.ACK011;
             }
+        }
+
+        //give clarification
+        if(StringUtil.isEmpty(nextStage) && ApplicationConsts.PROCESSING_DECISION_REPLY.equals(nextStageReplys)){
+            successInfo = MessageCodeKey.ACK015;
         }
 
         //request for information
