@@ -1542,6 +1542,14 @@ public class NewApplicationHelper {
                     if(svcCode.equals(appSvcRelatedInfoDto.getServiceCode())){
                         break;
                     }
+                    String baseSvcId = appSvcRelatedInfoDto.getBaseServiceId();
+                    //specified svc
+                    if(!StringUtil.isEmpty(baseSvcId)){
+                        HcsaServiceDto baseSvcDto = HcsaServiceCacheHelper.getServiceById(baseSvcId);
+                        if(svcCode.equals(baseSvcDto.getSvcCode())){
+                            break;
+                        }
+                    }
                     if(i == appSvcRelatedInfoDtos.size()-1){
                         otherSvcDtoList.add(hcsaServiceDto);
                     }

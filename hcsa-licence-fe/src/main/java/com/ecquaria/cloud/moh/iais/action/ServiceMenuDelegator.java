@@ -439,6 +439,7 @@ public class ServiceMenuDelegator {
                 }
             }
             excludeChkBase.removeAll(baseSvcIds);
+            excludeChkBase.removeAll(chkBaseSvcIds);
         }else{
             excludeChkBase.removeAll(chkBaseSvcIds);
         }
