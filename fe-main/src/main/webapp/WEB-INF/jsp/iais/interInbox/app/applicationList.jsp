@@ -163,7 +163,16 @@
                                                     <option value="Delete">Delete</option>
                                                 </select>
                                             </c:if>
-                                            <c:if test="${app.status == 'APST028' || app.status == 'APST007'
+                                            <c:if test="${app.status == 'APST007'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="Withdraw">Withdraw</option>
+                                                    <c:if test="${app.canRecall}">
+                                                        <option value="Recall">Recall</option>
+                                                    </c:if>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST028'
                                                           || app.status == 'APST003'
                                                           || app.status == 'APST001'
                                                           || app.status == 'APST029'

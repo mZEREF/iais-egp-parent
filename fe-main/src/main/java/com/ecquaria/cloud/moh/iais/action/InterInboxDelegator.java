@@ -153,7 +153,6 @@ public class InterInboxDelegator {
                 ) {
             List<InboxMsgMaskDto> inboxMsgMaskDtoList = inboxService.getInboxMaskEntity(inboxQueryDto.getId());
             for (InboxMsgMaskDto inboxMsgMaskDto:inboxMsgMaskDtoList){
-
                 inboxQueryDto.setMsgContent(inboxQueryDto.getMsgContent().replaceAll("="+inboxMsgMaskDto.getParamValue(),
                         "="+MaskUtil.maskValue(inboxMsgMaskDto.getParamName(),inboxMsgMaskDto.getParamValue())));
             }
@@ -577,11 +576,21 @@ public class InterInboxDelegator {
         SearchResult appResult = inboxService.appDoQuery(appParam);
         if(!StringUtil.isEmpty(appResult)){
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
+            List<RecallApplicationDto> recallApplicationDtoList = IaisCommonUtils.genNewArrayList();
+            List<RecallApplicationDto> finalRecallApplicationDtoList = recallApplicationDtoList;
             inboxAppQueryDtoList.forEach(h ->{
                 RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
                 recallApplicationDto.setAppId(h.getId());
                 recallApplicationDto.setAppNo(h.getApplicationNo());
-//                h.setCanRecall(inboxService.canRecallApplication(recallApplicationDto));
+                finalRecallApplicationDtoList.add(recallApplicationDto);
+            });
+            recallApplicationDtoList = inboxService.canRecallApplications(recallApplicationDtoList);
+            recallApplicationDtoList.forEach(h ->{
+                inboxAppQueryDtoList.forEach(f -> {
+                    if(f.getApplicationNo().equals(h.getAppNo())){
+                        f.setCanRecall(h.getResult());
+                    }
+                });
             });
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);

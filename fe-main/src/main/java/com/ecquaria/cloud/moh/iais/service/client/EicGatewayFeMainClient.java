@@ -11,6 +11,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class EicGatewayFeMainClient {
     @Value("${iais.inter.gateway.url}")
@@ -35,6 +37,13 @@ public class EicGatewayFeMainClient {
                                                                          String date, String authorization, String dateSec,
                                                                          String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/task-recall", HttpMethod.POST, recallApplicationDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, RecallApplicationDto.class);
+    }
+
+    public FeignResponseEntity<List> recallAppTasks(List<RecallApplicationDto> recallApplicationDtoList,
+                                                                         String date, String authorization, String dateSec,
+                                                                         String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/task-list-recall", HttpMethod.POST, recallApplicationDtoList,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, RecallApplicationDto.class);
     }
 
