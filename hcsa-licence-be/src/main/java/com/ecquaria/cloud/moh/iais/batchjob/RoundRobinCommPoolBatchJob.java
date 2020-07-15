@@ -162,18 +162,45 @@ public class RoundRobinCommPoolBatchJob {
         String date = getDate();
         log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob date -- >:" +date));
         List<TaskDto> taskDtoList = taskService.getTaskDtoByDate(date);
+        AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         if(!IaisCommonUtils.isEmpty(taskDtoList)){
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskDtoList.size() -- >:" +taskDtoList.size()));
           for (TaskDto taskDto : taskDtoList){
               if(!RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())){
                   try{
                       String workGroupId = taskDto.getWkGrpId();
+                      AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
+                      if(appPremisesRecommendationDto == null){
+                          List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
+                          List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                          String nameStr = "";
+                          for (String id : leadIds) {
+                              for (OrgUserDto oDto : orgUserDtos) {
+                                  if (id.equals(oDto.getId())) {
+                                      if(StringUtil.isEmpty(nameStr)){
+                                          nameStr = oDto.getDisplayName();
+                                      } else {
+                                          nameStr = nameStr + "," + oDto.getDisplayName();
+                                      }
+                                  }
+                              }
+                          }
+                          appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                          appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+                          appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                          appPremisesRecommendationDto.setVersion(1);
+                          appPremisesRecommendationDto.setRecomInDate(null);
+                          appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPECTION_LEAD);
+                          appPremisesRecommendationDto.setRecomDecision(nameStr);
+                          appPremisesRecommendationDto.setAuditTrailDto(auditTrailDto);
+                          fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+                      }
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
                       TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
                       taskDto.setUserId(taskScoreDto.getUserId());
                       taskDto.setDateAssigned(new Date());
-                      taskDto.setAuditTrailDto(AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET));
+                      taskDto.setAuditTrailDto(auditTrailDto);
                       taskDto = taskService.updateTask(taskDto);
                       ApplicationViewDto applicationViewDto=applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
                       if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL.equals(applicationViewDto.getApplicationDto().getStatus()) ||
@@ -181,7 +208,6 @@ public class RoundRobinCommPoolBatchJob {
                           ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                           List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
                           applicationDtos.add(applicationDto);
-                          AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
                           String taskUserId = taskScoreDto.getUserId();
                           List<String> taskUserIds = IaisCommonUtils.genNewArrayList();
                           taskUserIds.add(taskUserId);
