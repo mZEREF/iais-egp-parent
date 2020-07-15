@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -141,12 +142,12 @@ public class FeEicGatewayClient {
     public FeignResponseEntity<List> createFeReplyTask(ApptFeConfirmDateDto apptFeConfirmDateDto,
                                                          String date, String authorization, String dateSec, String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-task-assignment", HttpMethod.POST, apptFeConfirmDateDto,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApptFeConfirmDateDto.class);
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, TaskDto.class);
     }
 
-    public FeignResponseEntity<List> reSchFeSaveAllData(ProcessReSchedulingDto processReSchedulingDto,
+    public FeignResponseEntity<ProcessReSchedulingDto> reSchFeSaveAllData(ProcessReSchedulingDto processReSchedulingDto,
                                                        String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/hcsa-reschedule", HttpMethod.POST, processReSchedulingDto,
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/hcsa-reschedule", HttpMethod.POST, processReSchedulingDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ProcessReSchedulingDto.class);
     }
 
