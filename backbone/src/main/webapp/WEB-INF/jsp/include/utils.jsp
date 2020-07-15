@@ -80,7 +80,7 @@
         SOP.Crud.cfxSubmit("mainForm", "doBack");
     })
 
-    function validateUploadSizeMaxOrEmpty(maxsize,selectedFileId) {
+    function validateUploadSizeMaxOrEmpty(maxSize,selectedFileId) {
         var fileId= '#'+selectedFileId;
         var fileV = $( fileId).val();
         var file = $(fileId).get(0).files[0];
