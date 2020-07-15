@@ -9,8 +9,8 @@
           (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
 <%@include file="./dashboard.jsp" %>
-  <div class="main-content" style="margin-right: 13%;margin-left: 13%">
-  <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+  <div class="container" >
+  <form id="mainForm" method="post" style="margin-left: 3%" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">

@@ -198,6 +198,7 @@ public class AppealServiceImpl implements AppealService {
         ParamUtil.setRequestAttr(req, "CgoMandatoryCount", appSvcCgoDtoList.size());
         ParamUtil.setSessionAttr(req, "GovernanceOfficersList", (Serializable) appSvcCgoDtoList);
         String groupId = (String) request.getAttribute("groupId");
+        appealPageDto.setOtherReason(othersReason);
         String s = JsonUtil.parseToJson(appealPageDto);
         AppPremiseMiscDto appPremiseMiscDto = new AppPremiseMiscDto();
         if (!StringUtil.isEmpty(saveDraftId)) {
@@ -275,6 +276,7 @@ public class AppealServiceImpl implements AppealService {
                 AppPremiseMiscDto appPremiseMiscDto = new AppPremiseMiscDto();
                 appPremiseMiscDto.setReason(appealReason);
                 appPremiseMiscDto.setRemarks(remarks);
+                appPremiseMiscDto.setOtherReason(appealPageDto.getOtherReason());
                 String appealFor = appealPageDto.getAppealFor();
                 AppPremisesSpecialDocDto appPremisesSpecialDocDto = appealPageDto.getAppPremisesSpecialDocDto();
                 String type = appealPageDto.getType();
