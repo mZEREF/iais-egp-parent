@@ -72,6 +72,7 @@
                 </div>
             </div>
         </div>
+        <iais:confirm msg="Content could not exceed 4000"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
         <input hidden value="${id}" id="blastId" >
         <input hidden value="" id="action" name="action">
         <input hidden value="0" id="fileChange" name="fileChange">
@@ -83,9 +84,18 @@
 
 <script type="text/javascript">
     $('#saveDis').click(function(){
-        $("#action").val("save")
-        $("#mainForm").submit();
+        var length = tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText.length;
+        if(length > 4000){
+            $('#support').modal('show');
+        }else{
+            $("#action").val("save")
+            $("#mainForm").submit();
+        }
+
     });
+    function cancel() {
+        $('#support').modal('hide');
+    }
     $('#back').click(function(){
         $("#action").val("back");
         $("#mainForm").submit();
@@ -124,22 +134,48 @@
                 ' bold italic backcolor | alignleft aligncenter ' +
                 ' alignright alignjustify | bullist numlist outdent indent |' +
                 ' removeformat | help',
-            setup: function(ed) {
-                ed.on('keydown', function(ed) {
-                    var tinymax, tinylen;
-                    tinymax = 4000;
-                    var key = ed.keyCode;
-                    tinylen =  tinyMCE.activeEditor.getContent().length;
-                console.log(tinylen);
-                    if (tinylen>tinymax && key != 8 && key != 46){
-                        ed.stopPropagation();
-                        ed.preventDefault();
+            max_chars: 10,
+            setup: function (ed) {
+                var content;
+                var allowedKeys = [8, 37, 38, 39, 40, 46]; // backspace, delete and cursor keys
+                ed.on('keydown', function (e) {
+                    if (allowedKeys.indexOf(e.keyCode) != -1) return true;
+                    if (tinymce_getContentLength() + 1 > this.settings.max_chars) {
+                        tinymce.dom.Event.cancel(e);
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
                     }
+                    return true;
                 });
-                },
-            // init_instance_callback : function(editor) {
-            //     editor.setContent($("#msgContent").val());
-            // }
+                ed.on('keyup', function (e) {
+                    tinymce_updateCharCounter(this, tinymce_getContentLength());
+                });
+            },
+            init_instance_callback: function () { // initialize counter div
+                $('#' + this.id).prev().append('<div class="char_count" style="text-align:right"></div>');
+                tinymce_updateCharCounter(this, tinymce_getContentLength());
+            },
+            paste_preprocess: function (plugin, args) {
+                var editor = tinymce.get(tinymce.activeEditor.id);
+                var len = editor.contentDocument.body.innerText.length;
+                var text = $(args.content).text();
+                if (len + text.length > editor.settings.max_chars) {
+                    alert('Pasting this exceeds the maximum allowed number of ' + editor.settings.max_chars + ' characters.');
+                    args.content = '';
+                } else {
+                    tinymce_updateCharCounter(editor, len + text.length);
+                }
+            }
         });
+
+    }
+
+    function tinymce_updateCharCounter(el, len) {
+        $('#' + el.id).prev().find('.char_count').text(len + '/' + el.settings.max_chars);
+    }
+
+    function tinymce_getContentLength() {
+        return tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText.length;
     }
 </script>
