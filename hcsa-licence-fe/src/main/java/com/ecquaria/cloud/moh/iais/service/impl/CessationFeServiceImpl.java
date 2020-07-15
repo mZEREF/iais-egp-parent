@@ -367,9 +367,9 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
         }
         if (!licNos.isEmpty()) {
-            try{
+            try {
                 updateLicenceFe(licNos);
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.info(StringUtil.changeForLog("====================eic error================="));
             }
 
@@ -407,6 +407,28 @@ public class CessationFeServiceImpl implements CessationFeService {
         AppSubmissionDto entity = applicationClient.saveSubmision(appSubmissionDto).getEntity();
         AppSubmissionDto appSubmissionDtoSave = applicationClient.saveApps(entity).getEntity();
         List<ApplicationDto> applicationDtos = appSubmissionDtoSave.getApplicationDtos();
+        List<String> hciCodes = IaisCommonUtils.genNewArrayList();
+        for (String premiseId : premiseIds) {
+            PremisesDto entity1 = licenceClient.getLicPremisesDtoById(premiseId).getEntity();
+            String hciCode = entity1.getHciCode();
+            hciCodes.add(hciCode);
+        }
+        for (ApplicationDto applicationDto : applicationDtos) {
+            String id = applicationDto.getId();
+            AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
+            String hciCode = dto.getHciCode();
+            if (hciCodes.contains(hciCode)) {
+                applicationDto.setNeedNewLicNo(false);
+                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN_GENERATED);
+            } else {
+                applicationDto.setNeedNewLicNo(true);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN);
+                applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN);
+            }
+            applicationClient.updateApplicationDto(applicationDto);
+        }
+
         for (ApplicationDto applicationDto : applicationDtos) {
             String id = applicationDto.getId();
             AppGrpPremisesDto dto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
@@ -417,12 +439,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                 if (hciCode1.equals(hciCode)) {
                     String appId = id;
                     map.put(premiseId, appId);
-                    applicationDto.setNeedNewLicNo(false);
-                    applicationDto.setGroupLicenceFlag(null);
-                } else {
-                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 }
-                applicationClient.updateApplicationDto(applicationDto);
             }
         }
         return map;
