@@ -121,12 +121,9 @@
 </div>
 
 <script type="text/javascript">
-
-    if (window.attachEvent) {
-        window.attachEvent("onload", checkInputStatus);
-    } else if (window.addEventListener) {
-        window.addEventListener("load", checkInputStatus, false);
-    }
+    $(document).ready(function(){
+        checkInputStatus();
+    })
 
     function checkInputStatus() {
         if ($('#common').val() == '1') {
@@ -135,8 +132,8 @@
             $('#serviceNameField span').hide();
             $('#moduleField span').hide();
             $('#typeField span').hide();
-            disableInput();
             Utils.clearClickStatus('serviceFieldGroup')
+            disableInput();
         } else {
 
             var aaa = $(".form-horizontal select").val();
