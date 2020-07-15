@@ -1452,20 +1452,22 @@ public class LicenceApproveBatchjob {
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
             //ceased    weilu
-            try {
-               // G/20/0107/01/CLB/001/205
-                String licenceNo = originLicenceDto.getLicenceNo();
-                String[] split = licenceNo.split("/");
-                if(split.length>5){
-                    String runningNoS = split[5];
-                    Integer runningNoI = Integer.valueOf(Integer.parseInt(runningNoS));
-                    String s = seqNumber(runningNoI+1, 3);
-                    String ceasedLicNo = split[0]+"/"+split[1]+"/"+split[2]+"/"+split[3]+"/"+split[4]+"/"+s+"/"+split[6];
-                    licenceDto.setCesedLicNo(ceasedLicNo);
+            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType())){
+                try {
+                    // G/20/0107/01/CLB/001/205
+                    String licenceNo = originLicenceDto.getLicenceNo();
+                    String[] split = licenceNo.split("/");
+                    if(split.length>5){
+                        String runningNoS = split[5];
+                        Integer runningNoI = Integer.valueOf(Integer.parseInt(runningNoS));
+                        String s = seqNumber(runningNoI+1, 3);
+                        String ceasedLicNo = split[0]+"/"+split[1]+"/"+split[2]+"/"+split[3]+"/"+split[4]+"/"+s+"/"+split[6];
+                        licenceDto.setCesedLicNo(ceasedLicNo);
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(),e);
+                    log.info(StringUtil.changeForLog("============ceased licNo=================="));
                 }
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
-                log.info(StringUtil.changeForLog("============ceased licNo=================="));
             }
         } else {
             if (applicationGroupDto != null) {

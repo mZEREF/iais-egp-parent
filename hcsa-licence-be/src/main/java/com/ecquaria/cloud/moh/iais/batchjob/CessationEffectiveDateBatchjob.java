@@ -79,6 +79,12 @@ public class CessationEffectiveDateBatchjob {
                 List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
                 boolean grpLic = applicationDtos.get(0).isGrpLic();
                 if (grpLic) {
+                    List<String> statusList = IaisCommonUtils.genNewArrayList();
+                    statusList.clear();
+                    for (ApplicationDto applicationDto : applicationDtos) {
+                        String status = applicationDto.getStatus();
+                        statusList.add(status);
+                    }
                     for (ApplicationDto applicationDto : applicationDtos) {
                         String appId = applicationDto.getId();
                         String status = applicationDto.getStatus();
@@ -88,7 +94,7 @@ public class CessationEffectiveDateBatchjob {
                             if (effectiveDate.compareTo(date) <= 0) {
                                 String originLicenceId = applicationDto.getOriginLicenceId();
                                 LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
-                                if (!licenceDtos.contains(licenceDto)) {
+                                if (!licenceDtos.contains(licenceDto)&&statusList.contains(ApplicationConsts.APPLICATION_STATUS_APPROVED)) {
                                     licenceDtos.add(licenceDto);
                                     applicationGroupDtosCesead.add(applicationGroupDto);
                                 }
