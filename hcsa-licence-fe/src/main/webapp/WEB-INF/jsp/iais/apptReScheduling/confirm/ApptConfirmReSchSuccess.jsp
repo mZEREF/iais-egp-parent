@@ -15,36 +15,40 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../../common/dashboard.jsp"%>
-<form method="post" id="mainRecAckForm" action=<%=process.runtime.continueURL()%>>
-  <div class="main-content">
-    <div class="row">
-      <div class="col-lg-12 col-xs-12">
-        <div class="center-content">
-          <div class="intranet-content">
-            <iais:body >
-              <iais:section title="" id = "rec_ack_page">
-                <div class="bg-title">
-                  <h3 style="border-bottom: 0px solid">Submission successful</h3>
-                </div>
-                <iais:row>
-                  <iais:value width="7">
-                    <p><label>The appointment date has been confirmed.</label></p>
-                  </iais:value>
-                </iais:row>
-                <iais:action >
-                  <p class="print">
-                    <a style="text-decoration: none;" href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a>
-                    <a class="btn btn-primary" style="float:right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
-                  </p>
-                </iais:action>
-              </iais:section>
-            </iais:body>
+<div class = "container">
+  <div class = "component-gp">
+    <form method="post" id="mainRecAckForm" action=<%=process.runtime.continueURL()%>>
+      <div class="main-content">
+        <div class="row">
+          <div class="col-lg-12 col-xs-12">
+            <div class="center-content">
+              <div class="intranet-content">
+                <iais:body >
+                  <iais:section title="" id = "rec_ack_page">
+                    <div class="bg-title">
+                      <h3 style="border-bottom: 0px solid">Submission successful</h3>
+                    </div>
+                    <iais:row>
+                      <iais:value width="7">
+                        <p><label>The appointment date has been confirmed.</label></p>
+                      </iais:value>
+                    </iais:row>
+                    <iais:action >
+                      <p class="print">
+                        <a style="text-decoration: none;" href="#" id="print-ack"> <em class="fa fa-print"></em>Print</a>
+                        <a class="btn btn-primary" style="float:right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
+                      </p>
+                    </iais:action>
+                  </iais:section>
+                </iais:body>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   </div>
-</form>
+</div>
 <script type="text/javascript">
     $("#print-ack").click(function () {
         showWaiting();
