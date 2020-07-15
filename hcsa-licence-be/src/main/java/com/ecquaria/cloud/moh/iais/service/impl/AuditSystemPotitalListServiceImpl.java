@@ -303,15 +303,15 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             }
         }
         if (dtostartDate != null && dtoEndDate == null) {
-            if (startDate != null && dateCompareDate(startDate,dtostartDate)) {
+            if (startDate != null && dateCompareDate(dtostartDate,startDate)) {
                 return Boolean.TRUE;
             }
         } else if (dtostartDate == null && dtoEndDate != null) {
-            if (endDate != null &&  dateCompareDate(dtoEndDate, dtoEndDate)) {
+            if (endDate != null &&  dateCompareDate(endDate,dtoEndDate)) {
                 return Boolean.TRUE;
             }
         } else {
-            if (startDate != null && endDate != null &&dtoEndDate != null && dtostartDate != null &&  dateCompareDate(dtoEndDate, dtoEndDate) &&  dateCompareDate(startDate,dtostartDate)) {
+            if (startDate != null && endDate != null &&dtoEndDate != null && dtostartDate != null &&  dateCompareDate( endDate,dtoEndDate) &&  dateCompareDate(dtostartDate,startDate)) {
                 return Boolean.TRUE;
             }
         }
