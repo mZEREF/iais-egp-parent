@@ -69,13 +69,13 @@
                     <c:choose>
                         <c:when test="${parameterRequestDto.paramType == 'TPOF00007' || parameterRequestDto.paramType == 'TPOF00008'}">
                             <c:if test="${parameterRequestDto.value == '1'}">
-                                Yes <input name="value" type="radio" value="1" checked>
-                                No <input name="value" type="radio" value="0">
+                                <input name="value" type="radio" value="1" checked> Yes &nbsp;
+                                <input name="value" type="radio" value="0"> No
                             </c:if>
 
                             <c:if test="${parameterRequestDto.value == '0'}">
-                                Yes <input name="value" type="radio" value="1" >
-                                No <input name="value" type="radio" value="0" checked>
+                                <input name="value" type="radio" value="1" > Yes &nbsp;
+                                <input name="value" type="radio" value="0" checked> No
                             </c:if>
 
                         </c:when>
