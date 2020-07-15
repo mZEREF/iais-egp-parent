@@ -154,7 +154,6 @@
     </c:if>
 
 </div>
-<%@ include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
     function changeframework() {
         if ($('#framework').is(':checked')) {
