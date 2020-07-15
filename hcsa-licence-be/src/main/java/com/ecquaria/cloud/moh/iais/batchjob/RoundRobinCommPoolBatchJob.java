@@ -169,32 +169,8 @@ public class RoundRobinCommPoolBatchJob {
               if(!RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())){
                   try{
                       String workGroupId = taskDto.getWkGrpId();
-                      AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
-                      if(appPremisesRecommendationDto == null){
-                          List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
-                          List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-                          String nameStr = "";
-                          for (String id : leadIds) {
-                              for (OrgUserDto oDto : orgUserDtos) {
-                                  if (id.equals(oDto.getId())) {
-                                      if(StringUtil.isEmpty(nameStr)){
-                                          nameStr = oDto.getDisplayName();
-                                      } else {
-                                          nameStr = nameStr + "," + oDto.getDisplayName();
-                                      }
-                                  }
-                              }
-                          }
-                          appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-                          appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
-                          appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                          appPremisesRecommendationDto.setVersion(1);
-                          appPremisesRecommendationDto.setRecomInDate(null);
-                          appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPECTION_LEAD);
-                          appPremisesRecommendationDto.setRecomDecision(nameStr);
-                          appPremisesRecommendationDto.setAuditTrailDto(auditTrailDto);
-                          fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
-                      }
+                      //set inspector leads
+                      setInspLeadsInRecommendation(taskDto, workGroupId, auditTrailDto);
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
                       TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
@@ -226,6 +202,35 @@ public class RoundRobinCommPoolBatchJob {
             log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob do  not need roud robin task !!!"));
         }
         log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob end ..."));
+    }
+
+    private void setInspLeadsInRecommendation(TaskDto taskDto, String workGroupId, AuditTrailDto auditTrailDto) {
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
+        if(appPremisesRecommendationDto == null){
+            List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
+            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            String nameStr = "";
+            for (String id : leadIds) {
+                for (OrgUserDto oDto : orgUserDtos) {
+                    if (id.equals(oDto.getId())) {
+                        if(StringUtil.isEmpty(nameStr)){
+                            nameStr = oDto.getDisplayName();
+                        } else {
+                            nameStr = nameStr + "," + oDto.getDisplayName();
+                        }
+                    }
+                }
+            }
+            appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+            appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPremisesRecommendationDto.setVersion(1);
+            appPremisesRecommendationDto.setRecomInDate(null);
+            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPECTION_LEAD);
+            appPremisesRecommendationDto.setRecomDecision(nameStr);
+            appPremisesRecommendationDto.setAuditTrailDto(auditTrailDto);
+            fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+        }
     }
 
     private String getDate(){
