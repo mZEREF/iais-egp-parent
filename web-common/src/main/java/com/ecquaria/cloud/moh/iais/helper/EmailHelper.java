@@ -45,13 +45,19 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class EmailHelper {
-	public static final String RECEIPT_TYPE_APP_GRP 				= "GRP";
-	public static final String RECEIPT_TYPE_APP 					= "APP";
-	public static final String RECEIPT_TYPE_LICENCE_ID              = "LIC";
+	public static final String RECEIPT_TYPE_APP_GRP 			  	 = "GRP";
+	public static final String RECEIPT_TYPE_APP 				 	 = "APP";
+	public static final String RECEIPT_TYPE_LICENCE_ID               = "LIC";
 
-	private static final String RECEIPT_ROLE_LICENSEE               = "EM-LIC";
-	private static final String RECEIPT_ROLE_AUTHORISED_PERSON      = "EM-AP";
-	private static final String RECEIPT_ROLE_ASSIGNED_ASO           = "EM-A-ASO";
+	private static final String RECEIPT_ROLE_LICENSEE                = "EM-LIC";
+	private static final String RECEIPT_ROLE_AUTHORISED_PERSON       = "EM-AP";
+	private static final String RECEIPT_ROLE_ASSIGNED_ASO            = "EM-A-ASO";
+	private static final String RECEIPT_ROLE_ASSIGNED_PSO            = "EM-A-PSO";
+	private static final String RECEIPT_ROLE_ASSIGNED_AO1            = "EM-A-AO1";
+	private static final String RECEIPT_ROLE_ASSIGNED_AO2            = "EM-A-AO2";
+	private static final String RECEIPT_ROLE_ASSIGNED_AO3            = "EM-A-AO3";
+	private static final String RECEIPT_ROLE_ASSIGNED_INSPECTOR      = "EM-A-INSPECTOR";
+	private static final String RECEIPT_ROLE_ASSIGNED_INSPECTOR_LEAD = "EM-A-INSPECTOR_LEAD";
 
 	@Autowired
 	private IaisSystemClient iaisSystemClient;
@@ -181,7 +187,7 @@ public class EmailHelper {
 		if (RECEIPT_TYPE_APP_GRP.equals(refType)) {
 			all.addAll(getRecriptAppGrp(role, refId));
 		} else if (RECEIPT_TYPE_APP.equals(refType)) {
-
+			all.addAll(getRecriptApp(role, refId));
 		} else {
 
 		}
@@ -207,7 +213,7 @@ public class EmailHelper {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
-
+		set.addAll(getAssignedOfficer(roles, appNo));
 		for (String role : roles) {
 			if (RECEIPT_ROLE_ASSIGNED_ASO.equals(role)) {
 
@@ -258,6 +264,18 @@ public class EmailHelper {
 		for (String role : roles) {
 			if (RECEIPT_ROLE_ASSIGNED_ASO.equals(role) && userMap.get(RoleConsts.USER_ROLE_ASO) != null) {
 				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_ASO));
+			} else if (RECEIPT_ROLE_ASSIGNED_PSO.equals(role) && userMap.get(RoleConsts.USER_ROLE_PSO) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_PSO));
+			} else if (RECEIPT_ROLE_ASSIGNED_AO1.equals(role) && userMap.get(RoleConsts.USER_ROLE_AO1) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_AO1));
+			} else if (RECEIPT_ROLE_ASSIGNED_AO2.equals(role) && userMap.get(RoleConsts.USER_ROLE_AO2) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_AO2));
+			} else if (RECEIPT_ROLE_ASSIGNED_AO3.equals(role) && userMap.get(RoleConsts.USER_ROLE_AO3) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_AO3));
+			} else if (RECEIPT_ROLE_ASSIGNED_INSPECTOR.equals(role) && userMap.get(RoleConsts.USER_ROLE_INSPECTIOR) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTIOR));
+			} else if (RECEIPT_ROLE_ASSIGNED_INSPECTOR_LEAD.equals(role) && userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD));
 			}
 		}
 
