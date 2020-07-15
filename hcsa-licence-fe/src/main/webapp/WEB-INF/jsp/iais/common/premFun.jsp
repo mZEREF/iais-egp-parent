@@ -319,8 +319,8 @@
             // genPubHolDayFun($premContentEle,$contentDivEle,'Y');
             var name = $premContentEle.find('.premTypeValue').val();
             var premVal = $premContentEle.find('input[name="premValue"]').val();
-            console.log("Name"+name);
-            console.log("premVal"+premVal);
+            // console.log("Name"+name);
+            // console.log("premVal"+premVal);
             var type = '';
             if('ONSITE' == name){
                 name = premVal+'onSite';
@@ -604,7 +604,7 @@
     }
 
     var fillPhForm = function (premisesType,phList,$Ele) {
-
+        console.log("phList"+phList);
         var $currPrem = $Ele;
         if(premisesType == 'onSite') {
             $currPrem = $Ele.find('.new-premise-form-on-site');
@@ -613,10 +613,16 @@
         }else if (premisesType == 'offSite'){
             $currPrem = $Ele.find('.new-premise-form-off-site');
         }
-        $currPrem.find('.pubHolidayContent').each(function (k, v) {
-            var currData = phList[k];
-            fillFormData(premisesType,currData,$(this));
-        });
+        if(phList != null && phList.length>0){
+            $currPrem.find('.pubHolidayContent').each(function (k, v) {
+                var currData = phList[k];
+                console.log("currData"+currData);
+                fillFormData(premisesType,currData,$(this));
+            });
+        }else{
+
+        }
+
     }
 
     var reloadPage = function () {
@@ -717,7 +723,7 @@
                 currPhForm = $premContent.find('.new-premise-form-off-site');
             }
             var phHtml = currPhForm.find('.pubHolidayContent').get(0).outerHTML;
-            console.log(phHtml);
+            // console.log(phHtml);
             //remove
             currPhForm.find('.pubHolidayContent').remove();
             if(phList.length>0){
