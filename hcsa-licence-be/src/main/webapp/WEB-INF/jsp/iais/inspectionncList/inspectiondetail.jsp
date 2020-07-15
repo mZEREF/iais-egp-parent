@@ -2,6 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <div class="row">
+    <input type="hidden" id="fileMaxSizeForIns" name="fileMaxSizeForIns" value="${applicationViewDto.systemMaxFileSize}">
+    <input type="hidden" id="fileUploadTypeForIns" name="fileUploadTypeForIns" value="${applicationViewDto.systemFileType}">
     <div class="form-group">
         <label class="col-xs-12 col-md-4 control-label"  for="inspectionDate" >Inspection Date</label>
         <div class="col-xs-8 col-sm-6 col-md-5">
@@ -100,6 +102,7 @@
                     <input id="litterFile" name="litterFile" type="hidden" value="<c:out value="${serListDto.appPremisesSpecialDocDto.docName}"></c:out>" />
                     <input id="litterFileId" name="litterFileId" type="hidden" value="<iais:mask name="litterFileId" value="${serListDto.appPremisesSpecialDocDto.id}"/>"/>
                     <br/> <span class="error-msg" id="error_litterFile" name="iaisErrorMsg"></span>
+                    <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
                 </div>
             </div>
         </div>
@@ -151,6 +154,7 @@
     </c:if>
 
 </div>
+<%@ include file="/WEB-INF/jsp/include/utils.jsp" %>
 <script type="text/javascript">
     function changeframework() {
         if ($('#framework').is(':checked')) {
@@ -200,14 +204,24 @@
     }
 
     $('#selectedFileView').change(function () {
-        var file = $(this).val();
-        var  fileName = getFileName(file);
-        if( fileName != null && fileName.trim() != ""){
-            $("#licFileNameDe").attr("hidden",false);
-            $("#licFileName").html( fileName);
-            $('#litterFile').val(fileName);
-            $('#litterFileId').val("");
-        }
+        var maxSize = $("#fileMaxSizeForIns").val();
+        var error  = validateUploadSizeMaxOrEmpty(maxSize,'selectedFileView');
+       if( error =="Y"){
+           var file = $(this).val();
+           var  fileName = getFileName(file);
+           if( fileName != null && fileName.trim() != ""){
+               $("#licFileNameDe").attr("hidden",false);
+               $("#licFileName").html( fileName);
+               $('#litterFile').val(fileName);
+               $('#litterFileId').val("");
+           }
+           $('#error_litterFile_Show').html("");
+       }else {
+           if(error == "N"){
+               doDeleteFile();
+              $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ maxSize + 'M.');
+           }
+       }
     });
 
     function doDeleteFile() {
@@ -216,6 +230,7 @@
         $('#litterFile').val("");
         $('#litterFileId').val("");
         $("#error_litterFile").html("");
+        $('#error_litterFile_Show').html("");
     }
 
 
