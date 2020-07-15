@@ -107,7 +107,7 @@
                             <label class="col-xs-12 col-md-12 control-label">Message Content</label>
                         </div>
                         <div class="form-group">
-                            <textarea cols="120" rows="40" name="messageContent" class="textarea" id="htmlEditor"
+                            <textarea rows="40" name="messageContent" class="textarea" id="htmlEditor"
                                       title="content">
                                 ${MsgTemplateDto.messageContent}
                             </textarea>
@@ -127,6 +127,7 @@
                 </div>
             </div>
         </div>
+<iais:confirm msg="Content could not exceed 8000"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
@@ -140,78 +141,84 @@
         $("#TemplateEditForm").submit();
     }
 
-    function doEdit(mcId) {
-        $("[name='crud_action_value']").val(mcId);
-        submit("edit");
+    function cancel() {
+        $('#support').modal('hide');
     }
 
-    $(function () {
+    function doEdit(mcId) {
+        var length = tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText.length;
+        if(length > 8000){
+            $('#support').modal('show');
+        }else {
+            $("[name='crud_action_value']").val(mcId);
+            submit("edit");
+        }
+    }
+
+    $(window).on("load", function(){
+        $("#htmlEditor").hide();
+        setTimeout("intiTinymce()", 1000);
+    });
+
+    function intiTinymce() {
+        $("#htmlEditor").show();
         tinymce.init({
-            branding: false,
-            elementpath: false,
             selector: "#htmlEditor",  // change this value according to your HTML
             menubar: 'file edit view insert format tools',
             plugins: ['print preview fullpage',
                 'advlist autolink lists link image charmap print preview anchor',
                 'searchreplace visualblocks code fullscreen',
                 'insertdatetime media table paste code help wordcount',
-                'noneditable','code ax_wordlimit','autoresize'
+                'noneditable'
             ],
             toolbar: 'undo redo | formatselect | ' +
-            ' bold italic backcolor | alignleft aligncenter ' +
-            ' alignright alignjustify | bullist numlist outdent indent |' +
-            ' removeformat | help | code',
-            autoresize_bottom_margin: 20,
-            // min_heigh:100,
-            ax_wordlimit_num:20,
-            ax_wordlimit_callback: function(editor,txt,num){
-                console.log("content-size:"+num);
-                $("[name='template_content_size']").val(num);
-                console.log($("[name='template_content_size']").val())
+                ' bold italic backcolor | alignleft aligncenter ' +
+                ' alignright alignjustify | bullist numlist outdent indent |' +
+                ' removeformat | help',
+            max_chars: 8000,
+            setup: function (ed) {
+                var content;
+                var allowedKeys = [8, 37, 38, 39, 40, 46]; // backspace, delete and cursor keys
+                ed.on('keydown', function (e) {
+                    if (allowedKeys.indexOf(e.keyCode) != -1) return true;
+                    if (tinymce_getContentLength() + 1 > this.settings.max_chars) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                    return true;
+                });
+                ed.on('keyup', function (e) {
+                    tinymce_updateCharCounter(this, tinymce_getContentLength());
+                });
+            },
+            init_instance_callback: function () { // initialize counter div
+                $('#' + this.id).prev().append('<div class="char_count" style="text-align:right"></div>');
+                tinymce_updateCharCounter(this, tinymce_getContentLength());
+            },
+            paste_preprocess: function (plugin, args) {
+                var editor = tinymce.get(tinymce.activeEditor.id);
+                var len = editor.contentDocument.body.innerText.length;
+                var text = $(args.content).text();
+                if (len + text.length > editor.settings.max_chars) {
+                    $('#support').modal('show');
+                    args.content = '';
+                } else {
+                    tinymce_updateCharCounter(editor, len + text.length);
+                }
             }
         });
-    });
 
-    tinymce.PluginManager.add('ax_wordlimit', function(editor) {
-        var global$2 = tinymce.util.Tools.resolve('tinymce.util.Delay');
-        var ax_wordlimit_type = editor.getParam('ax_wordlimit_type', 'letter' );
-        var ax_wordlimit_num = editor.getParam('ax_wordlimit_num', false );
-        var ax_wordlimit_delay = editor.getParam('ax_wordlimit_delay', 500 );
-        var ax_wordlimit_callback = editor.getParam('ax_wordlimit_callback', function(){} );
-        var ax_wordlimit_event = editor.getParam('ax_wordlimit_event', 'SetContent Undo Redo Keyup' );
-        var onsign=1;
-        var sumLetter = function(){
-            var html = editor.getContent();
-            var re1 = new RegExp("<.+?>","g");
-            var txt = html.replace(re1,'');
-            txt = txt.replace(/\n/g,'');
-            txt = txt.replace(/&nbsp;/g,' ');
-            var num=txt.length;
-            return {txt:txt,num:num}
-        };
-        var onAct = function(){
-            if(onsign){
-                onsign=0;
-                switch(ax_wordlimit_type){
-                    case 'letter':
-                    default:
-                        var res = sumLetter();
-                }
-                if( res.num > ax_wordlimit_num ){
-                    ax_wordlimit_callback(editor, res.txt, res.num);
-                }
-                setTimeout(function(){onsign=1}, ax_wordlimit_delay);
-            }
+    }
 
-        };
-        var setup = function(){
-            if( ax_wordlimit_num>0 ){
-                global$2.setEditorTimeout(editor, function(){
-                    var doth = editor.on(ax_wordlimit_event, onAct);
-                }, 300);
-            }
-        };
-        setup();
-    });
+    function tagConfirmCallbacksupport() {
+        $('#support').modal('hide');
+    }
+    function tinymce_updateCharCounter(el, len) {
+        $('#' + el.id).prev().find('.char_count').text(len + '/' + el.settings.max_chars);
+    }
 
+    function tinymce_getContentLength() {
+        return tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText.length;
+    }
 </script>

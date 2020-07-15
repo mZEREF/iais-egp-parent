@@ -85,6 +85,7 @@
 <script type="text/javascript">
     $('#saveDis').click(function(){
         var length = tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText.length;
+        console.log(length)
         if(length > 4000){
             $('#support').modal('show');
         }else{
@@ -93,6 +94,10 @@
         }
 
     });
+
+    function tagConfirmCallbacksupport() {
+        $('#support').modal('hide');
+    }
     function cancel() {
         $('#support').modal('hide');
     }
@@ -134,14 +139,13 @@
                 ' bold italic backcolor | alignleft aligncenter ' +
                 ' alignright alignjustify | bullist numlist outdent indent |' +
                 ' removeformat | help',
-            max_chars: 10,
+            max_chars: 4000,
             setup: function (ed) {
                 var content;
                 var allowedKeys = [8, 37, 38, 39, 40, 46]; // backspace, delete and cursor keys
                 ed.on('keydown', function (e) {
                     if (allowedKeys.indexOf(e.keyCode) != -1) return true;
                     if (tinymce_getContentLength() + 1 > this.settings.max_chars) {
-                        tinymce.dom.Event.cancel(e);
                         e.preventDefault();
                         e.stopPropagation();
                         return false;
@@ -161,7 +165,7 @@
                 var len = editor.contentDocument.body.innerText.length;
                 var text = $(args.content).text();
                 if (len + text.length > editor.settings.max_chars) {
-                    alert('Pasting this exceeds the maximum allowed number of ' + editor.settings.max_chars + ' characters.');
+                    $('#support').modal('show');
                     args.content = '';
                 } else {
                     tinymce_updateCharCounter(editor, len + text.length);
