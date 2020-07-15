@@ -123,7 +123,7 @@ public class EmailResendDelegator {
                 int comparatorValue = endDate.compareTo(startDate);
                 if (comparatorValue < 0){
                     Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-                    errorMap.put("later", "Sent Date From cannot be later than Sent Date To");
+                    errorMap.put("later", "Send Date From cannot be later than Send Date To");
                     ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 }
             }catch (Exception e){
