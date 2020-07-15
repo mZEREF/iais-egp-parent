@@ -593,76 +593,40 @@ public class ServiceMenuDelegator {
                 }else{
                     log.info(StringUtil.changeForLog("can not found licenseeId"));
                 }
-                List<AppAlignLicQueryDto> appAlignLicQueryDtos = appSubmissionService.getAppAlignLicQueryDto(licenseeId,svcNameList);
-                if(!IaisCommonUtils.isEmpty(appAlignLicQueryDtos)){
-                    boolean hasExistBase = false;
-                    for(AppAlignLicQueryDto appAlignLicQueryDto:appAlignLicQueryDtos){
-                        String removeKey = "";
-                        for(Map.Entry<String,List<String>> entry:baseAlignSpec.entrySet()){
-                            List<String> baseNames = entry.getValue();
-                            if(!IaisCommonUtils.isEmpty(baseNames) && baseNames.contains(appAlignLicQueryDto.getSvcName())){
-                                removeKey = entry.getKey();
+
+
+                //check align whether correct
+                List<String> errMsgList = IaisCommonUtils.genNewArrayList();
+//                    String specSvcName = "";
+                boolean flag = true;
+                for(String specSvcId:baseAlignSpec.keySet()){
+                    List<String> baseSvcNameList = baseAlignSpec.get(specSvcId);
+                    if(!IaisCommonUtils.isEmpty(baseSvcNameList)){
+                        int i = 0;
+                        for(String baseSvcId:basechks){
+                            String baseSvcName = HcsaServiceCacheHelper.getServiceById(baseSvcId).getSvcName();
+                            if(baseSvcNameList.contains(baseSvcName)){
                                 break;
                             }
-                        }
-                        if(!StringUtil.isEmpty(removeKey)){
-                            baseAlignSpec.remove(removeKey);
-                        }
-                    }
-                    if(baseAlignSpec.size() == 0){
-                        hasExistBase = true;
-                    }
-                    log.info(StringUtil.changeForLog("has existing base："+hasExistBase));
-                    if(hasExistBase){
-                        nextstep = CHOOSE_BASE_SVC;
-                    }else{
-                        nextstep = currentPage;
-                        List<String> errMsgList = IaisCommonUtils.genNewArrayList();
-                        for(String specSvcId:baseAlignSpec.keySet()){
-                            String specSvcName =  HcsaServiceCacheHelper.getServiceById(specSvcId).getSvcName();
-//                            String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
-                            String errMsg = MessageUtil.getMessageDesc("NEW_ERR0008");
-                            errMsg = errMsg.replace("<service name>",specSvcName);
-                            String baseNameStr = baseAlignSpec.get(specSvcId).stream().collect(Collectors.joining(","));
-                            errMsg = errMsg.replace("<base service name>",baseNameStr);
-                            errMsgList.add(errMsg);
-                        }
-                        ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR_LIST, errMsgList);
-                    }
-                }else{
-                    //check align whether correct
-                    List<String> errMsgList = IaisCommonUtils.genNewArrayList();
-//                    String specSvcName = "";
-                    boolean flag = true;
-                    for(String specSvcId:baseAlignSpec.keySet()){
-                        List<String> baseSvcNameList = baseAlignSpec.get(specSvcId);
-                        if(!IaisCommonUtils.isEmpty(baseSvcNameList)){
-                            int i = 0;
-                            for(String baseSvcId:basechks){
-                                String baseSvcName = HcsaServiceCacheHelper.getServiceById(baseSvcId).getSvcName();
-                                if(baseSvcNameList.contains(baseSvcName)){
-                                    break;
-                                }
-                                if(i == basechks.length-1){
-                                    flag = false;
-                                    String specSvcName = HcsaServiceCacheHelper.getServiceById(specSvcId).getSvcName();
+                            if(i == basechks.length-1){
+                                flag = false;
+                                String specSvcName = HcsaServiceCacheHelper.getServiceById(specSvcId).getSvcName();
 //                                    String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
-                                    String errMsg = MessageUtil.getMessageDesc("NEW_ERR0008");
-                                    errMsg =  errMsg.replace("<service name>",specSvcName);
-                                    String baseNameStr = baseSvcNameList.stream().collect(Collectors.joining(","));
-                                    errMsg = errMsg.replace("<base service name>",baseNameStr);
-                                    errMsgList.add(errMsg);
-                                }
-                                i++;
+                                String errMsg = MessageUtil.getMessageDesc("NEW_ERR0008");
+                                errMsg =  errMsg.replace("<service name>",specSvcName);
+                                String baseNameStr = baseSvcNameList.stream().collect(Collectors.joining(","));
+                                errMsg = errMsg.replace("<base service name>",baseNameStr);
+                                errMsgList.add(errMsg);
                             }
+                            i++;
                         }
                     }
-                    if(flag){
-                        nextstep = CHOOSE_BASE_SVC;
-                    }else{
-                        nextstep = currentPage;
-                        ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR_LIST, errMsgList);
-                    }
+                }
+                if(flag){
+                    nextstep = CHOOSE_BASE_SVC;
+                }else{
+                    nextstep = currentPage;
+                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR_LIST, errMsgList);
                 }
             }else{
                 //new app
