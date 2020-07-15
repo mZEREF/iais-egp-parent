@@ -1232,7 +1232,7 @@ public class LicenceApproveBatchjob {
             //:controller the psersonnel version
             keyPersonnelDto.setVersion(getKeyPersonnelVersion(keyPersonnelDto.getIdNo(), organizationId));
             //todo: controller status
-            keyPersonnelDto.setStatus("active");
+            keyPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             //: controller the Organization
             keyPersonnelDto.setOrganizationId(organizationId);
             personnelsDto.setKeyPersonnelDto(keyPersonnelDto);
