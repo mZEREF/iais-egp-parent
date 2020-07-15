@@ -45,32 +45,20 @@ public class SystemParameterValidator implements CustomizeValidator {
 			}
 		}
 
-		String paramType = editDto.getParamType();
-		switch (paramType){
-			case SystemParameterConstants.PARAM_TYPE_REMINDER:
-			case SystemParameterConstants.PARAM_TYPE_MONTH:
-				break;
-			case SystemParameterConstants.PARAM_TYPE_PAGE_SIZE:
+		String propertiesKey = editDto.getPropertiesKey();
+		switch (propertiesKey){
+			case SystemParameterConstants.PARAM_KEY_PAGE_SIZE:
 				verifyPageSize(errMap, value);
 			break;
-			case SystemParameterConstants.PARAM_TYPE_MAX_FILE_SIZE:
+			case SystemParameterConstants.PARAM_KEY_UPLOAD_FILE_LIMIT:
 				verifyFileUploadSize(errMap, number);
 			break;
-			case SystemParameterConstants.PARAM_TYPE_AUDIT_TRAIL_SEARCH_WEEK:
+			case SystemParameterConstants.PARAM_KEY_AUDIT_TRAIL_SEARCH_WEEK:
 				verifyAuditTrailWeek(errMap, number);
 			break;
-			case SystemParameterConstants.PARAM_TYPE_FILE_TYPE_FOR_UPLOADING:
+			case SystemParameterConstants.PARAM_KEY_UPLOAD_FILE_TYPE:
 				verifyUploadFileType(errMap, value);
 				break;
-
-			/*case SystemParameterConstants.PARAM_TYPE_YES:
-				pass = verifyYes(value);
-			break;
-
-			case SystemParameterConstants.PARAM_TYPE_NO:
-				pass = verifyNo(value);
-			break;*/
-
 			default:
 		}
 		return errMap;
