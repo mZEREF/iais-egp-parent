@@ -20,9 +20,18 @@
 <%
   String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
+
+<style type="text/css">
+  .btn.btn-md {
+    font-size: .986rem;
+    font-weight: 600;
+    padding: 10px 25px;
+    text-transform: uppercase;
+    border-radius: 30px;
+  }
+</style>
+
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-
-
   <form method="post" id="mainSearchForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="mohOfficerReSchedulingType" value="">
