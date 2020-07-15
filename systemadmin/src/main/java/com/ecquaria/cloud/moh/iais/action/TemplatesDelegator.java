@@ -207,7 +207,7 @@ public class TemplatesDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        if (contentSize != -1 && contentSize>8000) {
+        if (contentSize == -1 || contentSize>8000) {
             validationResult.setHasErrors(true);
         }
         if(validationResult != null && validationResult.isHasErrors()) {
@@ -220,6 +220,9 @@ public class TemplatesDelegator {
             }
             if (contentSize>8000) {
                 errorMap.put("messageContent","The content should not exceed 8000 words");
+            }
+            if (contentSize == -1) {
+                errorMap.put("messageContent","The content should not be null");
             }
             String recipientString = "";
             String ccrecipientString = "";
