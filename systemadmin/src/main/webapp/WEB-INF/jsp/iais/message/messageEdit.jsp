@@ -19,7 +19,7 @@
             <div class="form-group">
                 <iais:field value="Type" />
                 <div class="col-xs-5 col-md-3" >
-                    <iais:select name="domainType" disabled="true" options="domainTypeSelect" firstOption="Please select" value="${msgRequestDto.domainType}" ></iais:select>
+                    <iais:select name="domainType" disabled="true" codeCategory="CATE_ID_ERR_MSG_TYPE" firstOption="Please Select" value="${msgRequestDto.domainType}" ></iais:select>
                     <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -27,7 +27,7 @@
             <div class="form-group">
                 <iais:field value="Message Type" />
                 <div class="col-xs-5 col-md-3">
-                    <iais:select name="msgType" disabled="true" options="msgTypeSelect" firstOption="Please select" value="${msgRequestDto.msgType}" ></iais:select>
+                    <iais:select name="msgType" disabled="true" codeCategory="CATE_ID_WRONG_TYPE"  filterValue="WRNTYPE003"  firstOption="Please Select" value="${msgRequestDto.msgType}" ></iais:select>
                     <span id="error_msgType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -35,7 +35,7 @@
             <div class="form-group">
                 <iais:field value="Module" />
                 <div class="col-xs-5 col-md-3">
-                    <iais:select name="module" disabled="true" options="moduleTypeSelect" firstOption="Please select" value="${msgRequestDto.module}"></iais:select>
+                    <iais:select name="module" disabled="true" codeCategory="CATE_ID_ERR_MSG_MODULE" filterValue="MSGMD010" firstOption="Please select" value="${msgRequestDto.module}"></iais:select>
                     <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>

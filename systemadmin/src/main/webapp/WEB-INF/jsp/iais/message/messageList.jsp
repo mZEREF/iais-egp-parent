@@ -20,7 +20,7 @@
                 <div class="form-group">
                     <iais:field value="Type" required="true"/>
                     <iais:value width="7">
-                        <iais:select name="domainType" id="domainType" value="${param.domainType}" options="domainTypeSelect" firstOption="Please Select" onchange="displaySection()"></iais:select>
+                        <iais:select name="domainType" id="domainType" value="${param.domainType}"  codeCategory="CATE_ID_ERR_MSG_TYPE"  firstOption="Please Select" onchange="displaySection()"></iais:select>
                     </iais:value>
                     <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
@@ -28,14 +28,14 @@
                 <div id = "msgTypeRow" class="form-group" style="display:none">
                     <iais:field value="Message Type" />
                     <iais:value width="7">
-                        <iais:select name="msgType" id="msgType" value="${param.msgType}" options="msgTypeSelect" firstOption="Please Select" onchange="displaySection()"></iais:select>
+                        <iais:select name="msgType" id="msgType" value="${param.msgType}"   codeCategory="CATE_ID_WRONG_TYPE"  filterValue="WRNTYPE003" firstOption="Please Select" onchange="displaySection()"></iais:select>
                     </iais:value>
                 </div>
 
                 <div id = "moduleTypeRow" class="form-group" style="display:none">
                     <iais:field value="Module" />
                     <iais:value width="7">
-                        <iais:select name="module"  id="module" value="${param.module}" options="moduleTypeSelect" firstOption="Please Select" ></iais:select>
+                        <iais:select name="module"  id="module" value="${param.module}"  codeCategory="CATE_ID_ERR_MSG_MODULE" filterValue="MSGMD010" firstOption="Please Select" ></iais:select>
                     </iais:value>
                 </div>
 
@@ -83,9 +83,9 @@
                                 <c:forEach var = "msgQuery" items = "${msgSearchResult.rows}" varStatus="status">
                                     <tr>
                                         <td align="left" class="row_no" style="width: 5px">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
-                                        <td align="left" style="width: 5px"><c:out value="${msgQuery.domainType}"></c:out></td>
-                                        <td align="left" style="width: 5px"><c:out value="${msgQuery.msgType}"></c:out></td>
-                                        <td align="left" style="width: 5px"><c:out value="${msgQuery.module}"></c:out> </td>
+                                        <td align="left" style="width: 5px"><iais:code code="${msgQuery.domainType}"></iais:code></td>
+                                        <td align="left" style="width: 5px"><iais:code code="${msgQuery.msgType}"></iais:code></td>
+                                        <td align="left" style="width: 5px"><iais:code code="${msgQuery.module}"></iais:code></td>
                                         <td align="left" style="width: 5px"><c:out value="${msgQuery.description}"></c:out></td>
                                         <td align="left" ><c:out value="${msgQuery.message}"></c:out></td>
                                         <td align="left"  ><iais:code code="${msgQuery.status}"></iais:code></td>

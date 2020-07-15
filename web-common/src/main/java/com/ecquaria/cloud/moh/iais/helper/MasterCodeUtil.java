@@ -14,7 +14,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -22,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -90,6 +90,9 @@ public final class MasterCodeUtil {
     public static final String CATE_ID_SYSTEM_RISK_TYPE  = "110534B1-4967-EA11-BE7F-000C29F371DC";
     public static final String CATE_ID_INBOx_MESSAGE_TYPE  = "D45AC717-945A-EA11-BE79-000C29D29DB0";
     public static final String CATE_ID_PERSONNEL_PSN_TYPE  = "6BC8C0B4-B182-EA11-BE82-000C29F371DC";
+    public static final String CATE_ID_ERR_MSG_MODULE  = "87F2F7C5-ABC5-EA11-BE7A-000C29D29DB0";
+    public static final String CATE_ID_ERR_MSG_TYPE  = "FA7B1B4F-ADC5-EA11-BE84-000C29F371DC";
+    public static final String CATE_ID_WRONG_TYPE  = "02FC2CBE-ADC5-EA11-BE84-000C29F371DC";
     /**
      * @description: refresh the master codes into cache
      *
