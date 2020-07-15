@@ -217,7 +217,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         final String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT;
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         for (SelfAssMtEmailDto i : allAssLt){
-            String reqRefNum = i .getAppNumber();
+            String reqRefNum;
+            if (1 == i.getMsgTrackRefNumType()){
+                reqRefNum = i.getGroupId();
+            }else {
+                reqRefNum = i.getAppNumber();
+            }
+
             String randomStr = IaisEGPHelper.generateRandomString(26);
             try {
                 emailHelper.sendEmail(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, EmailHelper.RECEIPT_TYPE_APP, reqRefNum);
