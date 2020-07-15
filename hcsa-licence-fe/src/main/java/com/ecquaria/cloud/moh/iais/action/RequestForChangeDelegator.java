@@ -294,8 +294,10 @@ public class RequestForChangeDelegator {
             String premisesIndexNo = appSubmissionDto.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
             ParamUtil.setRequestAttr(bpc.request, "premisesIndexNo", premisesIndexNo);
         }
+        int maxFile = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "prepareTranfer", appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
+        ParamUtil.setRequestAttr(bpc.request, "maxFile", 1);
         log.debug(StringUtil.changeForLog("the do prepareTranfer end ...."));
     }
 
@@ -373,6 +375,8 @@ public class RequestForChangeDelegator {
                appPremisesSpecialDocDto.setSubmitBy(auditTrailDto.getMohUserGuid());
                appPremisesSpecialDocDto.setSubmitDt(new Date());
            }
+        }else if(appPremisesSpecialDocDto == null ){
+            error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
         }else if(StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())){
             error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
         }

@@ -12,6 +12,7 @@
 <br/>
 <%@include file="../common/dashboard.jsp" %>
 <form method="post" enctype="multipart/form-data" id="mainForm" action=<%=process.runtime.continueURL()%>>
+  <<input type="hidden" name="maxFile" id ="maxFile" value="${maxFile}">
   <div class="row">
     <div class="container">
       <div class="col-xs-12">
@@ -148,7 +149,16 @@
         $(this).parent().children('span:eq(0)').html(getFileName(file));
         $(this).parent().children('span:eq(0)').next().removeClass("hidden");
         $(this).parent().children('input delFlag').val('N');
+        var maxSize = $("#maxFile").val();
+        var error  = validateUploadSizeMaxOrEmpty(maxSize,'selectedFile');
+        if(error == "N"){
+            doDeleteFile();
+            $('#error_selectedFileError').html('The file has exceeded the maximum upload size of '+ maxSize + 'M.');
+        }
     });
+    function doDeleteFile() {
+        $('#selectedFile').val("");
+    }
     $('.delBtn').click(function () {
         $(this).parent().children('span:eq(0)').html('');
         $(this).parent().children('span:eq(0)').next().addClass("hidden");
