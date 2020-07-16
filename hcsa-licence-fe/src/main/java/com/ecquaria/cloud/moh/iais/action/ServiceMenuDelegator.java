@@ -240,7 +240,7 @@ public class ServiceMenuDelegator {
                 bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, crud_action_additional);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute("DraftNumber", crud_action_additional);
+                bpc.request.getSession().setAttribute("DraftNumber", attribute);
             }else if(attribute!=null){
                 ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
                 return;
@@ -796,7 +796,7 @@ public class ServiceMenuDelegator {
                         bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
                         bpc.request.getSession().setAttribute("DraftNumber", null);
                     }else if("resume".equals(crud_action_value)){
-                        bpc.request.getSession().setAttribute("DraftNumber", draftNo);
+                        bpc.request.getSession().setAttribute("DraftNumber", attribute);
                     }else if(attribute!=null){
                         //back to curr page
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_BASE_SVC);
@@ -814,6 +814,16 @@ public class ServiceMenuDelegator {
 
             String switchStep = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
             if(NEXT.equals(switchStep)){
+                String crud_action_value=bpc.request.getParameter("crud_action_value");
+                String draftNo  =bpc.request.getParameter("draftNo");
+                getDraft(bpc);
+                String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
+                if("continue".equals(crud_action_value)){
+                    bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
+                    bpc.request.getSession().setAttribute("DraftNumber", null);
+                }else if("resume".equals(crud_action_value)){
+                    bpc.request.getSession().setAttribute("DraftNumber", attribute);
+                }
                 appSelectSvcDto.setBasePage(true);
             }
         }else{
@@ -863,7 +873,7 @@ public class ServiceMenuDelegator {
                 bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute("DraftNumber", draftNo);
+                bpc.request.getSession().setAttribute("DraftNumber", attribute);
             }else if(attribute!=null){
                 //back to curr page
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
@@ -873,6 +883,16 @@ public class ServiceMenuDelegator {
 
         String switchStep = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
         if(NEXT.equals(switchStep)){
+            String crud_action_value=bpc.request.getParameter("crud_action_value");
+            String draftNo  =bpc.request.getParameter("draftNo");
+            getDraft(bpc);
+            String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
+            if("continue".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
+                bpc.request.getSession().setAttribute("DraftNumber", null);
+            }else if("resume".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute("DraftNumber", attribute);
+            }
             appSelectSvcDto.setAlignPage(true);
         }
 
@@ -955,7 +975,7 @@ public class ServiceMenuDelegator {
                 bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute("DraftNumber", draftNo);
+                bpc.request.getSession().setAttribute("DraftNumber", attribute);
             }else if(attribute!=null){
                 //back to curr page
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
@@ -964,10 +984,19 @@ public class ServiceMenuDelegator {
         }
         String switchStep = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
         if(NEXT.equals(switchStep)){
+            String crud_action_value=bpc.request.getParameter("crud_action_value");
+            String draftNo  =bpc.request.getParameter("draftNo");
+            getDraft(bpc);
+            String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
+            if("continue".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
+                bpc.request.getSession().setAttribute("DraftNumber", null);
+            }else if("resume".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute("DraftNumber", attribute);
+            }
             appSelectSvcDto.setLicPage(true);
             ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
         }
-
         log.info(StringUtil.changeForLog("do choose lic end ..."));
     }
 

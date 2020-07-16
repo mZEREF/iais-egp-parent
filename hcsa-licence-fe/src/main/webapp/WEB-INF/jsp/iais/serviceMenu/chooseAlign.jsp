@@ -13,6 +13,7 @@
     <input type="hidden" name="crud_action_additional"/>
     <input type="hidden" name="crud_action_type_form"/>
     <input type="hidden" name="draftNo"/>
+    <input type="hidden" name="crud_action_value">
     <div class="container">
         <div class="component-gp">
             <br>

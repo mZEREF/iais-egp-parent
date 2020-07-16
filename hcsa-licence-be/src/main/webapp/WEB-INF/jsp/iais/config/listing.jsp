@@ -56,12 +56,20 @@
       </table>
 
     </div>
-
 </div>
+  <input type="hidden" id="reasult" value="${delete}" >
   </form>
 </div>
 
 <script type="text/javascript">
+  $(document).ready(function () {
+      if($('#reasult').val()=='fail'){
+          alert("The service is not eligible for deletion");
+      }else if($('#reasult').val()=='success'){
+          alert("delete success");
+      }
+
+  });
    function edit(obj) {
        SOP.Crud.cfxSubmit("mainForm","edit",$(obj).val(),"");
    }

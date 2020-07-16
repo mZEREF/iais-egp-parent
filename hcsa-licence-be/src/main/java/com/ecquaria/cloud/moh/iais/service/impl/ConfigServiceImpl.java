@@ -325,10 +325,11 @@ public class ConfigServiceImpl implements ConfigService {
             HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
             List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
             if(!entity.isEmpty()){
+                request.setAttribute("delete","fail");
                 return;
             }
             if(flag){
-
+                request.setAttribute("delete","fail");
                 return;
 
             }
@@ -337,12 +338,11 @@ public class ConfigServiceImpl implements ConfigService {
             request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
             try {
                 sendEmail(request);
-            } catch (IOException e) {
-              log.error(e.getMessage(),e);
-            } catch (TemplateException e) {
+            } catch (Exception e) {
               log.error(e.getMessage(),e);
             }
             hcsaConfigClient.updateService(serviceId);
+            request.setAttribute("delete","success");
         }
 
     }
