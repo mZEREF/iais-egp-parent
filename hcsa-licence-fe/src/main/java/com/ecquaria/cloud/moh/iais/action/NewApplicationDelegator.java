@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
@@ -182,6 +183,8 @@ public class NewApplicationDelegator {
     private FeMessageClient feMessageClient;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -452,7 +455,8 @@ public class NewApplicationDelegator {
         }else{
             ParamUtil.setSessionAttr(bpc.request, RELOADAPPGRPPRIMARYDOCMAP, (Serializable) new HashMap());
         }
-
+        int sysFileSize = systemParamConfig.getUploadFileLimit();
+        ParamUtil.setRequestAttr(bpc.request,"sysFileSize",sysFileSize);
         log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
 

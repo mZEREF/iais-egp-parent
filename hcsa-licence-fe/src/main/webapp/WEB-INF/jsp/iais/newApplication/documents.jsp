@@ -13,7 +13,7 @@
   <input type="hidden" name="paramController" id="paramController" value="com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator"/>
   <input type="hidden" name="valEntity" id="valEntity" value="com.ecquaria.cloud.moh.iais.dto.ApplicationValidateDto"/>
   <input type="hidden" name="valProfiles" id="valProfiles" value=""/>
-  
+  <input type="hidden" name="sysFileSize" id="sysFileSize" value="${sysFileSize}"/>
   <div class="main-content">
     <div class="container">
       <div class="row">
@@ -210,10 +210,39 @@
             submit('serviceForms',"next",null);
         });
 
+        $('.commDoc').change(function () {
+            var maxFileSize = $('#sysFileSize').val();
+            var error = validateUploadSizeMaxOrEmpty(maxFileSize, $(this));
+            if (error == "N"){
+                $(this).closest('.file-upload-gp').find('.error-msg').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+                $(this).closest('.file-upload-gp').find('span.delBtn').trigger('click');
+                dismissWaiting();
+            }else{
+                $(this).closest('.file-upload-gp').find('.error-msg').html('');
+                dismissWaiting();
+            }
+
+        });
 
 
         doEdit();
     });
+
+    function validateUploadSizeMaxOrEmpty(maxSize,$fileEle) {
+        var fileV = $fileEle.val();
+        var file = $fileEle.get(0).files[0];
+        if(fileV == null || fileV == "" ||file==null|| file==undefined){
+            return "E";
+        }
+        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+        fileSize = parseInt(fileSize);
+        if(fileSize>= maxSize){
+            return "N";
+        }
+        return "Y";
+    }
+
+
     function getFileName(o) {
         var pos = o.lastIndexOf("\\");
         return o.substring(pos + 1);

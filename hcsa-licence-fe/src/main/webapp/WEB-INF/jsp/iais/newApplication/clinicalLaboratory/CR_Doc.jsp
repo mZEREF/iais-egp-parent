@@ -1,3 +1,4 @@
+<input type="hidden" name="sysFileSize" id="sysFileSize" value="${sysFileSize}"/>
 <c:if test="${requestInformationConfig == null}">
   <c:set var="isClickEdit" value="true"/>
 </c:if>
@@ -76,11 +77,11 @@
                 </c:otherwise>
               </c:choose>
             </div>
-            <input class="selectedFile" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+            <input class="selectedFile svcDoc" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
 
-            <c:if test="${svcDoc.docName!=null}">
+            <%--<c:if test="${svcDoc.docName!=null}">--%>
               <span name="iaisErrorMsg" class="error-msg" id="error_${docConfig.id}selectedFile"></span>
-            </c:if>
+            <%--</c:if>--%>
           </div>
         </div>
       </div>
@@ -117,6 +118,7 @@
         documentDiv.find('.fileNameSpan').html('');
         documentDiv.find('.delBtn').html('');
         documentDiv.find('.delBtn').addClass('hidden');
+        documentDiv.find('input.svcDoc').val('');
         $(this).closest('.fileContent').find('input.selectedFile').val('');
         $(this).closest('.fileContent').find('input.delFlag').val('Y');
     });
@@ -132,4 +134,31 @@
         });
     }
 
+    $('.svcDoc').change(function () {
+        var maxFileSize = $('#sysFileSize').val();
+        var error = validateUploadSizeMaxOrEmpty(maxFileSize, $(this));
+        if (error == "N"){
+            $(this).closest('.document-upload-list').find('.error-msg').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            $(this).closest('.document-upload-list').find('span.delBtn').trigger('click');
+            dismissWaiting();
+        }else{
+            $(this).closest('.document-upload-list').find('.error-msg').html('');
+            dismissWaiting();
+        }
+
+    });
+
+    function validateUploadSizeMaxOrEmpty(maxSize,$fileEle) {
+        var fileV = $fileEle.val();
+        var file = $fileEle.get(0).files[0];
+        if(fileV == null || fileV == "" ||file==null|| file==undefined){
+            return "E";
+        }
+        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+        fileSize = parseInt(fileSize);
+        if(fileSize>= maxSize){
+            return "N";
+        }
+        return "Y";
+    }
 </script>

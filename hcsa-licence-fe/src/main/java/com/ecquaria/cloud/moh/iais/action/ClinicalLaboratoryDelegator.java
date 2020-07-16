@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -71,6 +72,8 @@ public class ClinicalLaboratoryDelegator {
     private ServiceConfigService serviceConfigService;
     @Autowired
     WithOutRenewalService outRenewalService;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     public static final String GOVERNANCEOFFICERS = "GovernanceOfficers";
     public static final String GOVERNANCEOFFICERSDTO = "GovernanceOfficersDto";
@@ -409,6 +412,8 @@ public class ClinicalLaboratoryDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, RELOADSVCDOC, (Serializable) reloadSvcDo);
 
+        int sysFileSize = systemParamConfig.getUploadFileLimit();
+        ParamUtil.setRequestAttr(bpc.request,"sysFileSize",sysFileSize);
         log.debug(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
 
