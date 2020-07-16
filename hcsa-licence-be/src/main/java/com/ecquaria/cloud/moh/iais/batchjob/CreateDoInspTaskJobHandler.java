@@ -42,7 +42,7 @@ import java.util.List;
  * @author Shicheng
  * @date 2020/4/19 12:08
  **/
-@JobHandler(value="inspRemindRecNcMesgJobHandler")
+@JobHandler(value="createDoInspTaskJobHandler")
 @Component
 @Slf4j
 public class CreateDoInspTaskJobHandler extends IJobHandler {
