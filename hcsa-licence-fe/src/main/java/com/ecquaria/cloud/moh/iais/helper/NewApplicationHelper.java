@@ -1332,11 +1332,18 @@ public class NewApplicationHelper {
         }
         SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
         psnSelectList.add(sp1);
+
+        List<SelectOption> personList = IaisCommonUtils.genNewArrayList();
         Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         personMap.forEach((k,v)->{
             SelectOption sp = new SelectOption(k,v.getName()+", "+v.getIdNo()+" ("+v.getIdType()+")");
-            psnSelectList.add(sp);
+            personList.add(sp);
         });
+        //sort
+        if(personList != null){
+            personList.sort((h1,h2)->h1.getText().compareTo(h2.getText()));
+            psnSelectList.addAll(personList);
+        }
         return psnSelectList;
     }
 
@@ -1634,6 +1641,8 @@ public class NewApplicationHelper {
         }
         return result;
     }
+
+
 
     //=============================================================================
     //private method
