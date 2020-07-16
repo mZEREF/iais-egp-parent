@@ -66,10 +66,12 @@ public class UserDownloadDelegator {
                 String firstNameText = orgUserDto.getFirstName();
                 String lastNameText = orgUserDto.getLastName();
                 String organizationText = orgUserDto.getOrganization();
+                String divisionText = orgUserDto.getDivision();
                 String mobileNoText = orgUserDto.getMobileNo();
                 String officeTelNoText = orgUserDto.getOfficeTelNo();
                 String branchUnitText = orgUserDto.getBranchUnit();
                 String emailText = orgUserDto.getEmail();
+                String remarksText = orgUserDto.getRemarks();
                 String statusText = null;
                 String status1 = orgUserDto.getStatus();
                 if(IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status1)){
@@ -103,11 +105,11 @@ public class UserDownloadDelegator {
                 if (!StringUtil.isEmpty(displayNameText)) {
                     displayName.setText(displayNameText);
                 }
-                Element startDate = userGroup.addElement("startDate");
+                Element startDate = userGroup.addElement("accountActivationStart");
                 if (!StringUtil.isEmpty(startStr)) {
                     startDate.setText(startStr);
                 }
-                Element endDate = userGroup.addElement("endDate");
+                Element endDate = userGroup.addElement("accountActivationEnd");
                 if (!StringUtil.isEmpty(endStr)) {
                     endDate.setText(endStr);
                 }
@@ -123,6 +125,22 @@ public class UserDownloadDelegator {
                 if (!StringUtil.isEmpty(lastNameText)) {
                     lastName.setText(lastNameText);
                 }
+                Element organization = userGroup.addElement("organization");
+                if (!StringUtil.isEmpty(organizationText)) {
+                    organization.setText(organizationText);
+                }
+                Element division = userGroup.addElement("division");
+                if (!StringUtil.isEmpty(divisionText)) {
+                    organization.setText(divisionText);
+                }
+                Element branchUnit = userGroup.addElement("branchUnit");
+                if (!StringUtil.isEmpty(branchUnitText)) {
+                    branchUnit.setText(branchUnitText);
+                }
+                Element email = userGroup.addElement("email");
+                if (!StringUtil.isEmpty(emailText)) {
+                    email.setText(emailText);
+                }
                 Element mobileNo = userGroup.addElement("mobileNo");
                 if (!StringUtil.isEmpty(mobileNoText)) {
                     mobileNo.setText(mobileNoText);
@@ -131,21 +149,13 @@ public class UserDownloadDelegator {
                 if (!StringUtil.isEmpty(officeTelNoText)) {
                     officeNo.setText(officeTelNoText);
                 }
-                Element email = userGroup.addElement("email");
-                if (!StringUtil.isEmpty(emailText)) {
-                    email.setText(emailText);
-                }
-                Element organization = userGroup.addElement("organization");
-                if (!StringUtil.isEmpty(organizationText)) {
-                    organization.setText(organizationText);
-                }
-                Element branchUnit = userGroup.addElement("branchUnit");
-                if (!StringUtil.isEmpty(branchUnitText)) {
-                    branchUnit.setText(branchUnitText);
-                }
                 Element status = userGroup.addElement("status");
                 if (!StringUtil.isEmpty(statusText)) {
                     status.setText(statusText);
+                }
+                Element remarks = userGroup.addElement("remarks");
+                if (!StringUtil.isEmpty(remarksText)) {
+                    remarks.setText(remarksText);
                 }
             }
             OutputFormat outputFormat = OutputFormat.createPrettyPrint();

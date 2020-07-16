@@ -5,12 +5,14 @@ import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
@@ -37,6 +39,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.rbac.user.UserIdentifier;
@@ -50,11 +54,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author weilu
@@ -95,9 +95,9 @@ public class MohIntranetUserDelegator {
     public void prepareData(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         prepareOption(bpc);
-        String deleteMod = (String)ParamUtil.getRequestAttr(request, "deleteMod");
-        if(!StringUtil.isEmpty(deleteMod)){
-            ParamUtil.setRequestAttr(request,"deleteMod","no");
+        String deleteMod = (String) ParamUtil.getRequestAttr(request, "deleteMod");
+        if (!StringUtil.isEmpty(deleteMod)) {
+            ParamUtil.setRequestAttr(request, "deleteMod", "no");
         }
         List<SelectOption> statusOption = getStatusOption();
         List<SelectOption> roleOption = getRoleOption();
@@ -222,8 +222,8 @@ public class MohIntranetUserDelegator {
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
             intranetUserService.updateOrgUser(orgUserDto);
             deleteEgpUser(userDomain, userId);
-        }else {
-            ParamUtil.setRequestAttr(request,"deleteMod","no");
+        } else {
+            ParamUtil.setRequestAttr(request, "deleteMod", "no");
         }
         return;
     }
@@ -308,6 +308,44 @@ public class MohIntranetUserDelegator {
         importXML(file1, bpc);
         return;
     }
+
+
+//    @GetMapping(value = "/user-exist-user")
+//    public @ResponseBody
+//    String genExistUser(HttpServletRequest request) throws Exception {
+//        String flag = "true";
+//        MultipartHttpServletRequest request1 = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+//        CommonsMultipartFile sessionFile = (CommonsMultipartFile) request1.getFile("xmlFile");
+//        File file = File.createTempFile("temp", "xml");
+//        File file1 = inputStreamToFile(sessionFile.getInputStream(), file);
+//        SAXReader saxReader = new SAXReader();
+//        Document document = saxReader.read(file1);
+//        //root
+//        Element root = document.getRootElement();
+//        List list = root.elements();
+//        List<String> userIdsDb = IaisCommonUtils.genNewArrayList();
+//        Set<String> userIdsXML = IaisCommonUtils.genNewHashSet();
+//        for (int i = 0; i < list.size(); i++) {
+//            Element element = (Element) list.get(i);
+//            String userId = element.element("userId").getText();
+//            OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
+//            if(intranetUserByUserId!=null&&!userIdsDb.contains(userId)){
+//                userIdsDb.add(userId);
+//            }
+//        }
+//        for (int i = 0; i < list.size(); i++) {
+//            Element element = (Element) list.get(i);
+//            String userId = element.element("userId").getText();
+//            userIdsXML.add(userId);
+//        }
+//        boolean b = userIdsXML.size()==list.size();
+//        if(!b||userIdsDb.size()>0){
+//           return flag ;
+//        }
+//        flag = "false";
+//        return flag ;
+//    }
+
 
     public void inportBack(BaseProcessClass bpc) {
         return;
@@ -639,24 +677,24 @@ public class MohIntranetUserDelegator {
         for (int i = 0; i < list.size(); i++) {
             Element element = (Element) list.get(i);
             String userId = element.element("userId").getText();
-            String userDomain = element.element("userDomain").getText();
             String displayName = element.element("displayName").getText();
-            String startDateStr = element.element("startDate").getText();
+            String startDateStr = element.element("accountActivationStart").getText();
             Date startDate = DateUtil.parseDate(startDateStr, "yyyy-MM-dd");
-            String endDateStr = element.element("endDate").getText();
+            String endDateStr = element.element("accountActivationEnd").getText();
             Date endDate = DateUtil.parseDate(endDateStr, "yyyy-MM-dd");
             String salutation = element.element("salutation").getText();
             String firstName = element.element("firstName").getText();
             String lastName = element.element("lastName").getText();
+            String organization = element.element("organization").getText();
+            String division = element.element("division").getText();
+            String branchUnit = element.element("branchUnit").getText();
             String mobileNo = element.element("mobileNo").getText();
             String officeNo = element.element("officeNo").getText();
             String email = element.element("email").getText();
-            String organization = element.element("organization").getText();
-            String branchUnit = element.element("branchUnit").getText();
-            String status = element.element("status").getText();
+            String remarks = element.element("remarks").getText();
             OrgUserDto orgUserDto = new OrgUserDto();
             orgUserDto.setUserId(userId);
-            orgUserDto.setUserDomain(userDomain);
+            orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
             orgUserDto.setFirstName(firstName);
             orgUserDto.setLastName(lastName);
             orgUserDto.setDisplayName(displayName);
@@ -664,14 +702,16 @@ public class MohIntranetUserDelegator {
             orgUserDto.setAccountDeactivateDatetime(endDate);
             orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
             orgUserDto.setBranchUnit(branchUnit);
+            orgUserDto.setDivision(division);
             orgUserDto.setSalutation(salutation);
             orgUserDto.setOrganization(organization);
             orgUserDto.setEmail(email);
             orgUserDto.setMobileNo(mobileNo);
             orgUserDto.setOfficeTelNo(officeNo);
+            orgUserDto.setRemarks(remarks);
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
             orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
-            orgUserDto.setStatus(status);
+            orgUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
             orgUserDto.setAvailable(Boolean.FALSE);
 
             OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
@@ -699,7 +739,6 @@ public class MohIntranetUserDelegator {
         bpc.request.setAttribute("orgUserUpLoadDtos", orgUserUpLoadDtos);
     }
 
-
     private List<String> valiant(OrgUserDto orgUserDto) {
         List<String> errors = IaisCommonUtils.genNewArrayList();
         String userId = orgUserDto.getUserId();
@@ -721,11 +760,6 @@ public class MohIntranetUserDelegator {
             String error = "UserId is a mandatory field..";
             errors.add(error);
         }
-        String userDomain = orgUserDto.getUserDomain();
-        if (StringUtil.isEmpty(userDomain)) {
-            String error = "UserDomain is a mandatory field.";
-            errors.add(error);
-        }
         String displayName = orgUserDto.getDisplayName();
         if (StringUtil.isEmpty(displayName)) {
             String error = "DisplayName is a mandatory field.";
@@ -733,18 +767,18 @@ public class MohIntranetUserDelegator {
         }
         Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
         if (accountActivateDatetime == null) {
-            String error = "ActivateDate is a mandatory field.";
+            String error = "accountActivationStart is a mandatory field.";
             errors.add(error);
         }
         Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
         if (accountDeactivateDatetime == null) {
-            String error = "endDate is a mandatory field.";
+            String error = "accountActivationEnd is a mandatory field.";
             errors.add(error);
         }
         if (accountDeactivateDatetime != null && accountActivateDatetime != null) {
             boolean after = accountDeactivateDatetime.after(accountActivateDatetime);
             if (!after) {
-                String error = "Effective End Date must be after Effective Start Date.";
+                String error = "accountActivationEnd date must be after accountActivationStart date.";
                 errors.add(error);
             }
         }
