@@ -302,6 +302,9 @@
             </div>
         </div>
     </iais:body>
+    <div hidden>
+        <iais:pagination param="SearchParam" result="SearchResult" />
+    </div>
 </form>
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>

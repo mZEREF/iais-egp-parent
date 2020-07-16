@@ -567,6 +567,7 @@
 
     function doLicBack() {
         showWaiting();
+        $('input[name="pageJumpNoTextchangePage"]').val(1);
         SOP.Crud.cfxSubmit("mainForm", "back");
     }
 
