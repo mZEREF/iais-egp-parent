@@ -38,7 +38,6 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @Process MohRemindRecNcMesg
  *
  * @author Shicheng
  * @date 2020/4/29 13:59
