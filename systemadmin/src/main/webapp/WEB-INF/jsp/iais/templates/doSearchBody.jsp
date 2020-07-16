@@ -1,3 +1,8 @@
+<style>
+    .dropdown-menu-right{
+        width: 100% !important;
+    }
+</style>
 <div class="row">
     <div class="filter-box form-horizontal clearTep">
         <div class="form-group">
@@ -23,7 +28,12 @@
                 <label class="col-xs-4 col-md-4 control-label" for="templateName">Template Name</label>
                 <div class="col-xs-6 col-sm-6 col-md-6">
                     <%String templateName = request.getParameter("templateName")==null?"":request.getParameter("templateName");%>
-                    <textarea id="templateName" name="templateName" rows="10" style="width: 100%" maxlength="500" ><%=templateName%></textarea>
+                    <form><input id="templateName" type="text" name="templateName"
+                                 maxlength="500" value="<%=templateName%>"/>
+                        <div class="input-group-btn">
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+                        </div>
+                    </form>
                 </div>
             </iais:value>
         </div>

@@ -7,6 +7,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
+import java.util.List;
+
 /**
  * @Author: Hc
  * @Program: iais-egp
@@ -36,4 +38,13 @@ public class MsgTemplateClientFallback implements MsgTemplateClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<String>> suggestTemplateCodeDescription(String code) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 }

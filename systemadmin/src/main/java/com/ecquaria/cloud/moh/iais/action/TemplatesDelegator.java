@@ -23,9 +23,12 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.TemplatesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Arrays;
@@ -207,7 +210,7 @@ public class TemplatesDelegator {
                 validationResult.setHasErrors(true);
             }
         }
-        if (contentSize < 2 || contentSize>8000) {
+        if (contentSize < 2 || contentSize > 8000) {
             validationResult.setHasErrors(true);
         }
         if(validationResult != null && validationResult.isHasErrors()) {
@@ -307,6 +310,18 @@ public class TemplatesDelegator {
     public void doPage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SearchResultHelper.doPage(request,filterParameter);
+    }
+
+    @GetMapping(value = "suggest-template-description")
+    public @ResponseBody
+    List<String> suggerTemplateMasterCode(HttpServletRequest request, HttpServletResponse response) {
+        log.debug(StringUtil.changeForLog("fileHandler start ...."));
+        String codeDescription = request.getParameter("description");
+        List<String> codeDescriptionList = IaisCommonUtils.genNewArrayList();
+        if (!StringUtil.isEmpty(codeDescription)){
+            codeDescriptionList = templatesService.suggestTemplateCodeDescription(codeDescription);
+        }
+        return codeDescriptionList;
     }
 
     public void doSort(BaseProcessClass bpc){

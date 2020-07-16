@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 /**
  * @author HuaChong
  * @Date 2019-12-24
@@ -30,4 +32,9 @@ public interface MsgTemplateClient {
 
     @PutMapping(path = "/iais-messageTemplate/template",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<MsgTemplateDto> updateMasterCode(@RequestBody MsgTemplateDto dto);
+
+    @GetMapping(path = "/iais-messageTemplate/suggestTemplateCodeDescription/{code}")
+    FeignResponseEntity<List<String>> suggestTemplateCodeDescription(@PathVariable("code") String code);
+
+
 }

@@ -10,7 +10,7 @@
 %>
 <webui:setLayout name="iais-intranet"/>
 <%@ include file="mainContent.jsp" %>
-
+<%@ include file="../mastercode/suggestJs.jsp" %>
 <script src="<%=webroot%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=webroot%>js/initTinyMce.js"></script>
 <script>
@@ -51,6 +51,32 @@
         $(".clearTep .current").text("Please Select");
     });
 
+    var admdirector = $("#templateName").bsSuggest({
+        indexId: 0,
+        indexKey: 0,
+        allowNoKeyword: false,
+        multiWord: false,
+        separator: ",",
+        getDataMethod: "url",
+        effectiveFields:["codeDescription"],
+        effectiveFieldsAlias:{codeDescription: "codeDescription"},
+        showHeader: true,
+        url: '${pageContext.request.contextPath}/suggest-template-description?description=',
+        processData: function(json){
+            var i, len, data = {value: []};
+            if(!json || json.length == 0) {
+                return false;
+            }
+            len = json.length;
+            for (i = 0; i < len; i++) {
+                data.value.push({
+                    "codeDescription": json[i]
+                });
+            }
+            console.log(data);
+            return data;
+        }
+    });
 </script>
 
 

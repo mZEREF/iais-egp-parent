@@ -9,6 +9,8 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @Author: Hc
  * @Program: iais-egp
@@ -33,5 +35,10 @@ public class TemplatesServiceImpl implements TemplatesService {
     @Override
     public MsgTemplateDto updateMsgTemplate(MsgTemplateDto msgTemplateDto) {
         return msgTemplateClient.updateMasterCode(msgTemplateDto).getEntity();
+    }
+
+    @Override
+    public List<String> suggestTemplateCodeDescription(String code){
+        return msgTemplateClient.suggestTemplateCodeDescription(code).getEntity();
     }
 }
