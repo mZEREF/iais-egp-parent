@@ -170,8 +170,10 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                 } catch (Exception e) {
                     JobLogger.log(e);
                     log.error(e.getMessage(), e);
-                    log.info(StringUtil.changeForLog("Application Id = " + aDto.getId()));
-                    JobLogger.log(StringUtil.changeForLog("Application Id = " + aDto.getId()));
+                    if(aDto != null) {
+                        log.info(StringUtil.changeForLog("Application Id = " + aDto.getId()));
+                        JobLogger.log(StringUtil.changeForLog("Application Id = " + aDto.getId()));
+                    }
                     continue;
                 }
             }
