@@ -33,7 +33,6 @@
     }
 
     function MsgContToMsgPage() {
-        alert('${msg_page_view}');
         if ('${msg_page_view}' == "msg_view") {
             submit("toMsg");
         }else {
