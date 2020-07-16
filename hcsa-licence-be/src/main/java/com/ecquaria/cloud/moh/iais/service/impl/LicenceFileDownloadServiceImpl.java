@@ -498,9 +498,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationListDto.setEventRefNo(l.toString());
         applicationListDto.setRefNo(l.toString());
         log.info("update be application status");
-        if(!requestForInfList.isEmpty()){
-            applicationClient.updateApplicationOfRfi(requestForInfList);
-        }
+
         eventBusHelper.submitAsyncRequest(applicationListDto,submissionId, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_SAVE_GROUP_APPLICATION,applicationListDto.getEventRefNo(),null);
 
@@ -644,6 +642,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
 
         public void  sendTask(String eventRefNum ,String submissionId) throws  Exception{
+
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         List<ApplicationDto> listNewApplicationDto =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> requestForInfList  =IaisCommonUtils.genNewArrayList();
@@ -663,6 +662,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                   requestForInfList = applicationNewAndRequstDto.getRequestForInfList();
                   log.info(StringUtil.changeForLog("listNewApplicationDto size"+listNewApplicationDto.size()));
                   log.info(StringUtil.changeForLog("requestForInfList size"+requestForInfList.size()));
+                    if(!requestForInfList.isEmpty()){
+                        applicationClient.updateApplicationOfRfi(requestForInfList);
+                    }
                 }
             }
             log.info(StringUtil.changeForLog(listNewApplicationDto.size()+"listNewApplicationDto size"));
