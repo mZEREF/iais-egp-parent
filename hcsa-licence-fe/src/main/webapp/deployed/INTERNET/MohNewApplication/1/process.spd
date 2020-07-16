@@ -65,7 +65,7 @@
     <JavaCode defClass="" executor="" methodName="doPreview_OnStepProcess_0" name="doPreview_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPayment" x="790" y="420">
+  <AutomaticStep defClass="" executor="" icon="" name="doPayment" x="850" y="370">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -231,6 +231,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="bank" stageIndicator="" x="850" y="460">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -289,7 +295,7 @@
    <position>{(750,370)(860,170)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPayment" style="oblique">
-   <position>{(810,440)(860,170)}</position>
+   <position>{(870,390)(860,170)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/ControlSwitch" style="oblique">
    <position>{(860,170)(990,170)}</position>
@@ -327,8 +333,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/jumpBank" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Payment" style="rectanular">
    <position>{(620,480)(730,480)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doPayment" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="oblique">
-   <position>{(730,480)(810,440)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doPayment" linkstyle="Direct" name="" sourceName="/Pages/WebPage/bank" style="oblique">
+   <position>{(895,510)(870,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareErrorAck" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(430,160)(510,-40)}</position>
@@ -392,6 +398,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/inboxToView" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/InboxToPreview" style="rectanular">
    <position>{(480,640)(660,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/bank" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="oblique">
+   <position>{(730,480)(895,510)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
