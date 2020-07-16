@@ -79,6 +79,8 @@
                     fillForm('onSite',data,$premContent);
                     setAddress('onSite',data,$premContent);
                     initPhForm('onSite',$premContent);
+                    //remove placeHolder disabled style
+                    $premContent.find('input[name="onSiteFireSafetyCertIssuedDate"]').removeClass('disabled-placeHolder');
                 }else if ("conveyanceSel" == thisId) {
                     $premContent.find('.new-premise-form-conv').removeClass('hidden');
                     $premContent.find('.new-premise-form-on-site').addClass('hidden');
@@ -299,6 +301,8 @@
             replaceFireIssueDateHtml(premContent,fireIssueDate);
             <!--remove ph hidden-->
             premContent.find('.addPubHolDay').removeClass('hidden');
+            <!--remove placeHolder disabled style -->
+            premContent.find('input[name="onSiteFireSafetyCertIssuedDate"]').removeClass('disabled-placeHolder');
         });
     }
 
@@ -455,6 +459,8 @@
             $premSelect.find('input[name="'+premisesType+'StreetName"]').val(data.streetName);
             $premSelect.find('input[name="'+premisesType+'ScdfRefNo"]').val(data.scdfRefNo);
             $premSelect.find('input[name="'+premisesType+'FireSafetyCertIssuedDate"]').val(data.certIssuedDtStr);
+            //add placeHolder disabled style
+            $premSelect.find('input[name="'+premisesType+'FireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
             $premSelect.find('input[name="'+premisesType+'OffTelNo"]').val(data.offTelNo);
             $premSelect.find('input[name="'+premisesType+'IsOtherLic"]').val(data.locateWithOthers);
             $premSelect.find('input.other-lic').each(function () {

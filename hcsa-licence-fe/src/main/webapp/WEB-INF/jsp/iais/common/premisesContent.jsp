@@ -1,3 +1,20 @@
+<style>
+    input.disabled-placeHolder::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color:#999999 !important;
+    }
+    .disabled-placeHolder:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color:#999999!important;
+    }
+    .disabled-placeHolder::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color:#999999!important;
+    }
+    input.disabled-placeHolder:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color:#999999!important;
+    }
+    input.disabled-placeHolder::-ms-input-placeholder { /* Microsoft Edge */
+        color:#999999!important;
+    }
+</style>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
     <c:set value="${errorMap_premises[premIndexNo]}" var="errMsg"/>
@@ -223,7 +240,7 @@
                     <iais:row>
                         <iais:field value="Fire Safety Certificate Issued Date" width="12"/>
                         <iais:value cssClass="col-xs-7 col-sm-4 col-md-5 fireIssuedDateDiv">
-                            <iais:datePicker cssClass="fireIssuedDate " name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDtStr}" />
+                            <iais:datePicker cssClass="fireIssuedDate" name="onSiteFireSafetyCertIssuedDate" value="${appGrpPremisesDto.certIssuedDtStr}" />
                         </iais:value>
                     </iais:row>
                     <iais:row>
