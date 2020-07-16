@@ -219,21 +219,65 @@ public class ApplicationServiceImpl implements ApplicationService {
         for (SelfAssMtEmailDto i : allAssLt){
             String reqRefNum;
             String refType;
-            if (1 == i.getMsgTrackRefNumType()){
+            List<ApplicationDto> appList;
+            String randomStr = IaisEGPHelper.generateRandomString(26);
+            int msgTrackRefNumType = i.getMsgTrackRefNumType();
+            if (msgTrackRefNumType == 1){
                 refType = EmailHelper.RECEIPT_TYPE_APP_GRP;
                 reqRefNum = i.getGroupId();
+                appList = i.getAppList();
+
+                StringBuilder svcNameStr = new StringBuilder();
+                for (ApplicationDto app : appList){
+                    String appNum = app.getAlignLicenceNo();
+                    String appType = app.getApplicationType();
+                    String svcId = app.getServiceId();
+                    Date appSubmitDate = app.getStartDate();
+                    templateContent.put("appNumber", appNum);
+                    templateContent.put("appType", appType);
+                    templateContent.put("appSubmitDate", appSubmitDate);
+
+                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
+                    if (serviceDto != null){
+                        String svcName = serviceDto.getSvcName();
+                        svcNameStr.append("<li>").append(svcName).append("</li>");
+                    }
+                }
+
+                templateContent.put("svcNameList", svcNameStr.toString());
+
+                try {
+                    emailHelper.sendEmail(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum);
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
+                } catch (TemplateException e) {
+                    log.error(e.getMessage(), e);
+                }
+
             }else {
                 refType = EmailHelper.RECEIPT_TYPE_APP;
-                reqRefNum = i.getAppNumber();
-            }
+                appList = i.getAppList();
+                //never null
+                ApplicationDto app = appList.get(0);
+                reqRefNum = app.getApplicationNo();
+                templateContent.put("appNumber", reqRefNum);
+                templateContent.put("appType", app.getApplicationType());
+                templateContent.put("appSubmitDate", app.getStartDate());
 
-            String randomStr = IaisEGPHelper.generateRandomString(26);
-            try {
-                emailHelper.sendEmail(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum);
-            } catch (IOException e) {
-                log.error(e.getMessage(), e);
-            } catch (TemplateException e) {
-                log.error(e.getMessage(), e);
+                StringBuilder svcNameStr = new StringBuilder();
+                HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(app.getServiceId());
+                if (serviceDto != null){
+                    String svcName = serviceDto.getSvcName();
+                    svcNameStr.append("<li>").append(svcName).append("</li>");
+                }
+                templateContent.put("svcNameList", svcNameStr.toString());
+                try {
+                    emailHelper.sendEmail(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum);
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
+                } catch (TemplateException e) {
+                    log.error(e.getMessage(), e);
+                }
             }
         }
         log.info("===>>>>alertSelfDeclNotification end");
