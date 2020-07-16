@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -135,6 +136,13 @@ public class EmailHelper {
 	@Async("emailAsyncExecutor")
 	public void sendEmail(String templateId, Map<String, Object> templateContent, String queryCode,
 						  String reqRefNum, String refIdType, String refId) throws IOException, TemplateException {
+		sendEmailWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null);
+	}
+
+	@Async("emailAsyncExecutor")
+	public void sendEmailWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode,
+									  String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto)
+										throws IOException, TemplateException {
 		List<String> receiptemail = IaisCommonUtils.genNewArrayList();
 		List<String> ccemail = IaisCommonUtils.genNewArrayList();
 		List<String> bccemail = IaisCommonUtils.genNewArrayList();
@@ -166,18 +174,22 @@ public class EmailHelper {
 			bccemail = getRecript(msgTemplateDto.getBccrecipient(), refIdType, refId);
 			emailDto.setBccList(bccemail);
 		}
-		if(queryCode != null){
+		if (queryCode != null) {
 			emailDto.setClientQueryCode(queryCode);
-		}else{
+		} else {
 			emailDto.setClientQueryCode("no queryCode");
 		}
-		if(reqRefNum != null){
+		if (reqRefNum != null) {
 			emailDto.setReqRefNum(reqRefNum);
-		}else{
+		} else {
 			emailDto.setReqRefNum("no reqRefNum");
 		}
 		//send
-		emailSmsClient.sendEmail(emailDto,null);
+		if (!IaisCommonUtils.isEmpty(emailDto.getReceipts())) {
+			emailSmsClient.sendEmail(emailDto,null);
+		} else {
+			log.info("No receipts. Won't send email.");
+		}
 		log.info(StringUtil.changeForLog("sendemail end... queryCode is"+queryCode + "templateId is "
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
 	}
