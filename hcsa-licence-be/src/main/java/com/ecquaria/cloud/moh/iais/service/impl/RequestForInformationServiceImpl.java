@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
@@ -39,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.RequestForInformationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import com.ecquaria.sz.commons.util.FileUtil;
@@ -56,6 +56,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -167,12 +168,16 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     };
     @Override
     public List<SelectOption> getAppTypeOption() {
-        return MasterCodeUtil.retrieveOptionsByCodes(appType);
+        List<SelectOption> selectOptions=MasterCodeUtil.retrieveOptionsByCodes(appType);
+        selectOptions.sort(Comparator.comparing(SelectOption::getText));
+        return selectOptions;
     }
 
     @Override
     public List<SelectOption> getAppStatusOption() {
-        return  MasterCodeUtil.retrieveOptionsByCodes(appStatus);
+        List<SelectOption> selectOptions= MasterCodeUtil.retrieveOptionsByCodes(appStatus);
+        selectOptions.sort(Comparator.comparing(SelectOption::getText));
+        return selectOptions;
     }
 
     @Override
@@ -189,6 +194,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         HashSet<SelectOption> set = new HashSet<>(selectOptions);
         selectOptions.clear();
         selectOptions.addAll(set);
+        selectOptions.sort(Comparator.comparing(SelectOption::getText));
         return selectOptions;
     }
 
@@ -205,12 +211,15 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                 selectOptions.add(selectOption);
             }
         }
+        selectOptions.sort(Comparator.comparing(SelectOption::getText));
         return selectOptions;
     }
 
     @Override
     public List<SelectOption> getLicStatusOption() {
-        return MasterCodeUtil.retrieveOptionsByCodes(licStatus);
+        List<SelectOption> selectOptions= MasterCodeUtil.retrieveOptionsByCodes(licStatus);
+        selectOptions.sort(Comparator.comparing(SelectOption::getText));
+        return selectOptions;
     }
 
     @Override
