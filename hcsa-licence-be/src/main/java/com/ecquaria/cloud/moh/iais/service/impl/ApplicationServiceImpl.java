@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -216,27 +217,37 @@ public class ApplicationServiceImpl implements ApplicationService {
         List<SelfAssMtEmailDto> allAssLt = applicationClient.getPendingSubmitSelfAss().getEntity();
         final String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT;
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+        templateContent.put("APPLICANT_NAME", "testname");
+        templateContent.put("newSystem", "test");
+        templateContent.put("moh_email", "test");
+        templateContent.put("MOH_NAME", "test");
         for (SelfAssMtEmailDto i : allAssLt){
             String reqRefNum;
             String refType;
             List<ApplicationDto> appList;
             String randomStr = IaisEGPHelper.generateRandomString(26);
             int msgTrackRefNumType = i.getMsgTrackRefNumType();
+
             if (msgTrackRefNumType == 1){
                 refType = EmailHelper.RECEIPT_TYPE_APP_GRP;
                 reqRefNum = i.getGroupId();
                 appList = i.getAppList();
 
+                boolean flag = false;
                 StringBuilder svcNameStr = new StringBuilder();
                 for (ApplicationDto app : appList){
-                    String appNum = app.getAlignLicenceNo();
-                    String appType = app.getApplicationType();
-                    String svcId = app.getServiceId();
-                    Date appSubmitDate = app.getStartDate();
-                    templateContent.put("appNumber", appNum);
-                    templateContent.put("appType", appType);
-                    templateContent.put("appSubmitDate", appSubmitDate);
+                    if (!flag){
+                        String appNum = app.getApplicationNo();
+                        String[] split = appNum.split("-");
+                        String appType = app.getApplicationType();
+                        Date appSubmitDate = app.getStartDate();
+                        templateContent.put("appNumber", split[0]);
+                        templateContent.put("appType", appType);
+                        templateContent.put("appSubmitDate", IaisEGPHelper.parseToString(appSubmitDate, "yyyy-MM-dd HH:mm:ss"));
+                        flag = true;
+                    }
 
+                    String svcId = app.getServiceId();
                     HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
                     if (serviceDto != null){
                         String svcName = serviceDto.getSvcName();
@@ -245,14 +256,12 @@ public class ApplicationServiceImpl implements ApplicationService {
                 }
 
                 templateContent.put("svcNameList", svcNameStr.toString());
-
-                try {
-                    emailHelper.sendEmail(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum);
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                } catch (TemplateException e) {
-                    log.error(e.getMessage(), e);
-                }
+                JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
+                jobRemindMsgTrackingDto.setMsgKey(i.getMsgTrackKey());
+                jobRemindMsgTrackingDto.setRefNo(reqRefNum);
+                jobRemindMsgTrackingDto.setCreateTime(new Date());
+                jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                emailHelper.sendEmailWithJobTrack(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
 
             }else {
                 refType = EmailHelper.RECEIPT_TYPE_APP;
@@ -262,7 +271,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 reqRefNum = app.getApplicationNo();
                 templateContent.put("appNumber", reqRefNum);
                 templateContent.put("appType", app.getApplicationType());
-                templateContent.put("appSubmitDate", app.getStartDate());
+                templateContent.put("appSubmitDate", IaisEGPHelper.parseToString(app.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
 
                 StringBuilder svcNameStr = new StringBuilder();
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(app.getServiceId());
@@ -270,14 +279,16 @@ public class ApplicationServiceImpl implements ApplicationService {
                     String svcName = serviceDto.getSvcName();
                     svcNameStr.append("<li>").append(svcName).append("</li>");
                 }
+
                 templateContent.put("svcNameList", svcNameStr.toString());
-                try {
-                    emailHelper.sendEmail(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum);
-                } catch (IOException e) {
-                    log.error(e.getMessage(), e);
-                } catch (TemplateException e) {
-                    log.error(e.getMessage(), e);
-                }
+
+                JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
+                jobRemindMsgTrackingDto.setMsgKey(i.getMsgTrackKey());
+                jobRemindMsgTrackingDto.setRefNo(reqRefNum);
+                jobRemindMsgTrackingDto.setCreateTime(new Date());
+                jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                emailHelper.sendEmailWithJobTrack(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
+
             }
         }
         log.info("===>>>>alertSelfDeclNotification end");
