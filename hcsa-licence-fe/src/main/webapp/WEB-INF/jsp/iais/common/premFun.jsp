@@ -765,6 +765,12 @@
         var phHtml = currPhForm.find('.pubHolidayContent').get(0).outerHTML;
         currPhForm.find('.pubHolidayContent').remove();
         currPhForm.find('.phFormMarkPoint').after(phHtml);
+        $("div.premSelect->ul").mCustomScrollbar({
+                advanced:{
+                    updateOnContentResize: true
+                }
+            }
+        );
         //init data
         var data = {};
         var $Ele = currPhForm.find('.pubHolidayContent:eq(0)');
