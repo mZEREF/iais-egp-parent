@@ -294,8 +294,8 @@ public class MasterCodeDelegator {
             masterCodeToExcelDto.setVersion(h.getVersion());
             masterCodeToExcelDto.setCodeDescription(h.getCodeDescription());
             masterCodeToExcelDto.setCodeValue(h.getCodeValue());
-            masterCodeToExcelDto.setEffectiveFrom(Formatter.formatDateTime(h.getEffectiveStartDate(), SystemAdminBaseConstants.DATE_FORMAT));
-            masterCodeToExcelDto.setEffectiveTo(Formatter.formatDateTime(h.getEffectiveEndDate(), SystemAdminBaseConstants.DATE_FORMAT));
+            masterCodeToExcelDto.setEffectiveFrom(Formatter.formatDateTime(h.getEffectiveStartDate()));
+            masterCodeToExcelDto.setEffectiveTo(Formatter.formatDateTime(h.getEffectiveEndDate()));
             masterCodeToExcelDto.setFilterValue(h.getFilterValue());
             masterCodeToExcelDto.setRemakes(h.getRemarks());
             masterCodeToExcelDto.setStatus(MasterCodeUtil.getCodeDesc(h.getStatus()));
@@ -382,10 +382,22 @@ public class MasterCodeDelegator {
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
                     masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
                 }
+                if (!StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
+                    if ("Active".equals(masterCodeToExcelDto.getStatus())){
+                        masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                    }else if ("Deleted".equals(masterCodeToExcelDto.getStatus())){
+                        masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
+                    }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
+                        masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    }else{
+                        emptyCode.add(masterCodeToExcelDto.getCodeValue());
+                        result = true;
+                    }
+                }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
-    //                if (masterCodeToExcelDto.getFilterValue().equals(masterCodeToExcelDto1.getCodeValue())){
-    //                    filterCode.add(masterCodeToExcelDto.getCodeValue());
-    //                }
+//                    if (masterCodeToExcelDto.getFilterValue().equals(masterCodeToExcelDto1.getCodeValue())){
+//                        filterCode.add(masterCodeToExcelDto.getCodeValue());
+//                    }
                     if (filterCode.size() == 0){
                         emptyCode.add(masterCodeToExcelDto.getCodeValue());
                         result = true;
@@ -404,9 +416,10 @@ public class MasterCodeDelegator {
             }else{
                 masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+                ParamUtil.setRequestAttr(request, "UPLOAD_DATE", new Date());
             }
         }catch (Exception e){
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, MessageCodeKey.GENERAL_ERR0005);
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "There is an error in the file contents");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }
