@@ -675,54 +675,59 @@ public class MohIntranetUserDelegator {
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
         List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < list.size(); i++) {
-            Element element = (Element) list.get(i);
-            String userId = element.element("userId").getText();
-            String displayName = element.element("displayName").getText();
-            String startDateStr = element.element("accountActivationStart").getText();
-            Date startDate = DateUtil.parseDate(startDateStr, "yyyy-MM-dd");
-            String endDateStr = element.element("accountActivationEnd").getText();
-            Date endDate = DateUtil.parseDate(endDateStr, "yyyy-MM-dd");
-            String salutation = element.element("salutation").getText();
-            String firstName = element.element("firstName").getText();
-            String lastName = element.element("lastName").getText();
-            String organization = element.element("organization").getText();
-            String division = element.element("division").getText();
-            String branchUnit = element.element("branchUnit").getText();
-            String mobileNo = element.element("mobileNo").getText();
-            String officeNo = element.element("officeNo").getText();
-            String email = element.element("email").getText();
-            String remarks = element.element("remarks").getText();
-            OrgUserDto orgUserDto = new OrgUserDto();
-            orgUserDto.setUserId(userId);
-            orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
-            orgUserDto.setFirstName(firstName);
-            orgUserDto.setLastName(lastName);
-            orgUserDto.setDisplayName(displayName);
-            orgUserDto.setAccountActivateDatetime(startDate);
-            orgUserDto.setAccountDeactivateDatetime(endDate);
-            orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
-            orgUserDto.setBranchUnit(branchUnit);
-            orgUserDto.setDivision(division);
-            orgUserDto.setSalutation(salutation);
-            orgUserDto.setOrganization(organization);
-            orgUserDto.setEmail(email);
-            orgUserDto.setMobileNo(mobileNo);
-            orgUserDto.setOfficeTelNo(officeNo);
-            orgUserDto.setRemarks(remarks);
-            orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-            orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
-            orgUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            orgUserDto.setAvailable(Boolean.FALSE);
+            try {
+                Element element = (Element) list.get(i);
+                String userId = element.element("userId").getText();
+                String displayName = element.element("displayName").getText();
+                String startDateStr = element.element("accountActivationStart").getText();
+                Date startDate = DateUtil.parseDate(startDateStr, "yyyy-MM-dd");
+                String endDateStr = element.element("accountActivationEnd").getText();
+                Date endDate = DateUtil.parseDate(endDateStr, "yyyy-MM-dd");
+                String salutation = element.element("salutation").getText();
+                String firstName = element.element("firstName").getText();
+                String lastName = element.element("lastName").getText();
+                String organization = element.element("organization").getText();
+                String division = element.element("division").getText();
+                String branchUnit = element.element("branchUnit").getText();
+                String mobileNo = element.element("mobileNo").getText();
+                String officeNo = element.element("officeNo").getText();
+                String email = element.element("email").getText();
+                String remarks = element.element("remarks").getText();
+                OrgUserDto orgUserDto = new OrgUserDto();
+                orgUserDto.setUserId(userId);
+                orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
+                orgUserDto.setFirstName(firstName);
+                orgUserDto.setLastName(lastName);
+                orgUserDto.setDisplayName(displayName);
+                orgUserDto.setAccountActivateDatetime(startDate);
+                orgUserDto.setAccountDeactivateDatetime(endDate);
+                orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
+                orgUserDto.setBranchUnit(branchUnit);
+                orgUserDto.setDivision(division);
+                orgUserDto.setSalutation(salutation);
+                orgUserDto.setOrganization(organization);
+                orgUserDto.setEmail(email);
+                orgUserDto.setMobileNo(mobileNo);
+                orgUserDto.setOfficeTelNo(officeNo);
+                orgUserDto.setRemarks(remarks);
+                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
+                orgUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                orgUserDto.setAvailable(Boolean.FALSE);
 
-            OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
-            orgUserUpLoadDto.setUserId(userId);
-            List<String> valiant = valiant(orgUserDto);
-            if (IaisCommonUtils.isEmpty(valiant)) {
-                valiant.add("add success !");
-                orgUserDtos.add(orgUserDto);
+                OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
+                orgUserUpLoadDto.setUserId(userId);
+                List<String> valiant = valiant(orgUserDto);
+                if (IaisCommonUtils.isEmpty(valiant)) {
+                    valiant.add("add success !");
+                    orgUserDtos.add(orgUserDto);
+                }
+                orgUserUpLoadDto.setMsg(valiant);
+                orgUserUpLoadDtos.add(orgUserUpLoadDto);
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+                continue;
             }
-            orgUserUpLoadDto.setMsg(valiant);
-            orgUserUpLoadDtos.add(orgUserUpLoadDto);
         }
         if (!IaisCommonUtils.isEmpty(orgUserDtos)) {
             for (OrgUserDto orgUserDto : orgUserDtos) {
