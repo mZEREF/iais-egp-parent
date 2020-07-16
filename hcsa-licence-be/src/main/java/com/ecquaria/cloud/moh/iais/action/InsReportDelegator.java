@@ -67,6 +67,7 @@ public class InsReportDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", null);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
+        ParamUtil.setSessionAttr(bpc.request,"askType",null);
     }
 
     public void inspectionReportInit(BaseProcessClass bpc) {
@@ -174,6 +175,7 @@ public class InsReportDelegator {
         if (ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(status)) {
             insRepService.routTaskToRoutBack(bpc, taskDto, applicationDto, appPremisesCorrelationId, appPremisesRecommendationDto.getProcessRemarks());
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            ParamUtil.setSessionAttr(bpc.request,"askType","Y");
             return;
         }
         if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
