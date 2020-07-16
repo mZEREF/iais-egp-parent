@@ -47,7 +47,7 @@
                                 <iais:field value="Distribution List" />
                                 <iais:value>
                                     <div class="col-xs-8 col-sm-6 col-md-5">
-                                        <iais:select name="role" options="roleSelection" value="${role}" firstOption="Please Select" disabled=""></iais:select>
+                                        <iais:multipleSelect name="role" selectValue="${role}" options="roleSelection"></iais:multipleSelect>
                                         <span id="error_role" name="iaisErrorMsg" class="error-msg"></span>
                                     </div>
                                 </iais:value>
@@ -215,7 +215,7 @@ $("#service").change(function () {
         },
         type:"POST",
         dataType: 'json',
-        url:'/system-admin-web/emailAjax/recipientsRoles.do',
+        url:'/system-admin-web/emailAjax/mulrecipientsRoles.do',
         error:function(data){
 
         },

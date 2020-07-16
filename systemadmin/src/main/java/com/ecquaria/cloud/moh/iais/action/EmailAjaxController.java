@@ -40,6 +40,31 @@ public class EmailAjaxController {
 
     @Autowired
     private BlastManagementListService blastManagementListService;
+
+
+    @RequestMapping(value = "mulrecipientsRoles.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, String> mulrecipientsRoles(HttpServletRequest request, HttpServletResponse response) {
+        String serviceCode = request.getParameter("serviceCode");
+        List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
+        if(!serviceCode.isEmpty()){
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceCode);
+            List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(hcsaServiceDto.getId(),AppConsts.COMMON_STATUS_ACTIVE);
+            for (HcsaSvcPersonnelDto item:hcsaSvcPersonnelDtoList
+            ) {
+                selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
+            }
+        }
+        Map<String, String> result = new HashMap<>();
+        Map<String,String> roleAttr = IaisCommonUtils.genNewHashMap();
+        roleAttr.put("class", "role");
+        roleAttr.put("id", "role");
+        roleAttr.put("name", "role");
+        roleAttr.put("style", "display: none;");
+        String roleSelectStr = getMultiSelect(selectOptions, "role");
+        result.put("roleSelect",roleSelectStr);
+        return result;
+    }
     @RequestMapping(value = "recipientsRoles.do", method = RequestMethod.POST)
     public @ResponseBody
     Map<String, String> recipientsRoles(HttpServletRequest request, HttpServletResponse response) {
@@ -135,6 +160,24 @@ public class EmailAjaxController {
             selectOptions.add(new SelectOption(item.getId(),item.getDisname()));
         }
         return selectOptions;
+    }
+
+    private String getMultiSelect(List<SelectOption> selectOptionList,String name){
+        StringBuilder sBuffer = new StringBuilder();
+        sBuffer.append("<div style=\"height: 200px; border: 1px solid darkgrey;overflow: scroll\" id=\"")
+                .append(name).append("Clear\">");
+        int i = 0;
+        for (SelectOption item:selectOptionList
+              ) {
+            sBuffer.append("<label class=\"checkbox-custom check-primary\" style=\"margin-left: 2px\">")
+                    .append("<input value=\"").append(item.getValue()).append("\" id=\"").append(name).append(i).append("\" name=\"").append(name).append("\" type=\"checkbox\">")
+                    .append("<label for=\"").append(name).append(i).append("\">")
+                    .append("<span>").append(item.getText()).append("</span>")
+                    .append("</label></label><br>");
+            i ++;
+        }
+        sBuffer.append("</div><span id=\"error_").append(name).append("\" name=\"iaisErrorMsg\" class=\"error-msg\"></span>");
+        return sBuffer.toString();
     }
 
     private String generateDropDownHtml(Map<String, String> premisesOnSiteAttr, List<SelectOption> selectOptionList, String firestOption, String checkedVal){

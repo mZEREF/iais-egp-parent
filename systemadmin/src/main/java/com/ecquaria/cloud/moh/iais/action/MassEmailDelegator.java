@@ -149,7 +149,9 @@ public class MassEmailDelegator {
     public void search(BaseProcessClass bpc){
         SearchParam searchParam = getSearchParam(bpc);
         String distributionName = ParamUtil.getRequestString(bpc.request,"distributionName");
-        String role = ParamUtil.getString(bpc.request, "role");
+        String[] roleString = ParamUtil.getStrings(bpc.request,"role");
+
+        String roleshow  = "";
         String service = ParamUtil.getString(bpc.request, "service");
         String mode = ParamUtil.getRequestString(bpc.request,"modeDelivery");
         searchParam.getParams().clear();
@@ -161,26 +163,50 @@ public class MassEmailDelegator {
         if(!StringUtil.isEmpty(distributionName)){
             searchParam.addFilter("description", "%" + distributionName + "%",true);
         }else{
+            searchParam.removeFilter("description");
             distributionName = null;
         }
-        if(!StringUtil.isEmpty(role)){
-            searchParam.addFilter("recipients",  "%" +role + "%",true);
-        }else{
-            role = null;
+
+        if(roleString != null){
+            List<String> role = Arrays.asList(roleString);
+            if(role.size() > 0){
+                StringBuilder sb = new StringBuilder("(");
+                int i =0;
+                for (String item: role) {
+                    sb.append(":itemKey").append(i).append(',');
+                    i++;
+                }
+                String inSql = sb.substring(0, sb.length() - 1) + ")";
+                searchParam.addParam("remises_corr_id_in", inSql);
+                i = 0;
+                for (String item: role) {
+                    searchParam.addFilter("itemKey" + i,
+                            item);
+                    i ++;
+                }
+                roleshow = String.join("#", role);
+            }else{
+                searchParam.removeFilter("remises_corr_id_in");
+                roleshow = null;
+            }
         }
         if(!StringUtil.isEmpty(service)){
             searchParam.addFilter("service",  service,true);
         }else{
+            searchParam.removeFilter("service");
             service = null;
         }
         if(!StringUtil.isEmpty(mode)){
             searchParam.addFilter("mode",  mode,true);
+        }else{
+            mode = null;
+            searchParam.removeFilter("mode");
         }
         setServiceSelect(bpc);
         setModeSelection(bpc);
         setSearchparam(bpc,searchParam);
         ParamUtil.setRequestAttr(bpc.request,"distributionName",distributionName);
-        ParamUtil.setRequestAttr(bpc.request,"role",role);
+        ParamUtil.setRequestAttr(bpc.request,"role",roleshow);
         ParamUtil.setRequestAttr(bpc.request,"service",service);
         ParamUtil.setRequestAttr(bpc.request,"modeDelivery",mode);
     }
@@ -369,14 +395,28 @@ public class MassEmailDelegator {
     }
 
     private void searchRole(BaseProcessClass bpc){
+        SearchParam searchParam = getSearchParam(bpc);
+        String serviceCode = (String)searchParam.getFilters().get("service");
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
-        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"CGO"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO,"Principal Officer"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO,"Deputy Principal Officer"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,"Licensee"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_AP,"Authorised Person"));
-        selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT,"MedAlert"));
-        ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
+        if(serviceCode != null){
+            if(!serviceCode.isEmpty()){
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(serviceCode);
+                List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtoList = distributionListService.roleByServiceId(hcsaServiceDto.getId(),AppConsts.COMMON_STATUS_ACTIVE);
+                for (HcsaSvcPersonnelDto item:hcsaSvcPersonnelDtoList
+                ) {
+                    selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
+                }
+            }
+        }else{
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,"CGO"));
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_PO,"Principal Officer"));
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO,"Deputy Principal Officer"));
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,"Licensee"));
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_AP,"Authorised Person"));
+            selectOptions.add(new SelectOption(ApplicationConsts.PERSONNEL_PSN_TYPE_MEDALERT,"MedAlert"));
+
+        }
+       ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
     }
 
     private String roleName(String roleAbbreviation){
