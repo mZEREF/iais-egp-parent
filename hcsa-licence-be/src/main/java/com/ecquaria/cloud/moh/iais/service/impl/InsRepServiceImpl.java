@@ -729,8 +729,9 @@ public class InsRepServiceImpl implements InsRepService {
         } else {
             String componentValue = historyExtDto.getComponentValue();
             if ("N".equals(componentValue)) {
+                ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
                 List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(serviceId,
-                        stageId, applicationType);
+                        stageId, applicationType,applicationGroupDto.getIsPreInspection());
                 if (hcsaSvcRoutingStageDtoList != null) {
                     HcsaSvcRoutingStageDto nextStage = hcsaSvcRoutingStageDtoList.get(0);
                     String stageCode = nextStage.getStageCode();

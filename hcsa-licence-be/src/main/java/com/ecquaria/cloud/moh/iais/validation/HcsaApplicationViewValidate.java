@@ -162,7 +162,11 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                                 }
                             }
                         }
-
+                        //remarks
+                        String recommendValue = (String)ParamUtil.getSessionAttr(request,"RecommendValue");
+                        if(!StringUtil.isEmpty(verified) && !verified.equals(recommendValue) && StringUtil.isEmpty(internalRemarks)){
+                            errMap.put("internalRemarks", "Please key in recommendation");
+                        }
                     } else if (ROLLBACK.equals(nextStage)) {
                         String rollBack = ParamUtil.getRequestString(request, "rollBack");
                         ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);

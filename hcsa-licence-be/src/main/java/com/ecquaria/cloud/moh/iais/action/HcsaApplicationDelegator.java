@@ -950,8 +950,10 @@ public class HcsaApplicationDelegator {
         }else{
             String componentValue = historyExtDto.getComponentValue();
             if("N".equals(componentValue)){
-                List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),
-                        stageId,applicationViewDto.getApplicationDto().getApplicationType());
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+                List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getServiceId(),
+                        stageId,applicationDto.getApplicationType(),applicationGroupDto.getIsPreInspection());
                 if(hcsaSvcRoutingStageDtoList != null){
                     HcsaSvcRoutingStageDto nextStage = hcsaSvcRoutingStageDtoList.get(0);
                     String stageCode = nextStage.getStageCode();
@@ -2086,6 +2088,8 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto", applicationViewDto);
         //set recommendation dropdown value
         setRecommendationDropdownValue(bpc.request,applicationViewDto);
+        //set verified dropdown value
+        setVerifiedDropdownValue(bpc.request,applicationViewDto,taskDto);
 
         //check broadcast role id
         AppPremisesRoutingHistoryDto userHistory = appPremisesRoutingHistoryService.getAppHistoryByAppNoAndActionBy(applicationViewDto.getApplicationDto().getApplicationNo(), taskDto.getUserId());
@@ -2208,8 +2212,6 @@ public class HcsaApplicationDelegator {
         setDmsProcessingDecisionDropdownValue(request);
         //set route back dropdown value
         setRouteBackDropdownValue(request,applicationViewDto);
-        //set verified dropdown value
-        setVerifiedDropdownValue(request,applicationViewDto,taskDto);
         //set recommendation dropdown value
 //        setRecommendationDropdownValue(request,applicationViewDto);
         //set recommendation other dropdown value
@@ -2223,8 +2225,10 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(request,"routeBackReview",null);
         if(!(RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId))){
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(status)){
-                List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),
-                        taskDto.getTaskKey(),applicationViewDto.getApplicationDto().getApplicationType());
+                ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+                List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getServiceId(),
+                        taskDto.getTaskKey(),applicationDto.getApplicationType(),applicationGroupDto.getIsPreInspection());
                 if(hcsaSvcRoutingStageDtoList != null & hcsaSvcRoutingStageDtoList.size() > 0){
                     ParamUtil.setSessionAttr(request,"routeBackReview","canRouteBackReview");
                 }
@@ -2451,13 +2455,19 @@ public class HcsaApplicationDelegator {
     public void setVerifiedDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){
         //get routing stage dropdown send to page.
         log.debug(StringUtil.changeForLog("the do prepareData get the hcsaSvcRoutingStageDtoList"));
-        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationViewDto.getApplicationDto().getServiceId(),
-                taskDto.getTaskKey(),applicationViewDto.getApplicationDto().getApplicationType());
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getServiceId(),
+                taskDto.getTaskKey(),applicationViewDto.getApplicationDto().getApplicationType(),applicationGroupDto.getIsPreInspection());
         List<SelectOption> routingStage = IaisCommonUtils.genNewArrayList();
         if(hcsaSvcRoutingStageDtoList!=null){
             if(hcsaSvcRoutingStageDtoList.size()>0){
                 for (HcsaSvcRoutingStageDto hcsaSvcRoutingStage:hcsaSvcRoutingStageDtoList) {
                     routingStage.add(new SelectOption(hcsaSvcRoutingStage.getStageCode(),hcsaSvcRoutingStage.getStageName()));
+                    if(hcsaSvcRoutingStage.isRecommend()){
+                        ParamUtil.setRequestAttr(request,"selectVerified",hcsaSvcRoutingStage.getStageCode());
+                        ParamUtil.setSessionAttr(request,"RecommendValue",hcsaSvcRoutingStage.getStageCode());
+                    }
                 }
             }else{
                 log.debug(StringUtil.changeForLog("the do prepareData add the Approve"));

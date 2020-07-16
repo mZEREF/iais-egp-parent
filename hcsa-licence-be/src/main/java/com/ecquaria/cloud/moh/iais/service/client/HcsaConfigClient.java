@@ -61,7 +61,8 @@ public interface HcsaConfigClient {
     @RequestMapping(path = "/hcsa-routing/stage-service-id-type-stage", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getStageName(@RequestParam("serviceId") String serviceId,
                                                                    @RequestParam("stageId") String stageId,
-                                                                   @RequestParam("type") String type);
+                                                                   @RequestParam("type") String type,
+                                                                   @RequestParam("isPreIns") Integer isPreIns);
 
     @RequestMapping(path = "/iais-hcsa-service/hcsa-service-by-ids", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaServiceDto>> getHcsaService(@RequestBody List<String> serviceId);

@@ -95,9 +95,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     }
 
     @Override
-    public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId,String type) {
+    public List<HcsaSvcRoutingStageDto> getStage(String serviceId, String stageId,String type,Integer isPreIns) {
 
-        return   hcsaConfigClient.getStageName(serviceId,stageId,type).getEntity();
+        return   hcsaConfigClient.getStageName(serviceId,stageId,type,isPreIns).getEntity();
 
 
     }

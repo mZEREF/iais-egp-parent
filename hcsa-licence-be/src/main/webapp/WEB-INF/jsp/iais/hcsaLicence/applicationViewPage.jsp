@@ -91,7 +91,8 @@
                                                     <%--<div>--%>
                                                     <div>
                                                         <iais:row>
-                                                            <iais:field value="Internal Remarks" required="false"  width="12"/>
+                                                            <div id="internalRemarksFalse"><iais:field value="Internal Remarks" required="false"  width="12"/></div>
+                                                            <div id="internalRemarksTrue" class="hidden"><iais:field value="Internal Remarks" required="true"  width="12"/></div>
                                                             <iais:value width="10">
                                                                 <div class="input-group">
                                                                     <div class="ax_default text_area">
@@ -664,6 +665,15 @@
                 $('#recommendationFieldTrue').addClass('hidden');
                 $('#recommendationFieldFalse').removeClass('hidden');
             }
+        }
+        //PROCVER nextStage
+        var nextStage = $("[name='nextStage']").val();
+        if('PROCVER' == nextStage && selectValue != '${RecommendValue}'){
+            $('#internalRemarksTrue').removeClass('hidden');
+            $('#internalRemarksFalse').addClass('hidden');
+        }else if('PROCVER' == nextStage && selectValue ==  '${RecommendValue}'){
+            $('#internalRemarksTrue').addClass('hidden');
+            $('#internalRemarksFalse').removeClass('hidden');
         }
     }
 
