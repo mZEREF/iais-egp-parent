@@ -107,64 +107,72 @@ public class InspectionSendRecJobHandler extends IJobHandler {
             AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
             for(ApplicationViewDto dto : mapApp){
                 ApplicationDto aDto = dto.getApplicationDto();
-                ApplicationGroupDto applicationGroupDto = dto.getApplicationGroupDto();
-                String appPremCorrId = dto.getAppPremisesCorrelationId();
-                JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(aDto.getId(), MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE).getEntity();
-                if(jobRemindMsgTrackingDto2 == null) {
-                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(aDto.getServiceId());
-                    String serviceCode = hcsaServiceDto.getSvcCode();
-                    InterMessageDto interMessageDto = new InterMessageDto();
-                    interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-                    interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_APPLICANT_RECTIFIES_NC);
-                    interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-                    String mesNO = inboxMsgService.getMessageNo();
-                    interMessageDto.setRefNo(mesNO);
-                    interMessageDto.setService_id(serviceCode+'@');
-                    interMessageDto.setUserId(applicationGroupDto.getLicenseeId());
-                    String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
-                            MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appPremCorrId;
-                    HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-                    maskParams.put("appPremCorrId", appPremCorrId);
+                try {
+                    ApplicationGroupDto applicationGroupDto = dto.getApplicationGroupDto();
+                    String appPremCorrId = dto.getAppPremisesCorrelationId();
+                    JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(aDto.getId(), MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE).getEntity();
+                    if(jobRemindMsgTrackingDto2 == null) {
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(aDto.getServiceId());
+                        String serviceCode = hcsaServiceDto.getSvcCode();
+                        InterMessageDto interMessageDto = new InterMessageDto();
+                        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+                        interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_APPLICANT_RECTIFIES_NC);
+                        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+                        String mesNO = inboxMsgService.getMessageNo();
+                        interMessageDto.setRefNo(mesNO);
+                        interMessageDto.setService_id(serviceCode+'@');
+                        interMessageDto.setUserId(applicationGroupDto.getLicenseeId());
+                        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName() +
+                                MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION + appPremCorrId;
+                        HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+                        maskParams.put("appPremCorrId", appPremCorrId);
 
-                    MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
-                    Map<String, Object> params = IaisCommonUtils.genNewHashMap();
-                    params.put("process_url", url);
-                    String licenseeId = dto.getApplicationGroupDto().getLicenseeId();
-                    LicenseeDto licDto = licenseeService.getLicenseeDtoById(licenseeId);
-                    params.put("applicant_name", StringUtil.viewHtml(licDto.getName()));
-                    params.put("hci_code", StringUtil.viewHtml(dto.getHciCode()));
-                    params.put("hci_name", StringUtil.viewHtml(dto.getHciName()));
-                    params.put("service_name", StringUtil.viewHtml(HcsaServiceCacheHelper.getServiceNameById(aDto.getServiceId())));
-                    params.put("application_number", aDto.getApplicationNo());
-                    String templateMessageByContent = MsgUtil.getTemplateMessageByContent(mtd.getMessageContent(), params);
-                    interMessageDto.setMsgContent(templateMessageByContent);
-                    interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-                    interMessageDto.setAuditTrailDto(intranet);
-                    interMessageDto.setMaskParams(maskParams);
-                    inboxMsgService.saveInterMessage(interMessageDto);
-                    aDto.setAuditTrailDto(intranet);
-                    aDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION);
-                    applicationViewService.updateApplicaiton(aDto);
-                    applicationService.updateFEApplicaiton(aDto);
+                        MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
+                        Map<String, Object> params = IaisCommonUtils.genNewHashMap();
+                        params.put("process_url", url);
+                        String licenseeId = dto.getApplicationGroupDto().getLicenseeId();
+                        LicenseeDto licDto = licenseeService.getLicenseeDtoById(licenseeId);
+                        params.put("applicant_name", StringUtil.viewHtml(licDto.getName()));
+                        params.put("hci_code", StringUtil.viewHtml(dto.getHciCode()));
+                        params.put("hci_name", StringUtil.viewHtml(dto.getHciName()));
+                        params.put("service_name", StringUtil.viewHtml(HcsaServiceCacheHelper.getServiceNameById(aDto.getServiceId())));
+                        params.put("application_number", aDto.getApplicationNo());
+                        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(mtd.getMessageContent(), params);
+                        interMessageDto.setMsgContent(templateMessageByContent);
+                        interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+                        interMessageDto.setAuditTrailDto(intranet);
+                        interMessageDto.setMaskParams(maskParams);
+                        inboxMsgService.saveInterMessage(interMessageDto);
+                        aDto.setAuditTrailDto(intranet);
+                        aDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION);
+                        applicationViewService.updateApplicaiton(aDto);
+                        applicationService.updateFEApplicaiton(aDto);
 
-                    AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
-                    appPremPreInspectionNcDtos.add(appPremPreInspectionNcDto);
-                    List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = fillUpCheckListGetAppClient.getAppNcItemByNcId(appPremPreInspectionNcDto.getId()).getEntity();
-                    if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtoList)){
-                        for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtoList){
-                            appPremisesPreInspectionNcItemDtos.add(appPremisesPreInspectionNcItemDto);
+                        AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremCorrId).getEntity();
+                        appPremPreInspectionNcDtos.add(appPremPreInspectionNcDto);
+                        List<AppPremisesPreInspectionNcItemDto> appPremisesPreInspectionNcItemDtoList = fillUpCheckListGetAppClient.getAppNcItemByNcId(appPremPreInspectionNcDto.getId()).getEntity();
+                        if(!IaisCommonUtils.isEmpty(appPremisesPreInspectionNcItemDtoList)){
+                            for(AppPremisesPreInspectionNcItemDto appPremisesPreInspectionNcItemDto : appPremisesPreInspectionNcItemDtoList){
+                                appPremisesPreInspectionNcItemDtos.add(appPremisesPreInspectionNcItemDto);
+                            }
                         }
-                    }
 
-                    List<JobRemindMsgTrackingDto> jobRemindMsgTrackingDtos = IaisCommonUtils.genNewArrayList();
-                    JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
-                    jobRemindMsgTrackingDto.setAuditTrailDto(intranet);
-                    jobRemindMsgTrackingDto.setMsgKey(MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE);
-                    jobRemindMsgTrackingDto.setRefNo(aDto.getId());
-                    jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                    jobRemindMsgTrackingDto.setId(null);
-                    jobRemindMsgTrackingDtos.add(jobRemindMsgTrackingDto);
-                    systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos);
+                        List<JobRemindMsgTrackingDto> jobRemindMsgTrackingDtos = IaisCommonUtils.genNewArrayList();
+                        JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
+                        jobRemindMsgTrackingDto.setAuditTrailDto(intranet);
+                        jobRemindMsgTrackingDto.setMsgKey(MessageConstants.JOB_REMIND_MSG_KEY_SEND_REC_TO_FE);
+                        jobRemindMsgTrackingDto.setRefNo(aDto.getId());
+                        jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                        jobRemindMsgTrackingDto.setId(null);
+                        jobRemindMsgTrackingDtos.add(jobRemindMsgTrackingDto);
+                        systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos);
+                    }
+                } catch (Exception e) {
+                    JobLogger.log(e);
+                    log.error(e.getMessage(), e);
+                    log.info(StringUtil.changeForLog("Application Id = " + aDto.getId()));
+                    JobLogger.log(StringUtil.changeForLog("Application Id = " + aDto.getId()));
+                    continue;
                 }
             }
             inspRectificationSaveDto.setAppPremPreInspectionNcDtos(appPremPreInspectionNcDtos);
