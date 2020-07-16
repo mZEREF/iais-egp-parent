@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -63,6 +64,9 @@ import java.util.Map;
 public class ApplicationServiceImpl implements ApplicationService {
     @Autowired
     private ApplicationClient applicationClient;
+
+    @Autowired
+    private InspEmailService inspEmailService;
 
     @Autowired
     private AppPremisesCorrClient appPremisesCorrClient;
@@ -217,7 +221,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         List<SelfAssMtEmailDto> allAssLt = applicationClient.getPendingSubmitSelfAss().getEntity();
         final String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT;
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-        templateContent.put("APPLICANT_NAME", "testname");
+
         templateContent.put("newSystem", "test");
         templateContent.put("moh_email", "test");
         templateContent.put("MOH_NAME", "test");
@@ -241,9 +245,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                         String[] split = appNum.split("-");
                         String appType = app.getApplicationType();
                         Date appSubmitDate = app.getStartDate();
-                        templateContent.put("appNumber", split[0]);
-                        templateContent.put("appType", appType);
-                        templateContent.put("appSubmitDate", IaisEGPHelper.parseToString(appSubmitDate, "yyyy-MM-dd HH:mm:ss"));
+
+                        templateContent.put("appNumber", StringUtil.viewHtml(split[0]));
+                        templateContent.put("appType", StringUtil.viewHtml(appType));
+                        templateContent.put("appSubmitDate", StringUtil.viewHtml(IaisEGPHelper.parseToString(appSubmitDate, "yyyy-MM-dd HH:mm:ss")));
                         flag = true;
                     }
 
@@ -255,7 +260,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                     }
                 }
 
-                templateContent.put("svcNameList", svcNameStr.toString());
+                LicenseeDto licenseeDto= inspEmailService.getLicenseeDtoById(i.getLicenseeId());
+                String applicantName = licenseeDto.getName();
+                templateContent.put("APPLICANT_NAME", StringUtil.viewHtml(applicantName));
+                templateContent.put("svcNameList", StringUtil.viewHtml(svcNameStr.toString()));
                 JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
                 jobRemindMsgTrackingDto.setMsgKey(i.getMsgTrackKey());
                 jobRemindMsgTrackingDto.setRefNo(reqRefNum);
@@ -280,8 +288,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     svcNameStr.append("<li>").append(svcName).append("</li>");
                 }
 
-                templateContent.put("svcNameList", svcNameStr.toString());
-
+                templateContent.put("svcNameList", StringUtil.viewHtml(svcNameStr.toString()));
                 JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
                 jobRemindMsgTrackingDto.setMsgKey(i.getMsgTrackKey());
                 jobRemindMsgTrackingDto.setRefNo(reqRefNum);
