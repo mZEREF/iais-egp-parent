@@ -101,7 +101,8 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
                             applicationDtos.add(applicationDto);
                             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
                             hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
-                            log.debug(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
+                            log.info(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
+                            JobLogger.log(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
                             List<TaskDto> taskDtos = getTaskByHistoryTasks(applicationDto.getApplicationNo());
                             createTasksByHistory(taskDtos, intranet, hcsaSvcStageWorkingGroupDtos.get(0).getCount(), aRecoDto.getAppPremCorreId());
                             updateInspectionStatus(aRecoDto.getAppPremCorreId(), InspectionConstants.INSPECTION_STATUS_PENDING_CHECKLIST_VERIFY, intranet);
@@ -143,7 +144,8 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
 
     private void createTasksByHistory(List<TaskDto> taskDtos, AuditTrailDto intranet, Integer score, String appPremCorrId) {
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
-        log.debug(StringUtil.changeForLog("Current taskDtos Size = " + taskDtos.size()));
+        log.info(StringUtil.changeForLog("Current taskDtos Size = " + taskDtos.size()));
+        JobLogger.log(StringUtil.changeForLog("Current taskDtos Size = " + taskDtos.size()));
         if(!IaisCommonUtils.isEmpty(taskDtos)) {
             for (TaskDto td : taskDtos) {
                 TaskDto taskDto = new TaskDto();
