@@ -12,13 +12,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.service.EmailService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
-import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import java.util.Arrays;
@@ -57,6 +55,7 @@ public class EmailHelper {
 	private static final String RECEIPT_ROLE_ASSIGNED_AO3            = "EM-A-AO3";
 	private static final String RECEIPT_ROLE_ASSIGNED_INSPECTOR      = "EM-A-INSPECTOR";
 	private static final String RECEIPT_ROLE_ASSIGNED_INSPECTOR_LEAD = "EM-A-INSPECTOR_LEAD";
+	private static final String RECEIPT_ROLE_MOH_OFFICER             = "EM-AO";
 
 	@Autowired
 	private IaisSystemClient iaisSystemClient;
@@ -65,15 +64,11 @@ public class EmailHelper {
 	@Value("${iais.email.sender}")
 	private String mailSender;
 	@Autowired
-	private EmailService emailService;
-	@Autowired
 	private EmailSmsClient emailSmsClient;
 	@Autowired
 	TaskOrganizationClient taskOrganizationClient;
 	@Autowired
 	private HcsaAppClient hcsaAppClient;
-	@Autowired
-	private TaskApplicationClient taskApplicationClient;
 	@Autowired
 	private HcsaLicenceClient hcsaLicenceClient;
 	@Value("${iais.current.domain}")
@@ -113,17 +108,6 @@ public class EmailHelper {
 	public List<String> getEmailAddressListByRole(List<String> role){
 		List<String> email = IaisCommonUtils.genNewArrayList();
 		List<OrgUserDto> orgUserDtoList = taskOrganizationClient.retrieveOrgUserByroleId(role).getEntity();
-		for (OrgUserDto item:orgUserDtoList
-		) {
-			email.add(item.getEmail());
-		}
-		return email;
-	}
-
-	//Method to retrieve All effect officers
-	public List<String> getEmailAddressList(){
-		List<String> email = IaisCommonUtils.genNewArrayList();
-		List<OrgUserDto> orgUserDtoList = taskOrganizationClient.retrieveOrgUser().getEntity();
 		for (OrgUserDto item:orgUserDtoList
 		) {
 			email.add(item.getEmail());
@@ -184,11 +168,23 @@ public class EmailHelper {
 			//send
 			if (!IaisCommonUtils.isEmpty(emailDto.getReceipts())) {
 				emailSmsClient.sendEmail(emailDto,null);
+				if (jrDto != null) {
+					List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
+					jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+					jobList.add(jrDto);
+					iaisSystemClient.createJobRemindMsgTracking(jobList);
+				}
 			} else {
 				log.info("No receipts. Won't send email.");
 			}
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			log.error("Error when sending email ==>", e);
+			if (jrDto != null) {
+				List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
+				jrDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+				jobList.add(jrDto);
+				iaisSystemClient.createJobRemindMsgTracking(jobList);
+			}
 		}
 		log.info(StringUtil.changeForLog("sendemail end... queryCode is"+queryCode + "templateId is "
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
@@ -204,7 +200,6 @@ public class EmailHelper {
 
 		}
 
-
 		return all;
 	}
 
@@ -212,11 +207,7 @@ public class EmailHelper {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpById(appGrpId).getEntity();
 		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
-		for (String role : roles) {
-			if (RECEIPT_ROLE_ASSIGNED_ASO.equals(role)) {
-
-			}
-		}
+		set.addAll(getOfficer(roles));
 
 		return set;
 	}
@@ -226,11 +217,7 @@ public class EmailHelper {
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
 		set.addAll(getAssignedOfficer(roles, appNo));
-		for (String role : roles) {
-			if (RECEIPT_ROLE_ASSIGNED_ASO.equals(role)) {
-
-			}
-		}
+		set.addAll(getOfficer(roles));
 
 		return set;
 	}
@@ -288,6 +275,49 @@ public class EmailHelper {
 				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTIOR));
 			} else if (RECEIPT_ROLE_ASSIGNED_INSPECTOR_LEAD.equals(role) && userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD) != null) {
 				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD));
+			}
+		}
+		List<OrgUserDto> userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
+		if (!IaisCommonUtils.isEmpty(userList)) {
+			for (OrgUserDto u : userList) {
+				if (!StringUtil.isEmpty(u.getEmail())) {
+					set.add(u.getEmail());
+				}
+			}
+		}
+
+		return set;
+	}
+
+	private Collection<String> getOfficer(List<String> roles) {
+		Set<String> set = IaisCommonUtils.genNewHashSet();
+		List<String> adminRoles = IaisCommonUtils.genNewArrayList();
+		List<String> passRoles = IaisCommonUtils.genNewArrayList();
+		adminRoles.add(RoleConsts.USER_ROLE_ASO);
+		adminRoles.add(RoleConsts.USER_ROLE_PSO);
+		adminRoles.add(RoleConsts.USER_ROLE_AO1);
+		adminRoles.add(RoleConsts.USER_ROLE_AO2);
+		adminRoles.add(RoleConsts.USER_ROLE_AO3);
+		adminRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
+		adminRoles.add(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+		adminRoles.add(RoleConsts.USER_ROLE_AUDIT_PLAN);
+		if (roles.contains(RECEIPT_ROLE_MOH_OFFICER)) {
+			passRoles.addAll(adminRoles);
+		} else {
+			roles.forEach(r -> {
+				String role = r.substring(3, r.length());
+				if (adminRoles.contains(role)) {
+					passRoles.add(role);
+				}
+			});
+		}
+
+		List<OrgUserDto> userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
+		if (!IaisCommonUtils.isEmpty(userList)) {
+			for (OrgUserDto u : userList) {
+				if (!StringUtil.isEmpty(u.getEmail())) {
+					set.add(u.getEmail());
+				}
 			}
 		}
 
