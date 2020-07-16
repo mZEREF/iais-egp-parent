@@ -150,6 +150,7 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
     }
 
     private void logAbout(String methodName){
-        log.debug(StringUtil.changeForLog("****The*****" + methodName +"******Start****"));
+        log.info(StringUtil.changeForLog("****The****" + methodName +" *****Start****"));
+        JobLogger.log(StringUtil.changeForLog("****The****" + methodName +" *****Start****"));
     }
 }
