@@ -738,6 +738,9 @@ public class ServiceMenuDelegator {
                         baseReloadDto.setLicPremisesId(appAlignLicQueryDto.getPremisesId());
                         baseReloadDto.setHciCode(appAlignLicQueryDto.getHciCode());
                         baseReloadDtoMap.put(speServiceDto.getSvcCode(),baseReloadDto);
+                        List<String> list=new ArrayList<>(1);
+                        list.add(baseServiceDto.getSvcCode());
+                        bpc.request.getSession().setAttribute("licence",list);
                     }
                 }
             }
@@ -1096,6 +1099,9 @@ public class ServiceMenuDelegator {
             String entity = applicationClient.selectDarft(map).getEntity();
             bpc.request.setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, entity);
         }
+    }
+    private void loadingServiceConfig(BaseProcessClass bpc){
+        List<String> serviceConfigIds = IaisCommonUtils.genNewArrayList();
     }
 
     private List<String> BaseIdToName(List<String> baseId){
