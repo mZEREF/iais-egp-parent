@@ -389,9 +389,6 @@ public class MasterCodeDelegator {
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
                     }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    }else{
-                        emptyCode.add(masterCodeToExcelDto.getCodeValue());
-                        result = true;
                     }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
