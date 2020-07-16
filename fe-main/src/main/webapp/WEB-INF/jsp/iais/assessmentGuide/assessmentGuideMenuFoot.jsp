@@ -13,6 +13,12 @@
 </div>
 
 <script>
+    $(function () {
+        $('.self-assessment-gp .self-assessment-item .table-gp .table input[type="radio"]').on('change', function() {
+            $('.self-assessment-gp .self-assessment-item .table-gp .table tr.selectedRow').removeClass('selectedRow');
+        });
+    });
+
     function guideSubmit(guideAction,toWhere){
         if("main" == toWhere){
             $("[name='crud_action_type']").val(guideAction);

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -107,6 +108,7 @@ public class HalpAssessmentGuideDelegator {
     public void perDate(BaseProcessClass bpc) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         licenseeId = loginContext.getLicenseeId();
+
     }
 
     public void prepareSwitch(BaseProcessClass bpc) {
@@ -793,6 +795,51 @@ public class HalpAssessmentGuideDelegator {
         log.info("****end ******");
     }
 
+    public void doRenewStep(BaseProcessClass bpc) throws IOException {
+        String [] licIds = ParamUtil.getStrings(bpc.request, "renewLicenId");
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        String tmp = "The selected licence(s) is/are not eligible for renewal: ";
+        StringBuilder errorMessage = new StringBuilder();
+        boolean result = true;
+        if(licIds != null){
+            List<String> licIdValue = IaisCommonUtils.genNewArrayList();
+            for(String item:licIds){
+                licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
+            }
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+            for (String licId:licIdValue
+                    ) {
+                errorMap = inboxService.checkRenewalStatus(licId);
+                if(!(errorMap.isEmpty())){
+                    String licenseNo = errorMap.get("errorMessage");
+                    if(!StringUtil.isEmpty(licenseNo)){
+                        if(StringUtil.isEmpty(errorMessage.toString())){
+                            errorMessage.append(tmp).append(licenseNo);
+                        }else{
+                            errorMessage.append(", ").append(licenseNo);
+                        }
+                    }
+                    result = false;
+                }
+            }
+            if (result){
+                StringBuilder url = new StringBuilder();
+                url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal");
+                ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_LIC_ID_LIST_ATTR, (Serializable) licIdValue);
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+            }else{
+                ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
+                if(StringUtil.isEmpty(errorMessage.toString())){
+                    errorMessage.append("There is already a pending application for the selected licence");
+                }
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMessage.toString());
+            }
+        }
+    }
+
+
     public void doRenewSort(BaseProcessClass bpc) {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM);
         HalpSearchResultHelper.doSort(bpc.request,searchParam);
@@ -893,6 +940,27 @@ public class HalpAssessmentGuideDelegator {
             ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_RESULT, amendDetailsSearchResult);
         }
         log.info("****end ******");
+    }
+
+    public void doAmenfLicStep(BaseProcessClass bpc) throws IOException {
+        String licId = ParamUtil.getString(bpc.request, "amendLicId");
+        String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
+        if(licIdValue != null){
+            Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
+            if(errorMap.isEmpty()){
+                StringBuilder url = new StringBuilder();
+                url.append(InboxConst.URL_HTTPS)
+                        .append(bpc.request.getServerName())
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                        .append("?licenceId=")
+                        .append(MaskUtil.maskValue("licenceId",licIdValue));
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+            }else{
+                ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
+            }
+        }
     }
 
     public void ceaseLic(BaseProcessClass bpc) {
@@ -1011,39 +1079,62 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void updateLicenceSort(BaseProcessClass bpc) {
-
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
 
     public void updateLicencePage(BaseProcessClass bpc) {
-
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEE_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
 
     public void addServicePage(BaseProcessClass bpc) {
-
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
 
     public void addServiceSort(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
+    }
 
+    public void removeServicePage(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_REMOVE_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
+    }
+
+    public void removeServiceSort(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_DETAILS_REMOVE_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
     public void addRemovePersonalPage(BaseProcessClass bpc) {
-
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_PERSONNEL_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
 
     public void addRemovePersonalSort(BaseProcessClass bpc) {
-
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_PERSONNEL_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
     public void updateLicenceesPage(BaseProcessClass bpc) {
-
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEES_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
+    }
+    public void updateLicenceesSort(BaseProcessClass bpc) {
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEES_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
     public void updateContactSort(BaseProcessClass bpc) {
-
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
     public void updateContactPage(BaseProcessClass bpc) {
-
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
 
 }

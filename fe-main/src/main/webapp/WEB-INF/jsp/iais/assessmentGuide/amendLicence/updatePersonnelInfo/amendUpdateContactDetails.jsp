@@ -47,7 +47,7 @@
     </div>
 </div>
 <div class="self-assessment-item assessment-level-3">
-    <div class="amendLicence4_1">
+    <div class="amendLicence4_2">
         <div class="form-check-gp">
             <%@include file="/WEB-INF/jsp/iais/assessmentGuide/amendLicence/updatePersonnelInfo/amendUpdateContactDetailsContent.jsp" %>
         </div>
@@ -58,4 +58,16 @@
     $("#amendLicence").attr('checked', 'true');
     $("#amendLicence4").attr('checked', 'true');
     $("#amendLicence4_2").attr('checked', 'true');
+
+    function jumpToPagechangePage() {
+        $("[name='guide_action_type']").val("updateContactPage");
+        $("#mainForm").submit();
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='guide_action_type']").val("updateContactSort");
+        $("#mainForm").submit();
+    }
 </script>

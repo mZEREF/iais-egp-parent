@@ -167,7 +167,7 @@ public class INTERNET___MohAccessmentGuide___1 extends BaseProcessClass {
 	}
 
 	public void updateLicenceesSort_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, " updateLicenceesSort", this);
+		EngineHelper.delegate(DELEGATOR, "updateLicenceesSort", this);
 	}
 
 	public void updateContactSort_OnStepProcess_0() throws Exception {
@@ -222,6 +222,22 @@ public class INTERNET___MohAccessmentGuide___1 extends BaseProcessClass {
 
 	public void doChooseAlign_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "doChooseAlign", this);
+	}
+
+	public void removeServiceSort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "removeServiceSort", this);
+	}
+
+	public void removeServicePage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "removeServicePage", this);		
+	}
+
+	public void updateHCISort_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "updateHCISort", this);
+	}
+
+	public void updateHCIPage_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "updateHCIPage", this);
 	}
 	
 

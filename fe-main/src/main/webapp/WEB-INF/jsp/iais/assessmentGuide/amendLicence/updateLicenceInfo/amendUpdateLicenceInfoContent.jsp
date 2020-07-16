@@ -8,7 +8,7 @@
         <table class="table">
             <thead>
             <tr align="center">
-
+                <th></th>
                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name"/>
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."/>
@@ -29,9 +29,14 @@
                     <c:forEach var="pool" items="${amendUpdateLicenseeSearchResult.rows}" varStatus="status">
                         <tr>
                             <td>
-                                <label>
-                                    <input id="licence${status.index + 1}" type="checkbox" name="rfc3_2LicIds" value="${pool.licenceId}"   >${pool.hciName}
-                                </label>
+                                <div class="form-check">
+                                    <input class="form-check-input licenceCheck" id="amendLicInfoId" type="radio"
+                                           name="amendLicInfoId" value="amendLicInfoId${status.index}" aria-invalid="false"/>
+                                    <label class="form-check-label" for="amendLicInfoId"><span
+                                            class="check-circle"></span>
+                                    </label>
+                                    <input type="hidden" name="amendLicInfoId${status.index}" value="<iais:mask name= "amendLicInfoId${status.index}" value="${pool.licenceId}"/>"/>
+                                </div>
                             </td>
                             <td>${pool.addrType}</td>
                             <td>${pool.licenceNo}</td>

@@ -27,12 +27,12 @@
                         <tr>
                             <td>
                                 <div class="form-check">
-                                    <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
-                                           name="renewLicenId" value="renew1LicenId${status.index}" aria-invalid="false"/>
-                                    <label class="form-check-label" for="licence1"><span
+                                    <input class="form-check-input licenceCheck" id="licenceNo" type="checkbox"
+                                           name="renewLicenId" value="renew2LicenId${status.index}" aria-invalid="false"/>
+                                    <label class="form-check-label" for="licenceNo"><span
                                             class="check-square"></span>
                                     </label>
-                                    <input type="hidden" name="renew1LicenId${status.index}" value="<iais:mask name= "renew1LicenId${status.index}" value="${pool.licenceId}"/>"/>
+                                    <input type="hidden" name="renew2LicenId${status.index}" value="<iais:mask name= "renew2LicenId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>
                             </td>
                             <td>${pool.hciName}</td>
@@ -48,5 +48,5 @@
         </table>
     </div>
 
-    <a class="btn btn-primary "  onclick="Utils.submit('mainForm','renew')" style="background: #1F92FF; color: white"  >NEXT</a>
+    <a class="btn btn-primary "  onclick="guideSubmit('renew','second')">NEXT</a>
 </div>

@@ -27,10 +27,10 @@
                         <tr>
                             <td>
                                 <div class="form-check">
-                                    <input class="form-check-input licenceCheck" id="amendHciId" type="checkbox"
+                                    <input class="form-check-input licenceCheck" id="amendHciId" type="radio"
                                            name="amendHciId" value="amendHciId${status.index}" aria-invalid="false"/>
                                     <label class="form-check-label" for="amendHciId"><span
-                                            class="check-square"></span>
+                                            class="check-circle"></span>
                                     </label>
                                     <input type="hidden" name="amendHciId${status.index}" value="<iais:mask name= "amendHciId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>

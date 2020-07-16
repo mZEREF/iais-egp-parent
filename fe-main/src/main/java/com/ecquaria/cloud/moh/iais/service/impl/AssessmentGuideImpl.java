@@ -10,9 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.ConfigInboxClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +24,7 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
     private ConfigInboxClient configInboxClient;
 
     @Autowired
-    private HcsaLicenceClient licenceClient;
+    private LicenceInboxClient licenceClient;
 
     @Autowired
     private AppInboxClient appInboxClient;

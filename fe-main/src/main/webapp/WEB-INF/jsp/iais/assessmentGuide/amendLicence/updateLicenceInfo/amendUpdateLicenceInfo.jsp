@@ -60,4 +60,16 @@
     $("#amendLicence").attr('checked', 'true');
     $("#amendLicence3").attr('checked', 'true');
     $("#amendLicence3_1").attr('checked', 'true');
+
+    function jumpToPagechangePage() {
+        $("[name='guide_action_type']").val("updateLicencePage");
+        $("#mainForm").submit();
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='guide_action_type']").val("updateLicenceSort");
+        $("#mainForm").submit();
+    }
 </script>

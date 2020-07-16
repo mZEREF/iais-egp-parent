@@ -30,10 +30,10 @@
                         <tr>
                             <td>
                                 <div class="form-check">
-                                    <input class="form-check-input licenceCheck" id="amendDetail" type="checkbox"
-                                           name="amendDetailId" value="amendDetailId${status.index}" aria-invalid="false"/>
+                                    <input class="form-check-input licenceCheck" id="amendDetail" type="radio"
+                                           name="amendLicId" value="amendDetailId${status.index}" aria-invalid="false"/>
                                     <label class="form-check-label" for="amendDetail"><span
-                                            class="check-square"></span>
+                                            class="check-circle"></span>
                                     </label>
                                     <input type="hidden" name="amendDetailId${status.index}" value="<iais:mask name= "amendDetailId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>
