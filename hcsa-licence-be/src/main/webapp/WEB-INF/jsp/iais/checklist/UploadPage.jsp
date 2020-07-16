@@ -49,6 +49,7 @@
         <div class="document-upload-gp">
             <h2>${switchUploadPage}</h2>
           <div class="document-upload-list">
+            <div class="error-msg"></div>
             <div class="file-upload-gp">
               <div class="fileNameDisplay"></div>
               <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
@@ -84,16 +85,25 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
-
     $('#docBack').click(function () {
         SOP.Crud.cfxSubmit("mainForm", "doBack");
     });
 
     $('#selectedFile').change(function () {
-        var file = $(this).val();
-        var fileName = Utils.getFileName(file);
+        let maxFileSize = 100;
+        let error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
+        if (error == "N"){
+          $(this).closest('.document-upload-list').find('.error-msg').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+          $(".fileNameDisplay").text("");
+          $(this).val(null);
+        }else{
+          $(this).closest('.document-upload-list').find('.error-msg').html('');
+        }
+
+        let file = $(this).val();
+        let fileName = Utils.getFileName(file);
         $(".fileNameDisplay").text(fileName);
-    });
+    })
 
     $('#docNext').click(function () {
         SOP.Crud.cfxSubmit("mainForm", "doUpload");
