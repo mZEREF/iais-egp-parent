@@ -66,9 +66,8 @@ public interface ApplicationClient  {
             consumes = MediaType.APPLICATION_JSON_VALUE,method =RequestMethod.PUT)
     FeignResponseEntity<Void> updateStatus(@RequestBody Map<String,List<String>> map);
 
-    @PutMapping(path = "/iais-application/application-correlations-Appt", produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppPremisesCorrelationDto>> appPremisesCorrelationDtosByApptViewDtos(@RequestBody List<ApptViewDto> apptViewDtos);
+    @PostMapping(value = "/iais-application/app-corr-appt",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity <List<AppPremisesCorrelationDto>> appPremCorrDtosByApptViewDtos(@RequestBody List<ApptViewDto> apptViewDtos);
 
     @PutMapping(path = "/iais-application/lastApplication", produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -306,4 +305,6 @@ public interface ApplicationClient  {
     FeignResponseEntity<List<ApplicationDto>> saveApplicationDtos(@RequestBody List<ApplicationDto> applicationDtos);
     @GetMapping(value = "/iais-application/application-by-corrId",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationDto> getApplicationByCorrId(@RequestParam("corrId")String corrId);
+    @GetMapping(value = "/all-appGrpDto-paying")
+    FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpDtoPaying();
 }

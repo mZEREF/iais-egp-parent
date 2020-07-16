@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -48,7 +50,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -2266,14 +2267,18 @@ public class NewApplicationDelegator {
             }catch (Exception e){
                 log.error(StringUtil.changeForLog("send email error ...."));
             }
-            StringBuilder url = new StringBuilder(10);
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/payment-web/eservice/INTERNET/PaymentRequest")
-                    .append("?amount=").append(MaskUtil.maskValue("amount",String.valueOf(appSubmissionDto.getAmount())))
-                    .append("&payMethod=").append(MaskUtil.maskValue("payMethod",payMethod))
-                    .append("&reqNo=").append(MaskUtil.maskValue("reqNo",appSubmissionDto.getAppGrpNo()));
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            String amount = String.valueOf(appSubmissionDto.getAmount());
+            Map<String, String> fieldMap = new HashMap<String, String>();
+            fieldMap.put(GatewayConstants.AMOUNT_KEY, amount);
+            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
+            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDto.getAppGrpNo());
+            try {
+                String html= GatewayAPI.create_partner_trade_by_buyer(fieldMap);
+                ParamUtil.setRequestAttr(bpc.request,"jumpHtml",html);
+            } catch (Exception e) {
+                log.info(e.getMessage(),e);
+            }
+
             return;
         }else if(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)){
             //send email

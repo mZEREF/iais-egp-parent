@@ -460,7 +460,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
     @Override
     public void updateAppStatusCommPool(List<ApptViewDto> apptViewDtos) {
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationClient.appPremisesCorrelationDtosByApptViewDtos(apptViewDtos).getEntity();
+        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos=applicationClient.appPremCorrDtosByApptViewDtos(apptViewDtos).getEntity();
 
         for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
         ) {
@@ -542,17 +542,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        //Exclude a selected date
-        List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
-        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
-        for(AppPremisesInspecApptDto apptDto : processReSchedulingDto.getAppPremisesInspecApptDtoList()){
-            appPremisesInspecApptDtoList.add(apptDto);
-            cancelRefNo.add(apptDto.getApptRefNo());
-        }
-        //filter
-        Set<String> cancelRefNoSet = new HashSet<>(cancelRefNo);
-        cancelRefNo = new ArrayList<>(cancelRefNoSet);
-        processReSchedulingDto.setAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList);
+
         //update appt
         setApptUpdateList(processReSchedulingDto);
         //update application
@@ -577,10 +567,6 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         appEicClient.updateStatus(eicRequestTrackingDtos);
-        //cancel or confirm appointment date
-        ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
-        apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
-        apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
-        ccCalendarStatusEic(apptCalendarStatusDto);
+
     }
 }

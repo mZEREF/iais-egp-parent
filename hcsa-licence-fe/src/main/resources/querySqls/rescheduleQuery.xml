@@ -36,7 +36,7 @@
                 CONCAT(case T3.BLK_NO
                   when null then null
                   when '' then null
-                  else ' '+T3.BLK_NO end ,
+                  else ''+T3.BLK_NO end ,
                case T3.STREET_NAME
                   when null then null
                   when '' then null

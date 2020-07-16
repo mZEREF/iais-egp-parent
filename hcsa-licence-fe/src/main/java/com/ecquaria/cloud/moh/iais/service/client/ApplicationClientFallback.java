@@ -361,7 +361,7 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
-    public FeignResponseEntity<List<AppPremisesCorrelationDto>> appPremisesCorrelationDtosByApptViewDtos(List<ApptViewDto> apptViewDtos) {
+    public FeignResponseEntity<List<AppPremisesCorrelationDto>> appPremCorrDtosByApptViewDtos(List<ApptViewDto> apptViewDtos) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -717,6 +717,14 @@ public class ApplicationClientFallback implements ApplicationClient {
 
     @Override
     public FeignResponseEntity<ApplicationDto> getApplicationByCorrId(String corrId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationGroupDto>> getAppGrpDtoPaying() {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

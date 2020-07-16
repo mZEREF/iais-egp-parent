@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -57,8 +58,10 @@ public class ResponseForInformationDelegator {
     OrganizationLienceseeClient organizationLienceseeClient;
     @Autowired
     LicenceViewService licenceViewService;
-   @Autowired
+    @Autowired
     FeMessageClient messageClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     public void Start(BaseProcessClass bpc)  {
         log.debug(StringUtil.changeForLog("the do Start start ...."));
@@ -117,6 +120,7 @@ public class ResponseForInformationDelegator {
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
+        ParamUtil.setRequestAttr(bpc.request,"maxSize",systemParamConfig.getUploadFileLimit());
         // 		doBack->OnStepProcess
     }
 
