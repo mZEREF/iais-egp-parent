@@ -46,7 +46,6 @@ import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.RoleHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
@@ -114,9 +113,6 @@ public class BackendInboxDelegator {
 
     @Autowired
     private EmailHelper emailHelper;
-
-    @Autowired
-    private RoleHelper roleHelper;
 
     @Autowired
     private EmailClient emailClient;
