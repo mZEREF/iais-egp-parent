@@ -21,8 +21,6 @@ import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -135,60 +133,62 @@ public class EmailHelper {
 
 	@Async("emailAsyncExecutor")
 	public void sendEmail(String templateId, Map<String, Object> templateContent, String queryCode,
-						  String reqRefNum, String refIdType, String refId) throws IOException, TemplateException {
+						  String reqRefNum, String refIdType, String refId) {
 		sendEmailWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null);
 	}
 
 	@Async("emailAsyncExecutor")
 	public void sendEmailWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode,
-									  String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto)
-										throws IOException, TemplateException {
-		List<String> receiptemail = IaisCommonUtils.genNewArrayList();
-		List<String> ccemail = IaisCommonUtils.genNewArrayList();
-		List<String> bccemail = IaisCommonUtils.genNewArrayList();
+									  String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto) {
 		log.info(StringUtil.changeForLog("sendemail start... ref type is " + StringUtil.nullToEmptyStr(refIdType)
 				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
 				+ "templateId is "+ templateId+"thread name is " + Thread.currentThread().getName()));
+		try {
+			List<String> receiptemail = IaisCommonUtils.genNewArrayList();
+			List<String> ccemail = IaisCommonUtils.genNewArrayList();
+			List<String> bccemail = IaisCommonUtils.genNewArrayList();
+			MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
+			EmailDto emailDto = new EmailDto();
+			String mesContext = "";
+			if (templateContent != null && !templateContent.isEmpty()) {
+				mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
+			} else {
+				mesContext = msgTemplateDto.getMessageContent();
+			}
 
-		MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
-		EmailDto emailDto = new EmailDto();
-		String mesContext = "";
-		if (templateContent != null && !templateContent.isEmpty()) {
-			mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
-		} else {
-			mesContext = msgTemplateDto.getMessageContent();
-		}
-
-		emailDto.setContent(mesContext);
-		emailDto.setSubject(msgTemplateDto.getTemplateName());
-		emailDto.setSender(this.mailSender);
-		if (msgTemplateDto.getRecipient()!= null && msgTemplateDto.getRecipient().size() > 0) {
-			receiptemail = getRecript(msgTemplateDto.getRecipient(), refIdType, refId);
-			emailDto.setReceipts(receiptemail);
-		}
-		if (msgTemplateDto.getCcrecipient()!= null && msgTemplateDto.getCcrecipient().size() > 0) {
-			ccemail = getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId);
-			emailDto.setCcList(ccemail);
-		}
-		if (msgTemplateDto.getBccrecipient()!= null && msgTemplateDto.getBccrecipient().size() > 0) {
-			bccemail = getRecript(msgTemplateDto.getBccrecipient(), refIdType, refId);
-			emailDto.setBccList(bccemail);
-		}
-		if (queryCode != null) {
-			emailDto.setClientQueryCode(queryCode);
-		} else {
-			emailDto.setClientQueryCode("no queryCode");
-		}
-		if (reqRefNum != null) {
-			emailDto.setReqRefNum(reqRefNum);
-		} else {
-			emailDto.setReqRefNum("no reqRefNum");
-		}
-		//send
-		if (!IaisCommonUtils.isEmpty(emailDto.getReceipts())) {
-			emailSmsClient.sendEmail(emailDto,null);
-		} else {
-			log.info("No receipts. Won't send email.");
+			emailDto.setContent(mesContext);
+			emailDto.setSubject(msgTemplateDto.getTemplateName());
+			emailDto.setSender(this.mailSender);
+			if (msgTemplateDto.getRecipient()!= null && msgTemplateDto.getRecipient().size() > 0) {
+				receiptemail = getRecript(msgTemplateDto.getRecipient(), refIdType, refId);
+				emailDto.setReceipts(receiptemail);
+			}
+			if (msgTemplateDto.getCcrecipient()!= null && msgTemplateDto.getCcrecipient().size() > 0) {
+				ccemail = getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId);
+				emailDto.setCcList(ccemail);
+			}
+			if (msgTemplateDto.getBccrecipient()!= null && msgTemplateDto.getBccrecipient().size() > 0) {
+				bccemail = getRecript(msgTemplateDto.getBccrecipient(), refIdType, refId);
+				emailDto.setBccList(bccemail);
+			}
+			if (queryCode != null) {
+				emailDto.setClientQueryCode(queryCode);
+			} else {
+				emailDto.setClientQueryCode("no queryCode");
+			}
+			if (reqRefNum != null) {
+				emailDto.setReqRefNum(reqRefNum);
+			} else {
+				emailDto.setReqRefNum("no reqRefNum");
+			}
+			//send
+			if (!IaisCommonUtils.isEmpty(emailDto.getReceipts())) {
+				emailSmsClient.sendEmail(emailDto,null);
+			} else {
+				log.info("No receipts. Won't send email.");
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
 		}
 		log.info(StringUtil.changeForLog("sendemail end... queryCode is"+queryCode + "templateId is "
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
