@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -187,7 +188,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
         JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
         jobRemindMsgTrackingDto.setRefNo(appNo);
         jobRemindMsgTrackingDto.setMsgKey(SUCCESSMSGKEY);
-        jobRemindMsgTrackingDto.setStatus("ACTIVE");
+        jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
         list.add(jobRemindMsgTrackingDto);
         systemBeLicClient.createJobRemindMsgTrackingDtos(list);
@@ -216,7 +217,7 @@ public class EmailToResultServiceImpl implements EmailToResultService {
         JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
         jobRemindMsgTrackingDto.setRefNo(appNo);
         jobRemindMsgTrackingDto.setMsgKey(FAILEDMSGKEY);
-        jobRemindMsgTrackingDto.setStatus("ACTIVE");
+        jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         List<JobRemindMsgTrackingDto> list = IaisCommonUtils.genNewArrayList();
         list.add(jobRemindMsgTrackingDto);
         systemBeLicClient.createJobRemindMsgTrackingDtos(list);
