@@ -234,19 +234,19 @@ function memoryPageSizeChange(paginationDiv, newSize) {
             confirmChangeMemoryPage(res);
         }
     });
+}
 
-    function validateUploadSizeMaxOrEmpty(maxSize,selectedFileId) {
-        var fileId= '#'+selectedFileId;
-        var fileV = $( fileId).val();
-        var file = $(fileId).get(0).files[0];
-        if(fileV == null || fileV == "" ||file==null|| file==undefined){
-            return "E";
-        }
-        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-        fileSize = parseInt(fileSize);
-        if(fileSize>= maxSize){
-            return "N";
-        }
-        return "Y";
+function validateUploadSizeMaxOrEmpty(maxSize,selectedFileId) {
+    var fileId= '#'+selectedFileId;
+    var fileV = $( fileId).val();
+    var file = $(fileId).get(0).files[0];
+    if(fileV == null || fileV == "" ||file==null|| file==undefined){
+        return "E";
     }
+    var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+    fileSize = parseInt(fileSize);
+    if(fileSize>= maxSize){
+        return "N";
+    }
+    return "Y";
 }
