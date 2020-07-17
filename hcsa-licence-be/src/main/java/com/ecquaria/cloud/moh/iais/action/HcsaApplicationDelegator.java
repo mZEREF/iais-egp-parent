@@ -1506,6 +1506,7 @@ public class HcsaApplicationDelegator {
                     List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
                     saveReturnFeeDtos.add(appReturnFeeDto);
                     broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+                    broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
 //                    applicationService.saveAppReturnFee(appReturnFeeDto);
                 }
             }
@@ -1734,6 +1735,7 @@ public class HcsaApplicationDelegator {
         }
         if(!IaisCommonUtils.isEmpty(saveReturnFeeDtos)){
             broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+            broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
         }
     }
 
