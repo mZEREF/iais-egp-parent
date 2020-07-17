@@ -96,22 +96,26 @@ public class SendMassEmailJobHandler extends IJobHandler {
 
     @Override
     public ReturnT<String> execute(String s) throws Exception {
-
-        log.debug(StringUtil.changeForLog("The SendMassEmailBatchjob is  start..." ));
+        log.info(StringUtil.changeForLog("The SendMassEmailBatchjob is start..." ));
         //get need send email and sms
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<BlastManagementDto> blastManagementDto = blastManagementListService.getBlastBySendTime(df.format(new Date()));
-
+        log.info(StringUtil.changeForLog("blastManagementDto count" + blastManagementDto.size() ));
         //foreach get recipient and send
+        int i = 0;
         for (BlastManagementDto item:blastManagementDto
         ) {
+            log.info(StringUtil.changeForLog("No." + i ));
+            log.info(StringUtil.changeForLog("mode is " + item.getMode()));
+            log.info(StringUtil.changeForLog("Id is " + item.getId()));
             if(EMAIL.equals(item.getMode())){
                 EmailDto email = new EmailDto();
                 List<String> roleEmail = blastManagementListService.getEmailByRole(item.getRecipientsRole());
                 email.setContent(item.getMsgContent());
                 email.setSender(mailSender);
                 email.setSubject(item.getSubject());
-                email.setClientQueryCode(item.getId());
+                log.info(StringUtil.changeForLog("subject is " + item.getSubject()));
+
                 List<String> allemail = IaisCommonUtils.genNewArrayList();
                 if(!IaisCommonUtils.isEmpty(roleEmail)){
                     allemail.addAll(roleEmail);
@@ -123,6 +127,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 email.setReceipts(allemail);
                 email.setReqRefNum(item.getId());
                 email.setClientQueryCode(item.getMessageId());
+                log.info(StringUtil.changeForLog("ClientQueryCode is " + item.getMessageId()));
                 try{
                     if(item.getAttachmentDtos() != null){
                         Map<String , byte[]> emailMap = IaisCommonUtils.genNewHashMap();
@@ -139,6 +144,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                         blastManagementListService.setActual(item.getId());
                     }
                 }catch (Exception e){
+                    log.info(StringUtil.changeForLog("Result is fail"));
                     return ReturnT.FAIL;
                 }
             }else{
@@ -164,9 +170,11 @@ public class SendMassEmailJobHandler extends IJobHandler {
             //send message to FE user.
             interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
             interMessageDto.setSubject(item.getSubject());
+            log.info(StringUtil.changeForLog("interMessage subject is " + item.getSubject()));
             interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
             interMessageDto.setRefNo(item.getMessageId());
             interMessageDto.setService_id(svcDto.getSvcCode()+'@');
+            log.info(StringUtil.changeForLog("interMessage ServiceId is " + svcDto.getSvcCode()+'@'));
             interMessageDto.setMsgContent(item.getMsgContent());
             interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
             interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -178,7 +186,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
         }
 
 
-        log.debug(StringUtil.changeForLog("SendMassEmailBatchjob end..." ));
+        log.info(StringUtil.changeForLog("Result is success"));
         return ReturnT.SUCCESS;
     }
 }
