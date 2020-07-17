@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -31,5 +32,11 @@ public class EicGatewayClient {
 		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/message-configs", HttpMethod.POST, messageDto,
 				MediaType.APPLICATION_JSON, date, authorization,
 				dateSec, authorizationSec, MessageDto.class);
+	}
+
+	public FeignResponseEntity<InterMessageDto> saveInboxMessage(InterMessageDto interInboxDto,
+																 String date, String authorization, String dateSec, String authorizationSec) {
+		return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/iais-inter-inbox-message", HttpMethod.POST, interInboxDto,
+				MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, InterMessageDto.class);
 	}
 }

@@ -3,14 +3,23 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.AttachmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
-import freemarker.template.TemplateException;
+import com.ecquaria.cloud.moh.iais.service.DistributionListService;
+import com.ecquaria.cloud.moh.iais.service.SysInboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -18,7 +27,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,17 +51,17 @@ public class SendMassEmailJobHandler extends IJobHandler {
     @Autowired
     BlastManagementListService blastManagementListService;
 
+    @Autowired
+    DistributionListService distributionListService;
+    @Autowired
+    SysInboxMsgService sysInboxMsgService;
+
+    @Autowired
+    HcsaLicenceClient hcsaLicenceClient;
     @Value("${iais.email.sender}")
     private String mailSender;
     private static final String EMAIL = "Email";
     private static final String SMS = "SMS";
-    public void start(BaseProcessClass bpc){
-
-    }
-    public void doBatchJob(BaseProcessClass bpc) throws IOException, TemplateException{
-
-    }
-
 
     private FileItem createFileItem(File file, String fieldName) {
         FileItemFactory factory = new DiskFileItemFactory(16, null);
@@ -138,7 +146,37 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 sendSMS(item.getMessageId(), mobile,item.getMsgContent());
             }
 
+            //send inbox msg
+            InterMessageDto interMessageDto = new InterMessageDto();
+            DistributionListWebDto dis = distributionListService.getDistributionListById(item.getDistributionId());
+            List<HcsaServiceDto> hcsaServiceDtoList = distributionListService.getServicesInActive();
+            String serviceName = "";
+            HcsaServiceDto svcDto = new HcsaServiceDto();
+            for (HcsaServiceDto serviceDto:hcsaServiceDtoList
+                 ) {
+                if(serviceDto.getSvcCode().equals(dis.getService())){
+                    svcDto = serviceDto;
+                }
+            }
+
+            List<LicenceDto> licenceList = hcsaLicenceClient.getLicenceDtosBySvcName(serviceName).getEntity();
+            List<String> licenseeList = IaisCommonUtils.genNewArrayList();
+            //send message to FE user.
+            interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+            interMessageDto.setSubject(item.getSubject());
+            interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+            interMessageDto.setRefNo(item.getMessageId());
+            interMessageDto.setService_id(svcDto.getSvcCode()+'@');
+            interMessageDto.setMsgContent(item.getMsgContent());
+            interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+            interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            for (LicenceDto licencedto:licenceList
+                 ) {
+                interMessageDto.setUserId(licencedto.getLicenseeId());
+                sysInboxMsgService.saveInterMessage(interMessageDto);
+            }
         }
+
 
         log.debug(StringUtil.changeForLog("SendMassEmailBatchjob end..." ));
         return ReturnT.SUCCESS;
