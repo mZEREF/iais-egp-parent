@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
@@ -148,7 +149,7 @@ public class ClientReschedulingDelegator {
                     apptViewDto.setAppId(reschApptGrpPremsQueryDto.getId());
                     apptViewDto.setAppCorrId(reschApptGrpPremsQueryDto.getAppCorrId());
                     apptViewDto.setLicenseeId(reschApptGrpPremsQueryDto.getLicenseeId());
-                    apptViewDto.setAddress(reschApptGrpPremsQueryDto.getAddress());
+                    apptViewDto.setAddress(MiscUtil.getAddress(reschApptGrpPremsQueryDto.getBlkNo(),reschApptGrpPremsQueryDto.getStreetName(),reschApptGrpPremsQueryDto.getBuildingName(),reschApptGrpPremsQueryDto.getFloorNo(),reschApptGrpPremsQueryDto.getUnitNo(),reschApptGrpPremsQueryDto.getPostalCode()));
                     apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
                     apptViewDto.setFastTracking(reschApptGrpPremsQueryDto.getFastTracking());
                     apptViewDto.setViewCorrId(viewCorrId);

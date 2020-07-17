@@ -178,23 +178,33 @@ public class RoundRobinCommPoolBatchJob {
                       taskDto.setDateAssigned(new Date());
                       taskDto.setAuditTrailDto(auditTrailDto);
                       taskDto = taskService.updateTask(taskDto);
-                      ApplicationViewDto applicationViewDto=applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
-                      if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL.equals(applicationViewDto.getApplicationDto().getStatus()) ||
-                              ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT.equals(applicationViewDto.getApplicationDto().getStatus())){
-                          ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-                          List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-                          applicationDtos.add(applicationDto);
-                          String taskUserId = taskScoreDto.getUserId();
-                          List<String> taskUserIds = IaisCommonUtils.genNewArrayList();
-                          taskUserIds.add(taskUserId);
-                          ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                          assignReschedulingTask(taskDto, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto);
-                      }
 
                   }catch (Exception e){
                       log.error(StringUtil.changeForLog("This  Task can not assign id-->:"+taskDto.getId()));
                   }
               }else{
+                  ApplicationViewDto applicationViewDto=applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
+                  if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL.equals(applicationViewDto.getApplicationDto().getStatus()) ||
+                          ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT.equals(applicationViewDto.getApplicationDto().getStatus())){
+                      String workGroupId = taskDto.getWkGrpId();
+                      //set inspector leads
+                      setInspLeadsInRecommendation(taskDto, workGroupId, auditTrailDto);
+                      log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
+                      log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
+                      TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
+                      taskDto.setUserId(taskScoreDto.getUserId());
+                      taskDto.setDateAssigned(new Date());
+                      taskDto.setAuditTrailDto(auditTrailDto);
+                      taskDto = taskService.updateTask(taskDto);
+                      ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                      List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+                      applicationDtos.add(applicationDto);
+                      String taskUserId = taskScoreDto.getUserId();
+                      List<String> taskUserIds = IaisCommonUtils.genNewArrayList();
+                      taskUserIds.add(taskUserId);
+                      ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                      assignReschedulingTask(taskDto, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto);
+                  }
                   log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob broadcast taskId -- >:" +taskDto.getId()));
               }
           }
