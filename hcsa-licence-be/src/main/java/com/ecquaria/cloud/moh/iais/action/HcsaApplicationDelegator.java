@@ -1503,7 +1503,10 @@ public class HcsaApplicationDelegator {
                     appReturnFeeDto.setApplicationNo(oldApplicationNo);
                     appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
                     appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
-                    applicationService.saveAppReturnFee(appReturnFeeDto);
+                    List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
+                    saveReturnFeeDtos.add(appReturnFeeDto);
+                    broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+//                    applicationService.saveAppReturnFee(appReturnFeeDto);
                 }
             }
         }
@@ -1620,7 +1623,7 @@ public class HcsaApplicationDelegator {
                         //get and set return fee
                         saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
                         //save return fee
-                        saveRejectReturnFee(saveApplicationDtoList);
+                        saveRejectReturnFee(saveApplicationDtoList,broadcastApplicationDto);
                     }
                 }
             }else{
@@ -1716,7 +1719,8 @@ public class HcsaApplicationDelegator {
         inboxMsgService.saveInterMessage(interMessageDto);
     }
 
-    private void saveRejectReturnFee(List<ApplicationDto> applicationDtos){
+    private void saveRejectReturnFee(List<ApplicationDto> applicationDtos,BroadcastApplicationDto broadcastApplicationDto){
+        List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
         //save return fee
         for(ApplicationDto applicationDto : applicationDtos){
             if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
@@ -1724,8 +1728,12 @@ public class HcsaApplicationDelegator {
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
                 appReturnFeeDto.setReturnAmount(applicationDto.getReturnFee());
                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
-                applicationService.saveAppReturnFee(appReturnFeeDto);
+                saveReturnFeeDtos.add(appReturnFeeDto);
+//                applicationService.saveAppReturnFee(appReturnFeeDto);
             }
+        }
+        if(!IaisCommonUtils.isEmpty(saveReturnFeeDtos)){
+            broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
         }
     }
 
