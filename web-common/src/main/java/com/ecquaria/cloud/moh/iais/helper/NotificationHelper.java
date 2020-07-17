@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -46,16 +47,26 @@ public class NotificationHelper {
 	public static final String RECEIPT_TYPE_APP 				 	 = "APP";
 	public static final String RECEIPT_TYPE_LICENCE_ID               = "LIC";
 
-	private static final String RECEIPT_ROLE_LICENSEE                = "EM-LIC";
-	private static final String RECEIPT_ROLE_AUTHORISED_PERSON       = "EM-AP";
-	private static final String RECEIPT_ROLE_ASSIGNED_ASO            = "EM-A-ASO";
-	private static final String RECEIPT_ROLE_ASSIGNED_PSO            = "EM-A-PSO";
-	private static final String RECEIPT_ROLE_ASSIGNED_AO1            = "EM-A-AO1";
-	private static final String RECEIPT_ROLE_ASSIGNED_AO2            = "EM-A-AO2";
-	private static final String RECEIPT_ROLE_ASSIGNED_AO3            = "EM-A-AO3";
-	private static final String RECEIPT_ROLE_ASSIGNED_INSPECTOR      = "EM-A-INSPECTOR";
-	private static final String RECEIPT_ROLE_ASSIGNED_INSPECTOR_LEAD = "EM-A-INSPECTOR_LEAD";
-	private static final String RECEIPT_ROLE_MOH_OFFICER             = "EM-AO";
+	public static final String RECEIPT_ROLE_LICENSEE                			= "EM-LIC";
+	public static final String RECEIPT_ROLE_AUTHORISED_PERSON       			= "EM-AP";
+	public static final String RECEIPT_ROLE_ASSIGNED_ASO            			= "EM-A-ASO";
+	public static final String RECEIPT_ROLE_ASSIGNED_PSO            			= "EM-A-PSO";
+	public static final String RECEIPT_ROLE_ASSIGNED_AO1            			= "EM-A-AO1";
+	public static final String RECEIPT_ROLE_ASSIGNED_AO2            			= "EM-A-AO2";
+	public static final String RECEIPT_ROLE_ASSIGNED_AO3            			= "EM-A-AO3";
+	public static final String RECEIPT_ROLE_ASSIGNED_INSPECTOR      			= "EM-A-INSPECTOR";
+	public static final String RECEIPT_ROLE_ASSIGNED_INSPECTOR_LEAD 			= "EM-A-INSPECTOR_LEAD";
+	public static final String RECEIPT_ROLE_MOH_OFFICER             			= "EM-AO";
+	public static final String RECEIPT_ROLE_SVC_PERSONNEL                       = "EM-SVCPSN";
+	public static final String RECEIPT_ROLE_SYSTEM_ADMIN                        = "EM-SYS_ADM";
+	public static final String RECEIPT_ROLE_AO                                  = "EM-AO";
+	public static final String RECEIPT_ROLE_ASO                                 = "EM-ASO";
+	public static final String RECEIPT_ROLE_PSO                                 = "EM-PSO";
+	public static final String RECEIPT_ROLE_AO1                                 = "EM-AO1";
+	public static final String RECEIPT_ROLE_AO2                                 = "EM-AO2";
+	public static final String RECEIPT_ROLE_AO3                                 = "EM-AO3";
+	public static final String RECEIPT_ROLE_INSPECTOR                           = "EM-INSPECTOR";
+	public static final String RECEIPT_ROLE_INSPECTOR_LEAD                      = "EM-INSPECTOR_LEAD";
 
 	@Autowired
 	private IaisSystemClient iaisSystemClient;
@@ -206,6 +217,10 @@ public class NotificationHelper {
 	private Collection<String> getRecriptAppGrp(List<String> roles, String appGrpId) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpById(appGrpId).getEntity();
+		List<ApplicationDto> appList = hcsaAppClient.getAppsByGrpId(appGrpId).getEntity();
+		for (ApplicationDto app : appList) {
+			set.addAll(getAssignedOfficer(roles, app.getApplicationNo()));
+		}
 		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
 		set.addAll(getOfficer(roles));
 

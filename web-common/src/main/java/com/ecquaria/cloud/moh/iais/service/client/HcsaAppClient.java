@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -27,4 +28,7 @@ public interface HcsaAppClient {
 
     @GetMapping(value = "/iais-application-history/appPremisesRoutingHistorys/{appNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistorysByAppNo(@PathVariable("appNo") String appNo);
+
+    @GetMapping(value = "/hcsa-app-common/apps-by-grp/{appGrpId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> getAppsByGrpId(@PathVariable("appGrpId") String appGrpId);
 }
