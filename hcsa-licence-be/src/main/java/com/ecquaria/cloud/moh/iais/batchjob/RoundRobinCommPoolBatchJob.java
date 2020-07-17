@@ -186,24 +186,12 @@ public class RoundRobinCommPoolBatchJob {
                   ApplicationViewDto applicationViewDto=applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
                   if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL.equals(applicationViewDto.getApplicationDto().getStatus()) ||
                           ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT.equals(applicationViewDto.getApplicationDto().getStatus())){
-                      String workGroupId = taskDto.getWkGrpId();
-                      //set inspector leads
-                      setInspLeadsInRecommendation(taskDto, workGroupId, auditTrailDto);
-                      log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
-                      log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
-                      TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
-                      taskDto.setUserId(taskScoreDto.getUserId());
-                      taskDto.setDateAssigned(new Date());
-                      taskDto.setAuditTrailDto(auditTrailDto);
-                      taskDto = taskService.updateTask(taskDto);
+
                       ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
                       List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
                       applicationDtos.add(applicationDto);
-                      String taskUserId = taskScoreDto.getUserId();
-                      List<String> taskUserIds = IaisCommonUtils.genNewArrayList();
-                      taskUserIds.add(taskUserId);
                       ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                      assignReschedulingTask(taskDto, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto);
+                      assignReschedulingTask(taskDto, applicationDtos, auditTrailDto, applicationGroupDto);
                   }
                   log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob broadcast taskId -- >:" +taskDto.getId()));
               }
@@ -256,7 +244,7 @@ public class RoundRobinCommPoolBatchJob {
     }
 
 
-    private void assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
+    private void assignReschedulingTask(TaskDto td, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
                                         ApplicationGroupDto applicationGroupDto) {
         //update
         td.setSlaDateCompleted(new Date());
@@ -272,37 +260,35 @@ public class RoundRobinCommPoolBatchJob {
         String appHistoryId = appPremisesRoutingHistoryDto.getId();
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         List<AppPremInspCorrelationDto> appPremInspCorrelationDtoList = IaisCommonUtils.genNewArrayList();
-        for(String taskUserId : taskUserIds){
-            //create appInspCorrelation and task
-            AppPremInspCorrelationDto appPremInspCorrelationDto = new AppPremInspCorrelationDto();
-            appPremInspCorrelationDto.setApplicationNo(applicationDto.getApplicationNo());
-            appPremInspCorrelationDto.setId(null);
-            appPremInspCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appPremInspCorrelationDto.setUserId(taskUserId);
-            appPremInspCorrelationDto.setAuditTrailDto(auditTrailDto);
-            appPremInspCorrelationDtoList.add(appPremInspCorrelationDto);
+        //create appInspCorrelation and task
+        AppPremInspCorrelationDto appPremInspCorrelationDto = new AppPremInspCorrelationDto();
+        appPremInspCorrelationDto.setApplicationNo(applicationDto.getApplicationNo());
+        appPremInspCorrelationDto.setId(null);
+        appPremInspCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        appPremInspCorrelationDto.setUserId(null);
+        appPremInspCorrelationDto.setAuditTrailDto(auditTrailDto);
+        appPremInspCorrelationDtoList.add(appPremInspCorrelationDto);
 
-            TaskDto taskDto = new TaskDto();
-            taskDto.setId(null);
-            taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
-            taskDto.setPriority(td.getPriority());
-            taskDto.setRefNo(td.getRefNo());
-            taskDto.setSlaAlertInDays(td.getSlaAlertInDays());
-            taskDto.setSlaDateCompleted(null);
-            taskDto.setSlaInDays(td.getSlaInDays());
-            taskDto.setSlaRemainInDays(null);
-            taskDto.setTaskKey(td.getTaskKey());
-            taskDto.setTaskType(td.getTaskType());
-            taskDto.setWkGrpId(td.getWkGrpId());
-            taskDto.setUserId(taskUserId);
-            taskDto.setDateAssigned(new Date());
-            taskDto.setRoleId(td.getRoleId());
-            taskDto.setAuditTrailDto(auditTrailDto);
-            taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_RESCHEDULING_COMMON_POOL);
-            taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
-            taskDto.setApplicationNo(td.getApplicationNo());
-            taskDtoList.add(taskDto);
-        }
+        TaskDto taskDto = new TaskDto();
+        taskDto.setId(null);
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setPriority(td.getPriority());
+        taskDto.setRefNo(td.getRefNo());
+        taskDto.setSlaAlertInDays(td.getSlaAlertInDays());
+        taskDto.setSlaDateCompleted(null);
+        taskDto.setSlaInDays(td.getSlaInDays());
+        taskDto.setSlaRemainInDays(null);
+        taskDto.setTaskKey(td.getTaskKey());
+        taskDto.setTaskType(td.getTaskType());
+        taskDto.setWkGrpId(td.getWkGrpId());
+        taskDto.setUserId(null);
+        taskDto.setDateAssigned(new Date());
+        taskDto.setRoleId(td.getRoleId());
+        taskDto.setAuditTrailDto(auditTrailDto);
+        taskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_RESCHEDULING_COMMON_POOL);
+        taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
+        taskDto.setApplicationNo(td.getApplicationNo());
+        taskDtoList.add(taskDto);
 
         //get appStatus
         String appStatus;
@@ -331,7 +317,7 @@ public class RoundRobinCommPoolBatchJob {
             List<String> premCorrIds = getAppPremCorrIdByList(appPremisesCorrelationDtos);
             List<ApplicationDto> applicationDtoList = getApplicationDtosByCorr(appPremisesCorrelationDtos);
             //get all users
-            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtoList, taskUserIds, applicationDto);
+            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtoList, null, applicationDto);
             boolean allInPlaceFlag = allAppFromSamePremisesIsOk(applicationDtoList);
             if(allInPlaceFlag){
                 saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId);
@@ -360,7 +346,7 @@ public class RoundRobinCommPoolBatchJob {
             List<String> premCorrIds = IaisCommonUtils.genNewArrayList();
             premCorrIds.add(appPremCorrId);
             //get all users
-            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtos, taskUserIds, applicationDto);
+            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtos, null, applicationDto);
             saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId);
             //update App
             ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);

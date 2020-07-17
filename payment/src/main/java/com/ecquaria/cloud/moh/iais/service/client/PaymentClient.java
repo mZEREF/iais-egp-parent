@@ -4,11 +4,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
 
 /**
  * @author weilu
@@ -26,4 +28,11 @@ public interface PaymentClient {
 
     @PostMapping(value = "/isTxnRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> isTxnRef(@RequestBody List<String> txnRefNo);
+
+    @GetMapping(value = "/iais-payment/payment-reqRefNo",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PaymentDto> getPaymentDtoByReqRefNo(@RequestBody String reqRefNo);
+
+    @GetMapping(value = "/iais-payment/payment-request-reqRefNo",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNo(@RequestBody String reqRefNo);
+
 }

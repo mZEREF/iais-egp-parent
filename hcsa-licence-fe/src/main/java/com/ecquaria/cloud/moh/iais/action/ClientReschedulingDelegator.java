@@ -31,7 +31,6 @@ import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -70,9 +69,6 @@ public class ClientReschedulingDelegator {
 
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
-
-    @Autowired
-    private FeMessageClient feMessageClient;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
