@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
@@ -88,7 +87,7 @@ public class MassEmailDelegator {
         setModeSelection(bpc);
         for (DistributionListDto item:searchResult.getRows()
              ) {
-            item.setRole(MasterCodeUtil.getCodeDesc(item.getRole()));
+            item.setRole(roleName(item.getRole()));
         }
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchResult",searchResult);
         ParamUtil.setRequestAttr(bpc.request,"distributionSearchParam",searchParam);
