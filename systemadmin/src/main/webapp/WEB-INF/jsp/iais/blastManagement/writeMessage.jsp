@@ -108,13 +108,24 @@
     });
 
     $('#selectedFile').change(function (event) {
-        var files = event.target.files;
-        console.log(files)
-        $(".filename").html("");
-        for(var i=0;i<files.length;i++){
-            $(".filename").append("<div class='fileNameDisplay'>"+files[i].name+"</div>");
+        var maxFileSize = 10;
+        var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
+        console.log(error)
+        console.log($("#selectedFile"))
+        if (error == "N"){
+            $('#error_fileUploadError').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+            $("#selectedFile").val('');
+            $(".filename").html("");
+        }else{
+            var files = event.target.files;
+            console.log(files)
+            $(".filename").html("");
+            for (var i = 0; i < files.length; i++) {
+                $(".filename").append("<div class='fileNameDisplay'>" + files[i].name + "</div>");
+            }
+            $("#fileChange").val("1")
+            $('#error_fileUploadError').html('');
         }
-        $("#fileChange").val("1")
     });
 
 

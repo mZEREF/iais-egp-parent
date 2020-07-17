@@ -100,9 +100,10 @@
                                             <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
                                         </div>
                                     </div>
-
                                 </div>
+                                <span name="iaisErrorMsg" class="error-msg" id="error_file"></span><br>
                             </div>
+
                         </div>
                     </div>
                     <div class="row">
@@ -165,11 +166,23 @@
     })
 
     $('#selectedFile').change(function (event) {
-        var files = event.target.files;
-        $(".filename").html("");
-        for(var i=0;i<files.length;i++){
-            $(".filename").append("<div class='fileNameDisplay'>"+files[i].name+"</div>");
+        var maxFileSize = 10;
+        var error = validateUploadSizeMaxOrEmpty(maxFileSize, 'selectedFile');
+        console.log(error)
+        if (error == "N"){
+            $("#selectedFile").val('');
+            $('#error_file').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');
+        }else{
+            var files = event.target.files;
+            $(".filename").html("");
+            for(var i=0;i<files.length;i++){
+                $(".filename").append("<div class='fileNameDisplay'>"+files[i].name+"</div>");
+            }
+            SOP.Crud.cfxSubmit("mainForm","upload");
+            $('#error_file').html('');
         }
-        SOP.Crud.cfxSubmit("mainForm","upload");
+
+
     });
+
 </script>
