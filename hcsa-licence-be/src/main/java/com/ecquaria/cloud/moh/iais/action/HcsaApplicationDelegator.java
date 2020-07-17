@@ -1015,7 +1015,7 @@ public class HcsaApplicationDelegator {
             String subject = "MOH IAIS – Renew" + applicationNo + " - Rejected ";
             String mesContext = "renew reject message";
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-            sendMessage(subject,licenseeId,mesContext,maskParams,applicationViewDto.getApplicationDto().getServiceId());
+            sendMessage(subject,licenseeId,mesContext,maskParams,applicationViewDto.getApplicationDto().getServiceId(),null);
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             //send email Appeal - Send SMS to licensee when appeal application is approved
             Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
@@ -1079,7 +1079,7 @@ public class HcsaApplicationDelegator {
                     HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                     maskParams.put("appealingFor",appealingFor);
                     String appealType = (String)ParamUtil.getSessionAttr(bpc.request, "type");
-                    sendAppealMessage(appealingFor,licenseeId,maskParams,applicationDto.getServiceId(),appealType);
+                    sendAppealMessage(appealingFor,licenseeId,maskParams,applicationDto.getServiceId(),appealType,applicationDto.getApplicationNo());
                 }
             }
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);
@@ -1178,18 +1178,19 @@ public class HcsaApplicationDelegator {
     //private methods
     //*************************************
 
-    private void sendAppealMessage(String appealingFor, String licenseeId,HashMap<String, String> maskParams,String serviceId,String appealType){
+    private void sendAppealMessage(String appealingFor, String licenseeId,HashMap<String, String> maskParams,String serviceId,String appealType,String appNo){
         if(StringUtil.isEmpty(appealingFor)
                 || StringUtil.isEmpty(licenseeId)
                 || StringUtil.isEmpty(serviceId)
-                || StringUtil.isEmpty(appealType)){
+                || StringUtil.isEmpty(appealType)
+                || StringUtil.isEmpty(appNo)){
             return;
         }
         String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ MessageConstants.MESSAGE_CALL_BACK_URL_Appeal+appealingFor+"&type="+appealType;
-        String subject = "Appeal Message";
-        String mesContext = "<a href='" + url + "'>appeal link</a>";
+        String subject = MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + appNo;
+        String mesContext = "Please click the link <a href='" + url + "'>here</a> for submission.";
         //send message
-        sendMessage(subject,licenseeId,mesContext,maskParams,serviceId);
+        sendMessage(subject,licenseeId,mesContext,maskParams,serviceId,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
     }
 
     private AppPremisesRecommendationDto getClearRecommendationDto(String appPremCorreId, String dateStr, String dateTimeShow) throws Exception{
@@ -2029,16 +2030,19 @@ public class HcsaApplicationDelegator {
         emailClient.sendNotification(emailDto).getEntity();
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         //send message
-        sendMessage(subject,licenseeId,mesContext,maskParams,serviceId);
+        sendMessage(subject,licenseeId,mesContext,maskParams,serviceId,null);
     }
 
 
-    private void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId){
+    private void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId,String messageType){
+        if(StringUtil.isEmpty(messageType)){
+            messageType = MessageConstants.MESSAGE_TYPE_NOTIFICATION;
+        }
         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
         interMessageDto.setSubject(subject);
-        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+        interMessageDto.setMessageType(messageType);
         String refNo = inboxMsgService.getMessageNo();
         interMessageDto.setRefNo(refNo);
         if(serviceDto != null){
