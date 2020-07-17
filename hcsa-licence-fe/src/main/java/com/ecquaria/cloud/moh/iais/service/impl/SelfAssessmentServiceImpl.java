@@ -28,7 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -75,7 +75,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     private FeEicGatewayClient gatewayClient;
 
     @Autowired
-    private EmailHelper emailHelper;
+    private NotificationHelper notificationHelper;
 
     @Autowired
     private FeEmailClient feEmailClient;
@@ -240,7 +240,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         map.put("DETAILS", StringUtil.viewHtml("test"));
         map.put("A_HREF", StringUtil.viewHtml(""));
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-        MsgTemplateDto entity = emailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID);
+        MsgTemplateDto entity = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID);
         String messageContent = entity.getMessageContent();
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
 

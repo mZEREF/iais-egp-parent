@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class EmailHelper {
+public class NotificationHelper {
 	public static final String RECEIPT_TYPE_APP_GRP 			  	 = "GRP";
 	public static final String RECEIPT_TYPE_APP 				 	 = "APP";
 	public static final String RECEIPT_TYPE_LICENCE_ID               = "LIC";

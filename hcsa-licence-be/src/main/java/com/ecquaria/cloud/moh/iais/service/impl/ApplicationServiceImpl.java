@@ -27,7 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -108,7 +108,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private String mailSender;
 
     @Autowired
-    private EmailHelper emailHelper;
+    private NotificationHelper notificationHelper;
 
     @Override
     public List<ApplicationDto> getApplicaitonsByAppGroupId(String appGroupId) {
@@ -233,7 +233,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             int msgTrackRefNumType = i.getMsgTrackRefNumType();
 
             if (msgTrackRefNumType == 1){
-                refType = EmailHelper.RECEIPT_TYPE_APP_GRP;
+                refType = NotificationHelper.RECEIPT_TYPE_APP_GRP;
                 reqRefNum = i.getGroupId();
                 appList = i.getAppList();
 
@@ -269,10 +269,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                 jobRemindMsgTrackingDto.setRefNo(reqRefNum);
                 jobRemindMsgTrackingDto.setCreateTime(new Date());
                 jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                emailHelper.sendEmailWithJobTrack(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
+                notificationHelper.sendEmailWithJobTrack(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
 
             }else {
-                refType = EmailHelper.RECEIPT_TYPE_APP;
+                refType = NotificationHelper.RECEIPT_TYPE_APP;
                 appList = i.getAppList();
                 //never null
                 ApplicationDto app = appList.get(0);
@@ -294,7 +294,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 jobRemindMsgTrackingDto.setRefNo(reqRefNum);
                 jobRemindMsgTrackingDto.setCreateTime(new Date());
                 jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                emailHelper.sendEmailWithJobTrack(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
+                notificationHelper.sendEmailWithJobTrack(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
 
             }
         }

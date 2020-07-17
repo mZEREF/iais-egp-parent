@@ -148,8 +148,8 @@ public final class ChecklistHelper {
 
     public static void sendEmailToApplicant(List<ApplicationGroupDto> appGroup){
         MsgTemplateClient msgTemplateClient = SpringContextHelper.getContext().getBean(MsgTemplateClient.class);
-        EmailHelper emailHelper = SpringContextHelper.getContext().getBean(EmailHelper.class);
-        if (emailHelper == null || msgTemplateClient == null){
+        NotificationHelper notificationHelper = SpringContextHelper.getContext().getBean(NotificationHelper.class);
+        if (notificationHelper == null || msgTemplateClient == null){
             log.info("===>>>>alertSelfDeclNotification can not find bean");
             return;
         }
@@ -251,12 +251,12 @@ public final class ChecklistHelper {
 
 
     public static void sendModifiedChecklistEmailToAOStage(String serviceId, String applicationType, String mailSender){
-        EmailHelper emailHelper = SpringContextHelper.getContext().getBean(EmailHelper.class);
+        NotificationHelper notificationHelper = SpringContextHelper.getContext().getBean(NotificationHelper.class);
         EmailClient emailClient = SpringContextHelper.getContext().getBean(EmailClient.class);
         HcsaConfigClient hcsaConfigClient = SpringContextHelper.getContext().getBean(HcsaConfigClient.class);
         OrganizationClient organizationClient = SpringContextHelper.getContext().getBean(OrganizationClient.class);
 
-        if (emailHelper == null || emailClient == null || hcsaConfigClient == null || organizationClient == null){
+        if (notificationHelper == null || emailClient == null || hcsaConfigClient == null || organizationClient == null){
             log.info("can not find context bean");
             return;
         }
@@ -286,7 +286,7 @@ public final class ChecklistHelper {
                         Map<String, Object> map = new HashMap(1);
                         map.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
-                        MsgTemplateDto msgTemplate = emailHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
+                        MsgTemplateDto msgTemplate = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
                         String subject = msgTemplate.getTemplateName();
                         String messageContent = msgTemplate.getMessageContent();
                         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);

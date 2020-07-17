@@ -42,7 +42,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -112,7 +112,7 @@ public class BackendInboxDelegator {
     private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryMainClient;
 
     @Autowired
-    private EmailHelper emailHelper;
+    private NotificationHelper notificationHelper;
 
     @Autowired
     private EmailClient emailClient;

@@ -8,7 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.EmailHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.UenManagementService;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
@@ -39,7 +39,7 @@ public class UenManagementServiceImpl implements UenManagementService {
     @Autowired
     private SystemAdminClient systemAdminClient;
     @Autowired
-    private EmailHelper emailHelper;
+    private NotificationHelper notificationHelper;
 
     @Autowired
     AppSubmissionService appSubmissionService;
@@ -106,7 +106,7 @@ public class UenManagementServiceImpl implements UenManagementService {
             emailDto.setSender(mailSender);
             List<String> licenseeIds= IaisCommonUtils.genNewArrayList();
             licenseeIds.add(licenceId);
-            List<String> emailAddress = emailHelper.getEmailAddressListByLicenseeId(licenseeIds);
+            List<String> emailAddress = notificationHelper.getEmailAddressListByLicenseeId(licenseeIds);
             emailDto.setReceipts(emailAddress);
             appSubmissionService.feSendEmail(emailDto);
         }catch (Exception e){
