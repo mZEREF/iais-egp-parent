@@ -2264,7 +2264,7 @@ public class HcsaApplicationDelegator {
                     isLateFeeAppealType = true;
                     isOtherAppealType = false;
                 } else if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
-                    AppSvcCgoDto appSvcCgoDto = applicationClient.getApplicationCgoByAppId(appId).getEntity();
+                    AppSvcCgoDto appSvcCgoDto = applicationClient.getApplicationCgoByAppId(appId,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
                     List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
                     appSvcCgoDtoList.add(appSvcCgoDto);
                     ParamUtil.setSessionAttr(request,"CgoMandatoryCount",1);

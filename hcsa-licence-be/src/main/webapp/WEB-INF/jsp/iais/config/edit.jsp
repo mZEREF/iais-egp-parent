@@ -496,7 +496,7 @@
       <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
         <div class="view">
           <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
-            <input class="add" type="text"  style="margin-left:0px" name="subType" value="${hcsaSvcSubtypeOrSubsumed.name}">
+            <input class="add" type="text"  style="margin-left:0px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed.name}">
           </div>
           <div class="value">
             <input type="text" value="0" name="level" style="display: none" >
@@ -511,7 +511,7 @@
           <c:forEach items="${hcsaSvcSubtypeOrSubsumed.list}" var="hcsaSvcSubtypeOrSubsumed2">
             <div class="view">
               <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
-                <input class="add" type="text"  style="margin-left:60px" name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
+                <input class="add" type="text"  style="margin-left:60px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
               </div>
               <div class="value">
                 <input type="text" value="1" name="level" style="display: none" >
@@ -526,7 +526,7 @@
             <c:forEach items="${hcsaSvcSubtypeOrSubsumed2.list}" var="hcsaSvcSubtypeOrSubsumed3">
               <div class="view">
                 <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
-                  <input class="add" type="text"  style="margin-left:120px" name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
+                  <input class="add" type="text" maxlength="100"  style="margin-left:120px" name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
                 </div>
                 <div class="value">
                   <input type="text" value="2" name="level" style="display: none" >

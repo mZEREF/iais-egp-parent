@@ -278,7 +278,7 @@ public interface ApplicationClient {
     @PostMapping(value = "/iais-application/rfi-be-aoolication",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity updateApplicationOfRfi(@RequestBody List<ApplicationDto> rfiApplications);
 
-    @GetMapping(value = "/iais-application-be/application-cgo-by-application-id")
-    FeignResponseEntity<AppSvcCgoDto> getApplicationCgoByAppId(@RequestParam(name = "appId") String appId);
+    @GetMapping(value = "/iais-application-be/application-cgo-by-application-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppSvcCgoDto> getApplicationCgoByAppId(@RequestParam(name = "applicationId") String applicationId,@RequestParam("psnType") String psnType);
 
 }
