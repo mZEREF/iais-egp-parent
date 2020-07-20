@@ -183,6 +183,9 @@ public class InspSupAddAvailabilityDelegator {
             apptNonAvailabilityDateDto.setBlockOutStart(nonAvaStartDate);
             apptNonAvailabilityDateDto.setBlockOutEnd(nonAvaEndDate);
             apptNonAvailabilityDateDto.setRecurrence(recurrence);
+            if(StringUtil.isEmpty(nonDescription)){
+                nonDescription = "-";
+            }
             apptNonAvailabilityDateDto.setNonAvaDescription(nonDescription);
             ValidationResult validationResult;
             if("lead".equals(curRole)){
@@ -341,6 +344,9 @@ public class InspSupAddAvailabilityDelegator {
             apptNonAvailabilityDateDto.setBlockOutStart(nonAvaStartDate);
             apptNonAvailabilityDateDto.setBlockOutEnd(nonAvaEndDate);
             apptNonAvailabilityDateDto.setRecurrence(recurrence);
+            if(StringUtil.isEmpty(nonDescription)){
+                nonDescription = "-";
+            }
             apptNonAvailabilityDateDto.setNonAvaDescription(nonDescription);
             ValidationResult validationResult = WebValidationHelper.validateProperty(apptNonAvailabilityDateDto,"inspector");
             if (validationResult.isHasErrors()) {
