@@ -72,7 +72,12 @@
                           <label style="font-size: 16px">Non-Available Date Description</label>
                         </div>
                         <div class="col-md-6">
-                          <span style="font-size: 16px"><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></span>
+                          <c:if test="${empty inspNonAvailabilityDto.nonAvaDescription}">
+                            <span style="font-size: 16px"><c:out value="-"></c:out></span>
+                          </c:if>
+                          <c:if test="${not empty inspNonAvailabilityDto.nonAvaDescription}">
+                            <span style="font-size: 16px"><c:out value="${inspNonAvailabilityDto.nonAvaDescription}"></c:out></span>
+                          </c:if>
                         </div>
                       </div>
                       <div class="row">
