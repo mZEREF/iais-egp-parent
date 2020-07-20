@@ -184,6 +184,12 @@
                 <artifactId>commons-collections4</artifactId>
                 <version>4.3</version>
             </dependency>
+            <!-- https://mvnrepository.com/artifact/com.stripe/stripe-java -->
+            <dependency>
+                <groupId>com.stripe</groupId>
+                <artifactId>stripe-java</artifactId>
+                <version>19.32.0</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
