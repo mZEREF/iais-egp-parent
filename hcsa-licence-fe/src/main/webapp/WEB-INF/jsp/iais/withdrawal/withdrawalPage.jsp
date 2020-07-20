@@ -1,6 +1,3 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.common.utils.ParamUtil" %>
-<%@ page import="org.springframework.web.multipart.MultipartHttpServletRequest" %>
-<%@ page import="sop.servlet.webflow.HttpHandler" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
@@ -14,28 +11,71 @@
 <div class="main-content">
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="app_action_type" value="">
+        <input type="hidden" name="withdraw_app_list" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="internet-content">
-                    <div class="row">
-                        <div class="center-content">
-                            <iais:field value="You are withdrawing for" required="false" style="font-size:3rem"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="center-content">
-                            <div class="col-md-12">
-                                <span style="font-size:2rem">${withdrawAppNo}</span>
+                    <div class="center-content">
+                        <h2>You are withdrawing for</h2>
+                        <div class="row">
+                            <div class="col-lg-8 col-xs-12">
+                                <div class="withdraw-content-box">
+                                    <div class="withdraw-info-gp">
+                                        <div class="withdraw-info-row">
+                                            <div class="withdraw-info">
+                                                <p>${withdrawAppNo}</p>
+                                            </div>
+                                            <div class="withdraw-delete">
+                                                <!--   <p><a href="#"><i class="fa fa-trash-o"></i>Delete</a></p> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-xs-12">
+                                <div class="withdraw-addmore gradient-light-grey">
+                                    <a href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4><i
+                                            class="fa fa-plus-circle"></i> Add more applications</h4></a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="center-content">
-                            <iais:field value="Reason for Withdrawal" required="true" style="font-size:3rem"/>
+                    <div id="newappModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Select application for withdrawal</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="withdraw-info-gp">
+                                            <div class="withdraw-info-row">
+                                                <div class="withdraw-info">
+                                                    <p>AN200518004017V-03</p>
+                                                </div>
+                                                <div class="withdraw-delete">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" id="icon1checkboxSample"
+                                                               type="checkbox" name="checkboxSample"
+                                                               aria-invalid="false">
+                                                        <label class="form-check-label" for="icon1checkboxSample"><span
+                                                                class="check-square"></span></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a class="btn btn-primary withdraw-next" href="#">Done</a>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
                     <div class="row">
                         <div class="center-content">
+                            <h3>Reason for Withdrawal</h3>
                             <div class="col-md-7">
                                 <iais:select name="withdrawalReason" id="withdrawalReason"
                                              options="withdrawalReasonList"
@@ -66,27 +106,26 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="center-content">
-                        <iais:field value="File Upload for Withdrawal  Reasons" required="false"
-                                    style="font-size:3rem"/>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="center-content">
-                        <div class="col-md-4">
-                            <div class="file-upload-gp">
-                                <input id="withdrawFile" type="file" name="selectedFile" style="display: none;"><a
-                                    class="btn btn-file-upload btn-secondary">Upload</a>
+                    <div class="row">
+                        <div class="center-content">
+                            <div class="document-upload-gp">
+                                <div class="document-upload-list">
+                                    <h3>File upload for Withdrawal Reasons</h3>
+                                    <div class="file-upload-gp">
+                                        <input id="withdrawFile" type="file" style="display: none;"
+                                               aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
+                                                                             href="#">Upload</a>
+                                        <div id="delFile" style="margin-top: 13px;color: #1F92FF;"
+                                             hidden="hidden">
+                                            <strong id="fileName">${file_upload_withdraw}</strong>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
+                                                    class="fa fa-times"></em></button>
+                                        </div>
+                                    </div>
+                                    <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
+                                </div>
                             </div>
-                            <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
-                        </div>
-                        <div id="delFile" class="col-md-9" style="margin-top: 13px;color: #1F92FF;margin-left: -20%"
-                             hidden="hidden">
-                            <strong id="fileName">${file_upload_withdraw}</strong>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteWdFile()"><em
-                                    class="fa fa-times"></em></button>
+
                         </div>
                     </div>
                 </div>
@@ -150,8 +189,44 @@
         $("#delFile").attr("hidden", "hidden");
     }
 
+    $(".withdraw-delete p").click(function () {
+        $(this).parent().parent().parent().parent().remove();
+    });
+
+    $(".withdraw-next").click(function () {
+        $("input[name='checkboxSample']:checked").each(function () {
+            var appNoList = [];
+            var withdrawContent$ = $(".withdraw-content-box");
+            withdrawContent$.find(".withdraw-info p").each(function (){
+                appNoList.push($(this).text)
+            });
+            var appNo = $(this).parent().parent().parent().find(".withdraw-info").find("p").text();
+            if (!$.inArray(appNo,appNoList)){
+                withdrawContent$.last().parent().append('<div class="withdraw-content-box">\n' +
+                    '                                    <div class="withdraw-info-gp">\n' +
+                    '                                        <div class="withdraw-info-row">\n' +
+                    '                                            <div class="withdraw-info">\n' +
+                    '                                                <p>'+appNo+'</p>\n' +
+                    '                                            </div>\n' +
+                    '                                            <div class="withdraw-delete">\n' +
+                    '                                                <p><a href="#"><i class="fa fa-trash-o"></i>Delete</a></p>\n' +
+                    '                                            </div>\n' +
+                    '                                        </div>\n' +
+                    '                                    </div>\n' +
+                    '                                </div>')
+            }
+        });
+    });
+
     function doSubmit() {
         showWaiting();
+        var appNoList = "";
+        var withdrawContent$ = $(".withdraw-content-box");
+        withdrawContent$.find(".withdraw-info p").each(function (){
+            appNoList = appNoList + $(this).text() + "#";
+        });
+        $("[name='withdraw_app_list']").val(appNoList);
+
         submit("withdrawalStep");
     }
 </script>

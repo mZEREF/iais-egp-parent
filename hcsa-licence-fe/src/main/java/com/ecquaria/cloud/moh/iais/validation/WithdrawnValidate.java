@@ -24,17 +24,20 @@ public class WithdrawnValidate implements CustomizeValidator {
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) httpServletRequest.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
-        if (!commonsMultipartFile.isEmpty()) {
+        if (commonsMultipartFile != null) {
             if (commonsMultipartFile.getSize() > 5 * 1024 * 1024) {
                 errorMap.put("withdrawalFile", "The file has exceeded the maximum upload size of 5MB.");
             }
-            String[] fileSplit = commonsMultipartFile.getOriginalFilename().split("\\.");
-            String fileType = fileSplit[fileSplit.length - 1];
-            if (!fileType.toLowerCase().equals("pdf")
-                    && !fileType.toLowerCase().equals("jpg")
-                    && !fileType.toLowerCase().equals("jpeg")
-                    && !fileType.toLowerCase().equals("png")) {
-                errorMap.put("withdrawalFile", "The file type is incorrect.");
+            String fileName = commonsMultipartFile.getOriginalFilename();
+            if (!StringUtil.isEmpty(fileName)){
+                String[] fileSplit = commonsMultipartFile.getOriginalFilename().split("\\.");
+                String fileType = fileSplit[fileSplit.length - 1];
+                if (!fileType.toLowerCase().equals("pdf")
+                        && !fileType.toLowerCase().equals("jpg")
+                        && !fileType.toLowerCase().equals("jpeg")
+                        && !fileType.toLowerCase().equals("png")) {
+                    errorMap.put("withdrawalFile", "The file type is incorrect.");
+                }
             }
         }
         if (StringUtil.isEmpty(withdrawnReason)) {

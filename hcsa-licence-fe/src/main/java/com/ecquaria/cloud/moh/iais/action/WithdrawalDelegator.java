@@ -68,43 +68,49 @@ public class WithdrawalDelegator {
     }
 
     public void withdrawalStep(BaseProcessClass bpc) throws Exception {
-        WithdrawnDto withdrawnDto = new WithdrawnDto();
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         LoginContext loginContext= (LoginContext)ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
-        CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
-        withdrawnDto.setApplicationId(withdrawAppId);
-        withdrawnDto.setApplicationNo(withdrawAppNo);
-        withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
-        withdrawnDto.setWithdrawnReason(withdrawnReason);
-        if ("WDR005".equals(withdrawnReason)){
-            String withdrawnRemarks = ParamUtil.getRequestString(bpc.request, "withdrawnRemarks");
-            withdrawnDto.setWithdrawnRemarks(withdrawnRemarks);
-        }
-        ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
-        if(validationResult != null && validationResult.isHasErrors()){
-            Map<String, String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-            ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
-            ParamUtil.setRequestAttr(bpc.request,"withdrawDtoView",withdrawnDto);
-        }else{
-            if (!commonsMultipartFile.isEmpty()){
-                String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
-                AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
-                appPremisesSpecialDocDto.setSubmitDt(new Date());
-                appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
-                appPremisesSpecialDocDto.setDocName(commonsMultipartFile.getOriginalFilename());
-                appPremisesSpecialDocDto.setDocSize((int)commonsMultipartFile.getSize() / 1024);
-                appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(commonsMultipartFile.getBytes()));
-                withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
-                withdrawnDto.setFileRepoId(fileRepoId);
+        String paramAppNos = ParamUtil.getString(mulReq, "withdraw_app_list");
+        List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
+        if (!StringUtil.isEmpty(paramAppNos)){
+            String[] withdrawAppNos = paramAppNos.split("#");
+            for (int i =0;i<withdrawAppNos.length;i++){
+                WithdrawnDto withdrawnDto = new WithdrawnDto();
+                String appNo = withdrawAppNos[i];
+                CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
+                withdrawnDto.setApplicationNo(appNo);
+                withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
+                withdrawnDto.setWithdrawnReason(withdrawnReason);
+                if ("WDR005".equals(withdrawnReason)){
+                    String withdrawnRemarks = ParamUtil.getRequestString(bpc.request, "withdrawnRemarks");
+                    withdrawnDto.setWithdrawnRemarks(withdrawnRemarks);
+                }
+                ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
+                if(validationResult != null && validationResult.isHasErrors()){
+                    Map<String, String> errorMap = validationResult.retrieveAll();
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                    ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
+                    ParamUtil.setRequestAttr(bpc.request,"withdrawDtoView",withdrawnDto);
+                }else{
+                    if (commonsMultipartFile != null){
+                        String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
+                        AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
+                        appPremisesSpecialDocDto.setSubmitDt(new Date());
+                        appPremisesSpecialDocDto.setSubmitBy(loginContext.getUserId());
+                        appPremisesSpecialDocDto.setDocName(commonsMultipartFile.getOriginalFilename());
+                        appPremisesSpecialDocDto.setDocSize((int)commonsMultipartFile.getSize() / 1024);
+                        appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(commonsMultipartFile.getBytes()));
+                        withdrawnDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
+                        withdrawnDto.setFileRepoId(fileRepoId);
+                    }
+                    withdrawnDtoList.add(withdrawnDto);
+                }
             }
-            List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
-            withdrawnDtoList.add(withdrawnDto);
-            withdrawalService.saveWithdrawn(withdrawnDtoList);
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
         }
+        withdrawalService.saveWithdrawn(withdrawnDtoList);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
     }
 
     public void saveDateStep(BaseProcessClass bpc){

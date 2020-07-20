@@ -12,15 +12,18 @@
         </div>
     </div>
     <div class="row">
-        <div style="margin-top: 20px;margin-left: 9%" >
-            <h1>Withdrawal Form</h1>
+        <div class="col-xs-12">
+            <div class="prelogin-title">
+                <h1>Withdrawal Form</h1>
+            </div>
         </div>
     </div>
 </div>
 
 <style>
-    .mandatory{
-        color: rgb(255,0,0);
+
+    .prelogin-title{
+        padding-left: 90px;
     }
 
 </style>
