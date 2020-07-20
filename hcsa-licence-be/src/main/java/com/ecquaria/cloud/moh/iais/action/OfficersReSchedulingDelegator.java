@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
@@ -429,9 +430,10 @@ public class OfficersReSchedulingDelegator {
 
     private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "inspReSchSearchParam");
+        int pageSize = SysParamUtil.getDefaultPageSize();
         if(searchParam == null || isNew){
             searchParam = new SearchParam(ReschedulingOfficerQueryDto.class.getName());
-            searchParam.setPageSize(10);
+            searchParam.setPageSize(pageSize);
             searchParam.setPageNo(1);
             searchParam.setSort("ID", SearchParam.ASCENDING);
         }

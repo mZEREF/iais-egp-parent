@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
@@ -143,9 +144,10 @@ public class InspecAssignTaskDelegator {
 
     private SearchParam getSearchParam(BaseProcessClass bpc,boolean isNew){
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchParam");
+        int pageSize = SysParamUtil.getDefaultPageSize();
         if(searchParam == null || isNew){
             searchParam = new SearchParam(InspectionCommonPoolQueryDto.class.getName());
-            searchParam.setPageSize(10);
+            searchParam.setPageSize(pageSize);
             searchParam.setPageNo(1);
             searchParam.setSort("GROUP_NO", SearchParam.ASCENDING);
         }
