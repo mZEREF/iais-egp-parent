@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -20,16 +21,9 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.PublicHolidayService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -40,6 +34,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.webflow.rt.api.BaseProcessClass;
 
 
 /*
@@ -54,6 +55,8 @@ import java.util.Map;
 public class PublicHolidayDelegate {
     @Autowired
     PublicHolidayService publicHolidayService;
+    @Autowired
+    SystemParamConfig systemParamConfig;
 
     /**
      * doStart
@@ -65,9 +68,9 @@ public class PublicHolidayDelegate {
 
     private SearchParam getSearchParam(HttpServletRequest request, boolean neednew){
         SearchParam holidaySearchParam = (SearchParam) ParamUtil.getSessionAttr(request, "holidaySearchParam");
-        if(neednew){
+        if(neednew || holidaySearchParam == null){
             holidaySearchParam = new SearchParam(PublicHolidayQueryDto.class.getName());
-            holidaySearchParam.setPageSize(10);
+            holidaySearchParam.setPageSize(SysParamUtil.getDefaultPageSize());
             holidaySearchParam.setPageNo(1);
             holidaySearchParam.setSort("ID", SearchParam.ASCENDING);
         }
