@@ -125,7 +125,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 //65189
                 if (isAoRouteBackStatus(status) && !isCessation && !isAudit) {
                     if (StringUtil.isEmpty(recommendationStr)) {
-                        errMap.put("recommendation", "Please key in recommendation");
+                        errMap.put("recommendation", "GENERAL_ERR0024");
                     }
                 }
                 //appeal if route back to ASO or PSO
@@ -158,14 +158,14 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {
                             if ((RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)) && !isAppealType) {
                                 if (StringUtil.isEmpty(recommendationStr)) {
-                                    errMap.put("recommendation", "Please key in recommendation");
+                                    errMap.put("recommendation", "GENERAL_ERR0024");
                                 }
                             }
                         }
                         //remarks
                         String recommendValue = (String)ParamUtil.getSessionAttr(request,"RecommendValue");
                         if(!StringUtil.isEmpty(verified) && !verified.equals(recommendValue) && StringUtil.isEmpty(internalRemarks)){
-                            errMap.put("internalRemarks", "Please key in recommendation");
+                            errMap.put("internalRemarks", "GENERAL_ERR0024");
                         }
                     } else if (ROLLBACK.equals(nextStage)) {
                         String rollBack = ParamUtil.getRequestString(request, "rollBack");
@@ -197,7 +197,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         boolean broadcastAsoPso = (boolean)ParamUtil.getSessionAttr(request,"broadcastAsoPso");
         if(broadcastAsoPso && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)){
             if(StringUtil.isEmpty(recommendationStr)){
-                errMap.put("recommendation","Please key in recommendation");
+                errMap.put("recommendation","GENERAL_ERR0024");
             }
         }
     }
@@ -218,13 +218,13 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             if(isAso || isPso){
                 String appealRecommendationValues = ParamUtil.getString(request, "appealRecommendationValues");
                 if(StringUtil.isEmpty(appealRecommendationValues)){
-                    errMap.put("appealRecommendationValues","Please key in recommendation");
+                    errMap.put("appealRecommendationValues","GENERAL_ERR0024");
                 }else{
                     ParamUtil.setRequestAttr(request,"selectAppealRecommendationValue",appealRecommendationValues);
                     if(isLateFeeAppealType && "appealApprove".equals(appealRecommendationValues)){
                         String returnFee = ParamUtil.getString(request, "returnFee");
                         if(StringUtil.isEmpty(returnFee)){
-                            errMap.put("returnFee","Please key in recommendation");
+                            errMap.put("returnFee","GENERAL_ERR0024");
                         }else{
                             String oldApplicationNo = (String)ParamUtil.getSessionAttr(request, "oldApplicationNo");
                             verifyReturnFee(returnFee,errMap,oldApplicationNo);
