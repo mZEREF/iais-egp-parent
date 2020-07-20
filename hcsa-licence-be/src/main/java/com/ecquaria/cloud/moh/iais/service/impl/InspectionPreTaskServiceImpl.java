@@ -530,6 +530,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                     if(premisesStr != null && premisesStr2 != null) {
                         if (premisesStr.equals(premisesStr2)) {
                             hicCode = premisesDto.getHciCode();
+                            return hicCode;
                         }
                     }
                 }
