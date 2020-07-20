@@ -97,7 +97,7 @@
                     </c:choose>
                     </tbody>
                 </table>
-                <!-- Modal -->
+                <!--delete  Modal -->
                 <div class="modal fade" id="deleteModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -115,9 +115,32 @@
                         </div>
                     </div>
                 </div>
+                <!--delete end -->
 
-
-
+                <!-- import Modal -->
+                <div class="modal fade" id="importUser" tabindex="-1" role="dialog" aria-labelledby="importUser"
+                     style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem">Do you confirm the modification ?</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" onclick="submitUser('doImport')">Confirm</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="submitUser('importCancel')">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Modal End-->
 
             </div>
             <div class="panel-heading" id="exportError" hidden style="color: red"><h4>Please select user.</h4></div>
@@ -147,8 +170,12 @@
     }
     $(document).ready(function () {
        var value = '${deleteMod}';
+        var value1 = '${importSelect}';
         if(value=='no'){
             $('#deleteModal').modal('show')
+        }
+        if(value1=='show'){
+            $('#importUser').modal('show')
         }
     });
 </script>

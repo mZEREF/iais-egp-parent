@@ -28,6 +28,7 @@
         <input type="hidden" name="crud_action_value" value="">
         <input type="hidden" name="crud_action_deactivate" value="">
         <input type="hidden" id="maskUserId" name="maskUserId" value="">
+        <input type="hidden" id="importUserSelect" name="importUserSelect" value="">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -90,7 +91,6 @@
         submitUser('doRole');
     }
 
-
     function doExport() {
         if ($("input[type='checkbox']").is(':checked')) {
             $('#exportError').hide();
@@ -107,9 +107,8 @@
             alert("please import .xml");
             return false;
         } else {
-            submitUser('doImport');
+             submitUser('doImport');
         }
-
     }
 
     function jumpToPagechangePage() {

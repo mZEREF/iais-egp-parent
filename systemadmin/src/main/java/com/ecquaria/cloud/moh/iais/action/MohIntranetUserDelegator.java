@@ -23,16 +23,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import com.ecquaria.csrfguard.action.IAction;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -83,6 +79,7 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, null);
+        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery", searchParam);
         SearchResult searchResult = intranetUserService.doQuery(searchParam);
@@ -302,52 +299,64 @@ public class MohIntranetUserDelegator {
 
     public void doImport(BaseProcessClass bpc) throws IOException, DocumentException {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        List<OrgUserDto> orgUserDtos = (List<OrgUserDto>) ParamUtil.getSessionAttr(bpc.request, "orgUserDtos1");
+        if (!IaisCommonUtils.isEmpty(orgUserDtos)) {
+            List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
+            List<OrgUserDto> orgUserDtosSave = IaisCommonUtils.genNewArrayList();
+            for (OrgUserDto orgUserDto : orgUserDtos) {
+                OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
+                orgUserUpLoadDto.setUserId(orgUserDto.getUserId());
+                List<String> valiant = valiant(orgUserDto);
+                if (IaisCommonUtils.isEmpty(valiant)) {
+                    valiant.add("add success !");
+                    orgUserDtosSave.add(orgUserDto);
+                }
+                orgUserUpLoadDto.setMsg(valiant);
+                orgUserUpLoadDtos.add(orgUserUpLoadDto);
+            }
+            if (!IaisCommonUtils.isEmpty(orgUserDtosSave)) {
+                for (OrgUserDto orgUserDto : orgUserDtos) {
+                    try {
+                        intranetUserService.updateOrgUser(orgUserDto);
+                        editEgpUser(orgUserDto);
+                    }catch (Exception e){
+                        log.error(e.getMessage(),e);
+                    }
+                }
+            }
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            ParamUtil.setRequestAttr(bpc.request, "orgUserUpLoadDtos", orgUserUpLoadDtos);
+            return;
+        }
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("xmlFile");
         File file = File.createTempFile("temp", "xml");
-        File file1 = inputStreamToFile(sessionFile.getInputStream(), file);
-        importXML(file1, bpc);
+        File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
+        boolean isExistDup = importUserIdValiant(xmlFile);
+        if (!isExistDup) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            importXML(xmlFile, bpc);
+            return;
+        }
+        ParamUtil.setRequestAttr(bpc.request, "xmlFile", xmlFile);
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+        ParamUtil.setRequestAttr(bpc.request, "importSelect", "show");
         return;
     }
 
+    public void importNext(BaseProcessClass bpc) throws DocumentException {
+        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
+        File xmlFile = (File) ParamUtil.getRequestAttr(bpc.request, "xmlFile");
+        importXMLExistUserId(xmlFile, bpc);
+        return;
+    }
 
-//    @GetMapping(value = "/user-exist-user")
-//    public @ResponseBody
-//    String genExistUser(HttpServletRequest request) throws Exception {
-//        String flag = "true";
-//        MultipartHttpServletRequest request1 = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-//        CommonsMultipartFile sessionFile = (CommonsMultipartFile) request1.getFile("xmlFile");
-//        File file = File.createTempFile("temp", "xml");
-//        File file1 = inputStreamToFile(sessionFile.getInputStream(), file);
-//        SAXReader saxReader = new SAXReader();
-//        Document document = saxReader.read(file1);
-//        //root
-//        Element root = document.getRootElement();
-//        List list = root.elements();
-//        List<String> userIdsDb = IaisCommonUtils.genNewArrayList();
-//        Set<String> userIdsXML = IaisCommonUtils.genNewHashSet();
-//        for (int i = 0; i < list.size(); i++) {
-//            Element element = (Element) list.get(i);
-//            String userId = element.element("userId").getText();
-//            OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
-//            if(intranetUserByUserId!=null&&!userIdsDb.contains(userId)){
-//                userIdsDb.add(userId);
-//            }
-//        }
-//        for (int i = 0; i < list.size(); i++) {
-//            Element element = (Element) list.get(i);
-//            String userId = element.element("userId").getText();
-//            userIdsXML.add(userId);
-//        }
-//        boolean b = userIdsXML.size()==list.size();
-//        if(!b||userIdsDb.size()>0){
-//           return flag ;
-//        }
-//        flag = "false";
-//        return flag ;
-//    }
-
+    public void importCancel(BaseProcessClass bpc) throws DocumentException {
+        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
+        return;
+    }
 
     public void inportBack(BaseProcessClass bpc) {
+        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
         return;
     }
 
@@ -673,6 +682,7 @@ public class MohIntranetUserDelegator {
         //ele
         List list = root.elements();
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
+        List<OrgUserDto> orgUserDtos1 = IaisCommonUtils.genNewArrayList();
         List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < list.size(); i++) {
             try {
@@ -714,6 +724,7 @@ public class MohIntranetUserDelegator {
                 orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
                 orgUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 orgUserDto.setAvailable(Boolean.FALSE);
+                orgUserDtos1.add(orgUserDto);
 
                 OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
                 orgUserUpLoadDto.setUserId(userId);
@@ -724,8 +735,8 @@ public class MohIntranetUserDelegator {
                 }
                 orgUserUpLoadDto.setMsg(valiant);
                 orgUserUpLoadDtos.add(orgUserUpLoadDto);
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
                 continue;
             }
         }
@@ -737,11 +748,103 @@ public class MohIntranetUserDelegator {
                     log.error(e.getMessage(), e);
                     log.info(StringUtil.changeForLog("========================egpUser================"));
                 }
-
             }
             intranetUserService.createIntranetUsers(orgUserDtos);
         }
-        bpc.request.setAttribute("orgUserUpLoadDtos", orgUserUpLoadDtos);
+        ParamUtil.setSessionAttr(bpc.request, "orgUserUpLoadDtos", (Serializable) orgUserUpLoadDtos);
+        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", (Serializable) orgUserDtos1);
+    }
+
+    private void importXMLExistUserId(File file, BaseProcessClass bpc) throws DocumentException {
+        SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(file);
+        //root
+        Element root = document.getRootElement();
+        //ele
+        List list = root.elements();
+        List<OrgUserDto> orgUserDtos1 = IaisCommonUtils.genNewArrayList();
+        List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i < list.size(); i++) {
+            try {
+                Element element = (Element) list.get(i);
+                String userId = element.element("userId").getText();
+                String displayName = element.element("displayName").getText();
+                String startDateStr = element.element("accountActivationStart").getText();
+                Date startDate = DateUtil.parseDate(startDateStr, "yyyy-MM-dd");
+                String endDateStr = element.element("accountActivationEnd").getText();
+                Date endDate = DateUtil.parseDate(endDateStr, "yyyy-MM-dd");
+                String salutation = element.element("salutation").getText();
+                String firstName = element.element("firstName").getText();
+                String lastName = element.element("lastName").getText();
+                String organization = element.element("organization").getText();
+                String division = element.element("division").getText();
+                String branchUnit = element.element("branchUnit").getText();
+                String mobileNo = element.element("mobileNo").getText();
+                String officeNo = element.element("officeNo").getText();
+                String email = element.element("email").getText();
+                String remarks = element.element("remarks").getText();
+                OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
+                OrgUserDto orgUserDto = new OrgUserDto();
+                if (intranetUserByUserId != null) {
+                    orgUserDto.setId(intranetUserByUserId.getId());
+                }
+                orgUserDto.setUserId(userId);
+                orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
+                orgUserDto.setFirstName(firstName);
+                orgUserDto.setLastName(lastName);
+                orgUserDto.setDisplayName(displayName);
+                orgUserDto.setAccountActivateDatetime(startDate);
+                orgUserDto.setAccountDeactivateDatetime(endDate);
+                orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
+                orgUserDto.setBranchUnit(branchUnit);
+                orgUserDto.setDivision(division);
+                orgUserDto.setSalutation(salutation);
+                orgUserDto.setOrganization(organization);
+                orgUserDto.setEmail(email);
+                orgUserDto.setMobileNo(mobileNo);
+                orgUserDto.setOfficeTelNo(officeNo);
+                orgUserDto.setRemarks(remarks);
+                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
+                orgUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                orgUserDto.setAvailable(Boolean.FALSE);
+                orgUserDtos1.add(orgUserDto);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                continue;
+            }
+        }
+        ParamUtil.setSessionAttr(bpc.request, "orgUserUpLoadDtos", (Serializable) orgUserUpLoadDtos);
+        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", (Serializable) orgUserDtos1);
+    }
+
+    private boolean importUserIdValiant(File file) throws DocumentException {
+        SAXReader saxReader = new SAXReader();
+        Document document = saxReader.read(file);
+        //root
+        Element root = document.getRootElement();
+        //ele
+        List list = root.elements();
+        List<String> userIds = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i < list.size(); i++) {
+            try {
+                Element element = (Element) list.get(i);
+                String userId = element.element("userId").getText();
+                userIds.add(userId);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                continue;
+            }
+        }
+        if (!IaisCommonUtils.isEmpty(userIds)) {
+            for (String userId : userIds) {
+                OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
+                if (intranetUserByUserId != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private List<String> valiant(OrgUserDto orgUserDto) {
@@ -751,15 +854,6 @@ public class MohIntranetUserDelegator {
             if (!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")) {
                 String error = "UserId is Alphanumeric.";
                 errors.add(error);
-            } else {
-                OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
-                if (intranetUserByUserId != null) {
-                    String valiuserId = intranetUserByUserId.getUserId();
-                    if (userId.equals(valiuserId)) {
-                        String error = "UserId is exist.";
-                        errors.add(error);
-                    }
-                }
             }
         } else {
             String error = "UserId is a mandatory field..";
