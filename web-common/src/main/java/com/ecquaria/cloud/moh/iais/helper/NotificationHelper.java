@@ -20,12 +20,6 @@ import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +27,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executor;
 
 /**
  * @author: yichen
@@ -327,11 +328,13 @@ public class NotificationHelper {
 			});
 		}
 
-		List<OrgUserDto> userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
-		if (!IaisCommonUtils.isEmpty(userList)) {
-			for (OrgUserDto u : userList) {
-				if (!StringUtil.isEmpty(u.getEmail())) {
-					set.add(u.getEmail());
+		if (!IaisCommonUtils.isEmpty(passRoles)){
+			List<OrgUserDto> userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
+			if (!IaisCommonUtils.isEmpty(userList)) {
+				for (OrgUserDto u : userList) {
+					if (!StringUtil.isEmpty(u.getEmail())) {
+						set.add(u.getEmail());
+					}
 				}
 			}
 		}

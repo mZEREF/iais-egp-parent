@@ -27,10 +27,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -222,83 +223,82 @@ public class ApplicationServiceImpl implements ApplicationService {
         final String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT;
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
 
-        templateContent.put("newSystem", "test");
+        templateContent.put("newSystem", "<a href=\"https://egp.sit.inter.iais.com/main-web\">HALP</a>");
         templateContent.put("moh_email", "test");
-        templateContent.put("MOH_NAME", "test");
-        for (SelfAssMtEmailDto i : allAssLt){
+        templateContent.put("MOH_NAME", StringUtil.viewHtml("MOH-HALP"));
+
+        for (SelfAssMtEmailDto i : allAssLt) {
             String reqRefNum;
             String refType;
             List<ApplicationDto> appList;
             String randomStr = IaisEGPHelper.generateRandomString(26);
             int msgTrackRefNumType = i.getMsgTrackRefNumType();
 
-            if (msgTrackRefNumType == 1){
-                refType = NotificationHelper.RECEIPT_TYPE_APP_GRP;
-                reqRefNum = i.getGroupId();
-                appList = i.getAppList();
+            LicenseeDto licenseeDto= inspEmailService.getLicenseeDtoById(i.getLicenseeId());
+            if (licenseeDto != null){
+                //pending submit self ass mt
+                if (msgTrackRefNumType == 1) {
+                    refType = NotificationHelper.RECEIPT_TYPE_APP_GRP;
+                    reqRefNum = i.getGroupId();
+                    appList = i.getAppList();
+                    boolean flag = false;
+                    StringBuilder svcNameStr = new StringBuilder();
+                    if (!IaisCommonUtils.isEmpty(appList)) {
+                        for (ApplicationDto app : appList) {
+                            if (!flag) {
+                                String appNum = app.getApplicationNo();
+                                String[] split = appNum.split("-");
+                                String appType = MasterCodeUtil.getCodeDesc(app.getApplicationType());
+                                Date appSubmitDate = app.getStartDate();
 
-                boolean flag = false;
-                StringBuilder svcNameStr = new StringBuilder();
-                for (ApplicationDto app : appList){
-                    if (!flag){
-                        String appNum = app.getApplicationNo();
-                        String[] split = appNum.split("-");
-                        String appType = app.getApplicationType();
-                        Date appSubmitDate = app.getStartDate();
+                                templateContent.put("appNumber", StringUtil.viewHtml(split[0]));
+                                templateContent.put("appType", StringUtil.viewHtml(appType));
+                                templateContent.put("appSubmitDate", StringUtil.viewHtml(IaisEGPHelper.parseToString(appSubmitDate, "yyyy-MM-dd HH:mm:ss")));
+                                flag = true;
+                            }
 
-                        templateContent.put("appNumber", StringUtil.viewHtml(split[0]));
-                        templateContent.put("appType", StringUtil.viewHtml(appType));
-                        templateContent.put("appSubmitDate", StringUtil.viewHtml(IaisEGPHelper.parseToString(appSubmitDate, "yyyy-MM-dd HH:mm:ss")));
-                        flag = true;
+                            String svcId = app.getServiceId();
+                            HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
+                            if (serviceDto != null) {
+                                String svcName = serviceDto.getSvcName();
+                                svcNameStr.append("<li>").append(svcName).append("</li>");
+                            }
+                        }
+
+                        templateContent.put("svcNameList", svcNameStr.toString());
                     }
+                } else {
+                    // uncompleted self ass mt
+                    refType = NotificationHelper.RECEIPT_TYPE_APP;
+                    appList = i.getAppList();
+                    //never null
+                    ApplicationDto app = appList.get(0);
+                    reqRefNum = app.getApplicationNo();
+                    templateContent.put("appNumber", reqRefNum);
+                    templateContent.put("appType", app.getApplicationType());
+                    templateContent.put("appSubmitDate", IaisEGPHelper.parseToString(app.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
 
-                    String svcId = app.getServiceId();
-                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
-                    if (serviceDto != null){
+                    StringBuilder svcNameStr = new StringBuilder();
+                    HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(app.getServiceId());
+                    if (serviceDto != null) {
                         String svcName = serviceDto.getSvcName();
                         svcNameStr.append("<li>").append(svcName).append("</li>");
                     }
+                    templateContent.put("svcNameList", svcNameStr.toString());
                 }
 
-                LicenseeDto licenseeDto= inspEmailService.getLicenseeDtoById(i.getLicenseeId());
                 String applicantName = licenseeDto.getName();
                 templateContent.put("APPLICANT_NAME", StringUtil.viewHtml(applicantName));
-                templateContent.put("svcNameList", StringUtil.viewHtml(svcNameStr.toString()));
                 JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
                 jobRemindMsgTrackingDto.setMsgKey(i.getMsgTrackKey());
                 jobRemindMsgTrackingDto.setRefNo(reqRefNum);
                 jobRemindMsgTrackingDto.setCreateTime(new Date());
                 jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 notificationHelper.sendEmailWithJobTrack(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
-
-            }else {
-                refType = NotificationHelper.RECEIPT_TYPE_APP;
-                appList = i.getAppList();
-                //never null
-                ApplicationDto app = appList.get(0);
-                reqRefNum = app.getApplicationNo();
-                templateContent.put("appNumber", reqRefNum);
-                templateContent.put("appType", app.getApplicationType());
-                templateContent.put("appSubmitDate", IaisEGPHelper.parseToString(app.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
-
-                StringBuilder svcNameStr = new StringBuilder();
-                HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(app.getServiceId());
-                if (serviceDto != null){
-                    String svcName = serviceDto.getSvcName();
-                    svcNameStr.append("<li>").append(svcName).append("</li>");
-                }
-
-                templateContent.put("svcNameList", StringUtil.viewHtml(svcNameStr.toString()));
-                JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
-                jobRemindMsgTrackingDto.setMsgKey(i.getMsgTrackKey());
-                jobRemindMsgTrackingDto.setRefNo(reqRefNum);
-                jobRemindMsgTrackingDto.setCreateTime(new Date());
-                jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                notificationHelper.sendEmailWithJobTrack(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
-
             }
+
+            log.info("===>>>>alertSelfDeclNotification end");
         }
-        log.info("===>>>>alertSelfDeclNotification end");
     }
 
     @Override
