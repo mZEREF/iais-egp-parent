@@ -22,21 +22,19 @@
 </div>
 <div class="col-xs-12">
     <div class="col-xs-3">
-        <img src="<%=webroot1%>img/mastercard.png" width="40" height="25" alt="mastercard">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" width="66" height="35" alt="GIRO">
         &nbsp;
-        <img src="<%=webroot1%>img/paymentVISA.png" width="66" height="25" alt="VISA">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" width="66" height="35" alt="GIRO">
     </div>
     <div class="col-xs-2">
-        <img src="<%=webroot1%>img/paymentNets.png" width="66" height="25" alt="NETS">
-        <!--<img src="/hcsa-licence-web/iais/newApplication/paymentNets.png" width="66" height="25" alt="NETS"> -->
+        <img src="<%=webroot1%>img/paymentNets.png" width="66" height="30" alt="NETS">
     </div>
     <div class="col-xs-2">
-        <img src="<%=webroot1%>img/paymentPayNow.png" width="66" height="25" alt="PayNow">
-        <!--<img src="/hcsa-licence-web/iais/newApplication/paymentPayNow.png" width="66" height="25" alt="PayNow"> -->
+        <img src="https://abs.org.sg/images/default-album/paynow.png" width="66" height="35" alt="GIRO">
     </div>
     <divc class="col-xs-3">
         <%--<img src="/hcsa-licence-web/img/PereOceanGIRO.png" width="66" height="25" alt="GIRO">--%>
-        <img src="<%=webroot1%>img/PereOceanGIRO.png" width="66" height="25" alt="GIRO">
+        <img src="<%=webroot1%>img/PereOceanGIRO.png" width="66" height="30" alt="GIRO">
     </divc>
 </div>
 <div class="col-xs-12">
