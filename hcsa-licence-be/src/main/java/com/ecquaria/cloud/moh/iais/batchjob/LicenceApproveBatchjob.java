@@ -1566,8 +1566,21 @@ public class LicenceApproveBatchjob {
             //licenceDto.setLicenceNo(licenceNo);
             licenceDto.setVersion(version);
             licenceDto.setFeeRetroNeeded(false);
+
+            //0066047
+            Date today=new Date();
+            boolean effectiveBoolean = true;
+            Date effectiveDate = applicationGroupDto.getEffectDate();
+            log.info(StringUtil.changeForLog("The effectiveDate is -->:"+effectiveDate));
+            if(effectiveDate != null){
+                if(today.before(effectiveDate)){
+                    effectiveBoolean =  false;
+                }
+            }
+            log.info(StringUtil.changeForLog("The effectiveBoolean is -->:"+effectiveBoolean));
+
             //0065635
-            if(applicationDto!=null&&ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
+            if((applicationDto!=null&&ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) || !effectiveBoolean){
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_APPROVED);
             }else{
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
