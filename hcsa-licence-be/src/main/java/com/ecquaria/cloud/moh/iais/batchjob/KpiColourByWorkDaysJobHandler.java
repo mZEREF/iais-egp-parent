@@ -180,7 +180,7 @@ public class KpiColourByWorkDaysJobHandler extends IJobHandler {
                     }
                 }
             }
-            workAndNonMap.put(allWorkDays, allHolidays);
+            workAndNonMap.put(allWorkDays, allHolidays);//NOSONAR
             if(workAndNonMap != null){
                 for(Map.Entry<Integer, Integer> map:workAndNonMap.entrySet()){
                     days = map.getKey();
