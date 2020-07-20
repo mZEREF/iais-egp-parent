@@ -32,7 +32,7 @@
   }
 </style>
 <script type="text/javascript">
-
+    document.title = 'HALP';
     $(document).ready(function () {
         //Binding method
         $('#previewNext').click(function () {
@@ -69,6 +69,5 @@
             }
         });
     }
-
 
 </script>

@@ -759,17 +759,22 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             map.put(applicationGroupDto.getId(),list);
         }
+        List<ApplicationDto>  updateTaskList=IaisCommonUtils.genNewArrayList();
         map.forEach((k,v)->{
+            boolean flag=false;
             for(ApplicationDto application :v){
                 if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY)){
                     requestForInforList.add(application);
+                    flag=true;
                 }
+            }
+            if(flag){
+                updateTaskList.addAll(v);
             }
         });
     }
 
     private void update(List<ApplicationDto> list,List<ApplicationGroupDto> applicationGroup,List<ApplicationDto>  applicationList){
-
 
         Map<ApplicationGroupDto,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
         for (ApplicationGroupDto every : applicationGroup) {
@@ -811,11 +816,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         requestForChange--;
                     }
                     if(requestForChange==i){
-
                         if(!autoRfc){
                             list.addAll(applicationDtoList);
                         }
-
                     }
                 }
 
@@ -844,7 +847,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                     if(reNew==i){
                         if(!autoRfc){
-                            //all reNew application
                             list.addAll(applicationDtoList);
                         }
                     }
@@ -867,6 +869,23 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
         });
 
+
+    }
+
+    private void updateTask(List<ApplicationDto>  updateTaskList){
+        if(updateTaskList==null){
+            return;
+        }
+        List<ApplicationDto> removeList=IaisCommonUtils.genNewArrayList();
+        for(ApplicationDto applicationDto : updateTaskList){
+            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationDto.getStatus())){
+                removeList.add(applicationDto);
+            }
+        }
+        updateTaskList.removeAll(removeList);
+        for(ApplicationDto applicationDto : updateTaskList){
+
+        }
 
     }
 

@@ -593,7 +593,7 @@ public class HcsaConfigClientFallback implements HcsaConfigClient{
     }
 
     @Override
-    public FeignResponseEntity saveHcsaServiceConfig(HcsaServiceConfigDto hcsaServiceConfigDto) {
+    public FeignResponseEntity<HcsaServiceConfigDto> saveHcsaServiceConfig(HcsaServiceConfigDto hcsaServiceConfigDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

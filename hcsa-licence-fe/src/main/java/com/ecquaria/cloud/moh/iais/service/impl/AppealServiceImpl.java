@@ -109,30 +109,16 @@ public class AppealServiceImpl implements AppealService {
     private RequestForChangeService requestForChangeService;
 
     @Override
-    public List<String> reasonAppeal(String applicationNoOrLicenceNo) {
-        ApplicationDto applicationDto = applicationClient.getApplicationDtoByVersion(applicationNoOrLicenceNo).getEntity();
-        if (applicationDto != null) {
-            String applicationType = applicationDto.getApplicationType();
-        }
-
-
-        return null;
-    }
-
-    @Override
     public String submitData(HttpServletRequest request) {
         String appealingFor = (String) request.getSession().getAttribute(APPEALING_FOR);
         String type = (String) request.getSession().getAttribute(TYPE);
         if (LICENCE.equals(type)) {
             return licencePresmises(request, appealingFor);
         } else if (APPLICATION.equals(type)) {
-
             return applicationPresmies(request, appealingFor);
         } else {
             return null;
         }
-
-
     }
 
     @Override
@@ -215,7 +201,10 @@ public class AppealServiceImpl implements AppealService {
                     entity.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                 }
                 entity.setLicenseeId(licenseeId);
-                req.setAttribute("saveDraftSuccess", "success");
+                Object errorMsg = req.getAttribute("errorMsg");
+                if(errorMsg==null){
+                    req.setAttribute("saveDraftSuccess", "success");
+                }
                 applicationClient.saveDraft(entity).getEntity();
             }
             appPremiseMiscDto.setRemarks(remarks);
@@ -258,7 +247,10 @@ public class AppealServiceImpl implements AppealService {
         req.setAttribute("appPremiseMiscDto", appPremiseMiscDto);
         req.setAttribute(APPEALING_FOR, appealingFor);
         req.getSession().setAttribute("saveDraftNo", draftNo);
-        req.setAttribute("saveDraftSuccess", "success");
+        Object errorMsg = req.getAttribute("errorMsg");
+        if(errorMsg==null){
+            req.setAttribute("saveDraftSuccess", "success");
+        }
         return null;
     }
 

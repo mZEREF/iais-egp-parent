@@ -272,8 +272,8 @@ public interface HcsaConfigClient {
     @PostMapping(value = "/iais-hcsa-service/application-type-by-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Set<String>> getAppGrpPremisesTypeBySvcId(@RequestBody List<String> serviceId);
 
-    @PostMapping(value = "/hcsa-config/hcsa-service-config-dto", consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity saveHcsaServiceConfig(@RequestBody HcsaServiceConfigDto hcsaServiceConfigDto);
+    @PostMapping(value = "/hcsa-config/hcsa-service-config-dto", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<HcsaServiceConfigDto> saveHcsaServiceConfig(@RequestBody HcsaServiceConfigDto hcsaServiceConfigDto);
 
     @GetMapping(value = "/iais-hcsa-service/svc-personnel-by-service-id", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcPersonnelDto>> getSvcPersonnelByServiceId(@RequestParam("serviceId") String serviceId);

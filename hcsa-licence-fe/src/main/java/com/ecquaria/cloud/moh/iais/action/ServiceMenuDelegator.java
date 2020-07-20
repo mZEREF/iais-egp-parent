@@ -237,7 +237,7 @@ public class ServiceMenuDelegator {
             getDraft(bpc);
             String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
             if("continue".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, crud_action_additional);
+
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -796,7 +796,9 @@ public class ServiceMenuDelegator {
                     getDraft(bpc);
                     String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
                     if("continue".equals(crud_action_value)){
-                        bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
+                        List<String> list=new ArrayList<>(1);
+                        list.add(draftNo);
+                        applicationClient.deleteDraftNUmber(list);
                         bpc.request.getSession().setAttribute("DraftNumber", null);
                     }else if("resume".equals(crud_action_value)){
                         bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -822,7 +824,9 @@ public class ServiceMenuDelegator {
                 getDraft(bpc);
                 String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
                 if("continue".equals(crud_action_value)){
-                    bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
+                    List<String> list=new ArrayList<>(1);
+                    list.add(draftNo);
+                    applicationClient.deleteDraftNUmber(list);
                     bpc.request.getSession().setAttribute("DraftNumber", null);
                 }else if("resume".equals(crud_action_value)){
                     bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -873,7 +877,9 @@ public class ServiceMenuDelegator {
             getDraft(bpc);
             String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
             if("continue".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
+                List<String> list=new ArrayList<>(1);
+                list.add(draftNo);
+                applicationClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -891,7 +897,9 @@ public class ServiceMenuDelegator {
             getDraft(bpc);
             String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
             if("continue".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
+                List<String> list=new ArrayList<>(1);
+                list.add(draftNo);
+                applicationClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -975,7 +983,9 @@ public class ServiceMenuDelegator {
             getDraft(bpc);
             String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
             if("continue".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
+                List<String> list=new ArrayList<>(1);
+                list.add(draftNo);
+                applicationClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
@@ -992,7 +1002,9 @@ public class ServiceMenuDelegator {
             getDraft(bpc);
             String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
             if("continue".equals(crud_action_value)){
-                bpc.request.getSession().setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, draftNo);
+                List<String> list=new ArrayList<>(1);
+                list.add(draftNo);
+                applicationClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);

@@ -10,8 +10,6 @@ import java.util.Map;
  */
 public interface AppealService {
 
-    List<String>  reasonAppeal(String applicationNoOrLicenceNo);
-
     String submitData(HttpServletRequest request);
 
     String saveData(HttpServletRequest request);

@@ -11,8 +11,8 @@
 %>
 
 <%@include file="./dashboard.jsp" %>
-<div class="main-content">
-  <form id="mainForm" enctype="multipart/form-data" style="margin-left: 15%" class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
+<div class="container">
+  <form id="mainForm" enctype="multipart/form-data"  class="__egovform" method="post" action=<%=process.runtime.continueURL()%> >
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
@@ -109,7 +109,7 @@
   <div >
     <div>
       <div class="col-xs-12 col-md-10" >
-        <label style="font-size: 25px;margin-top: 25px;" >File Upload For Appeal Reasons</label>
+        <label style="font-size: 25px;margin-top: 25px;margin-left: 1%" >File Upload For Appeal Reasons</label>
       </div>
 
       <div class="col-xs-12">
@@ -140,7 +140,7 @@
     <br> <br> <br>
     <div >
       <div class="row">
-        <div class="col-xs-12 col-sm-10" style="margin-bottom: 1%">
+        <div class="col-xs-12 col-sm-12" style="margin-bottom: 1%">
           <div class="text-right text-center-mobile">
             <a class="btn btn-secondary" href="#" id="cancel">Cancel</a>
             <a class="btn btn-secondary" href="#" id="save">Save</a>

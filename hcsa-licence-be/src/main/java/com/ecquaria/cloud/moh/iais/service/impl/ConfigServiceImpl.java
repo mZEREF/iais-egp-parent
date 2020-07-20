@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
@@ -192,16 +193,14 @@ public class ConfigServiceImpl implements ConfigService {
 
         gatewayClient.saveFeServiceConfig(hcsaServiceConfigDto,signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization());
-
+        HcsaServiceCacheHelper.receiveServiceMapping();
         // todo send email
         request.setAttribute("option","added");
         request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
         try {
             sendEmail(request);
-        } catch (IOException e) {
+        } catch (Exception e) {
          log.error(e.getMessage(),e);
-        } catch (TemplateException e) {
-            log.error(e.getMessage(),e);
         }
         request.setAttribute("crud_action_type", "save");
     }
@@ -272,7 +271,7 @@ public class ConfigServiceImpl implements ConfigService {
                     signature2.date(), signature2.authorization());
             request.setAttribute("crud_action_type", "save");
             //todo send email update (if start date or end date change need send  Effective Start/End )
-
+            HcsaServiceCacheHelper.receiveServiceMapping();
          /*   request.setAttribute("option","updated");
             request.setAttribute("serviceName",hcsaServiceDto.getSvcName());
             try {
