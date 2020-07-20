@@ -66,7 +66,7 @@ public class CessationEffectiveDateBatchjob {
         log.debug(StringUtil.changeForLog("The CessationEffectiveDateBatchjob is start ..."));
     }
 
-    public void doBatchJob(BaseProcessClass bpc) throws Exception {
+    public void doBatchJob(BaseProcessClass bpc) {
         //licence
         log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
         Date date = new Date();

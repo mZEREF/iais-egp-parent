@@ -80,7 +80,7 @@
                                                 </iais:row>
                                                 <div id="${num.count}reason${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value=""/>
+                                                        <iais:field value="Others"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" maxLength="200"
                                                                         name="${num.count}otherReason${uid.count}"
@@ -147,7 +147,7 @@
                                                 </div>
                                                 <div id="${num.count}patHciName${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value=""/>
+                                                        <iais:field value="HCI Name"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" value="${appCessHci.patHciName}"
                                                                         maxLength="100"
@@ -157,7 +157,7 @@
                                                 </div>
                                                 <div id="${num.count}patRegNo${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value=""/>
+                                                        <iais:field value="Professional Regn No."/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" maxLength="20"
                                                                         name="${num.count}patRegNo${uid.count}"
@@ -167,17 +167,7 @@
                                                 </div>
                                                 <div id="${num.count}patOthers${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value=""/>
-                                                        <iais:value width="7">
-                                                            <iais:input type="text" value="${appCessHci.patOthers}"
-                                                                        maxLength="100"
-                                                                        name="${num.count}patOthers${uid.count}"></iais:input>
-                                                        </iais:value>
-                                                    </iais:row>
-                                                </div>
-                                                <div id="${num.count}patOthers${uid.count}" hidden>
-                                                    <iais:row>
-                                                        <iais:field value=""/>
+                                                        <iais:field value="Others"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" value="${appCessHci.patOthers}"
                                                                         maxLength="100"
@@ -187,7 +177,7 @@
                                                 </div>
                                                 <div id="${num.count}patNo${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value=""/>
+                                                        <iais:field value="Reason for no patients' records transfer"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" value="${appCessHci.patNoRemarks}"
                                                                         maxLength="200"

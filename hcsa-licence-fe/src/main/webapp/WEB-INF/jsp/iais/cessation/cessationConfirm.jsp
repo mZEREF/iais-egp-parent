@@ -78,7 +78,7 @@
                                                 </iais:row>
                                                 <div id="${num.count}reason${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value=""/>
+                                                        <iais:field value="Others"/>
                                                         <iais:value width="7">
                                                             <iais:input needDisabled="true" type="text"
                                                                         name="${num.count}otherReason${uid.count}"
@@ -137,7 +137,7 @@
                                                 </div>
                                                 <div id="${num.count}patHciName${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value=""/>
+                                                        <iais:field value="HCI Name"/>
                                                         <iais:value width="7">
                                                             <iais:input type="text" needDisabled="true" value="${appCessHci.patHciName}" maxLength="100" name="${num.count}patHciName${uid.count}"></iais:input>
                                                         </iais:value>
@@ -145,7 +145,7 @@
                                                 </div>
                                                 <div id="${num.count}patRegNo${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value=""/>
+                                                        <iais:field value="Professional Regn No."/>
                                                         <iais:value width="7">
                                                             <iais:input needDisabled="true" cssClass="disabled" type="text" name="${num.count}patRegNo${uid.count}" value="${appCessHci.patRegNo}"></iais:input>
                                                         </iais:value>
@@ -153,15 +153,7 @@
                                                 </div>
                                                 <div id="${num.count}patOthers${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value=""/>
-                                                        <iais:value width="7">
-                                                            <iais:input needDisabled="true" type="text" name="${num.count}patOthers${uid.count}" value="${appCessHci.patOthers}"></iais:input>
-                                                        </iais:value>
-                                                    </iais:row>
-                                                </div>
-                                                <div id="${num.count}patOthers${uid.count}" hidden>
-                                                    <iais:row>
-                                                        <iais:field value=""/>
+                                                        <iais:field value="Others"/>
                                                         <iais:value width="7">
                                                             <iais:input needDisabled="true" type="text" name="${num.count}patOthers${uid.count}" value="${appCessHci.patOthers}"></iais:input>
                                                         </iais:value>
@@ -169,7 +161,7 @@
                                                 </div>
                                                 <div id="${num.count}patNo${uid.count}" hidden>
                                                     <iais:row>
-                                                        <iais:field value=""/>
+                                                        <iais:field value="Reason for no patients' records transfer"/>
                                                         <iais:value width="7">
                                                             <iais:input needDisabled="true" type="text" name="${num.count}patNoRemarks${uid.count}" value="${appCessHci.patNoRemarks}"></iais:input>
                                                         </iais:value>
