@@ -491,11 +491,16 @@ public class BackendInboxDelegator {
                 String returnFee = appPremisesRecommendationDto.getRemarks();
                 if(!StringUtil.isEmpty(returnFee)){
                     String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
-                    AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
-                    appReturnFeeDto.setApplicationNo(oldApplicationNo);
-                    appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
-                    appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
-                    applicationViewService.saveAppReturnFee(appReturnFeeDto);
+                    if(!StringUtil.isEmpty(oldApplicationNo)){
+                        AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                        appReturnFeeDto.setApplicationNo(oldApplicationNo);
+                        appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
+                        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
+                        List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
+                        saveReturnFeeDtos.add(appReturnFeeDto);
+                        broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+                        broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
+                    }
                 }
             }
         }
@@ -617,7 +622,7 @@ public class BackendInboxDelegator {
                     //get and set return fee
                     saveApplicationDtoList = hcsaConfigMainClient.returnFee(saveApplicationDtoList).getEntity();
                     //save return fee
-                    saveRejectReturnFee(saveApplicationDtoList);
+                    saveRejectReturnFee(saveApplicationDtoList,broadcastApplicationDto);
                 }
             }
         }
@@ -635,7 +640,8 @@ public class BackendInboxDelegator {
         applicationViewService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
     }
 
-    private void saveRejectReturnFee(List<ApplicationDto> applicationDtos){
+    private void saveRejectReturnFee(List<ApplicationDto> applicationDtos,BroadcastApplicationDto broadcastApplicationDto){
+        List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
         //save return fee
         for(ApplicationDto applicationDto : applicationDtos){
             if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
@@ -643,8 +649,13 @@ public class BackendInboxDelegator {
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
                 appReturnFeeDto.setReturnAmount(applicationDto.getReturnFee());
                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
-                applicationViewService.saveAppReturnFee(appReturnFeeDto);
+                saveReturnFeeDtos.add(appReturnFeeDto);
+//                applicationService.saveAppReturnFee(appReturnFeeDto);
             }
+        }
+        if(!IaisCommonUtils.isEmpty(saveReturnFeeDtos)){
+            broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+            broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
         }
     }
 

@@ -1500,15 +1500,16 @@ public class HcsaApplicationDelegator {
                 String returnFee = appPremisesRecommendationDto.getRemarks();
                 if(!StringUtil.isEmpty(returnFee)){
                     String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
-                    AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
-                    appReturnFeeDto.setApplicationNo(oldApplicationNo);
-                    appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
-                    appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
-                    List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
-                    saveReturnFeeDtos.add(appReturnFeeDto);
-                    broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
-                    broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
-//                    applicationService.saveAppReturnFee(appReturnFeeDto);
+                    if(!StringUtil.isEmpty(oldApplicationNo)){
+                        AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                        appReturnFeeDto.setApplicationNo(oldApplicationNo);
+                        appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
+                        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
+                        List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
+                        saveReturnFeeDtos.add(appReturnFeeDto);
+                        broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+                        broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
+                    }
                 }
             }
         }
@@ -2271,6 +2272,8 @@ public class HcsaApplicationDelegator {
                 } else if (ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE.equals(reason)) {
                     isLateFeeAppealType = true;
                     isOtherAppealType = false;
+                } else if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
+
                 }
                 //file
                 AppPremisesSpecialDocDto appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
