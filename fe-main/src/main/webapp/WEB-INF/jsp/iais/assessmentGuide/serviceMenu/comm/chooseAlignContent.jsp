@@ -9,18 +9,14 @@
     }
 </style>
 <div class="row">
-    <div class="col-xs-12 col-md-3">
-    </div>
-    <div class="col-xs-12 col-md-6">
+    <div class="col-xs-12 col-md-67">
         <h3>
             Do you want to align the expiry date of your new licence(s)?
         </h3>
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-12 col-md-3">
-    </div>
-    <div class="col-xs-12 col-md-6">
+    <div class="col-xs-12 col-md-7">
         <div class="self-assessment-checkbox-gp gradient-light-grey">
             <div class="form-check" style="height: 10px;">
                 <input class="form-check-input" type="radio" name="isAlign" value="1" aria-invalid="false" <c:if test="${appSelectSvc.align}">checked="checked"</c:if> >

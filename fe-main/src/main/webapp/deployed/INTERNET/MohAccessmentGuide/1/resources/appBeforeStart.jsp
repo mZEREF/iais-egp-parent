@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/serviceMenu/appBeforeStart.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/assessmentGuide/serviceMenu/appBeforeStart.jsp"%>

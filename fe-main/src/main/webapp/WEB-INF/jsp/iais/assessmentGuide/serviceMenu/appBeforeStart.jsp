@@ -1,12 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: yichen
-  Date: 1/20/2020
-  Time: 10:24 AM
-  To change this template use File | Settings | File Templates.
---%>
-
-
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
@@ -16,8 +7,6 @@
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <webui:setLayout name="iais-internet"/>
-
-<div class="main-content">
   <div class="container">
     <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
       <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -27,15 +16,13 @@
       <c:set var="loginContext" value="${iais_Login_User_Info_Attr}"/>
       <br>
           <div class="navigation-gp">
-            <%@ include file="../dashboard.jsp" %>
+            <%@ include file="../../common/dashboardDropDown.jsp" %>
               <div class="col-xs-12">
                 <div class="dashboard-page-title">
                   <h1>New Licence Application</h1>
                 </div>
               </div>
       </div>
-
-
       <div class="instruction-content center-content">
         <h2>SERVICES SELECTED</h2>
         <ul class="service-list">
@@ -100,13 +87,8 @@
           </div>
         </div>
       </div>
-    <%--  <c:if test="${ not empty selectDraftNo }">
-          <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
-      </c:if>--%>
     </form>
-  </div>
 </div>
-
 <script>
   function doNext() {
       $("input[name='switch_action_type']").val("startApplication");
@@ -118,27 +100,18 @@
       $("#mainForm").submit();
   }
 
-  function saveDraft() {
-
-  }
-
-  function cancelSaveDraft() {
-
-  }
-
   $(".license-view").click(function () {
-    $("input[name='switch_action_type']").val("Licensee");
-    $("#mainForm").submit();
-  })
+      $("input[name='switch_action_type']").val("Licensee");
+      $("#mainForm").submit();
+  });
 
   $(".authorise-view").click(function () {
     $("input[name='switch_action_type']").val("Authorised");
     $("#mainForm").submit();
-  })
+  });
 
   $(".medAlert-view").click(function () {
     $("input[name='switch_action_type']").val("MedAlert");
     $("#mainForm").submit();
-  })
-</script
+  });
 </script>

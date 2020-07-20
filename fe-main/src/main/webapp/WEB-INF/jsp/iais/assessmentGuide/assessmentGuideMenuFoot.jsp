@@ -28,6 +28,10 @@
         $("#mainForm").submit();
     }
 
+    $("#applyLicence").click(function(){
+        guideSubmit("new1","main");
+    });
+
     $("#withdrawApplication").click(function(){
         guideSubmit("withdraw","main");
     });

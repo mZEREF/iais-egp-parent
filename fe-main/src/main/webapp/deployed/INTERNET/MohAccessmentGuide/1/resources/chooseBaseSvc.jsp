@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/serviceMenu/chooseBaseSvc.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/assessmentGuide/serviceMenu/chooseBaseSvc.jsp"%>

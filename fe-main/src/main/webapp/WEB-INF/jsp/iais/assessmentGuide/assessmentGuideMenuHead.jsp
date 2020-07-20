@@ -11,6 +11,7 @@
 
 <webui:setLayout name="iais-internet"/>
 <%@include file="./dashboard.jsp" %>
+<%@include file="serviceMenu/comm/comFun.jsp"%>
 <style>
     .table-info-display {
         margin: 20px 0px 5px 0px;
@@ -43,6 +44,9 @@
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="guide_action_type" id="guide_action_type"/>
         <input type="hidden" name="guide_action_type" id="guide_action_value"/>
+        <input type="hidden" name="crud_action_type"/>
+        <input type="hidden" name="crud_action_additional"/>
+        <input type="hidden" name="crud_action_type_form"/>
         <div class="main-content">
             <div class="row">
                 <div class="col-xs-12">

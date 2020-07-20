@@ -5,9 +5,7 @@
     }
 </style>
 <div class="row">
-    <div class="col-xs-12 col-md-3">
-    </div>
-    <div class="col-xs-12 col-md-6">
+    <div class="col-xs-12 col-md-7">
         <h3>
             You may choose to align the expiry date of your new licence(s) to any of your existing licences.
         </h3>
@@ -15,8 +13,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-12 col-md-3"></div>
-    <div class="col-xs-12 col-md-6">
+    <div class="col-xs-12 col-md-7">
         <table class="table">
             <thead>
                 <tr style="font-size: 16px;">
@@ -26,12 +23,6 @@
                     <td style="width:17%;"><strong>Expires on</strong></td>
                 </tr>
             </thead>
-
-
-
-            <%--<c:forEach items="${appAlignLic}" var="licInfo" varStatus="status">--%>
-
-            <%--</c:forEach>--%>
             <c:forEach var="lic" items="${licAlignSearchResult.rows}" varStatus="status">
                 <c:choose>
                     <c:when test="${'first' == lic.svcName}">
@@ -93,10 +84,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-12 col-md-3">
-
-    </div>
-    <div class="col-xs-6 col-md-6">
+    <div class="col-xs-6 col-md-7">
         <iais:pagination param="licAlignSearchParam" result="licAlignSearchResult"/>
     </div>
 </div>
