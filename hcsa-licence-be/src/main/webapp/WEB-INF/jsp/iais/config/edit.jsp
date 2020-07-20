@@ -483,7 +483,7 @@
             <label>Page name</label>
           </div >
           <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed"></span>
-          <div  class="col-xs-12 col-md-5"><input  type="text" maxlength="255" value="Laboratory Disciplines" ></div>
+          <div  class="col-xs-12 col-md-5"><input  type="text" maxlength="100" value="Laboratory Disciplines" ></div>
 
           <div class="form-group"  id="add">
             <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
