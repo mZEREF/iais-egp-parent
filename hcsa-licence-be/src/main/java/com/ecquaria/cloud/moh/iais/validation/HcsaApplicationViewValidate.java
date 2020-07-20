@@ -205,7 +205,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     private void checkIsUploadDMS(ApplicationViewDto applicationViewDto, Map<String, String> errMap){
             if(applicationViewDto != null){
                 if((applicationViewDto.getIsUpload() == null) || !applicationViewDto.getIsUpload()){
-                    errMap.put("document","DMS's reply email is mandatory to be uploaded");
+                    errMap.put("document","GENERAL_ERR0025");
                 }
             }
     }
