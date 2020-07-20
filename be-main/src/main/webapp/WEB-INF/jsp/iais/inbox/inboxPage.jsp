@@ -191,7 +191,7 @@
                 </c:when>
             </c:choose>
         </div>
-        <iais:confirm msg="Please select at least one application"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+        <iais:confirm msg="GENERAL_ERR0023"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
 
     </form>
 </div>
