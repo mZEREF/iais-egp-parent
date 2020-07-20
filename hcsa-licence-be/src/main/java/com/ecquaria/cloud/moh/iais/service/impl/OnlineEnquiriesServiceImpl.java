@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -46,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -75,7 +77,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -83,7 +84,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -260,10 +260,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             }
 
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-            Calendar c = Calendar.getInstance();
             try {
-                c.setTime(appPremisesRecommendationDto.getRecomInDate());
-                complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
                 complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
                 HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
                 hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
@@ -278,6 +275,15 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             }catch (NullPointerException e){
                 log.error(e.getMessage(), e);
                 complianceHistoryDto.setRiskTag("-");
+            }
+            AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+            try {
+                Calendar c = Calendar.getInstance();
+                c.setTime(appPreRecommentdationDtoDate.getRecomInDate());
+                complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+                complianceHistoryDto.setInspectionDateYear(null);
             }
             complianceHistoryDtos.add(complianceHistoryDto);
         }
@@ -296,11 +302,18 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         List<AppPremisesRecommendationDto>  appPremisesRecommendationDtos  = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         AppPremisesRecommendationDto ncRecommendationDto =appPremisesRecommendationDtos.get(0);
-        inspectionReportDto.setHciCode(licPremisesDto.get(0).getHciCode());
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appPremisesCorrelationId).getEntity();
+        inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
-
+        for (PremisesDto appGrpPremise:licPremisesDto
+        ) {
+            String adderss = MiscUtil.getAddress(appGrpPremise.getUnitNo(), appGrpPremise.getStreetName()
+                    ,appGrpPremise.getBuildingName(),appGrpPremise.getFloorNo(),appGrpPremise.getUnitNo(),appGrpPremise.getPostalCode());
+            if(adderss.equals(appInsRepDto.getHciAddress())){
+                inspectionReportDto.setHciCode(appGrpPremise.getHciCode());
+            }
+        }
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String appId = applicationDto.getId();
         String appGrpId = applicationDto.getAppGrpId();
@@ -502,7 +515,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         inspectionReportDto.setReportedBy(reportBy);
         inspectionReportDto.setReportNoteBy(leadName);
         inspectionReportDto.setServiceName(svcName);
-        inspectionReportDto.setHciCode(applicationViewDto.getHciCode());
         inspectionReportDto.setHciName(appInsRepDto.getHciName());
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
         inspectionReportDto.setReasonForVisit(reasonForVisit);
@@ -524,17 +536,18 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
         ApplicationViewDto applicationViewDto = insRepService.getApplicationViewDto(appPremisesCorrelationId);
         EnquiryInspectionReportDto insRepDto = getInsRepDto(applicationViewDto,licenceId);
-        ParamUtil.setSessionAttr(request, "insRepDto", insRepDto);
-        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-        appPremisesRecommendationDto.setChronoUnit(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getChronoUnit()}).get(0).getText());
-        LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
-        if(licenceDto!=null){
-            SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
-            appPremisesRecommendationDto.setPeriod(sdf.format(licenceDto.getStartDate())+"-"+sdf.format(licenceDto.getExpiryDate()));
+        try{
+            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+            if(appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVED)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVEDLTC)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.RFC_APPROVED)){
+                insRepDto.setRecommendation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getRecomDecision()}).get(0).getText()+" with "+appPremisesRecommendationDto.getRecomInNumber()+" "+MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getChronoUnit()}).get(0).getText()+" Licence");
+            }else {
+                insRepDto.setRecommendation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getRecomDecision()}).get(0).getText());
+            }
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+            insRepDto.setRecommendation("-");
         }
-        appPremisesRecommendationDto.setRecomDecision(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getRecomDecision()}).get(0).getText());
-        appPremisesRecommendationDto.setRiskLevel(insRepDto.getRiskLevel());
-        ParamUtil.setSessionAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
+        ParamUtil.setRequestAttr(request, "insRepDto", insRepDto);
         // 		preInspReport->OnStepProcess
     }
 

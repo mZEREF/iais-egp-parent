@@ -736,28 +736,29 @@
                                                             <p>&nbsp;Recommendation </p>
                                                         </td>
                                                         <td class="col-xs-4">
-                                                            &nbsp;${appPremisesRecommendationDto.recommendation}<c:if test="${empty appPremisesRecommendationDto.recommendation}">-</c:if>
+
+                                                            &nbsp;${insRepDto.recommendation}<c:if test="${empty insRepDto.recommendation}">-</c:if>
                                                         </td>
                                                         <td class="col-xs-4"></td>
                                                     </tr>
-                                                    <tr id="period" >
-                                                        <td class="col-xs-4">
-                                                            <p>&nbsp;Period </p>
-                                                        </td>
-                                                        <td class="col-xs-4">
-                                                            &nbsp;${appPremisesRecommendationDto.period}
-                                                        </td>
-                                                        <td class="col-xs-4"></td>
-                                                    </tr>
-                                                    <tr id="selfPeriod" >
-                                                        <td class="col-xs-4">
-                                                            <p>&nbsp;Other Period </p>
-                                                        </td>
-                                                        <td class="col-xs-4">
-                                                            &nbsp;${appPremisesRecommendationDto.recomInNumber} ${appPremisesRecommendationDto.chronoUnit}
-                                                        </td>
-                                                        <td class="col-xs-4"></td>
-                                                    </tr>
+<%--                                                    <tr id="period" >--%>
+<%--                                                        <td class="col-xs-4">--%>
+<%--                                                            <p>&nbsp;Period </p>--%>
+<%--                                                        </td>--%>
+<%--                                                        <td class="col-xs-4">--%>
+<%--                                                            &nbsp;${appPremisesRecommendationDto.period}--%>
+<%--                                                        </td>--%>
+<%--                                                        <td class="col-xs-4"></td>--%>
+<%--                                                    </tr>--%>
+<%--                                                    <tr id="selfPeriod" >--%>
+<%--                                                        <td class="col-xs-4">--%>
+<%--                                                            <p>&nbsp;Other Period </p>--%>
+<%--                                                        </td>--%>
+<%--                                                        <td class="col-xs-4">--%>
+<%--                                                            &nbsp;${appPremisesRecommendationDto.recomInNumber} ${appPremisesRecommendationDto.chronoUnit}--%>
+<%--                                                        </td>--%>
+<%--                                                        <td class="col-xs-4"></td>--%>
+<%--                                                    </tr>--%>
                                                 </table>
                                             </div>
                                         </div>
