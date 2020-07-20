@@ -152,7 +152,7 @@ public class ServiceMenuDelegator {
         }else{
             if(basechks == null){
                 //no choose all
-                String err = "Base service should be selected.";
+                String err = MessageUtil.getMessageDesc("NEW_ERR0009");
                 ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                 ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
             }else{
@@ -205,13 +205,13 @@ public class ServiceMenuDelegator {
         }else {
             if(licenceJudge == null){
                 ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
-                String err = "Please select at least one licence.";
+                String err = MessageUtil.getMessageDesc("NEW_ERR0010");
                 ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                 ParamUtil.setRequestAttr(bpc.request, "action","err");
             }else if("1".equals(licenceJudge)) {
                 if(licence == null){
                     ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
-                    String err = "Please select at least one licence.";
+                    String err = MessageUtil.getMessageDesc("NEW_ERR0010");
                     ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
                     ParamUtil.setRequestAttr(bpc.request, "action","err");
                 }else{

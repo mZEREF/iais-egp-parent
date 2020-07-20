@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import lombok.extern.slf4j.Slf4j;
@@ -118,7 +119,7 @@ public class CessationApplicationFeDelegator {
             }
         }
         if (!choose) {
-            errorMap.put("choose", "Please select at least one licence");
+            errorMap.put("choose", MessageUtil.getMessageDesc("NEW_ERR0010"));
         }
         if (confirmDtos.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));

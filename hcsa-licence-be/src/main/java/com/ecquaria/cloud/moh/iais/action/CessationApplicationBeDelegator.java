@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
@@ -123,7 +124,7 @@ public class CessationApplicationBeDelegator {
             }
         }
         if (!choose) {
-            errorMap.put("choose", "Please select at least one licence");
+            errorMap.put("choose",MessageUtil.getMessageDesc("NEW_ERR0010"));
         }
         if (confirmDtos.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
