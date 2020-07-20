@@ -900,8 +900,8 @@ public class HalpAssessmentGuideDelegator {
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
                 appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
                 appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
-                appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
                 appSvcRelatedInfoDto.setAlignLicenceNo(alignLicenceNo);
+                appSvcRelatedInfoDto.setBaseServiceId(hcsaServiceDto.getId());
                 appSvcRelatedInfoDto.setLicPremisesId(licPremiseId);
                 appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
             }
@@ -935,8 +935,8 @@ public class HalpAssessmentGuideDelegator {
                 bpc.request.getSession().setAttribute("DraftNumber", attribute);
             }else if(attribute!=null){
                 //back to curr page
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
                 ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"loading");
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
             }
         }
         String switchStep = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
@@ -979,8 +979,8 @@ public class HalpAssessmentGuideDelegator {
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
             List<HcsaServiceDto> otherSvcDtoList = IaisCommonUtils.genNewArrayList();
             for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
-                String svcCode = hcsaServiceDto.getSvcCode();
                 int i = 0;
+                String svcCode = hcsaServiceDto.getSvcCode();
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                     if(svcCode.equals(appSvcRelatedInfoDto.getServiceCode())){
                         break;
@@ -1044,7 +1044,6 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void doRenewStep(BaseProcessClass bpc) throws IOException {
-
         String [] licIds = ParamUtil.getStrings(bpc.request, "renewLicenId");
         Map<String, String> renewErrorMap = IaisCommonUtils.genNewHashMap();
         String tmp = "The selected licence(s) is/are not eligible for renewal: ";
@@ -1109,8 +1108,14 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void backChooseSvc(BaseProcessClass bpc) {
-        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.RENEW_LICENCE_UPDATE_SEARCH_PARAM);
-        HalpSearchResultHelper.doSort(bpc.request,searchParam);
+
+    }
+    public void doPage(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("doPage start ..."));
+        SearchParam searchParamGroup = (SearchParam) ParamUtil.getSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM);
+        CrudHelper.doPaging(searchParamGroup,bpc.request);
+        AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
+        appSelectSvcDto.setAlignLicPremId("");
     }
 
     public void beforeJump(BaseProcessClass bpc) {
