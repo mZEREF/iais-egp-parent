@@ -178,21 +178,21 @@ public class RoundRobinCommPoolBatchJob {
                       taskDto.setDateAssigned(new Date());
                       taskDto.setAuditTrailDto(auditTrailDto);
                       taskDto = taskService.updateTask(taskDto);
-
+                      ApplicationViewDto applicationViewDto=applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
+                      if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL.equals(applicationViewDto.getApplicationDto().getStatus()) ||
+                              ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT.equals(applicationViewDto.getApplicationDto().getStatus())){
+                          taskDto.setUserId(null);
+                          taskDto = taskService.updateTask(taskDto);
+                          ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                          List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+                          applicationDtos.add(applicationDto);
+                          ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+                          assignReschedulingTask(taskDto,taskScoreDto.getUserId(), applicationDtos, auditTrailDto, applicationGroupDto);
+                      }
                   }catch (Exception e){
                       log.error(StringUtil.changeForLog("This  Task can not assign id-->:"+taskDto.getId()));
                   }
               }else{
-                  ApplicationViewDto applicationViewDto=applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
-                  if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL.equals(applicationViewDto.getApplicationDto().getStatus()) ||
-                          ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT.equals(applicationViewDto.getApplicationDto().getStatus())){
-
-                      ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-                      List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
-                      applicationDtos.add(applicationDto);
-                      ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-                      assignReschedulingTask(taskDto, applicationDtos, auditTrailDto, applicationGroupDto);
-                  }
                   log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob broadcast taskId -- >:" +taskDto.getId()));
               }
           }
@@ -244,7 +244,7 @@ public class RoundRobinCommPoolBatchJob {
     }
 
 
-    private void assignReschedulingTask(TaskDto td, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
+    private void assignReschedulingTask(TaskDto td,String userId, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
                                         ApplicationGroupDto applicationGroupDto) {
         //update
         td.setSlaDateCompleted(new Date());
@@ -265,7 +265,7 @@ public class RoundRobinCommPoolBatchJob {
         appPremInspCorrelationDto.setApplicationNo(applicationDto.getApplicationNo());
         appPremInspCorrelationDto.setId(null);
         appPremInspCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        appPremInspCorrelationDto.setUserId(null);
+        appPremInspCorrelationDto.setUserId(userId);
         appPremInspCorrelationDto.setAuditTrailDto(auditTrailDto);
         appPremInspCorrelationDtoList.add(appPremInspCorrelationDto);
 
@@ -281,7 +281,7 @@ public class RoundRobinCommPoolBatchJob {
         taskDto.setTaskKey(td.getTaskKey());
         taskDto.setTaskType(td.getTaskType());
         taskDto.setWkGrpId(td.getWkGrpId());
-        taskDto.setUserId(null);
+        taskDto.setUserId(userId);
         taskDto.setDateAssigned(new Date());
         taskDto.setRoleId(td.getRoleId());
         taskDto.setAuditTrailDto(auditTrailDto);
