@@ -30,7 +30,7 @@
       <div class="col-xs-12 col-md-8">
         <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
         <div class="col-xs-12 col-md-4">
-          <input id="serviceName" name="serviceName" type="text" readonly value="${hcsaServiceDto.svcName}">
+          <input id="serviceName" name="serviceName" maxlength="100" type="text" readonly value="${hcsaServiceDto.svcName}">
         </div>
       </div>
       </div>
@@ -38,7 +38,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="description">Service Description<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="description" name="description" readonly type="text" value="${hcsaServiceDto.svcDesc}">
+            <input id="description" name="description" maxlength="255" readonly type="text" value="${hcsaServiceDto.svcDesc}">
           </div>
         </div>
       </div>
@@ -46,7 +46,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="displayDescription">Service Display Description<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="displayDescription" name="displayDescription" readonly type="text" value="${hcsaServiceDto.svcDisplayDesc}">
+            <input id="displayDescription" name="displayDescription" maxlength="255" readonly type="text" value="${hcsaServiceDto.svcDisplayDesc}">
           </div>
         </div>
       </div>
@@ -55,7 +55,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceCode">Service Code<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceCode" type="text" name="serviceCode" readonly value="${hcsaServiceDto.svcCode}">
+            <input id="serviceCode" type="text" name="serviceCode" maxlength="3" readonly value="${hcsaServiceDto.svcCode}">
           </div>
         </div>
       </div>
@@ -152,10 +152,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-principalOfficer" readonly value="${PO.mandatoryCount}" placeholder="mandatory count">
+            <input type="text" name="man-principalOfficer" maxlength="2" readonly value="${PO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-principalOfficer"  readonly value="${PO.maximumCount}" placeholder="maximum count">
+            <input type="text" name="mix-principalOfficer" maxlength="2"  readonly value="${PO.maximumCount}" placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -165,10 +165,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label">Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-DeputyPrincipalOfficer" readonly value="${DPO.mandatoryCount}" placeholder="mandatory count">
+            <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" readonly value="${DPO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-DeputyPrincipalOfficer" readonly  value="${DPO.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" readonly  value="${DPO.maximumCount}"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -178,10 +178,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ClinicalGovernanceOfficer"  readonly value="${CGO.mandatoryCount}" placeholder="mandatory count">
+            <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2"  readonly value="${CGO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ClinicalGovernanceOfficer"  readonly value="${CGO.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  readonly value="${CGO.maximumCount}"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -191,10 +191,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ServicePersonnel" readonly value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
+            <input  type="text" name="man-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel" readonly value="${SVCPSN.maximumCount}" placeholder="maximum count">
+            <input  type="text" name="mix-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.maximumCount}" placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -202,11 +202,11 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Medalert Person<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text">
-            <input  type="text" name="man-MedalertPerson" value="${MAP.mandatoryCount}" placeholder="minimum count">
+            <input value="${MAP.id}" name="svcpsnId" maxlength="2" style="display:none;" type="text">
+            <input  type="text" name="man-MedalertPerson" maxlength="2" value="${MAP.mandatoryCount}" placeholder="minimum count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-MedalertPerson" value="${MAP.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-MedalertPerson" maxlength="2" value="${MAP.maximumCount}"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -216,7 +216,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument"  readonly  type="text" value="${NumberDocument}">
+            <input id="NumberDocument"  readonly  type="text" maxlength="2" value="${NumberDocument}">
           </div>
         </div>
       </div>
@@ -226,7 +226,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionDocument">Description of each Service-Related Document to
             be Uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionDocument"  value="${DescriptionDocument}" readonly type="text">
+            <input id="DescriptionDocument" maxlength="255"  value="${DescriptionDocument}" readonly type="text">
           </div>
 
         </div>
@@ -237,7 +237,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to
             be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="Numberfields" readonly type="text" value="${comDocConfigDtoSize}">
+            <input id="Numberfields" readonly type="text" maxlength="2" value="${comDocConfigDtoSize}">
           </div>
         </div>
       </div>
@@ -246,7 +246,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info field to be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionGeneral" readonly type="text" value="${comDocConfigDtosTitle}">
+            <input id="DescriptionGeneral" readonly type="text" maxlength="255" value="${comDocConfigDtosTitle}">
           </div>
         </div>
       </div>
@@ -451,7 +451,7 @@
           <div class="col-xs-12 col-md-7">
             <label>Page name</label>
           </div >
-          <div  class="col-xs-12 col-md-5"><input  type="text" value="Laboratory Disciplines" ></div>
+          <div  class="col-xs-12 col-md-5"><input  type="text" maxlength="255" value="Laboratory Disciplines" ></div>
 
           <div class="form-group"  id="add">
             <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">

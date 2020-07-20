@@ -30,7 +30,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceName" type="text"  value="${hcsaServiceDto.svcName}" name="serviceName" disabled>
+            <input id="serviceName" type="text" maxlength="100"  value="${hcsaServiceDto.svcName}" name="serviceName" disabled>
           </div>
         </div>
       </div>
@@ -38,7 +38,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="description">Service Description<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="description" type="text" value="${hcsaServiceDto.svcDesc}" disabled>
+            <input id="description" type="text" maxlength="255" value="${hcsaServiceDto.svcDesc}" disabled>
           </div>
         </div>
       </div>
@@ -46,7 +46,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="displayDescription">Service Display Description<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="displayDescription" type="text" value="${hcsaServiceDto.svcDisplayDesc}" disabled>
+            <input id="displayDescription" type="text" maxlength="255" value="${hcsaServiceDto.svcDisplayDesc}" disabled>
           </div>
         </div>
       </div>
@@ -55,7 +55,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceCode">Service Code<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceCode" type="text"  value="${hcsaServiceDto.svcCode}" disabled>
+            <input id="serviceCode" type="text" maxlength="3"  value="${hcsaServiceDto.svcCode}" disabled>
           </div>
         </div>
       </div>
@@ -143,11 +143,11 @@
         <div class="col-xs-12 col-md-8" >
           <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2" >
-            <input type="text"  disabled name="man-principalOfficer" value="${PO.mandatoryCount}" placeholder="mandatory count">
-            <input type="text" disabled name="poId" style="display: none" value="${PO.id}">
+            <input type="text"  disabled name="man-principalOfficer" maxlength="2" value="${PO.mandatoryCount}" placeholder="mandatory count">
+            <input type="text" disabled name="poId" style="display: none" maxlength="2" value="${PO.id}">
           </div>
           <div class="col-xs-12 col-md-2" >
-            <input type="text" disabled name="mix-principalOfficer" value="${PO.maximumCount}" placeholder="maximum count">
+            <input type="text" disabled name="mix-principalOfficer" maxlength="2" value="${PO.maximumCount}" placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -159,10 +159,10 @@
           <label class="col-xs-12 col-md-6 control-label" >Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  value="${DPO.id}" name="dpoId" style="display:none;" type="text">
-            <input  readonly type="text" name="man-DeputyPrincipalOfficer" value="${DPO.mandatoryCount}" placeholder="mandatory count">
+            <input  readonly type="text" name="man-DeputyPrincipalOfficer" maxlength="2" value="${DPO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" disabled name="mix-DeputyPrincipalOfficer" value="${DPO.maximumCount}"  placeholder="maximum count">
+            <input  type="text" disabled name="mix-DeputyPrincipalOfficer" maxlength="2" value="${DPO.maximumCount}"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -173,10 +173,10 @@
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${CGO.id}" name="cgoId" style="display:none;" type="text">
-            <input readonly  type="text" name="man-ClinicalGovernanceOfficer" value="${CGO.mandatoryCount}" placeholder="mandatory count">
+            <input readonly  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input disabled type="text" name="mix-ClinicalGovernanceOfficer" value="${CGO.maximumCount}"  placeholder="maximum count">
+            <input disabled type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.maximumCount}"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -186,11 +186,11 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input value="${SVCPSN.id}" name="svcpsnId" style="display:none;" type="text">
-            <input  readonly type="text" name="man-ServicePersonnel" value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
+            <input value="${SVCPSN.id}" name="svcpsnId" style="display:none;" maxlength="2" type="text">
+            <input  readonly type="text" name="man-ServicePersonnel" maxlength="2" value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel" disabled value="${SVCPSN.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-ServicePersonnel" maxlength="2" disabled value="${SVCPSN.maximumCount}"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -201,7 +201,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input  readonly id="NumberDocument" type="text">
+            <input  readonly id="NumberDocument" maxlength="2" type="text">
           </div>
         </div>
       </div>
@@ -211,7 +211,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionDocument">Description of each Service-Related Document to
             be Uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input readonly id="DescriptionDocument" type="text">
+            <input readonly id="DescriptionDocument" maxlength="255" type="text">
           </div>
         </div>
       </div>
@@ -221,7 +221,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to
             be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input readonly id="Numberfields" type="text">
+            <input readonly id="Numberfields" maxlength="2" type="text">
           </div>
         </div>
       </div>
@@ -230,7 +230,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info field to be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input disabled id="DescriptionGeneral" type="text">
+            <input disabled id="DescriptionGeneral" maxlength="255" type="text">
           </div>
         </div>
       </div>
@@ -429,7 +429,7 @@
           <div class="col-xs-12 col-md-7">
             <label>Page name</label>
           </div >
-          <div  class="col-xs-12 col-md-5"><input  type="text" value="Laboratory Disciplines" ></div>
+          <div  class="col-xs-12 col-md-5"><input  type="text" maxlength="255" value="Laboratory Disciplines" ></div>
 
           <div class="form-group"  id="add">
             <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">

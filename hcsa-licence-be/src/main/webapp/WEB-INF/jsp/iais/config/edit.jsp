@@ -179,11 +179,11 @@
         <div class="col-xs-12 col-md-8" >
           <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2" >
-            <input type="text" name="man-principalOfficer" value="${PO.mandatoryCount}" placeholder="minimum count">
-            <input type="text" name="poId" style="display: none" value="${PO.id}">
+            <input type="text" name="man-principalOfficer" maxlength="2" value="${PO.mandatoryCount}" placeholder="minimum count">
+            <input type="text" name="poId" style="display: none" maxlength="2" value="${PO.id}">
           </div>
           <div class="col-xs-12 col-md-2" >
-            <input type="text" name="mix-principalOfficer" value="${PO.maximumCount}" placeholder="maximum count">
+            <input type="text" name="mix-principalOfficer" maxlength="2" value="${PO.maximumCount}" placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -193,11 +193,11 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input value="${DPO.id}" name="dpoId" style="display:none;" type="text">
-            <input  type="text" name="man-DeputyPrincipalOfficer" value="${DPO.mandatoryCount}" placeholder="minimum count">
+            <input value="${DPO.id}" name="dpoId" style="display:none;" maxlength="2" type="text">
+            <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" value="${DPO.mandatoryCount}" placeholder="minimum count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-DeputyPrincipalOfficer" value="${DPO.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" value="${DPO.maximumCount}"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -207,11 +207,11 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input value="${CGO.id}" name="cgoId" style="display:none;" type="text">
-            <input  type="text" name="man-ClinicalGovernanceOfficer" value="${CGO.mandatoryCount}" placeholder="minimum count">
+            <input value="${CGO.id}" name="cgoId" style="display:none;" maxlength="2" type="text">
+            <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.mandatoryCount}" placeholder="minimum count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ClinicalGovernanceOfficer" value="${CGO.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.maximumCount}"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -221,11 +221,11 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input value="${SVCPSN.id}" name="svcpsnId" style="display:none;" type="text">
-            <input  type="text" name="man-ServicePersonnel" value="${SVCPSN.mandatoryCount}" placeholder="minimum count">
+            <input value="${SVCPSN.id}" name="svcpsnId" style="display:none;" type="text" maxlength="2">
+            <input  type="text" name="man-ServicePersonnel" value="${SVCPSN.mandatoryCount}" maxlength="2" placeholder="minimum count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel" value="${SVCPSN.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-ServicePersonnel" value="${SVCPSN.maximumCount}" maxlength="2"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -235,10 +235,10 @@
           <label class="col-xs-12 col-md-6 control-label" >Medalert Person<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text">
-            <input  type="text" name="man-MedalertPerson" value="${MAP.mandatoryCount}" placeholder="minimum count">
+            <input  type="text" name="man-MedalertPerson" value="${MAP.mandatoryCount}" maxlength="2" placeholder="minimum count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-MedalertPerson" value="${MAP.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-MedalertPerson" value="${MAP.maximumCount}" maxlength="2"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -248,7 +248,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument" type="text" value="${NumberDocument}" name="NumberDocument" maxlength="2">
+            <input id="NumberDocument" type="text" value="${NumberDocument}" maxlength="2" name="NumberDocument" maxlength="2">
           </div>
         </div>
       </div>
@@ -258,7 +258,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionDocument">Description of each Service-Related Document to
             be Uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionDocument" type="text" value="${DescriptionDocument}" name="DescriptionDocument" maxlength="255">
+            <input id="DescriptionDocument" type="text" value="${DescriptionDocument}" maxlength="255" name="DescriptionDocument" maxlength="255">
           </div>
         </div>
       </div>
@@ -483,7 +483,7 @@
             <label>Page name</label>
           </div >
           <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed"></span>
-          <div  class="col-xs-12 col-md-5"><input  type="text" value="Laboratory Disciplines" ></div>
+          <div  class="col-xs-12 col-md-5"><input  type="text" maxlength="255" value="Laboratory Disciplines" ></div>
 
           <div class="form-group"  id="add">
             <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">

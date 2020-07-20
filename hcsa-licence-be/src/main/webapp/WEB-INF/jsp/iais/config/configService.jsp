@@ -40,7 +40,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceName" type="text" name="serviceName" value="${hcsaServiceDto.svcName}">
+            <input id="serviceName" type="text" name="serviceName" maxlength="100" value="${hcsaServiceDto.svcName}">
             <span name="iaisErrorMsg" class="error-msg" id="error_svcName"></span>
             <span name="iaisErrorMsg" class="error-msg" id="error_Name"></span>
           </div>
@@ -50,7 +50,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="description">Service Description<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="description" type="text" name="description" value="${hcsaServiceDto.svcDesc}">
+            <input id="description" type="text" name="description" maxlength="255" value="${hcsaServiceDto.svcDesc}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcDesc"></span>
           </div>
         </div>
@@ -59,7 +59,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="displayDescription">Service Display Description<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="displayDescription" type="text" name="displayDescription" value="${hcsaServiceDto.svcDisplayDesc}">
+            <input id="displayDescription" type="text" name="displayDescription" maxlength="255" value="${hcsaServiceDto.svcDisplayDesc}">
             <span class="error-msg" name="iaisErrorMsg" id="error_svcDisplayDesc"></span>
           </div>
         </div>
@@ -249,11 +249,11 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Medalert Person<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text">
-            <input  type="text" name="man-MedalertPerson" value="${MAP.mandatoryCount}" placeholder="minimum count">
+            <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text" maxlength="2">
+            <input  type="text" name="man-MedalertPerson" value="${MAP.mandatoryCount}" maxlength="2" placeholder="minimum count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-MedalertPerson" value="${MAP.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-MedalertPerson" value="${MAP.maximumCount}" maxlength="2"  placeholder="maximum count">
           </div>
         </div>
       </div>
@@ -273,7 +273,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionDocument">Description of each Service-Related Document to
             be Uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionDocument" type="text" name="DescriptionDocument" value="${descriptionDocument}">
+            <input id="DescriptionDocument" type="text" name="DescriptionDocument" maxlength="255" value="${descriptionDocument}">
           </div>
         </div>
       </div>
@@ -283,7 +283,7 @@
           <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to
             be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="Numberfields" type="text" name="Numberfields" value="${numberfields}">
+            <input id="Numberfields" type="text" name="Numberfields" maxlength="2" value="${numberfields}">
           </div>
         </div>
       </div>
@@ -292,7 +292,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info field to be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionGeneral" type="text" name="DescriptionGeneral" value="${descriptionGeneral}">
+            <input id="DescriptionGeneral" type="text" name="DescriptionGeneral" maxlength="255" value="${descriptionGeneral}">
           </div>
         </div>
       </div>
