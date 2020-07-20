@@ -121,7 +121,16 @@
                 <artifactId>ecq-sz-commons</artifactId>
                 <version>0.4</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.ncs.secureconnect</groupId>
+                <artifactId>sim-lite</artifactId>
+                <version>1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ncs.secureconnect</groupId>
+                <artifactId>sim-entities</artifactId>
+                <version>1.0</version>
+            </dependency>
             <dependency>
                 <groupId>com.ecquaria.submission.client</groupId>
                 <artifactId>submissionclient</artifactId>
