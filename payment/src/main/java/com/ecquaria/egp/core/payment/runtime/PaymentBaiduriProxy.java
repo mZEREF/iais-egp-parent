@@ -6,6 +6,7 @@ import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUti
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
@@ -74,19 +75,22 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			logger.debug(e1.getMessage());
 			throw new PaymentException(e1);
 		}
-		HttpServletRequest request = bpc.request;
 
 		String amo = fields.get("vpc_Amount");
 		String payMethod = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
+		String returnUrl=this.getPaymentData().getContinueUrl();
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
 			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
+			SrcSystemConfDto srcSystemConfDto =new SrcSystemConfDto();
 
 			double amount = Double.parseDouble(amo)/100;
 			paymentRequestDto.setAmount(amount);
 			paymentRequestDto.setPayMethod(payMethod);
 			paymentRequestDto.setReqDt(new Date());
 			paymentRequestDto.setReqRefNo(reqNo);
+			srcSystemConfDto.setReturnUrl(returnUrl);
+			paymentRequestDto.setSrcSystemConfDto(srcSystemConfDto);
 			PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPaymentResquset(paymentRequestDto);
 
 		}
@@ -172,9 +176,9 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		try {
 			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 
-//			StringBuilder bud = new StringBuilder();
+			PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
-			String bigsUrl ="https://" + request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment"+results;
+			String bigsUrl ="https://" + request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
 //			bud.append(bigsURL).append('?');
 //			appendQueryFields(bud, fields);
 

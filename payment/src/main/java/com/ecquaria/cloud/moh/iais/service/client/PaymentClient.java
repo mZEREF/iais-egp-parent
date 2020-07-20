@@ -6,7 +6,6 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -29,10 +28,10 @@ public interface PaymentClient {
     @PostMapping(value = "/isTxnRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> isTxnRef(@RequestBody List<String> txnRefNo);
 
-    @GetMapping(value = "/iais-payment/payment-reqRefNo",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-payment/payment-reqRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentDto> getPaymentDtoByReqRefNo(@RequestBody String reqRefNo);
 
-    @GetMapping(value = "/iais-payment/payment-request-reqRefNo",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-payment/payment-request-reqRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNo(@RequestBody String reqRefNo);
 
 }

@@ -5,13 +5,6 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.AtEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.EicClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicmEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.OnlineApptEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -19,13 +12,21 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.List;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.AtEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.EicClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.LicmEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.OnlineApptEicClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.List;
 
 /**
  * EicSelfRecoveJobHandler
