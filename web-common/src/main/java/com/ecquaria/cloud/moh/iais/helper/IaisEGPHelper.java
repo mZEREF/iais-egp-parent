@@ -36,6 +36,21 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.egp.api.EGPHelper;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpEntity;
@@ -50,22 +65,6 @@ import org.sqlite.date.FastDateFormat;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.servlet.webflow.HttpHandler;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 import static org.eclipse.jdt.internal.compiler.util.Util.UTF_8;
@@ -200,7 +199,9 @@ public final class IaisEGPHelper extends EGPHelper {
         User user = SessionManager.getInstance(request).getCurrentUser();
         HttpSession session = request.getSession();
         if (user != null) {
-            dto.setNricNumber(user.getId());
+            if (AppConsts.USER_DOMAIN_INTERNET.equals(user.getUserDomain())) {
+                dto.setNricNumber(user.getId());
+            }
             dto.setMohUserId(user.getId());
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if (loginContext != null) {
