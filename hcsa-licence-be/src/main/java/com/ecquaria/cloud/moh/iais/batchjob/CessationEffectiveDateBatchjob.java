@@ -93,7 +93,7 @@ public class CessationEffectiveDateBatchjob {
                         String appId = applicationDto.getId();
                         String status = applicationDto.getStatus();
                         AppPremiseMiscDto appPremiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
-                        if (appPremiseMiscDto != null && (ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(status))) {
+                        if (appPremiseMiscDto != null && (ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE.equals(status))) {
                             Date effectiveDate = appPremiseMiscDto.getEffectiveDate();
                             if (effectiveDate.compareTo(date) <= 0) {
                                 String originLicenceId = applicationDto.getOriginLicenceId();

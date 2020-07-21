@@ -321,7 +321,6 @@ public class CessationFeServiceImpl implements CessationFeService {
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<String> listAppIds = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appCessationDtos.size(); i++) {
-
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String licId = appCessationDto.getLicId();
             LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();

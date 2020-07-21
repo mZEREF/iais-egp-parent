@@ -1,6 +1,9 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
-import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
+import com.ecquaria.cloud.job.executor.handler.IJobHandler;
+import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
+import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -12,8 +15,8 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import sop.util.DateUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.Date;
 import java.util.List;
@@ -21,11 +24,12 @@ import java.util.Map;
 
 /**
  * @Author weilu
- * @Date 2020/4/27 8:27
+ * @Date 2020/7/21 10:15
  */
-@Delegator("licenceExpiredBatchJob")
+@JobHandler(value="licenceExpired")
+@Component
 @Slf4j
-public class LicenceExpiredBatchJob {
+public class LicenceExpiredJobHandler extends IJobHandler {
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
@@ -46,44 +50,47 @@ public class LicenceExpiredBatchJob {
 
     private final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
-    public void start(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("The licenceExpiredBatchJob is start ..."));
-    }
-
-    public void doBatchJob(BaseProcessClass bpc) throws Exception {
-        //licence
-        log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
-        Date date = new Date();
-        String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
-        String status = ApplicationConsts.LICENCE_STATUS_ACTIVE;
-        // get expired date == today de licence
-        List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
-        List<LicenceDto> licenceDtosForSave = IaisCommonUtils.genNewArrayList();
-        List<String> ids = IaisCommonUtils.genNewArrayList();
-        if (licenceDtos != null && !licenceDtos.isEmpty()) {
-            for (LicenceDto licenceDto : licenceDtos) {
-                try {
-                    String id = licenceDto.getId();
-                    ids.clear();
-                    ids.add(id);
-                    String svcName = licenceDto.getSvcName();
-                    String licenceNo = licenceDto.getLicenceNo();
-                    String licenseeId = licenceDto.getLicenseeId();
-                    //shi fou you qi ta de app zai zuo
-                    Map<String, Boolean> stringBooleanMap = cessationBeService.listResultCeased(ids);
-                    if (stringBooleanMap.get(id)) {
-                        licenceDtosForSave.add(licenceDto);
+    @Override
+    public ReturnT<String> execute(String s) {
+        try {
+            //licence
+            log.debug(StringUtil.changeForLog("The CessationLicenceBatchJob is doBatchJob ..."));
+            Date date = new Date();
+            String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
+            String status = ApplicationConsts.LICENCE_STATUS_ACTIVE;
+            // get expired date == today de licence
+            List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
+            List<LicenceDto> licenceDtosForSave = IaisCommonUtils.genNewArrayList();
+            List<String> ids = IaisCommonUtils.genNewArrayList();
+            if (licenceDtos != null && !licenceDtos.isEmpty()) {
+                for (LicenceDto licenceDto : licenceDtos) {
+                    try {
+                        String id = licenceDto.getId();
+                        ids.clear();
+                        ids.add(id);
+                        String svcName = licenceDto.getSvcName();
+                        String licenceNo = licenceDto.getLicenceNo();
+                        String licenseeId = licenceDto.getLicenseeId();
+                        //shi fou you qi ta de app zai zuo
+                        Map<String, Boolean> stringBooleanMap = cessationBeService.listResultCeased(ids);
+                        if (stringBooleanMap.get(id)) {
+                            licenceDtosForSave.add(licenceDto);
+                        }
+                        updateLicenceStatus(licenceDtosForSave, date);
+                        cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, id, licenseeId, licenceNo);
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                        continue;
                     }
-                    updateLicenceStatus(licenceDtosForSave, date);
-                    cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, id, licenseeId, licenceNo);
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                    continue;
                 }
             }
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+            JobLogger.log(e);
+            return ReturnT.FAIL;
         }
+        return ReturnT.SUCCESS;
     }
-
     private void updateLicenceStatus(List<LicenceDto> licenceDtos, Date date) {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
         for (LicenceDto licenceDto : licenceDtos) {
@@ -114,10 +121,10 @@ public class LicenceExpiredBatchJob {
             }
         }
         log.info(StringUtil.changeForLog("==========================update be success======================"));
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
         log.info(StringUtil.changeForLog("==========================update fe success======================"));
     }
 }

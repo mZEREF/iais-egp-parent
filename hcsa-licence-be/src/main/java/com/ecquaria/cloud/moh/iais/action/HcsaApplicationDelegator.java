@@ -1521,7 +1521,7 @@ public class HcsaApplicationDelegator {
         //cessation
         if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(appStatus)&&ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
             applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN);
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN);
+            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
             applicationDto.setNeedNewLicNo(true);
         }
         broadcastApplicationDto.setApplicationDto(applicationDto);

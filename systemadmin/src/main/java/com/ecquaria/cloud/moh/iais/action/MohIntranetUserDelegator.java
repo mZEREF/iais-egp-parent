@@ -830,7 +830,9 @@ public class MohIntranetUserDelegator {
             try {
                 Element element = (Element) list.get(i);
                 String userId = element.element("userId").getText();
-                userIds.add(userId);
+                if(!StringUtil.isEmpty(userId)){
+                    userIds.add(userId);
+                }
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 continue;
@@ -866,18 +868,18 @@ public class MohIntranetUserDelegator {
         }
         Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
         if (accountActivateDatetime == null) {
-            String error = "accountActivationStart is a mandatory field.";
+            String error = "AccountActivationStart is a mandatory field.";
             errors.add(error);
         }
         Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
         if (accountDeactivateDatetime == null) {
-            String error = "accountActivationEnd is a mandatory field.";
+            String error = "AccountActivationEnd is a mandatory field.";
             errors.add(error);
         }
         if (accountDeactivateDatetime != null && accountActivateDatetime != null) {
             boolean after = accountDeactivateDatetime.after(accountActivateDatetime);
             if (!after) {
-                String error = "accountActivationEnd date must be after accountActivationStart date.";
+                String error = "AccountActivationEnd date must be after accountActivationStart date.";
                 errors.add(error);
             }
         }

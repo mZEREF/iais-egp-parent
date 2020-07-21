@@ -385,7 +385,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                 applicationDto.setNeedNewLicNo(false);
                 applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER);
             } else {
-                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
                 applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN);
                 applicationDto.setNeedNewLicNo(true);
             }
