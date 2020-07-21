@@ -399,7 +399,7 @@
         doEdit();
 
         $('#control--runtime--0').children().remove("hr")
-
+        $('.assignSel ').trigger('change');
     });
 
     var disabledAll = function () {

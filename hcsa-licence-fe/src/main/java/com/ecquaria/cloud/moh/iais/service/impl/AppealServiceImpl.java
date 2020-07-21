@@ -507,12 +507,7 @@ public class AppealServiceImpl implements AppealService {
             map.put("remarks", "UC_CHKLMD001_ERR001");
         }
         String appealReason = appealPageDto.getAppealReason();
-        String id = (String) request.getSession().getAttribute("id");
-       /* Boolean flag = applicationClient.isAppealEligibility(id).getEntity();
-        if(!flag){
-            map.put("submit","An appeal has already been submitted for this licence/application");
-            return;
-        }*/
+
         if (StringUtil.isEmpty(appealReason)) {
             map.put("reason", "UC_CHKLMD001_ERR001");
         } else {
@@ -818,8 +813,8 @@ public class AppealServiceImpl implements AppealService {
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
             applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
             s = rfiApplication.getApplicationNo();
-            applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
-            applicationClient.updateApplication(applicationDto);
+            rfiApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
+            applicationClient.updateApplication(rfiApplication);
         }
 
         if (appSvcCgoDtos != null && !appSvcCgoDtos.isEmpty()) {

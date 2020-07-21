@@ -60,26 +60,6 @@ public class UploadDelegator {
                 log.error(e.getMessage(),e);
             }
         }
-        /*for(ApplicationListFileDto applicationListFileDto : parse){
-            List<ApplicationDto> applicationDtoList = IaisCommonUtils.genNewArrayList();
-            List<ApplicationDto> application = applicationListFileDto.getApplication();
-            for(ApplicationDto applicationDto : application){
-                String status = applicationDto.getStatus();
-                if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(status)){
-                    applicationDtoList.add(applicationDto);
-                }
-            }
-            for( ApplicationDto applicationDto : applicationDtoList){
-                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-            }
-            try {
-                log.info(applicationDtoList.toString());
-                applicationClient.saveApplicationDtos(applicationDtoList);
-                log.info("update application status");
-            }catch (Exception e){
-                log.error("update applcaition status is error",e);
-            }
-        }*/
 
     }
 

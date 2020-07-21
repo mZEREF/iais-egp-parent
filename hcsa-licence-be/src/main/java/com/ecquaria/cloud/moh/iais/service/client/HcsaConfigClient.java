@@ -339,4 +339,6 @@ public interface HcsaConfigClient {
     FeignResponseEntity<List<ApplicationDto>> returnFee(@RequestBody List<ApplicationDto> applicationDtos);
     @RequestMapping(path = "/iais-hcsa-service/svc-doc-config-results",method = RequestMethod.GET)
     FeignResponseEntity<List<HcsaSvcDocConfigDto>> getHcsaSvcDocConfig(@RequestParam(value = "string") String docMapJson);
+    @GetMapping(value = "/hcsa-config/all-base-service",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity <List<HcsaServiceDto>> baseHcsaService();
 }

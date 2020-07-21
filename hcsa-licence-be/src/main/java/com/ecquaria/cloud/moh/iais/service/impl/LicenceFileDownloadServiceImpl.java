@@ -663,6 +663,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                   log.info(StringUtil.changeForLog("listNewApplicationDto size"+listNewApplicationDto.size()));
                   log.info(StringUtil.changeForLog("requestForInfList size"+requestForInfList.size()));
                     if(!requestForInfList.isEmpty()){
+                        log.info("update requeste Application status");
                         applicationClient.updateApplicationOfRfi(requestForInfList);
                     }
                 }

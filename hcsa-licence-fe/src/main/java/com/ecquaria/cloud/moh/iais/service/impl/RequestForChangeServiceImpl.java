@@ -556,8 +556,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i2 = Integer.parseInt(convStartFromMM);
                                             int i3 = Integer.parseInt(onsiteEndToHH);
                                             int i4 = Integer.parseInt(onsiteEndToMM);
-                                            if((i1*60+i2)>(i3*60+i4)){
-                                                errorMap.put("onsiteEndToMM"+i+j,"UC_CHKLMD001_ERR008");
+                                            if(i3*60+i4!=0){
+                                                if((i1*60+i2)>(i3*60+i4)){
+                                                    errorMap.put("onsiteEndToMM"+i+j,"UC_CHKLMD001_ERR008");
+                                                }
                                             }
                                         }catch (Exception e){
                                         }
@@ -842,8 +844,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i2 = Integer.parseInt(convStartFromMM);
                                             int i3 = Integer.parseInt(convEndToHH);
                                             int i4 = Integer.parseInt(convEndToMM);
-                                            if((i1*60+i2)>(i3*60+i4)){
-                                                errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR008");
+                                            if(i3*60+i4!=0){
+                                                if((i1*60+i2)>(i3*60+i4)){
+                                                    errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR008");
+                                                }
                                             }
                                         }catch (Exception e){
 
@@ -1142,9 +1146,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                             int i2 = Integer.parseInt(offSiteStartFromMM);
                                             int i3 = Integer.parseInt(offSiteEndToHH);
                                             int i4 = Integer.parseInt(offSiteEndToMM);
-                                            if((i1*60+i2)>(i3*60+i4)){
-                                                errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR008");
+                                            if(i3*60+i4!=0){
+                                                if((i1*60+i2)>(i3*60+i4)){
+                                                    errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR008");
+                                                }
                                             }
+
                                         }catch (Exception e){
 
                                         }

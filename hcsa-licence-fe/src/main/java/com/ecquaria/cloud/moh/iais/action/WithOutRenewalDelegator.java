@@ -910,7 +910,7 @@ public class WithOutRenewalDelegator {
             renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);
             renewDto.getAppSubmissionDtos().get(0).setEffectiveDateStr(renewEffectiveDate);
         }
-      /*  if (renewDto != null) {
+        if (renewDto != null) {
             List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
                 List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -947,7 +947,7 @@ public class WithOutRenewalDelegator {
                     }
                 }
             }
-        }*/
+        }
         //go page3
         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
     }
