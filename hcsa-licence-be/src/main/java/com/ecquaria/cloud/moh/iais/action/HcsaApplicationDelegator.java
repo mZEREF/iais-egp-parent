@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
@@ -2264,11 +2265,27 @@ public class HcsaApplicationDelegator {
                     isLateFeeAppealType = true;
                     isOtherAppealType = false;
                 } else if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(reason)) {
+                    String serviceId = applicationViewDto.getApplicationDto().getServiceId();
+                    String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
                     AppSvcCgoDto appSvcCgoDto = applicationClient.getApplicationCgoByAppId(appId,ApplicationConsts.PERSONNEL_PSN_TYPE_CGO).getEntity();
+                    appSvcCgoDto.setAssignSelect("newOfficer");
                     List<AppSvcCgoDto> appSvcCgoDtoList = IaisCommonUtils.genNewArrayList();
                     appSvcCgoDtoList.add(appSvcCgoDto);
+                    SelectOption sp0 = new SelectOption("-1", "Please Select");
+                    List<SelectOption> cgoSelectList = IaisCommonUtils.genNewArrayList();
+                    cgoSelectList.add(sp0);
+                    SelectOption sp1 = new SelectOption("newOfficer", "I'd like to add a new personnel");
+                    cgoSelectList.add(sp1);
+                    List<SelectOption> idTypeSelOp = getIdTypeSelOp();
+                    if (serviceName != null) {
+                        HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceName);
+                        List<SelectOption> list = genSpecialtySelectList(serviceByServiceName.getSvcCode());
+                        ParamUtil.setSessionAttr(request, "SpecialtySelectList", (Serializable) list);
+                    }
                     ParamUtil.setSessionAttr(request,"CgoMandatoryCount",1);
                     ParamUtil.setSessionAttr(request,"GovernanceOfficersList",(Serializable) appSvcCgoDtoList);
+                    ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
+                    ParamUtil.setSessionAttr(request, "IdTypeSelect", (Serializable) idTypeSelOp);
                 }
                 //file
                 AppPremisesSpecialDocDto appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
@@ -2355,6 +2372,38 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(request,"isLateFeeAppealType",isLateFeeAppealType);
     }
 
+    private List<SelectOption> genSpecialtySelectList(String svcCode){
+        List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();
+        if(!StringUtil.isEmpty(svcCode)){
+            if(AppServicesConsts.SERVICE_CODE_CLINICAL_LABORATORY.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)){
+                specialtySelectList = IaisCommonUtils.genNewArrayList();
+                SelectOption ssl1 = new SelectOption("-1", "Please select");
+                SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
+                SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
+                SelectOption ssl4 = new SelectOption("other", "Others");
+                specialtySelectList.add(ssl1);
+                specialtySelectList.add(ssl2);
+                specialtySelectList.add(ssl3);
+                specialtySelectList.add(ssl4);
+            }else if(AppServicesConsts.SERVICE_CODE_RADIOLOGICAL_SERVICES.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_IMAGING.equals(svcCode) ||
+                    AppServicesConsts.SERVICE_CODE_NUCLEAR_MEDICINE_ASSAY.equals(svcCode)){
+                specialtySelectList = IaisCommonUtils.genNewArrayList();
+                SelectOption ssl1 = new SelectOption("-1", "Please select");
+                SelectOption ssl2 = new SelectOption("Diagnostic Radiology", "Diagnostic Radiology");
+                SelectOption ssl3 = new SelectOption("Nuclear Medicine", "Nuclear Medicine");
+                SelectOption ssl4 = new SelectOption("other", "Others");
+                specialtySelectList.add(ssl1);
+                specialtySelectList.add(ssl2);
+                specialtySelectList.add(ssl3);
+                specialtySelectList.add(ssl4);
+            }
+        }
+        return specialtySelectList;
+    }
+
     private void setAppealRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationType = applicationDto.getApplicationType();
@@ -2436,6 +2485,17 @@ public class HcsaApplicationDelegator {
         decisionValues.add(new SelectOption("decisionApproval", "Approve"));
         decisionValues.add(new SelectOption("decisionReject", "Reject"));
         ParamUtil.setSessionAttr(request, "decisionValues", (Serializable)decisionValues);
+    }
+
+    private List<SelectOption> getIdTypeSelOp(){
+        List<SelectOption> idTypeSelectList = IaisCommonUtils.genNewArrayList();
+        SelectOption idType0 = new SelectOption("-1", "Please Select");
+        idTypeSelectList.add(idType0);
+        SelectOption idType1 = new SelectOption("NRIC", "NRIC");
+        idTypeSelectList.add(idType1);
+        SelectOption idType2 = new SelectOption("FIN", "FIN");
+        idTypeSelectList.add(idType2);
+        return idTypeSelectList;
     }
 
     public void setRouteBackDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
