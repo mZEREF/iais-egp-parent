@@ -17,7 +17,6 @@ import ecq.commons.helper.StringHelper;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 import sop.config.ConfigUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -39,7 +38,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-@Service
 public class PaymentBaiduriProxy extends PaymentProxy {
 
 
@@ -68,6 +66,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		Map<String, String> fields = null;
 		try {
 			fields = getFieldsMap(bpc);
+			fields.put("vpc_ReturnURL","https://" + bpc.request.getServerName()+fields.get("vpc_ReturnURL"));
 			String secureHash = hashAllFields(fields, DEFAULT_SECURE_HASH_TYPE);
 			fields.put("vpc_SecureHash", secureHash);
 			fields.put("vpc_SecureHashType", DEFAULT_SECURE_HASH_TYPE);
@@ -75,14 +74,20 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			logger.debug(e1.getMessage());
 			throw new PaymentException(e1);
 		}
-
+		SrcSystemConfDto srcSystemConfDto =new SrcSystemConfDto();
+//		try {
+//			Account account= PaymentBaiduriProxyUtil.getStripeService().createAccount();
+//			srcSystemConfDto.setClientKey(account.getId());
+//		} catch (StripeException e) {
+//			logger.info(e.getMessage(),e);
+//			srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
+//		}
 		String amo = fields.get("vpc_Amount");
 		String payMethod = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
 		String returnUrl=this.getPaymentData().getContinueUrl();
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
 			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
-			SrcSystemConfDto srcSystemConfDto =new SrcSystemConfDto();
 
 			double amount = Double.parseDouble(amo)/100;
 			paymentRequestDto.setAmount(amount);
