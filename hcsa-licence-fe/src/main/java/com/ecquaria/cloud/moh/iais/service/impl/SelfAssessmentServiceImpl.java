@@ -28,11 +28,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -112,12 +112,12 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
         //common data
         ChecklistConfigDto common = appConfigClient.getMaxVersionCommonConfig().getEntity();
-        List<PremCheckItem> commonQuestion = FeSelfChecklistHelper.loadPremisesQuestion(common, false);
+        Map<String, List<PremCheckItem>> sqMap  = FeSelfChecklistHelper.loadPremisesQuestion(common, false);
 
         SelfAssessmentConfig commonConfig = new SelfAssessmentConfig();
         commonConfig.setConfigId(common.getId());
         commonConfig.setCommon(true);
-        commonConfig.setQuestion(commonQuestion);
+        commonConfig.setSqMap(sqMap);
 
         for(ApplicationDto app : appList){
             String appId = app.getId();
@@ -161,18 +161,18 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 svcConfig.setSvcCode(serviceConfig.getSvcCode());
                 svcConfig.setSvcName(serviceConfig.getSvcName());
 
-                List<PremCheckItem> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
+                Map<String, List<PremCheckItem>> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
                 List<String> serviceSubtypeName = getServiceSubTypeName(corrId);
                 for(String subTypeName : serviceSubtypeName){
                     ChecklistConfigDto subTypeConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();
                     if (subTypeConfig != null){
                         svcConfig.setHasSubtype(true);
-                        List<PremCheckItem> subTypeQuestion = FeSelfChecklistHelper.loadPremisesQuestion(subTypeConfig, true);
-                        serviceQuestion.addAll(subTypeQuestion);
+                        Map<String, List<PremCheckItem>> subTypeQuestion = FeSelfChecklistHelper.loadPremisesQuestion(subTypeConfig, true);
+                        serviceQuestion.putAll(subTypeQuestion);
                     }
                 }
 
-                svcConfig.setQuestion(serviceQuestion);
+                svcConfig.setSqMap(serviceQuestion);
                 configList.add(svcConfig);
                 selfAssessment.setSelfAssessmentConfig(configList);
                 selfAssessmentList.add(selfAssessment);

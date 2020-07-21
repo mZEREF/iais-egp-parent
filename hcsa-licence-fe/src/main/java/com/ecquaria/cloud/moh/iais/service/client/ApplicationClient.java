@@ -274,6 +274,9 @@ public interface ApplicationClient  {
     @GetMapping(value = "/iais-self-assessment/self-assessment/{groupId}/status/", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Integer> getApplicationSelfAssMtStatusByGroupId(@PathVariable(value = "groupId") String groupId);
 
+    @GetMapping(value = "/iais-self-assessment/self-assessment/{corrId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<SelfAssessment>> receiveSelfAssessmentDataByCorrId(@PathVariable(value = "corrId") String corrId);
+
     @PutMapping(value = "/iais-application/batch-update/application", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> updateApplicationList(@RequestBody List<ApplicationDto> applicationDtoList);
     @PostMapping(value = "/iais-application/app-group-misc-dto",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)

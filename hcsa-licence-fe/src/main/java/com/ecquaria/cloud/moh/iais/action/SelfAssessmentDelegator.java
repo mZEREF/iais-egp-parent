@@ -159,11 +159,14 @@ public class SelfAssessmentDelegator {
         ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR, (Serializable) selfAssessmentList);
     }
 
-    public void setAnswerWithQuestion(HttpServletRequest request, List<PremCheckItem> tab) {
-        for (PremCheckItem item : tab) {
-            String answer = ParamUtil.getString(request, item.getAnswerKey());
-            if (answer != null) {
-                item.setAnswer(answer);
+    public void setAnswerWithQuestion(HttpServletRequest request, Map<String, List<PremCheckItem>> sqMap) {
+        for (Map.Entry<String, List<PremCheckItem>> entry : sqMap.entrySet()){
+            List<PremCheckItem> list = entry.getValue();
+            for (PremCheckItem item : list) {
+                String answer = ParamUtil.getString(request, item.getAnswerKey());
+                if (answer != null) {
+                    item.setAnswer(answer);
+                }
             }
         }
     }
@@ -190,8 +193,8 @@ public class SelfAssessmentDelegator {
         String tabIndex = ParamUtil.getMaskedString(request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
         SelfAssessment selfAssessmentDetail = (SelfAssessment) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR);
 
-        List<PremCheckItem> lastTabQuestion = getTabQuestionByServiceId(selfAssessmentDetail, prevTabIndex);
-        setAnswerWithQuestion(request, lastTabQuestion);
+        Map<String, List<PremCheckItem>> sqMap = getTabQuestionByServiceId(selfAssessmentDetail, prevTabIndex);
+        setAnswerWithQuestion(request, sqMap);
 
         ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, selfAssessmentDetail);
         ParamUtil.setRequestAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION, tabIndex);
@@ -237,7 +240,6 @@ public class SelfAssessmentDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             } else {
                 String applicationNumber = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
-
                 boolean retSubmit = selfAssessmentService.saveAllSelfAssessment(selfAssessmentList, applicationNumber).booleanValue();
                 if (retSubmit){
 
@@ -283,9 +285,12 @@ public class SelfAssessmentDelegator {
         SelfAssessment selfAssessmentDetail = (SelfAssessment) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR);
         String tabIndex = ParamUtil.getMaskedString(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_TAB_INDEX_POSTION);
 
-        List<PremCheckItem> currentTabQuestion = getTabQuestionByServiceId(selfAssessmentDetail, tabIndex);
-        for (PremCheckItem item : currentTabQuestion) {
-            item.setAnswer(null);
+        Map<String, List<PremCheckItem>> currentTabQuestion = getTabQuestionByServiceId(selfAssessmentDetail, tabIndex);
+        for (Map.Entry<String, List<PremCheckItem>> entry : currentTabQuestion.entrySet()){
+            List<PremCheckItem> list = entry.getValue();
+            for (PremCheckItem item : list) {
+                item.setAnswer(null);
+            }
         }
 
         ParamUtil.setSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR, selfAssessmentDetail);
@@ -296,12 +301,13 @@ public class SelfAssessmentDelegator {
     private Boolean hasFillUpAnswer(SelfAssessment selfAssessmentDetail) {
         boolean fullPower = true;
         List<SelfAssessmentConfig> selfAssessmentConfig = selfAssessmentDetail.getSelfAssessmentConfig();
-
         for (SelfAssessmentConfig s : selfAssessmentConfig) {
-            List<PremCheckItem> premCheckItemList = s.getQuestion();
-            for (PremCheckItem item : premCheckItemList) {
-                if (StringUtils.isEmpty(item.getAnswer())) {
-                    fullPower = false;
+            for (Map.Entry<String, List<PremCheckItem>> entry : s.getSqMap().entrySet()){
+                List<PremCheckItem> premCheckItemList = entry.getValue();
+                for (PremCheckItem item : premCheckItemList) {
+                    if (StringUtils.isEmpty(item.getAnswer())) {
+                        fullPower = false;
+                    }
                 }
             }
         }
@@ -321,7 +327,7 @@ public class SelfAssessmentDelegator {
         SelfAssessment selfAssessmentDetail = (SelfAssessment) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_DETAIL_ATTR);
 
         if (selfAssessmentDetail != null) {
-            List<PremCheckItem> lastTabQuestion = getTabQuestionByServiceId(selfAssessmentDetail, tabIndex);
+            Map<String, List<PremCheckItem>> lastTabQuestion = getTabQuestionByServiceId(selfAssessmentDetail, tabIndex);
             setAnswerWithQuestion(request, lastTabQuestion);
 
             boolean fullPower = hasFillUpAnswer(selfAssessmentDetail).booleanValue();
@@ -343,18 +349,18 @@ public class SelfAssessmentDelegator {
         }
     }
 
-    private List<PremCheckItem> getTabQuestionByServiceId(SelfAssessment selfAssessmentDetail, String tabIndex) {
-        List<PremCheckItem> list = IaisCommonUtils.genNewArrayList();
+    private Map<String, List<PremCheckItem>> getTabQuestionByServiceId(SelfAssessment selfAssessmentDetail, String tabIndex) {
+        Map<String, List<PremCheckItem>> sqMap = IaisCommonUtils.genNewHashMap();
         if (selfAssessmentDetail != null && selfAssessmentDetail.getSelfAssessmentConfig() != null) {
             List<SelfAssessmentConfig> selfAssessmentConfigList = selfAssessmentDetail.getSelfAssessmentConfig();
 
             selfAssessmentConfigList = selfAssessmentConfigList.stream().filter(i -> i.getConfigId().equals(tabIndex)).collect(Collectors.toList());
 
             //uncheck
-            list = selfAssessmentConfigList.get(0).getQuestion();
+            sqMap = selfAssessmentConfigList.get(0).getSqMap();
         }
 
-        return list;
+        return sqMap;
     }
 
 

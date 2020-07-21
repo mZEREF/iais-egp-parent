@@ -49,33 +49,11 @@
             </div>
         </div>
 
-        <div class="tab-content">
-            <div class="tab-pane active" id="tabInbox" role="tabpanel">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="table-gp">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th width="5%">No.</th>
-                                    <th width="15%">Section Name</th>
-                                    <th width="25%">Regulation Clause Number</th>
-                                    <th width="40%">Item</th>
-                                    <th width="5%">Yes</th>
-                                    <th width="5%">No</th>
-                                    <th width="5%">N/A</th>
-                                </tr>
-                                </thead>
-                                <tbody id="general">
-                                <%@include file="/WEB-INF/jsp/iais/common/checklistAnswer.jsp"%>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
 
-            </div>
-        </div>
+
+        <%@include file="/WEB-INF/jsp/iais/common/checklistAnswer.jsp"%>
+
+
         <br>
     </c:otherwise>
 </c:choose>
