@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -40,6 +41,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -1121,22 +1123,18 @@ public class NewApplicationHelper {
                     }
                     String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
                     person.setSpecialityHtml(specialtySelectStr);
-                    person.setCgoPsn(true);
                     psnDto.setSpcOptList(specialityOpts);
                     psnDto.setSpecialityHtml(specialtySelectStr);
                     psnDto.setNeedSpcOptList(true);
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType())){
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
-                    person.setPoPsn(true);
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
-                    person.setDpoPsn(true);
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
                     person.setPreferredMode(psnDto.getPreferredMode());
-                    person.setMapPsn(true);
                 }
                 //person.setLicPerson(true);
                 //for person dtos
@@ -1170,16 +1168,7 @@ public class NewApplicationHelper {
                     }
                     AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(psnDto, AppSvcPrincipalOfficersDto.class);
                     appSvcPrincipalOfficersDto.setLicPerson(true);
-                    if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())){
-                        appSvcPrincipalOfficersDto.setCgoPsn(true);
-                    }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType())){
-                        appSvcPrincipalOfficersDto.setPoPsn(true);
-                    }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
-                        appSvcPrincipalOfficersDto.setDpoPsn(true);
-                    }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
-                        appSvcPrincipalOfficersDto.setMapPsn(true);
-                    }
-                    appSvcPrincipalOfficersDto.setLicPerson(true);
+                    appSvcPrincipalOfficersDto.setNeedDisabled(true);
                     personMap.put(personMapKey, appSvcPrincipalOfficersDto);
                 } else {
                     //set different page column
@@ -1214,19 +1203,15 @@ public class NewApplicationHelper {
                         }
                         String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
                         person.setSpecialityHtml(specialtySelectStr);
-                        person.setCgoPsn(true);
                     }
                     if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType())) {
                         person.setOfficeTelNo(psnDto.getOfficeTelNo());
-                        person.setPoPsn(true);
                     }
                     if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
                         person.setOfficeTelNo(psnDto.getOfficeTelNo());
-                        person.setDpoPsn(true);
                     }
                     if (ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())) {
                         person.setPreferredMode(psnDto.getPreferredMode());
-                        person.setDpoPsn(true);
                     }
 
                     person.setLicPerson(true);
@@ -1642,6 +1627,61 @@ public class NewApplicationHelper {
         return result;
     }
 
+    public static AppPsnEditDto setNeedEditField(AppSvcPrincipalOfficersDto person){
+        AppPsnEditDto appPsnEditDto = new AppPsnEditDto();
+        if(person != null){
+            PersonFieldDto personFieldDto = MiscUtil.transferEntityDto(person,PersonFieldDto.class);
+            if("-1".equals(personFieldDto.getSpeciality())){
+                personFieldDto.setSpeciality(null);
+            }
+            Class psnClsa = personFieldDto.getClass();
+            Field[] fs = psnClsa.getDeclaredFields();
+            for(Field f:fs){
+                if( Modifier.isStatic(f.getModifiers())) {
+                    continue;
+                }
+                f.setAccessible(true);
+                Object value = IaisCommonUtils.getFieldValue(personFieldDto, f);
+                if(StringUtil.isEmpty(value)){
+                    String fieldName = f.getName();
+                    Field field = null;
+                    try {
+                        field = appPsnEditDto.getClass().getDeclaredField(fieldName);
+                        field.setAccessible(true);
+                        field.setBoolean(appPsnEditDto,true);
+                    } catch (NoSuchFieldException e) {
+                        log.debug(StringUtil.changeForLog("not found this field:"+fieldName));
+                    } catch (IllegalAccessException e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
+            }
+        }
+        return appPsnEditDto;
+    }
+
+    public static String[] setPsnValue(String[] arr, int i, AppSvcPrincipalOfficersDto person,String fieldName){
+        if(arr == null){
+            return new String[0];
+        }
+        String value = arr[i];
+        Field field = null;
+        try {
+            field = person.getClass().getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        if(field != null){
+            field.setAccessible(true);
+            try {
+                field.set(person,value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return removeArrIndex(arr,i);
+    }
+
 
 
     //=============================================================================
@@ -1765,10 +1805,10 @@ public class NewApplicationHelper {
                 appSvcCgoDto.setSpecialityHtml(selPerson.getSpecialityHtml());
                 //set lic person info
                 appSvcCgoDto.setLicPerson(selPerson.isLicPerson());
-                appSvcCgoDto.setCgoPsn(selPerson.isCgoPsn());
-                appSvcCgoDto.setPoPsn(selPerson.isPoPsn());
-                appSvcCgoDto.setDpoPsn(selPerson.isDpoPsn());
-                appSvcCgoDto.setMapPsn(selPerson.isMapPsn());
+//                appSvcCgoDto.setCgoPsn(selPerson.isCgoPsn());
+//                appSvcCgoDto.setPoPsn(selPerson.isPoPsn());
+//                appSvcCgoDto.setDpoPsn(selPerson.isDpoPsn());
+//                appSvcCgoDto.setMapPsn(selPerson.isMapPsn());
             }
         }
     }
@@ -1796,10 +1836,6 @@ public class NewApplicationHelper {
                 }
                 //set lic person info
                 person.setLicPerson(selPerson.isLicPerson());
-                person.setCgoPsn(selPerson.isCgoPsn());
-                person.setPoPsn(selPerson.isPoPsn());
-                person.setDpoPsn(selPerson.isDpoPsn());
-                person.setMapPsn(selPerson.isMapPsn());
 
             }
         }
@@ -1832,6 +1868,20 @@ public class NewApplicationHelper {
         return errMap;
     }
 
+    private static String[] removeArrIndex(String[] arrs, int index) {
+        if (arrs == null) {
+            return new String[]{""};
+        }
+        String[] newArrs = new String[arrs.length - 1];
+        int j = 0;
+        for (int i = 0; i < arrs.length; i++) {
+            if (i != index) {
+                newArrs[j] = arrs[i];
+                j++;
+            }
+        }
+        return newArrs;
+    }
 
 /*
 * @parameter file

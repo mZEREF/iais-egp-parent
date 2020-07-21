@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
@@ -1685,6 +1686,7 @@ public class ClinicalLaboratoryDelegator {
         String[] existingPsn = ParamUtil.getStrings(request, "existingPsn");
         String[] licPerson = ParamUtil.getStrings(request, "licPerson");
         String[] isPartEdit = ParamUtil.getStrings(request, "isPartEdit");
+        //form display data
         String[] salutation = ParamUtil.getStrings(request, "salutation");
         String[] name = ParamUtil.getStrings(request, "name");
         String[] idType = ParamUtil.getStrings(request, "idType");
@@ -1697,6 +1699,112 @@ public class ClinicalLaboratoryDelegator {
         String[] qualification = ParamUtil.getStrings(request, "qualification");
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
+        //new and not rfi
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && !isRfi){
+            for (int i = 0; i < size; i++) {
+                appSvcCgoDto = new AppSvcCgoDto();
+                String cgoIndexNo = cgoIndexNos[i];
+                String assign = assignSelect[i];
+                if (assign != null) {
+                    String licPsn = licPerson[i];
+                    if(!NewApplicationConstant.NEW_PSN.equals(assign) && !assign.equals("-1")&&AppConsts.YES.equals(licPsn)){
+                        AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+                        AppPsnEditDto appPsnEditDto;
+                        try {
+                            appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcPrincipalOfficersDto);
+                        } catch (Exception e) {
+                            appPsnEditDto = new AppPsnEditDto();
+                            log.error(e.getMessage(), e);
+                        }
+                        if(appPsnEditDto.isSalutation()){
+                            NewApplicationHelper.setPsnValue(salutation,i,appSvcPrincipalOfficersDto,"salutation");
+                        }
+                        if(appPsnEditDto.isIdType()){
+                            NewApplicationHelper.setPsnValue(idType,i,appSvcPrincipalOfficersDto,"idType");
+                        }
+                        if(appPsnEditDto.isDesignation()){
+                            NewApplicationHelper.setPsnValue(designation,i,appSvcPrincipalOfficersDto,"designation");
+                        }
+                        if(appPsnEditDto.isProfessionType()){
+                            NewApplicationHelper.setPsnValue(professionType,i,appSvcPrincipalOfficersDto,"professionType");
+                        }
+                        if(appPsnEditDto.isSpeciality()){
+                            NewApplicationHelper.setPsnValue(specialty,i,appSvcPrincipalOfficersDto,"speciality");
+                        }
+                        //input
+                        if(appPsnEditDto.isName()){
+                            name = NewApplicationHelper.setPsnValue(name,i,appSvcPrincipalOfficersDto,"name");
+                        }
+                        if(appPsnEditDto.isIdNo()){
+                            idNo = NewApplicationHelper.setPsnValue(idNo,i,appSvcPrincipalOfficersDto,"idNo");
+                        }
+                        if(appPsnEditDto.isMobileNo()){
+                            mobileNo = NewApplicationHelper.setPsnValue(mobileNo,i,appSvcPrincipalOfficersDto,"mobileNo");
+                        }
+                        if(appPsnEditDto.isProfRegNo()){
+                            professionRegoNo = NewApplicationHelper.setPsnValue(professionRegoNo,i,appSvcPrincipalOfficersDto,"profRegNo");
+                        }
+                        if(appPsnEditDto.isSpecialityOther() && "other".equals(appSvcPrincipalOfficersDto.getSpecialityOther())){
+                            specialtyOther = NewApplicationHelper.setPsnValue(specialtyOther,i,appSvcPrincipalOfficersDto,"specialityOther");
+                        }
+                        if(appPsnEditDto.isSubSpeciality()){
+                            qualification = NewApplicationHelper.setPsnValue(qualification,i,appSvcPrincipalOfficersDto,"subSpeciality");
+                        }
+                        if(appPsnEditDto.isEmailAddr()){
+                            emailAddress = NewApplicationHelper.setPsnValue(emailAddress,i,appSvcPrincipalOfficersDto,"emailAddr");
+                        }
+                        appSvcCgoDto = MiscUtil.transferEntityDto(appSvcPrincipalOfficersDto, AppSvcCgoDto.class);
+                        appSvcCgoDto.setAssignSelect(assignSelect[i]);
+                        appSvcCgoDto.setLicPerson(true);
+                        appSvcCgoDto.setSelectDropDown(true);
+                        if (StringUtil.isEmpty(appSvcPrincipalOfficersDto.getCgoIndexNo())) {
+                            appSvcCgoDto.setCgoIndexNo(UUID.randomUUID().toString());
+                        }
+                        appSvcCgoDtoList.add(appSvcCgoDto);
+                        //change arr index
+                        cgoIndexNos = removeArrIndex(cgoIndexNos, i);
+                        isPartEdit = removeArrIndex(isPartEdit, i);
+                        licPerson = removeArrIndex(licPerson, i);
+                        existingPsn = removeArrIndex(existingPsn, i);
+                        //dropdown cannot disabled
+                        assignSelect = removeArrIndex(assignSelect, i);
+                        salutation = removeArrIndex(salutation, i);
+                        idType = removeArrIndex(idType, i);
+                        designation = removeArrIndex(designation, i);
+                        professionType = removeArrIndex(professionType, i);
+                        specialty = removeArrIndex(specialty, i);
+                        --i;
+                        --size;
+                        continue;
+                    }
+                    if (StringUtil.isEmpty(cgoIndexNo)) {
+                        appSvcCgoDto.setCgoIndexNo(UUID.randomUUID().toString());
+                    } else {
+                        appSvcCgoDto.setCgoIndexNo(cgoIndexNos[i]);
+                    }
+                    appSvcCgoDto.setAssignSelect(assignSelect[i]);
+                    appSvcCgoDto.setSalutation(salutation[i]);
+                    appSvcCgoDto.setName(name[i]);
+                    appSvcCgoDto.setIdType(idType[i]);
+                    appSvcCgoDto.setIdNo(idNo[i]);
+                    appSvcCgoDto.setDesignation(designation[i]);
+                    appSvcCgoDto.setProfessionType(professionType[i]);
+                    appSvcCgoDto.setProfRegNo(professionRegoNo[i]);
+                    String specialtyStr = specialty[i];
+                    appSvcCgoDto.setSpeciality(specialtyStr);
+                    if ("other".equals(specialtyStr)) {
+                        appSvcCgoDto.setSpecialityOther(specialtyOther[i]);
+                    }
+                    //qualification(before)
+                    appSvcCgoDto.setSubSpeciality(qualification[i]);
+                    appSvcCgoDto.setMobileNo(mobileNo[i]);
+                    appSvcCgoDto.setEmailAddr(emailAddress[i]);
+                    appSvcCgoDtoList.add(appSvcCgoDto);
+                    continue;
+                }
+            }
+        }else {
         for (int i = 0; i < size; i++) {
             String cgoIndexNo = cgoIndexNos[i];
             appSvcCgoDto = new AppSvcCgoDto();
@@ -1788,6 +1896,7 @@ public class ClinicalLaboratoryDelegator {
             }
             appSvcCgoDtoList.add(appSvcCgoDto);
         }
+        }
         ParamUtil.setSessionAttr(request, GOVERNANCEOFFICERSDTOLIST, (Serializable) appSvcCgoDtoList);
         return appSvcCgoDtoList;
     }
@@ -1813,50 +1922,124 @@ public class ClinicalLaboratoryDelegator {
             String[] officeTelNo = ParamUtil.getStrings(request, "officeTelNo");
             String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
             int length = assignSelect.length;
-            if (length > 0) {
+            //new and not rfi
+            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && !isRfi){
                 for (int i = 0; i < length; i++) {
-                    AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
-                    if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")) {
-                        boolean newGetData = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && AppConsts.YES.equals(poLicPerson[i]);
-                        //edit,first submit,
-                        boolean editGetData = needEdit && AppConsts.YES.equals(poExistingPsn[i]);
-                        if (newGetData || editGetData) {
-                            poDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
-                            poDto.setAssignSelect(assignSelect[i]);
-                            poDto.setLicPerson(true);
-                            poDto.setSelectDropDown(true);
-                            poDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-                            appSvcPrincipalOfficersDtos.add(poDto);
-                            //change arr
+                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
+                    String assign = assignSelect[i];
+                    if (assign != null) {
+                        String licPsn = poLicPerson[i];
+                        if(!NewApplicationConstant.NEW_PSN.equals(assign) && !assign.equals("-1")&&AppConsts.YES.equals(licPsn)){
+                            appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+                            AppPsnEditDto appPsnEditDto;
+                            try {
+                                appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcPrincipalOfficersDto);
+                            } catch (Exception e) {
+                                appPsnEditDto = new AppPsnEditDto();
+                                log.error(e.getMessage(), e);
+                            }
+                            if(appPsnEditDto.isIdType()){
+                                NewApplicationHelper.setPsnValue(idType,i,appSvcPrincipalOfficersDto,"idType");
+                            }
+                            if(appPsnEditDto.isSalutation()){
+                                NewApplicationHelper.setPsnValue(salutation,i,appSvcPrincipalOfficersDto,"salutation");
+                            }
+                            if(appPsnEditDto.isDesignation()){
+                                NewApplicationHelper.setPsnValue(designation,i,appSvcPrincipalOfficersDto,"designation");
+                            }
+                            //input
+
+                            if(appPsnEditDto.isName()){
+                                name = NewApplicationHelper.setPsnValue(name,i,appSvcPrincipalOfficersDto,"name");
+                            }
+                            if(appPsnEditDto.isIdNo()){
+                                idNo = NewApplicationHelper.setPsnValue(idNo,i,appSvcPrincipalOfficersDto,"idNo");
+                            }
+                            if(appPsnEditDto.isMobileNo()){
+                                mobileNo = NewApplicationHelper.setPsnValue(mobileNo,i,appSvcPrincipalOfficersDto,"mobileNo");
+                            }
+                            if(appPsnEditDto.isOfficeTelNo()){
+                                officeTelNo = NewApplicationHelper.setPsnValue(officeTelNo,i,appSvcPrincipalOfficersDto,"officeTelNo");
+                            }
+                            if(appPsnEditDto.isEmailAddr()){
+                                emailAddress = NewApplicationHelper.setPsnValue(emailAddress,i,appSvcPrincipalOfficersDto,"emailAddr");
+                            }
+                            appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                            appSvcPrincipalOfficersDto.setLicPerson(true);
+                            appSvcPrincipalOfficersDto.setSelectDropDown(true);
+                            appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                            appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                            //change arr index
                             poLicPerson = removeArrIndex(poLicPerson, i);
                             //dropdown cannot disabled
+                            assignSelect = removeArrIndex(assignSelect, i);
                             salutation = removeArrIndex(salutation, i);
                             idType = removeArrIndex(idType, i);
                             designation = removeArrIndex(designation, i);
-                            assignSelect = removeArrIndex(assignSelect, i);
-                            poExistingPsn = removeArrIndex(poExistingPsn, i);
-                            //change arr index
                             --i;
                             --length;
                             continue;
-                        } else {
-                            poDto.setSelectDropDown(true);
                         }
+                        appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                        appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                        appSvcPrincipalOfficersDto.setSalutation(salutation[i]);
+                        appSvcPrincipalOfficersDto.setName(name[i]);
+                        appSvcPrincipalOfficersDto.setIdType(idType[i]);
+                        appSvcPrincipalOfficersDto.setIdNo(idNo[i]);
+                        appSvcPrincipalOfficersDto.setDesignation(designation[i]);
+                        appSvcPrincipalOfficersDto.setMobileNo(mobileNo[i]);
+                        appSvcPrincipalOfficersDto.setOfficeTelNo(officeTelNo[i]);
+                        appSvcPrincipalOfficersDto.setEmailAddr(emailAddress[i]);
+                        appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                        continue;
                     }
-                    poDto.setAssignSelect(assignSelect[i]);
-                    poDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
-                    poDto.setSalutation(salutation[i]);
-                    poDto.setName(name[i]);
-                    poDto.setIdType(idType[i]);
-                    poDto.setIdNo(idNo[i]);
-                    poDto.setOfficeTelNo(officeTelNo[i]);
-                    poDto.setDesignation(designation[i]);
-                    poDto.setMobileNo(mobileNo[i]);
-                    poDto.setEmailAddr(emailAddress[i]);
-                    if (needEdit && AppConsts.YES.equals(poLicPerson[i])) {
-                        poDto.setLicPerson(true);
+                }
+            }else {
+                if (length > 0) {
+                    for (int i = 0; i < length; i++) {
+                        AppSvcPrincipalOfficersDto poDto = new AppSvcPrincipalOfficersDto();
+                        if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")) {
+                            boolean newGetData = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && AppConsts.YES.equals(poLicPerson[i]);
+                            //edit,first submit,
+                            boolean editGetData = needEdit && AppConsts.YES.equals(poExistingPsn[i]);
+                            if (newGetData || editGetData) {
+                                poDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+                                poDto.setAssignSelect(assignSelect[i]);
+                                poDto.setLicPerson(true);
+                                poDto.setSelectDropDown(true);
+                                poDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                                appSvcPrincipalOfficersDtos.add(poDto);
+                                //change arr
+                                poLicPerson = removeArrIndex(poLicPerson, i);
+                                //dropdown cannot disabled
+                                salutation = removeArrIndex(salutation, i);
+                                idType = removeArrIndex(idType, i);
+                                designation = removeArrIndex(designation, i);
+                                assignSelect = removeArrIndex(assignSelect, i);
+                                poExistingPsn = removeArrIndex(poExistingPsn, i);
+                                //change arr index
+                                --i;
+                                --length;
+                                continue;
+                            } else {
+                                poDto.setSelectDropDown(true);
+                            }
+                        }
+                        poDto.setAssignSelect(assignSelect[i]);
+                        poDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                        poDto.setSalutation(salutation[i]);
+                        poDto.setName(name[i]);
+                        poDto.setIdType(idType[i]);
+                        poDto.setIdNo(idNo[i]);
+                        poDto.setOfficeTelNo(officeTelNo[i]);
+                        poDto.setDesignation(designation[i]);
+                        poDto.setMobileNo(mobileNo[i]);
+                        poDto.setEmailAddr(emailAddress[i]);
+                        if (needEdit && AppConsts.YES.equals(poLicPerson[i])) {
+                            poDto.setLicPerson(true);
+                        }
+                        appSvcPrincipalOfficersDtos.add(poDto);
                     }
-                    appSvcPrincipalOfficersDtos.add(poDto);
                 }
             }
         }
@@ -1873,49 +2056,124 @@ public class ClinicalLaboratoryDelegator {
             String[] deputyMobileNo = ParamUtil.getStrings(request, "deputyMobileNo");
             String[] deputyOfficeTelNo = ParamUtil.getStrings(request, "deputyOfficeTelNo");
             String[] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
-            if (assignSelect != null && assignSelect.length > 0) {
-                for (int i = 0; i < assignSelect.length; i++) {
-                    AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
-                    if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")) {
-                        boolean newGetData = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && AppConsts.YES.equals(dpoLicPerson[i]);
-                        //edit,first submit,
-                        boolean editGetData = needEdit && AppConsts.YES.equals(dpoExistingPsn[i]);
-                        if (newGetData || editGetData) {
-                            dpoDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
-                            dpoDto.setAssignSelect(assignSelect[i]);
-                            dpoDto.setLicPerson(true);
-                            dpoDto.setSelectDropDown(true);
-                            dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-                            appSvcPrincipalOfficersDtos.add(dpoDto);
-                            //change arr
+            int length = assignSelect.length;
+            //new and not rfi
+            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && !isRfi){
+                for (int i = 0; i < length; i++) {
+                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
+                    String assign = assignSelect[i];
+                    if (assign != null) {
+                        String licPsn = dpoLicPerson[i];
+                        if(!NewApplicationConstant.NEW_PSN.equals(assign) && !assign.equals("-1")&&AppConsts.YES.equals(licPsn)){
+                            appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+                            AppPsnEditDto appPsnEditDto;
+                            try {
+                                appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcPrincipalOfficersDto);
+                            } catch (Exception e) {
+                                appPsnEditDto = new AppPsnEditDto();
+                                log.error(e.getMessage(), e);
+                            }
+                            if(appPsnEditDto.isIdType()){
+                                NewApplicationHelper.setPsnValue(deputyIdType,i,appSvcPrincipalOfficersDto,"idType");
+                            }
+                            if(appPsnEditDto.isSalutation()){
+                                NewApplicationHelper.setPsnValue(deputySalutation,i,appSvcPrincipalOfficersDto,"salutation");
+                            }
+                            if(appPsnEditDto.isDesignation()){
+                                NewApplicationHelper.setPsnValue(deputyDesignation,i,appSvcPrincipalOfficersDto,"designation");
+                            }
+
+                            //input
+                            if(appPsnEditDto.isName()){
+                                deputyName = NewApplicationHelper.setPsnValue(deputyName,i,appSvcPrincipalOfficersDto,"name");
+                            }
+                            if(appPsnEditDto.isIdNo()){
+                                deputyIdNo = NewApplicationHelper.setPsnValue(deputyIdNo,i,appSvcPrincipalOfficersDto,"idNo");
+                            }
+                            if(appPsnEditDto.isMobileNo()){
+                                deputyMobileNo = NewApplicationHelper.setPsnValue(deputyMobileNo,i,appSvcPrincipalOfficersDto,"mobileNo");
+                            }
+                            if(appPsnEditDto.isOfficeTelNo()){
+                                deputyOfficeTelNo = NewApplicationHelper.setPsnValue(deputyOfficeTelNo,i,appSvcPrincipalOfficersDto,"officeTelNo");
+                            }
+                            if(appPsnEditDto.isEmailAddr()){
+                                deputyEmailAddr = NewApplicationHelper.setPsnValue(deputyEmailAddr,i,appSvcPrincipalOfficersDto,"emailAddr");
+                            }
+                            appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                            appSvcPrincipalOfficersDto.setLicPerson(true);
+                            appSvcPrincipalOfficersDto.setSelectDropDown(true);
+                            appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+                            appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                            //change arr index
                             dpoLicPerson = removeArrIndex(dpoLicPerson, i);
                             //dropdown cannot disabled
                             assignSelect = removeArrIndex(assignSelect, i);
                             deputySalutation = removeArrIndex(deputySalutation, i);
                             deputyIdType = removeArrIndex(deputyIdType, i);
                             deputyDesignation = removeArrIndex(deputyDesignation, i);
-                            dpoExistingPsn = removeArrIndex(dpoExistingPsn, i);
-                            //change arr index
                             --i;
+                            --length;
                             continue;
-                        } else {
-                            dpoDto.setSelectDropDown(true);
                         }
+                        appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+                        appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                        appSvcPrincipalOfficersDto.setSalutation(deputySalutation[i]);
+                        appSvcPrincipalOfficersDto.setName(deputyName[i]);
+                        appSvcPrincipalOfficersDto.setIdType(deputyIdType[i]);
+                        appSvcPrincipalOfficersDto.setIdNo(deputyIdNo[i]);
+                        appSvcPrincipalOfficersDto.setDesignation(deputyDesignation[i]);
+                        appSvcPrincipalOfficersDto.setMobileNo(deputyMobileNo[i]);
+                        appSvcPrincipalOfficersDto.setOfficeTelNo(deputyOfficeTelNo[i]);
+                        appSvcPrincipalOfficersDto.setEmailAddr(deputyEmailAddr[i]);
+                        appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                        continue;
                     }
-                    dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
-                    dpoDto.setAssignSelect(assignSelect[i]);
-                    dpoDto.setDesignation(deputyDesignation[i]);
-                    dpoDto.setEmailAddr(deputyEmailAddr[i]);
-                    dpoDto.setSalutation(deputySalutation[i]);
-                    dpoDto.setName(deputyName[i]);
-                    dpoDto.setIdType(deputyIdType[i]);
-                    dpoDto.setIdNo(deputyIdNo[i]);
-                    dpoDto.setOfficeTelNo(deputyOfficeTelNo[i]);
-                    dpoDto.setMobileNo(deputyMobileNo[i]);
-                    if (needEdit && AppConsts.YES.equals(dpoLicPerson[i])) {
-                        dpoDto.setLicPerson(true);
+                }
+            }else {
+                if (assignSelect != null && assignSelect.length > 0) {
+                    for (int i = 0; i < assignSelect.length; i++) {
+                        AppSvcPrincipalOfficersDto dpoDto = new AppSvcPrincipalOfficersDto();
+                        if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")) {
+                            boolean newGetData = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && AppConsts.YES.equals(dpoLicPerson[i]);
+                            //edit,first submit,
+                            boolean editGetData = needEdit && AppConsts.YES.equals(dpoExistingPsn[i]);
+                            if (newGetData || editGetData) {
+                                dpoDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+                                dpoDto.setAssignSelect(assignSelect[i]);
+                                dpoDto.setLicPerson(true);
+                                dpoDto.setSelectDropDown(true);
+                                dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+                                appSvcPrincipalOfficersDtos.add(dpoDto);
+                                //change arr
+                                dpoLicPerson = removeArrIndex(dpoLicPerson, i);
+                                //dropdown cannot disabled
+                                assignSelect = removeArrIndex(assignSelect, i);
+                                deputySalutation = removeArrIndex(deputySalutation, i);
+                                deputyIdType = removeArrIndex(deputyIdType, i);
+                                deputyDesignation = removeArrIndex(deputyDesignation, i);
+                                dpoExistingPsn = removeArrIndex(dpoExistingPsn, i);
+                                //change arr index
+                                --i;
+                                continue;
+                            } else {
+                                dpoDto.setSelectDropDown(true);
+                            }
+                        }
+                        dpoDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
+                        dpoDto.setAssignSelect(assignSelect[i]);
+                        dpoDto.setDesignation(deputyDesignation[i]);
+                        dpoDto.setEmailAddr(deputyEmailAddr[i]);
+                        dpoDto.setSalutation(deputySalutation[i]);
+                        dpoDto.setName(deputyName[i]);
+                        dpoDto.setIdType(deputyIdType[i]);
+                        dpoDto.setIdNo(deputyIdNo[i]);
+                        dpoDto.setOfficeTelNo(deputyOfficeTelNo[i]);
+                        dpoDto.setMobileNo(deputyMobileNo[i]);
+                        if (needEdit && AppConsts.YES.equals(dpoLicPerson[i])) {
+                            dpoDto.setLicPerson(true);
+                        }
+                        appSvcPrincipalOfficersDtos.add(dpoDto);
                     }
-                    appSvcPrincipalOfficersDtos.add(dpoDto);
                 }
             }
         }
@@ -2258,6 +2516,8 @@ public class ClinicalLaboratoryDelegator {
 
     private List<AppSvcPrincipalOfficersDto> genAppSvcMedAlertPerson(HttpServletRequest request) {
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
+        String appType = appSubmissionDto.getAppType();
+        boolean isRfi = NewApplicationHelper.checkIsRfi(request);
         String[] licPerson = ParamUtil.getStrings(request, "licPerson");
         String[] assignSelect = ParamUtil.getStrings(request, "assignSel");
         String[] salutation = ParamUtil.getStrings(request, "salutation");
@@ -2266,47 +2526,132 @@ public class ClinicalLaboratoryDelegator {
         String[] idNo = ParamUtil.getStrings(request, "idNo");
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
-        int length = assignSelect.length;
         List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i < length; i++) {
-            AppSvcPrincipalOfficersDto medAlertPerson = new AppSvcPrincipalOfficersDto();
-            if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")) {
-                if (AppConsts.YES.equals(licPerson[i])) {
-                    medAlertPerson = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
-                    medAlertPerson.setAssignSelect(assignSelect[i]);
-                    medAlertPerson.setLicPerson(true);
-                    medAlertPerson.setSelectDropDown(true);
-                    medAlertPersons.add(medAlertPerson);
-                    //change arr
-                    licPerson = removeArrIndex(licPerson, i);
-                    //dropdown cannot disabled
-                    salutation = removeArrIndex(salutation, i);
-                    idType = removeArrIndex(idType, i);
-                    //change arr index
-                    --i;
-                    --length;
+        int length = assignSelect.length;
+        //new and not rfi
+        int preferredModeLength = 0;
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && !isRfi){
+            for (int i = 0; i < length; i++) {
+                AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
+                String assign = assignSelect[i];
+                if (assign != null) {
+                    String licPsn = licPerson[i];
+                    String[] preferredModes = ParamUtil.getStrings(request, "preferredMode" + preferredModeLength);
+                    if(!NewApplicationConstant.NEW_PSN.equals(assign) && !assign.equals("-1")&&AppConsts.YES.equals(licPsn)){
+                        appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+                        AppPsnEditDto appPsnEditDto;
+                        try {
+                            appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcPrincipalOfficersDto);
+                        } catch (Exception e) {
+                            appPsnEditDto = new AppPsnEditDto();
+                            log.error(e.getMessage(), e);
+                        }
+                        if(appPsnEditDto.isSalutation()){
+                            NewApplicationHelper.setPsnValue(salutation,i,appSvcPrincipalOfficersDto,"salutation");
+                        }
+                        if(appPsnEditDto.isIdType()){
+                            NewApplicationHelper.setPsnValue(idType,i,appSvcPrincipalOfficersDto,"idType");
+                        }
+
+                        //input
+                        if(appPsnEditDto.isName()){
+                            name = NewApplicationHelper.setPsnValue(name,i,appSvcPrincipalOfficersDto,"name");
+                        }
+                        if(appPsnEditDto.isIdNo()){
+                            idNo = NewApplicationHelper.setPsnValue(idNo,i,appSvcPrincipalOfficersDto,"idNo");
+                        }
+                        if(appPsnEditDto.isMobileNo()){
+                            mobileNo = NewApplicationHelper.setPsnValue(mobileNo,i,appSvcPrincipalOfficersDto,"mobileNo");
+                        }
+                        if(appPsnEditDto.isEmailAddr()){
+                            emailAddress = NewApplicationHelper.setPsnValue(emailAddress,i,appSvcPrincipalOfficersDto,"emailAddr");
+                        }
+                        if(appPsnEditDto.isPreferredMode()){
+                            if (preferredModes != null) {
+                                if (preferredModes.length == 2) {
+                                    appSvcPrincipalOfficersDto.setPreferredMode("3");
+                                } else {
+                                    appSvcPrincipalOfficersDto.setPreferredMode(preferredModes[0]);
+                                }
+                            }
+                        }
+
+                        appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                        appSvcPrincipalOfficersDto.setLicPerson(true);
+                        appSvcPrincipalOfficersDto.setSelectDropDown(true);
+                        medAlertPersons.add(appSvcPrincipalOfficersDto);
+                        //change arr index
+                        licPerson = removeArrIndex(licPerson, i);
+                        //dropdown cannot disabled
+                        assignSelect = removeArrIndex(assignSelect, i);
+                        salutation = removeArrIndex(salutation, i);
+                        idType = removeArrIndex(idType, i);
+                        --i;
+                        --length;
+                        ++preferredModeLength;
+                        continue;
+                    }
+
+                    appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
+                    appSvcPrincipalOfficersDto.setSalutation(salutation[i]);
+                    appSvcPrincipalOfficersDto.setName(name[i]);
+                    appSvcPrincipalOfficersDto.setIdType(idType[i]);
+                    appSvcPrincipalOfficersDto.setIdNo(idNo[i]);
+                    appSvcPrincipalOfficersDto.setMobileNo(mobileNo[i]);
+                    appSvcPrincipalOfficersDto.setEmailAddr(emailAddress[i]);
+                    if (preferredModes != null) {
+                        if (preferredModes.length == 2) {
+                            appSvcPrincipalOfficersDto.setPreferredMode("3");
+                        } else {
+                            appSvcPrincipalOfficersDto.setPreferredMode(preferredModes[0]);
+                        }
+                    }
+                    preferredModeLength++;
+                    medAlertPersons.add(appSvcPrincipalOfficersDto);
                     continue;
-                } else {
-                    medAlertPerson.setSelectDropDown(true);
                 }
             }
-            String[] preferredModes = ParamUtil.getStrings(request, "preferredMode" + i);
-            medAlertPerson.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
-            medAlertPerson.setAssignSelect(assignSelect[i]);
-            medAlertPerson.setSalutation(salutation[i]);
-            medAlertPerson.setName(name[i]);
-            medAlertPerson.setIdType(idType[i]);
-            medAlertPerson.setIdNo(idNo[i]);
-            medAlertPerson.setMobileNo(mobileNo[i]);
-            medAlertPerson.setEmailAddr(emailAddress[i]);
-            if (preferredModes != null) {
-                if (preferredModes.length == 2) {
-                    medAlertPerson.setPreferredMode("3");
-                } else {
-                    medAlertPerson.setPreferredMode(preferredModes[0]);
+        }else {
+            for (int i = 0; i < length; i++) {
+                AppSvcPrincipalOfficersDto medAlertPerson = new AppSvcPrincipalOfficersDto();
+                if (assignSelect[i] != null && !NewApplicationConstant.NEW_PSN.equals(assignSelect[i]) && !assignSelect[i].equals("-1")) {
+                    if (AppConsts.YES.equals(licPerson[i])) {
+                        medAlertPerson = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+                        medAlertPerson.setAssignSelect(assignSelect[i]);
+                        medAlertPerson.setLicPerson(true);
+                        medAlertPerson.setSelectDropDown(true);
+                        medAlertPersons.add(medAlertPerson);
+                        //change arr
+                        licPerson = removeArrIndex(licPerson, i);
+                        //dropdown cannot disabled
+                        salutation = removeArrIndex(salutation, i);
+                        idType = removeArrIndex(idType, i);
+                        //change arr index
+                        --i;
+                        --length;
+                        continue;
+                    } else {
+                        medAlertPerson.setSelectDropDown(true);
+                    }
                 }
+                String[] preferredModes = ParamUtil.getStrings(request, "preferredMode" + i);
+                medAlertPerson.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
+                medAlertPerson.setAssignSelect(assignSelect[i]);
+                medAlertPerson.setSalutation(salutation[i]);
+                medAlertPerson.setName(name[i]);
+                medAlertPerson.setIdType(idType[i]);
+                medAlertPerson.setIdNo(idNo[i]);
+                medAlertPerson.setMobileNo(mobileNo[i]);
+                medAlertPerson.setEmailAddr(emailAddress[i]);
+                if (preferredModes != null) {
+                    if (preferredModes.length == 2) {
+                        medAlertPerson.setPreferredMode("3");
+                    } else {
+                        medAlertPerson.setPreferredMode(preferredModes[0]);
+                    }
+                }
+                medAlertPersons.add(medAlertPerson);
             }
-            medAlertPersons.add(medAlertPerson);
         }
         return medAlertPersons;
     }

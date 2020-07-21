@@ -281,9 +281,17 @@
         var isLicPerson = data.licPerson;
         if('1' == isLicPerson){
             if('CGO' == psnTYpe){
-                disabledPartPage($CurrentPsnEle.find('.new-officer-form'));
+                var $cgoPsnEle = $CurrentPsnEle.find('.new-officer-form');
+                //add disabled not add input disabled style
+                personDisable($cgoPsnEle,'','Y');
+                var psnEditDto = data.psnEditDto;
+                setPsnDisabled($cgoPsnEle,psnEditDto);
             }else{
-                disabledPartPage($CurrentPsnEle.find('.medAlertPerson'));
+                var $cgoPsnEle = $CurrentPsnEle.find('.medAlertPerson');
+                //add disabled not add input disabled style
+                personDisable($cgoPsnEle,'','Y');
+                var psnEditDto = data.psnEditDto;
+                setPsnDisabled($cgoPsnEle,psnEditDto);
             }
             $CurrentPsnEle.find('input[name="licPerson"]').val('1');
             $CurrentPsnEle.find('input[name="existingPsn"]').val('1');
@@ -320,6 +328,69 @@
             'error':function () {
             }
         });
+    }
+
+    var setPsnDisabled = function ($cgoPsnEle,psnEditDto) {
+        console.log("setPsnDisabled start...");
+        console.log(psnEditDto);
+        if(psnEditDto == 'undefined' || psnEditDto == '' || psnEditDto == null){
+            console.log('psnEditDto is empty or undefind');
+            return;
+        }
+        //dropdown
+        if(psnEditDto.salutation){
+            $cgoPsnEle.find('div.salutationSel').removeClass('disabled');
+        }
+        if(psnEditDto.idType){
+            $cgoPsnEle.find('div.idTypeSel').removeClass('disabled');
+        }
+        if(psnEditDto.designation){
+            $cgoPsnEle.find('div.designationSel').removeClass('disabled');
+        }
+        if(psnEditDto.professionType){
+            $cgoPsnEle.find('div.professionTypeSel').removeClass('disabled');
+        }
+        if(psnEditDto.speciality){
+            $cgoPsnEle.find('div.specialty').removeClass('disabled');
+        }
+        //input text
+        if(psnEditDto.name){
+            $cgoPsnEle.find('input[name="name"]').prop('disabled',false);
+        }
+        if(psnEditDto.idNo){
+            $cgoPsnEle.find('input[name="idNo"]').prop('disabled',false);
+        }
+        if(psnEditDto.mobileNo){
+            $cgoPsnEle.find('input[name="mobileNo"]').prop('disabled',false);
+        }
+        if(psnEditDto.profRegNo){
+            $cgoPsnEle.find('input[name="professionRegoNo"]').prop('disabled',false);
+        }
+        if(psnEditDto.specialityOther){
+            $cgoPsnEle.find('input[name="specialtyOther"]').prop('disabled',false);
+        }
+        if(psnEditDto.subSpeciality){
+            $cgoPsnEle.find('input[name="qualification"]').prop('disabled',false);
+        }
+        if(psnEditDto.emailAddr){
+            $cgoPsnEle.find('input[name="emailAddress"]').prop('disabled',false);
+        }
+        //map->mode
+        if(psnEditDto.preferredMode){
+            $cgoPsnEle.find('input[type="checkbox"]').prop('disabled',false);
+        }
+
+        //for disabled add style
+        $cgoPsnEle.find('input[type="text"]').each(function () {
+            if($(this).prop('disabled')){
+                $(this).css('border-color','#ededed');
+                $(this).css('color','#999');
+            }else{
+                $(this).css('border-color','');
+                $(this).css('color','');
+            }
+        });
+        console.log("setPsnDisabled end...");
     }
 
 </script>

@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
@@ -1915,10 +1916,6 @@ public class NewApplicationDelegator {
     private  List<AppSvcCgoDto> copyAppSvcCgo( List<AppSvcCgoDto> appSvcCgoDtoList) throws  Exception{
         List<AppSvcCgoDto> n =(List<AppSvcCgoDto>)CopyUtil.copyMutableObject(appSvcCgoDtoList);
         for(AppSvcCgoDto appSvcCgoDto : n){
-            appSvcCgoDto.setCgoPsn(false);
-            appSvcCgoDto.setPoPsn(false);
-            appSvcCgoDto.setDpoPsn(false);
-            appSvcCgoDto.setMapPsn(false);
             appSvcCgoDto.setLicPerson(false);
             appSvcCgoDto.setSelectDropDown(false);
             appSvcCgoDto.setNeedSpcOptList(false);
@@ -1960,10 +1957,6 @@ public class NewApplicationDelegator {
     private List<AppSvcPrincipalOfficersDto> copyMedaler( List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList) throws Exception{
         List<AppSvcPrincipalOfficersDto> n=(List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(appSvcMedAlertPersonList);
         for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto: n){
-            appSvcPrincipalOfficersDto.setCgoPsn(false);
-            appSvcPrincipalOfficersDto.setPoPsn(false);
-            appSvcPrincipalOfficersDto.setDpoPsn(false);
-            appSvcPrincipalOfficersDto.setMapPsn(false);
             appSvcPrincipalOfficersDto.setLicPerson(false);
             appSvcPrincipalOfficersDto.setSelectDropDown(false);
             appSvcPrincipalOfficersDto.setNeedSpcOptList(false);
@@ -1979,10 +1972,6 @@ public class NewApplicationDelegator {
     private List<AppSvcPrincipalOfficersDto>  copyAppSvcPo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList) throws  Exception{
         List<AppSvcPrincipalOfficersDto> n=(List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(appSvcPrincipalOfficersDtoList);
         for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : n){
-            appSvcPrincipalOfficersDto.setCgoPsn(false);
-            appSvcPrincipalOfficersDto.setPoPsn(false);
-            appSvcPrincipalOfficersDto.setDpoPsn(false);
-            appSvcPrincipalOfficersDto.setMapPsn(false);
             appSvcPrincipalOfficersDto.setLicPerson(false);
             appSvcPrincipalOfficersDto.setSelectDropDown(false);
             appSvcPrincipalOfficersDto.setNeedSpcOptList(false);
@@ -2256,6 +2245,16 @@ public class NewApplicationDelegator {
             return;
         }
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
+        Double totalAmount = appSubmissionDto.getAmount();
+        if(totalAmount == 0.0){
+            StringBuilder url = new StringBuilder();
+            url.append("https://")
+                    .append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PrepareAckPage");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+            return;
+        }
         String a=appSubmissionDto.getPaymentMethod();
         appSubmissionDto.setPaymentMethod(payMethod);
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
@@ -5334,6 +5333,11 @@ public class NewApplicationDelegator {
             List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
             //exchange order
             licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(bpc.request,licPersonList);
+            licPersonMap.forEach((k,v)->{
+                //set empty field
+                AppPsnEditDto appPsnEditDto = NewApplicationHelper.setNeedEditField(v);
+                v.setPsnEditDto(appPsnEditDto);
+            });
             ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
             Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, PERSONSELECTMAP);
             if(personMap != null){

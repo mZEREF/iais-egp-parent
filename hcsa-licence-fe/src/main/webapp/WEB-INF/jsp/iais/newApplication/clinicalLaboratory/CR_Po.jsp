@@ -1,3 +1,5 @@
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <div class="row">
 </div>
 <div class="row">
@@ -568,6 +570,52 @@
             $('.deputy-content input[type="text"]').css('color','#999');
             $('#addDpoBtn').unbind('click');
         }
+
+        var appType = $('input[name="applicationType"]').val();
+        var rfiObj = $('input[name="rfiObj"]').val();
+        //new and not rfi
+        if('APTY002' == appType && '0' == rfiObj){
+            //po
+            <c:choose>
+              <c:when test="${!empty ReloadPrincipalOfficers}">
+                console.log('po true');
+                <c:set var="psnLength" value="${ReloadPrincipalOfficers.size()-1}"/>
+              </c:when>
+              <c:otherwise>
+                <c:set var="psnLength" value="0"/>
+              </c:otherwise>
+            </c:choose>
+            console.log('psnLength:'+${psnLength});
+            <c:forEach begin="0" end="${psnLength}" step="1" varStatus="stat">
+              var $currentPsn = $('.po-content').eq(${stat.index+1});
+              //remove dis style
+              $currentPsn.find('input[type="text"]').css('border-color','');
+              $currentPsn.find('input[type="text"]').css('color','');
+              //add edit and set style
+              setPoPsnDisabled($currentPsn,${ReloadPrincipalOfficers[stat.index].psnEditFieldStr});
+            </c:forEach>
+
+            //dpo
+            <c:choose>
+              <c:when test="${!empty ReloadDeputyPrincipalOfficers}">
+            console.log('dpo true');
+                <c:set var="psnLength-dpo" value="${ReloadDeputyPrincipalOfficers.size()-1}"/>
+              </c:when>
+              <c:otherwise>
+                <c:set var="psnLength-dpo" value="0"/>
+              </c:otherwise>
+            </c:choose>
+            console.log('psnLength-dpo:'+${psnLength-dpo});
+            <c:forEach begin="0" end="${psnLength-dpo}" step="1" varStatus="stat">
+              var $currentPsn = $('.dpo-content').eq(${stat.index+1});
+              //remove dis style
+              $currentPsn.find('input[type="text"]').css('border-color','');
+              $currentPsn.find('input[type="text"]').css('color','');
+              //add edit and set style
+              setDpoPsnDisabled($currentPsn,${ReloadDeputyPrincipalOfficers[stat.index].psnEditFieldStr});
+            </c:forEach>
+        }
+
         <!-- init end-->
         init = 1;
     });
@@ -848,7 +896,11 @@
 
         var isLicPerson = data.licPerson;
         if('1' == isLicPerson){
-            disabledPartPage($poContentEle.find('div.principalOfficers'));
+            var $psnContentEle = $poContentEle.find('div.principalOfficers');
+            //add disabled not add input disabled style
+            personDisable($psnContentEle,'','Y');
+            var psnEditDto = data.psnEditDto;
+            setPoPsnDisabled($psnContentEle,psnEditDto);
             $poContentEle.find('input[name="poLicPerson"]').val('1');
             $poContentEle.find('input[name="poExistingPsn"]').val('1');
         }else{
@@ -891,7 +943,11 @@
 
         var isLicPerson = data.licPerson;
         if('1' == isLicPerson){
-            disabledPartPage($poContentEle.find('div.deputyPrincipalOfficers'));
+            var $psnContentEle = $poContentEle.find('div.deputyPrincipalOfficers');
+            //add disabled not add input disabled style
+            personDisable($psnContentEle,'','Y');
+            var psnEditDto = data.psnEditDto;
+            setDpoPsnDisabled($psnContentEle,psnEditDto);
             $poContentEle.find('input[name="dpoLicPerson"]').val('1');
             $poContentEle.find('input[name="dpoExistingPsn"]').val('1');
         }else{
@@ -932,5 +988,98 @@
             }
         });
 
+    }
+
+    var setPoPsnDisabled = function ($cgoPsnEle,psnEditDto) {
+        console.log("setPsnDisabled start...");
+        console.log("psnEditDto:"+psnEditDto);
+        if(psnEditDto == 'undefined' || psnEditDto == '' || psnEditDto == null){
+            console.log('psnEditDto is empty or undefind');
+            return;
+        }
+        //dropdown
+        if(psnEditDto.salutation){
+            $cgoPsnEle.find('div.salutation').removeClass('disabled');
+        }
+        if(psnEditDto.idType){
+            $cgoPsnEle.find('div.idType').removeClass('disabled');
+        }
+        if(psnEditDto.designation){
+            $cgoPsnEle.find('div.designation').removeClass('disabled');
+        }
+        //input text
+        if(psnEditDto.name){
+            $cgoPsnEle.find('input[name="name"]').prop('disabled',false);
+        }
+        if(psnEditDto.idNo){
+            $cgoPsnEle.find('input[name="idNo"]').prop('disabled',false);
+        }
+        if(psnEditDto.mobileNo){
+            $cgoPsnEle.find('input[name="mobileNo"]').prop('disabled',false);
+        }
+        if(psnEditDto.officeTelNo){
+            $cgoPsnEle.find('input[name="officeTelNo"]').prop('disabled',false);
+        }
+        if(psnEditDto.emailAddr){
+            $cgoPsnEle.find('input[name="emailAddress"]').prop('disabled',false);
+        }
+        //for disabled add style
+        $cgoPsnEle.find('input[type="text"]').each(function () {
+            if($(this).prop('disabled')){
+                $(this).css('border-color','#ededed');
+                $(this).css('color','#999');
+            }else{
+                $(this).css('border-color','');
+                $(this).css('color','');
+            }
+        });
+        console.log("setPsnDisabled end...");
+    }
+
+
+    var setDpoPsnDisabled = function ($cgoPsnEle,psnEditDto) {
+        console.log("setPsnDisabled start...");
+        console.log(psnEditDto);
+        if(psnEditDto == 'undefined' || psnEditDto == '' || psnEditDto == null){
+            console.log('psnEditDto is empty or undefind');
+            return;
+        }
+        //dropdown
+        if(psnEditDto.salutation){
+            $cgoPsnEle.find('div.deputySalutation').removeClass('disabled');
+        }
+        if(psnEditDto.idType){
+            $cgoPsnEle.find('div.deputyIdType').removeClass('disabled');
+        }
+        if(psnEditDto.designation){
+            $cgoPsnEle.find('div.deputyDesignation').removeClass('disabled');
+        }
+        //input text
+        if(psnEditDto.name){
+            $cgoPsnEle.find('input[name="deputyName"]').prop('disabled',false);
+        }
+        if(psnEditDto.idNo){
+            $cgoPsnEle.find('input[name="deputyIdNo"]').prop('disabled',false);
+        }
+        if(psnEditDto.mobileNo){
+            $cgoPsnEle.find('input[name="deputyMobileNo"]').prop('disabled',false);
+        }
+        if(psnEditDto.officeTelNo){
+            $cgoPsnEle.find('input[name="deputyOfficeTelNo"]').prop('disabled',false);
+        }
+        if(psnEditDto.emailAddr){
+            $cgoPsnEle.find('input[name="deputyEmailAddress"]').prop('disabled',false);
+        }
+        //for disabled add style
+        $cgoPsnEle.find('input[type="text"]').each(function () {
+            if($(this).prop('disabled')){
+                $(this).css('border-color','#ededed');
+                $(this).css('color','#999');
+            }else{
+                $(this).css('border-color','');
+                $(this).css('color','');
+            }
+        });
+        console.log("setPsnDisabled end...");
     }
 </script>

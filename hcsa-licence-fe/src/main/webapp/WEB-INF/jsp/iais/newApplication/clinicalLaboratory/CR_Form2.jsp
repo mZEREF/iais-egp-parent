@@ -7,7 +7,8 @@
     margin-top: 19px;
   }
 </style>
-
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <div id="formPanel" class="sopform ui-tabs ui-widget ui-widget-content ui-corner-all" style="display: block;">
   <h4>A Clinical Governance Officer is responsible for the clinical and technical oversight of a medical service.</h4>
   <div class="form-tab-panel ui-tabs-panel ui-widget-content ui-corner-bottom" id="tab_page_0">
@@ -86,6 +87,7 @@
                     <input type="hidden" name="isPartEdit" value="0"/>
                     <input type="hidden" name="cgoIndexNo" value="${currentCgo.cgoIndexNo}"/>
                     <input type="hidden" name="existingPsn" value="0"/>
+                    <input type="hidden" name="psnEditField" value="${currentCgo.psnEditDto}"/>
                     <c:choose>
                       <c:when test="${currentCgo.licPerson}">
                         <input type="hidden" name="licPerson" value="1"/>
@@ -452,10 +454,13 @@
 
         removeCgo();
 
+
         $('input[name="licPerson"]').each(function (k,v) {
             if('1' == $(this).val()){
                 var $currentPsn = $(this).closest('.assignContent').find('.new-officer-form');
                 disabledPartPage($currentPsn);
+
+
             }
         });
 
@@ -464,6 +469,28 @@
             //$('.addListBtn').addClass('hidden');
         }
 
+        var appType = $('input[name="applicationType"]').val();
+        var rfiObj = $('input[name="rfiObj"]').val();
+        //new and not rfi
+        if('APTY002' == appType && '0' == rfiObj){
+            <c:choose>
+              <c:when test="${!empty GovernanceOfficersList}">
+                <c:set var="psnLength" value="${GovernanceOfficersList.size()-1}"/>
+              </c:when>
+              <c:otherwise>
+                <c:set var="psnLength" value="0"/>
+              </c:otherwise>
+            </c:choose>
+            console.log('psnLength:'+${psnLength});
+            <c:forEach begin="0" end="${psnLength}" step="1" varStatus="stat">
+              var $currentPsn = $('.assignContent').eq(${stat.index+1}).find('.new-officer-form');
+              //remove dis style
+              $currentPsn.find('input[type="text"]').css('border-color','');
+              $currentPsn.find('input[type="text"]').css('color','');
+              //add edit and set style
+              setPsnDisabled($currentPsn,${GovernanceOfficersList[stat.index].psnEditFieldStr});
+            </c:forEach>
+        }
         doEdit();
 
         //init end

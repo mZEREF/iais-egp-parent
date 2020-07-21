@@ -195,14 +195,29 @@
     }
 
     function disabledPartPage($Ele) {
-        $Ele.find('input[type="radio"]').prop('disabled',true);
-        $Ele.find('input[type="text"]').prop('disabled',true);
-        $Ele.find('input[type="file"]').prop('disabled',true);
-        $Ele.find('input[type="checkbox"]').prop('disabled',true);
+        inputDisabled($Ele);
         $Ele.find('div.nice-select').addClass('disabled');
         $Ele.find('input[type="text"]').css('border-color','#ededed');
         $Ele.find('input[type="text"]').css('color','#999');
 
+    }
+
+    function inputDisabled($Ele) {
+        $Ele.find('input[type="radio"]').prop('disabled',true);
+        $Ele.find('input[type="text"]').prop('disabled',true);
+        $Ele.find('input[type="file"]').prop('disabled',true);
+        $Ele.find('input[type="checkbox"]').prop('disabled',true);
+    }
+
+    function personDisable($Ele,inpDisStyle,disableDiv){
+        inputDisabled($Ele);
+        if(inpDisStyle == 'Y'){
+            $Ele.find('input[type="text"]').css('border-color','#ededed');
+            $Ele.find('input[type="text"]').css('color','#999');
+        }
+        if(disableDiv == 'Y'){
+            $Ele.find('div.nice-select').addClass('disabled');
+        }
     }
 
     function unDisabledPage(){

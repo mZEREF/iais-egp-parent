@@ -3,6 +3,8 @@
         cursor: pointer;
     }
 </style>
+<input type="hidden" name="applicationType" value="${AppSubmissionDto.appType}"/>
+<input type="hidden" name="rfiObj" value="<c:if test="${requestInformationConfig == null}">0</c:if><c:if test="${requestInformationConfig != null}">1</c:if>"/>
 <div class="row">
     <div class="col-xs-12">
         <h2>MedAlert Person</h2>
@@ -260,6 +262,29 @@
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
             $('.addMapBtn').addClass('hidden');
+        }
+        var appType = $('input[name="applicationType"]').val();
+        var rfiObj = $('input[name="rfiObj"]').val();
+        //new and not rfi
+        if('APTY002' == appType && '0' == rfiObj){
+            <c:choose>
+                <c:when test="${!empty AppSvcMedAlertPsn}">
+            console.log('map true');
+                    <c:set var="psnLength" value="${AppSvcMedAlertPsn.size()-1}"/>
+                </c:when>
+                <c:otherwise>
+                    <c:set var="psnLength" value="0"/>
+                </c:otherwise>
+            </c:choose>
+            console.log('psnLength:'+${psnLength});
+            <c:forEach begin="0" end="${psnLength}" step="1" varStatus="stat">
+                var $currentPsn = $('.medAlertContent').eq(${stat.index+1}).find('.medAlertPerson');
+                //remove dis style
+                $currentPsn.find('input[type="text"]').css('border-color','');
+                $currentPsn.find('input[type="text"]').css('color','');
+                //add edit and set style
+                setPsnDisabled($currentPsn,${AppSvcMedAlertPsn[stat.index].psnEditFieldStr});
+            </c:forEach>
         }
         //doEdit();
         //init end

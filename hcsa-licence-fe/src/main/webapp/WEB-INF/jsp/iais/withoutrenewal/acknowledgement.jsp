@@ -51,10 +51,7 @@
                                             <br/>
                                         </div>
                                         <div class="col-xs-12">
-                                            We will review your application and notify you if any changes are required.
-                                        </div>
-                                        <div class="col-xs-12">
-                                            An inspection date will be arranged if necessary.
+                                            <iais:message key="NEW_ACK005"></iais:message>
                                             <br/>
                                             <br/>
                                         </div>

@@ -28,9 +28,7 @@
                             <p>-<c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></p>
                         </c:forEach>
                         <p>A confirmation email will be sent to XXXXX.</p>
-                        <p>
-                            We will review your application and notify you if any changes are required.
-                            An inspection date will be arranged if necessary.</p>
+                        <p><iais:message key="NEW_ACK005"></iais:message></p>
                         <c:if test="${dAmount!='$0.0'}">
                             <p>Transactional details:</p>
                             <table class="table">
