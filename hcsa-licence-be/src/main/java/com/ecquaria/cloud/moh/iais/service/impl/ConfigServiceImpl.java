@@ -187,7 +187,7 @@ public class ConfigServiceImpl implements ConfigService {
             return;
         }
 
-        hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
+         hcsaServiceConfigDto = hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
@@ -264,7 +264,7 @@ public class ConfigServiceImpl implements ConfigService {
 
             Integer i = (int) Double.parseDouble(hcsaServiceDto1.getVersion()) + 1;
             hcsaServiceDto.setVersion(i.toString());
-            hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto);
+            hcsaServiceConfigDto= hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
             gatewayClient.saveFeServiceConfig(hcsaServiceConfigDto,signature.date(), signature.authorization(),
