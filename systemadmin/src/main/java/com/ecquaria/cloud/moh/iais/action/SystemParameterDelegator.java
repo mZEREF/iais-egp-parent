@@ -76,6 +76,10 @@ public class SystemParameterDelegator {
                         "of system parameters use by entire system");
         HttpServletRequest request = bpc.request;
 
+        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_DOMAIN_TYPE, null);
+        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_MODULE, null);
+        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_STATUS, null);
+        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_DESCRIPTION, null);
         ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_SEARCH, null);
         ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_SEARCHRESULT, null);
     }
@@ -123,10 +127,10 @@ public class SystemParameterDelegator {
         queryDto.setDescription(description);
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
 
-        ParamUtil.setRequestAttr(request, SystemParameterConstants.PARAM_DOMAIN_TYPE, domainType);
-        ParamUtil.setRequestAttr(request, SystemParameterConstants.PARAM_MODULE, module);
-        ParamUtil.setRequestAttr(request, SystemParameterConstants.PARAM_STATUS, status);
-        ParamUtil.setRequestAttr(request, SystemParameterConstants.PARAM_DESCRIPTION, description);
+        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_DOMAIN_TYPE, domainType);
+        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_MODULE, module);
+        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_STATUS, status);
+        ParamUtil.setSessionAttr(request, SystemParameterConstants.PARAM_DESCRIPTION, description);
 
         ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "search");
         if(validationResult != null && validationResult.isHasErrors()) {

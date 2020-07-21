@@ -33,7 +33,7 @@
                 <iais:field value="Type of System Parameter:"   required="true"/>
                 <div class="col-md-3">
                     <iais:select name="domainType" id="domainType"
-                                 firstOption="Please select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE" value="${domainType}"></iais:select>
+                                 firstOption="Please Select" codeCategory="CATE_ID_SYSTEM_PARAMETER_TYPE" value="${domainType}"></iais:select>
                     <span id="error_domainType" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -41,7 +41,7 @@
             <div class="form-group">
                 <iais:field value="Module:"  />
                 <div class="col-md-3">
-                    <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" firstOption="Please select" value="${module}"></iais:select>
+                    <iais:select name="module" id="module"  codeCategory = "CATE_ID_SYSTEM_PARAMETER_MODULE" firstOption="Please Select" value="${module}"></iais:select>
                     <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
 
