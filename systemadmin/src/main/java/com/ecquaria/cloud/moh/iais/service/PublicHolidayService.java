@@ -20,4 +20,5 @@ public interface PublicHolidayService {
     void deleteHoliday(List<String> id);
     String getPublicHolidayInCalender(String form);
     List<String> getScheduleInCalender(String groupName);
+    List<String> getAllYearList();
 }

@@ -82,5 +82,13 @@ public class PublicHolidayClientFallback implements PublicHolidayClient{
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<List<String>> getAllYearList() {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
 
 }

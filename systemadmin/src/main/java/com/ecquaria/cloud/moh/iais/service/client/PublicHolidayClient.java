@@ -8,6 +8,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,4 +46,9 @@ public interface PublicHolidayClient {
 
     @PostMapping(value = "/iais-publicHoliday/getScheduleInCalender", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getScheduleInCalender(@RequestParam("groupName") String groupName);
+
+    @GetMapping(value = "/iais-publicHoliday/getAllYearList",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<String>> getAllYearList();
+
+
 }

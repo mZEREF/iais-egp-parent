@@ -63,4 +63,9 @@ public class PublicHolidayServiceImpl implements PublicHolidayService {
         return publicHolidayClient.getScheduleInCalender(groupName).getEntity();
     }
 
+    @Override
+    public List<String> getAllYearList(){
+        return publicHolidayClient.getAllYearList().getEntity();
+    }
+
 }

@@ -24,6 +24,14 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.PublicHolidayService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sop.servlet.webflow.HttpHandler;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,16 +39,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import sop.servlet.webflow.HttpHandler;
-import sop.webflow.rt.api.BaseProcessClass;
 
 
 /*
@@ -72,7 +74,7 @@ public class PublicHolidayDelegate {
             holidaySearchParam = new SearchParam(PublicHolidayQueryDto.class.getName());
             holidaySearchParam.setPageSize(SysParamUtil.getDefaultPageSize());
             holidaySearchParam.setPageNo(1);
-            holidaySearchParam.setSort("ID", SearchParam.ASCENDING);
+            holidaySearchParam.setSort("FROM_DATE", SearchParam.DESCENDING);
         }
         return holidaySearchParam;
 
@@ -84,9 +86,6 @@ public class PublicHolidayDelegate {
      */
     public void doPrepare(BaseProcessClass bpc){
         SearchParam holidaySearchParam = getSearchParam(bpc.request,false);
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        holidaySearchParam.addFilter("year", "%" + year + "%",true);
 
         QueryHelp.setMainSql("systemAdmin", "getHolidayList", holidaySearchParam);
         SearchResult<PublicHolidayQueryDto> HolidaySearchResult = publicHolidayService.getHoliday(holidaySearchParam);
@@ -293,7 +292,7 @@ public class PublicHolidayDelegate {
      * @param bpc
      */
     public void doSearch(BaseProcessClass bpc){
-        SearchParam holidaySearchParam = getSearchParam(bpc.request,false);
+        SearchParam holidaySearchParam = getSearchParam(bpc.request,true);
         String description = ParamUtil.getString(bpc.request,"description");
         String year = ParamUtil.getString(bpc.request,"year");
         String nonWorking = ParamUtil.getString(bpc.request,"nonWorking");
@@ -302,12 +301,14 @@ public class PublicHolidayDelegate {
             holidaySearchParam.addFilter("description", "%" + description + "%",true);
             ParamUtil.setSessionAttr(bpc.request,"description",description);
         }else{
+            holidaySearchParam.removeFilter("description");
             ParamUtil.setSessionAttr(bpc.request,"description",null);
         }
         if(!StringUtil.isEmpty(year)){
             holidaySearchParam.addFilter("year", "%" + year + "%",true);
             ParamUtil.setSessionAttr(bpc.request,"year",year);
         }else{
+            holidaySearchParam.removeFilter("year");
             ParamUtil.setSessionAttr(bpc.request,"year",null);
         }
         if(!StringUtil.isEmpty(nonWorking)){
@@ -320,12 +321,14 @@ public class PublicHolidayDelegate {
                 log.error(e.getMessage(), e);
             }
         }else{
+            holidaySearchParam.removeFilter("nonWorking");
             ParamUtil.setSessionAttr(bpc.request,"nonWorking",null);
         }
         if(!StringUtil.isEmpty(status)){
             holidaySearchParam.addFilter("status",  status,true);
             ParamUtil.setSessionAttr(bpc.request,"searchStatus",status);
         }else{
+            holidaySearchParam.removeFilter("searchStatus");
             ParamUtil.setSessionAttr(bpc.request,"searchStatus",null);
         }
         ParamUtil.setSessionAttr(bpc.request,"holidaySearchParam",holidaySearchParam);
@@ -399,10 +402,21 @@ public class PublicHolidayDelegate {
                 selectOptionList.add(new SelectOption(Integer.toString(year), Integer.toString(year)));
             }
         }else{
+            List<String> yearList = publicHolidayService.getAllYearList();
+            int max = Integer.parseInt(Collections.max(yearList));
+            int min = Integer.parseInt(Collections.min(yearList));
+            count = count + 2;
+            if(max > count){
+                count = max;
+            }
             year = year - 5;
+            if(min < year){
+                year = min;
+            }
             for (;count >= year;count --) {
                 selectOptionList.add(new SelectOption(Integer.toString(count), Integer.toString(count)));
             }
+
         }
 
         ParamUtil.setRequestAttr(bpc.request,"yearOption",selectOptionList);

@@ -32,20 +32,20 @@
                                                value="${description}">
                                     </div>
                                     <label class="col-md-2 control-label">Year</label>
-                                    <div class="col-md-4">
-                                        <iais:select name="year" options="yearOption" cssClass="yearOption"
+                                    <div class="col-md-4 searchdiv">
+                                        <iais:select id="year" name="year" options="yearOption" cssClass="yearOption" firstOption="Please Select"
                                                      value="${year}"></iais:select>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-horizontal" id="searchdiv">
+                            <div class="form-horizontal" >
                                 <div class="form-group">
                                     <label class="col-md-2 control-label">Non-working Date</label>
                                     <div class="col-md-4">
                                         <iais:datePicker id="nonWorking" name="nonWorking" value="${nonWorking}"/>
                                     </div>
                                     <label class="col-md-2 control-label">Status</label>
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 searchdiv">
                                         <iais:select id="searchStatus" name="searchStatus" options="statusOption" cssClass="statusOption" firstOption="Please Select"
                                                      value="${searchStatus}"></iais:select>
                                     </div>
@@ -154,7 +154,8 @@
         $('input[name="description"]').val("");
         $('input[name="nonWorking"]').val("");
         $("#searchStatus option:first").prop("selected", 'selected');
-        $("#searchdiv .current").text("Please Select");
+        $("#year option:first").prop("selected", 'selected');
+        $(".searchdiv .current").text("Please Select");
 
     })
 
