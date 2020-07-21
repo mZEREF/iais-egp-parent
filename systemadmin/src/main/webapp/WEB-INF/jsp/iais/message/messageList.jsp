@@ -35,7 +35,7 @@
                 <div id = "moduleTypeRow" class="form-group" style="display:none">
                     <iais:field value="Module" />
                     <iais:value width="7">
-                        <iais:select name="module"  id="module" value="${param.module}"  codeCategory="CATE_ID_ERR_MSG_MODULE" filterValue="MSGMD010" firstOption="Please Select" ></iais:select>
+                        <iais:select name="module"  id="module" value="${param.module}" options="moduleTypeSelect" firstOption="Please Select" ></iais:select>
                     </iais:value>
                 </div>
 

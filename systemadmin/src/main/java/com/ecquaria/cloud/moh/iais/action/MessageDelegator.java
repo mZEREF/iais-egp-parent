@@ -5,8 +5,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.message.MessageQueryDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -49,6 +52,24 @@ public class MessageDelegator {
     }
 
     /**
+     * setup option to web page
+     * @param request
+     */
+    private void preSelectOption(HttpServletRequest request){
+        List<SelectOption> moduleList =  IaisCommonUtils.genNewArrayList();
+        moduleList.add(new SelectOption("New", "New"));
+        moduleList.add(new SelectOption("Renewal", "Renewal"));
+        moduleList.add(new SelectOption("Request For Change", "Request For Change"));
+        moduleList.add(new SelectOption("Withdrawal", "Withdrawal"));
+        moduleList.add(new SelectOption("Cessation", "Cessation"));
+        moduleList.add(new SelectOption("Suspension", "Suspension"));
+        moduleList.add(new SelectOption("Revocation", "Revocation"));
+        moduleList.add(new SelectOption("Reinstatement", "Reinstatement"));
+        moduleList.add(new SelectOption("Appeal", "Appeal"));
+        ParamUtil.setRequestAttr(request, "moduleTypeSelect", moduleList);
+    }
+
+    /**
      * StartStep: startStep
      * @param bpc
      * @throws IllegalAccessException
@@ -70,6 +91,9 @@ public class MessageDelegator {
      */
     public void prepareData(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+
+        preSelectOption(request);
+
         SearchParam param = IaisEGPHelper.getSearchParam(request, filterParameter);
         QueryHelp.setMainSql("systemAdmin", "queryMessage", param);
         SearchResult searchResult = messageService.doQuery(param);
@@ -95,6 +119,7 @@ public class MessageDelegator {
             return;
         }
 
+        preSelectOption(request);
 
         String description = ParamUtil.getString(request, MessageConstants.PARAM_DESCRIPTION);
         String message = ParamUtil.getString(request, MessageConstants.PARAM_MESSAGE);
@@ -134,6 +159,8 @@ public class MessageDelegator {
      */
     public void backAfter(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        preSelectOption(request);
+
     }
 
     /**
@@ -212,6 +239,7 @@ public class MessageDelegator {
     public void prepareEdit(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         String msgId = ParamUtil.getMaskedString(request, "msgQueryId");
+        preSelectOption(request);
         if(!StringUtil.isEmpty(msgId)){
             MessageDto messageDto = messageService.getMessageById(msgId);
             ParamUtil.setSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO, messageDto);        }
