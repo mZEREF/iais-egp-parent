@@ -15,11 +15,11 @@ import java.util.Map;
 public class GatewayAPI {
 
 	public static String create_partner_trade_by_buyer(
-			Map<String, String> sParaTemp) throws Exception {
+			Map<String, String> sParaTemp,HttpServletRequest request) throws Exception {
 
 		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayConfig.payment_registry_name);
 		sParaTemp.put(GatewayConstants.RETURN_URL_KEY, GatewayConfig.return_url);
-		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, GatewayConfig.notify_url);
+		sParaTemp.put(GatewayConstants.NOTIFY_URL_KEY, "https://" + request.getServerName()+GatewayConfig.notify_url);
 		sParaTemp.put(GatewayConstants.INPUT_CHARSET, GatewayConfig.input_charset);
 
 //		sParaTemp.put(GatewayConstants.REGISTRY_NAME_KEY, "moh");
@@ -29,7 +29,7 @@ public class GatewayAPI {
 
 		String strButtonName = "OK";
 
-		return GatewaySubmit.buildForm(sParaTemp, GatewayConfig.common_gateway_url, "get",
+		return GatewaySubmit.buildForm(sParaTemp, "https://" + request.getServerName()+GatewayConfig.common_gateway_url, "get",
 				strButtonName);
 	}
 	

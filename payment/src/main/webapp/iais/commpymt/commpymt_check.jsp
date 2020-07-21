@@ -24,4 +24,4 @@
 	fieldMap.put(GatewayConstants.REGISTRY_NAME_KEY, GatewayConfig.payment_registry_name);
 	fieldMap.put(GatewayConstants.INPUT_CHARSET, GatewayConfig.input_charset);
 %>
-<%=GatewaySubmit.buildForm(fieldMap, GatewayConfig.common_gateway_service_url, "get", "OK")%>
+<%=GatewaySubmit.buildForm(fieldMap, "https://" + request.getServerName()+GatewayConfig.common_gateway_service_url, "get", "OK")%>

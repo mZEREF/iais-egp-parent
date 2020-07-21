@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -62,7 +63,7 @@ public class ClientReschedulingDelegator {
             .clz(ReschApptGrpPremsQueryDto.class)
             .searchAttr("SearchParam")
             .resultAttr("SearchResult")
-            .sortField("ADDRESS").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(10).build();
+            .sortField("ADDRESS").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(SysParamUtil.getDefaultPageSize()).build();
 
     @Autowired
     SystemParamConfig systemParamConfig;

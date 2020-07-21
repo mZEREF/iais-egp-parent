@@ -30,4 +30,4 @@
 	fieldMap.put(GatewayConstants.INPUT_CHARSET, GatewayConfig.input_charset);
 	fieldMap.put(GatewayConstants.AMOUNT_KEY, amount);
 %>
-<%=GatewaySubmit.buildForm(fieldMap, GatewayConfig.common_gateway_service_url, "get", "OK")%>
+<%=GatewaySubmit.buildForm(fieldMap, "https://" + request.getServerName()+GatewayConfig.common_gateway_service_url, "get", "OK")%>

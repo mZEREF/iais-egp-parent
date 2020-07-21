@@ -2273,7 +2273,7 @@ public class NewApplicationDelegator {
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDto.getAppGrpNo());
             try {
-                String html= GatewayAPI.create_partner_trade_by_buyer(fieldMap);
+                String html= GatewayAPI.create_partner_trade_by_buyer(fieldMap,bpc.request);
                 ParamUtil.setRequestAttr(bpc.request,"jumpHtml",html);
             } catch (Exception e) {
                 log.info(e.getMessage(),e);
