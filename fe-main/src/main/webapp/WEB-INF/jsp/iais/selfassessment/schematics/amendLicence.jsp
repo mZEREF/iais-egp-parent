@@ -36,7 +36,7 @@
         <label class="form-check-label" for="amendLicence3">
             <span class="check-circle"></span>
             <span class="left-content">Update licensee information</span>
-            <span class="right-content">Update a change in licensee, or licensee’s information</span>
+            <span class="right-content">Update a change in licensee, or licensee's information</span>
         </label>
     </div>
     <div class="form-check progress-step-check" style="width: 900px">
