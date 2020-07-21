@@ -116,7 +116,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <p><span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span></p>
+                            <p style="margin-left: 100px"><span id="error_selectedFile" name="iaisErrorMsg" class="error-msg"></span></p>
                         </div>
                     </div>
                 </div>
