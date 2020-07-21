@@ -306,7 +306,7 @@ public class MohIntranetUserDelegator {
             for (OrgUserDto orgUserDto : orgUserDtos) {
                 OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
                 orgUserUpLoadDto.setUserId(orgUserDto.getUserId());
-                List<String> valiant = valiant(orgUserDto);
+                List<String> valiant = valiantDto(orgUserDto);
                 if (IaisCommonUtils.isEmpty(valiant)) {
                     valiant.add("add success !");
                     orgUserDtosSave.add(orgUserDto);
@@ -856,9 +856,74 @@ public class MohIntranetUserDelegator {
             if (!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")) {
                 String error = "UserId is Alphanumeric.";
                 errors.add(error);
+            }else{
+                OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
+                if (intranetUserByUserId != null) {
+                    String valiuserId = intranetUserByUserId.getUserId();
+                    if (userId.equals(valiuserId)) {
+                        String error = "UserId is exist.";
+                        errors.add(error);
+                    }
+                }
             }
         } else {
-            String error = "UserId is a mandatory field..";
+            String error = "UserId is a mandatory field.";
+            errors.add(error);
+        }
+        String displayName = orgUserDto.getDisplayName();
+        if (StringUtil.isEmpty(displayName)) {
+            String error = "DisplayName is a mandatory field.";
+            errors.add(error);
+        }
+        Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
+        if (accountActivateDatetime == null) {
+            String error = "AccountActivationStart is a mandatory field.";
+            errors.add(error);
+        }
+        Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
+        if (accountDeactivateDatetime == null) {
+            String error = "AccountActivationEnd is a mandatory field.";
+            errors.add(error);
+        }
+        if (accountDeactivateDatetime != null && accountActivateDatetime != null) {
+            boolean after = accountDeactivateDatetime.after(accountActivateDatetime);
+            if (!after) {
+                String error = "AccountActivationEnd date must be after accountActivationStart date.";
+                errors.add(error);
+            }
+        }
+        String lastName = orgUserDto.getLastName();
+        if (StringUtil.isEmpty(lastName)) {
+            String error = "LastName is a mandatory field.";
+            errors.add(error);
+        }
+        String firstName = orgUserDto.getFirstName();
+        if (StringUtil.isEmpty(firstName)) {
+            String error = "FirstName is a mandatory field.";
+            errors.add(error);
+        }
+        String email = orgUserDto.getEmail();
+        if (StringUtil.isEmpty(email)) {
+            String error = "Email is a mandatory field.";
+            errors.add(error);
+        } else {
+            if (!ValidationUtils.isEmail(email)) {
+                String error = "Email is not  correct.";
+                errors.add(error);
+            }
+        }
+        return errors;
+    }
+    private List<String> valiantDto(OrgUserDto orgUserDto) {
+        List<String> errors = IaisCommonUtils.genNewArrayList();
+        String userId = orgUserDto.getUserId();
+        if (!StringUtil.isEmpty(userId)) {
+            if (!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")) {
+                String error = "UserId is Alphanumeric.";
+                errors.add(error);
+            }
+        } else {
+            String error = "UserId is a mandatory field.";
             errors.add(error);
         }
         String displayName = orgUserDto.getDisplayName();
