@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.api.config.GatewayConfig;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.common.base.FileType;
@@ -2273,7 +2274,7 @@ public class NewApplicationDelegator {
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDto.getAppGrpNo());
             try {
-                String html= GatewayAPI.create_partner_trade_by_buyer(fieldMap,bpc.request);
+                String html= GatewayAPI.create_partner_trade_by_buyer(fieldMap,bpc.request, GatewayConfig.return_url);
                 ParamUtil.setRequestAttr(bpc.request,"jumpHtml",html);
             } catch (Exception e) {
                 log.info(e.getMessage(),e);
