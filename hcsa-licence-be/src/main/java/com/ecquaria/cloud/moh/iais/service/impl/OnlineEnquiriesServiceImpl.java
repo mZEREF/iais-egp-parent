@@ -498,9 +498,19 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         iteraterAo1s.addAll(ao1s);
         //get inspection lead
         List<OrgUserDto> userList = organizationClient.retrieveOrgUserAccount(iteraterInspectior).getEntity();
-        String reportBy = userList.get(0).getDisplayName();
+        try{
+            String reportBy = userList.get(0).getDisplayName();
+            inspectionReportDto.setReportedBy(reportBy);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
         List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(iteraterAo1s).getEntity();
-        String leadName = leadList.get(0).getDisplayName();
+        try{
+            String leadName = leadList.get(0).getDisplayName();
+            inspectionReportDto.setReportedBy(leadName);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
 
         Set<String> inspectiors = taskService.getInspectiors(applicationDto.getApplicationNo(), TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR);
         List<String> inspectors = IaisCommonUtils.genNewArrayList();
@@ -512,8 +522,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             inspectorsName.add(displayName);
         }
         inspectionReportDto.setInspectors(inspectorsName);
-        inspectionReportDto.setReportedBy(reportBy);
-        inspectionReportDto.setReportNoteBy(leadName);
+//        inspectionReportDto.setReportedBy(reportBy);
+//        inspectionReportDto.setReportNoteBy(leadName);
         inspectionReportDto.setServiceName(svcName);
         inspectionReportDto.setHciName(appInsRepDto.getHciName());
         inspectionReportDto.setHciAddress(appInsRepDto.getHciAddress());
