@@ -16,7 +16,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../common/dashboard.jsp"%>
-<div class="container">
+<div class="container" style="margin-left: 320px;">
   <div class="component-gp">
     <br>
     <form method="post" id="mainReConfirmForm" action=<%=process.runtime.continueURL()%>>
@@ -26,39 +26,35 @@
       <div class="main-content">
         <div class="row">
           <div class="col-lg-12 col-xs-12">
-            <div class="center-content">
-              <div class="intranet-content">
-                <iais:body >
-                  <iais:section title="" id = "ava_apptnew_date">
-                    <div class="row">
-                      <div class="col-md-4">
-                        <label style="font-size: 16px">Available Appointment Dates</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-6">
-                        <c:if test="${apptFeConfirmDateDto.inspectionNewDate != null}">
-                          <c:forEach items="${apptFeConfirmDateDto.inspectionNewDate}" var="newDate">
-                            <br><input class="form-check-input" type="radio" name="apptCheckNewDate" aria-invalid="true" value="${newDate.value}" <c:if test="${newDate.value eq apptFeConfirmDateDto.checkNewDate}">checked</c:if>>
-                            <span><c:out value = "${newDate.text}"/></span>
-                          </c:forEach>
-                          <br><span class="error-msg" name="iaisErrorMsg" id="error_checkNewDate"></span>
-                        </c:if>
-                        <c:if test="${apptFeConfirmDateDto.inspectionNewDate == null}">
-                          <span><c:out value = "-"/></span>
-                        </c:if>
-                      </div>
-                    </div>
-                    <br>
-                    <iais:action >
-                      <c:if test="${apptFeConfirmDateDto.inspectionNewDate != null}">
-                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptTwoConfirmInspDateCon()">Confirm</button>
-                      </c:if>
-                      <a class="back" id="Back" onclick="javascript:apptTwoConfirmInspDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
-                    </iais:action>
-                  </iais:section>
-                </iais:body>
-              </div>
+            <div class="intranet-content">
+              <iais:section title="" id = "ava_apptnew_date">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label style="font-size: 16px">Available Appointment Dates</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <c:if test="${apptFeConfirmDateDto.inspectionNewDate != null}">
+                      <c:forEach items="${apptFeConfirmDateDto.inspectionNewDate}" var="newDate">
+                        <br><input class="form-check-input" type="radio" name="apptCheckNewDate" aria-invalid="true" value="${newDate.value}" <c:if test="${newDate.value eq apptFeConfirmDateDto.checkNewDate}">checked</c:if>>
+                        <span><c:out value = "${newDate.text}"/></span>
+                      </c:forEach>
+                      <br><span class="error-msg" name="iaisErrorMsg" id="error_checkNewDate"></span>
+                    </c:if>
+                    <c:if test="${apptFeConfirmDateDto.inspectionNewDate == null}">
+                      <span><c:out value = "-"/></span>
+                    </c:if>
+                  </div>
+                </div>
+                <br>
+                <iais:action >
+                  <c:if test="${apptFeConfirmDateDto.inspectionNewDate != null}">
+                    <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:apptTwoConfirmInspDateCon()">Confirm</button>
+                  </c:if>
+                  <a class="back" id="Back" onclick="javascript:apptTwoConfirmInspDateBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                </iais:action>
+              </iais:section>
             </div>
           </div>
         </div>

@@ -16,7 +16,7 @@
 %>
 <webui:setLayout name="iais-internet"/>
 <%@include file="../common/dashboard.jsp"%>
-<div class="container">
+<div class="container" style="margin-left: 320px;">
   <div class="component-gp">
     <br>
     <form method="post" id="mainConfirmForm" action=<%=process.runtime.continueURL()%>>
@@ -26,67 +26,63 @@
       <div class="main-content">
         <div class="row">
           <div class="col-lg-12 col-xs-12">
-            <div class="center-content">
-              <div class="intranet-content">
-                <iais:body>
-                  <c:if test="${'SUCCESS' eq apptInspFlag}">
-                    <iais:section title="" id = "rec_ack_page">
-                      <div class="bg-title">
-                        <h3 style="border-bottom: 0px solid">Submission successful</h3>
-                      </div>
-                      <iais:row>
-                        <iais:value width="7">
-                          <p><label>Congratulations, you have successfully submitted to MOH.</label></p>
-                        </iais:value>
-                      </iais:row>
-                      <iais:action >
-                        <p class="print">
-                          <span style="font-size: 16px;"><a style="text-decoration: none;" href="" id="print-ack"> <em class="fa fa-print"></em>Print</a></span>
-                          <a class="btn btn-primary" style="float:right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
-                        </p>
-                      </iais:action>
-                    </iais:section>
-                  </c:if>
-                  <c:if test="${'SUCCESS' ne apptInspFlag}">
-                    <iais:section title="" id = "ava_appt_date">
-                      <iais:row>
-                        <iais:field value="Application No"/>
-                        <iais:value width="7">
-                          <c:forEach items="${apptFeConfirmDateDto.applicationDtos}" var="app">
-                            <p><span><c:out value = "${app.applicationNo}"/></span></p>
-                          </c:forEach>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
-                        <iais:field value="Application Type"/>
-                        <iais:value width="7">
-                          <p><span><iais:code code = "${appType}"/></span></p>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
-                        <iais:field value="Licence Period"/>
-                        <iais:value width="7">
-                          <c:forEach items="${apptFeConfirmDateDto.licencePeriods}" var="lic">
-                            <p><span><c:out value = "${lic}"/></span></p>
-                          </c:forEach>
-                        </iais:value>
-                      </iais:row>
-                      <iais:row>
-                        <iais:field value="Date"/>
-                        <iais:value width="7">
-                          <p><span><c:out value = "${apptFeConfirmDateDto.specificDateShow}"/></span></p>
-                        </iais:value>
-                      </iais:row>
-                      <iais:action >
-                        <button class="btn btn-primary" style="float:right" type="button" data-toggle= "modal" data-target= "#rejectDate">Reject</button>
-                        <iais:confirm yesBtnCls="btn btn-primary" msg="ACKAPPT_001" callBack="userConfirmSpecificDateReject()" popupOrder="rejectDate" title="Message from webpage" needCancel="false"></iais:confirm>
-                        <span style="float:right">&nbsp;</span>
-                        <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:userConfirmSpecificDateAccept()">Accept</button>
-                      </iais:action>
-                    </iais:section>
-                  </c:if>
-                </iais:body>
-              </div>
+            <div class="intranet-content">
+              <c:if test="${'SUCCESS' eq apptInspFlag}">
+                <iais:section title="" id = "rec_ack_page">
+                  <div class="bg-title">
+                    <h3 style="border-bottom: 0px solid">Submission successful</h3>
+                  </div>
+                  <iais:row>
+                    <iais:value width="7">
+                      <p><label>Congratulations, you have successfully submitted to MOH.</label></p>
+                    </iais:value>
+                  </iais:row>
+                  <iais:action >
+                    <p class="print">
+                      <span style="font-size: 16px;"><a style="text-decoration: none;" href="" id="print-ack"> <em class="fa fa-print"></em>Print</a></span>
+                      <a class="btn btn-primary" style="float:right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to Dashboard</a>
+                    </p>
+                  </iais:action>
+                </iais:section>
+              </c:if>
+              <c:if test="${'SUCCESS' ne apptInspFlag}">
+                <iais:section title="" id = "ava_appt_date">
+                  <iais:row>
+                    <iais:field value="Application No"/>
+                    <iais:value width="7">
+                      <c:forEach items="${apptFeConfirmDateDto.applicationDtos}" var="app">
+                        <p><span><c:out value = "${app.applicationNo}"/></span></p>
+                      </c:forEach>
+                    </iais:value>
+                  </iais:row>
+                  <iais:row>
+                    <iais:field value="Application Type"/>
+                    <iais:value width="7">
+                      <p><span><iais:code code = "${appType}"/></span></p>
+                    </iais:value>
+                  </iais:row>
+                  <iais:row>
+                    <iais:field value="Licence Period"/>
+                    <iais:value width="7">
+                      <c:forEach items="${apptFeConfirmDateDto.licencePeriods}" var="lic">
+                        <p><span><c:out value = "${lic}"/></span></p>
+                      </c:forEach>
+                    </iais:value>
+                  </iais:row>
+                  <iais:row>
+                    <iais:field value="Date"/>
+                    <iais:value width="7">
+                      <p><span><c:out value = "${apptFeConfirmDateDto.specificDateShow}"/></span></p>
+                    </iais:value>
+                  </iais:row>
+                  <iais:action >
+                    <button class="btn btn-primary" style="float:right" type="button" data-toggle= "modal" data-target= "#rejectDate">Reject</button>
+                    <iais:confirm yesBtnCls="btn btn-primary" msg="ACKAPPT_001" callBack="userConfirmSpecificDateReject()" popupOrder="rejectDate" title="Message from webpage" needCancel="false"></iais:confirm>
+                    <span style="float:right">&nbsp;</span>
+                    <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:userConfirmSpecificDateAccept()">Accept</button>
+                  </iais:action>
+                </iais:section>
+              </c:if>
             </div>
           </div>
         </div>
