@@ -12,7 +12,7 @@
             <div class="row">
                 <c:choose>
                     <c:when test="${DashboardTitle != null && DashboardTitle !=''}">
-                        <h1>${DashboardTitle}</h1>
+                        <div class="col-xs-12"><h1>${DashboardTitle}</h1></div>
                     </c:when>
                     <c:otherwise>
                         <c:choose>
