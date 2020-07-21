@@ -207,9 +207,11 @@
                               </iais:value>
                             </iais:row>
                             <iais:row id="indicateCondRemarks">
-                              <iais:field value="Please indicate Licensing Terms and Conditions" required="true"/>
+                              <div class="col-md-4" style="padding-right: 0px;">
+                                <label style="font-size: 16px">Please indicate Licensing Terms and Conditions<span style="color: red"> *</span></label>
+                              </div>
                               <iais:value width="4000">
-                                <textarea id="condRemarks" name="condRemarks" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></textarea>
+                                <textarea id="condRemarks" name="condRemarks" maxlength="4000" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_accCondMarks"></span>
                               </iais:value>
                             </iais:row>
