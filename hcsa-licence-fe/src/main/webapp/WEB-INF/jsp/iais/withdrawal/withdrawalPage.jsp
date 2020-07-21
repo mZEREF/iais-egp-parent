@@ -12,6 +12,7 @@
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="app_action_type" value="">
         <input type="hidden" name="withdraw_app_list" value="">
+        <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="internet-content">
@@ -48,24 +49,15 @@
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         <h4 class="modal-title">Select application for withdrawal</h4>
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="withdraw-info-gp">
-                                            <div class="withdraw-info-row">
-                                                <div class="withdraw-info">
-                                                    <p>AN200518004017V-03</p>
-                                                </div>
-                                                <div class="withdraw-delete">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" id="icon1checkboxSample"
-                                                               type="checkbox" name="checkboxSample"
-                                                               aria-invalid="false">
-                                                        <label class="form-check-label" for="icon1checkboxSample"><span
-                                                                class="check-square"></span></label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div id="withdrawPagDiv"></div>
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="withdrawBodyDiv"></tbody>
+                                    </table>
                                     <div class="modal-footer">
                                         <a class="btn btn-primary withdraw-next" href="#">Done</a>
                                     </div>
@@ -176,32 +168,37 @@
 
     $("#withdrawFile").change(function () {
         $("#delFile").removeAttr("hidden");
-        var fileName = $("#withdrawFile").val();
-        var pos = fileName.lastIndexOf("\\");
+        let fileName = $("#withdrawFile").val();
+        let pos = fileName.lastIndexOf("\\");
         $("#fileName").html(fileName.substring(pos + 1));
     });
 
     function deleteWdFile() {
         // document.getElementById("withdrawFile").files[0] = null;
-        wdfile = $("#withdrawFile");
+        let wdfile = $("#withdrawFile");
         wdfile.after(wdfile.clone().val(""));
         wdfile.remove();
         $("#delFile").attr("hidden", "hidden");
     }
 
-    $(".withdraw-delete p").click(function () {
-        $(this).parent().parent().parent().parent().remove();
-    });
+    // $(".delete-withdraw").click(function () {
+    //     console.log("delete withdraw app");
+    //     $(this).parent().parent().parent().parent().remove();
+    // });
+    function deleteWithdraw(it){
+        console.log("delete withdraw app");
+        $(it).parent().parent().parent().parent().parent().remove();
+    }
 
     $(".withdraw-next").click(function () {
         $("input[name='checkboxSample']:checked").each(function () {
-            var appNoList = [];
-            var withdrawContent$ = $(".withdraw-content-box");
+            let appNoList = [];
+            let withdrawContent$ = $(".withdraw-content-box");
             withdrawContent$.find(".withdraw-info p").each(function (){
-                appNoList.push($(this).text)
+                appNoList.push($(this).text())
             });
-            var appNo = $(this).parent().parent().parent().find(".withdraw-info").find("p").text();
-            if (!$.inArray(appNo,appNoList)){
+            let appNo = $(this).parent().parent().parent().find(".withdraw-info").find("p").text();
+            if ($.inArray(appNo,appNoList) == -1){
                 withdrawContent$.last().parent().append('<div class="withdraw-content-box">\n' +
                     '                                    <div class="withdraw-info-gp">\n' +
                     '                                        <div class="withdraw-info-row">\n' +
@@ -209,7 +206,7 @@
                     '                                                <p>'+appNo+'</p>\n' +
                     '                                            </div>\n' +
                     '                                            <div class="withdraw-delete">\n' +
-                    '                                                <p><a href="#"><i class="fa fa-trash-o"></i>Delete</a></p>\n' +
+                    '                                                <p ><a onclick="deleteWithdraw(this)"><i class="fa fa-trash-o"></i>Delete</a></p>\n' +
                     '                                            </div>\n' +
                     '                                        </div>\n' +
                     '                                    </div>\n' +
@@ -220,8 +217,8 @@
 
     function doSubmit() {
         showWaiting();
-        var appNoList = "";
-        var withdrawContent$ = $(".withdraw-content-box");
+        let appNoList = "";
+        let withdrawContent$ = $(".withdraw-content-box");
         withdrawContent$.find(".withdraw-info p").each(function (){
             appNoList = appNoList + $(this).text() + "#";
         });

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -45,6 +46,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -123,6 +125,12 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                 }
             });
         }
+    }
+
+    @Override
+    public List<WithdrawApplicationDto> getCanWithdrawAppList(List<String[]> appTandS) {
+        List<WithdrawApplicationDto> withdrawApplicationDtoList = applicationClient.getApplicationByAppTypesAndStatus(appTandS).getEntity();
+        return withdrawApplicationDtoList;
     }
 
     private void sendInboxMessage(String applicationNo,String licenseeId,HashMap<String, String> maskParams,String templateMessageByContent,String serviceId,String subject){
