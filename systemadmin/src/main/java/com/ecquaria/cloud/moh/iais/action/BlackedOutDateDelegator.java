@@ -339,7 +339,7 @@ public class BlackedOutDateDelegator {
         //ERR004 There is an inspection scheduled on that date. This appointment must be rescheduled before this action may be performed.
        boolean isUnavailableTime = appointmentService.isUnavailableTime(groupName, blackoutDateDto.getStartDate(), blackoutDateDto.getEndDate());
         if (isUnavailableTime){
-            errorMap.put(CUSTOM_VALIDATEION_ATTR, "GENERAL_ERR0018");
+            errorMap.put(CUSTOM_VALIDATEION_ATTR, "APPT_ERROR0001");
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             return ;
