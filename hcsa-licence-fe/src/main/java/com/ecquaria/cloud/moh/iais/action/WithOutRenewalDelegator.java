@@ -2,6 +2,9 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.api.config.GatewayConfig;
+import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
@@ -958,7 +961,7 @@ public class WithOutRenewalDelegator {
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
             return;
         }
-        String backUrl = "hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal/1/preparatData";
+        String backUrl = "/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal/1/preparatData";
         //set back url
         ParamUtil.setSessionAttr(bpc.request, "backUrl", backUrl);
         String payMethod = ParamUtil.getString(bpc.request, "payMethod");
@@ -981,20 +984,25 @@ public class WithOutRenewalDelegator {
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/payment-web/eservice/INTERNET/PaymentRequest")
-                    .append("?amount=").append(MaskUtil.maskValue("amount", String.valueOf(totalAmount)))
-                    .append("&payMethod=").append(MaskUtil.maskValue("payMethod", payMethod))
-                    .append("&reqNo=").append(MaskUtil.maskValue("reqNo", groupNo))
-                    .append("&backUrl=").append(MaskUtil.maskValue("backUrl", backUrl));
+//            StringBuilder url = new StringBuilder();
+//            url.append("https://").append(bpc.request.getServerName())
+//                    .append("/payment-web/eservice/INTERNET/PaymentRequest")
+//                    .append("?amount=").append(MaskUtil.maskValue("amount", String.valueOf(totalAmount)))
+//                    .append("&payMethod=").append(MaskUtil.maskValue("payMethod", payMethod))
+//                    .append("&reqNo=").append(MaskUtil.maskValue("reqNo", groupNo))
+//                    .append("&backUrl=").append(MaskUtil.maskValue("backUrl", backUrl));
+//            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+//            bpc.response.sendRedirect(tokenUrl);
+            Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
+            fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(totalAmount));
+            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
+            fieldMap.put(GatewayConstants.SVCREF_NO, groupNo);
 
-
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
             try {
-                bpc.request.setAttribute("paymentAmount", totalAmount);
+                String html= GatewayAPI.create_partner_trade_by_buyer(fieldMap,bpc.request,backUrl);
+                ParamUtil.setRequestAttr(bpc.request,"jumpHtml",html);
 
+                bpc.request.setAttribute("paymentAmount", totalAmount);
                 sendEmail(bpc.request, groupNo, "onlinePayment", licenseeId, totalAmount, "xxxx-xxxx-xxxx");
 
             } catch (Exception e) {
