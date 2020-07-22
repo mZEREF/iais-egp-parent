@@ -181,7 +181,7 @@ public class TemplatesDelegator {
             List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_TEMPLATE_ROLE);
             for (SelectOption item:selectOptions
                  ) {
-                item.setValue(item.getValue().substring(3));
+                item.setValue(item.getValue());
             }
             ParamUtil.setSessionAttr(bpc.request,"recipient",(Serializable) selectOptions);
             ParamUtil.setSessionAttr(bpc.request,"recipientString", recipientString);
