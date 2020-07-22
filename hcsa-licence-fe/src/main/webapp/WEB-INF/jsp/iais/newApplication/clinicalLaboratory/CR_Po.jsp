@@ -604,14 +604,14 @@
             <c:choose>
               <c:when test="${!empty ReloadDeputyPrincipalOfficers}">
             console.log('dpo true');
-                <c:set var="psnLength-dpo" value="${ReloadDeputyPrincipalOfficers.size()-1}"/>
+                <c:set var="psnLengthDpo" value="${ReloadDeputyPrincipalOfficers.size()-1}"/>
               </c:when>
               <c:otherwise>
-                <c:set var="psnLength-dpo" value="0"/>
+                <c:set var="psnLengthDpo" value="0"/>
               </c:otherwise>
             </c:choose>
-            console.log('psnLength-dpo:'+${psnLength-dpo});
-            <c:forEach begin="0" end="${psnLength-dpo}" step="1" varStatus="stat">
+            console.log('psnLengthDpo:'+${psnLengthDpo});
+            <c:forEach begin="0" end="${psnLengthDpo}" step="1" varStatus="stat">
               var $currentPsn = $('.dpo-content').eq(${stat.index+1});
               //remove dis style
               $currentPsn.find('input[type="text"]').css('border-color','');
