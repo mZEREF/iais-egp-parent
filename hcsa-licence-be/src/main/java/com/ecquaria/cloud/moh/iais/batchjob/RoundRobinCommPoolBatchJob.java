@@ -77,6 +77,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -169,8 +170,6 @@ public class RoundRobinCommPoolBatchJob {
               if(!RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())){
                   try{
                       String workGroupId = taskDto.getWkGrpId();
-                      //set inspector leads
-                      setInspLeadsInRecommendation(taskDto, workGroupId, auditTrailDto);
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
                       TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
@@ -181,6 +180,8 @@ public class RoundRobinCommPoolBatchJob {
                       ApplicationViewDto applicationViewDto=applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
                       if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL.equals(applicationViewDto.getApplicationDto().getStatus()) ||
                               ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT.equals(applicationViewDto.getApplicationDto().getStatus())){
+                          //set inspector leads
+                          setInspLeadsInRecommendation(taskDto, workGroupId, auditTrailDto);
                           taskDto.setUserId(null);
                           taskDto = taskService.updateTask(taskDto);
                           ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -189,7 +190,7 @@ public class RoundRobinCommPoolBatchJob {
                           ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
                           assignReschedulingTask(taskDto,taskScoreDto.getUserId(), applicationDtos, auditTrailDto, applicationGroupDto);
                       }
-                  }catch (Exception e){
+                  }catch (Exception e ){
                       log.error(StringUtil.changeForLog("This  Task can not assign id-->:"+taskDto.getId()));
                   }
               }else{
@@ -317,7 +318,8 @@ public class RoundRobinCommPoolBatchJob {
             List<String> premCorrIds = getAppPremCorrIdByList(appPremisesCorrelationDtos);
             List<ApplicationDto> applicationDtoList = getApplicationDtosByCorr(appPremisesCorrelationDtos);
             //get all users
-            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtoList, null, applicationDto);
+
+            Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtoList, Collections.singletonList(userId), applicationDto);
             boolean allInPlaceFlag = allAppFromSamePremisesIsOk(applicationDtoList);
             if(allInPlaceFlag){
                 saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId);
@@ -708,7 +710,7 @@ public class RoundRobinCommPoolBatchJob {
         appPremisesRoutingHistoryDto.setStageId(stageId);
         appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
         appPremisesRoutingHistoryDto.setAppStatus(status);
-        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setActionby("49CD8912-790B-EA11-BE7D-000C29F371DC");
         appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         appPremisesRoutingHistoryDto.setProcessDecision(processDec);
         appPremisesRoutingHistoryDto.setRoleId(roleId);
