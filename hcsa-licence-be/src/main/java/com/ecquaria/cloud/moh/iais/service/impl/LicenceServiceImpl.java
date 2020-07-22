@@ -162,7 +162,11 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public LicenceDto getLicenceDto(String licenceId) {
-        return hcsaLicenceClient.getLicenceDtoById(licenceId).getEntity();
+        LicenceDto result = null;
+        if(!StringUtil.isEmpty(licenceId)){
+            result = hcsaLicenceClient.getLicenceDtoById(licenceId).getEntity();
+        }
+        return result;
     }
 
     @Override
