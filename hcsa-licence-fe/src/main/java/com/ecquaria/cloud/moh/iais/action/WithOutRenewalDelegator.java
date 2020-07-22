@@ -430,15 +430,16 @@ public class WithOutRenewalDelegator {
             List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldSubmissionDtos.get(0).getAppGrpPremisesDtoList();
             List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = newAppSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
             List<AppGrpPremisesDto> newAppGrpPremisesDtoList = newAppSubmissionDtos.get(0).getAppGrpPremisesDtoList();
-            Boolean replacePerson = outRenewalService.isReplace(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-            Boolean updatePerson = outRenewalService.isUpdate(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+            boolean replacePerson = outRenewalService.isReplace(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+            boolean updatePerson = outRenewalService.isUpdate(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+            boolean editDoc = outRenewalService.isEditDoc(newAppSubmissionDtos.get(0), oldSubmissionDtos.get(0));
             List<AppSvcPrincipalOfficersDto> poAndDpo = newAppSvcRelatedInfoDtoList.get(0).getAppSvcPrincipalOfficersDtoList();
             if(!IaisCommonUtils.isEmpty(poAndDpo)){
                 poAndDpo.sort((h1,h2)->h2.getPsnType().compareTo(h1.getPsnType()));
                 newAppSvcRelatedInfoDtoList.get(0).setAppSvcPrincipalOfficersDtoList(poAndDpo);
             }
             boolean eqGrpPremisesResult = eqGrpPremises(newAppGrpPremisesDtoList, oldAppGrpPremisesDtoList);
-            if (replacePerson || updatePerson || eqGrpPremisesResult) {
+            if (replacePerson || updatePerson || eqGrpPremisesResult ||editDoc) {
                 ParamUtil.setRequestAttr(bpc.request, "changeRenew", "Y");
             }
         }
@@ -658,40 +659,40 @@ public class WithOutRenewalDelegator {
                 if (updateCgo.contains(idNo)) {
                     List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
                     if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
-                        psnTypesExit.add("CGO");
+                        psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
                     } else {
                         List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                        psnTypes.add("CGO");
+                        psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
                         idNoPsnTypeMap.put(idNo, psnTypes);
                     }
                 }
                 if (updatePo.contains(idNo)) {
                     List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
                     if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
-                        psnTypesExit.add("PO");
+                        psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
                     } else {
                         List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                        psnTypes.add("PO");
+                        psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
                         idNoPsnTypeMap.put(idNo, psnTypes);
                     }
                 }
                 if (updateDpo.contains(idNo)) {
                     List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
                     if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
-                        psnTypesExit.add("DPO");
+                        psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
                     } else {
                         List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                        psnTypes.add("DPO");
+                        psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
                         idNoPsnTypeMap.put(idNo, psnTypes);
                     }
                 }
                 if (updateMat.contains(idNo)) {
                     List<String> psnTypesExit = idNoPsnTypeMap.get(idNo);
                     if (!IaisCommonUtils.isEmpty(psnTypesExit)) {
-                        psnTypesExit.add("MAT");
+                        psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
                     } else {
                         List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                        psnTypes.add("MAT");
+                        psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
                         idNoPsnTypeMap.put(idNo, psnTypes);
                     }
                 }
@@ -714,39 +715,39 @@ public class WithOutRenewalDelegator {
             if (!IaisCommonUtils.isEmpty(notReNewLicIds)) {
                 List<AppSubmissionDto> notReNewappSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(notReNewLicIds);
                 for (AppSubmissionDto appSubmissionDto : notReNewappSubmissionDtos) {
-                    if (psnTypes.contains("CGO")) {
+                    if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO)) {
                         List<AppSvcCgoDto> appSvcCgoDtoList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcCgoDtoList();
                         appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcCgoDtoList(appSvcCgoDtoList);
                     }
-                    if (psnTypes.contains("PO")) {
+                    if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_PO)) {
                         List<AppSvcPrincipalOfficersDto> newPOList = IaisCommonUtils.genNewArrayList();
                         List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDtoList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcPrincipalOfficersDtoList();
                         if (!IaisCommonUtils.isEmpty(newAppSvcPrincipalOfficersDtoList)) {
                             for (int i = 0; i < newAppSvcPrincipalOfficersDtoList.size(); i++) {
                                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = newAppSvcPrincipalOfficersDtoList.get(i);
                                 String psnType = appSvcPrincipalOfficersDto.getPsnType();
-                                if ("PO".equals(psnType)) {
+                                if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)) {
                                     newPOList.add(appSvcPrincipalOfficersDto);
                                 }
                             }
                         }
                         appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcPrincipalOfficersDtoList(newPOList);
                     }
-                    if (psnTypes.contains("DPO")) {
+                    if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO)) {
                         List<AppSvcPrincipalOfficersDto> newPOList = IaisCommonUtils.genNewArrayList();
                         List<AppSvcPrincipalOfficersDto> newAppSvcPrincipalOfficersDtoList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcPrincipalOfficersDtoList();
                         if (!IaisCommonUtils.isEmpty(newAppSvcPrincipalOfficersDtoList)) {
                             for (int i = 0; i < newAppSvcPrincipalOfficersDtoList.size(); i++) {
                                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = newAppSvcPrincipalOfficersDtoList.get(i);
                                 String psnType = appSvcPrincipalOfficersDto.getPsnType();
-                                if ("DPO".equals(psnType)) {
+                                if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnType)) {
                                     newPOList.add(appSvcPrincipalOfficersDto);
                                 }
                             }
                         }
                         appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcPrincipalOfficersDtoList(newPOList);
                     }
-                    if (psnTypes.contains("MAT")) {
+                    if (psnTypes.contains(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP)) {
                         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = newAppSvcRelatedInfoDtoList.get(0).getAppSvcMedAlertPersonList();
                         appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcMedAlertPersonList(appSvcMedAlertPersonList);
                     }
@@ -905,6 +906,8 @@ public class WithOutRenewalDelegator {
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
                 errorMap.put("rfcEffectiveDate", "Please select future date.");
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);
+                renewDto.getAppSubmissionDtos().get(0).setEffectiveDateStr(renewEffectiveDate);
                 return;
             }
             renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);

@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.submission.client.App;
 import com.google.inject.internal.cglib.reflect.$FastConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                     String newIdNo = newCgoList.get(i).getIdNo();
                     String oldIdNo = oldCgoList.get(i).getIdNo();
                     if (!newIdNo.equals(oldIdNo)) {
-                       return true;
+                        return true;
                     }
                 }
             } else {
@@ -146,7 +147,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                     AppSvcPrincipalOfficersDto oldPoDto = oldPoList.get(j);
                     String psnTypeNew = newPoDto.getPsnType();
                     String psnTypeOld = oldPoDto.getPsnType();
-                    if ("PO".equals(psnTypeNew)&&"PO".equals(psnTypeOld)) {
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnTypeNew) && ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnTypeOld)) {
                         newPoE.setName(newPoDto.getName());
                         newPoE.setDesignation(newPoDto.getDesignation());
                         newPoE.setMobileNo(newPoDto.getMobileNo());
@@ -161,7 +162,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                             return true;
                         }
                     }
-                    if ("DPO".equals(psnTypeNew)&&"DPO".equals(psnTypeOld)) {
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnTypeNew) && ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnTypeOld)) {
                         AppSvcPrincipalOfficersDto newDpoE = new AppSvcPrincipalOfficersDto();
                         AppSvcPrincipalOfficersDto oldDpoE = new AppSvcPrincipalOfficersDto();
                         newDpoE.setName(newPoDto.getName());
@@ -206,6 +207,70 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     }
 
     @Override
+    public boolean isEditDoc(AppSubmissionDto newAppSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
+
+        List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtos = newAppSubmissionDto.getAppGrpPrimaryDocDtos();
+        List<AppSvcDocDto> NewAppSvcDocDtoLit = newAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
+
+        List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
+        List<AppSvcDocDto> oldAppSvcDocDtoLit = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
+
+        if (!IaisCommonUtils.isEmpty(newAppGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(oldAppGrpPrimaryDocDtos)) {
+            if (newAppGrpPrimaryDocDtos.size() == oldAppGrpPrimaryDocDtos.size()) {
+                List<String> newFileIds = IaisCommonUtils.genNewArrayList();
+                List<String> oldFileIds = IaisCommonUtils.genNewArrayList();
+                for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : newAppGrpPrimaryDocDtos) {
+                    String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
+                    newFileIds.add(fileRepoId);
+                }
+                for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : oldAppGrpPrimaryDocDtos) {
+                    String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
+                    oldFileIds.add(fileRepoId);
+                }
+                newFileIds.retainAll(oldFileIds);
+                if (newFileIds.size() != oldFileIds.size()) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        }else {
+            if (IaisCommonUtils.isEmpty(newAppGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(oldAppGrpPrimaryDocDtos)){
+                return true;
+            }else if(!IaisCommonUtils.isEmpty(newAppGrpPrimaryDocDtos) && IaisCommonUtils.isEmpty(oldAppGrpPrimaryDocDtos)) {
+                return true;
+            }
+        }
+        if (!IaisCommonUtils.isEmpty(NewAppSvcDocDtoLit) && !IaisCommonUtils.isEmpty(oldAppSvcDocDtoLit)) {
+            if (NewAppSvcDocDtoLit.size() == oldAppSvcDocDtoLit.size()) {
+                List<String> newFileIds = IaisCommonUtils.genNewArrayList();
+                List<String> oldFileIds = IaisCommonUtils.genNewArrayList();
+                for (AppSvcDocDto appSvcDocDto : NewAppSvcDocDtoLit) {
+                    String fileRepoId = appSvcDocDto.getFileRepoId();
+                    newFileIds.add(fileRepoId);
+                }
+                for (AppSvcDocDto appSvcDocDto : oldAppSvcDocDtoLit) {
+                    String fileRepoId = appSvcDocDto.getFileRepoId();
+                    oldFileIds.add(fileRepoId);
+                }
+                newFileIds.retainAll(oldFileIds);
+                if (newFileIds.size() != oldFileIds.size()) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+        }else {
+            if (IaisCommonUtils.isEmpty(NewAppSvcDocDtoLit) && !IaisCommonUtils.isEmpty(oldAppSvcDocDtoLit)){
+                return true;
+            }else if(!IaisCommonUtils.isEmpty(NewAppSvcDocDtoLit) && IaisCommonUtils.isEmpty(oldAppSvcDocDtoLit)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public List<String> isUpdateCgo(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
         List<String> idNos = IaisCommonUtils.genNewArrayList();
         AppSvcCgoDto newAppSvcCgoDtoE = new AppSvcCgoDto();
@@ -239,7 +304,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
 
                     String idNo = newAppSvcCgoDto.getIdNo();
                     String idNo1 = oldAppSvcCgoDto.getIdNo();
-                    if (!oldAppSvcCgoDtoE.equals(newAppSvcCgoDtoE)&&idNo.equals(idNo1)) {
+                    if (!oldAppSvcCgoDtoE.equals(newAppSvcCgoDtoE) && idNo.equals(idNo1)) {
                         idNos.add(idNo);
                     }
                 }
@@ -275,7 +340,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                         oldPoE.setMobileNo(oldPoDto.getMobileNo());
                         oldPoE.setOfficeTelNo(oldPoDto.getOfficeTelNo());
                         oldPoE.setEmailAddr(oldPoDto.getEmailAddr());
-                        if (!newPoE.equals(oldPoE)&&idNo.equals(idNo1)) {
+                        if (!newPoE.equals(oldPoE) && idNo.equals(idNo1)) {
                             idNos.add(idNo);
                         }
                     }
@@ -312,7 +377,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                         oldDpoE.setMobileNo(oldPoDto.getMobileNo());
                         oldDpoE.setOfficeTelNo(oldPoDto.getOfficeTelNo());
                         oldDpoE.setEmailAddr(oldPoDto.getEmailAddr());
-                        if (!newDpoE.equals(oldDpoE)&&idNo.equals(idNo1)) {
+                        if (!newDpoE.equals(oldDpoE) && idNo.equals(idNo1)) {
                             idNos.add(idNo);
                         }
                     }
@@ -344,7 +409,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                     oldMatE.setMobileNo(oldMatDto.getMobileNo());
                     oldMatE.setEmailAddr(oldMatDto.getEmailAddr());
                     oldMatE.setPreferredMode(oldMatDto.getPreferredMode());
-                    if (!newMatE.equals(oldMatE)&&idNo.equals(idNo1)) {
+                    if (!newMatE.equals(oldMatE) && idNo.equals(idNo1)) {
                         idNos.add(idNo);
                     }
                 }
