@@ -749,7 +749,7 @@ public class LicenceApproveBatchjob {
                         }
                     }
 
-                    if (applicationDto != null && originLicenceDto != null) {
+                    if (applicationDto != null) {
                         sendEmailAndSms(applicationDto, licenceDto, oldLicenseeDto, originLicenceDto, serviceId);
                     }
                 }
@@ -1758,13 +1758,6 @@ public class LicenceApproveBatchjob {
 
     private void sendEmailAndSms(ApplicationDto applicationDto, LicenceDto licenceDto,
                                  LicenseeDto oldLicenseeDto, LicenceDto originLicenceDto, String serviceId) {
-        if(applicationDto == null ||
-                licenceDto == null ||
-                oldLicenseeDto == null ||
-                originLicenceDto == null ||
-                StringUtil.isEmpty(serviceId)){
-            return;
-        }
         log.info(StringUtil.changeForLog("The sendEmailAndSms start ..."));
         String applicationNo = applicationDto.getApplicationNo();
         String loginUrl = "#";
@@ -1773,7 +1766,10 @@ public class LicenceApproveBatchjob {
         //new application send email
         //zhilin
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())) {
-            String uenNo = oldLicenseeDto.getUenNo();
+            String uenNo = null;
+            if(oldLicenseeDto != null){
+                uenNo = oldLicenseeDto.getUenNo();
+            }
             boolean isNew = false;
             if (StringUtil.isEmpty(uenNo)) {
                 //todo set new uenNo
