@@ -667,14 +667,14 @@
             }
         }
         //PROCVER nextStage
-        var nextStage = $("[name='nextStage']").val();
-        if('PROCVER' == nextStage && selectValue != '${RecommendValue}'){
-            $('#internalRemarksTrue').removeClass('hidden');
-            $('#internalRemarksFalse').addClass('hidden');
-        }else if('PROCVER' == nextStage && selectValue ==  '${RecommendValue}'){
-            $('#internalRemarksTrue').addClass('hidden');
-            $('#internalRemarksFalse').removeClass('hidden');
-        }
+        <%--var nextStage = $("[name='nextStage']").val();--%>
+        <%--if('PROCVER' == nextStage && selectValue != '${RecommendValue}'){--%>
+        <%--    $('#internalRemarksTrue').removeClass('hidden');--%>
+        <%--    $('#internalRemarksFalse').addClass('hidden');--%>
+        <%--}else if('PROCVER' == nextStage && selectValue ==  '${RecommendValue}'){--%>
+        <%--    $('#internalRemarksTrue').addClass('hidden');--%>
+        <%--    $('#internalRemarksFalse').removeClass('hidden');--%>
+        <%--}--%>
     }
 
     $("[name='verified']").change(function selectChange() {
