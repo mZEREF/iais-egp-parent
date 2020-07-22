@@ -209,10 +209,14 @@
             </div>
         </c:forEach>
         <c:if test="${requestInformationConfig==null}">
-            <c:set var="mapDtoLength" value="${AppSvcMedAlertPsn.size()}"/>
-            <c:if test="${mapDtoLength == '0'}">
-                <c:set var="mapDtoLength" value="1"/>
-            </c:if>
+            <c:choose>
+                <c:when test="${!empty AppSvcMedAlertPsn}">
+                    <c:set var="mapDtoLength" value="${AppSvcMedAlertPsn.size()}"/>
+                </c:when>
+                <c:otherwise>
+                    <c:set var="mapDtoLength" value="1"/>
+                </c:otherwise>
+            </c:choose>
             <c:set var="needAddPsn" value="true"/>
             <c:choose>
                 <c:when test="${mapHcsaSvcPersonnel.status =='CMSTAT003'}">

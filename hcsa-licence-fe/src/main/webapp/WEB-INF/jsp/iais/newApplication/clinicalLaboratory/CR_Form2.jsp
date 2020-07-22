@@ -407,10 +407,14 @@
           </td>
         </tr>
         <c:if test="${'BLB'!=currentSvcCode && 'RDS'!=currentSvcCode && requestInformationConfig==null}">
-          <c:set var="cgoDtoLength" value="${GovernanceOfficersList.size()}"/>
-          <c:if test="${cgoDtoLength == '0'}">
-            <c:set var="cgoDtoLength" value="1"/>
-          </c:if>
+          <c:choose>
+              <c:when test="${!empty GovernanceOfficersList}">
+                  <c:set var="cgoDtoLength" value="${GovernanceOfficersList.size()}"/>
+              </c:when>
+              <c:otherwise>
+                  <c:set var="cgoDtoLength" value="1"/>
+              </c:otherwise>
+          </c:choose>
           <c:set var="needAddPsn" value="true"/>
           <c:choose>
             <c:when test="${HcsaSvcPersonnel.status =='CMSTAT003'}">
