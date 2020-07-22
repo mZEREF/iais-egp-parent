@@ -1921,9 +1921,12 @@ public class ClinicalLaboratoryDelegator {
             String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
             String[] officeTelNo = ParamUtil.getStrings(request, "officeTelNo");
             String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
-            int length = assignSelect.length;
+            int length =  0;
+            if(assignSelect != null){
+                length = assignSelect.length;
+            }
             //new and not rfi
-            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && !isRfi){
+            if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
                 for (int i = 0; i < length; i++) {
                     AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
                     String assign = assignSelect[i];
@@ -2056,9 +2059,12 @@ public class ClinicalLaboratoryDelegator {
             String[] deputyMobileNo = ParamUtil.getStrings(request, "deputyMobileNo");
             String[] deputyOfficeTelNo = ParamUtil.getStrings(request, "deputyOfficeTelNo");
             String[] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
-            int length = assignSelect.length;
+            int length = 0;
+            if(assignSelect != null){
+                length = assignSelect.length;
+            }
             //new and not rfi
-            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && !isRfi){
+            if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
                 for (int i = 0; i < length; i++) {
                     AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
                     String assign = assignSelect[i];
@@ -2530,7 +2536,7 @@ public class ClinicalLaboratoryDelegator {
         int length = assignSelect.length;
         //new and not rfi
         int preferredModeLength = 0;
-        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType) && !isRfi){
+        if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
             for (int i = 0; i < length; i++) {
                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
                 String assign = assignSelect[i];
@@ -2539,11 +2545,10 @@ public class ClinicalLaboratoryDelegator {
                     String[] preferredModes = ParamUtil.getStrings(request, "preferredMode" + preferredModeLength);
                     if(!NewApplicationConstant.NEW_PSN.equals(assign) && !assign.equals("-1")&&AppConsts.YES.equals(licPsn)){
                         appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
-                        AppPsnEditDto appPsnEditDto;
+                        AppPsnEditDto appPsnEditDto = new AppPsnEditDto();
                         try {
                             appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcPrincipalOfficersDto);
                         } catch (Exception e) {
-                            appPsnEditDto = new AppPsnEditDto();
                             log.error(e.getMessage(), e);
                         }
                         if(appPsnEditDto.isSalutation()){
@@ -2707,6 +2712,10 @@ public class ClinicalLaboratoryDelegator {
                 reloadDto.add(appSvcPrincipalOfficersDto);
             }
         }
+    }
+
+    private boolean isExistingPsn(String assign,String licPsn){
+        return !NewApplicationConstant.NEW_PSN.equals(assign) && !assign.equals("-1")&&AppConsts.YES.equals(licPsn);
     }
 
 }
