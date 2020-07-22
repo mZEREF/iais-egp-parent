@@ -58,9 +58,11 @@ public class INTERNET___MohWithOutRenewal___1 extends BaseProcessClass {
 	}
 	public void toPrepareData_OnStepProcess_0() throws Exception {
 	// 		toPrepareData->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "toPrepareData", this);
 	}
 	public void prepareJump_OnStepProcess_0() throws Exception {
 	// 		prepareJump->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "prepareJump", this);
 	}
 	public void step2_OnStepProcess_0() throws Exception {
 	// 		controlSwitch->OnStepProcess
