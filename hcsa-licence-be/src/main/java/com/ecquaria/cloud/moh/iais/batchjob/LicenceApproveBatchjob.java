@@ -1783,7 +1783,7 @@ public class LicenceApproveBatchjob {
 
                 sendSMS(msgId, licenceDto.getLicenseeId(), msgInfoMap);
             } catch (Exception e) {
-                log.error(StringUtil.changeForLog("send sms error"));
+                log.error(StringUtil.changeForLog("send sms error"), e);
             }
          //huachong
         } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
@@ -1801,7 +1801,7 @@ public class LicenceApproveBatchjob {
                 HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                 sendMessage(subject1,licenceDto.getLicenseeId(),mesContext,maskParams,serviceId);
             } catch (Exception e) {
-                log.error(StringUtil.changeForLog("send sms error"));
+                log.error(StringUtil.changeForLog("send sms error"), e);
             }
          //guying
         } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
@@ -1823,7 +1823,7 @@ public class LicenceApproveBatchjob {
                 //transfor
                 sendSMS(msgId, originLicenceDto.getLicenseeId(), notifyMap);
             } catch (Exception e) {
-                log.error(StringUtil.changeForLog("send sms error"));
+                log.error(StringUtil.changeForLog("send sms error"), e);
             }
         }
         log.info(StringUtil.changeForLog("The sendEmailAndSms end ..."));
