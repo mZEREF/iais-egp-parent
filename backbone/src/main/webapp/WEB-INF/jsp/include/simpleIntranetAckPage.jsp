@@ -37,3 +37,11 @@
     }
 
 </script>
+
+
+<script type="text/javascript">
+    function doCancel(){
+        SOP.Crud.cfxSubmit("mainForm","doCancel");
+    }
+
+</script>
