@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -47,6 +48,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -362,7 +364,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
         String appNo = reschedulingOfficerDto.getAssignNo();
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         Date saveDate = reschedulingOfficerDto.getSpecificStartDate();
-        String apptRefNo = appointmentClient.saveManualUserCalendar(reschedulingOfficerDto.getAppointmentDto()).getEntity();
+        //end hour - 1, because the function save all start hour
+        AppointmentDto appointmentDto = subtractEndHourByApptDto(reschedulingOfficerDto.getAppointmentDto());
+        String apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDto).getEntity();
         Map<String, List<String>> samePremisesAppMap = reschedulingOfficerDto.getSamePremisesAppMap();
         if(samePremisesAppMap != null) {
             List<String> appNoList = samePremisesAppMap.get(appNo);
@@ -399,6 +403,24 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 cancelOrConfirmApptDate(apptCalendarStatusDto);
             }
         }
+    }
+
+    @Override
+    public AppointmentDto subtractEndHourByApptDto(AppointmentDto appointmentDto) {
+        String endDateStr = appointmentDto.getEndDate();
+        if(!StringUtil.isEmpty(endDateStr)){
+            try {
+                Date endDate = Formatter.parseDateTime(endDateStr, "yyyy-MM-dd HH:mm:ss");
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(endDate);
+                cal.add(Calendar.HOUR, -1);
+                appointmentDto.setEndDate(Formatter.formatDateTime(cal.getTime(), "yyyy-MM-dd HH:mm:ss"));
+            } catch (ParseException e) {
+                log.info(e.getMessage());
+                return appointmentDto;
+            }
+        }
+        return appointmentDto;
     }
 
     private void createOrUpdateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto, String appPremCorrId, Date saveDate) {

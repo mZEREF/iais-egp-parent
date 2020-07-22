@@ -114,4 +114,13 @@ public interface OfficersReSchedulingService {
       * @Descripation: reScheduleRoutingAudit
       */
     void reScheduleRoutingAudit(ReschedulingOfficerDto reschedulingOfficerDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/7/22
+      * @Param: appointmentDto
+      * @return: AppointmentDto
+      * @Descripation: subtractEndHourByApptDto
+      */
+    AppointmentDto subtractEndHourByApptDto(AppointmentDto appointmentDto);
 }
