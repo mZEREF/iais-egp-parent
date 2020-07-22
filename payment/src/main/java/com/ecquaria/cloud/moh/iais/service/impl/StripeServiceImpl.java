@@ -4,7 +4,9 @@ import com.ecquaria.cloud.moh.iais.service.StripeService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
+import com.stripe.model.Charge;
 import com.stripe.net.RequestOptions;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.Map;
  * @date 2020/7/21
  */
 @Service
+@Slf4j
 public class StripeServiceImpl implements StripeService {
     @Override
     public Account createAccount() throws StripeException {
@@ -45,5 +48,42 @@ public class StripeServiceImpl implements StripeService {
         return  RequestOptions.builder()
                 .setStripeAccount(id)
                 .build();
+    }
+
+    @Override
+    public void authentication() {
+        Stripe.apiKey = "sk_test_YGXYtjBWWLt6qhEqW34wu8Vg00iEFDMW4w";
+
+        RequestOptions requestOptions = RequestOptions.builder()
+                .setApiKey("sk_test_YGXYtjBWWLt6qhEqW34wu8Vg00iEFDMW4w")
+                .build();
+
+    }
+
+    @Override
+    public Charge createCharge(Map<String, Object> params) {
+        Stripe.apiKey = "sk_test_YGXYtjBWWLt6qhEqW34wu8Vg00iEFDMW4w";
+
+        Charge charge =null;
+        try {
+             charge = Charge.create(params);
+        } catch (StripeException e) {
+        log.info(e.getMessage(),e);
+        }
+        return charge;
+    }
+
+    @Override
+    public Charge retrieveCharge(String id) {
+        Stripe.apiKey = "sk_test_YGXYtjBWWLt6qhEqW34wu8Vg00iEFDMW4w";
+
+        Charge charge =
+                null;
+        try {
+            charge = Charge.retrieve(id);
+        } catch (StripeException e) {
+            log.info(e.getMessage(),e);
+        }
+        return charge;
     }
 }

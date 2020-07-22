@@ -1,8 +1,9 @@
 package com.ecquaria.egp.core.payment.api.config;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.util.Properties;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class GatewayConfig {
@@ -10,7 +11,7 @@ public class GatewayConfig {
 	static Properties properties = new Properties();
 	static{
 		try {
-			properties.load(GatewayConfig.class.getClassLoader().getResourceAsStream("payment-client.properties"));
+			properties.load(GatewayConfig.class.getClassLoader().getResourceAsStream("application.properties"));
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}

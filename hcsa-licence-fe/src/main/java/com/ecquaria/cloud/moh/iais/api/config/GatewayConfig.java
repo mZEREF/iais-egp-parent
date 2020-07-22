@@ -11,7 +11,7 @@ public class GatewayConfig {
 	static Properties properties = new Properties();
 	static{
 		try {
-			properties.load(com.ecquaria.egp.core.payment.api.config.GatewayConfig.class.getClassLoader().getResourceAsStream("payment-client.properties"));
+			properties.load(com.ecquaria.egp.core.payment.api.config.GatewayConfig.class.getClassLoader().getResourceAsStream("application.properties"));
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}

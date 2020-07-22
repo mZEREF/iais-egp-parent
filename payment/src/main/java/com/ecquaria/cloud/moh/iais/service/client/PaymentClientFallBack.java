@@ -31,6 +31,14 @@ public class PaymentClientFallBack implements PaymentClient{
     }
 
     @Override
+    public FeignResponseEntity<PaymentRequestDto> updatePaymentResquset(PaymentRequestDto paymentReqDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<String>> isTxnRef(List<String> txnRefNo){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

@@ -26,6 +26,9 @@ public interface PaymentClient {
     @PostMapping(value = "/iais-payment/duringThePayment" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentRequestDto> saveHcsaPaymentResquset(@RequestBody PaymentRequestDto paymentReqDto);
 
+
+    @PostMapping(value = "/update-payment-resquset" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<PaymentRequestDto> updatePaymentResquset(@RequestBody PaymentRequestDto paymentReqDto);
     @PostMapping(value = "/isTxnRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> isTxnRef(@RequestBody List<String> txnRefNo);
 
