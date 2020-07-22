@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -56,7 +55,9 @@ import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
+import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -143,6 +144,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Autowired
     private AppPremisesCorrClient appPremisesCorrClient;
+
+    @Autowired
+    private OfficersReSchedulingService officersReSchedulingService;
 
     @Autowired
     private MsgTemplateClient msgTemplateClient;
@@ -292,8 +296,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<TaskDto> taskDtos = apptInspectionDateDto.getTaskDtos();
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
         Date saveDate = apptInspectionDateDto.getSpecificStartDate();
+        //end hour - 1, because the function save all start hour
+        AppointmentDto appointmentDtoSave = officersReSchedulingService.subtractEndHourByApptDto(apptInspectionDateDto.getSpecificApptDto());
         //confirm date and calendar
-        String apptRefNo = appointmentClient.saveManualUserCalendar(apptInspectionDateDto.getSpecificApptDto()).getEntity();
+        String apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDtoSave).getEntity();
         List<String> confirmRefNo = IaisCommonUtils.genNewArrayList();
         confirmRefNo.add(apptRefNo);
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
@@ -517,7 +523,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             serviceId = applicationDto.getServiceId();
             submitDt = applicationGroupDto.getSubmitDt();
         }
-        String apptRefNo = appointmentClient.saveManualUserCalendar(apptInspectionDateDto.getSpecificApptDto()).getEntity();
+        //end hour - 1, because the function save all start hour
+        AppointmentDto appointmentDtoSave = officersReSchedulingService.subtractEndHourByApptDto(apptInspectionDateDto.getSpecificApptDto());
+        String apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDtoSave).getEntity();
         for(String appPremCorrId : appPremCorrIds) {
             AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
             appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
@@ -776,7 +784,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         if (apptInspectionDateDto.getProcessDec().equals(InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE)) {
             List<AppPremisesInspecApptDto> appPremisesInspecApptDtoCreateList = IaisCommonUtils.genNewArrayList();
             List<AppPremisesInspecApptDto> appPremisesInspecApptDtoUpdateList = IaisCommonUtils.genNewArrayList();
-            String apptRefNo = appointmentClient.saveManualUserCalendar(apptInspectionDateDto.getSpecificApptDto()).getEntity();
+            //end hour - 1, because the function save all start hour
+            AppointmentDto appointmentDtoSave = officersReSchedulingService.subtractEndHourByApptDto(apptInspectionDateDto.getSpecificApptDto());
+            String apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDtoSave).getEntity();
             //remove inactive inspection date
             if (!IaisCommonUtils.isEmpty(appPremisesInspecApptDtos)) {
                 appPremInspApptDto1 = appPremisesInspecApptDtos.get(0);
