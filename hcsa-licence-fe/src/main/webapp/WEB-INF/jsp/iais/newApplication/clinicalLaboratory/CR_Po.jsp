@@ -275,6 +275,11 @@
                   </div>
                 </c:if>
               </c:if>
+              <c:set var="needDpoDrop" value="N"/>
+              <c:if test="${dpoHcsaSvcPersonnelDto.maximumCount > 0}">
+                  <c:set var="needDpoDrop" value="Y"/>
+              </c:if>
+              <c:if test="${needDpoDrop == 'Y'}">
               <div class="row">
                 <div class="form-group form-horizontal formgap">
                   <div class="col-sm-6 col-md-4" style="font-size: 1.6rem;">
@@ -303,7 +308,7 @@
                 </div>
                 </c:if>
               </div>
-
+              </c:if>
             </div>
 
           </div>
