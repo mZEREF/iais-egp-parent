@@ -34,13 +34,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
-        if(serListDto!=null&&!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
-            for(InspectionFillCheckListDto fDto:serListDto.getFdtoList()){
-                getServiceMsg(fDto,errMap);
-            }
-        }
         tcuVad(serListDto,errMap);
-        commonVad(request,errMap);
         //ahocVad(request,errMap);
         fillUpVad(request,errMap);
         otherinfoVad(serListDto,errMap);
@@ -94,34 +88,41 @@ public class InspectionCheckListValidation implements CustomizeValidator {
     }
 
     private void fillUpVad(HttpServletRequest request, Map<String, String> errMap) {
-        if(commFillUpVad(request)&&serviceFillUpVad(request)&& adhocFillUpVad(request)){
+        if(commFillUpVad(request,errMap)&&serviceFillUpVad(request,errMap)&& adhocFillUpVad(request,errMap)){
 
         }else{
             errMap.put("fillchkl","UC_INSTA004_ERR008");
         }
     }
-
-    private boolean adhocFillUpVad(HttpServletRequest request) {
+    private boolean adhocFillUpVad(HttpServletRequest request,Map<String, String> errMap) {
         AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
         if(showDto!=null){
             List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
             if(itemDtoList!=null && !itemDtoList.isEmpty()){
+                boolean isError = true;
                 for(AdhocNcCheckItemDto temp:itemDtoList){
                     if(StringUtil.isEmpty(temp.getAdAnswer())){
-                        return false;
+                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","The field"));
+                        if(isError)
+                            isError = false;
+                    } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getRemark())){
+                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Remark","The field"));
+                        if(isError)
+                            isError = false;
                     }
                 }
+                return  isError;
             }
         }
         return true;
     }
 
-    private boolean serviceFillUpVad(HttpServletRequest request) {
+    private boolean serviceFillUpVad(HttpServletRequest request,Map<String, String> errMap) {
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
         int flagNum = 0;
         if(serListDto!=null&&!IaisCommonUtils.isEmpty(serListDto.getFdtoList())){
             for(InspectionFillCheckListDto fDto:serListDto.getFdtoList()){
-                if(!fillServiceVad(fDto)){
+                if(!fillServiceVad(fDto,errMap)){
                     flagNum++;
                 };
             }
@@ -132,20 +133,52 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         return true;
     }
 
-    private boolean commFillUpVad(HttpServletRequest request) {
+    private boolean commFillUpVad(HttpServletRequest request,Map<String, String> errMap) {
         InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
         if (icDto != null) {
+            boolean isError = true;
             List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
             if(cqDtoList!=null && !cqDtoList.isEmpty()){
                 for(InspectionCheckQuestionDto temp:cqDtoList){
                     if(StringUtil.isEmpty(temp.getChkanswer())){
-                        return false;
+                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","The field"));
+                        if(isError)
+                            isError = false;
+                    }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
+                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Remark","The field"));
+                        if(isError)
+                            isError = false;
                     }
                 }
             }
+            return isError;
         }
         return true;
     }
+
+    public boolean fillServiceVad(InspectionFillCheckListDto fDto,Map<String, String> errMap){
+        List<InspectionCheckQuestionDto> cqDtoList = fDto.getCheckList();
+        if(!IaisCommonUtils.isEmpty(cqDtoList)){
+            boolean isError = true;
+            for(InspectionCheckQuestionDto temp:cqDtoList){
+                if(StringUtil.isEmpty(temp.getChkanswer())){
+                    errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Yes No N/A","The field"));
+                    if(isError)
+                        isError = false;
+                }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
+                    errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Remark","The field"));
+                    if(isError)
+                        isError = false;
+                }
+            }
+            return  isError;
+        }
+        return true;
+    }
+
+
+
+
 
 
     private void otherinfoVad(InspectionFDtosDto serListDto, Map<String, String> errMap) {
@@ -274,45 +307,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
         return true;
     }
 
-    public void getServiceMsg(InspectionFillCheckListDto fDto,Map<String, String> errMap){
-        List<InspectionCheckQuestionDto> cqDtoList = fDto.getCheckList();
-        if(!IaisCommonUtils.isEmpty(cqDtoList)){
-            for(InspectionCheckQuestionDto temp:cqDtoList){
-                if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(fDto.getSubName()+temp.getSectionNameSub()+temp.getItemId(),ERR0010);
-                }
-            }
-        }
-    }
 
-    public void commonVad(HttpServletRequest request,Map<String, String> errMap){
-        InspectionFillCheckListDto icDto = (InspectionFillCheckListDto)ParamUtil.getSessionAttr(request,"commonDto");
-        if (icDto != null) {
-            List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
-            if(cqDtoList!=null && !cqDtoList.isEmpty()){
-                for(InspectionCheckQuestionDto temp:cqDtoList){
-                    if(StringUtil.isEmpty(temp.getChkanswer())){
-                        errMap.put(temp.getSectionNameSub()+temp.getItemId()+"com",ERR0010);
-                    }
-                }
-            }else{
-                errMap.put("allList","Please fill in checkList.");
-            }
-        }
-    }
-//    public void ahocVad(HttpServletRequest request,Map<String, String> errMap){
-//        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
-//        if(showDto!=null){
-//            List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
-//            if(itemDtoList!=null && !itemDtoList.isEmpty()){
-//                for(AdhocNcCheckItemDto temp:itemDtoList){
-//                    if(StringUtil.isEmpty(temp.getAdAnswer())){
-//                        errMap.put(temp.getId()+"adhoc",ERR0010);
-//                    }
-//                }
-//            }
-//        }
-//    }
     public void tcuVad(InspectionFDtosDto icDto,Map<String, String> errMap){
         try {
             String dateStr = icDto.getTuc();

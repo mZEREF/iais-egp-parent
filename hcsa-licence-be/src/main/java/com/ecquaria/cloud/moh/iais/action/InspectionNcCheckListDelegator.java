@@ -516,7 +516,8 @@ public class InspectionNcCheckListDelegator {
         InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
         Map errMap =  inspectionCheckListItemValidate.validate(request);
         if(!errMap.isEmpty()){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             serListDto.setCheckListTab("chkList");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         }else {
