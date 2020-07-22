@@ -89,12 +89,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             String decisionValue = ParamUtil.getString(request,"decisionValues");
 
             if(StringUtil.isEmpty(decisionValue)){
-                errMap.put("decisionValues","The field is mandatory.");
+                errMap.put("decisionValues","GENERAL_ERR0024");
             }else{
                 if(!isRequestForChange){
                     if(DECISION_APPROVAL.equals(decisionValue)){
                         if(StringUtil.isEmpty(recommendationStr)){
-                            errMap.put("recommendation","The field is mandatory.");
+                            errMap.put("recommendation","GENERAL_ERR0024");
                         }else if(RECOMMENDATION_REJECT.equals(recommendationStr)){
                             errMap.put("recommendation","The value of recommendation cannot be 'Reject'.");
                         }
@@ -110,14 +110,14 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 applicationViewDto.getApplicationDto().getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
             String withdrawalDecisionValue = ParamUtil.getString(request, "withdrawalDecisionValues");
             if(StringUtil.isEmpty(withdrawalDecisionValue)){
-                errMap.put("decisionValues","The field is mandatory.");
+                errMap.put("decisionValues","GENERAL_ERR0024");
             }
         }else {
             //special status
             if (isRouteBackStatus(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
                 String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
                 if (StringUtil.isEmpty(nextStageReplys)) {
-                    errMap.put("nextStageReplys", "The field is mandatory.");
+                    errMap.put("nextStageReplys", "GENERAL_ERR0024");
                 } else {
                     ParamUtil.setRequestAttr(request, "selectNextStageReply", nextStageReplys);
                 }
@@ -146,13 +146,13 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     appealTypeValidate(errMap,request,applicationType,roleId);
                 }
                 if (StringUtil.isEmpty(nextStage)) {
-                    errMap.put("nextStage", "The field is mandatory.");
+                    errMap.put("nextStage", "GENERAL_ERR0024");
                 } else {
                     if (VERIFIED.equals(nextStage)) {
                         String verified = ParamUtil.getRequestString(request, "verified");
                         ParamUtil.setRequestAttr(request, "selectVerified", verified);
                         if (StringUtil.isEmpty(verified)) {
-                            errMap.put("verified", "The field is mandatory.");
+                            errMap.put("verified", "GENERAL_ERR0024");
                         }
                         // if role is AOS or PSO ,check verified's value
                         if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {
@@ -166,13 +166,13 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         String rollBack = ParamUtil.getRequestString(request, "rollBack");
                         ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
                         if (StringUtil.isEmpty(rollBack)) {
-                            errMap.put("rollBack", "The field is mandatory.");
+                            errMap.put("rollBack", "GENERAL_ERR0024");
                         }
                     } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                         //rfiSelectValue
                         String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
                         if(StringUtil.isEmpty(rfiSelectValue)){
-                            errMap.put("nextStage", "Please select at least 1 section to unlock");
+                            errMap.put("nextStage", "PRF_ERR003");
                         }
                     }
                 }
@@ -264,7 +264,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
             String number = ParamUtil.getString(request,"number");
             if(StringUtil.isEmpty(number)){
-                errMap.put("recomInNumber","The field is mandatory.");
+                errMap.put("recomInNumber","GENERAL_ERR0024");
             }else{
                 if(!CommonValidator.isPositiveInteger(number)){
                     errMap.put("recomInNumber","The field is Invalid.");
@@ -274,7 +274,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
             String chrono = ParamUtil.getString(request,"chrono");
             if(StringUtil.isEmpty(chrono)){
-                errMap.put("chronoUnit","The field is mandatory.");
+                errMap.put("chronoUnit","GENERAL_ERR0024");
             }else{
                 ParamUtil.setRequestAttr(request,"otherChrono",chrono);
             }

@@ -517,7 +517,7 @@ public class HcsaApplicationDelegator {
     public void chooseAckValue(BaseProcessClass bpc) throws Exception{
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(bpc.request,"taskDto");
         String roleId = taskDto.getRoleId();
-        String successInfo = MessageCodeKey.ACK003;
+        String successInfo = "LOLEV_ACK018";
         String nextStage = ParamUtil.getString(bpc.request,"nextStage");
         String nextStageReplys = ParamUtil.getString(bpc.request,"nextStageReplys");
         String verified = "";
@@ -538,57 +538,57 @@ public class HcsaApplicationDelegator {
         if("isDMS".equals(isDMS)){
             if("decisionApproval".equals(decisionValue)){
                 //DMS APPROVAL
-                successInfo = MessageCodeKey.ACK013;
+                successInfo = "LOLEV_ACK026";
             }else if("decisionReject".equals(decisionValue)){
                 //DMS REJECT
-                successInfo = MessageCodeKey.ACK014;
+                successInfo = "LOLEV_ACK027";
             }else{
-                successInfo = MessageCodeKey.ACK015;
+                successInfo = "LOLEV_ACK028";
             }
         }else{
             //ASO PSO
             if(RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)){
-                successInfo = MessageCodeKey.ACK003;
+                successInfo = "LOLEV_ACK018";
             }
             //ao3 approve and reject
             if(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status)){
                 //AO3 APPROVAL
-                successInfo = MessageCodeKey.ACK009;
+                successInfo = "LOLEV_ACK020";
             }else if(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status)){
                 //AO3 REJECT
-                successInfo = MessageCodeKey.ACK010;
+                successInfo = "LOLEV_ACK022";
             }
             //verified
             if(!StringUtil.isEmpty(verified)){
                 //AO1 -> AO2
                 if(RoleConsts.USER_ROLE_AO1.equals(roleId) && RoleConsts.USER_ROLE_AO2.equals(verified)){
-                    successInfo = MessageCodeKey.ACK005;
+                    successInfo = "LOLEV_ACK009";
                 }else if(RoleConsts.USER_ROLE_AO2.equals(roleId) && RoleConsts.USER_ROLE_AO3.equals(verified)){
                     //AO2 -> AO3
-                    successInfo = MessageCodeKey.ACK007;
+                    successInfo = "LOLEV_ACK013";
                 }
             }else if(!StringUtil.isEmpty(rollBack)){
                 //roll back
-                successInfo = MessageCodeKey.ACK006;
+                successInfo = "LOLEV_ACK002";
                 if(RoleConsts.USER_ROLE_AO1.equals(roleId)){
                     //AO1
-                    successInfo = MessageCodeKey.ACK006;
+                    successInfo = "LOLEV_ACK002";
                 }else if(RoleConsts.USER_ROLE_AO2.equals(roleId)){
                     //AO2
-                    successInfo = MessageCodeKey.ACK008;
+                    successInfo = "LOLEV_ACK014";
                 }else if((RoleConsts.USER_ROLE_AO3.equals(roleId))){
                     //AO3
-                    successInfo = MessageCodeKey.ACK012;
+                    successInfo = "LOLEV_ACK025";
                 }
             }else if(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS.equals(nextStage)){
                 //AO3 DMS
-                successInfo = MessageCodeKey.ACK011;
+                successInfo = "LOLEV_ACK024";
             }
         }
 
         //give clarification
         if(StringUtil.isEmpty(nextStage) && ApplicationConsts.PROCESSING_DECISION_REPLY.equals(nextStageReplys)){
-            successInfo = MessageCodeKey.ACK015;
+            successInfo = "LOLEV_ACK028";
         }
 
         //request for information
