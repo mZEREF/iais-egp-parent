@@ -31,7 +31,7 @@
              JOIN APPLICATION T2 ON T2.ID = T1.APPLICATION_ID
              JOIN APP_GRP_PREMISES T3 ON T3.ID = T1.APP_GRP_PREM_ID
              JOIN APPLICATION_GROUP T4 ON T4.ID = T2.APP_GRP_ID
-             JOIN (SELECT COUNT(ID) COU, APP_GRP_ID FROM application GROUP BY app_grp_id) as T6 ON T4.ID = T6.app_grp_id
+             JOIN (SELECT COUNT(DISTINCT application.APPLICATION_NO) COU, APP_GRP_ID FROM application GROUP BY app_grp_id) as T6 ON T4.ID = T6.app_grp_id
              WHERE 1 = 1
              <#if appCorrId_list??> and CONVERT(NVARCHAR(36), T1.ID) IN ${appCorrId_list} </#if>
             ) T5
