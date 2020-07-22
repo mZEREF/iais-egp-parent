@@ -584,7 +584,7 @@ public class InspectReviseNcEmailDelegator {
             fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             serListDto.setCheckListTab("chkList");
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+//            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         }else {
             serListDto.setCheckListTab("chkList");
             fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
