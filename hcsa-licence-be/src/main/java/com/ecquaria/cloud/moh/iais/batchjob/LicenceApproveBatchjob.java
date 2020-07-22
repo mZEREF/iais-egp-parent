@@ -654,27 +654,21 @@ public class LicenceApproveBatchjob {
                     break;
                 }
                 String originLicenceId = firstApplicationDto.getOriginLicenceId();
-                LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId,applicationType);
-                log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
-                if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(firstApplicationDto.getApplicationType())){
-                    superLicDto.setOriginLicenceDto(originLicenceDto);
+                LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
+                if(originLicenceDto == null){
+                    originLicenceDto = licenceService.getCeasedGroupLicDto(originLicenceId);
                 }
-                //create licence
-//                String licenceNo = null;
-//                if (firstApplicationDto.isNeedNewLicNo()) {
-//                    licenceNo = licenceService.getGroupLicenceNo(hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto, originLicenceId, applicationDtos.size());
-//                }
-//                log.debug(StringUtil.changeForLog("The licenceNo is -->;" + licenceNo));
-//                if (StringUtil.isEmpty(licenceNo) && firstApplicationDto.isNeedNewLicNo()) {
-//                    errorMessage = "The licenceNo is null .-->:" + hcsaServiceDto.getSvcCode() + ":" + applicationListDtos.size();
-//                    break;
-//                }
-
                 LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), null, applicationGroupDto, appPremisesRecommendationDto,
                         originLicenceDto, firstApplicationDto, applicationDtos, true);
                 licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
                 licenceDto.setPremiseSize(applicationDtos.size());
                 superLicDto.setLicenceDto(licenceDto);
+
+                 originLicenceDto = deleteOriginLicenceDto(originLicenceDto,applicationType,licenceDto.getStatus());
+                log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
+                if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(firstApplicationDto.getApplicationType())){
+                    superLicDto.setOriginLicenceDto(originLicenceDto);
+                }
                 //if PostInspNeeded send email
                 if (isPostInspNeeded == Integer.parseInt(AppConsts.YES)) {
                     sendEmailInspection(licenceDto);
@@ -834,23 +828,21 @@ public class LicenceApproveBatchjob {
     }
 
 
-    private LicenceDto deleteOriginLicenceDto(String organizationId,String appType) {
-        LicenceDto result = null;
-        if (!StringUtil.isEmpty(organizationId)) {
-            result = licenceService.getLicenceDto(organizationId);
-            if (result != null) {
-                if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)){
-                    result.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
-                }else {
-                    result.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
-                    log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> active: " + organizationId));
-                }
-            }else {
-                result = licenceService.getCeasedGroupLicDto(organizationId);
-                log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is --> ceased:" + organizationId));
+    private LicenceDto deleteOriginLicenceDto(LicenceDto originLicenceDto,String appType,String licenceStatus) {
+        log.info(StringUtil.changeForLog("The deleteOriginLicenceDto start ..."));
+        log.info(StringUtil.changeForLog("The deleteOriginLicenceDto appType is -->:"+appType));
+        log.info(StringUtil.changeForLog("The deleteOriginLicenceDto licenceStatus is -->:"+licenceStatus));
+        if (originLicenceDto != null) {
+            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)){
+                originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_CEASED);
+            }else if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
+                originLicenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
             }
+        }else{
+            log.info(StringUtil.changeForLog("The deleteOriginLicenceDto originLicenceDto is null..."));
         }
-        return result;
+        log.info(StringUtil.changeForLog("The deleteOriginLicenceDto end ..."));
+        return originLicenceDto;
     }
 
     private List<ApplicationDto> getApplicationDtos(List<ApplicationListDto> applicationListDtos) {
@@ -932,28 +924,25 @@ public class LicenceApproveBatchjob {
                         break;
                     }
                     superLicDto.setPremisesGroupDtos(premisesGroupDtos);
-
-//                    //create licence
-//                    if (applicationDto.isNeedNewLicNo()) {
-//                        licenceNo = licenceService.getLicenceNo(premisesGroupDto.getPremisesDto().getHciCode(), hcsaServiceDto.getSvcCode(), appPremisesRecommendationDto);
-//                    }
-//                    log.debug(StringUtil.changeForLog("The licenceNo is -->;" + licenceNo));
-//                    if (StringUtil.isEmpty(licenceNo) && applicationDto.isNeedNewLicNo()) {
-//                        errorMessage = "The licenceNo is null .-->:" + premisesGroupDto.getPremisesDto().getHciCode() + ":" + hcsaServiceDto.getSvcCode();
-//                        break;
-//                    }
                 }
+
                 String originLicenceId = applicationDto.getOriginLicenceId();
                 String applicationType = applicationDto.getApplicationType();
-                LicenceDto originLicenceDto = deleteOriginLicenceDto(originLicenceId,applicationType);
-                log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
-                if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())){
-                    superLicDto.setOriginLicenceDto(originLicenceDto);
+
+                LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
+                if(originLicenceDto == null){
+                    originLicenceDto = licenceService.getCeasedGroupLicDto(originLicenceId);
                 }
                 LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
                         originLicenceDto, applicationDto, null, false);
                 licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
                 superLicDto.setLicenceDto(licenceDto);
+
+                originLicenceDto = deleteOriginLicenceDto(originLicenceDto,applicationType,licenceDto.getStatus());
+                log.info(StringUtil.changeForLog("The applicationType is -->:"+ApplicationConsts.APPLICATION_TYPE_RENEWAL));
+                if(!ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
+                    superLicDto.setOriginLicenceDto(originLicenceDto);
+                }
 
                 //create the lic_app_correlation
                 List<LicAppCorrelationDto> licAppCorrelationDtos = IaisCommonUtils.genNewArrayList();
@@ -1418,6 +1407,35 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
+    private boolean effective(Date effectiveDate){
+        //0066047
+        boolean effectiveBoolean = true;
+        Date today=new Date();
+        log.info(StringUtil.changeForLog("The effectiveDate is -->:"+effectiveDate));
+        if(effectiveDate != null){
+            if(today.before(effectiveDate)){
+                effectiveBoolean =  false;
+            }
+        }
+        return effectiveBoolean;
+    }
+
+    private  String getLicenceStatus(ApplicationGroupDto applicationGroupDto){
+        log.info(StringUtil.changeForLog("The  getLicenceStatus start ..."));
+        String result;
+        Date effectiveDate = applicationGroupDto.getEffectDate();
+        boolean effectiveBoolean = effective(effectiveDate);
+        log.info(StringUtil.changeForLog("The effectiveBoolean is -->:"+effectiveBoolean));
+        //0065635
+        if(!effectiveBoolean){
+            result = ApplicationConsts.LICENCE_STATUS_APPROVED;
+        }else{
+            result = ApplicationConsts.LICENCE_STATUS_ACTIVE;
+        }
+        log.info(StringUtil.changeForLog("The result is -->:"+result));
+        log.info(StringUtil.changeForLog("The  getLicenceStatus end ..."));
+        return result;
+    }
     private LicenceDto getLicenceDto(String svcName, String svcType, ApplicationGroupDto applicationGroupDto,
                                      AppPremisesRecommendationDto appPremisesRecommendationDto,
                                      LicenceDto originLicenceDto,
@@ -1430,13 +1448,15 @@ public class LicenceApproveBatchjob {
         if (!StringUtil.isEmpty(svcType)) {
             licenceDto.setSvcType(svcType);
         }
+        Date effectiveDate = applicationGroupDto.getEffectDate();
+        licenceDto.setEffectiveDate(effectiveDate);
+        licenceDto.setStatus(getLicenceStatus(applicationGroupDto));
         if (applicationDto != null && originLicenceDto != null &&
                 ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationDto.getApplicationType()))
                 || ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType()))) {
             log.info(StringUtil.changeForLog("The  getLicenceDto APPType is RFC ..."));
             licenceDto.setStartDate(originLicenceDto.getStartDate());
             licenceDto.setExpiryDate(originLicenceDto.getExpiryDate());
-            //licenceDto.setEndDate(originLicenceDto.getEndDate());
             licenceDto.setGrpLic(originLicenceDto.isGrpLic());
             licenceDto.setOriginLicenceId(originLicenceDto.getId());
             licenceDto.setMigrated(originLicenceDto.isMigrated());
@@ -1447,7 +1467,6 @@ public class LicenceApproveBatchjob {
                 licenceDto.setVersion(1);
             }
             licenceDto.setFeeRetroNeeded(originLicenceDto.isFeeRetroNeeded());
-            licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
             if (applicationGroupDto != null) {
                 licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
             }
@@ -1563,28 +1582,8 @@ public class LicenceApproveBatchjob {
             } else {
                 licenceDto.setMigrated(false);
             }
-            //licenceDto.setLicenceNo(licenceNo);
             licenceDto.setVersion(version);
             licenceDto.setFeeRetroNeeded(false);
-
-            //0066047
-            Date today=new Date();
-            boolean effectiveBoolean = true;
-            Date effectiveDate = applicationGroupDto.getEffectDate();
-            log.info(StringUtil.changeForLog("The effectiveDate is -->:"+effectiveDate));
-            if(effectiveDate != null){
-                if(today.before(effectiveDate)){
-                    effectiveBoolean =  false;
-                }
-            }
-            log.info(StringUtil.changeForLog("The effectiveBoolean is -->:"+effectiveBoolean));
-
-            //0065635
-            if((applicationDto!=null&&ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) || !effectiveBoolean){
-                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_APPROVED);
-            }else{
-                licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
-            }
         }
         List<ApplicationDto> applicationDtos1 = IaisCommonUtils.genNewArrayList();
 
