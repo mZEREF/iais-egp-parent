@@ -2537,6 +2537,7 @@ public class ClinicalLaboratoryDelegator {
         //new and not rfi
         int preferredModeLength = 0;
         if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+            AppPsnEditDto appPsnEditDto = new AppPsnEditDto();
             for (int i = 0; i < length; i++) {
                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
                 String assign = assignSelect[i];
@@ -2545,10 +2546,10 @@ public class ClinicalLaboratoryDelegator {
                     String[] preferredModes = ParamUtil.getStrings(request, "preferredMode" + preferredModeLength);
                     if(!NewApplicationConstant.NEW_PSN.equals(assign) && !assign.equals("-1")&&AppConsts.YES.equals(licPsn)){
                         appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
-                        AppPsnEditDto appPsnEditDto = new AppPsnEditDto();
                         try {
                             appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcPrincipalOfficersDto);
                         } catch (Exception e) {
+                            clearAppPsnEditDto(appPsnEditDto);
                             log.error(e.getMessage(), e);
                         }
                         if(appPsnEditDto.isSalutation()){
@@ -2557,7 +2558,6 @@ public class ClinicalLaboratoryDelegator {
                         if(appPsnEditDto.isIdType()){
                             NewApplicationHelper.setPsnValue(idType,i,appSvcPrincipalOfficersDto,"idType");
                         }
-
                         //input
                         if(appPsnEditDto.isName()){
                             name = NewApplicationHelper.setPsnValue(name,i,appSvcPrincipalOfficersDto,"name");
@@ -2718,4 +2718,20 @@ public class ClinicalLaboratoryDelegator {
         return !NewApplicationConstant.NEW_PSN.equals(assign) && !assign.equals("-1")&&AppConsts.YES.equals(licPsn);
     }
 
+    private void clearAppPsnEditDto(AppPsnEditDto appPsnEditDto){
+        appPsnEditDto.setName(false);
+        appPsnEditDto.setSalutation(false);
+        appPsnEditDto.setIdType(false);
+        appPsnEditDto.setIdNo(false);
+        appPsnEditDto.setDesignation(false);
+        appPsnEditDto.setMobileNo(false);
+        appPsnEditDto.setOfficeTelNo(false);
+        appPsnEditDto.setEmailAddr(false);
+        appPsnEditDto.setProfessionType(false);
+        appPsnEditDto.setProfRegNo(false);
+        appPsnEditDto.setSpeciality(false);
+        appPsnEditDto.setSpecialityOther(false);
+        appPsnEditDto.setSubSpeciality(false);
+        appPsnEditDto.setPreferredMode(false);
+    }
 }
