@@ -250,7 +250,7 @@
           <label class="col-xs-12 col-md-8 control-label" >Service-Related Checklists<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
+              <a class="btn btn-secondary " data-toggle="modal" data-target= "#checklists" style="padding: 12px 60px"><span class="view">view</span></a>
             </div>
           </div>
         </div>
@@ -261,7 +261,7 @@
           <label class="col-xs-12 col-md-8 control-label" >Service Risk Score<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
+              <a class="btn btn-secondary "  data-toggle="modal" data-target= "#riskScore" style="padding: 12px 60px"><span class="view">view</span></a>
             </div>
           </div>
         </div>
@@ -272,13 +272,13 @@
           <label class="col-xs-12 col-md-8 control-label" >Service KPI<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
+              <a class="btn btn-secondary " data-toggle="modal" data-target= "#kpi" style="padding: 12px 60px"><span class="view">view</span></a>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="form-group">
+     <%-- <div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service Fees<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
@@ -299,7 +299,7 @@
           </div>
         </div>
       </div>
-
+--%>
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-3">
@@ -333,22 +333,22 @@
               <a class="btn btn-secondary width-70" onclick="showCESSATION()"><span class="view">CESSATION</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
+         <%-- <div class="col-xs-10 col-md-3">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
             </div>
-          </div>
+          </div>--%>
 
           <div class="col-xs-10 col-md-3">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
+         <%-- <div class="col-xs-10 col-md-3">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
             </div>
-          </div>
+          </div>--%>
 
         </div>
       </div>
@@ -544,7 +544,11 @@
 
   </form>
 </div>
-<iais:confirm msg="Are you sure you want to leave this page!" callBack="" popupOrder=""></iais:confirm>
+<iais:confirm msg="Are you sure you want to leave this page!" callBack="kpi()" popupOrder="kpi" ></iais:confirm>
+
+<iais:confirm msg="Are you sure you want to leave this page!" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
+
+<iais:confirm msg="Are you sure you want to leave this page!" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
 
 <style>
   .mandatory{
@@ -567,6 +571,22 @@
 
 </style>
 <script type="text/javascript">
+
+
+    function kpi() {
+
+        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohKPIAndReminder";
+    }
+
+
+    function  checklists(){
+
+        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration";
+    }
+
+    function riskScore(){
+        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohRiskConigMenu";
+    }
 
     function confirmDelete(obj) {
         var r=confirm("Are you sure to delete!");

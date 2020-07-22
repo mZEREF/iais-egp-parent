@@ -20,11 +20,11 @@ public interface ConfigService {
 
     void editPageInfo(HttpServletRequest request);
 
-    void saveOrUpdate(HttpServletRequest request, HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto);
+    void saveOrUpdate(HttpServletRequest request, HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception;
 
     void addNewService(HttpServletRequest request);
 
-    void update(HttpServletRequest request,HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto);
+    void update(HttpServletRequest request,HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception;
 
     void saData(HttpServletRequest request);
 

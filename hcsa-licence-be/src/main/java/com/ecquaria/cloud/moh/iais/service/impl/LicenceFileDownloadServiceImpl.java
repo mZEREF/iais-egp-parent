@@ -877,15 +877,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(updateTaskList==null){
             return;
         }
-        List<ApplicationDto> removeList=IaisCommonUtils.genNewArrayList();
         for(ApplicationDto applicationDto : updateTaskList){
-            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationDto.getStatus())){
-                removeList.add(applicationDto);
-            }
-        }
-        updateTaskList.removeAll(removeList);
-        for(ApplicationDto applicationDto : updateTaskList){
+            AppPremisesCorrelationDto entity = applicationClient.getAppPremCorrByAppNo(applicationDto.getApplicationNo()).getEntity();
+            List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(entity.getId()).getEntity();
+            for (TaskDto taskDto : taskDtos){
 
+
+            }
         }
 
     }

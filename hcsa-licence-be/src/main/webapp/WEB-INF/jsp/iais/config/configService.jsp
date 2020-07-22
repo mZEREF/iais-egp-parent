@@ -324,7 +324,7 @@
           <label class="col-xs-12 col-md-8 control-label" >Service Risk Score<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary " ><span class="view">Configure</span></a>
+              <a class="btn btn-secondary "  data-toggle="modal" data-target= "#riskScore"><span class="view">Configure</span></a>
             </div>
           </div>
         </div>
@@ -344,7 +344,7 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <%--<div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service Fees<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
@@ -365,7 +365,7 @@
           </div>
         </div>
       </div>
-
+--%>
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-3">
@@ -398,22 +398,22 @@
               <a class="btn btn-secondary " onclick="showCESSATION()"><span class="view">CESSATION</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
+         <%-- <div class="col-xs-10 col-md-3">
             <div class="components">
               <a class="btn btn-secondary " onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
             </div>
-          </div>
+          </div>--%>
 
           <div class="col-xs-10 col-md-3">
             <div class="components">
               <a class="btn btn-secondary " onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
+        <%--  <div class="col-xs-10 col-md-3">
             <div class="components">
               <a class="btn btn-secondary " onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
             </div>
-          </div>
+          </div>--%>
 
         </div>
       </div>
@@ -636,6 +636,7 @@
 
 <iais:confirm msg="Are you sure you want to leave this page!" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
 
+<iais:confirm msg="Are you sure you want to leave this page!" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
 
 
 <script type="text/javascript">
@@ -652,12 +653,14 @@
 
 
     function  checklists(){
-        var b = confirm("Are you sure you want to leave this page");
-        if(b==true){
-            location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration";
-        }
 
+        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration";
     }
+
+    function riskScore(){
+        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohRiskConigMenu";
+    }
+
     function manhours(){
         location.href="";
     }

@@ -117,6 +117,7 @@ public class ServiceMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM,null);
         ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_RESULT,null);
         ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST,null);
+        HcsaServiceCacheHelper.receiveServiceMapping();
         log.debug(StringUtil.changeForLog("the  doStart end 1...."));
     }
 

@@ -245,8 +245,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
-            uploaded<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument" type="text" value="${NumberDocument}" maxlength="2" name="NumberDocument" maxlength="2">
           </div>
@@ -308,7 +307,7 @@
           <label class="col-xs-12 col-md-8 control-label" >Service Risk Score<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary "><span class="view">Configure</span></a>
+              <a class="btn btn-secondary " data-toggle="modal" data-target= "#riskScore"><span class="view">Configure</span></a>
             </div>
           </div>
         </div>
@@ -327,7 +326,7 @@
         </div>
       </div>
       <br>
-      <div class="form-group">
+      <%--<div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
           <label class="col-xs-12 col-md-8 control-label" >Service Fees<span class="mandatory">*</span></label>
           <div class="col-xs-10 col-md-4">
@@ -347,7 +346,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div>--%>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
@@ -382,22 +381,22 @@
               <a class="btn btn-secondary width-70" onclick="showCESSATION()"><span class="view">CESSATION</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
+         <%-- <div class="col-xs-10 col-md-3">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
             </div>
-          </div>
+          </div>--%>
 
           <div class="col-xs-10 col-md-3">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
+         <%-- <div class="col-xs-10 col-md-3">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
             </div>
-          </div>
+          </div>--%>
 
         </div>
       </div>
@@ -557,7 +556,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective Start Date<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text"   value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" disabled value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>
@@ -625,7 +624,7 @@
 
 <iais:confirm msg="Are you sure you want to leave this page!" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
 
-
+<iais:confirm msg="Are you sure you want to leave this page!" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
 <script type="text/javascript">
 
 
@@ -636,10 +635,12 @@
 
     function  checklists(){
 
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohKPIAndReminder";
-
+        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration";
     }
 
+    function riskScore(){
+        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohRiskConigMenu";
+    }
 
     $('#versionSelect').change(function () {
 

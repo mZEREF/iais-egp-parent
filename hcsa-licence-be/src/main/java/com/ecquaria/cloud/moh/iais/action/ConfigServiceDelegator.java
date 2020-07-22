@@ -329,47 +329,15 @@ public class ConfigServiceDelegator {
 
         int count=1;
 
-        if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
-            hcsaServiceStepSchemeDto.setStepCode("SVST001");
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
+
         if(cgoMandatory!=null){
 
         }
-        if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
-            hcsaServiceStepSchemeDto.setStepCode("SVST002");
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
+
         if(dpoMandatory!=null){
 
         }
-        if(dpoDto.getMandatoryCount()>0&&dpoDto.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
-            hcsaServiceStepSchemeDto.setStepCode("SVST003");
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
-        if(poMandatory!=null){
 
-        }
-        if(poDto.getMandatoryCount()>0&&poDto.getMaximumCount()>0){
-            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
-            hcsaServiceStepSchemeDto.setStepCode("SVST004");
-            hcsaServiceStepSchemeDto.setSeqNum(count);
-            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-            count++;
-        }
 
         cgoDto.setStatus("CMSTAT001");
         hcsaSvcPersonnelDtos.add(cgoDto);
@@ -417,6 +385,50 @@ public class ConfigServiceDelegator {
         }catch (Exception e){
             mapPersonnelDto.setMaximumCount(-1);
         }
+        if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStepCode("SVST001");
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
+        if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStepCode("SVST002");
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
+        if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()&&cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStepCode("SVST003");
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
+        if(poMandatory!=null){
+
+        }
+        if(svcPersonnelDto.getMandatoryCount()>0&&svcPersonnelDto.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStepCode("SVST006");
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
+        if(poDto.getMandatoryCount()>0&&poDto.getMaximumCount()>0){
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
+            hcsaServiceStepSchemeDto.setStepCode("SVST004");
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
+        }
+
         mapPersonnelDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         hcsaSvcPersonnelDtos.add(mapPersonnelDto);
         if(mapPersonnelDto.getMandatoryCount()>0&&mapPersonnelDto.getMaximumCount()>0){
@@ -483,7 +495,7 @@ public class ConfigServiceDelegator {
                     hcsaSvcDocConfigDto.setStatus("CMSTAT001");
                     hcsaSvcDocConfigDto.setDispOrder(0);
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
-                    hcsaSvcDocConfigDto.setDupForPrem(individualPremises);
+                    hcsaSvcDocConfigDto.setDupForPrem("0");
                     if(numberfieldsMandatory!=null){
                         hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                     }
@@ -579,7 +591,7 @@ public class ConfigServiceDelegator {
 
         try {
             Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(startDate);
-            String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
+            String format = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).format(parse);
             hcsaServiceDto.setEffectiveDate(format);
             if(parse.after(new Date())){
                 hcsaServiceDto.setStatus("CMSTAT003");

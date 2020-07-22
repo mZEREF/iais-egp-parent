@@ -141,7 +141,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public void saveOrUpdate(HttpServletRequest request, HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) {
+    public void saveOrUpdate(HttpServletRequest request, HttpServletResponse response, HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception{
         String crud_action_value = request.getParameter("crud_action_value");
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
@@ -187,7 +187,11 @@ public class ConfigServiceImpl implements ConfigService {
             return;
         }
 
-         hcsaServiceConfigDto = hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
+        String effectiveDate = hcsaServiceDto.getEffectiveDate();
+        Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(effectiveDate);
+        String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
+        hcsaServiceDto.setEffectiveDate(format);
+        hcsaServiceConfigDto = hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
@@ -217,7 +221,7 @@ public class ConfigServiceImpl implements ConfigService {
     }
 
     @Override
-    public void update(HttpServletRequest request,HttpServletResponse response,  HcsaServiceConfigDto hcsaServiceConfigDto) {
+    public void update(HttpServletRequest request,HttpServletResponse response,  HcsaServiceConfigDto hcsaServiceConfigDto) throws Exception{
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         String crud_action_value = request.getParameter("crud_action_value");
         if("cancel".equals(crud_action_value)){
@@ -264,6 +268,10 @@ public class ConfigServiceImpl implements ConfigService {
 
             Integer i = (int) Double.parseDouble(hcsaServiceDto1.getVersion()) + 1;
             hcsaServiceDto.setVersion(i.toString());
+            String effectiveDate = hcsaServiceDto.getEffectiveDate();
+            Date parse = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT).parse(effectiveDate);
+            String format = new SimpleDateFormat("yyyy-MM-dd").format(parse);
+            hcsaServiceDto.setEffectiveDate(format);
             hcsaServiceConfigDto= hcsaConfigClient.saveHcsaServiceConfig(hcsaServiceConfigDto).getEntity();
             HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
             HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
