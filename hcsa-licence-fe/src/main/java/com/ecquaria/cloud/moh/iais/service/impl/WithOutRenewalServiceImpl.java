@@ -144,7 +144,9 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                 for (int j = 0; j < newPoList.size(); j++) {
                     AppSvcPrincipalOfficersDto newPoDto = newPoList.get(j);
                     AppSvcPrincipalOfficersDto oldPoDto = oldPoList.get(j);
-                    if (newPoDto.isPoPsn() && oldPoDto.isPoPsn()) {
+                    String psnTypeNew = newPoDto.getPsnType();
+                    String psnTypeOld = oldPoDto.getPsnType();
+                    if ("PO".equals(psnTypeNew)&&"PO".equals(psnTypeOld)) {
                         newPoE.setName(newPoDto.getName());
                         newPoE.setDesignation(newPoDto.getDesignation());
                         newPoE.setMobileNo(newPoDto.getMobileNo());
@@ -159,7 +161,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                             return true;
                         }
                     }
-                    if (newPoDto.isDpoPsn() && oldPoDto.isDpoPsn()) {
+                    if ("DPO".equals(psnTypeNew)&&"DPO".equals(psnTypeOld)) {
                         AppSvcPrincipalOfficersDto newDpoE = new AppSvcPrincipalOfficersDto();
                         AppSvcPrincipalOfficersDto oldDpoE = new AppSvcPrincipalOfficersDto();
                         newDpoE.setName(newPoDto.getName());

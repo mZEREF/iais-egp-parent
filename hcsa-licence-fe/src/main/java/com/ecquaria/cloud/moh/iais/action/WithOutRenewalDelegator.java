@@ -724,8 +724,8 @@ public class WithOutRenewalDelegator {
                         if (!IaisCommonUtils.isEmpty(newAppSvcPrincipalOfficersDtoList)) {
                             for (int i = 0; i < newAppSvcPrincipalOfficersDtoList.size(); i++) {
                                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = newAppSvcPrincipalOfficersDtoList.get(i);
-                                boolean poPsn = appSvcPrincipalOfficersDto.isPoPsn();
-                                if (poPsn) {
+                                String psnType = appSvcPrincipalOfficersDto.getPsnType();
+                                if ("PO".equals(psnType)) {
                                     newPOList.add(appSvcPrincipalOfficersDto);
                                 }
                             }
@@ -738,8 +738,8 @@ public class WithOutRenewalDelegator {
                         if (!IaisCommonUtils.isEmpty(newAppSvcPrincipalOfficersDtoList)) {
                             for (int i = 0; i < newAppSvcPrincipalOfficersDtoList.size(); i++) {
                                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = newAppSvcPrincipalOfficersDtoList.get(i);
-                                boolean poPsn = appSvcPrincipalOfficersDto.isDpoPsn();
-                                if (poPsn) {
+                                String psnType = appSvcPrincipalOfficersDto.getPsnType();
+                                if ("DPO".equals(psnType)) {
                                     newPOList.add(appSvcPrincipalOfficersDto);
                                 }
                             }
