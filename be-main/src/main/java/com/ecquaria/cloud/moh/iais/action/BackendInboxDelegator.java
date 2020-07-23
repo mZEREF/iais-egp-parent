@@ -574,6 +574,7 @@ public class BackendInboxDelegator {
                 applicationDtoList = removeFastTracking(applicationDtoList);
                 boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
                         ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                log.debug(StringUtil.changeForLog("isAllSubmit is " + isAllSubmit));
                 if(isAllSubmit){
                     // send the task to Ao3
                     TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,
@@ -610,6 +611,7 @@ public class BackendInboxDelegator {
             applicationDtoList = removeFastTracking(applicationDtoList);
             boolean isAllSubmit = applicationViewService.isOtherApplicaitonSubmit(applicationDtoList,applicationDtoIds,
                     appStatus);
+            log.debug(StringUtil.changeForLog("isAllSubmit is " + isAllSubmit));
             if(isAllSubmit || applicationDto.isFastTracking()){
                 //update application Group status
                 ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
@@ -751,8 +753,6 @@ public class BackendInboxDelegator {
         List<TaskDto> commPools = getCommPoolBygetUserId(loginContext.getUserId(),loginContext.getCurRoleId());
         SearchParam searchParamGroup = getSearchParam(bpc.request,false);
         SearchParam searchParamAjax = new SearchParam(InspectionAppInGroupQueryDto.class.getName());
-        searchParamAjax.setPageSize(100);
-        searchParamAjax.setPageNo(1);
         searchParamAjax.setSort("APPLICATION_NO", SearchParam.ASCENDING);
 
         String application_no = ParamUtil.getString(bpc.request, "application_no");

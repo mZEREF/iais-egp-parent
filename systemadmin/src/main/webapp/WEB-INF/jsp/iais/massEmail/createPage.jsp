@@ -92,13 +92,11 @@
                             <div class="document-upload-gp col-xs-8 col-md-8">
                                 <div class="document-upload-list">
                                     <div class="file-upload-gp">
-                                        <div class=" col-md-4  filename">
+                                        <div class="filename fileNameDisplay">
                                             <c:out value="${fileName}"/>
                                         </div>
-                                        <div class="text-right filecontent">
                                             <input id="selectedFile" name="selectedFile" type="file" style="display: none;" aria-label="selectedFile1">
                                             <a class="btn btn-file-upload btn-secondary" href="#">Upload</a>
-                                        </div>
                                     </div>
                                 </div>
                                 <span name="iaisErrorMsg" class="error-msg" id="error_file"></span><br>
