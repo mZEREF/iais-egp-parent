@@ -67,7 +67,7 @@
                         </div>
                     <div class="row">
                         <div class="center-content">
-                            <h3>Reason for Withdrawal</h3>
+                            <h3>Reason for Withdrawal<span style="color: red"> *</span></h3>
                             <div class="col-md-7">
                                 <iais:select name="withdrawalReason" id="withdrawalReason"
                                              options="withdrawalReasonList"
@@ -121,7 +121,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" style="padding-bottom: 2%">
                     <div class="center-content">
                         <div class="col-md-2 col-md-offset-8" style="text-align: right">
                             <div class="components">

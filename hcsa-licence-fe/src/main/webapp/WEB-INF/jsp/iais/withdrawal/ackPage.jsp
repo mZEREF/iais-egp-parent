@@ -15,19 +15,15 @@
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
-                    <div class="internet-content">
-                        <div class="bg-title">
-                            <div class="center-content">
-                                <h2>Acknowledgement</h2>
-                            </div>
-                            <div class="center-content">
-                                <span style="font-size:2rem">You have submitted a Withdrawal Application Request</span>
-                            </div>
-                        </div>
-                        <div class="row" style="padding-top: 10px">
-                            <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
-                        </div>
-                    </div>
+                    <h2>Acknowledgement</h2>
+                    <br>
+                    <span style="font-size:2rem;">You have submitted a Withdrawal Application Request</span>
+                </div>
+            </div>
+            <div class="col-lg-12 col-xs-12">
+                <div class="center-content " style="padding-top: 10px">
+                    <a href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em
+                            class="fa fa-angle-left"></em> Back</a>
                 </div>
             </div>
         </div>
