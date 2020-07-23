@@ -94,10 +94,12 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Override
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
+        String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
         withdrawnDtoList.forEach(h -> {
             String licenseeId = h.getLicenseeId();
             AppSubmissionDto appSubmissionDto = applicationClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
             transform(appSubmissionDto,licenseeId);
+            appSubmissionDto.setAppGrpNo(grpNo);
             AppSubmissionDto newAppSubmissionDto = applicationClient.saveSubmision(appSubmissionDto).getEntity();
             List<ApplicationDto> applicationDtoList = newAppSubmissionDto.getApplicationDtos();
             h.setNewApplicationId(applicationDtoList.get(0).getId());
@@ -191,7 +193,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     private void transform(AppSubmissionDto appSubmissionDto,String licenseeId){
         AuditTrailDto auditTrailDto = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTERNET);
-        String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
@@ -200,7 +201,6 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         appSvcRelatedInfoDtoList.get(0).setServiceId(svcId);
         appSvcRelatedInfoDtoList.get(0).setServiceCode(svcCode);
         appSubmissionDto.setAppGrpId(null);
-        appSubmissionDto.setAppGrpNo(grpNo);
         appSubmissionDto.setFromBe(false);
         appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
         appSubmissionDto.setAmount(0.0);
