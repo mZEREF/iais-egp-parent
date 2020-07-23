@@ -51,7 +51,7 @@
                                             <br/>
                                         </div>
                                         <div class="col-xs-12">
-                                            <iais:message key="NEW_ACK005"></iais:message>
+                                            <iais:message key="NEW_ACK005" escape="false"></iais:message>
                                             <br/>
                                             <br/>
                                         </div>
