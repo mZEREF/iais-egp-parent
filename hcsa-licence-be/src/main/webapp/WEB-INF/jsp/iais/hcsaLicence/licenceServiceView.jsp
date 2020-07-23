@@ -20,6 +20,9 @@
     <c:when test="${applicationDto.applicationType == 'APTY001'}">
       <%@include file="../appeal/appealForm.jsp"%>
     </c:when>
+    <c:when test="${applicationDto.applicationType == 'APTY006'}">
+      <%@include file="../withdrawViewForm/withdrawForm.jsp"%>
+    </c:when>
     <c:otherwise>
       <%@include file="viewPremises.jsp"%>
     </c:otherwise>

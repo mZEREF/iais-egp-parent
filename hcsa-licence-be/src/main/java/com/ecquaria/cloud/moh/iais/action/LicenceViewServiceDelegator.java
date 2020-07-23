@@ -6,28 +6,16 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewHciNameDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -38,11 +26,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -69,6 +53,8 @@ public class LicenceViewServiceDelegator {
 
     private static final String APPSUBMISSIONDTO = "appSubmissionDto";
     private static final String HCSASERVICEDTO = "hcsaServiceDto";
+    private static final String WITHDRAWDTO = "withdrawDto";
+    private static final String WITHDRAWDTOLIST = "withdrawDtoList";
     private static final String NOT_VIEW = "NOT_VIEW";
     @Autowired
     private LicenceViewService licenceViewService;
@@ -84,9 +70,14 @@ public class LicenceViewServiceDelegator {
     private AppointmentClient appointmentClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
+    @Autowired
+    private CessationClient cessationClient;
 
     @Autowired
     private ApplicationService applicationService;
+
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     /**
      * StartStep: doStart
@@ -123,12 +114,38 @@ public class LicenceViewServiceDelegator {
         String newCorrelationId = "";
         String oldCorrelationId = "";
         AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
+
         if (appPremisesCorrelationDto != null) {
+            String applicationId = appPremisesCorrelationDto.getApplicationId();
             newCorrelationId = appPremisesCorrelationDto.getId();
             oldCorrelationId = appPremisesCorrelationDto.getOldCorrelationId();
-            String applicationId = appPremisesCorrelationDto.getApplicationId();
             appSubmissionDto = licenceViewService.getAppSubmissionByAppId(applicationId);
             ApplicationDto applicationDto = applicationClient.getApplicationById(applicationId).getEntity();
+            if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType())){
+                List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
+                String appGrpId = applicationDto.getAppGrpId();
+                String appId = applicationDto.getId();
+                AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
+                List<ApplicationDto> applicationDtoList = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
+                if (applicationDtoList != null && premiseMiscDto != null){
+                    applicationDtoList.forEach(h -> {
+                        WithdrawnDto withdrawnDto = new WithdrawnDto();
+                        withdrawnDto.setApplicationNo(h.getApplicationNo());
+
+                        withdrawnDto.setWithdrawnReason(premiseMiscDto.getReason());
+                        withdrawnDto.setWithdrawnRemarks(premiseMiscDto.getRemarks());
+//                        withdrawnDto.setAppPremisesSpecialDocDto();
+                        AppPremisesSpecialDocDto appealSpecialDocDto = fillUpCheckListGetAppClient.getAppPremisesSpecialDocByPremId(premiseMiscDto.getAppPremCorreId()).getEntity();
+                        if(appealSpecialDocDto != null){
+                            ParamUtil.setSessionAttr(bpc.request, "appealSpecialDocDto",appealSpecialDocDto);
+                        }
+                        withdrawnDtoList.add(withdrawnDto);
+                    });
+                }
+
+                ParamUtil.setRequestAttr(bpc.request, WITHDRAWDTO, withdrawnDtoList.get(0));
+                ParamUtil.setRequestAttr(bpc.request, WITHDRAWDTOLIST, withdrawnDtoList);
+            }
             List<String> list = new ArrayList<>(1);
             if (applicationDto.getOriginLicenceId() != null) {
                 list.add(applicationDto.getOriginLicenceId());
