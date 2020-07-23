@@ -67,7 +67,7 @@
                             <iais:value>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <textarea style="width: 100%" rows="10" name="mobile" class="textarea" id="mobile" title="content">${emailAddress}</textarea>
-                                    <span id="error_mobile" name="iaisErrorMsg" class="error-msg"></span>
+                                    <span id="error_mobileNo" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
@@ -117,7 +117,7 @@
                 </div>
             </div>
         </div>
-        <input hidden name="distributionId" value="<c:out value="${distribution.getId()}"/> ">
+        <input hidden name="distributionId" value="<c:out value="${distribution.getId()}"/>">
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 </div>

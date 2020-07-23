@@ -304,9 +304,11 @@ public class MassEmailDelegator {
                 distributionListDto.setEmailAddress(commamobilelist);
             }
         }
-        if(id != null)
+        if(!StringUtil.isEmpty(id))
         {
             distributionListDto.setId(id);
+        }else{
+            distributionListDto.setId(null);
         }
         distributionListDto.setService(service);
         distributionListDto.setDisname(name);
