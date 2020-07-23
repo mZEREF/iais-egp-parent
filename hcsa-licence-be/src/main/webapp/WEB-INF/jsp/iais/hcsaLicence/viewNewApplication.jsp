@@ -216,7 +216,7 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                     </td>
                     <td>
-                      <p><c:out value="${cgo.specialityOther}"/></p>
+                      <p><c:out value="${cgo.subSpeciality}"/></p>
                     </td>
                   </tr>
                 </c:if>
@@ -225,7 +225,15 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspeciality or relevant qualification</p>
                   </td>
                   <td>
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span> </p>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                    <div class="col-xs-6">
+                      <span class="newVal " attr="${cgo.subSpeciality}" ><c:out value="${cgo.subSpeciality}"/></span>
+                    </div>
+                    <div class="col-xs-6">
+                      <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].subSpeciality}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].subSpeciality}</span>
+                    </div>
+
+                    </p>
                   </td>
                 </tr>
 

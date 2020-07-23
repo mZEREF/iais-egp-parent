@@ -861,6 +861,14 @@ public class AppealServiceImpl implements AppealService {
                 cgoSelectList.add(sp1);
                 ParamUtil.setSessionAttr(request, "CgoSelectList", (Serializable) cgoSelectList);
                 ParamUtil.setSessionAttr(request, "GovernanceOfficersList", (Serializable) appSvcCgoDtos);
+                HcsaServiceDto serviceDto= HcsaServiceCacheHelper.getServiceById(entity.getServiceId());
+                List<SelectOption> idTypeSelOp = AppealDelegator.getIdTypeSelOp();
+                ParamUtil.setSessionAttr(request, "IdTypeSelect",(Serializable)  idTypeSelOp);
+                if (serviceDto != null) {
+                    HcsaServiceDto serviceByServiceName = HcsaServiceCacheHelper.getServiceByServiceName(serviceDto.getSvcName());
+                    List<SelectOption> list = AppealDelegator.genSpecialtySelectList(serviceByServiceName.getSvcCode());
+                    ParamUtil.setSessionAttr(request, "SpecialtySelectList", (Serializable) list);
+                }
             }
         }else {
             return;
@@ -952,6 +960,7 @@ public class AppealServiceImpl implements AppealService {
         if (loginContext != null) {
             List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
             if (licenseeEmailAddrs != null) {
+                log.info(licenseeEmailAddrs.toString());
                 emailDto.setReceipts(licenseeEmailAddrs);
                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -970,31 +979,25 @@ public class AppealServiceImpl implements AppealService {
 
     private void sendAdminEmail(HttpServletRequest request) throws IOException, TemplateException {
         List<String> email = adminEmail(request);
-        LoginContext loginContext = (LoginContext) request.getSession().getAttribute("loginContext");
-        String newApplicationNo = (String) request.getAttribute("newApplicationNo");
-        EmailDto emailDto = new EmailDto();
+        String newApplicationNo =(String) request.getAttribute("newApplicationNo");
+        EmailDto emailDto=new EmailDto();
         emailDto.setContent("Send notification to Admin Officer when appeal application is submitted.");
-        emailDto.setSubject(" MOH IAIS –Submission of Appeal - " + newApplicationNo);
+        emailDto.setSubject(" MOH IAIS –Submission of Appeal - "+newApplicationNo);
         emailDto.setSender(mailSender);
         emailDto.setClientQueryCode(newApplicationNo);
-        if (loginContext != null) {
-            List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(loginContext.getLicenseeId());
-            if (licenseeEmailAddrs != null) {
-                emailDto.setReceipts(licenseeEmailAddrs);
-                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                try {
-                    feEicGatewayClient.feSendEmail(emailDto, signature.date(), signature.authorization(),
-                            signature2.date(), signature2.authorization());
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                }
+        emailDto.setReceipts(email);
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        try {
+            feEicGatewayClient.feSendEmail(emailDto,signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
             }
         }
 
-    }
 
-    private List<String> adminEmail(HttpServletRequest request) {
+        private List<String> adminEmail(HttpServletRequest request) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String orgId = loginContext.getOrgId();
         List<String> email = requestForChangeService.getAdminEmail(orgId);
