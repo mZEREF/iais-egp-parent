@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -46,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformati
 import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -78,7 +80,6 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -278,12 +279,10 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             }
             AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
             try {
-                Calendar c = Calendar.getInstance();
-                c.setTime(appPreRecommentdationDtoDate.getRecomInDate());
-                complianceHistoryDto.setInspectionDateYear(c.get(Calendar.YEAR));
+                complianceHistoryDto.setInspectionDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), SystemAdminBaseConstants.DATE_FORMAT));
             }catch (Exception e){
                 log.error(e.getMessage(), e);
-                complianceHistoryDto.setInspectionDateYear(null);
+                complianceHistoryDto.setInspectionDate("-");
             }
             complianceHistoryDtos.add(complianceHistoryDto);
         }
@@ -549,7 +548,15 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         try{
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
             if(appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVED)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.APPROVEDLTC)||appPremisesRecommendationDto.getRecomDecision().equals(InspectionReportConstants.RFC_APPROVED)){
-                insRepDto.setRecommendation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getRecomDecision()}).get(0).getText()+" with "+appPremisesRecommendationDto.getRecomInNumber()+" "+MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getChronoUnit()}).get(0).getText()+" Licence");
+                int recomInNumber=appPremisesRecommendationDto.getRecomInNumber();
+                String chronoUnit=MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getChronoUnit()}).get(0).getText();
+                if(appPremisesRecommendationDto.getChronoUnit().equals(AppointmentConstants.RECURRENCE_MONTH)){
+                    if(recomInNumber/12>=1){
+                        recomInNumber=recomInNumber/12;
+                        chronoUnit=MasterCodeUtil.retrieveOptionsByCodes(new String[]{AppointmentConstants.RECURRENCE_YEAR}).get(0).getText();
+                    }
+                }
+                insRepDto.setRecommendation("Approve with "+recomInNumber+" "+chronoUnit+" Licence");
             }else {
                 insRepDto.setRecommendation(MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getRecomDecision()}).get(0).getText());
             }

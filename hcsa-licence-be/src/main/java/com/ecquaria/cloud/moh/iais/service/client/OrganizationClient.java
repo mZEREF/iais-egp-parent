@@ -132,7 +132,7 @@ public interface OrganizationClient {
     @GetMapping(value = "/iais-workgroup/work-group-by-group-domain", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<WorkingGroupDto>> getWorkingGroup(@RequestParam("uerDomain") String uerDomain);
 
-    @GetMapping(value = "/iais-licensee-be/OrganizationLicDto/{licenseeId}")
+    @GetMapping(value = "/iais-licensee-be/OrganizationLicDto/{licenseeId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<OrganizationLicDto> getOrganizationLicDtoByLicenseeId(@PathVariable(name = "licenseeId") String licenseeId);
 
     @GetMapping(value = "/iais-task/com-tasks/{appNo}",produces = MediaType.APPLICATION_JSON_VALUE)

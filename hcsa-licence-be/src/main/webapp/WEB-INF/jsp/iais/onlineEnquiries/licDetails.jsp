@@ -384,7 +384,7 @@
                                                                 <p>${compliance.inspectionTypeName}</p>
                                                             </td>
                                                             <td>
-                                                                <p>${compliance.inspectionDateYear}<c:if test="${empty compliance.inspectionDateYear}">-</c:if></p>
+                                                                <p>${compliance.inspectionDate}<c:if test="${empty compliance.inspectionDate}">-</c:if></p>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
