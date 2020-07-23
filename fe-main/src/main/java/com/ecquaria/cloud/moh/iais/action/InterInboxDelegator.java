@@ -890,6 +890,7 @@ public class InterInboxDelegator {
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_APPROVED, "Approved"));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_SUSPENDED, "Suspended"));
         LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_REVOKED, "Revoked"));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_TRANSFERRED, "Transferred"));
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
         List<SelectOption> LicenceTypeList = IaisCommonUtils.genNewArrayList();
