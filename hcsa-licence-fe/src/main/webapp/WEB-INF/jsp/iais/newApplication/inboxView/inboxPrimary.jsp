@@ -18,7 +18,7 @@
                                     <div class="control col-sm-5">
                                         <div class="fileList">
                                             <span class="filename server-site">
-                                                <a class="test-btn" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">
+                                                <a class="test-btn" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${appGrpPrimaryDoc.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDoc.docName}" title="Download" class="downloadFile">
                                                     ${appGrpPrimaryDoc.docName}
                                                 </a>
                                                 (${appGrpPrimaryDoc.docSize} KB)

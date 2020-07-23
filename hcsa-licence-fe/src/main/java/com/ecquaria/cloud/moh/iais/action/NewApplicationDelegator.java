@@ -1091,7 +1091,7 @@ public class NewApplicationDelegator {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
         response.sendRedirect(tokenUrl);
     }
-    public void inboxToPreview(BaseProcessClass bpc) throws IOException {
+    public void inboxToPreview(BaseProcessClass bpc) {
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,null);
         String appNo = ParamUtil.getMaskedString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)) {
