@@ -71,6 +71,15 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -78,14 +87,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * LicenceApproveBatchjob
@@ -240,6 +241,8 @@ public class LicenceApproveBatchjob {
                 LicenceDto licenceDto = superLicDto.getLicenceDto();
                 String svcType = licenceDto.getSvcType();
                 String applicationNo = licenceDto.getApplicationNo();
+                log.info(StringUtil.changeForLog("The getBaseIdForApplicationNo  svcType is -->:"+svcType));
+                log.info(StringUtil.changeForLog("The getBaseIdForApplicationNo  applicationNo is -->:"+applicationNo));
                 if(!StringUtil.isEmpty(svcType) && ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(svcType)
                         && baseApplicationNo.equals(applicationNo)){
                     result = licenceDto;
@@ -655,7 +658,7 @@ public class LicenceApproveBatchjob {
                 }
                 String originLicenceId = firstApplicationDto.getOriginLicenceId();
                 LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
-                if(originLicenceDto == null){
+                if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
                     originLicenceDto = licenceService.getCeasedGroupLicDto(originLicenceId);
                 }
                 LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), null, applicationGroupDto, appPremisesRecommendationDto,
@@ -851,6 +854,18 @@ public class LicenceApproveBatchjob {
                 result.add(applicationListDto.getApplicationDto());
             }
         }
+        Collections.sort(result,new Comparator<ApplicationDto>(){
+            @Override
+            public int compare(ApplicationDto applicationDto1, ApplicationDto applicationDto2) {
+               int diff = applicationDto1.getApplicationNo().compareTo(applicationDto2.getApplicationNo());
+                if (diff > 0) {
+                    return 1;
+                }else  if (diff < 0) {
+                    return -1;
+                }
+                return 0;
+            }
+        });
         return result;
     }
 
@@ -929,7 +944,7 @@ public class LicenceApproveBatchjob {
                 String applicationType = applicationDto.getApplicationType();
 
                 LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
-                if(originLicenceDto == null){
+                if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
                     originLicenceDto = licenceService.getCeasedGroupLicDto(originLicenceId);
                 }
                 LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
