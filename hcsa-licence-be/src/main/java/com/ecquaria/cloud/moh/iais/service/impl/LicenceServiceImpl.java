@@ -171,7 +171,11 @@ public class LicenceServiceImpl implements LicenceService {
 
     @Override
     public LicenceDto getCeasedGroupLicDto(String licenceId) {
-        return hcsaLicenceClient.getCeasedGroupLicDtoById(licenceId).getEntity();
+        LicenceDto result = null;
+        if(!StringUtil.isEmpty(licenceId)){
+            result = hcsaLicenceClient.getCeasedGroupLicDtoById(licenceId).getEntity();
+        }
+        return result;
     }
 
     @Override
