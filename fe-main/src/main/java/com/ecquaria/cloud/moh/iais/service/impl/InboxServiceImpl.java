@@ -391,6 +391,10 @@ public class InboxServiceImpl implements InboxService {
                 }
             }
         }
+        Boolean entity = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
+        if(!entity){
+            errorMap.put("errorMessage","There is already a pending application for this licence");
+        }
         return errorMap;
     }
 

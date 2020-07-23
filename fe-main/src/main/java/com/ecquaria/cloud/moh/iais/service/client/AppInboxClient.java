@@ -73,4 +73,6 @@ public interface AppInboxClient {
 
     @PostMapping(value = "/iais-submission/darft-service-codes",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> selectDarft(@RequestBody Map<String,Object> serviceCodes);
+    @GetMapping(value = "/appeal/licence-appeal-or-cessation-by-licence-id")
+    FeignResponseEntity<Boolean> isLiscenceAppealOrCessation(@RequestParam("licenceId") String licenceId);
 }
