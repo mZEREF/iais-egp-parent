@@ -3,7 +3,9 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
@@ -18,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 
 import java.util.ArrayList;
@@ -45,6 +48,9 @@ public class WithdrawalDelegator {
 
     @Autowired
     private ServiceConfigService serviceConfigService;
+
+    @Autowired
+    private ApplicationClient applicationClient;
 
     private String withdrawAppId;
 
@@ -136,7 +142,12 @@ public class WithdrawalDelegator {
             for (int i =0;i<withdrawAppNos.length;i++){
                 WithdrawnDto withdrawnDto = new WithdrawnDto();
                 String appNo = withdrawAppNos[i];
+                ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(appNo).getEntity();
+                String appId = applicationDto.getId();
                 CommonsMultipartFile commonsMultipartFile = (CommonsMultipartFile) mulReq.getFile("selectedFile");
+                if(!StringUtil.isEmpty(appId)){
+                    withdrawnDto.setApplicationId(appId);
+                }
                 withdrawnDto.setApplicationNo(appNo);
                 withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
                 withdrawnDto.setWithdrawnReason(withdrawnReason);
