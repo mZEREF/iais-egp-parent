@@ -765,8 +765,6 @@ public class LicenceApproveBatchjob {
                 superLicDto.setPersonnelsDtos(personnelsDtos);
                 superLicDto.setLicAppCorrelationDtos(licAppCorrelationDtos);
                 superLicDtos.add(superLicDto);
-
-
             }
 
             licenceGroupDto.setSuperLicDtos(superLicDtos);
