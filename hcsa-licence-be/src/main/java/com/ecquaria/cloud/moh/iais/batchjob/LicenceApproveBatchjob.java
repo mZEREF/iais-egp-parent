@@ -811,18 +811,19 @@ public class LicenceApproveBatchjob {
     }
 
     private void newApplicationApproveSendEmail(LicenceDto licenceDto, String applicationNo, String licenceNo, String loginUrl, boolean isNew, String uenNo) {
-        Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
-        tempMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-        tempMap.put("loginUrl", loginUrl);
-        tempMap.put("licenceNumber", licenceNo);
-        tempMap.put("applicationNumber", applicationNo);
-        tempMap.put("isNewApplication", null);
-        if (isNew) {
-            tempMap.put("isNewApplication", "Y");
-            tempMap.put("UEN_NO", uenNo);
-        }
-        String subject = " " + applicationNo + " is Approved ";
-        sendEmailHelper(tempMap, MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID, subject, licenceDto.getLicenseeId(), licenceDto.getId());
+//        Map<String, Object> tempMap = IaisCommonUtils.genNewHashMap();
+//        tempMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+//        tempMap.put("loginUrl", loginUrl);
+//        tempMap.put("licenceNumber", licenceNo);
+//        tempMap.put("applicationNumber", applicationNo);
+//        tempMap.put("isNewApplication", null);
+//        if (isNew) {
+//            tempMap.put("isNewApplication", "Y");
+//            tempMap.put("UEN_NO", uenNo);
+//        }
+//        String subject = " " + applicationNo + " is Approved ";
+//        sendEmailHelper(tempMap, MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID, subject, licenceDto.getLicenseeId(), licenceDto.getLicenseeId());
+        sendEmailHelper(licenceDto.getLicenseeId(),applicationNo);
     }
 
 
@@ -1721,6 +1722,27 @@ public class LicenceApproveBatchjob {
             //send
             licenceService.sendEmail(emailDto);
         } catch (IOException | TemplateException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    private void sendEmailHelper(String licenseeId, String appNo) {
+        if (StringUtil.isEmpty(licenseeId)) {
+            return;
+        }
+        String mesContext = null;
+        try {
+            mesContext = "email context";
+
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(mesContext);
+            emailDto.setSubject(" MOH IAIS – New Application -  "+ appNo +" is Approved ");
+            emailDto.setSender(mailSender);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(licenseeId);
+            //send
+            licenceService.sendEmail(emailDto);
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
     }

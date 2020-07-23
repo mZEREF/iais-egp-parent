@@ -50,13 +50,13 @@
             <c:forEach items="${hciNames}" var="hciName" >
               <div >
                 <div class="form-check" >
-                  <input class="form-check-input"  onclick="isCheck(this)" type="checkbox" <c:if test="${fn:length(hciNames)==1}">checked="checked" </c:if> name="selectHciName" aria-invalid="false" value="${hciName}">
+                  <input class="form-check-input"  onclick="isCheck(this)" type="checkbox" disabled <c:if test="${fn:length(hciNames)==1}">checked="checked" </c:if> name="selectHciName" aria-invalid="false" value="${hciName}">
                   <label class="form-check-label"><span class="check-square"></span>${hciName}</label>
                 </div>
 
                 <div class="col-xs-12 col-md-10" id="proposedHciName" style="display: none" >
                   <label style="font-size: 20px">Proposed  HCI Name</label>
-                  <input type="text" maxlength="100" name="proposedHciName" value="${premiseMiscDto.newHciName}">
+                  <input type="text" maxlength="100" name="proposedHciName" disabled value="${premiseMiscDto.newHciName}">
                   <span ></span>
                 </div>
               </div>

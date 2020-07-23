@@ -116,6 +116,9 @@ public class LicenceViewServiceDelegator {
         }
         bpc.request.getSession().removeAttribute(NOT_VIEW);
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) bpc.request.getSession().getAttribute("applicationViewDto");
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+            return;
+        }
         AppSubmissionDto appSubmissionDto;
         String newCorrelationId = "";
         String oldCorrelationId = "";
