@@ -13,6 +13,8 @@ import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Account;
 import ecq.commons.helper.StringHelper;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -37,6 +39,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class PaymentBaiduriProxy extends PaymentProxy {
 
@@ -75,13 +78,13 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			throw new PaymentException(e1);
 		}
 		SrcSystemConfDto srcSystemConfDto =new SrcSystemConfDto();
-//		try {
-//			Account account= PaymentBaiduriProxyUtil.getStripeService().createAccount();
-//			srcSystemConfDto.setClientKey(account.getId());
-//		} catch (StripeException e) {
-//			logger.info(e.getMessage(),e);
-//			srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
-//		}
+		try {
+			Account account= PaymentBaiduriProxyUtil.getStripeService().createAccount();
+			srcSystemConfDto.setClientKey(account.getId());
+		} catch (StripeException e) {
+			logger.info(e.getMessage(),e);
+			srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
+		}
 		String amo = fields.get("vpc_Amount");
 		String payMethod = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
