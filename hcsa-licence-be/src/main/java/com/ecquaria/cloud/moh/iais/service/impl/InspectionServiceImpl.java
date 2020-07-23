@@ -324,7 +324,7 @@ public class InspectionServiceImpl implements InspectionService {
         inspectionTaskPoolListDto.setSubmitDt(applicationGroupDto.getSubmitDt());
         inspectionTaskPoolListDto.setServiceName(hcsaServiceDto.getSvcName());
         inspectionTaskPoolListDto.setHciCode(superPoolTaskQueryDto.getHciCode());
-        inspectionTaskPoolListDto.setHciName(superPoolTaskQueryDto.getHciAddress());
+        inspectionTaskPoolListDto.setHciName(StringUtil.viewHtml(superPoolTaskQueryDto.getHciAddress()));
         //todo: get authentic Inspection Type
         inspectionTaskPoolListDto.setInspectionTypeName(InspectionConstants.INSPECTION_TYPE_ONSITE);
         String appPremCorrId = taskDto.getRefNo();

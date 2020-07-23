@@ -226,9 +226,9 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         inspecTaskCreAndAssDto.setApplicationType(applicationDto.getApplicationType());
         inspecTaskCreAndAssDto.setApplicationStatus(applicationDto.getStatus());
         if (!StringUtil.isEmpty(appGrpPremisesDto.getHciName())) {
-            inspecTaskCreAndAssDto.setHciName(appGrpPremisesDto.getHciName() + " / " + address);
+            inspecTaskCreAndAssDto.setHciName(StringUtil.viewHtml(appGrpPremisesDto.getHciName() + " / " + address));
         } else {
-            inspecTaskCreAndAssDto.setHciName(address);
+            inspecTaskCreAndAssDto.setHciName(StringUtil.viewHtml(address));
         }
         inspecTaskCreAndAssDto.setHciCode(appGrpPremisesDto.getHciCode());
         inspecTaskCreAndAssDto.setServiceName(hcsaServiceDto.getSvcName());
