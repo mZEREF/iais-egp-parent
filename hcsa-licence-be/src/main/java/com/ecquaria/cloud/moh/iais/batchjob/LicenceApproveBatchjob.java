@@ -1780,26 +1780,26 @@ public class LicenceApproveBatchjob {
                                  LicenseeDto oldLicenseeDto, LicenceDto originLicenceDto, String serviceId) {
         log.info(StringUtil.changeForLog("The sendEmailAndSms start ..."));
         String applicationNo = applicationDto.getApplicationNo();
-        String loginUrl = "#";
+//        String loginUrl = "#";
         String msgId = "";
         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
         //new application send email
         //zhilin
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())) {
-            String uenNo = null;
-            if(oldLicenseeDto != null){
-                uenNo = oldLicenseeDto.getUenNo();
-            }
-            boolean isNew = false;
-            if (StringUtil.isEmpty(uenNo)) {
-                //todo set new uenNo
-                uenNo = "new UEN";
-                isNew = true;
-            }
+//            String uenNo = null;
+//            if(oldLicenseeDto != null){
+//                uenNo = oldLicenseeDto.getUenNo();
+//            }
+//            boolean isNew = false;
+//            if (StringUtil.isEmpty(uenNo)) {
+//                //todo set new uenNo
+//                uenNo = "new UEN";
+//                isNew = true;
+//            }
             //send sms
             try {
                 //send email
-                newApplicationApproveSendEmail(licenceDto, applicationNo, licenceDto.getLicenceNo(), loginUrl, isNew, uenNo);
+                newApplicationApproveSendEmail(licenceDto, applicationNo, null, null, false, null);
 
                 sendSMS(msgId, licenceDto.getLicenseeId(), msgInfoMap);
             } catch (Exception e) {
