@@ -215,9 +215,7 @@ public class MasterCodeDelegator {
         HttpServletRequest request = bpc.request;
         String categoryDescription = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY);
         String codeDescription = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_DESCRIPTION);
-        String codeValue = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VALUE);
         String codeStatus = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS);
-        String filterValue = ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         Date codeEffFrom = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM));
         Date codeEffTo = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO));
         String codeStartDate = Formatter.formatDateTime(codeEffFrom, SystemAdminBaseConstants.DATE_FORMAT);
@@ -238,16 +236,6 @@ public class MasterCodeDelegator {
             searchParam.addFilter(MasterCodeConstants.MASTER_CODE_DESCRIPTION, "%" + codeDescription + "%",true);
         } else {
             searchParam.removeFilter(MasterCodeConstants.MASTER_CODE_DESCRIPTION);
-        }
-        if (!StringUtil.isEmpty(codeValue)) {
-            searchParam.addFilter(MasterCodeConstants.MASTER_CODE_VALUE, "%" + codeValue + "%",true);
-        } else {
-            searchParam.removeFilter(MasterCodeConstants.MASTER_CODE_VALUE);
-        }
-        if (!StringUtil.isEmpty(filterValue)) {
-            searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE, "%" + filterValue + "%",true);
-        } else {
-            searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         }
         if (codeEffFrom != null && codeEffTo != null) {
             if (codeEffFrom.compareTo(codeEffTo) <= 0) {
@@ -291,12 +279,10 @@ public class MasterCodeDelegator {
             MasterCodeToExcelDto masterCodeToExcelDto = new MasterCodeToExcelDto();
             masterCodeToExcelDto.setCodeCategory(h.getCodeCategory());
             masterCodeToExcelDto.setSequence(String.valueOf(h.getSequence()));
-            masterCodeToExcelDto.setVersion(h.getVersion());
             masterCodeToExcelDto.setCodeDescription(h.getCodeDescription());
             masterCodeToExcelDto.setCodeValue(h.getCodeValue());
             masterCodeToExcelDto.setEffectiveFrom(Formatter.formatDateTime(h.getEffectiveStartDate()));
             masterCodeToExcelDto.setEffectiveTo(Formatter.formatDateTime(h.getEffectiveEndDate()));
-            masterCodeToExcelDto.setFilterValue(h.getFilterValue());
             masterCodeToExcelDto.setRemakes(h.getRemarks());
             masterCodeToExcelDto.setStatus(MasterCodeUtil.getCodeDesc(h.getStatus()));
             masterCodeToExcelDtoList.add(masterCodeToExcelDto);
@@ -388,18 +374,18 @@ public class MasterCodeDelegator {
                     errItems.add(errMsg);
                     result = true;
                 }
-                if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
-                    List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
-                    List<String> codeValueList = IaisCommonUtils.genNewArrayList();
-                    masterCodeToExcelDtos.forEach(h -> {
-                        codeValueList.add(h.getCodeValue());
-                    });
-                    if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
-                        String errMsg = "Filter Value must be an existing Code Value";
-                        errItems.add(errMsg);
-                        result = true;
-                    }
-                }
+//                if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
+//                    List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
+//                    List<String> codeValueList = IaisCommonUtils.genNewArrayList();
+//                    masterCodeToExcelDtos.forEach(h -> {
+//                        codeValueList.add(h.getCodeValue());
+//                    });
+//                    if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
+//                        String errMsg = "Filter Value must be an existing Code Value";
+//                        errItems.add(errMsg);
+//                        result = true;
+//                    }
+//                }
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
                     masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
                 }
@@ -433,7 +419,7 @@ public class MasterCodeDelegator {
                 ParamUtil.setRequestAttr(request, "UPLOAD_DATE", new Date());
             }
         }catch (Exception e){
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "There is an error in the file contents");
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "File save failed");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }

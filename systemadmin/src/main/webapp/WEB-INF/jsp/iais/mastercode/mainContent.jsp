@@ -19,9 +19,8 @@
                                 <iais:sortableHeader needSort="true" field="code_category" value="Master Code Category" style="width:15%" />
                                 <iais:sortableHeader needSort="true" field="code_value" value="Code Value" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="code_category" value="Code Description" style="width:10%"/>
-                                <iais:sortableHeader needSort="true" field="filter_value" value="Filter Value" style="width:10%"/>
                                 <iais:sortableHeader needSort="true" field="sequence" value="Sequence" style="width:7%" />
-                                <iais:sortableHeader needSort="true" field="Version" value="Version" style="width:7%"/>
+                                <iais:sortableHeader needSort="true" field="remarks" value="Remark" style="width:17%"/>
                                 <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date"  style="width:13%"/>
                                 <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date"  style="width:13%"/>
                                 <iais:sortableHeader needSort="true" field="status" value="Status" style="width:6%"/>
@@ -57,16 +56,12 @@
                                                 <p>${masterCodeResult.codeDescription}</p>
                                             </td>
                                             <td>
-                                                <p class="visible-xs visible-sm table-row-title">Filter Value</p>
-                                                <p>${masterCodeResult.filterValue}</p>
-                                            </td>
-                                            <td>
                                                 <p class="visible-xs visible-sm table-row-title">Sequence</p>
                                                 <p>${masterCodeResult.sequence}</p>
                                             </td>
                                             <td>
-                                                <p class="visible-xs visible-sm table-row-title">Version</p>
-                                                <p>${masterCodeResult.version}</p>
+                                                <p class="visible-xs visible-sm table-row-title">Remarks</p>
+                                                <p>${masterCodeResult.remarks}</p>
                                             </td>
                                             <td>
                                                 <p class="visible-xs visible-sm table-row-title">Effective Start

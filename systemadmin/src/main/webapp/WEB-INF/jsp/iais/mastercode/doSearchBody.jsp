@@ -15,15 +15,6 @@
             </div>
             <div class="form-group">
                 <iais:value>
-                    <%String codeValue = request.getParameter("codeValue")==null?"":request.getParameter("codeValue");%>
-                    <label class="col-xs-4 col-md-4 control-label">Code Value</label>
-                    <div class="col-xs-6 col-sm-6 col-md-6">
-                        <input id="codeValue" type="text" name="codeValue" value="<%=codeValue%>" maxlength="25">
-                    </div>
-                </iais:value>
-            </div>
-            <div class="form-group">
-                <iais:value>
                     <%String codeDescription = request.getParameter("codeDescription")==null?"":request.getParameter("codeDescription");%>
                     <label class="col-xs-4 col-md-4 control-label">Code Description</label>
                     <div class="col-xs-6 col-sm-6 col-md-6">
@@ -33,15 +24,6 @@
                                 <ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
                             </div>
                         </form>
-                    </div>
-                </iais:value>
-            </div>
-            <div class="form-group">
-                <iais:value>
-                    <%String filterValue = request.getParameter("filterValue")==null?"":request.getParameter("filterValue");%>
-                    <label class="col-xs-4 col-md-4 control-label">Filter Value</label>
-                    <div class="col-xs-6 col-sm-6 col-md-6">
-                        <input id="filterValue" type="text" name="filterValue" value="<%=filterValue%>" maxlength="50">
                     </div>
                 </iais:value>
             </div>
