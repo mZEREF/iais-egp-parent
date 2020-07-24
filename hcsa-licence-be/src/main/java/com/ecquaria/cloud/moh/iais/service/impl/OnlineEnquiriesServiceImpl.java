@@ -74,6 +74,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -285,7 +286,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 log.error(e.getMessage(), e);
                 complianceHistoryDto.setInspectionDate("-");
             }
-            complianceHistoryDtos.add(complianceHistoryDto);
+            if ((appPremisesRecommendationDto != null) && ImmutableSet.of(InspectionReportConstants.APPROVED, InspectionReportConstants.APPROVEDLTC, InspectionReportConstants.RFC_APPROVED, InspectionReportConstants.REJECTED, InspectionReportConstants.RFC_REJECTED).contains(appPremisesRecommendationDto.getRecomDecision())) {
+                complianceHistoryDtos.add(complianceHistoryDto);
+            }
         }
         return complianceHistoryDtos;
     }
