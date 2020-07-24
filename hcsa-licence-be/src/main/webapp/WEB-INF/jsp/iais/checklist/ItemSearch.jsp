@@ -84,9 +84,9 @@
             <div class="row">
               <div class="col-xs-12 col-md-10">
                 <div class="text-right">
-                  <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
                   <a class="btn btn-secondary" id="exportButtonId" href="${pageContext.request.contextPath}/checklist-item-file?action=checklistItem" onclick="$('#exportButtonId').attr('class', 'btn btn-secondary disabled') ">Export Checklist Item</a>
                   <a class="btn btn-secondary" id="exportTemplateButtonId"   onclick="$('#exportTemplateButtonId').attr('class', 'btn btn-secondary disabled'); exportToConfigTemplate()">Export Checklist Configurations</a>
+                  <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
                   <a class="btn btn-primary next" id="crud_search_button" value="doSearch" href="#">Search</a>
                 </div>
               </div>

@@ -88,17 +88,17 @@ public final class ChecklistHelper {
 
         if (!isCommon){
             if (StringUtil.isEmpty(module)){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, MessageUtil.replaceMessage("GENERAL_ERR0006", "Module", "field")));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031"));
                 return true;
             }
 
             if (StringUtil.isEmpty(type)){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, MessageUtil.replaceMessage("GENERAL_ERR0006", "Type", "field")));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031"));
                 return true;
             }
 
             if (StringUtil.isEmpty(service)){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, MessageUtil.replaceMessage("GENERAL_ERR0006", "Service", "field")));
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031"));
                 return true;
             }
         }
@@ -107,7 +107,7 @@ public final class ChecklistHelper {
         String effectiveEndDate = excelTemplate.getEftEndDate();
 
         if (StringUtils.isEmpty(effectiveStartDate) || StringUtils.isEmpty(effectiveEndDate)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "CHKL_ERR014"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031"));
             return true;
         }else {
             try {
