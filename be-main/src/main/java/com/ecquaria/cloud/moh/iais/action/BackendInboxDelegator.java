@@ -536,6 +536,7 @@ public class BackendInboxDelegator {
 
         broadcastApplicationDto.setApplicationDto(applicationDto);
         if(!StringUtil.isEmpty(stageId)){
+            log.debug(StringUtil.changeForLog("has next stageId :" + stageId));
             if(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(oldStatus)){
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto1 = appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryForCurrentStage(
                         applicationDto.getApplicationNo(),stageId
@@ -605,6 +606,8 @@ public class BackendInboxDelegator {
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
             }
         }else{
+            log.debug(StringUtil.changeForLog("not has next stageId :" + stageId));
+            log.debug(StringUtil.changeForLog("do ao3 approve ----- "));
             List<ApplicationDto> applicationDtoList = applicationViewService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
             List<ApplicationDto> saveApplicationDtoList = IaisCommonUtils.genNewArrayList();
             CopyUtil.copyMutableObjectList(applicationDtoList,saveApplicationDtoList);
