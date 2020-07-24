@@ -240,6 +240,7 @@ public class AppealApproveBatchjob {
         for(ApplicationDto applicationDto : appealApplicaiton){
             beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
+            applicationClient.updateApplication(applicationDto);
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationRejection is end ..."));
     }
@@ -332,7 +333,13 @@ public class AppealApproveBatchjob {
             rollBackLicence.add(licenceDto);
             LicenceDto appealLicenceDto = (LicenceDto) CopyUtil.copyMutableObject(licenceDto);
             Date startDate = appealLicenceDto.getStartDate();
-            Date expiryDate = LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
+            Date expiryDate;
+            try {
+                expiryDate= LicenceUtil.getExpiryDate(startDate,appPremisesRecommendationDto);
+            }catch (Exception e){
+                expiryDate=new Date();
+            }
+
             appealLicenceDto.setExpiryDate(expiryDate);
             appealLicence.add(appealLicenceDto);
             try {

@@ -674,7 +674,7 @@ public class ApplicationClientFallback implements ApplicationClient{
     }
 
     @Override
-    public FeignResponseEntity updateApplicationOfRfi(List<ApplicationDto> rfiApplications) {
+    public FeignResponseEntity<List<ApplicationDto>> updateApplicationOfRfi(List<ApplicationDto> rfiApplications) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

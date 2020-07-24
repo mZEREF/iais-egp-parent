@@ -275,8 +275,8 @@ public interface ApplicationClient {
 
     @PostMapping (path = "/iais-appt-inspec-be/appt-Resch-param",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<SearchResult<ReschApptGrpPremsQueryDto>> searchApptReschGrpPrems(@RequestBody SearchParam searchParam);
-    @PostMapping(value = "/iais-application/rfi-be-aoolication",consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity updateApplicationOfRfi(@RequestBody List<ApplicationDto> rfiApplications);
+    @PostMapping(value = "/rfi-be-aoolication",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> updateApplicationOfRfi(@RequestBody List<ApplicationDto> rfiApplications);
 
     @GetMapping(value = "/iais-application-be/application-cgo-by-application-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppSvcCgoDto> getApplicationCgoByAppId(@RequestParam(name = "applicationId") String applicationId,@RequestParam("psnType") String psnType);

@@ -662,7 +662,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                   requestForInfList = applicationNewAndRequstDto.getRequestForInfList();
                   log.info(StringUtil.changeForLog("listNewApplicationDto size"+listNewApplicationDto.size()));
                   log.info(StringUtil.changeForLog("requestForInfList size"+requestForInfList.size()));
-
+                  log.info("update requeste Application status");
+                  requestForInfList= applicationClient.updateApplicationOfRfi(requestForInfList).getEntity();
+                  log.info(StringUtil.changeForLog(JsonUtil.parseToJson(requestForInfList)));
                 }
             }
             log.info(StringUtil.changeForLog(listNewApplicationDto.size()+"listNewApplicationDto size"));
@@ -705,8 +707,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null,submissionId);
             broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,null,submissionId);
             //update fe application stauts
-            log.info("update requeste Application status");
-            applicationClient.updateApplicationOfRfi(requestForInfList);
             log.info("update application stauts");
             for(ApplicationDto applicationDto :requestForInfList){
                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);

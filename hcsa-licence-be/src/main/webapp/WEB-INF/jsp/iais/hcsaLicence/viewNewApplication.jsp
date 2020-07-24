@@ -232,7 +232,6 @@
                     <div class="col-xs-6">
                       <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].subSpeciality}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].subSpeciality}</span>
                     </div>
-
                     </p>
                   </td>
                 </tr>
@@ -351,161 +350,6 @@
     </div>
   </c:if>
 
-
-  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST004')}">
-    <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">PRINCIPAL OFFICERS</label>
-      <div class="amend-preview-info">
-        <div class="form-check-gp">
-          <div class="row">
-            <div class="col-xs-12">
-              <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po" varStatus="status">
-                <p><strong class="col-xs-6">Principal Officers ${status.index+1}:</strong></p>
-                <table class="col-xs-12">
-                  <tr>
-                    <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
-                    </td>
-                    <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                      <div class="col-xs-6">
-                        <span class="newVal " attr="${po.salutation}" ><iais:code code="${po.salutation}"/></span>
-
-                      </div>
-                      <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].salutation}" style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].salutation}"/></span>
-                      </div>
-
-                      </p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
-                    </td>
-                    <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-
-                      <div  class="col-xs-6">
-                        <span class="newVal " attr="${po.name}" ><c:out value="${po.name}"/></span>
-                      </div>
-                      <div  class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].name}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].name}</span>
-                      </div>
-                      </p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type</p>
-                    </td>
-                    <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                      <div class="col-xs-6">
-                        <span class="newVal " attr="${po.idType}" ><c:out value="${po.idType}"/></span>
-                      </div>
-                      <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType}</span>
-                      </div>
-
-                      </p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.</p>
-                    </td>
-                    <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                      <div class="col-xs-6">
-                        <span class="newVal " attr="${po.idNo}"><c:out value="${po.idNo}"/></span>
-                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                    </div>
-                      <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}</span>
-                      </div>
-
-                      </p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation</p>
-                    </td>
-                    <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                      <div class="col-xs-6">
-                        <span class="newVal " attr="${po.designation}" ><iais:code code="${po.designation}"/></span>
-                      </div>
-                      <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].designation}"  style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].designation}"/></span>
-                      </div>
-
-
-                      </p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No.
-                      </p>
-                    </td>
-                    <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                      <div class="col-xs-6">
-                        <span class="newVal " attr="${po.officeTelNo}"><c:out value="${po.officeTelNo}"/></span>
-                      </div>
-                      <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].officeTelNo}" style="display: none"><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].officeTelNo}"/></span>
-                      </div>
-
-
-                      </p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.</p>
-                    </td>
-                    <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                      <div class="col-xs-6">
-                        <span class="newVal " attr="${po.mobileNo}" ><c:out value="${po.mobileNo}"/></span>
-                      </div>
-                      <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].mobileNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].mobileNo}</span>
-                      </div>
-
-
-                      </p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="col-xs-6">
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address</p>
-                    </td>
-                    <td>
-                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
-                      <div  class="col-xs-6">
-                        <span class="newVal " attr="${po.emailAddr}" ><c:out value="${po.emailAddr}"/></span>
-                      </div>
-                      <div  class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].emailAddr}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].emailAddr}</span>
-                      </div>
-
-                      </p>
-                    </td>
-                  </tr>
-                </table>
-              </c:forEach>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </c:if>
-
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST006')}">
     <div class="amended-service-info-gp">
       <label style="font-size: 2.2rem">SERVICE PERSONNEL</label>
@@ -560,6 +404,7 @@
 
                           <div class="col-xs-6">
                             <span class="newVal " attr="${appSvcPersonnelDtoList.profRegNo}" ><c:out value="${appSvcPersonnelDtoList.profRegNo}"/></span>
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                           </div>
                           <div class="col-xs-6">
                             <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</span>
@@ -785,7 +630,7 @@
                           <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>PersonnelType</p>
                         </td>
                         <td>
-                            <span class="col-xs-6 col-md-6"> Medical Physicist</span>
+                          <span class="col-xs-6 col-md-6"> Medical Physicist</span>
                           </p>
                         </td>
                       </tr>
@@ -815,7 +660,7 @@
                         </td>
                         <td>
 
-                            <span class="col-xs-6 col-md-6">Registered Nurse</span></p>
+                          <span class="col-xs-6 col-md-6">Registered Nurse</span></p>
                         </td>
                       </tr>
                       <tr>
@@ -864,6 +709,157 @@
       </div>
 
     </div>
+  </c:if>
+  <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST004')}">
+    <div class="amended-service-info-gp">
+      <label style="font-size: 2.2rem">PRINCIPAL OFFICERS</label>
+      <div class="amend-preview-info">
+        <div class="form-check-gp">
+          <div class="row">
+            <div class="col-xs-12">
+              <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po" varStatus="status">
+                <p><strong class="col-xs-6">Principal Officers ${status.index+1}:</strong></p>
+                <table class="col-xs-12">
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Salutation</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="${po.salutation}" ><iais:code code="${po.salutation}"/></span>
+
+                      </div>
+                      <div class="col-xs-6">
+                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].salutation}" style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].salutation}"/></span>
+                      </div>
+
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Name</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+
+                      <div  class="col-xs-6">
+                        <span class="newVal " attr="${po.name}" ><c:out value="${po.name}"/></span>
+                      </div>
+                      <div  class="col-xs-6">
+                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].name}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].name}</span>
+                      </div>
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID Type</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="${po.idType}" ><c:out value="${po.idType}"/></span>
+                      </div>
+                      <div class="col-xs-6">
+                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idType}</span>
+                      </div>
+
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>ID No.</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="${po.idNo}"><c:out value="${po.idNo}"/></span>
+                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                    </div>
+                      <div class="col-xs-6">
+                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}</span>
+                      </div>
+
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Designation</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="${po.designation}" ><iais:code code="${po.designation}"/></span>
+                      </div>
+                      <div class="col-xs-6">
+                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].designation}"  style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].designation}"/></span>
+                      </div>
+
+
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Office Telephone No.
+                      </p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="${po.officeTelNo}"><c:out value="${po.officeTelNo}"/></span>
+                      </div>
+                      <div class="col-xs-6">
+                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].officeTelNo}" style="display: none"><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].officeTelNo}"/></span>
+                      </div>
+
+
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Mobile No.</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div class="col-xs-6">
+                        <span class="newVal " attr="${po.mobileNo}" ><c:out value="${po.mobileNo}"/></span>
+                      </div>
+                      <div class="col-xs-6">
+                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].mobileNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].mobileNo}</span>
+                      </div>
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Email Address</p>
+                    </td>
+                    <td>
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
+                      <div  class="col-xs-6">
+                        <span class="newVal " attr="${po.emailAddr}" ><c:out value="${po.emailAddr}"/></span>
+                      </div>
+                      <div  class="col-xs-6">
+                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].emailAddr}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].emailAddr}</span>
+                      </div>
+
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </c:forEach>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST007')}">
     <div class="amended-service-info-gp">
