@@ -140,14 +140,14 @@ public class NotificationHelper {
 	}
 
 	@Async("emailAsyncExecutor")
-	public void sendEmail(String templateId, Map<String, Object> templateContent, String queryCode,
-						  String reqRefNum, String refIdType, String refId) {
-		sendEmailWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null);
+	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
+								 String reqRefNum, String refIdType, String refId) {
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null);
 	}
 
 	@Async("emailAsyncExecutor")
-	public void sendEmailWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode,
-									  String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto) {
+	public void sendNotificationWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode,
+											 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto) {
 		log.info(StringUtil.changeForLog("sendemail start... ref type is " + StringUtil.nullToEmptyStr(refIdType)
 				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
 				+ "templateId is "+ templateId+"thread name is " + Thread.currentThread().getName()));
