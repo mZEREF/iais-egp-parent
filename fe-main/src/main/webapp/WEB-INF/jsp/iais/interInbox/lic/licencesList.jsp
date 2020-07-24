@@ -245,7 +245,7 @@
                             <a class="btn btn-primary disabled" href="#" id="lic-cease">Cease</a>
                             <a class="btn btn-primary disabled" href="#" id="lic-amend">Amend</a>
                             <a class="btn btn-primary disabled" href="#" id="lic-appeal">Appeal</a>
-                            <a class="btn btn-primary disabled" id="lic-print" onclick="doPrint()">Print</a>
+                            <a class="btn btn-primary disabled" href="#" id="lic-print">Print</a>
                         </div>
                     </div>
                 </div>
@@ -266,6 +266,9 @@
     });
     $('#lic-appeal').click(function () {
         doLicAppeal();
+    });
+    $('#lic-print').click(function () {
+        doLicPrint();
     });
 
 </script>

@@ -264,6 +264,19 @@
     <JavaCode defClass="" executor="" methodName="appDoAppView_OnStepProcess_0" name="appDoAppView_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="licPrint" processname="PrintLicence" project="INTERNET" version="-1" x="1080" y="710">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="licDoPrint" x="980" y="670">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="licDoPrint_OnStepProcess_0" name="licDoPrint_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" formSetupHeight="" formSetupMode="Dialog" formSetupSelector="" formSetupWidth="" icon="" name="msgPageView" stageIndicator="" x="400" y="100">
@@ -336,6 +349,7 @@
    <SwitchCase component="/Steps/AutomaticStep/licDoCease" value="&quot;licDoCease&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/licDoRenew" value="&quot;licDoRenew&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/licDoAppeal" value="&quot;licDoAppeal&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/licDoPrint" value="&quot;licDoPrint&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/prepareDate" executor="" icon="" leftOperand="msg_view_type" name="Switch4" x="910" y="370">
    <Description/>
@@ -642,6 +656,12 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/msgToArchive" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch4" style="rectanular">
    <position>{(930,390)(690,20)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/licDoPrint" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(720,620)(1000,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/licPrint" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/licDoPrint" style="oblique">
+   <position>{(1000,690)(1100,730)}</position>
   </SynchronousLink>
  </Links>
 </Application>

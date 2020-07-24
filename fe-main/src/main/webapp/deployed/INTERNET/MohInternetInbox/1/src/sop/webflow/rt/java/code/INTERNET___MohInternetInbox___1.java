@@ -172,6 +172,10 @@ public class INTERNET___MohInternetInbox___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "appToAppView", this);
 	}
 
+	public void licDoPrint_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "licDoPrint", this);
+	}
+
 	
 	
 

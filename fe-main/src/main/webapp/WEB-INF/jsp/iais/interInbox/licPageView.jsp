@@ -138,6 +138,11 @@
         submit('licDoCease');
     }
 
+    function doLicPrint(){
+        showWaiting();
+        submit('licDoPrint');
+    }
+
     function doLicAction(licNo){
         showWaiting();
         $("[name='crud_action_value']").val(licNo);

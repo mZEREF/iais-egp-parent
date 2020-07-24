@@ -549,6 +549,19 @@ public class InterInboxDelegator {
         }
     }
 
+    public void licDoPrint(BaseProcessClass bpc) throws IOException {
+        String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
+        List<String> licIdValue = IaisCommonUtils.genNewArrayList();
+        for (String item : licIds) {
+            licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
+        }
+        if(!IaisCommonUtils.isEmpty(licIdValue)) {
+            ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
+            return;
+        }
+        return;
+    }
+
     /**
      *
      * @param bpc
