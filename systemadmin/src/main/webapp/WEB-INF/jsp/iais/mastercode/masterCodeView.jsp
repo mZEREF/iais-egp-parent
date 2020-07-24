@@ -69,11 +69,11 @@
         multiWord: false,
         separator: ",",
         getDataMethod: "url",
-        effectiveFields:["codeDescription"],
+        // effectiveFields:["codeDescription"],
         // effectiveFields:["name","ename","departName","jobtitle"],
         // effectiveFieldsAlias:{codeDescription: "codeDescription",ename:"英文名",departName:"部门",jobtitle:"职位"},
-        effectiveFieldsAlias:{codeDescription: "codeDescription"},
-        showHeader: true,
+        // effectiveFieldsAlias:{codeDescription: "codeDescription"},
+        showHeader: false,
         url: '${pageContext.request.contextPath}/suggest-code-description?description=',
         processData: function(json){
             var i, len, data = {value: []};
