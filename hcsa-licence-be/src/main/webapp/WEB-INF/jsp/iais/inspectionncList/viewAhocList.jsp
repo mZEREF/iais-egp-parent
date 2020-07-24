@@ -61,7 +61,7 @@
                 <div>
                     <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
                     <div style="float:right">
-                        <button class="btn btn-primary next" type="button" onclick="javascript:doEditAhoc();">Edit AHocs</button>
+                        <button class="btn btn-primary next" type="button" onclick="javascript:doEditAhoc();">Edit Adhocs</button>
                     </div>
                 </div>
             </div>

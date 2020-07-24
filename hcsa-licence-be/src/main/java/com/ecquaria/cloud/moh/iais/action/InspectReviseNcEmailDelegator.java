@@ -151,8 +151,6 @@ public class InspectReviseNcEmailDelegator {
         //set num
         fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
 
-        //comparative data for sef and check list nc
-        fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
@@ -419,11 +417,8 @@ public class InspectReviseNcEmailDelegator {
         if(cDto!=null&&cDto.getCheckList()!=null&&!cDto.getCheckList().isEmpty()) {
             List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
             for (InspectionCheckQuestionDto temp : checkListDtoList) {
-                String answer = temp.getChkanswer();
-                if (!temp.isNcSelfAnswer()) {
-                    answer = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comrad");
-                    temp.setChkanswer(answer);
-                }
+                String answer = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comrad");
+                temp.setChkanswer(answer);
                 String remark = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comremark");
                 String rectified = ParamUtil.getString(request, temp.getSectionNameShow() + temp.getItemId() + "comrec");
                 temp.setRectified(!StringUtil.isEmpty(rectified) && "No".equals(answer));
@@ -724,11 +719,8 @@ public class InspectReviseNcEmailDelegator {
     }
 
     public void getServiceData(InspectionCheckQuestionDto temp,InspectionFillCheckListDto fdto,HttpServletRequest request){
-        String answer = temp.getChkanswer();
-        if(!temp.isNcSelfAnswer()){
-            answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rad");
-            temp.setChkanswer(answer);
-        }
+        String answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rad");
+        temp.setChkanswer(answer);
         String remark = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"remark");
         String rectified = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rec");
         if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){

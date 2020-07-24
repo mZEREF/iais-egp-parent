@@ -76,7 +76,7 @@
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                                     View CheckList
                                                 </button>
-                                                <button type="button" class="btn btn-primary" onclick="javascript: doListAhoc();">List Ahoc</button>
+                                                <button type="button" class="btn btn-primary" onclick="javascript: doListAhoc();">List Adhoc</button>
                                             </div>
                                             <div align="right">
                                             <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
