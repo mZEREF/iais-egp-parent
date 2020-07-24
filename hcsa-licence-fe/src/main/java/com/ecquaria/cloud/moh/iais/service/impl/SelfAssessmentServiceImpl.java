@@ -336,13 +336,13 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             return Boolean.TRUE;
         }
 
-        boolean submitted = true;
+        boolean submitted = false;
         List<Integer> status = appList.stream()
                 .map(ApplicationDto::getSelfAssMtFlag).collect(Collectors.toList());
 
         for (Integer i : status){
-            if (ApplicationConsts.SUBMITTED_RFI_SELF_ASSESSMENT.equals(i)){
-                submitted = false;
+            if (ApplicationConsts.SUBMITTED_SELF_ASSESSMENT.equals(i)){
+                submitted = true;
                 break;
             }
         }
