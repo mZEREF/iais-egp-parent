@@ -291,6 +291,9 @@ public class BackendInboxDelegator {
      * @throws
      */
     public void doApprove(BaseProcessClass bpc)  throws FeignException, CloneNotSupportedException {
+
+        ParamUtil.setSessionAttr(bpc.request,"BackendInboxApprove",null);
+
         String[] taskList =  ParamUtil.getMaskedStrings(bpc.request, "taskId");
         String action =  ParamUtil.getString(bpc.request, "action");
         String successStatus = "";
@@ -312,6 +315,12 @@ public class BackendInboxDelegator {
                 ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(newCorrelationId);
                 applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
                 ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+                List<String> app = (List<String>)ParamUtil.getSessionAttr(bpc.request,"BackendInboxApprove");
+                if(app == null){
+                    app = IaisCommonUtils.genNewArrayList();
+                }
+                app.add(applicationDto.getApplicationNo());
+                ParamUtil.setSessionAttr(bpc.request,"BackendInboxApprove",(Serializable) app);
                 String status = applicationDto.getStatus();
                 if(("trigger").equals(action)){
                     routeToDMS(bpc,applicationViewDto,taskDto);
@@ -465,8 +474,7 @@ public class BackendInboxDelegator {
         String newCorrelationId = newAppPremisesCorrelationDto.getId();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
-        List<String> applicationDtoIds = IaisCommonUtils.genNewArrayList();
-        applicationDtoIds.add(applicationDto.getApplicationNo());
+        List<String> applicationDtoIds = (List<String>) ParamUtil.getSessionAttr(bpc.request,"BackendInboxApprove");
 
         //judge the final status is Approve or Reject.
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
