@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.api.config.GatewayConfig;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -13,7 +12,19 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
@@ -30,7 +41,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -56,11 +66,15 @@ import sop.util.CopyUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import javax.naming.directory.InvalidAttributeIdentifierException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -411,6 +425,8 @@ public class WithOutRenewalDelegator {
                 //jump page to payment
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE3);
             }
+        }else if(appSubmissionDtos.get(0).getPaymentMethod()!=null&&appSubmissionDtos.get(0).getPaymentMethod().equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)){
+            ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
         }
         log.info("**** the  renwal  prepare  end ******");
     }
@@ -1036,6 +1052,10 @@ public class WithOutRenewalDelegator {
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
             ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal/1/preparatData");
+            RedirectUtil.redirect(url.toString(), bpc.request, bpc.response);
         }
 
     }
