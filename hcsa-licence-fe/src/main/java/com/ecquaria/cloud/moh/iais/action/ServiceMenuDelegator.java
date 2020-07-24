@@ -1145,7 +1145,7 @@ public class ServiceMenuDelegator {
     }
 
     public void showLicensee(BaseProcessClass bpc) {
-        String type = ParamUtil.getRequestString(bpc.request,"switch_action_type");
+        String type = ParamUtil.getRequestString(bpc.request,"crud_action_additional");
         try {
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
