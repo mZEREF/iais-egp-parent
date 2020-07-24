@@ -66,26 +66,37 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
             return  false;
         }
         boolean result = true;
+        log.debug(StringUtil.changeForLog(" isOtherApplicaitonSubmit start ....."));
         Map<String,List<ApplicationDto>> applicationMap = tidyApplicationDto(applicationDtoList);
         if(applicationMap!=null && applicationMap.size()>0){
+            log.debug(StringUtil.changeForLog(" applicationMap.size() is" + applicationMap.size()));
             for (Map.Entry<String,List<ApplicationDto>> entry : applicationMap.entrySet()){
+                log.debug(StringUtil.changeForLog(" entry.getKey() is" + entry.getKey()));
                 String key = entry.getKey();
                 List<ApplicationDto> value = entry.getValue();
                 boolean isExistFlag = false;
                 for (String appNo:appNos
                      ) {
+                    log.debug(StringUtil.changeForLog(" appNo is" + appNo));
+                    log.debug(StringUtil.changeForLog(" key is" + key));
+                    log.debug(StringUtil.changeForLog(" isExistFlag is" + isExistFlag));
                     if(appNo.equals(key)){
                         isExistFlag = true;
                     }
+                    log.debug(StringUtil.changeForLog(" isExistFlag is" + isExistFlag));
                 }
                 if(isExistFlag){
+                    log.debug(StringUtil.changeForLog(" countine ..."));
                     continue;
                 }else if(!containStatus(value,status)){
+                    log.debug(StringUtil.changeForLog("else if containStatus result is false"));
                     result = false;
                     break;
                 }
             }
         }
+        log.debug(StringUtil.changeForLog("result is " + result));
+        log.debug(StringUtil.changeForLog(" isOtherApplicaitonSubmit end ....."));
         return result;
     }
     private boolean containStatus(List<ApplicationDto> applicationDtos,String status){
