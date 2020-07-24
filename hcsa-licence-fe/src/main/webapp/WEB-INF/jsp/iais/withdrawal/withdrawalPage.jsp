@@ -175,9 +175,8 @@
 
     function deleteWdFile() {
         // document.getElementById("withdrawFile").files[0] = null;
-        let wdfile = $("#withdrawFile");
-        wdfile.after(wdfile.clone().val(""));
-        wdfile.remove();
+        let wdfile = $("#selectedFile");
+        wdfile.val("");
         $("#delFile").attr("hidden", "hidden");
     }
 
