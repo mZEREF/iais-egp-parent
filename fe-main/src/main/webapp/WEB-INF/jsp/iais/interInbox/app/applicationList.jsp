@@ -179,6 +179,9 @@
                                                           || app.status == 'APST023'
                                                           || app.status == 'APST024'
                                                           || app.status == 'APST012'
+                                                          || app.status == 'APST004'
+                                                          || app.status == 'APST031'
+                                                          || app.status == 'APST049'
                                                           || app.status == 'APST039'
                                                           || app.status == 'APST011'
                                                           || app.status == 'APST004'}">
