@@ -61,7 +61,7 @@
                 <div class="col-md-12">
                     <span class="col-xs-3 col-md-3"></span>
                     <div class="col-md-9">
-                        <span class="error-msg" style="padding: 0">${LDEM}</span>
+                        <span class="error-msg" style="padding: 0;font-size:1.5rem">${LDEM}</span>
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@
                 <div class="col-md-12">
                     <span class="col-xs-3 col-md-3"></span>
                     <div class="col-md-5">
-                        <span class="error-msg" style="width: 150%;position: absolute;">${LEEM}</span>
+                        <span class="error-msg" style="width: 150%;position: absolute;font-size:1.5rem">${LEEM}</span>
                     </div>
                     <div class="col-md-4">
                         <div class="text-right">
