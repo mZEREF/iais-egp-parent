@@ -19,7 +19,7 @@
                             <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>UserId</th>
+                                <th>User ID</th>
                                 <th>Status</th>
                             </tr>
                             </thead>

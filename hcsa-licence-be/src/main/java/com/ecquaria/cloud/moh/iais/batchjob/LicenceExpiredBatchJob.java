@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.submission.client.App;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,31 +57,26 @@ public class LicenceExpiredBatchJob {
         Date date = new Date();
         String dateStr = DateUtil.formatDate(date, "yyyy-MM-dd");
         String status = ApplicationConsts.LICENCE_STATUS_ACTIVE;
-        // get expired date == today de licence
+        //get expired date + 1 = today de licence
         List<LicenceDto> licenceDtos = hcsaLicenceClient.cessationLicenceDtos(status, dateStr).getEntity();
         List<LicenceDto> licenceDtosForSave = IaisCommonUtils.genNewArrayList();
         List<String> ids = IaisCommonUtils.genNewArrayList();
         if (licenceDtos != null && !licenceDtos.isEmpty()) {
             for (LicenceDto licenceDto : licenceDtos) {
-                try {
-                    String id = licenceDto.getId();
-                    ids.clear();
-                    ids.add(id);
-                    String svcName = licenceDto.getSvcName();
-                    String licenceNo = licenceDto.getLicenceNo();
-                    String licenseeId = licenceDto.getLicenseeId();
-                    //shi fou you qi ta de app zai zuo
-                    Map<String, Boolean> stringBooleanMap = cessationBeService.listResultCeased(ids);
-                    if (stringBooleanMap.get(id)) {
-                        licenceDtosForSave.add(licenceDto);
-                    }
-                    updateLicenceStatus(licenceDtosForSave, date);
-                    cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, id, licenseeId, licenceNo);
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                    continue;
+                //shi fou you qi ta de app zai zuo
+                String licId = licenceDto.getId();
+                ids.add(licId);
+                Map<String, Boolean> stringBooleanMap = cessationBeService.listResultCeased(ids);
+                if (stringBooleanMap.get(licId)) {
+                    licenceDtosForSave.add(licenceDto);
                 }
             }
+            updateLicenceStatus(licenceDtosForSave, date);
+        }
+        //effective Date
+        List<LicenceDto> effectLicDtos = hcsaLicenceClient.getLicByEffDate().getEntity();
+        if (!IaisCommonUtils.isEmpty(effectLicDtos)) {
+            updateLicenceStatusEffect(effectLicDtos, date);
         }
     }
 
@@ -88,36 +84,65 @@ public class LicenceExpiredBatchJob {
         List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
         for (LicenceDto licenceDto : licenceDtos) {
             String licId = licenceDto.getId();
+            String svcName = licenceDto.getSvcName();
+            String licenceNo = licenceDto.getLicenceNo();
+            String licenseeId = licenceDto.getLicenseeId();
             //pan daun shi dou you xin de licence sheng cheng
             LicenceDto newLicDto = hcsaLicenceClient.getLicdtoByOrgId(licId).getEntity();
             if (newLicDto == null) {
-                log.info("===================new is null====================");
                 licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_LAPSED);
             } else {
-                log.info("===================new is not null====================");
-                if(ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(newLicDto.getStatus())){
-                    log.info("===================new is active ====================");
+                if (ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(newLicDto.getStatus())) {
                     licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_EXPIRY);
-                }else {
-                    log.info("===================new is not null but errornew=======================");
+                } else if (ApplicationConsts.LICENCE_STATUS_APPROVED.equals(newLicDto.getStatus())) {
+                    licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_EXPIRY);
+                    newLicDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
+                    updateLicenceDtos.add(newLicDto);
+                } else {
                     licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_LAPSED);
                 }
             }
             licenceDto.setEndDate(date);
             updateLicenceDtos.add(licenceDto);
+            try {
+                cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, licId, licenseeId, licenceNo);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+
         }
-        List<LicenceDto> entity = hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
-        if(!IaisCommonUtils.isEmpty(entity)){
-            for(LicenceDto licenceDto : entity){
-                String status = licenceDto.getStatus();
-                log.info(StringUtil.changeForLog("============="+status+"======================"));
+        hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+    }
+
+    private void updateLicenceStatusEffect(List<LicenceDto> licenceDtos, Date date) {
+        List<LicenceDto> updateLicenceDtos = IaisCommonUtils.genNewArrayList();
+        for (LicenceDto licenceDto : licenceDtos) {
+            String originLicenceId = licenceDto.getOriginLicenceId();
+            LicenceDto interimLicDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
+            interimLicDto.setStatus(ApplicationConsts.LICENCE_STATUS_IACTIVE);
+            interimLicDto.setEndDate(date);
+            licenceDto.setStatus(ApplicationConsts.LICENCE_STATUS_ACTIVE);
+            updateLicenceDtos.add(licenceDto);
+            updateLicenceDtos.add(interimLicDto);
+            //send email
+            String licenceDtoId = licenceDto.getId();
+            String svcName = licenceDto.getSvcName();
+            String licenceNo = licenceDto.getLicenceNo();
+            String licenseeId = licenceDto.getLicenseeId();
+            try {
+                cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, licenceDtoId, licenseeId, licenceNo);
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
             }
         }
-        log.info(StringUtil.changeForLog("==========================update be success======================"));
-            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-            gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
-                    signature2.date(), signature2.authorization());
-        log.info(StringUtil.changeForLog("==========================update fe success======================"));
+        hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
     }
 }

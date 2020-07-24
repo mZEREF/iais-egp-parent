@@ -67,7 +67,7 @@ public class CessationApplicationFeDelegator {
         List<String> licIds = (List<String>)ParamUtil.getSessionAttr(bpc.request, "licIds");
         if(licIds==null){
             licIds = IaisCommonUtils.genNewArrayList();
-            licIds.add("4176FF73-895E-EA11-BE7F-000C29F371DC");
+            licIds.add("E67B9E46-7B96-EA11-BE82-000C29F371DC");
         }
         List<AppCessLicDto> appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
         List<AppSpecifiedLicDto> specLicInfo = cessationFeService.getSpecLicInfo(licIds);

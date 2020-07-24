@@ -45,6 +45,5 @@ public class PrepareCessation {
            }
            applicationClient.updateCessationApplications(applicationDtos).getEntity();
         }
-
     }
 }

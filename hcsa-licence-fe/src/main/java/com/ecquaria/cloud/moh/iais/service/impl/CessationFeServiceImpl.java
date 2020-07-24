@@ -199,9 +199,9 @@ public class CessationFeServiceImpl implements CessationFeService {
                 licenceClient.doUpdate(licenceDto);
             }
         }
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        feEicGatewayClient.updateLicenceStatus(licenceDtos, signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
+//        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+//        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+//        feEicGatewayClient.updateLicenceStatus(licenceDtos, signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
     }
 
     @Override
@@ -419,10 +419,10 @@ public class CessationFeServiceImpl implements CessationFeService {
             if (hciCodes.contains(hciCode)) {
                 applicationDto.setNeedNewLicNo(false);
                 applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_TRANSFER);
-                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN_GENERATED);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE);
             } else {
                 applicationDto.setNeedNewLicNo(true);
-                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN);
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
                 applicationDto.setGroupLicenceFlag(ApplicationConsts.GROUP_LICENCE_FLAG_ORIGIN);
             }
             applicationClient.updateApplicationDto(applicationDto);

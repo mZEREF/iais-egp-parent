@@ -727,7 +727,11 @@ public class MohIntranetUserDelegator {
                 orgUserDtos1.add(orgUserDto);
 
                 OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
-                orgUserUpLoadDto.setUserId(userId);
+                if(StringUtil.isEmpty(userId)){
+                    orgUserUpLoadDto.setUserId("-");
+                }else {
+                    orgUserUpLoadDto.setUserId(userId);
+                }
                 List<String> valiant = valiant(orgUserDto);
                 if (IaisCommonUtils.isEmpty(valiant)) {
                     valiant.add("add success !");
@@ -763,7 +767,6 @@ public class MohIntranetUserDelegator {
         //ele
         List list = root.elements();
         List<OrgUserDto> orgUserDtos1 = IaisCommonUtils.genNewArrayList();
-        List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < list.size(); i++) {
             try {
                 Element element = (Element) list.get(i);
@@ -814,7 +817,6 @@ public class MohIntranetUserDelegator {
                 continue;
             }
         }
-        ParamUtil.setSessionAttr(bpc.request, "orgUserUpLoadDtos", (Serializable) orgUserUpLoadDtos);
         ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", (Serializable) orgUserDtos1);
     }
 
@@ -854,20 +856,20 @@ public class MohIntranetUserDelegator {
         String userId = orgUserDto.getUserId();
         if (!StringUtil.isEmpty(userId)) {
             if (!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")) {
-                String error = "UserId is Alphanumeric.";
+                String error = "User ID is Alphanumeric.";
                 errors.add(error);
             }else{
                 OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
                 if (intranetUserByUserId != null) {
                     String valiuserId = intranetUserByUserId.getUserId();
                     if (userId.equals(valiuserId)) {
-                        String error = "UserId is exist.";
+                        String error = "User ID is exist.";
                         errors.add(error);
                     }
                 }
             }
         } else {
-            String error = "UserId is a mandatory field.";
+            String error = "User ID is a mandatory field.";
             errors.add(error);
         }
         String displayName = orgUserDto.getDisplayName();

@@ -57,6 +57,6 @@ import java.util.Map;
     @PostMapping(value = "/iais-cessation/list-can-ceased",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Map<String,Boolean>> listCanCeased(@RequestBody List<String> licIds);
 
-    @PostMapping(value = "/iais-cessation/prepare-cessation",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-cessation/prepare-cessation",produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> prepareCessation();
 }

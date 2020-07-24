@@ -682,7 +682,7 @@ public class WithOutRenewalDelegator {
                         psnTypesExit.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
                     } else {
                         List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                        psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
+                        psnTypes.add(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
                         idNoPsnTypeMap.put(idNo, psnTypes);
                     }
                 }
@@ -828,7 +828,16 @@ public class WithOutRenewalDelegator {
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);
         rfcAppSubmissionDtos.addAll(noAutoAppSubmissionDtos);
         rfcAppSubmissionDtos.addAll(autoAppSubmissionDtos);
+        List<String> serviceNamesAck = IaisCommonUtils.genNewArrayList();
         for (AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos) {
+            String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
+            String appType = appSubmissionDto.getAppType();
+            if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                serviceName = serviceName + " (Renew)" ;
+            }else {
+                serviceName = serviceName + " (Amendment)" ;
+            }
+            serviceNamesAck.add(serviceName);
             appSubmissionDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
             appSubmissionDto.setAmountStr("$0");
             appSubmissionDto.setAmount(0.0);
@@ -844,6 +853,7 @@ public class WithOutRenewalDelegator {
         /*    ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);*/
         ParamUtil.setSessionAttr(bpc.request, "totalStr", totalStr);
         ParamUtil.setSessionAttr(bpc.request, "totalAmount", total);
+        ParamUtil.setSessionAttr(bpc.request, "serviceNamesAck", (Serializable) serviceNamesAck);
         //has app submit
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", "Y");
     }
