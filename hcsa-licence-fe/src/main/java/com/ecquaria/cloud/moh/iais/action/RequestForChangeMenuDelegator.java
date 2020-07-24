@@ -684,7 +684,7 @@ public class RequestForChangeMenuDelegator {
                     idNos.add(idNo);
                     String name = dto.getName();
                     String idType = dto.getIdType();
-                    SelectOption s = new SelectOption(idType + "," + idNo, name + "," + idNo + "," + idType);
+                    SelectOption s = new SelectOption(idType + "," + idNo, name + "," + idNo + "," +"("+ idType+")");
                     selectOptions.add(s);
                 }
             }
