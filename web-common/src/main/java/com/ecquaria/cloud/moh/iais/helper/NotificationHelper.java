@@ -20,20 +20,22 @@ import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
 
 /**
  * @author: yichen
@@ -70,6 +72,8 @@ public class NotificationHelper {
 	public static final String RECEIPT_ROLE_INSPECTOR_LEAD                      = "EM-INSPECTOR_LEAD";
 
 	@Autowired
+	private Environment env;
+	@Autowired
 	private IaisSystemClient iaisSystemClient;
 	@Autowired
 	private LicenseeClient licenseeClient;
@@ -85,6 +89,14 @@ public class NotificationHelper {
 	private HcsaLicenceClient hcsaLicenceClient;
 	@Value("${iais.current.domain}")
 	private String currentDomain;
+	@Value("${iais.hmac.keyId}")
+	private String keyId;
+	@Value("${iais.hmac.second.keyId}")
+	private String secKeyId;
+	@Value("${iais.hmac.secretKey}")
+	private String secretKey;
+	@Value("${iais.hmac.second.secretKey}")
+	private String secSecretKey;
 
 	private static List<String> licenceEmailString =  Arrays.asList(
 		ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,
@@ -179,7 +191,16 @@ public class NotificationHelper {
 			}
 			//send
 			if (!IaisCommonUtils.isEmpty(emailDto.getReceipts())) {
-				emailSmsClient.sendEmail(emailDto,null);
+				if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)) {
+					String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+					HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+					HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+					IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
+							MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+							signature2.date(), signature2.authorization(), String.class);
+				} else {
+					emailSmsClient.sendEmail(emailDto,null);
+				}
 				if (jrDto != null) {
 					List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 					jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
