@@ -63,29 +63,37 @@ public class SelfAssessmentDelegator {
         String action = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION);
         ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_ACTION, action);
 
+        String groupId;
         try {
-            String groupId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
-            String applicationNumber = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID, groupId);
-            ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER, applicationNumber);
-
-            if (!StringUtils.isEmpty(applicationNumber)){
-                log.info(StringUtil.changeForLog("when self ass rfi , the application number is " + applicationNumber));
-                AppPremisesCorrelationDto correlation = selfAssessmentService.getCorrelationByAppNo(applicationNumber);
-                if (correlation != null){
-                    ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, correlation.getId());
-                }
-            }
+            groupId = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
         }catch (Exception e){
-
-            log.error("====>>>>>>>startStep>>>>>>>>>>");
+            log.error("====>>>>>>>message back receive value >>>>groupId>>>>>>");
             log.error(e.getMessage(), e);
+            groupId = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
         }
 
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID, groupId);
+
+        String applicationNumber;
+        try {
+            applicationNumber = ParamUtil.getMaskedString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
+        }catch (Exception e){
+            log.error("====>>>>>>>message back receive value >>>>applicationNumber>>>>>>");
+            log.error(e.getMessage(), e);
+            applicationNumber = ParamUtil.getString(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
+        }
+
+        ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER, applicationNumber);
+        if (!StringUtils.isEmpty(applicationNumber)){
+            log.info(StringUtil.changeForLog("when self ass rfi , the application number is " + applicationNumber));
+            AppPremisesCorrelationDto correlation = selfAssessmentService.getCorrelationByAppNo(applicationNumber);
+            if (correlation != null){
+                ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID, correlation.getId());
+            }
+        }
 
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         if (!StringUtil.isEmpty(messageId)){
-            inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
             InterMessageDto interMessageDto = appSubmissionService.getInterMessageById(messageId);
             ParamUtil.setSessionAttr(request,"msg_action_id",messageId);
             ParamUtil.setSessionAttr(request,"msg_action_type",interMessageDto.getMessageType());
@@ -224,7 +232,6 @@ public class SelfAssessmentDelegator {
      */
     public void submitAllSelfAssessment(BaseProcessClass bpc) {
         List<SelfAssessment> selfAssessmentList = (List<SelfAssessment>) ParamUtil.getSessionAttr(bpc.request, SelfAssessmentConstant.SELF_ASSESSMENT_QUERY_ATTR);
-
         if (selfAssessmentList != null) {
             HashMap<String, String> errorMap = IaisCommonUtils.genNewHashMap();
             for (int i = 0; i < selfAssessmentList.size(); i++) {
@@ -240,18 +247,19 @@ public class SelfAssessmentDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             } else {
                 String applicationNumber = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
-                boolean retSubmit = selfAssessmentService.saveAllSelfAssessment(selfAssessmentList, applicationNumber).booleanValue();
-                if (retSubmit){
 
-                    log.info(StringUtil.changeForLog("retSubmit flag " + retSubmit));
-
-                    if (StringUtils.isEmpty(applicationNumber)){
+                selfAssessmentService.saveAllSelfAssessment(selfAssessmentList, applicationNumber);
+                    /*if (StringUtils.isEmpty(applicationNumber)){
                         String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
                         selfAssessmentService.changePendingSelfAssMtStatus(groupId, Boolean.TRUE);
                     }else {
                         String corrId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_RFI_CORR_ID);
                         selfAssessmentService.changePendingSelfAssMtStatus(corrId, Boolean.FALSE);
-                    }
+                    }*/
+
+                String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
+                if (!StringUtil.isEmpty(messageId)) {
+                    inspecUserRecUploadService.updateMessageStatus(messageId, MessageConstants.MESSAGE_STATUS_RESPONSE);
                 }
 
                 ParamUtil.setRequestAttr(bpc.request, "ackMsg", MessageUtil.getMessageDesc("ACK025"));

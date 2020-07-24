@@ -41,14 +41,14 @@
           <div class="form-group">
             <iais:field value="Description"  />
             <div class="col-xs-10 col-md-7">
-              <textarea cols="70" rows="7" name="description" disabled="disabled" id="description"><c:out value="${msgRequestDto.description}"></c:out></textarea>
+              <textarea cols="70" rows="7" name="description" maxlength="255" disabled="disabled" id="description"><c:out value="${msgRequestDto.description}"></c:out></textarea>
             </div>
           </div>
 
           <div class="form-group">
             <iais:field value="Message"  />
             <div class="col-xs-5 col-md-7">
-              <textarea cols="70" rows="7" name="message" disabled="disabled" id="message"><c:out value="${msgRequestDto.message}"></c:out></textarea>
+              <textarea cols="70" rows="7" name="message" maxlength="255" disabled="disabled" id="message"><c:out value="${msgRequestDto.message}"></c:out></textarea>
             </div>
           </div>
 

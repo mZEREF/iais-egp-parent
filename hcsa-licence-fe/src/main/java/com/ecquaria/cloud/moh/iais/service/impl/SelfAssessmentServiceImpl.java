@@ -277,12 +277,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     }
 
     @Override
-    public Boolean saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList, String applicationNumber) {
-        boolean retSubmit = false;
+    public void saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList, String applicationNumber) {
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
-            retSubmit = true;
-
            try {
                List<String> sendEmailAddress = selfAssessmentList.stream().map(SelfAssessment::getCorrId).collect(Collectors.toList());
                 sendNotificationToInspector(sendEmailAddress);
@@ -319,7 +316,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             }
         }
 
-        return retSubmit;
     }
 
     @Override
