@@ -731,7 +731,12 @@ public class NewApplicationHelper {
                                 log.info(StringUtil.changeForLog("set chkName ..."));
                                 appSvcDisciplineAllocationDto = allocation;
                                 //set chkName
-                                appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
+                                String chkName = appSvcChckListDto.getChkName();
+                                if("Please indicate".equals(chkName)){
+                                    appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getOtherScopeName());
+                                }else{
+                                    appSvcDisciplineAllocationDto.setChkLstName(chkName);
+                                }
                                 //set selCgoName
                                 String idNo = allocation.getIdNo();
                                 if(!IaisCommonUtils.isEmpty(appSvcCgoDtoList) && !StringUtil.isEmpty(idNo)){
