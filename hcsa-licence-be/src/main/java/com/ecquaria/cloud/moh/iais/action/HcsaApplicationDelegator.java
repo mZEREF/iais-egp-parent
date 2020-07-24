@@ -368,6 +368,7 @@ public class HcsaApplicationDelegator {
                 }
             }else if(("reject").equals(recommendationStr)){
                 AppPremisesRecommendationDto appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.REJECTED);
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomInNumber(0);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
@@ -388,6 +389,7 @@ public class HcsaApplicationDelegator {
                 AppPremisesRecommendationDto appPremisesRecommendationDto=new AppPremisesRecommendationDto();
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
+                appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
                 if(isAppealType){
                     appPremisesRecommendationDto.setRecomDecision("approve");
                 }
