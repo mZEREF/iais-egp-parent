@@ -456,6 +456,43 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
+    public void updateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto, String recomType) {
+        String recommendation = appPremisesRecommendationDto.getRecommendation();
+        //update old data
+        String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
+        AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, recomType).getEntity();
+        if (oldAppPremisesRecommendationDto != null) {
+            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+            if (APPROVAL.equals(recommendation)) {
+                oldAppPremisesRecommendationDto.setId(null);
+                oldAppPremisesRecommendationDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
+                oldAppPremisesRecommendationDto.setVersion(oldAppPremisesRecommendationDto.getVersion() + 1);
+                oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+                return;
+            } else if (REJECT.equals(recommendation)) {
+                oldAppPremisesRecommendationDto.setId(null);
+                oldAppPremisesRecommendationDto.setRecomDecision(appPremisesRecommendationDto.getRecomDecision());
+                oldAppPremisesRecommendationDto.setVersion(oldAppPremisesRecommendationDto.getVersion() + 1);
+                oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+                return;
+            } else {
+                appPremisesRecommendationDto.setRemarks(oldAppPremisesRecommendationDto.getRemarks());
+                appPremisesRecommendationDto.setVersion(oldAppPremisesRecommendationDto.getVersion() + 1);
+                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                insRepClient.saveRecommendationData(appPremisesRecommendationDto);
+                return;
+            }
+        } else {
+            appPremisesRecommendationDto.setVersion(1);
+            saveRecommendation(appPremisesRecommendationDto);
+            return;
+        }
+    }
+
+    @Override
     public List<SelectOption> getRiskOption(ApplicationViewDto applicationViewDto) {
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
         List<String> list = IaisCommonUtils.genNewArrayList();
