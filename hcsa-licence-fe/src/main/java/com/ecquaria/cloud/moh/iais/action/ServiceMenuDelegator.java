@@ -1144,7 +1144,8 @@ public class ServiceMenuDelegator {
         log.debug(StringUtil.changeForLog("the doBeforStart end ...."));
     }
 
-    public void showLicensee(BaseProcessClass bpc,String type) {
+    public void showLicensee(BaseProcessClass bpc) {
+        String type = ParamUtil.getRequestString(bpc.request,"switch_action_type");
         try {
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())

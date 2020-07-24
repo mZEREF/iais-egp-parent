@@ -101,7 +101,7 @@
   }
 
   $(".license-view").click(function () {
-      $("input[name='switch_action_type']").val("Licensee");
+      $("input[name='switch_action_type']").val("showlicense");
       $("#mainForm").submit();
   });
 

@@ -1093,13 +1093,18 @@ public class HalpAssessmentGuideDelegator {
     }
 
 
-    public void showLicensee(BaseProcessClass bpc,String type) {
+    public void showLicensee(BaseProcessClass bpc) {
+        String actionType = "";
+        String type = ParamUtil.getRequestString(bpc.request,"switch_action_type");
+        if ("showlicense".equals(type)){
+            actionType = "Licensee";
+        }
         try {
             StringBuilder url = new StringBuilder();
             url.append("https://")
                     .append(bpc.request.getServerName())
                     .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail")
-                    .append("?licenseView=").append(type);
+                    .append("?licenseView=").append(actionType);
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }catch (Exception e){
