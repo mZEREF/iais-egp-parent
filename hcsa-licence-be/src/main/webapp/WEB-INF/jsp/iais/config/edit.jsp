@@ -407,22 +407,30 @@
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
           <table border="1px" style="text-align: center" >
             <tr>
-              <th style="width: 10% ;height: 40px;text-align: center;padding: 1% 0% 1% "> application type<span class="mandatory" >*</span></th>
+              <th style="width: 10% ;height: 40px;text-align: center;padding: 1% 0% 1% "> Application Type<span class="mandatory" >*</span></th>
               <th  style="width: 20% ;height: 40px;text-align: center"> Service Workflow Routing Stages<span class="mandatory" >*</span></th>
               <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
               <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
-              <th  style="width: 25% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
+              <th  style="width: 25% ;height: 40px;text-align: center">Working Group<span class="mandatory">*</span></th>
             </tr>
             <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
               <tr >
                 <td >${routingStage.appTypeName}</td>
                 <td >${routingStage.stageName}</td>
                 <td >
+                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
+                    <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
+                      <option value="">Please Select</option>
+                      <option value="mandatory" selected="selected">Mandatory</option>
+                      <option value="optional">Optional</option>
+                    </select>
+                  </div>
+
                   <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%" >
                     <input type="text" name="stageId${routingStage.stageCode}${routingStages.key}" value="${routingStage.routingSchemeId}" style="display:none;">
 
                     <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"   >
-                      <option value="">Select one</option>
+                      <option value="">Please Select</option>
                       <option value="common"
                               <c:if test="${routingStage.routingSchemeName=='common'}">selected="selected" </c:if>
                       >Common Pool</option>
@@ -435,14 +443,7 @@
                     </select>
                     <span name="iaisErrorMsg" class="error-msg" id="error_schemeType${sta.index*6+status.index}"></span>
                   </div>
-                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
-                    <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
-                      <option value="">Select one</option>
-                      <option value="mandatory" selected="selected">Mandatory</option>
-                      <option value="optional">Optional</option>
-                    </select>
 
-                  </div>
                 </td>
 
                 <td>
@@ -456,7 +457,7 @@
                   <div class="col-xs-12 col-md-12">
                     <input name="workstageId${routingStage.stageCode}${routingStages.key}" type="text" style="display: none" value="${routingStage.workStageId}">
                     <select name="workingGroup${routingStage.stageCode}${routingStages.key}">
-                      <option value="">Select one</option>
+                      <option value="">Please Select</option>
                       <c:forEach items="${routingStage.workingGroup}" var="workingGroup">
                         <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if> value="${workingGroup.id}">${workingGroup.groupName}</option>
                       </c:forEach>
@@ -479,10 +480,10 @@
         <div class="col-xs-12 col-md-6" style="margin-top: 20px ;margin-bottom: 20px">
           <label class="col-xs-12 col-md-8 control-label" >Service Sub-Types</label>
           <div class="col-xs-12 col-md-7">
-            <label>Page name</label>
+            <label>Page Name</label>
           </div >
           <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed"></span>
-          <div  class="col-xs-12 col-md-5"><input  type="text" maxlength="100" value="Laboratory Disciplines" ></div>
+          <div  class="col-xs-12 col-md-5"><input  type="text" maxlength="100" value="" ></div>
 
           <div class="form-group"  id="add">
             <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
@@ -542,7 +543,7 @@
       </c:forEach>
 
           <div class="col-xs-12 col-md-6">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add as item</label>
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add as Item</label>
           </div>
         </div>
 

@@ -288,6 +288,10 @@
         </div>
       </div>
 
+      <div class="Numberfields">
+
+      </div>
+
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info field to be captured<span class="mandatory">*</span></label>
@@ -426,28 +430,34 @@
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
       <table border="1px" style="text-align: center" >
         <tr>
-          <th style="width: 10% ;height: 40px;text-align: center">application type<span class="mandatory" >*</span></th>
+          <th style="width: 10% ;height: 40px;text-align: center">Application Type<span class="mandatory" >*</span></th>
           <th  style="width: 20% ;height: 40px;text-align: center">Service Workflow Routing Stages<span class="mandatory" >*</span></th>
           <th  style="width:30% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
           <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
-          <th  style="width: 25% ;height: 40px;text-align: center">working group<span class="mandatory">*</span></th>
+          <th  style="width: 25% ;height: 40px;text-align: center">Working Group<span class="mandatory">*</span></th>
         </tr>
         <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
       <tr>
         <td >${routingStage.appTypeName} </td>
         <td >${routingStage.stageName}</td>
         <td>
+
+          <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
+            <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
+              <option value="">Please Select</option>
+              <option value="mandatory" selected="selected">Mandatory</option>
+              <option value="optional">Optional</option>
+            </select>
+          </div>
+
           <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
             <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"  >
-              <option value="" >Select one</option>
+              <option value="" >Please Select</option>
               <option value="common"
                       <c:choose>
                         <c:when test="${routingStage.routingSchemeName=='common'}">
                           selected="selected"
                         </c:when>
-                        <c:otherwise>
-                          <c:if test="${routingStage.stageCode=='PSO'}">selected="selected" </c:if>
-                        </c:otherwise>
                       </c:choose>
               >Common Pool</option>
               <option value="assign"
@@ -458,22 +468,13 @@
                         <c:when test="${routingStage.routingSchemeName=='round'}">
                           selected="selected"
                         </c:when>
-                        <c:otherwise>
-                          <c:if test="${routingStage.stageCode=='ASO'||routingStage.stageCode=='AO1'||routingStage.stageCode=='AO2'||routingStage.stageCode=='AO3'}">selected="selected"  </c:if>
-                        </c:otherwise>
                       </c:choose>
 
               >Round Robin</option>
            </select>
             <span name="iaisErrorMsg" class="error-msg" id="error_schemeType${sta.index*6+status.index}"></span>
           </div>
-          <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
-            <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
-              <option value="">Select one</option>
-              <option value="mandatory" selected="selected">Mandatory</option>
-              <option value="optional">Optional</option>
-            </select>
-          </div>
+
         </td>
         <td>
           <div class="col-xs-12 col-md-12">
@@ -486,7 +487,7 @@
           <div class="col-xs-12 col-md-12">
 
             <select name="workingGroup${routingStage.stageCode}${routingStages.key}">
-              <option value="">Select one</option><c:forEach items="${routingStage.workingGroup}" var="workingGroup">
+              <option value="">Please Select</option><c:forEach items="${routingStage.workingGroup}" var="workingGroup">
               <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if>value="${workingGroup.id}">${workingGroup.groupName}</option>
             </c:forEach>
             </select>
@@ -508,9 +509,9 @@
           <label class="col-xs-12 col-md-8 control-label" >Service Sub-Types</label>
 
           <div class="col-xs-12 col-md-7">
-            <label>Page name</label>
+            <label>Page Name</label>
           </div >
-          <div  class="col-xs-12 col-md-5"><input  type="text" maxlength="100" value="Laboratory Disciplines" ></div>
+          <div  class="col-xs-12 col-md-5"><input  type="text" maxlength="100" value="" ></div>
           <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed"></span>
           <div class="form-group"  id="add">
             <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
@@ -571,7 +572,7 @@
           </c:forEach>
 
           <div class="col-xs-12 col-md-6">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add as item</label>
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add as Item</label>
           </div>
         </div>
 
@@ -931,6 +932,29 @@
 
     });
 
+    $('#Numberfields').change(function () {
+        let val = $('#Numberfields').val();
+        let number = parseInt(val);
+        let jQuery = $(this).closest("div.form-group").next(".Numberfields").children();
+        alert(parseInt(jQuery.length));
+        alert(number);
+        if(number-parseInt(jQuery.length)>0){
+            for(var i=0;i<number-jQuery;i++){
+                $(this).closest("div.form-group").next(".Numberfields").append(" <div class=\"form-group\">\n" +
+                    "        <div class=\"col-xs-12 col-md-8\">\n" +
+                    "          <label class=\"col-xs-12 col-md-6 control-label\" for=\"DescriptionGeneral\">Name of Info Field</label>\n" +
+                    "          <div class=\"col-xs-12 col-md-4\">\n" +
+                    "            <input  type=\"text\" name=\"\" maxlength=\"255\" value=\"\">\n" +
+                    "          </div>\n" +
+                    "          <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">   <input class=\"form-check-input\"  type=\"checkbox\" name=\"POMandatory\" aria-invalid=\"false\">\n" +
+                    "            <label class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
+                    "          </div>\n" +
+                    "        </div>\n" +
+                    "      </div>");
+            }
+        }
+
+    });
 
 </script>
 </>

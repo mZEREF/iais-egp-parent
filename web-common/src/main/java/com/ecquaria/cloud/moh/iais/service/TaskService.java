@@ -92,4 +92,5 @@ public interface TaskService {
      * @return: java.util.List<com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto>
      */
     List<TaskDto> getTaskDtoByDate(String date);
+    List<TaskDto> getTaskbyApplicationNo(String applicationNo);
 }

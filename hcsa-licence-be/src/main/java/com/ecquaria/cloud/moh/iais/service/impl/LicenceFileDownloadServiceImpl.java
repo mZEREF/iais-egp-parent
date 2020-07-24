@@ -485,13 +485,16 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             every.setAuditTrailDto(intranet);
         }
         applicationListDto.setAuditTrailDto(intranet);
-        requeOrNew(requestForInfList,applicationGroup,application);
+        List<ApplicationDto> updateTaskList=IaisCommonUtils.genNewArrayList();
+        requeOrNew(requestForInfList,applicationGroup,application,updateTaskList);
         update(listApplicationDto,applicationGroup,application);
         log.info(StringUtil.changeForLog(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size()));
         log.info(StringUtil.changeForLog(requestForInfList.toString()+"requestForInfList size" +requestForInfList .size()));
+        log.info(StringUtil.changeForLog(requestForInfList.toString()+"updateTaskList size" +updateTaskList .size()));
         ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
+        applicationNewAndRequstDto.setUpdateTaskList(updateTaskList);
         applicationListDto.setApplicationNewAndRequstDto(applicationNewAndRequstDto);
         processFileTrackDto.setStatus("PFT003");
         applicationListDto.setProcessFileTrackDto(processFileTrackDto);
@@ -747,7 +750,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
 
 
-    private void requeOrNew(List<ApplicationDto> requestForInforList, List<ApplicationGroupDto> applicationGroup,List<ApplicationDto> dtoList) {
+    private void requeOrNew(List<ApplicationDto> requestForInforList, List<ApplicationGroupDto> applicationGroup,List<ApplicationDto> dtoList,List<ApplicationDto> updateTaskList) {
 
         Map<String,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
         for (ApplicationGroupDto applicationGroupDto : applicationGroup) {
@@ -759,7 +762,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             map.put(applicationGroupDto.getId(),list);
         }
-        List<ApplicationDto>  updateTaskList=IaisCommonUtils.genNewArrayList();
+
         map.forEach((k,v)->{
             boolean flag=false;
             for(ApplicationDto application :v){
@@ -877,15 +880,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             return;
         }
         for(ApplicationDto applicationDto : updateTaskList){
-            AppPremisesCorrelationDto entity = applicationClient.getAppPremCorrByAppNo(applicationDto.getApplicationNo()).getEntity();
-            List<TaskDto> taskDtos = organizationClient.getTasksByRefNo(entity.getId()).getEntity();
-            for (TaskDto taskDto : taskDtos){
-
-
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
+            List<TaskDto> taskbyApplicationNo = taskService.getTaskbyApplicationNo(applicationDto.getApplicationNo());
+            for(TaskDto taskDto : taskbyApplicationNo){
+                for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
+                    taskDto.setRefNo(appPremisesCorrelationDto.getId());
+                }
             }
+            taskService.createTasks(taskbyApplicationNo);
         }
-
     }
-
-
 }

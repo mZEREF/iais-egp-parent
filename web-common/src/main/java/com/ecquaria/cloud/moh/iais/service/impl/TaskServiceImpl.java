@@ -304,6 +304,12 @@ public class TaskServiceImpl implements TaskService {
         return taskOrganizationClient.getTaskDtoByDate(date).getEntity();
     }
 
+    @Override
+    public List<TaskDto> getTaskbyApplicationNo(String applicationNo) {
+
+        return  taskOrganizationClient.getTaskbyApplicationNo(applicationNo).getEntity();
+    }
+
 
     @Override
     public List<TaskEmailDto> getEmailNotifyList(){

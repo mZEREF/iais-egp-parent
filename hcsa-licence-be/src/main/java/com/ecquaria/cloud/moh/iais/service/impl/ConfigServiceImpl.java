@@ -889,21 +889,21 @@ public class ConfigServiceImpl implements ConfigService {
             List<HcsaConfigPageDto> hcsaConfigPageDto = hcsaConfigPageDtos.get(type);
             List<HcsaConfigPageDto> appeal=IaisCommonUtils.genNewArrayList();
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
-                appeal= getWorkGrop(type,"appeal");
+                appeal= getWorkGrop(type,"Appeal");
             }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
-                appeal=  getWorkGrop(type,"new application");
+                appeal=  getWorkGrop(type,"New Application");
             }else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)){
-               appeal = getWorkGrop(type, "request for change");
+               appeal = getWorkGrop(type, "Request For Change");
             }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
-                appeal=  getWorkGrop(type,"renew");
+                appeal=  getWorkGrop(type,"Renew");
             }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
-                appeal= getWorkGrop(type,"cessation");
+                appeal= getWorkGrop(type,"Cessation");
             }else  if("APTY007".equals(type)){
-                appeal= getWorkGrop(type,"suspension");
+                appeal= getWorkGrop(type,"Suspension");
             }else if(ApplicationConsts.APPLICATION_TYPE_REINSTATEMENT.equals(type)){
-                appeal= getWorkGrop(type,"revocation");
+                appeal= getWorkGrop(type,"Revocation");
             }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
-                appeal= getWorkGrop(type,"withdrawal");
+                appeal= getWorkGrop(type,"Withdrawal");
             }
             setValueOfhcsaConfigPageDtos(hcsaConfigPageDto,appeal);
             map.put(type,appeal);
@@ -1040,19 +1040,19 @@ public class ConfigServiceImpl implements ConfigService {
     private void sendHcsaConfigPageDtoTypeName(HcsaConfigPageDto hcsaConfigPageDto,String type){
         hcsaConfigPageDto.setAppType(type);
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("new Application");
+            hcsaConfigPageDto.setAppTypeName("New Application");
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("appeal");
+            hcsaConfigPageDto.setAppTypeName("Appeal");
         } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(type)) {
-            hcsaConfigPageDto.setAppTypeName("request for change");
+            hcsaConfigPageDto.setAppTypeName("Request For Change");
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("renew");
+            hcsaConfigPageDto.setAppTypeName("Renew");
         }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("cessation");
+            hcsaConfigPageDto.setAppTypeName("Cessation");
         }else  if("APTY007".equals(type)){
-            hcsaConfigPageDto.setAppTypeName("suspension");
+            hcsaConfigPageDto.setAppTypeName("Suspension");
         }else if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(type)){
-            hcsaConfigPageDto.setAppTypeName("withdrawal");
+            hcsaConfigPageDto.setAppTypeName("Withdrawal");
         }
 
     }
