@@ -382,10 +382,10 @@ public class InboxServiceImpl implements InboxService {
     public Map<String, String> checkRfcStatus(String licenceId) {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
-        List<String> endStatusList = IaisCommonUtils.getAppPendingStatus();
+        List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
         if(!IaisCommonUtils.isEmpty(apps)){
             for(ApplicationDto applicationDto:apps){
-                if(!endStatusList.contains(applicationDto.getStatus())){
+                if(!finalStatusList.contains(applicationDto.getStatus())){
                     errorMap.put("errorMessage","There is already a pending application for this licence");
                     break;
                 }
@@ -406,7 +406,7 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public Map<String, String> appealIsApprove(String licenceId, String type) {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-        List<String> endStatusList = IaisCommonUtils.getAppPendingStatus();
+        List<String> endStatusList = IaisCommonUtils.getAppFinalStatus();
         endStatusList.add("APST005");
         if("licence".equals(type)){
             List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
