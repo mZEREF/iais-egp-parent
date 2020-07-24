@@ -102,16 +102,19 @@
 
   $(".license-view").click(function () {
       $("input[name='switch_action_type']").val("showlicense");
+      $("input[name='crud_action_additional']").val("Licensee");
       $("#mainForm").submit();
   });
 
   $(".authorise-view").click(function () {
-    $("input[name='switch_action_type']").val("Authorised");
-    $("#mainForm").submit();
+      $("input[name='switch_action_type']").val("showlicense");
+      $("input[name='crud_action_additional']").val("Authorised");
+      $("#mainForm").submit();
   });
 
   $(".medAlert-view").click(function () {
-    $("input[name='switch_action_type']").val("MedAlert");
-    $("#mainForm").submit();
+      $("input[name='switch_action_type']").val("showlicense");
+      $("input[name='crud_action_additional']").val("MedAlert");
+      $("#mainForm").submit();
   });
 </script>
