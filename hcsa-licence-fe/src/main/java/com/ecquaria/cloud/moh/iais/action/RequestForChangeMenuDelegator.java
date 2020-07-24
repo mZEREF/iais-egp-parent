@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
+import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -62,21 +64,21 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.util.CopyUtil;
+import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.util.CopyUtil;
-import sop.webflow.rt.api.BaseProcessClass;
 
 import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESSAGE;
 
@@ -1301,16 +1303,16 @@ public class RequestForChangeMenuDelegator {
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-            String backUrl = "hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment";
-            StringBuilder url = new StringBuilder(10);
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/payment-web/eservice/INTERNET/PaymentRequest")
-                    .append("?amount=").append(MaskUtil.maskValue("amount", String.valueOf(appSubmissionDtos.get(0).getAmount())))
-                    .append("&payMethod=").append(MaskUtil.maskValue("payMethod", payMethod))
-                    .append("&reqNo=").append(MaskUtil.maskValue("reqNo", appSubmissionDtos.get(0).getAppGrpNo()))
-                    .append("&backUrl=").append(MaskUtil.maskValue("backUrl", backUrl));
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+            Map<String, String> fieldMap = new HashMap<String, String>();
+            fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(appSubmissionDtos.get(0).getAmount()));
+            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
+            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo());
+            try {
+                String html= GatewayAPI.create_partner_trade_by_buyer(fieldMap,bpc.request, "hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment");
+                ParamUtil.setRequestAttr(bpc.request,"jumpHtml",html);
+            } catch (Exception e) {
+                log.info(e.getMessage(),e);
+            }
             return;
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
             String appGrpId = appSubmissionDtos.get(0).getAppGrpId();

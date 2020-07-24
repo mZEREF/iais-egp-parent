@@ -154,6 +154,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="bank" stageIndicator="" x="660" y="370">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -208,8 +214,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/back" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(910,150)(720,70)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="oblique">
-   <position>{(580,400)(730,240)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/bank" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="oblique">
+   <position>{(580,400)(705,420)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doRequestForInformationSubmit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(910,150)(990,330)}</position>
@@ -258,6 +264,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/dashboard" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ack" style="oblique">
    <position>{(1020,-110)(1130,0)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/ControlSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/bank" style="oblique">
+   <position>{(705,420)(730,240)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

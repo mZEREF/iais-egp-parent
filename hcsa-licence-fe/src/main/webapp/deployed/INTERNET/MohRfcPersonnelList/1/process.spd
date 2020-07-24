@@ -105,6 +105,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="bank" stageIndicator="" x="940" y="290">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -168,11 +174,14 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/jumpBank" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/payment" style="rectanular">
    <position>{(810,440)(810,310)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="rectanular">
-   <position>{(810,310)(810,220)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/bank" style="rectanular">
+   <position>{(985,340)(810,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/dash" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ack" style="rectanular">
    <position>{(810,220)(940,220)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/bank" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="oblique">
+   <position>{(810,310)(985,340)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

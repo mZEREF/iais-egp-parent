@@ -286,7 +286,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 log.error(e.getMessage(), e);
                 complianceHistoryDto.setInspectionDate("-");
             }
-            if ((appPremisesRecommendationDto != null) && ImmutableSet.of(InspectionReportConstants.APPROVED, InspectionReportConstants.APPROVEDLTC, InspectionReportConstants.RFC_APPROVED, InspectionReportConstants.REJECTED, InspectionReportConstants.RFC_REJECTED).contains(appPremisesRecommendationDto.getRecomDecision())) {
+            if ((appPremisesRecommendationDto != null) && ImmutableSet.of(InspectionReportConstants.APPROVED).contains(appPremisesRecommendationDto.getRecomDecision())) {
                 complianceHistoryDtos.add(complianceHistoryDto);
             }
         }
