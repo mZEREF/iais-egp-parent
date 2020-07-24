@@ -75,7 +75,7 @@ public class FECorppassLandingDelegator {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
         AuditTrailHelper.auditFunction("FE Corppass", "Login");
-
+        log.info("corppassCallBack===========>>>Start");
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
         String uen = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
         String nric =  ParamUtil.getRequestString(request, UserConstants.CORPPASS_ID);
@@ -96,6 +96,8 @@ public class FECorppassLandingDelegator {
         }else {
             ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "Y");
         }
+
+        log.info("corppassCallBack===========>>>End");
     }
 
 
@@ -133,6 +135,8 @@ public class FECorppassLandingDelegator {
         String uen = ParamUtil.getRequestString(bpc.request, UserConstants.ENTITY_ID);
         String nric =  ParamUtil.getRequestString(bpc.request, UserConstants.CORPPASS_ID);
 
+        log.info("corppassCallBack=====loginUser======>>>Start");
+
         FeUserDto feUserDto =  orgUserManageService.getUserByNricAndUen(uen, nric);
         if (feUserDto != null){
             User user = new User();
@@ -159,6 +163,8 @@ public class FECorppassLandingDelegator {
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0012"));
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "N");
         }
+
+        log.info("corppassCallBack=====loginUser======>>>End");
     }
 
     /**
@@ -171,6 +177,7 @@ public class FECorppassLandingDelegator {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
 
+        log.info("initCorppassUserInfo===========>>>Start");
         String name = ParamUtil.getString(request, UserConstants.NAME);
         String salutation = ParamUtil.getString(request, UserConstants.SALUTATION);
         String designation = ParamUtil.getString(request, UserConstants.DESIGNATION);
@@ -217,6 +224,8 @@ public class FECorppassLandingDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
         }
+
+        log.info("initCorppassUserInfo===========>>>End");
 
     }
 

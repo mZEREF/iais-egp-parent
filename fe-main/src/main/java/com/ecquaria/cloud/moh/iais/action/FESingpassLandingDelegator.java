@@ -17,14 +17,15 @@ import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 @Delegator(value = "singpassLandingDelegator")
 @Slf4j
@@ -51,6 +52,8 @@ public class FESingpassLandingDelegator {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
         FeUserDto feUserDto = (FeUserDto) ParamUtil.getSessionAttr(request, UserConstants.SESSION_USER_DTO);
+
+        log.info("initLoginInfo===========>>>Start");
         if (feUserDto != null){
             User user = new User();
             user.setDisplayName(feUserDto.getDisplayName());
@@ -58,6 +61,7 @@ public class FESingpassLandingDelegator {
             user.setId(feUserDto.getUserId());
             LoginHelper.initUserInfo(request, response, user);
         }
+        log.info("initLoginInfo===========>>>End");
     }
 
 
@@ -70,6 +74,8 @@ public class FESingpassLandingDelegator {
     public void singpassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
+
+        log.info("singpassCallBack===========>>>Start");
         AuditTrailHelper.auditFunction("FE Landing Singpass", "Login");
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
         String nric = ParamUtil.getString(request, UserConstants.ENTITY_ID);
@@ -81,6 +87,8 @@ public class FESingpassLandingDelegator {
         }else {
             ParamUtil.setRequestAttr(request, "hasMohIssueUen", IaisEGPConstant.NO);
         }
+
+        log.info("singpassCallBack===========>>>End");
     }
 
     /**
@@ -93,6 +101,7 @@ public class FESingpassLandingDelegator {
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
         String nric = ParamUtil.getString(request, UserConstants.ENTITY_ID);
+        log.info("receiveUserInfo===========>>>Start");
         FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNric(nric);
 
         if (feUserDto != null){
@@ -104,7 +113,7 @@ public class FESingpassLandingDelegator {
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request, "isFirstLogin", IaisEGPConstant.YES);
         }
-
+        log.info("receiveUserInfo===========>>>End");
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, feUserDto);
     }
 
@@ -117,7 +126,7 @@ public class FESingpassLandingDelegator {
     public void initSingpassInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
-
+        log.info("initSingpassInfo===========>>>Start");
         String name = ParamUtil.getString(request, UserConstants.NAME);
         String salutation = ParamUtil.getString(request, UserConstants.SALUTATION);
         String designation = ParamUtil.getString(request, UserConstants.DESIGNATION);
@@ -165,6 +174,8 @@ public class FESingpassLandingDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }
         }
+
+        log.info("initSingpassInfo===========>>>End");
     }
 
 
