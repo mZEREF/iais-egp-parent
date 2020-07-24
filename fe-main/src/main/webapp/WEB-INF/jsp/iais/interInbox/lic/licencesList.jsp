@@ -238,7 +238,7 @@
                     </div>
                 </div>
                 <!--Modal End-->
-                <div class="row">
+                <div class="row" style="padding-bottom: 9%">
                     <div class="col-md-12">
                         <div class="col-md-12 text-right">
                             <a class="btn btn-primary disabled" href="#" id="lic-renew">Renew</a>
