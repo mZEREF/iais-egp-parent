@@ -3,10 +3,8 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
@@ -113,6 +111,25 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public void removeRole(List<String> ids) {
         intranetUserClient.removeRole(ids);
+    }
+
+    @Override
+    public void removeEgpRoles(String userDomain, String userId, List<String> roleIds) {
+        if(!IaisCommonUtils.isEmpty(roleIds)){
+          for(String roleId : roleIds){
+              egpUserClient.deleteUerRoleIds(userDomain,userId,roleId);
+          }
+        }
+    }
+
+    @Override
+    public String createEgpRoles(List<EgpUserRoleDto> egpUserRoleDtos) {
+        if(!IaisCommonUtils.isEmpty(egpUserRoleDtos)){
+            for(EgpUserRoleDto egpUserRoleDto :egpUserRoleDtos){
+                egpUserClient.createUerRoleIds(egpUserRoleDto).getEntity();
+            }
+        }
+        return null;
     }
 
     @Override

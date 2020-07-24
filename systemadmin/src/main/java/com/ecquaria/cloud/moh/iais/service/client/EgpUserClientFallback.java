@@ -1,9 +1,12 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 import sop.rbac.user.UserIdentifier;
+
+import java.util.List;
 
 /**
  * @author weilu
@@ -44,6 +47,22 @@ public class EgpUserClientFallback implements EgpUserClient {
 
     @Override
     public FeignResponseEntity<Boolean> validatepassword(String var1, UserIdentifier var2) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Boolean> deleteUerRoleIds(String var1, String var2, String var3) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<String> createUerRoleIds(EgpUserRoleDto var1) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

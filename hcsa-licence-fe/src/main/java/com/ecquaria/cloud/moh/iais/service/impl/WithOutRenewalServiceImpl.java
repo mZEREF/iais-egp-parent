@@ -209,11 +209,37 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     @Override
     public boolean isEditDoc(AppSubmissionDto newAppSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
 
+        List<String> newFileReportIds = IaisCommonUtils.genNewArrayList();
+        List<String> oldFileReportIds = IaisCommonUtils.genNewArrayList();
         List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtos = newAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppSvcDocDto> NewAppSvcDocDtoLit = newAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
 
         List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppSvcDocDto> oldAppSvcDocDtoLit = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
+        if(!IaisCommonUtils.isEmpty(newAppGrpPrimaryDocDtos)){
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto :newAppGrpPrimaryDocDtos){
+                String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
+                newFileReportIds.add(fileRepoId);
+            }
+        }
+        if(!IaisCommonUtils.isEmpty(oldAppGrpPrimaryDocDtos)){
+            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto :oldAppGrpPrimaryDocDtos){
+                String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
+                oldFileReportIds.add(fileRepoId);
+            }
+        }
+        if(!IaisCommonUtils.isEmpty(NewAppSvcDocDtoLit)){
+            for(AppSvcDocDto appSvcDocDto :NewAppSvcDocDtoLit){
+                String fileRepoId = appSvcDocDto.getFileRepoId();
+                newFileReportIds.add(fileRepoId);
+            }
+        }
+        if(!IaisCommonUtils.isEmpty(oldAppSvcDocDtoLit)){
+            for(AppSvcDocDto appSvcDocDto :oldAppSvcDocDtoLit){
+                String fileRepoId = appSvcDocDto.getFileRepoId();
+                oldFileReportIds.add(fileRepoId);
+            }
+        }
 
         if (!IaisCommonUtils.isEmpty(newAppGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(oldAppGrpPrimaryDocDtos)) {
             if (newAppGrpPrimaryDocDtos.size() == oldAppGrpPrimaryDocDtos.size()) {

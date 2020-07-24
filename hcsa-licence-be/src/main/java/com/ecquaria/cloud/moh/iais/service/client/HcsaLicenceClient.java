@@ -217,6 +217,6 @@ public interface HcsaLicenceClient {
     FeignResponseEntity<AppSubmissionDto> getAppSubmissionDto(@RequestParam(value = "licenceId" ) String licenceId);
     @GetMapping(value = "/hcsa-licence/find-newest-licId")
     FeignResponseEntity<String> findNewestLicId(@RequestParam("licenceId") String licenceId);
-    @GetMapping(value = "/hcsa-licence/find-lic-effDate")
+    @GetMapping(value = "/hcsa-licence/find-lic-effDate",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicByEffDate();
 }

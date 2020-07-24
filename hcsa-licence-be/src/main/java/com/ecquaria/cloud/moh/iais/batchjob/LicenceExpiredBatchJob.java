@@ -109,13 +109,17 @@ public class LicenceExpiredBatchJob {
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
-
         }
-        hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        try {
+            hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+
     }
 
     private void updateLicenceStatusEffect(List<LicenceDto> licenceDtos, Date date) {
@@ -139,10 +143,15 @@ public class LicenceExpiredBatchJob {
                 log.error(e.getMessage(), e);
             }
         }
-        hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
+        try {
+            hcsaLicenceClient.updateLicences(updateLicenceDtos).getEntity();
+            HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+            HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+            gatewayClient.updateFeLicDto(updateLicenceDtos, signature.date(), signature.authorization(),
+                    signature2.date(), signature2.authorization());
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+
     }
 }

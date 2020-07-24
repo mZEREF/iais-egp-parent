@@ -12,11 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserUpLoadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -25,25 +21,21 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
+import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import com.ecquaria.csrfguard.action.IAction;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-import sop.rbac.user.UserIdentifier;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -70,7 +62,7 @@ public class MohIntranetUserDelegator {
     @Autowired
     private IntranetUserService intranetUserService;
     @Autowired
-    private UserClient userClient;
+    private EgpUserClient egpUserClient;
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>user");
@@ -272,6 +264,7 @@ public class MohIntranetUserDelegator {
         String userAccId = orgUserDto.getId();
         if (assignRoles != null) {
             List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
+            List<EgpUserRoleDto> EgpUserRoleDtos = IaisCommonUtils.genNewArrayList();
             orgUserRoleDtos.clear();
             for (String assignRole : assignRoles) {
                 OrgUserRoleDto orgUserRoleDto = new OrgUserRoleDto();
@@ -279,8 +272,17 @@ public class MohIntranetUserDelegator {
                 orgUserRoleDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 orgUserRoleDto.setRoleName(assignRole);
                 orgUserRoleDtos.add(orgUserRoleDto);
+
+                EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
+                egpUserRoleDto.setUserId(orgUserDto.getUserId());
+                egpUserRoleDto.setUserDomain(orgUserDto.getUserDomain());
+                egpUserRoleDto.setRoleId(assignRole);
+                egpUserRoleDto.setPermission("A");
+                //egpUserRoleDto.isSystem()
+                EgpUserRoleDtos.add(egpUserRoleDto);
             }
             intranetUserService.assignRole(orgUserRoleDtos);
+            intranetUserService.createEgpRoles(EgpUserRoleDtos);
         }
         if (removeRoles != null) {
             List<String> removeRoleIds = IaisCommonUtils.genNewArrayList();
@@ -289,12 +291,12 @@ public class MohIntranetUserDelegator {
                 removeRoleIds.add(removeRole);
             }
             intranetUserService.removeRole(removeRoleIds);
+            removeRoleIds.clear();
+            intranetUserService.removeEgpRoles(orgUserDto.getUserDomain(),orgUserDto.getUserId(),removeRoleIds);
         }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
         ParamUtil.setRequestAttr(bpc.request, "userAccId", userAccId);
         return;
-        //ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, userDomain);
-
     }
 
     public void doImport(BaseProcessClass bpc) throws IOException, DocumentException {

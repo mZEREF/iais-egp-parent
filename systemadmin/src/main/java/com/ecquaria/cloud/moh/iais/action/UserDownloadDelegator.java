@@ -43,7 +43,6 @@ public class UserDownloadDelegator {
             byte[] xml = createXML(bpc,ids);
             bpc.request.setAttribute("xml", xml);
         }
-
     }
     private byte[] createXML(BaseProcessClass bpc,String [] ids) {
         byte[] bytes = null;
@@ -131,7 +130,7 @@ public class UserDownloadDelegator {
                 }
                 Element division = userGroup.addElement("division");
                 if (!StringUtil.isEmpty(divisionText)) {
-                    organization.setText(divisionText);
+                    division.setText(divisionText);
                 }
                 Element branchUnit = userGroup.addElement("branchUnit");
                 if (!StringUtil.isEmpty(branchUnitText)) {

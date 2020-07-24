@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import sop.rbac.user.UserIdentifier;
+
+import java.util.List;
 
 /**
  * @author weilu
@@ -32,4 +35,10 @@ public interface EgpUserClient {
 
     @RequestMapping(path = {"/api/v1/users/password_validate"}, consumes = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.PATCH}, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> validatepassword(@RequestParam("password") String var1, @RequestBody UserIdentifier var2);
+
+    @RequestMapping(path = {"/api/v1/userroleassignments"}, consumes = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.DELETE}, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Boolean> deleteUerRoleIds(@RequestParam("userdomain") String var1, @RequestParam("userid") String var2,@RequestParam("roleids") String var3);
+
+    @RequestMapping(path = {"/api/v1/userroleassignments"}, consumes = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.POST}, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> createUerRoleIds(@RequestBody EgpUserRoleDto var1);
 }
