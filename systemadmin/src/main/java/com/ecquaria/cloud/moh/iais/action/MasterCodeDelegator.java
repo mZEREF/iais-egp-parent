@@ -367,17 +367,38 @@ public class MasterCodeDelegator {
         File toFile = FileUtils.multipartFileToFile(file);
         try{
             List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
-            List<String> duplicateCode = IaisCommonUtils.genNewArrayList();
-            List<String> emptyCode = IaisCommonUtils.genNewArrayList();
-            List<String> filterCode = IaisCommonUtils.genNewArrayList();
             boolean result = false;
+            List<Map<String,List<String>>> errResult = IaisCommonUtils.genNewArrayList();
             for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
-                if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())
-                        ||StringUtil.isEmpty(masterCodeToExcelDto.getStatus())
-                        ||StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom()))
-                        {
-                    emptyCode.add(masterCodeToExcelDto.getCodeValue());
+                Map<String,List<String>> errMap = IaisCommonUtils.genNewHashMap();
+                List<String> errItems = IaisCommonUtils.genNewArrayList();
+                if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory()))
+                {
+                    String errMsg = "Code Category is a mandatory field.";
+                    errItems.add(errMsg);
                     result = true;
+                }
+                if (StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
+                    String errMsg = "Status is a mandatory field.";
+                    errItems.add(errMsg);
+                    result = true;
+                }
+                if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom())){
+                    String errMsg = "Effective From is a mandatory field.";
+                    errItems.add(errMsg);
+                    result = true;
+                }
+                if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
+                    List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
+                    List<String> codeValueList = IaisCommonUtils.genNewArrayList();
+                    masterCodeToExcelDtos.forEach(h -> {
+                        codeValueList.add(h.getCodeValue());
+                    });
+                    if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
+                        String errMsg = "Filter Value must be an existing Code Value";
+                        errItems.add(errMsg);
+                        result = true;
+                    }
                 }
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
                     masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
@@ -389,17 +410,14 @@ public class MasterCodeDelegator {
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_DELETED);
                     }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                    }
-                }
-                if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
-//                    if (masterCodeToExcelDto.getFilterValue().equals(masterCodeToExcelDto1.getCodeValue())){
-//                        filterCode.add(masterCodeToExcelDto.getCodeValue());
-//                    }
-                    if (filterCode.size() == 0){
-                        emptyCode.add(masterCodeToExcelDto.getCodeValue());
+                    }else{
+                        String errMsg = "The Status can only be Active/Deleted/Inactive";
+                        errItems.add(errMsg);
                         result = true;
                     }
                 }
+                errMap.put(masterCodeToExcelDto.getCodeValue(),errItems);
+                errResult.add(errMap);
             }
             if (result){
                 if (errorMap != null){
@@ -408,8 +426,7 @@ public class MasterCodeDelegator {
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
-                ParamUtil.setRequestAttr(request,"ERR_DUPLICATE_CODE",duplicateCode);
-                ParamUtil.setRequestAttr(request,"ERR_EMPTY_CODE",emptyCode);
+                ParamUtil.setRequestAttr(request,"ERR_RESULT_LIST_MAP",errResult);
             }else{
                 masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);

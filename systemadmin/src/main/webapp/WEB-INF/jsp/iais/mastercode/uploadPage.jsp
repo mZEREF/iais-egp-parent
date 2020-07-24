@@ -1,6 +1,7 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
+<%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%@ page contentType="text/html; charset=UTF-8" %>
@@ -54,22 +55,24 @@
                     <table class="table">
                         <thead>
                         <tr>
+                            <th>S/N</th>
                             <th>Code Value</th>
                             <th>Error Message</th>
                         </tr>
                         </thead>
                         <tbody>
-                            <c:forEach var="errDuplicateCodeResult" items="${ERR_DUPLICATE_CODE}" varStatus="status">
-                                <tr>
-                                    <td>${errDuplicateCodeResult}</td>
-                                    <td>Duplicate value</td>
-                                </tr>
-                            </c:forEach>
-                            <c:forEach var="errDuplicateCodeResult" items="${ERR_EMPTY_CODE}" varStatus="status">
-                                <tr>
-                                    <td>${errDuplicateCodeResult}</td>
-                                    <td>Empty value</td>
-                                </tr>
+                            <c:forEach var="errCodeResultListMap" items="${ERR_RESULT_LIST_MAP}" varStatus="status">
+                                <c:forEach var="errCodeResultMap" items="${errCodeResultListMap}">
+                                    <tr>
+                                        <td>${status.index + 1}</td>
+                                        <td>${errCodeResultMap.key}</td>
+                                        <td>
+                                            <c:forEach items="${errCodeResultMap.value}" var="errCodeResultValue">
+                                                <p style="color: red">${errCodeResultValue}</p>
+                                            </c:forEach>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
                             </c:forEach>
                         </tbody>
                     </table>
@@ -78,7 +81,6 @@
         </div>
         <div class="row">
             <div class="col-xs-6 col-md-4" style="padding-top: 4%">
-                <p><a id = "docBack" class="back" href="/system-admin-web/eservice/INTRANET/MohMasterCode"><em class="fa fa-angle-left"></em> Back</a></p>
             </div>
             <div class="col-xs-5 col-md-8 text-right">
                 <div class="nav">
