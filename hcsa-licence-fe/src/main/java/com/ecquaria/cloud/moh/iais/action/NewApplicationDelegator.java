@@ -1344,6 +1344,8 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAmount(amount);
         if(appGrpPremisesDtoList!=null){
             int size = appGrpPremisesDtoList.size();
+            String effectiveDateStr = appSubmissionDto.getEffectiveDateStr();
+            Date effectiveDate = appSubmissionDto.getEffectiveDate();
             for(int i=0;i<size;i++){
                 //Get the selected license from page to save
                 List<LicenceDto> attribute =(List<LicenceDto>)bpc.request.getSession().getAttribute("selectLicence" + i);
@@ -1431,6 +1433,8 @@ public class NewApplicationDelegator {
                             RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
                             requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
                             appSubmissionDtoByLicenceId.setAuditTrailDto( IaisEGPHelper.getCurrentAuditTrailDto());
+                            appSubmissionDtoByLicenceId.setEffectiveDate(effectiveDate);
+                            appSubmissionDtoByLicenceId.setEffectiveDateStr(effectiveDateStr);
                             appSubmissionDtos.add(appSubmissionDtoByLicenceId);
                     }
                 }
