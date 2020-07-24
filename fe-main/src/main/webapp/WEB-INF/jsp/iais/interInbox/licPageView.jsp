@@ -139,7 +139,6 @@
     }
 
     function doLicPrint(){
-        showWaiting();
         submit('licDoPrint');
     }
 
