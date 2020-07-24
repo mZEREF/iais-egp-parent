@@ -526,8 +526,8 @@ public class ClinicalLaboratoryDelegator {
                         break;
                     case HcsaConsts.STEP_DISCIPLINE_ALLOCATION:
                         Map<String, List<AppSvcDisciplineAllocationDto>> newReloadMap = IaisCommonUtils.genNewHashMap();
-                        for(String key:reloadDisciplineAllocationMap.keySet()){
-                            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtos = reloadDisciplineAllocationMap.get(key);
+                        for(Map.Entry<String,List<AppSvcDisciplineAllocationDto>> enntry:reloadDisciplineAllocationMap.entrySet()){
+                            List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtos = enntry.getValue();
                             if(!IaisCommonUtils.isEmpty(appSvcDisciplineAllocationDtos)){
                                 List<AppSvcDisciplineAllocationDto> newAllocationDto = IaisCommonUtils.genNewArrayList();
                                 for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto:appSvcDisciplineAllocationDtos){
@@ -537,7 +537,7 @@ public class ClinicalLaboratoryDelegator {
                                     }
                                 }
                                 if(newAllocationDto.size() != 0){
-                                    newReloadMap.put(key,newAllocationDto);
+                                    newReloadMap.put(enntry.getKey(),newAllocationDto);
                                 }
                             }
                         }

@@ -601,8 +601,9 @@ public class ServiceMenuDelegator {
                 List<String> errMsgList = IaisCommonUtils.genNewArrayList();
 //                    String specSvcName = "";
                 boolean flag = true;
-                for(String specSvcId:baseAlignSpec.keySet()){
-                    List<String> baseSvcNameList = baseAlignSpec.get(specSvcId);
+                for(Map.Entry<String,List<String>> entry:baseAlignSpec.entrySet()){
+                    String specSvcId = entry.getKey();
+                    List<String> baseSvcNameList = entry.getValue();
                     if(!IaisCommonUtils.isEmpty(baseSvcNameList)){
                         int i = 0;
                         for(String baseSvcId:basechks){
@@ -862,6 +863,7 @@ public class ServiceMenuDelegator {
         }
 
         if(AppConsts.YES.equals(isAlign)){
+            //todo
         }else{
             //to next
         }
