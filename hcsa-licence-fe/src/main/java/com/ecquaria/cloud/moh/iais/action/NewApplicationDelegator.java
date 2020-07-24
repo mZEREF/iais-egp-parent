@@ -126,7 +126,7 @@ import static java.util.regex.Pattern.compile;
 public class NewApplicationDelegator {
     private static final String ERRORMAP_PREMISES = "errorMap_premises";
     public static final String PREMISESTYPE = "premisesType";
-
+    private static final String HCSASERVICEDTO = "hcsaServiceDto";
     public static final String CURRENTSERVICEID = "currentServiceId";
     public static final String CURRENTSVCCODE = "currentSvcCode";
     public static final String APPSUBMISSIONDTO = "AppSubmissionDto";
@@ -169,7 +169,6 @@ public class NewApplicationDelegator {
 
     @Autowired
     private AppSubmissionService appSubmissionService;
-
     @Autowired
     private RequestForChangeService requestForChangeService;
 
@@ -1091,6 +1090,7 @@ public class NewApplicationDelegator {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
         response.sendRedirect(tokenUrl);
     }
+
     public void inboxToPreview(BaseProcessClass bpc) {
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,null);
         String appNo = ParamUtil.getMaskedString(bpc.request,"appNo");
@@ -1105,6 +1105,9 @@ public class NewApplicationDelegator {
                 AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
                 List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(appSvcRelatedInfoDto.getServiceId());
                 appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
+                String svcId = appSvcRelatedInfoDto.getServiceId();
+                HcsaServiceDto hcsaServiceDto  = serviceConfigService.getHcsaServiceDtoById(svcId);
+                ParamUtil.setRequestAttr(bpc.request, HCSASERVICEDTO, hcsaServiceDto);
                 ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             }
             ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);

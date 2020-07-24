@@ -49,6 +49,6 @@ public interface ServiceConfigService {
     List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(List<String> svcIds);
     List<HcsaServiceDto> getHcsaServiceByNames(List<String> names);
     List<SelectOption> getPubHolidaySelect();
-
+    HcsaServiceDto getHcsaServiceDtoById(String id);
     void paymentUpDateByGrpNo(ApplicationGroupDto appGrp);
 }

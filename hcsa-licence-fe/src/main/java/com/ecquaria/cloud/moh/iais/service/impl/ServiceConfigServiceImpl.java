@@ -305,6 +305,11 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
     }
 
     @Override
+    public HcsaServiceDto getHcsaServiceDtoById(String id) {
+        return appConfigClient.getHcsaServiceDtoByServiceId(id).getEntity();
+    }
+
+    @Override
     public void paymentUpDateByGrpNo(ApplicationGroupDto appGrp) {
         applicationClient.paymentUpDateByGrpNo(appGrp);
     }
