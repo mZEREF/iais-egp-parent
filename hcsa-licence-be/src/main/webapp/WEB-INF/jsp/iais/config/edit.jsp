@@ -53,6 +53,7 @@
           <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="serviceName" name="serviceName" maxlength="100" readonly type="text" value="${hcsaServiceDto.svcName}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_svcDesc"></span>
           </div>
         </div>
       </div>
@@ -61,6 +62,7 @@
           <label class="col-xs-12 col-md-8 control-label" for="description">Service Description<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="description" name="description" maxlength="255" type="text" value="${hcsaServiceDto.svcDesc}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_svcDisplayDesc"></span>
           </div>
         </div>
       </div>
@@ -93,6 +95,7 @@
               <option <c:if test="${hcsaServiceDto.svcType=='SVTP002'}">selected="selected"</c:if> value="SVTP002">Subsumed</option>
               <option <c:if test="${hcsaServiceDto.svcType=='SVTP003'}">selected="selected"</c:if> value="SVTP003">Specified</option>
             </select>
+            <span class="error-msg" name="iaisErrorMsg" id="error_svcType"></span>
           </div>
         </div>
       </div>
@@ -100,6 +103,7 @@
       <div class="form-group">
         <div class="col-xs-12 col-md-10">
           <label class="col-xs-12 col-md-10 control-label" >Premises Type<span class="mandatory">*</span></label>
+          <span class="error-msg" name="iaisErrorMsg" id="error_premieseType"></span>
         </div>
       </div>
       <br>
@@ -264,22 +268,17 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to
-            be captured<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="Numberfields" type="text" name="Numberfields" maxlength="2" value="${comDocConfigDtoSize}">
           </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info field to be captured<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-4">
-            <input id="DescriptionGeneral" type="text" name="DescriptionGeneral" maxlength="255" value="${comDocConfigDtosTitle}">
-          </div>
-        </div>
+      <div class="Numberfields">
+
       </div>
+
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label">Will the doc be duplicated for individual premises?</label>
@@ -927,6 +926,29 @@
 
 
     });
-
+    $('#Numberfields').change(function () {
+        let val = $('#Numberfields').val();
+        let number = parseInt(val);
+        let jQuery = $(this).closest("div.form-group").next(".Numberfields").children();
+        let number1 = parseInt(jQuery.length);
+        if(number-number1>0){
+            for(var i=0;i<number-number1;i++){
+                $(this).closest("div.form-group").next(".Numberfields").append(" <div class=\"form-group\">\n" +
+                    "        <div class=\"col-xs-12 col-md-8\">\n" +
+                    "          <label class=\"col-xs-12 col-md-6 control-label\" for=\"DescriptionGeneral\">Name of Info Field</label>\n" +
+                    "          <div class=\"col-xs-12 col-md-4\">\n" +
+                    "            <input  type=\"text\" name=\"\" maxlength=\"255\" value=\"\">\n" +
+                    "          </div>\n" +
+                    "          <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">   <input class=\"form-check-input\"  type=\"checkbox\" name=\"POMandatory\" aria-invalid=\"false\">\n" +
+                    "            <label class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
+                    "          </div>\n" +
+                    "        </div>\n" +
+                    "      </div>");
+            }
+        }else if(number1-number>0){
+            for(var i=0;i<number1-number;i++){
+                $(this).closest("div.form-group").next(".Numberfields").children().last().remove();
+            }
+        }
 </script>
 </>

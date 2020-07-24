@@ -294,14 +294,6 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info field to be captured<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-4">
-            <input id="DescriptionGeneral" type="text" name="DescriptionGeneral" maxlength="255" value="${descriptionGeneral}">
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label">Will the doc be duplicated for individual premises?</label>
           <div class="col-xs-12 col-md-2">
             <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" checked value="0"><label>No</label>
@@ -936,21 +928,24 @@
         let val = $('#Numberfields').val();
         let number = parseInt(val);
         let jQuery = $(this).closest("div.form-group").next(".Numberfields").children();
-        alert(parseInt(jQuery.length));
-        alert(number);
-        if(number-parseInt(jQuery.length)>0){
-            for(var i=0;i<number-jQuery;i++){
+        let number1 = parseInt(jQuery.length);
+        if(number-number1>0){
+            for(var i=0;i<number-number1;i++){
                 $(this).closest("div.form-group").next(".Numberfields").append(" <div class=\"form-group\">\n" +
                     "        <div class=\"col-xs-12 col-md-8\">\n" +
                     "          <label class=\"col-xs-12 col-md-6 control-label\" for=\"DescriptionGeneral\">Name of Info Field</label>\n" +
                     "          <div class=\"col-xs-12 col-md-4\">\n" +
-                    "            <input  type=\"text\" name=\"\" maxlength=\"255\" value=\"\">\n" +
+                    "            <input  type=\"text\" name=\"descriptionCommDoc\" maxlength=\"255\" value=\"\">\n" +
                     "          </div>\n" +
                     "          <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">   <input class=\"form-check-input\"  type=\"checkbox\" name=\"POMandatory\" aria-invalid=\"false\">\n" +
                     "            <label class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
                     "          </div>\n" +
                     "        </div>\n" +
                     "      </div>");
+            }
+        }else if(number1-number>0){
+            for(var i=0;i<number1-number;i++){
+                $(this).closest("div.form-group").next(".Numberfields").children().last().remove();
             }
         }
 

@@ -1300,6 +1300,11 @@ public class RequestForChangeMenuDelegator {
         }
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
         bpc.request.getSession().setAttribute("payMethod", payMethod);
+        if(0.0==appSubmissionDtos.get(0).getAmount()){
+            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
+            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+            return;
+        }
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
