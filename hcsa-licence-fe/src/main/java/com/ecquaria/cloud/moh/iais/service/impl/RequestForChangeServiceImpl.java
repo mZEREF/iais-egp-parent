@@ -37,18 +37,12 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Date;
@@ -57,6 +51,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import static java.util.regex.Pattern.compile;
 
@@ -80,8 +78,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     private MsgTemplateClient msgTemplateClient;
     @Autowired
     private FeEicGatewayClient feEicGatewayClient;
-    @Autowired
-    private FeEmailClient feEmailClient;
     @Autowired
     private AppConfigClient appConfigClient;
     @Autowired
@@ -359,7 +355,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     @Override
     public String sendNotification(EmailDto email){
-        return feEmailClient.sendNotification(email).getEntity();
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        return feEicGatewayClient.feSendEmail(email, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
     }
 
 

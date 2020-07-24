@@ -37,7 +37,6 @@ import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEmailClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -76,9 +75,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Autowired
     private NotificationHelper notificationHelper;
-
-    @Autowired
-    private FeEmailClient feEmailClient;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -251,7 +247,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         emailDto.setSender(mailSender);
         emailDto.setReceipts(emailAddress);
 
-        feEmailClient.sendNotification(emailDto);
+        gatewayClient.feSendEmail(emailDto, signature.date(), signature.authorization(),
+               signature2.date(), signature2.authorization());
     }
 
 
