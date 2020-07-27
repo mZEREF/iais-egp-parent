@@ -254,16 +254,18 @@ public class ConfigServiceDelegator {
         try {
             if (!StringUtil.isEmpty(manprincipalOfficer)) {
                 poDto.setMandatoryCount(Integer.parseInt(manprincipalOfficer));
+                poDto.setPageMandatoryCount(manprincipalOfficer);
             }
         }catch (NumberFormatException e){
-            poDto.setMandatoryCount(-1);
+            poDto.setPageMandatoryCount(manprincipalOfficer);
         }
         try {
             if (!StringUtil.isEmpty(mixprincipalOfficer)) {
                 poDto.setMaximumCount(Integer.parseInt(mixprincipalOfficer));
+                poDto.setPageMaximumCount(mixprincipalOfficer);
             }
         }catch (NumberFormatException e){
-            poDto.setMaximumCount(-1);
+            poDto.setPageMaximumCount(mixprincipalOfficer);
         }
 
         if (!StringUtil.isEmpty(poId)) {
@@ -283,16 +285,18 @@ public class ConfigServiceDelegator {
         try {
             if (!StringUtil.isEmpty(mandeputyPrincipalOfficer)) {
                 dpoDto.setMandatoryCount(Integer.parseInt(mandeputyPrincipalOfficer));
+                dpoDto.setPageMandatoryCount(mandeputyPrincipalOfficer);
             }
         }catch (NumberFormatException e){
-            dpoDto.setMandatoryCount(-1);
+            dpoDto.setPageMandatoryCount(mandeputyPrincipalOfficer);
         }
         try {
             if (!StringUtil.isEmpty(mixdeputyPrincipalOfficer)) {
                 dpoDto.setMaximumCount(Integer.parseInt(mixdeputyPrincipalOfficer));
+                dpoDto.setPageMaximumCount(mixdeputyPrincipalOfficer);
             }
         }catch (NumberFormatException e){
-            dpoDto.setMaximumCount(-1);
+            dpoDto.setPageMaximumCount(mixdeputyPrincipalOfficer);
         }
 
 
@@ -310,16 +314,18 @@ public class ConfigServiceDelegator {
         try {
             if (!StringUtil.isEmpty(manclinicalGovernanceOfficer)) {
                 cgoDto.setMandatoryCount(Integer.parseInt(manclinicalGovernanceOfficer));
+                cgoDto.setPageMandatoryCount(manclinicalGovernanceOfficer);
             }
         }catch (NumberFormatException e){
-            cgoDto.setMandatoryCount(-1);
+            cgoDto.setPageMandatoryCount(manclinicalGovernanceOfficer);
         }
         try {
             if (!StringUtil.isEmpty(mixclinicalGovernanceOfficer)) {
                 cgoDto.setMaximumCount(Integer.parseInt(mixclinicalGovernanceOfficer));
+                cgoDto.setPageMaximumCount(mixclinicalGovernanceOfficer);
             }
         }catch (NumberFormatException e){
-            cgoDto.setMaximumCount(-1);
+            cgoDto.setPageMaximumCount(mixclinicalGovernanceOfficer);
         }
 
         //todo is mandatory ,cannot
@@ -352,17 +358,19 @@ public class ConfigServiceDelegator {
         try {
             if (!StringUtil.isEmpty(manservicePersonnel)) {
                 svcPersonnelDto.setMandatoryCount(Integer.parseInt(manservicePersonnel));
+                svcPersonnelDto.setPageMandatoryCount(manservicePersonnel);
             }
         } catch (Exception e) {
 
-            svcPersonnelDto.setMaximumCount(-1);
+            svcPersonnelDto.setPageMandatoryCount(manservicePersonnel);
         }
         try {
             if (!StringUtil.isEmpty(mixservicePersonnel)) {
                 svcPersonnelDto.setMaximumCount(Integer.parseInt(mixservicePersonnel));
+                svcPersonnelDto.setPageMaximumCount(mixservicePersonnel);
             }
         }catch (NumberFormatException e){
-            svcPersonnelDto.setMandatoryCount(-1);
+            svcPersonnelDto.setPageMaximumCount(mixservicePersonnel);
         }
 
         svcPersonnelDto.setStatus("CMSTAT001");
@@ -374,16 +382,18 @@ public class ConfigServiceDelegator {
         try {
             if(!StringUtil.isEmpty(manMedalertPerson)){
                 mapPersonnelDto.setMandatoryCount(Integer.parseInt(manMedalertPerson));
+                mapPersonnelDto.setPageMandatoryCount(manMedalertPerson);
             }
         }catch (Exception e){
-            mapPersonnelDto.setMandatoryCount(-1);
+            mapPersonnelDto.setPageMandatoryCount(manMedalertPerson);
         }
         try {
             if(!StringUtil.isEmpty(mixMedalertPerson)){
                 mapPersonnelDto.setMaximumCount(Integer.parseInt(mixMedalertPerson));
+                mapPersonnelDto.setPageMaximumCount(mixMedalertPerson);
             }
         }catch (Exception e){
-            mapPersonnelDto.setMaximumCount(-1);
+            mapPersonnelDto.setPageMaximumCount(mixMedalertPerson);
         }
         if(!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
@@ -484,7 +494,7 @@ public class ConfigServiceDelegator {
             request.setAttribute("numberfields",numberfields);
             request.setAttribute("descriptionGeneral",descriptionGeneral);
             Integer integer = Integer.valueOf(numberfields);
-            List<String> split = configService.split(descriptionGeneral);
+           /* List<String> split = configService.split(descriptionGeneral);
             if(integer!=split.size()){
 
             }else {
@@ -502,7 +512,7 @@ public class ConfigServiceDelegator {
                     hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
                 }
 
-            }
+            }*/
         }catch (NumberFormatException e){
 
 

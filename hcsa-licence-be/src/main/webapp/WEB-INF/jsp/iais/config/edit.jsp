@@ -183,11 +183,13 @@
         <div class="col-xs-12 col-md-8" >
           <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2" >
-            <input type="text" name="man-principalOfficer" maxlength="2" value="${PO.mandatoryCount}" placeholder="minimum count">
+            <input type="text" name="man-principalOfficer" maxlength="2" value="${PO.pageMandatoryCount}" placeholder="minimum count">
             <input type="text" name="poId" style="display: none" maxlength="2" value="${PO.id}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount0"></span>
           </div>
           <div class="col-xs-12 col-md-2" >
-            <input type="text" name="mix-principalOfficer" maxlength="2" value="${PO.maximumCount}" placeholder="maximum count">
+            <input type="text" name="mix-principalOfficer" maxlength="2" value="${PO.pageMaximumCount}" placeholder="maximum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount0"></span>
           </div>
         </div>
       </div>
@@ -198,10 +200,12 @@
           <label class="col-xs-12 col-md-6 control-label" >Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${DPO.id}" name="dpoId" style="display:none;" maxlength="2" type="text">
-            <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" value="${DPO.mandatoryCount}" placeholder="minimum count">
+            <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" value="${DPO.pageMandatoryCount}" placeholder="minimum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount1"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" value="${DPO.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" value="${DPO.pageMaximumCount}"  placeholder="maximum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount1"></span>
           </div>
         </div>
       </div>
@@ -212,10 +216,12 @@
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${CGO.id}" name="cgoId" style="display:none;" maxlength="2" type="text">
-            <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.mandatoryCount}" placeholder="minimum count">
+            <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.pageMandatoryCount}" placeholder="minimum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount2"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.maximumCount}"  placeholder="maximum count">
+            <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.pageMaximumCount}"  placeholder="maximum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount2"></span>
           </div>
         </div>
       </div>
@@ -226,10 +232,12 @@
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${SVCPSN.id}" name="svcpsnId" style="display:none;" type="text" maxlength="2">
-            <input  type="text" name="man-ServicePersonnel" value="${SVCPSN.mandatoryCount}" maxlength="2" placeholder="minimum count">
+            <input  type="text" name="man-ServicePersonnel" value="${SVCPSN.pageMandatoryCount}" maxlength="2" placeholder="minimum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount3"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel" value="${SVCPSN.maximumCount}" maxlength="2"  placeholder="maximum count">
+            <input  type="text" name="mix-ServicePersonnel" value="${SVCPSN.pageMaximumCount}" maxlength="2"  placeholder="maximum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount3"></span>
           </div>
         </div>
       </div>
@@ -239,10 +247,12 @@
           <label class="col-xs-12 col-md-6 control-label" >Medalert Person<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text">
-            <input  type="text" name="man-MedalertPerson" value="${MAP.mandatoryCount}" maxlength="2" placeholder="minimum count">
+            <input  type="text" name="man-MedalertPerson" value="${MAP.pageMandatoryCount}" maxlength="2" placeholder="minimum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount4"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-MedalertPerson" value="${MAP.maximumCount}" maxlength="2"  placeholder="maximum count">
+            <input  type="text" name="mix-MedalertPerson" value="${MAP.pageMaximumCount}" maxlength="2"  placeholder="maximum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount4"></span>
           </div>
         </div>
       </div>
@@ -598,7 +608,7 @@
               <select name="versionSelect" id="version">
                 <option value="">Select one</option>
                 <c:forEach items="${hcsaServiceDtosVersion}" var="hcsaServiceDtosVer">
-                  <option  value="<iais:mask name="crud_action_additional"  value="${hcsaServiceDto.id}"/>">${hcsaServiceDtosVer.version}</option>
+                  <option  value="<iais:mask name="crud_action_additional"  value="${hcsaServiceDtosVer.id}"/>">${hcsaServiceDtosVer.version}</option>
                 </c:forEach>
               </select>
             </div>
@@ -931,8 +941,8 @@
         let number = parseInt(val);
         let jQuery = $(this).closest("div.form-group").next(".Numberfields").children();
         let number1 = parseInt(jQuery.length);
-        if(number-number1>0){
-            for(var i=0;i<number-number1;i++){
+        if (number - number1 > 0) {
+            for (var i = 0; i < number - number1; i++) {
                 $(this).closest("div.form-group").next(".Numberfields").append(" <div class=\"form-group\">\n" +
                     "        <div class=\"col-xs-12 col-md-8\">\n" +
                     "          <label class=\"col-xs-12 col-md-6 control-label\" for=\"DescriptionGeneral\">Name of Info Field</label>\n" +
@@ -945,10 +955,11 @@
                     "        </div>\n" +
                     "      </div>");
             }
-        }else if(number1-number>0){
-            for(var i=0;i<number1-number;i++){
+        } else if (number1 - number > 0) {
+            for (var i = 0; i < number1 - number; i++) {
                 $(this).closest("div.form-group").next(".Numberfields").children().last().remove();
             }
         }
+    });
 </script>
 </>

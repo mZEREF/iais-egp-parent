@@ -187,14 +187,13 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="man-principalOfficer" maxlength="2" placeholder="minimum count" value="${PO.mandatoryCount}">
+            <input type="text" name="man-principalOfficer" maxlength="2" placeholder="minimum count" value="${PO.pageMandatoryCount}">
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount0"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input type="text" name="mix-principalOfficer" maxlength="2" placeholder="maximum count" value="${PO.maximumCount}">
+            <input type="text" name="mix-principalOfficer" maxlength="2" placeholder="maximum count" value="${PO.pageMaximumCount}">
             <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount0"></span>
           </div>
-          <span class="error-msg" name="iaisErrorMsg" id="error_psnType1"></span>
         </div>
       </div>
 
@@ -203,15 +202,13 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" placeholder="minimum count" value="${DPO.mandatoryCount}">
+            <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" placeholder="minimum count" value="${DPO.pageMandatoryCount}">
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount1"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" placeholder="maximum count" value="${DPO.maximumCount}">
+            <input  type="text" name="mix-DeputyPrincipalOfficer" maxlength="2" placeholder="maximum count" value="${DPO.pageMaximumCount}">
             <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount1"></span>
           </div>
-
-          <span class="error-msg" name="iaisErrorMsg" id="error_psnType2"></span>
         </div>
       </div>
 
@@ -220,14 +217,13 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" placeholder="minimum count" value="${CGO.mandatoryCount}">
+            <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" placeholder="minimum count" value="${CGO.pageMandatoryCount}">
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount2"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  placeholder="maximum count" value="${CGO.maximumCount}">
+            <input  type="text" name="mix-ClinicalGovernanceOfficer" maxlength="2"  placeholder="maximum count" value="${CGO.pageMaximumCount}">
             <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount2"></span>
           </div>
-          <span class="error-msg" name="iaisErrorMsg" id="error_psnType3"></span>
         </div>
       </div>
 
@@ -236,13 +232,12 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="man-ServicePersonnel" maxlength="2" placeholder="minimum count" value="${SVCPSN.mandatoryCount}">
+            <input  type="text" name="man-ServicePersonnel" maxlength="2" placeholder="minimum count" value="${SVCPSN.pageMandatoryCount}">
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount3"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel" maxlength="2"  placeholder="maximum count" value="${SVCPSN.maximumCount}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount3"></span>
-          </div>
+            <input  type="text" name="mix-ServicePersonnel" maxlength="2"  placeholder="maximum count" value="${SVCPSN.pageMaximumCount}"></div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount3"></span>
         </div>
       </div>
       <div class="form-group">
@@ -250,10 +245,12 @@
           <label class="col-xs-12 col-md-6 control-label" >Medalert Person<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text" maxlength="2">
-            <input  type="text" name="man-MedalertPerson" value="${MAP.mandatoryCount}" maxlength="2" placeholder="minimum count">
+            <input  type="text" name="man-MedalertPerson" value="${MAP.pageMandatoryCount}" maxlength="2" placeholder="minimum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount4"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-MedalertPerson" value="${MAP.maximumCount}" maxlength="2"  placeholder="maximum count">
+            <input  type="text" name="mix-MedalertPerson" value="${MAP.pageMaximumCount}" maxlength="2"  placeholder="maximum count">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount4"></span>
           </div>
         </div>
       </div>
