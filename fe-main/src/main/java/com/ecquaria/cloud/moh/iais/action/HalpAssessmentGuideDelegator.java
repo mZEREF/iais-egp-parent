@@ -1079,7 +1079,12 @@ public class HalpAssessmentGuideDelegator {
             }else{
                 ParamUtil.setRequestAttr(bpc.request,"licIsRenewed",result);
                 if(StringUtil.isEmpty(renewErrorMessage.toString())){
-                    renewErrorMessage.append("There is already a pending application for the selected licence");
+                    String errorMessage2 = renewErrorMap.get("errorMessage2");
+                    if(StringUtil.isEmpty(errorMessage2)){
+                        renewErrorMessage.append("There is already a pending application for the selected licence");
+                    }else{
+                        renewErrorMessage.append(errorMessage2);
+                    }
                 }
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,renewErrorMessage.toString());
                 String actionType = ParamUtil.getString(bpc.request,"guide_action_type");

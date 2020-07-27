@@ -300,24 +300,28 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Map<String,String> checkRenewalStatus(String licenceId) {
+        LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
-        for(ApplicationDto app : apps){
-            if(!(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(app.getStatus()))
-                    && !(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(app.getStatus()))
-                    && !(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(app.getStatus()))
-                    && !(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(app.getStatus()))
-                    && !(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED.equals(app.getStatus()))){
-                errorMap.put("errorMessage1","This application is performing the renew process");
+        if(!IaisCommonUtils.isEmpty(apps)){
+            for(ApplicationDto app : apps){
+                if(!(ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(app.getStatus()))
+                        && !(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(app.getStatus()))
+                        && !(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(app.getStatus()))
+                        && !(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(app.getStatus()))
+                        && !(ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED.equals(app.getStatus()))){
+                    errorMap.put("errorMessage1","This application is performing the renew process");
+                }
+            }
+            //Verify whether the new licence is generated
+            LicenceDto entity = licenceInboxClient.getLicdtoByOrgId(licenceId).getEntity();
+            if(entity != null){
+                errorMap.put("errorMessage2","You have already renewed this licence.");
             }
         }
         //check expiry date
-        LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
         Date expiryDate = licenceDto.getExpiryDate();
         Date nowDate = new Date();
-
-//        Calendar startCalendar = Calendar.getInstance();
-//        startCalendar.setTime(nowDate);
 
         //expiryDate
         Calendar endCalendar = Calendar.getInstance();
