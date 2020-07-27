@@ -2553,6 +2553,9 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }
                 ++preferredModeLength;
+                if (needEdit && AppConsts.YES.equals(licPsn)) {
+                    appSvcPrincipalOfficersDto.setLicPerson(true);
+                }
                 medAlertPersons.add(appSvcPrincipalOfficersDto);
             }
         }

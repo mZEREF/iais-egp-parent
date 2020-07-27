@@ -395,7 +395,7 @@
         $('#isEditHiddenVal').val('1');
         $('#edit-content').addClass('hidden');
         $('#addMapBtn').removeClass('hidden');
-        $('input[name="licPerson"]').val('0');
+        // $('input[name="licPerson"]').val('0');
         $('input[name="existingPsn"]').val('0');
     });
 
