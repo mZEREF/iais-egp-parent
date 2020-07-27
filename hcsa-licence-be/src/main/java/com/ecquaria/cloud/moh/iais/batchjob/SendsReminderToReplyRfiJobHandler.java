@@ -4,7 +4,6 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
@@ -63,18 +62,20 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
     HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     EmailClient emailClient;
+
     @Autowired
     private InboxMsgService inboxMsgService;
     @Autowired
     HcsaConfigClient hcsaConfigClient;
     @Value("${iais.email.sender}")
     private String mailSender;
-    @Autowired
-    private SystemParamConfig systemParamConfig;
-    @Value("iais.system.rfc.sms.reminder")
-    String reminderMaxNum;
+
     @Value("iais.system.rfc.sms.reminder.day")
-    String reminderMaxDay;
+    String reminderMax1Day;
+    @Value("iais.system.rfc.sms.sec.reminder.day")
+    String reminderMax2Day;
+    @Value("iais.system.rfc.sms.third.reminder.day")
+    String reminderMax3Day;
 
     @Override
     public ReturnT<String> execute(String s) throws Exception {
@@ -82,14 +83,23 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtos= requestForInformationService.getAllReqForInfo();
             for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
             ) {
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(rfi.getDueDateSubmission());
-                cal.add(Calendar.DAY_OF_MONTH, systemParamConfig.getRfiDueDay());
-                Calendar cal1 = Calendar.getInstance();
-                cal1.setTime(rfi.getRequestDate());
-                cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay));
-                if(cal.getTime().compareTo(new Date())<0&&rfi.getReminder()<=Integer.parseInt(reminderMaxNum)&&cal1.getTime().compareTo(new Date())>0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
-                    reminder(rfi);
+                if(rfi.getReminder()<3){
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(rfi.getDueDateSubmission());
+                    cal.add(Calendar.DAY_OF_MONTH, 1);
+                    Calendar cal1 = Calendar.getInstance();
+                    cal1.setTime(rfi.getRequestDate());
+                    String reminderMaxDay;
+                    switch (rfi.getReminder()){
+                        case 0:reminderMaxDay=reminderMax1Day;break;
+                        case 1:reminderMaxDay=reminderMax2Day;break;
+                        case 2:reminderMaxDay=reminderMax3Day;break;
+                        default:reminderMaxDay="0";
+                    }
+                    cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay));
+                    if(cal.getTime().compareTo(new Date())<0&&cal1.getTime().compareTo(new Date())>0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
+                        reminder(rfi);
+                    }
                 }
             }
             return ReturnT.SUCCESS;
