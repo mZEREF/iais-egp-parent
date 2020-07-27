@@ -382,16 +382,16 @@ public class BackendInboxDelegator {
                 successInfo = MessageCodeKey.ACK005;
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(successStatus)){
                 //AO2 -> AO3
-                successInfo = MessageCodeKey.ACK007;
+                successInfo = "LOLEV_ACK013";
             }else if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(successStatus)){
                 //AO3 APPROVAL
-                successInfo = MessageCodeKey.ACK009;
+                successInfo = "LOLEV_ACK020";
             }else if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(successStatus)){
                 //AO3 REJECT
-                successInfo = MessageCodeKey.ACK010;
+                successInfo = "LOLEV_ACK022";
             }else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS.equals(successStatus)){
                 //AO3 DMS
-                successInfo = MessageCodeKey.ACK011;
+                successInfo = "LOLEV_ACK024";
             }
             ParamUtil.setRequestAttr(bpc.request,"successInfo",successInfo);
         }
