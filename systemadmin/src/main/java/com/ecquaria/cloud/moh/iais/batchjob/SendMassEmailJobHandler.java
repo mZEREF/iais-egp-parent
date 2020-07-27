@@ -108,7 +108,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
             log.info(StringUtil.changeForLog("No." + i ));
             log.info(StringUtil.changeForLog("mode is " + item.getMode()));
             log.info(StringUtil.changeForLog("Id is " + item.getId()));
-            if(EMAIL.equals(item.getMode())){
+            if(EMAIL.equals(item.getMode()) && item.getRecipientsRole() != null){
                 EmailDto email = new EmailDto();
                 List<String> roleEmail = blastManagementListService.getEmailByRole(item.getRecipientsRole());
                 email.setContent(item.getMsgContent());
@@ -147,45 +147,45 @@ public class SendMassEmailJobHandler extends IJobHandler {
                     log.info(StringUtil.changeForLog("Result is fail"));
                     return ReturnT.FAIL;
                 }
-            }else{
+            }else if(item.getRecipientsRole() != null){
                 List<String> mobile = blastManagementListService.getMobileByRole(item.getRecipientsRole());
                 sendSMS(item.getMessageId(), mobile,item.getMsgContent());
             }
 
             //send inbox msg
             InterMessageDto interMessageDto = new InterMessageDto();
-            DistributionListWebDto dis = distributionListService.getDistributionListById(item.getDistributionId());
-            List<HcsaServiceDto> hcsaServiceDtoList = distributionListService.getServicesInActive();
-            String serviceName = "";
-            HcsaServiceDto svcDto = new HcsaServiceDto();
-            for (HcsaServiceDto serviceDto:hcsaServiceDtoList
-                 ) {
-                if(serviceDto.getSvcCode().equals(dis.getService())){
-                    svcDto = serviceDto;
+            if(!StringUtil.isEmpty(item.getDistributionId())){
+                DistributionListWebDto dis = distributionListService.getDistributionListById(item.getDistributionId());
+                List<HcsaServiceDto> hcsaServiceDtoList = distributionListService.getServicesInActive();
+                String serviceName = "";
+                HcsaServiceDto svcDto = new HcsaServiceDto();
+                for (HcsaServiceDto serviceDto:hcsaServiceDtoList
+                     ) {
+                    if(serviceDto.getSvcCode().equals(dis.getService())){
+                        svcDto = serviceDto;
+                    }
+                }
+
+                List<LicenceDto> licenceList = hcsaLicenceClient.getLicenceDtosBySvcName(serviceName).getEntity();
+                //send message to FE user.
+                interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+                interMessageDto.setSubject(item.getSubject());
+                log.info(StringUtil.changeForLog("interMessage subject is " + item.getSubject()));
+                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+                interMessageDto.setRefNo(item.getMessageId());
+                interMessageDto.setService_id(svcDto.getSvcCode()+'@');
+                log.info(StringUtil.changeForLog("interMessage ServiceId is " + svcDto.getSvcCode()+'@'));
+                interMessageDto.setMsgContent(item.getMsgContent());
+                interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                for (LicenceDto licencedto:licenceList
+                     ) {
+                    interMessageDto.setUserId(licencedto.getLicenseeId());
+                    sysInboxMsgService.saveInterMessage(interMessageDto);
                 }
             }
 
-            List<LicenceDto> licenceList = hcsaLicenceClient.getLicenceDtosBySvcName(serviceName).getEntity();
-            List<String> licenseeList = IaisCommonUtils.genNewArrayList();
-            //send message to FE user.
-            interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-            interMessageDto.setSubject(item.getSubject());
-            log.info(StringUtil.changeForLog("interMessage subject is " + item.getSubject()));
-            interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-            interMessageDto.setRefNo(item.getMessageId());
-            interMessageDto.setService_id(svcDto.getSvcCode()+'@');
-            log.info(StringUtil.changeForLog("interMessage ServiceId is " + svcDto.getSvcCode()+'@'));
-            interMessageDto.setMsgContent(item.getMsgContent());
-            interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-            interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            for (LicenceDto licencedto:licenceList
-                 ) {
-                interMessageDto.setUserId(licencedto.getLicenseeId());
-                sysInboxMsgService.saveInterMessage(interMessageDto);
-            }
         }
-
-
         log.info(StringUtil.changeForLog("Result is success"));
         return ReturnT.SUCCESS;
     }
