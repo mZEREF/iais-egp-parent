@@ -215,7 +215,7 @@ public class InspectionRectificationProDelegator {
             String checkItemId = adhocChecklistItemDto.getItemId();
             if(!StringUtil.isEmpty(checkItemId)){
                 ChecklistItemDto checklistItemDto = inspectionRectificationProService.getChklItemById(checkItemId);
-                iDto.setCheckClause(checklistItemDto.getRegulationClause());
+                iDto.setCheckClause("-");
                 iDto.setCheckQuestion(checklistItemDto.getChecklistItem());
                 iDto.setItemId(adhocItemId);
             } else {
