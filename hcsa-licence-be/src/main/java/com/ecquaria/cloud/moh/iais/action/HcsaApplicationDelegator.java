@@ -1505,6 +1505,20 @@ public class HcsaApplicationDelegator {
                         broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
                     }
                 }
+            }else if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+                if (applicationDto != null){
+                    AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
+                    AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                    String oldAppId = premiseMiscDto.getRelateRecId();
+                    ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                    appReturnFeeDto.setApplicationNo(oldApplication.getApplicationNo());
+                    appReturnFeeDto.setReturnAmount(oldApplication.getReturnFee());
+                    appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
+                    List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
+                    saveReturnFeeDtos.add(appReturnFeeDto);
+                    broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+                    broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
+                }
             }
         }
 
@@ -1655,6 +1669,7 @@ public class HcsaApplicationDelegator {
                     String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
                     if (ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(withdrawApplicationDto.getStatus())){
+                        applicationService.closeTaskWhenWhAppApprove(withdrawApplicationDto.getId());
                         String subjectSuppInfo = applicationNo + " is Approved";
                         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
                         msgInfoMap.put("appNum", applicationNo);
