@@ -681,16 +681,6 @@ public final class IaisEGPHelper extends EGPHelper {
         return resEnt;
     }
 
-    public static Matcher matcherByRegex(String str, String regex){
-        if (StringUtils.isEmpty(str) || StringUtils.isEmpty(regex)){
-            throw new IaisRuntimeException("params is empty");
-        }
-
-        Pattern pattern= Pattern.compile(regex);
-        Matcher matcher= pattern.matcher(str);
-        return matcher;
-    }
-
     public static String[] getPageSizeByStrings(String pageSizeStr) throws IaisRuntimeException{
         if (StringUtils.isEmpty(pageSizeStr)){
             throw new IaisRuntimeException("can not convert page size");
