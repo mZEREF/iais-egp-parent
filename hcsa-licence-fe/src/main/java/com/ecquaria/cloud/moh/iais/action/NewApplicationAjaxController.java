@@ -967,7 +967,7 @@ public class NewApplicationAjaxController {
         //mapMaximumCount = 4;
         if (mapMaximumCount - hasNumber > 0){
             //assign select
-            List<SelectOption> assignPrincipalOfficerSel = ClinicalLaboratoryDelegator.getAssignMedAlertSel(true);
+            List<SelectOption> assignPrincipalOfficerSel = NewApplicationHelper.genAssignPersonSel(request,true);
             Map<String,String> assignPrincipalOfficerAttr = IaisCommonUtils.genNewHashMap();
             assignPrincipalOfficerAttr.put("name", "assignSel");
             assignPrincipalOfficerAttr.put("class", "assignSel");

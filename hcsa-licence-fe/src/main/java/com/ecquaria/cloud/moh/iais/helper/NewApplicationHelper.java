@@ -1792,7 +1792,7 @@ public class NewApplicationHelper {
             AppSvcPrincipalOfficersDto selPerson = personMap.get(personKey);
             if(selPerson != null){
                 appSvcCgoDto.setAssignSelect(getPersonKey(selPerson.getIdType(),selPerson.getIdNo()));
-                appSvcCgoDto.setDesignation(selPerson.getDesignation());
+                appSvcCgoDto.setSalutation(selPerson.getSalutation());
                 appSvcCgoDto.setName(selPerson.getName());
                 appSvcCgoDto.setIdType(selPerson.getIdType());
                 appSvcCgoDto.setIdNo(selPerson.getIdNo());
@@ -1804,6 +1804,15 @@ public class NewApplicationHelper {
                 appSvcCgoDto.setSubSpeciality(selPerson.getSubSpeciality());
                 appSvcCgoDto.setMobileNo(selPerson.getMobileNo());
                 appSvcCgoDto.setEmailAddr(selPerson.getEmailAddr());
+                //sync other field
+                String officeTelNo = selPerson.getOfficeTelNo();
+                String preferredMode = selPerson.getPreferredMode();
+                if(!StringUtil.isEmpty(officeTelNo)){
+                    appSvcCgoDto.setOfficeTelNo(officeTelNo);
+                }
+                if(!StringUtil.isEmpty(preferredMode)){
+                    appSvcCgoDto.setPreferredMode(preferredMode);
+                }
                 //
                 appSvcCgoDto.setNeedSpcOptList(true);
                 appSvcCgoDto.setSpcOptList(selPerson.getSpcOptList());
@@ -1827,17 +1836,49 @@ public class NewApplicationHelper {
             AppSvcPrincipalOfficersDto selPerson = personMap.get(personKey);
             if(selPerson != null){
                 person.setAssignSelect(getPersonKey(selPerson.getIdType(),selPerson.getIdNo()));
-                person.setDesignation(selPerson.getDesignation());
+                person.setSalutation(selPerson.getSalutation());
                 person.setName(selPerson.getName());
                 person.setIdType(selPerson.getIdType());
                 person.setIdNo(selPerson.getIdNo());
                 person.setMobileNo(selPerson.getMobileNo());
                 person.setEmailAddr(selPerson.getEmailAddr());
+                String officeTelNo = selPerson.getOfficeTelNo();
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(person.getPsnType()) || ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(person.getPsnType()) ){
-                    person.setOfficeTelNo(selPerson.getOfficeTelNo());
+                    person.setOfficeTelNo(officeTelNo);
+                }else if(!StringUtil.isEmpty(officeTelNo)){
+                    //cgo column -> cgoC1 , po not have cgoC1 po to sync data shouldnt set null
+                    person.setOfficeTelNo(officeTelNo);
                 }
+                String preferredMode = selPerson.getPreferredMode();
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(person.getPsnType())){
-                    person.setPreferredMode(selPerson.getPreferredMode());
+                    person.setPreferredMode(preferredMode);
+                }else if(!StringUtil.isEmpty(preferredMode)){
+                    person.setPreferredMode(preferredMode);
+                }
+                //sync other field
+                String designation = selPerson.getDesignation();
+                String professionType = selPerson.getProfessionType();
+                String profRegNo = selPerson.getProfRegNo();
+                String speciality = selPerson.getSpeciality();
+                String specialityOther = selPerson.getSpecialityOther();
+                String subSpeciality = selPerson.getSubSpeciality();
+                if(!StringUtil.isEmpty(designation)){
+                    person.setDesignation(designation);
+                }
+                if(!StringUtil.isEmpty(professionType)){
+                    person.setProfessionType(professionType);
+                }
+                if(!StringUtil.isEmpty(profRegNo)){
+                    person.setProfRegNo(profRegNo);
+                }
+                if(!StringUtil.isEmpty(speciality)){
+                    person.setSpeciality(speciality);
+                }
+                if(!StringUtil.isEmpty(specialityOther)){
+                    person.setSpecialityOther(specialityOther);
+                }
+                if(!StringUtil.isEmpty(subSpeciality)){
+                    person.setSubSpeciality(subSpeciality);
                 }
                 //set lic person info
                 person.setLicPerson(selPerson.isLicPerson());

@@ -1538,6 +1538,7 @@ public class NewApplicationDelegator {
         autoAppSubmissionListDto.setEventRefNo(autoTime.toString());
         notAutoAppSubmissionListDto.setEventRefNo(notAutoTime.toString());
         if(!notAutoSaveAppsubmission.isEmpty()){
+            AppSubmissionDto appSu = requestForChangeService.submitChange(notAutoAppSubmissionListDto.getAppSubmissionDtos().get(0));
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(notAutoSaveAppsubmission);
             notAutoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(notAutoAppSubmissionListDto,notAuto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
@@ -1552,6 +1553,7 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
         if(!autoSaveAppsubmission.isEmpty()){
+            AppSubmissionDto appSu = requestForChangeService.submitChange(notAutoAppSubmissionListDto.getAppSubmissionDtos().get(0));
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoSaveAppsubmission);
             autoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto,auto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
@@ -3043,9 +3045,9 @@ public class NewApplicationDelegator {
                 String certIssuedDtStr = Formatter.formatDate(fireSafetyCertIssuedDateDate);
                 appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
                 if(AppConsts.YES.equals(isOtherLic[i])){
-                    appGrpPremisesDto.setLocateWithOthers(AppConsts.YES);
-                }else if(AppConsts.NO.equals(isOtherLic[i])){
-                    appGrpPremisesDto.setLocateWithOthers(AppConsts.NO);
+                    appGrpPremisesDto.setLocateWithOthers(1);
+                }else if("-1".equals(isOtherLic[i])){
+                    appGrpPremisesDto.setLocateWithOthers(-1);
                 }
                 for(int j =0; j<length; j++){
                     AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();

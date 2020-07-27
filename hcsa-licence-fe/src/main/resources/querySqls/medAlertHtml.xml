@@ -4,6 +4,7 @@
         <![CDATA[
         <div class="medAlertContent">
             <input type="hidden" name="licPerson" value="0"/>
+            <input type="hidden" name="existingPsn" value="0"/>
             <div class="row">
                 <div class="control control-caption-horizontal">
                     <div class=" form-group form-horizontal formgap">

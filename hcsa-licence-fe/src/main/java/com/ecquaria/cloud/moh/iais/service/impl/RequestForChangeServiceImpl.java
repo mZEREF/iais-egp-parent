@@ -43,6 +43,11 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Date;
@@ -51,10 +56,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import static java.util.regex.Pattern.compile;
 
@@ -488,8 +489,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
 
-                        String locateWithOthers = appGrpPremisesDtoList.get(i).getLocateWithOthers();
-                        if(StringUtil.isEmpty(locateWithOthers)){
+                        int locateWithOthers = appGrpPremisesDtoList.get(i).getLocateWithOthers();
+                        if(locateWithOthers == 0){
                             errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR001");
                         }
 
