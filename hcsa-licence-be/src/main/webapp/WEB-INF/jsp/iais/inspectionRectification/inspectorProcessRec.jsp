@@ -206,6 +206,12 @@
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_internalMarks"></span>
                               </iais:value>
                             </iais:row>
+                            <iais:row>
+                              <iais:field value="Processing Decision" required="true"/>
+                              <iais:value width="7">
+                                <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"></iais:select>
+                              </iais:value>
+                            </iais:row>
                             <iais:row id="indicateCondRemarks">
                               <div class="col-md-4" style="padding-right: 0px;">
                                 <label style="font-size: 16px">Please indicate Licensing Terms and Conditions<span style="color: red"> *</span></label>
@@ -213,12 +219,6 @@
                               <iais:value width="4000">
                                 <textarea id="condRemarks" name="condRemarks" maxlength="4000" cols="60" rows="7" style="font-size:16px"><c:out value="${inspectionPreTaskDto.accCondMarks}"></c:out></textarea>
                                 <br><span class="error-msg" name="iaisErrorMsg" id="error_accCondMarks"></span>
-                              </iais:value>
-                            </iais:row>
-                            <iais:row id="indicateCondRemarks">
-                              <iais:field value="Processing Decision" required="true"/>
-                              <iais:value width="7">
-                                <iais:select name="selectValue" options="processDecOption" firstOption="Please Select" value="${inspectionPreTaskDto.selectValue}" onchange="javascript:doInspectorProRecChange(this.value)"></iais:select>
                               </iais:value>
                             </iais:row>
                             <c:if test="${'APTY002' eq applicationViewDto.applicationDto.applicationType}">
