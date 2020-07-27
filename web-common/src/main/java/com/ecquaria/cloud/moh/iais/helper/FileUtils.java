@@ -142,14 +142,7 @@ public final class FileUtils {
             return null;
         }
 
-        String regex = "\\{([^}]*)\\}";
-        Matcher matcher = IaisEGPHelper.matcherByRegex(str.trim(), regex);
-        if (!matcher.matches()){
-            return null;
-        }
-
-        String fileTypeStr = matcher.group(1);
-        return fileTypeStr.split("\\,");
+        return str.split(",");
     }
 
     public static  String getStringFromSystemConfigString(String configString){
