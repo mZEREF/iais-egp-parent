@@ -58,9 +58,7 @@
         multiWord: false,
         separator: ",",
         getDataMethod: "url",
-        effectiveFields:["codeDescription"],
-        effectiveFieldsAlias:{codeDescription: "codeDescription"},
-        showHeader: true,
+        showHeader: false,
         url: '${pageContext.request.contextPath}/suggest-template-description?description=',
         processData: function(json){
             var i, len, data = {value: []};
