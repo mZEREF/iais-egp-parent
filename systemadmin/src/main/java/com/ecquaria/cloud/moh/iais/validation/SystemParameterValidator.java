@@ -13,7 +13,6 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.regex.Matcher;
 
 /**
  * @author: yichen
@@ -77,7 +76,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 				int val = Integer.parseInt(values[i]);
 				if (val < 10 || val > 100){
 					errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "GENERAL_ERR0022");
-					break;
+					return;
 				}
 
 				to[i] = val;
