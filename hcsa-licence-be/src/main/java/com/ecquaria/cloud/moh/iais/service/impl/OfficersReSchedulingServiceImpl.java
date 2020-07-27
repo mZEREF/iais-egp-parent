@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -33,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AppointmentUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
@@ -71,6 +73,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
+
+    @Autowired
+    private ApplicationService applicationService;
 
     @Autowired
     private ApplicationClient applicationClient;
@@ -283,6 +288,9 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                         //create and update task
                         reSchSaveTask(taskDtos, auditTrailDto, taskScore);
                     }
+                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT);
+                    applicationDto.setAuditTrailDto(auditTrailDto);
+                    applicationService.updateFEApplicaiton(applicationDto);
                 }
             }
             reschedulingOfficerDto.setSaveAppNoList(appNoList);
