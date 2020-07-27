@@ -119,7 +119,7 @@ public class AppealServiceImpl implements AppealService {
 
     @Override
     public AppealApplicationDto createAppealApplicationDto(AppealApplicationDto appealApplicationDto) {
-        String callBackUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/LicenceEventBusCallBack";
+        String callBackUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/ComEventBusCallback";
         String sopUrl = systemParamConfig.getIntraServerName()+"/hcsa-licence-web/eservice/INTRANET/ApplicationView";
         String project ="hcsaLicenceBe";
         String processName = "generateLicenceAppeal";
