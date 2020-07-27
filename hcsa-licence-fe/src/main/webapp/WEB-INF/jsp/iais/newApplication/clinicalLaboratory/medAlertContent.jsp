@@ -64,6 +64,7 @@
                         <input type="hidden" name="licPerson" value="0"/>
                     </c:otherwise>
                 </c:choose>
+                <input type="hidden" name="existingPsn" value="0"/>
                 <div class="row">
                     <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -265,7 +266,7 @@
 
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
-            $('.addMapBtn').addClass('hidden');
+            $('#addMapBtn').addClass('hidden');
         }
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
@@ -393,7 +394,9 @@
         unDisabledPage();
         $('#isEditHiddenVal').val('1');
         $('#edit-content').addClass('hidden');
-        $('.addMapBtn').removeClass(hidden);
+        $('#addMapBtn').removeClass('hidden');
+        $('input[name="licPerson"]').val('0');
+        $('input[name="existingPsn"]').val('0');
     });
 
 

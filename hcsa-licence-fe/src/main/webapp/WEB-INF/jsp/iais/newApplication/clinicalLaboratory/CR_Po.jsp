@@ -851,6 +851,7 @@
             addPo();
             $('#edit').addClass('hidden');
             $('input[name="poExistingPsn"]').val('0');
+            // $('input[name="poLicPerson"]').val('0');
         });
     }
 
@@ -866,6 +867,7 @@
             addDpo();
             $('#edit-dpo').addClass('hidden');
             $('input[name="dpoExistingPsn"]').val('0');
+            // $('input[name="dpoLicPerson"]').val('0');
         });
     }
     var fillPoData = function ($poContentEle,data) {

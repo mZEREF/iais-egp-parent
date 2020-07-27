@@ -129,12 +129,12 @@
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>
                                         <c:choose>
-                                            <c:when test="${appGrpPremDto.locateWithOthers}">
+                                            <c:when test="${appGrpPremDto.locateWithOthers =='1'}">
                                                 Yes
                                             </c:when>
-                                            <c:otherwise>
+                                            <c:when test="${appGrpPremDto.locateWithOthers =='-1'}">
                                                 No
-                                            </c:otherwise>
+                                            </c:when>
                                         </c:choose>
                                     </span></p>
                                 </div>

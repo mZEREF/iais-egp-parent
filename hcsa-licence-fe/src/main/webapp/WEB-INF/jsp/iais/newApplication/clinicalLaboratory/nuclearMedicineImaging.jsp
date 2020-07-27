@@ -213,10 +213,14 @@
                 </c:forEach>
               </c:if>
               <c:if test="${requestInformationConfig==null}">
-                <c:set var="spDtoLength" value="${AppSvcPersonnelDtoList.size()}"/>
-                <c:if test="${spDtoLength == '0'}">
-                  <c:set var="spDtoLength" value="1"/>
-                </c:if>
+                <c:choose>
+                  <c:when test="${!empty AppSvcPersonnelDtoList}">
+                    <c:set var="spDtoLength" value="${AppSvcPersonnelDtoList.size()}"/>
+                  </c:when>
+                  <c:otherwise>
+                    <c:set var="spDtoLength" value="1"/>
+                  </c:otherwise>
+                </c:choose>
                 <c:set var="needAddPsn" value="true"/>
                 <c:choose>
                   <c:when test="${spHcsaSvcPersonnelDto.status =='CMSTAT003'}">

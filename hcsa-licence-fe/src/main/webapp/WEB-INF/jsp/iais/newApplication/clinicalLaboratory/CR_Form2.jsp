@@ -494,6 +494,11 @@
               //add edit and set style
               setPsnDisabled($currentPsn,${GovernanceOfficersList[stat.index].psnEditFieldStr});
             </c:forEach>
+        }else if(('APTY005' == appType || 'APTY004' == appType) && '0' == rfiObj){
+            disabledPage();
+        }else{
+            //rfi
+
         }
         doEdit();
 
@@ -612,7 +617,8 @@
             $contentEle.find('div.nice-select').removeClass('disabled');
             $contentEle.find('input[type="text"]').css('border-color','');
             $contentEle.find('input[type="text"]').css('color','');
-            $contentEle.find('input[name=""existingPsn]').val('0');
+            //get data from page
+            $contentEle.find('select[name="assignSelect"] option[value="newOfficer"]').prop('selected',true);
             $('#isEditHiddenVal').val('1');
         });
     }
