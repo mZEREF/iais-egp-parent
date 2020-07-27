@@ -65,37 +65,33 @@ public class SystemParameterValidator implements CustomizeValidator {
 	}
 
 	private void verifyPageSize(Map<String, String> errorMap, String value){
-		Matcher m = IaisEGPHelper.matcherByRegex(value, "\\{([^}]*)\\}");
-		if (m.matches()){
-			String[] values = IaisEGPHelper.getPageSizeByStrings(value);
-			try {
-				if (values.length != 5){
-					errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.replaceMessage("GENERAL_ERR0021", "5", "len"));
-					return;
-				}
-
-				int[] to = new int[values.length];
-				for (int i = 0; i < values.length; i++){
-					int val = Integer.parseInt(values[i]);
-					if (val < 10 || val > 100){
-						errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "GENERAL_ERR0022");
-						break;
-					}
-
-					to[i] = val;
-				}
-
-				if (!IaisEGPHelper.isAsc(to)){
-					errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "UC_CHKLMD001_ERR003");
-				}
-
-			}catch (NumberFormatException e){
-				errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "UC_CHKLMD001_ERR003");
+		String[] values = IaisEGPHelper.getPageSizeByStrings(value);
+		try {
+			if (values.length != 5){
+				errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, MessageUtil.replaceMessage("GENERAL_ERR0021", "5", "len"));
 				return;
 			}
-		}else {
+
+			int[] to = new int[values.length];
+			for (int i = 0; i < values.length; i++){
+				int val = Integer.parseInt(values[i]);
+				if (val < 10 || val > 100){
+					errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "GENERAL_ERR0022");
+					break;
+				}
+
+				to[i] = val;
+			}
+
+			if (!IaisEGPHelper.isAsc(to)){
+				errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "UC_CHKLMD001_ERR003");
+			}
+
+		}catch (NumberFormatException e){
 			errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "UC_CHKLMD001_ERR003");
+			return;
 		}
+
 
 	}
 

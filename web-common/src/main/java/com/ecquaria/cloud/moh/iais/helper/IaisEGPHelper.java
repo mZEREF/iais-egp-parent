@@ -696,13 +696,7 @@ public final class IaisEGPHelper extends EGPHelper {
             throw new IaisRuntimeException("can not convert page size");
         }
 
-        String regex = "\\{([^}]*)\\}";
-        Matcher matcher = matcherByRegex(pageSizeStr.trim(), regex);
-        if (!matcher.matches()){
-            return null;
-        }
-
-        return matcher.group(1).split("\\,");
+        return pageSizeStr.split(",");
     }
 
 
