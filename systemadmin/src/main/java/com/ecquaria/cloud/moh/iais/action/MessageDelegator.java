@@ -119,6 +119,31 @@ public class MessageDelegator {
             return;
         }
 
+        String description = ParamUtil.getString(request, MessageConstants.PARAM_DESCRIPTION);
+        String message = ParamUtil.getString(request, MessageConstants.PARAM_MESSAGE);
+        MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO);
+
+        editDto.setDescription(description);
+        editDto.setMessage(message);
+        ParamUtil.setSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO, editDto);
+        ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
+        if(validationResult != null && validationResult.isHasErrors()){
+            Map<String,String> errorMap = validationResult.retrieveAll();
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
+        }else {
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
+
+            messageService.saveMessage(editDto);
+        }
+    }
+
+    /**
+     * AutoStep: backAfter
+     * @param bpc
+     */
+    public void setAttrValue(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
         preSelectOption(request);
 
         String description = ParamUtil.getString(request, MessageConstants.PARAM_DESCRIPTION);
@@ -127,40 +152,7 @@ public class MessageDelegator {
 
         editDto.setDescription(description);
         editDto.setMessage(message);
-        ValidationResult validationResult = WebValidationHelper.validateProperty(editDto, "edit");
-        if(validationResult != null && validationResult.isHasErrors()){
-            Map<String,String> errorMap = validationResult.retrieveAll();
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"N");
-        }else {
-            ParamUtil.setSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO, editDto);
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,"Y");
-        }
-
-    }
-
-    /**
-     * AutoStep: editSubmit
-     * @param bpc
-     */
-    public void editSubmit(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        String currentAction = ParamUtil.getString(request, IaisEGPConstant.CRUD_ACTION_TYPE);
-        if ("editSubmit".equals(currentAction)){
-            MessageDto editDto = (MessageDto) ParamUtil.getSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO);
-            messageService.saveMessage(editDto);
-        }
-
-    }
-
-    /**
-     * AutoStep: backAfter
-     * @param bpc
-     */
-    public void backAfter(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        preSelectOption(request);
-
+        ParamUtil.setSessionAttr(request, MessageConstants.MESSAGE_REQUEST_DTO, editDto);
     }
 
     /**

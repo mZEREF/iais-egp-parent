@@ -35,17 +35,16 @@
             <div class="form-group">
                 <iais:field value="Module" />
                 <div class="col-xs-5 col-md-3">
-                    <iais:select name="module" disabled="true" codeCategory="CATE_ID_ERR_MSG_MODULE" filterValue="MSGMD010" firstOption="Please select" value="${msgRequestDto.module}"></iais:select>
+                    <iais:select name="module" disabled="true" options="moduleTypeSelect" firstOption="Please Select" value="${msgRequestDto.module}"></iais:select>
                     <span id="error_module" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
-
 
             <div class="form-group">
                 <iais:field value="Description" required="true" />
                 <div class="col-xs-10 col-md-7">
                     <textarea cols="70" rows="7" name="description" maxlength="255" id="description"><c:out value="${msgRequestDto.description}"></c:out></textarea>
-                    <span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
+                    <br><br><span id="error_description" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
 
@@ -53,7 +52,7 @@
                 <iais:field value="Message" required="true" />
                 <div class="col-xs-5 col-md-7">
                     <textarea cols="70" rows="7" name="message" maxlength="255" id="message"><c:out value="${msgRequestDto.message}"></c:out></textarea>
-                    <span id="error_message" name="iaisErrorMsg" class="error-msg"></span>
+                    <br><br><span id="error_message" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
 
@@ -71,11 +70,12 @@
 
         <div class="row">
             <div class="col-xs-12 col-sm-8">
-                <a class="back" href="#" id="crud_cancel_link"  value = "doCancel"><em class="fa fa-angle-left"></em> Back</a>
+                <a class="back" href="#" id="crud_cancel_link"  value = "doBack"><em class="fa fa-angle-left"></em> Back</a>
             </div>
             <div class="col-xs-12 col-sm-4">
                 <div class="button-group">
-                    <a class="btn btn-primary next" onclick="Utils.submit('mainForm','doEdit', '${msgRequestDto.id}')">Preview</a>
+                    <a class="btn btn-primary next" onclick="Utils.submit('mainForm','setAttrValue')">Preview</a>
+                    <a class="btn btn-primary next" onclick="Utils.submit('mainForm','doEdit', '${msgRequestDto.id}')">Submit</a>
                 </div>
             </div>
         </div>

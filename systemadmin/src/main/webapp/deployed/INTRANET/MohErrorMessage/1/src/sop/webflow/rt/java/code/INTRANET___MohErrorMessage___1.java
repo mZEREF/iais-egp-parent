@@ -49,12 +49,8 @@ private static final String DELEGATOR ="messageDelegator";
 		EngineHelper.delegate(DELEGATOR, "prepareEdit", this);
 	}
 
-	public void editSubmit_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "editSubmit", this);
-	}
-
-	public void backAfter_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "backAfter", this);
+	public void setAttrValue_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "setAttrValue", this);
 	}
 
 	

@@ -26,14 +26,14 @@
           <div class="form-group">
             <iais:field value="Message Type" />
             <div class="col-xs-5 col-md-3">
-              <iais:select name="msgType" disabled="true" codeCategory="CATE_ID_WRONG_TYPE"  filterValue="WRNTYPE003" firstOption="Please select" value="${msgRequestDto.msgType}" ></iais:select>
+              <iais:select name="msgType" disabled="true" codeCategory="CATE_ID_WRONG_TYPE"  filterValue="WRNTYPE003" firstOption="Please Select" value="${msgRequestDto.msgType}" ></iais:select>
             </div>
           </div>
 
           <div class="form-group">
             <iais:field value="Module" />
             <div class="col-xs-5 col-md-3">
-              <iais:select name="module" disabled="true" codeCategory="CATE_ID_ERR_MSG_MODULE" filterValue="MSGMD010" firstOption="Please select" value="${msgRequestDto.module}"></iais:select>
+              <iais:select name="module" disabled="true" codeCategory="CATE_ID_ERR_MSG_MODULE" filterValue="MSGMD010" firstOption="Please Select" value="${msgRequestDto.module}"></iais:select>
             </div>
           </div>
 
@@ -65,12 +65,7 @@
 
     <div class="row">
       <div class="col-xs-12 col-sm-8">
-        <a class="back" href="#" id="crud_cancel_link"  value = "doCancel"><em class="fa fa-angle-left"></em> Back</a>
-      </div>
-      <div class="col-xs-12 col-sm-4">
-        <div class="button-group">
-          <a class="btn btn-primary next" onclick="Utils.submit('mainForm','editSubmit')">Submit</a>
-        </div>
+        <a class="back" href="#" id="crud_cancel_link"  value = "doBack"><em class="fa fa-angle-left"></em> Back</a>
       </div>
     </div>
 
