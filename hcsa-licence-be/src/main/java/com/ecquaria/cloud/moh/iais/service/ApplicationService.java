@@ -59,4 +59,6 @@ public interface ApplicationService {
     AppReturnFeeDto saveAppReturnFee(AppReturnFeeDto appReturnFeeDto);
     List<ApplicationDto> getApplicationDtosByApplicationNo(String applicationNo);
     List<AppEditSelectDto>  getAppEditSelectDtosByAppIds( List<String> applicationIds);
+
+    boolean closeTaskWhenWhAppApprove(String appId);
 }

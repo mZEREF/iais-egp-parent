@@ -6,11 +6,13 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -20,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -35,18 +38,14 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.EicClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import sop.forms.task.TaskConstants;
 
 import java.io.IOException;
 import java.util.Date;
@@ -80,6 +79,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private InboxMsgService inboxMsgService;
+
+    @Autowired
+    CessationClient cessationClient;
+
+    @Autowired
+    private TaskOrganizationClient taskOrganizationClient;
 
     @Autowired
     MsgTemplateClient msgTemplateClient;
@@ -447,6 +452,31 @@ public class ApplicationServiceImpl implements ApplicationService {
     public List<AppEditSelectDto> getAppEditSelectDtosByAppIds(List<String> applicationIds) {
         List<AppEditSelectDto> entity = applicationClient.getAppEditSelectDtosByAppIds(applicationIds).getEntity();
         return entity;
+    }
+
+    @Override
+    public boolean closeTaskWhenWhAppApprove(String appId) {
+        AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
+        if (premiseMiscDto != null){
+            String oldApplicationId = premiseMiscDto.getAppPremCorreId();
+            if (!StringUtil.isEmpty(oldApplicationId)){
+                List<String> applicationList = IaisCommonUtils.genNewArrayList();
+                applicationList.add(oldApplicationId);
+                List<ApplicationDto> applicationDtoList = applicationClient.getApplicationDtosByIds(applicationList).getEntity();
+                if (applicationDtoList != null){
+                    applicationDtoList.forEach(h -> {
+                        List<TaskDto> taskDtoList = taskOrganizationClient.getTaskbyApplicationNo(h.getApplicationNo()).getEntity();
+                        if (taskDtoList != null && taskDtoList.size()>0){
+                            taskDtoList.forEach(c -> {
+                                c.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                                taskOrganizationClient.updateTask(c).getEntity();
+                            });
+                        }
+                    });
+                }
+            }
+        }
+        return false;
     }
 
     @Override
