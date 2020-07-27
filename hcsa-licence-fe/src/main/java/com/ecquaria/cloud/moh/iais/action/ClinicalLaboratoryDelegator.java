@@ -1703,6 +1703,7 @@ public class ClinicalLaboratoryDelegator {
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
         //new and not rfi
         for (int i = 0; i < size; i++) {
+            AppPsnEditDto appPsnEditDto = new AppPsnEditDto();
             boolean chooseExisting = false;
             boolean getPageData = false;
             appSvcCgoDto = new AppSvcCgoDto();
@@ -1758,11 +1759,10 @@ public class ClinicalLaboratoryDelegator {
             log.info(StringUtil.changeForLog("getPageData:"+getPageData));
             if(chooseExisting){
                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
-                AppPsnEditDto appPsnEditDto;
                 try {
                     appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcPrincipalOfficersDto);
                 } catch (Exception e) {
-                    appPsnEditDto = new AppPsnEditDto();
+                    clearAppPsnEditDto(appPsnEditDto);
                     log.error(e.getMessage(), e);
                 }
                 if(appPsnEditDto.isSalutation()){
