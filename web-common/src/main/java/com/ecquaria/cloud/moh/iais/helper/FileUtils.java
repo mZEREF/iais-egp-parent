@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
 
 /**
  * @author: yichen
@@ -141,6 +140,7 @@ public final class FileUtils {
         if (StringUtils.isEmpty(str)){
             return null;
         }
+
 
         return str.split(",");
     }
