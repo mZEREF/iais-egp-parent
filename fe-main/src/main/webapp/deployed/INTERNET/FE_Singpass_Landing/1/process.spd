@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="" dtdVersion="6.0" executable="true" majorVersion="9" minorVersion="0" name="FE_Singpass_Landing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="" dtdVersion="6.0" executable="true" majorVersion="11" minorVersion="0" name="FE_Singpass_Landing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step2" x="120" y="200">
@@ -28,13 +28,6 @@
     <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </StopStep>
-  <StopStep defClass="" executor="" icon="" name="redirectToInbox" x="790" y="730">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="redirectToInbox_OnStepProcess_0" name="redirectToInbox_OnStepProcess_0"/>
-   </OnStepProcess>
-  </StopStep>
   <AutomaticStep defClass="" executor="" icon="" name="receiveUserInfo" x="440" y="340">
    <Description/>
    <probepoint type="none"/>
@@ -49,6 +42,12 @@
     <JavaCode defClass="" executor="" methodName="initLoginInfo_OnStepProcess_0" name="initLoginInfo_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="inbox" processname="MohInternetInbox" project="INTERNET" version="-1" x="950" y="720">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="singpassCallBackPage" stageIndicator="" x="910" y="110">
@@ -85,13 +84,10 @@
    <position>{(840,360)(820,490)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/initSingpassInfo" style="rectanular">
-   <position>{(820,490)(840,620)}</position>
+   <position>{(820,490)(840,610)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/fillParticulars" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
-   <position>{(840,620)(678,621)(660,360)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/StopStep/redirectToInbox" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
-   <position>{(840,620)(810,750)}</position>
+   <position>{(840,610)(678,621)(660,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/singpassCallBack" style="rectanular">
    <position>{(330,220)(360,360)}</position>
@@ -108,15 +104,18 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/initLoginInfo" linkstyle="Direct" name="" sourceName="/Conditions/Condition/isFirstLogin" style="oblique">
    <position>{(560,360)(560,740)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/StopStep/redirectToInbox" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/initLoginInfo" style="rectanular">
-   <position>{(560,740)(810,750)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/fillParticulars" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/isFirstLogin" style="rectanular">
    <position>{(560,360)(660,360)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/inbox" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(840,610)(970,740)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/inbox" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/initLoginInfo" style="rectanular">
+   <position>{(560,740)(970,740)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Pages/WebPage/fillParticulars" componentIfTrue="/Steps/StopStep/redirectToInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="820" y="600">
+  <Condition componentIfFalse="/Pages/WebPage/fillParticulars" componentIfTrue="/Steps/InvokeStep/inbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="820" y="590">
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/receiveUserInfo" componentIfTrue="/Pages/WebPage/Page1" defClass="" executor="" icon="" leftOperand="hasMohIssueUen" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="340" y="340">

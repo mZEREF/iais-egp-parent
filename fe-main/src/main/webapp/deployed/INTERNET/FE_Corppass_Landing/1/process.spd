@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="" dtdVersion="6.0" executable="true" majorVersion="8" minorVersion="0" name="FE_Corppass_Landing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="" dtdVersion="6.0" executable="true" majorVersion="10" minorVersion="0" name="FE_Corppass_Landing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step3" x="130" y="70">
@@ -37,13 +37,6 @@
     <JavaCode defClass="" executor="" methodName="loginUser_OnStepProcess_0" name="loginUser_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <StopStep defClass="" executor="" icon="" name="redirectToInbox" x="530" y="780">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="redirectToInbox_OnStepProcess_0" name="redirectToInbox_OnStepProcess_0"/>
-   </OnStepProcess>
-  </StopStep>
   <StopStep defClass="" executor="" icon="" name="Step4" x="1220" y="620">
    <Description/>
    <probepoint type="none"/>
@@ -63,6 +56,12 @@
     <JavaCode defClass="" executor="" methodName="corppassCallBack_OnStepProcess_0" name="corppassCallBack_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <InvokeStep defClass="" executor="" icon="" name="inbox" processname="MohInternetInbox" project="INTERNET" version="-1" x="540" y="770">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess/>
+   <OnStepComplete/>
+  </InvokeStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="entityDeclares" stageIndicator="" x="1070" y="230">
@@ -134,20 +133,20 @@
   <SynchronousLink destinationName="/Conditions/Condition/Cond4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/initCorppassUserInfo" style="rectanular">
    <position>{(720,670)(760,800)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/StopStep/redirectToInbox" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
-   <position>{(760,800)(550,800)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/fillParticulars" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
    <position>{(760,800)(937,802)(920,510)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond5" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/loginUser" style="rectanular">
    <position>{(390,540)(400,690)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/StopStep/redirectToInbox" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond5" style="oblique">
-   <position>{(400,690)(573,689)(550,800)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond5" style="oblique">
    <position>{(400,690)(270,690)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/inbox" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond5" style="rectanular">
+   <position>{(400,690)(560,790)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/InvokeStep/inbox" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(760,800)(560,790)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -160,10 +159,10 @@
   <Condition componentIfFalse="/Steps/AutomaticStep/loginUser" componentIfTrue="/Steps/AutomaticStep/validateKeyAppointment" defClass="" executor="" icon="" leftOperand="isFirstLogin" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="370" y="230">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Pages/WebPage/fillParticulars" componentIfTrue="/Steps/StopStep/redirectToInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;Y&quot;" x="740" y="780">
+  <Condition componentIfFalse="/Pages/WebPage/fillParticulars" componentIfTrue="/Steps/InvokeStep/inbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;Y&quot;" x="740" y="780">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Pages/WebPage/Page1" componentIfTrue="/Steps/StopStep/redirectToInbox" defClass="" executor="" icon="" leftOperand="isAdminRole" name="Cond5" operator="=" rightOperand="&quot;Y&quot;" x="380" y="670">
+  <Condition componentIfFalse="/Pages/WebPage/Page1" componentIfTrue="/Steps/InvokeStep/inbox" defClass="" executor="" icon="" leftOperand="isAdminRole" name="Cond5" operator="=" rightOperand="&quot;Y&quot;" x="380" y="670">
    <Description/>
   </Condition>
  </Conditions>
