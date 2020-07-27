@@ -42,16 +42,18 @@
         </iais:row>
 
         <iais:row>
-          <iais:field value="Blacked Out Date Start"/>
+          <iais:field value="Blacked Out Date From" required="true"/>
           <iais:value width="18">
             <iais:datePicker id = "startDate" name = "startDate"  value="${startDate}"></iais:datePicker>
+            <span class="error-msg" id="error_inspectionStartDate" name="iaisErrorMsg"></span>
           </iais:value>
         </iais:row>
 
         <iais:row>
-          <iais:field value="Blacked Out Date End"/>
+          <iais:field value="Blacked Out Date To" required="true"/>
           <iais:value width="18">
             <iais:datePicker id = "endDate" name = "endDate"  value="${endDate}"></iais:datePicker>
+            <span class="error-msg" id="error_inspectionEndDate" name="iaisErrorMsg"></span>
           </iais:value>
         </iais:row>
 

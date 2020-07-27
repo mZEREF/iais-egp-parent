@@ -123,39 +123,42 @@ public class BlackedOutDateDelegator {
             wrlGrpNameOpt.add(new SelectOption(groupName, groupName));
         });
 
-        SearchParam blackQuery = IaisEGPHelper.getSearchParam(request, filterParameter);
 
-        String isNew = (String) ParamUtil.getSessionAttr(request, "isNewViewData");
-        if (isNew.equals("true")){
-            blackQuery.addParam("shortName", defaultName);
-            blackQuery.addFilter("shortName", defaultName, true);
-            ParamUtil.setSessionAttr(request, "isNewViewData", "false");
-        }
 
-        ParamUtil.setRequestAttr(request, "shortName", defaultName);
-        QueryHelp.setMainSql("systemAdmin", "getBlackedOutDateList", blackQuery);
+        String isValid = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ISVALID);
+        if (IaisEGPConstant.YES.equals(isValid)){
+            SearchParam blackQuery = IaisEGPHelper.getSearchParam(request, filterParameter);
 
-        SearchResult<ApptBlackoutDateQueryDto> blackoutDateQueryList  = appointmentService.doQuery(blackQuery);
-
-        List<SelectOption> dropYear = (List<SelectOption>) ParamUtil.getSessionAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT);
-        ParamUtil.setRequestAttr(bpc.request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, dropYear);
-        if (IaisCommonUtils.isEmpty(dropYear)){
-            if (blackoutDateQueryList != null && !IaisCommonUtils.isEmpty(blackoutDateQueryList.getRows())){
-                List<ApptBlackoutDateQueryDto> queryDto = blackoutDateQueryList.getRows();
-                List<Date> dateList = queryDto.stream().map(ApptBlackoutDateQueryDto::getEndDate).collect(Collectors.toList());
-
-                Date start = Collections.min(dateList);
-                Date end = Collections.max(dateList);
-                ApptHelper.preYearOption(request, start, end);
+            String isNew = (String) ParamUtil.getSessionAttr(request, "isNewViewData");
+            if (isNew.equals("true")){
+                blackQuery.addParam("shortName", defaultName);
+                blackQuery.addFilter("shortName", defaultName, true);
+                ParamUtil.setSessionAttr(request, "isNewViewData", "false");
             }
+
+            ParamUtil.setRequestAttr(request, "shortName", defaultName);
+            QueryHelp.setMainSql("systemAdmin", "getBlackedOutDateList", blackQuery);
+
+            SearchResult<ApptBlackoutDateQueryDto> blackoutDateQueryList  = appointmentService.doQuery(blackQuery);
+
+            List<SelectOption> dropYear = (List<SelectOption>) ParamUtil.getSessionAttr(request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT);
+            ParamUtil.setRequestAttr(bpc.request, AppointmentConstants.APPOINTMENT_DROP_YEAR_OPT, dropYear);
+            if (IaisCommonUtils.isEmpty(dropYear)){
+                if (blackoutDateQueryList != null && !IaisCommonUtils.isEmpty(blackoutDateQueryList.getRows())){
+                    List<ApptBlackoutDateQueryDto> queryDto = blackoutDateQueryList.getRows();
+                    List<Date> dateList = queryDto.stream().map(ApptBlackoutDateQueryDto::getEndDate).collect(Collectors.toList());
+
+                    Date start = Collections.min(dateList);
+                    Date end = Collections.max(dateList);
+                    ApptHelper.preYearOption(request, start, end);
+                }
+            }
+
+            ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
+            ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_QUERY, blackQuery);
+            ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_GROUP_NAME_TO_ID_MAP, (Serializable) groupNameToIdMap);
+            ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT, blackoutDateQueryList);
         }
-
-
-
-        ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
-        ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_QUERY, blackQuery);
-        ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_GROUP_NAME_TO_ID_MAP, (Serializable) groupNameToIdMap);
-        ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT, blackoutDateQueryList);
     }
 
     /**
@@ -222,7 +225,25 @@ public class BlackedOutDateDelegator {
         String endDate = ParamUtil.getString(request, "endDate");
         String status = ParamUtil.getString(request, "status");
 
+
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         SearchParam blackQuery = IaisEGPHelper.getSearchParam(request, true, filterParameter);
+        if (StringUtils.isEmpty(startDate)){
+            errorMap.put("inspectionStartDate", "ERR0010");
+        }else {
+            String convertStartDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(startDate), SystemAdminBaseConstants.DATE_FORMAT);
+            blackQuery.addFilter("startDate", convertStartDate, true);
+            ParamUtil.setRequestAttr(request, "startDate", startDate);
+        }
+
+
+        if (StringUtils.isEmpty(endDate)){
+            errorMap.put("inspectionEndDate", "ERR0010");
+        }else {
+            String convertEndDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(endDate), SystemAdminBaseConstants.DATE_FORMAT);
+            blackQuery.addFilter("endDate", convertEndDate, true);
+            ParamUtil.setRequestAttr(request, "endDate", endDate);
+        }
 
         if (!StringUtils.isEmpty(groupName)){
             blackQuery.addFilter("shortName", groupName, true);
@@ -230,19 +251,6 @@ public class BlackedOutDateDelegator {
 
         if (!StringUtils.isEmpty(dropYear)){
             blackQuery.addFilter("year", dropYear, true);
-        }
-
-
-        if (!StringUtils.isEmpty(startDate)){
-            String convertStartDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(startDate), SystemAdminBaseConstants.DATE_FORMAT);
-            blackQuery.addFilter("startDate", convertStartDate, true);
-            ParamUtil.setRequestAttr(request, "startDate", startDate);
-        }
-
-        if (!StringUtils.isEmpty(endDate)){
-            String convertEndDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(endDate), SystemAdminBaseConstants.DATE_FORMAT);
-            blackQuery.addFilter("endDate", convertEndDate, true);
-            ParamUtil.setRequestAttr(request, "endDate", endDate);
         }
 
         if (!StringUtils.isEmpty(desc)){
@@ -254,6 +262,15 @@ public class BlackedOutDateDelegator {
             blackQuery.addFilter("status", status, true);
             ParamUtil.setRequestAttr(request, "status", status);
         }
+
+
+        if (!IaisCommonUtils.isEmpty(errorMap)){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+        }
+
     }
 
     /**

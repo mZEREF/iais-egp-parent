@@ -300,8 +300,8 @@
             AND T1.STATUS in ('CMSTAT001','CMSTAT003')
             <#if shortName??> AND T1.GROUP_SHORT_NAME = :shortName</#if>
             <#if desc??> and charindex(:desc, T1.[DESC]) >0</#if>
-            <#if startDate??> AND T1.START_DATE = :startDate</#if>
-            <#if endDate??> AND T1.END_DATE = :endDate</#if>
+            <#if startDate??> AND T1.START_DATE >= :startDate</#if>
+            <#if endDate??> AND T1.END_DATE <= :endDate</#if>
             <#if status??> AND T1.STATUS = :status</#if>
             <#if year??>
                     AND T1.START_DATE >= CONVERT(datetime, :year, 20) AND T1.END_DATE <= dateadd(ms,86399990,dateadd(dd, 365, CONVERT(datetime, :year, 20)))
