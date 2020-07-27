@@ -36,6 +36,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+import sun.security.krb5.internal.PAData;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -301,63 +303,36 @@ public class MohIntranetUserDelegator {
 
     public void doImport(BaseProcessClass bpc) throws IOException, DocumentException {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
-        List<OrgUserDto> orgUserDtos = (List<OrgUserDto>) ParamUtil.getSessionAttr(bpc.request, "orgUserDtos1");
-        if (!IaisCommonUtils.isEmpty(orgUserDtos)) {
-            List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
-            List<OrgUserDto> orgUserDtosSave = IaisCommonUtils.genNewArrayList();
-            for (OrgUserDto orgUserDto : orgUserDtos) {
-                OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
-                orgUserUpLoadDto.setUserId(orgUserDto.getUserId());
-                List<String> valiant = valiantDto(orgUserDto);
-                if (IaisCommonUtils.isEmpty(valiant)) {
-                    valiant.add("add success !");
-                    orgUserDtosSave.add(orgUserDto);
-                }
-                orgUserUpLoadDto.setMsg(valiant);
-                orgUserUpLoadDtos.add(orgUserUpLoadDto);
-            }
-            if (!IaisCommonUtils.isEmpty(orgUserDtosSave)) {
-                for (OrgUserDto orgUserDto : orgUserDtos) {
-                    try {
-                        intranetUserService.updateOrgUser(orgUserDto);
-                        editEgpUser(orgUserDto);
-                    }catch (Exception e){
-                        log.error(e.getMessage(),e);
-                    }
-                }
-            }
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-            ParamUtil.setRequestAttr(bpc.request, "orgUserUpLoadDtos", orgUserUpLoadDtos);
-            return;
-        }
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("xmlFile");
         File file = File.createTempFile("temp", "xml");
         File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
-        boolean isExistDup = importUserIdValiant(xmlFile);
-        if (!isExistDup) {
-            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-            importXML(xmlFile, bpc);
-            return;
+        List<OrgUserDto> orgUserDtos = importXML(xmlFile, bpc);
+        ParamUtil.setRequestAttr(bpc.request, "orgUserDtos", orgUserDtos);
+        return;
+    }
+
+    public void prepareImportAck(BaseProcessClass bpc) throws DocumentException {
+        List<OrgUserDto> orgUserDtos = (List<OrgUserDto>)ParamUtil.getRequestAttr(bpc.request, "orgUserDtos");
+        for(OrgUserDto orgUserDto :orgUserDtos){
+            String userId = orgUserDto.getUserId();
+            OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
+            if(intranetUserByUserId!=null){
+
+            }
         }
-        ParamUtil.setRequestAttr(bpc.request, "xmlFile", xmlFile);
-        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-        ParamUtil.setRequestAttr(bpc.request, "importSelect", "show");
-        return;
     }
 
-    public void importNext(BaseProcessClass bpc) throws DocumentException {
-        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
-        File xmlFile = (File) ParamUtil.getRequestAttr(bpc.request, "xmlFile");
-        importXMLExistUserId(xmlFile, bpc);
-        return;
-    }
-
-    public void importCancel(BaseProcessClass bpc) throws DocumentException {
+    public void importSwitch(BaseProcessClass bpc) throws DocumentException {
         ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
         return;
     }
 
-    public void inportBack(BaseProcessClass bpc) {
+    public void importSubmit(BaseProcessClass bpc) throws DocumentException {
+        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
+        return;
+    }
+
+    public void importBack(BaseProcessClass bpc) {
         ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
         return;
     }
@@ -676,7 +651,7 @@ public class MohIntranetUserDelegator {
     }
 
 
-    private void importXML(File file, BaseProcessClass bpc) throws DocumentException {
+    private List<OrgUserDto> importXML(File file, BaseProcessClass bpc) throws DocumentException {
         SAXReader saxReader = new SAXReader();
         Document document = saxReader.read(file);
         //root
@@ -684,7 +659,6 @@ public class MohIntranetUserDelegator {
         //ele
         List list = root.elements();
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
-        List<OrgUserDto> orgUserDtos1 = IaisCommonUtils.genNewArrayList();
         List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < list.size(); i++) {
             try {
@@ -726,39 +700,14 @@ public class MohIntranetUserDelegator {
                 orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
                 orgUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 orgUserDto.setAvailable(Boolean.FALSE);
-                orgUserDtos1.add(orgUserDto);
+                orgUserDtos.add(orgUserDto);
 
-                OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
-                if(StringUtil.isEmpty(userId)){
-                    orgUserUpLoadDto.setUserId("-");
-                }else {
-                    orgUserUpLoadDto.setUserId(userId);
-                }
-                List<String> valiant = valiant(orgUserDto);
-                if (IaisCommonUtils.isEmpty(valiant)) {
-                    valiant.add("add success !");
-                    orgUserDtos.add(orgUserDto);
-                }
-                orgUserUpLoadDto.setMsg(valiant);
-                orgUserUpLoadDtos.add(orgUserUpLoadDto);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 continue;
             }
         }
-        if (!IaisCommonUtils.isEmpty(orgUserDtos)) {
-            for (OrgUserDto orgUserDto : orgUserDtos) {
-                try {
-                    saveEgpUser(orgUserDto);
-                } catch (Exception e) {
-                    log.error(e.getMessage(), e);
-                    log.info(StringUtil.changeForLog("========================egpUser================"));
-                }
-            }
-            intranetUserService.createIntranetUsers(orgUserDtos);
-        }
-        ParamUtil.setSessionAttr(bpc.request, "orgUserUpLoadDtos", (Serializable) orgUserUpLoadDtos);
-        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", (Serializable) orgUserDtos1);
+        return orgUserDtos ;
     }
 
     private void importXMLExistUserId(File file, BaseProcessClass bpc) throws DocumentException {
@@ -918,6 +867,7 @@ public class MohIntranetUserDelegator {
         }
         return errors;
     }
+
     private List<String> valiantDto(OrgUserDto orgUserDto) {
         List<String> errors = IaisCommonUtils.genNewArrayList();
         String userId = orgUserDto.getUserId();

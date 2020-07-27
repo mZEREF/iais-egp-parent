@@ -64,7 +64,7 @@ public class INTRANET___MohIntranetUser___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "doImport", this);
 	}
 	public void back_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "inportBack", this);
+		EngineHelper.delegate(DELEGATOR, "importBack", this);
 	}
 	public void prepareRole_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "prepareAddRole", this);
@@ -72,11 +72,14 @@ public class INTRANET___MohIntranetUser___1 extends BaseProcessClass {
 	public void doAddRole_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "addRole", this);
 	}
-	public void routeBack_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "importNext", this);
+	public void prepareImportAck_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "prepareImportAck", this);
 	}
-	public void flash_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "importCancel", this);
+	public void importSubmit_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "importSubmit", this);
+	}
+	public void importSwitch_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "importSwitch", this);
 	}
 
 }

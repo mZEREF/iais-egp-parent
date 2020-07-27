@@ -86,7 +86,7 @@
     <JavaCode defClass="" executor="" methodName="doStatus_OnStepProcess_0" name="doStatus_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doChange" x="790" y="410">
+  <AutomaticStep defClass="" executor="" icon="" name="doChange" x="950" y="360">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -107,7 +107,7 @@
     <JavaCode defClass="" executor="" methodName="import_OnStepProcess_0" name="import_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Back" x="610" y="550">
+  <AutomaticStep defClass="" executor="" icon="" name="Back" x="640" y="530">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -134,18 +134,32 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <AutomaticStep defClass="" executor="" icon="" name="importContinue" x="730" y="470">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="routeBack_OnStepProcess_0" name="routeBack_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
   <AutomaticStep defClass="" executor="" icon="" name="flash" x="80" y="170">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="flash_OnStepProcess_0" name="flash_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareImportAck" x="780" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareImportAck_OnStepProcess_0" name="prepareImportAck_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="importSwitch" x="710" y="360">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="importSwitch_OnStepProcess_0" name="importSwitch_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="importSubmit" x="820" y="540">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="importSubmit_OnStepProcess_0" name="importSubmit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -168,13 +182,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="doStatusPage" stageIndicator="" x="780" y="300">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="doStatusPage" stageIndicator="" x="940" y="240">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="importPage" stageIndicator="" x="640" y="460">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="importPage" stageIndicator="" x="800" y="360">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -268,19 +282,19 @@
    <position>{(580,80)(820,200)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/doStatusPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doStatus" style="oblique">
-   <position>{(820,200)(800,320)}</position>
+   <position>{(820,200)(960,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doChange" linkstyle="Direct" name="" sourceName="/Pages/WebPage/doStatusPage" style="oblique">
-   <position>{(800,320)(810,430)}</position>
+   <position>{(960,260)(970,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doChange" style="oblique">
-   <position>{(810,430)(820,640)}</position>
+   <position>{(970,380)(980,630)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
-   <position>{(820,640)(580,640)}</position>
+   <position>{(980,630)(580,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doStatus" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
-   <position>{(820,640)(1028,638)(820,200)}</position>
+   <position>{(980,630)(1028,638)(820,200)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Export" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(580,80)(730,210)}</position>
@@ -288,14 +302,11 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/import" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(580,80)(770,210)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Conditions/Condition/Cond5" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/import" style="oblique">
-   <position>{(770,210)(740,330)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Back" style="oblique">
-   <position>{(630,570)(580,640)}</position>
+   <position>{(660,550)(580,640)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/Back" linkstyle="Direct" name="" sourceName="/Pages/WebPage/importPage" style="oblique">
-   <position>{(660,480)(630,570)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/importSwitch" linkstyle="Direct" name="" sourceName="/Pages/WebPage/importPage" style="oblique">
+   <position>{(820,380)(730,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PrepareRole" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(580,80)(430,210)}</position>
@@ -318,20 +329,29 @@
   <SynchronousLink destinationName="/Steps/InvokeStep/Step1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Export" style="oblique">
    <position>{(730,210)(690,320)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/importPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond5" style="oblique">
-   <position>{(740,330)(660,480)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/importContinue" style="oblique">
-   <position>{(750,490)(580,640)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/importContinue" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond5" style="oblique">
-   <position>{(740,330)(750,490)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/flash" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(580,80)(100,190)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/flash" style="rectanular">
    <position>{(100,190)(580,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareImportAck" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/import" style="oblique">
+   <position>{(770,210)(800,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/importPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareImportAck" style="oblique">
+   <position>{(800,270)(820,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Back" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond5" style="oblique">
+   <position>{(740,480)(660,550)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/importSubmit" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond5" style="oblique">
+   <position>{(740,480)(840,560)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/importSubmit" style="oblique">
+   <position>{(840,560)(580,640)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond5" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/importSwitch" style="oblique">
+   <position>{(730,380)(740,480)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
@@ -341,13 +361,13 @@
   <Condition componentIfFalse="/Steps/AutomaticStep/PrepareEdit" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="340" y="550">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/doStatus" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;true&quot;" x="800" y="620">
+  <Condition componentIfFalse="/Steps/AutomaticStep/doStatus" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;true&quot;" x="960" y="610">
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/PrepareRole" componentIfTrue="/Merges/Merge/Merge1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;true&quot;" x="430" y="530">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/importContinue" componentIfTrue="/Pages/WebPage/importPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond5" operator="=" rightOperand="&quot;true&quot;" x="720" y="310">
+  <Condition componentIfFalse="/Steps/AutomaticStep/Back" componentIfTrue="/Steps/AutomaticStep/importSubmit" defClass="" executor="" icon="" leftOperand="isValid" name="Cond5" operator="=" rightOperand="&quot;true&quot;" x="720" y="460">
    <Description/>
   </Condition>
  </Conditions>
