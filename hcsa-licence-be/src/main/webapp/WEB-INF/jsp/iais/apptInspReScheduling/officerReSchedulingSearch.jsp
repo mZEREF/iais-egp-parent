@@ -72,7 +72,7 @@
                     <thead>
                       <tr align="center">
                         <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
-                        <iais:sortableHeader needSort="true" field="HCI_NAME" value="HCI NAME"></iais:sortableHeader>
+                        <iais:sortableHeader needSort="true" field="HCI_NAME" value="HCI Name"></iais:sortableHeader>
                         <iais:sortableHeader needSort="false" field="" value="Inspector(s)"></iais:sortableHeader>
                         <iais:sortableHeader needSort="true" field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>
                         <iais:sortableHeader needSort="true" field="TASK_TYPE" value="Type of Task"></iais:sortableHeader>
