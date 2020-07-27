@@ -39,7 +39,6 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
-import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -128,25 +127,25 @@ public class OfficerOnlineEnquiriesDelegator {
             .clz(RfiLicenceQueryDto.class)
             .searchAttr("licParam")
             .resultAttr("licResult")
-            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(SysParamUtil.getDefaultPageSize()).build();
+            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(10).build();
 
     FilterParameter applicationParameter = new FilterParameter.Builder()
             .clz(RfiApplicationQueryDto.class)
             .searchAttr("appParam")
             .resultAttr("appResult")
-            .sortField("application_no").pageNo(1).pageSize(SysParamUtil.getDefaultPageSize()).sortType(SearchParam.ASCENDING).build();
+            .sortField("application_no").pageNo(1).pageSize(10).sortType(SearchParam.ASCENDING).build();
 
     FilterParameter licenseeParameter = new FilterParameter.Builder()
             .clz(LicenseeQueryDto.class)
             .searchAttr("licenseeParam")
             .resultAttr("licenseeResult")
-            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(SysParamUtil.getDefaultPageSize()).build();
+            .sortField("id").sortType(SearchParam.ASCENDING).pageNo(1).pageSize(10).build();
 
     FilterParameter serviceParameter = new FilterParameter.Builder()
             .clz(HcsaSvcQueryDto.class)
             .searchAttr("svcParam")
             .resultAttr("svcResult")
-            .sortField("id").pageNo(1).pageSize(SysParamUtil.getDefaultPageSize()).sortType(SearchParam.ASCENDING).build();
+            .sortField("id").pageNo(1).pageSize(10).sortType(SearchParam.ASCENDING).build();
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>start>>>>>>>>>>>>>>>>requestForInformation");

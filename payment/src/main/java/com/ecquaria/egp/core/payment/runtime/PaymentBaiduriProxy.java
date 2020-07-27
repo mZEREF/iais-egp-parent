@@ -15,7 +15,9 @@ import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Account;
+import com.stripe.model.Charge;
 import ecq.commons.helper.StringHelper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 public class PaymentBaiduriProxy extends PaymentProxy {
 
 
@@ -74,21 +77,37 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			fields.put("vpc_SecureHash", secureHash);
 			fields.put("vpc_SecureHashType", DEFAULT_SECURE_HASH_TYPE);
 		} catch (UnsupportedEncodingException | NoSuchAlgorithmException e1) {
+			log.info(e1.getMessage(),e1);
 			logger.debug(e1.getMessage());
 			throw new PaymentException(e1);
 		}
 		SrcSystemConfDto srcSystemConfDto =new SrcSystemConfDto();
-		try {
-			Account account= PaymentBaiduriProxyUtil.getStripeService().createAccount();
-			srcSystemConfDto.setClientKey(account.getId());
-		} catch (StripeException e) {
-			logger.info(e.getMessage(),e);
-			srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
-		}
+
 		String amo = fields.get("vpc_Amount");
 		String payMethod = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
 		String returnUrl=this.getPaymentData().getContinueUrl();
+		try {
+			PaymentBaiduriProxyUtil.getStripeService().authentication();
+			Account account= PaymentBaiduriProxyUtil.getStripeService().createAccount();
+			srcSystemConfDto.setClientKey(account.getId());
+			List<Object> paymentMethodTypes =
+					new ArrayList<>();
+			paymentMethodTypes.add("card");
+			Map<String, Object> params = new HashMap<>();
+			params.put("amount", Double.parseDouble(amo)/100);
+			params.put("currency", "sgd");
+			params.put(
+					"payment_method_types",
+					paymentMethodTypes
+			);
+			PaymentBaiduriProxyUtil.getStripeService().createPaymentIntent(params);
+
+		} catch (StripeException e) {
+			log.info(e.getMessage(),e);
+			logger.info(e.getMessage(),e);
+			srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
+		}
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
 			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
 
@@ -112,10 +131,12 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			RedirectUtil.redirect(bud.toString(), bpc.request, bpc.response);
 			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 		} catch (UnsupportedEncodingException e) {
+			log.info(e.getMessage(),e);
 			logger.debug(e.getMessage());
 
 			throw new PaymentException(e);
 		} catch (IOException e) {
+			log.info(e.getMessage(),e);
 			logger.debug(e.getMessage());
 
 			throw new PaymentException(e);
@@ -134,12 +155,39 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		String transNo = this.getPaymentData().getPaymentTrans().getTransNo();
 		String refNo = this.getPaymentData().getSvcRefNo();
 		double amount = this.getPaymentData().getAmount();
-		
+		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
+
 		Map<String, String> fields = getResponseFieldsMap(bpc);
 		
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
 		HttpServletRequest request = bpc.request;
+
+		try{
+
+			PaymentBaiduriProxyUtil.getStripeService().authentication();
+			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+			Map<String, Object> card = new HashMap<>();
+			card.put("number", fields.get("vpc_CardNum"));
+			card.put("exp_month", 7);
+			card.put("exp_year", 2021);
+			card.put("cvc", "314");
+			Map<String, Object> params = new HashMap<>();
+			params.put("type", "card");
+			params.put("card", card);
+			PaymentBaiduriProxyUtil.getStripeService().createPaymentMethod(params);
+		}catch (Exception e){
+			log.info(e.getMessage(),e);
+		}
+		Map<String, Object> params = new HashMap<>();
+		params.put("amount", amount);
+		params.put("currency", "sgd");
+		params.put("source",fields.get("card"));
+		params.put(
+				"description",
+				"My First Test Charge (created for API docs)"
+		);
+		Charge charge= PaymentBaiduriProxyUtil.getStripeService().createCharge(params);
 
 		String response = "payment success";
 		setPaymentResponse(response);
@@ -166,7 +214,11 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 				paymentDto.setAmount(amount);
 				paymentDto.setReqRefNo(refNo);
 				paymentDto.setTxnRefNo(transNo);
-				paymentDto.setInvoiceNo(fields.get("vpc_ReceiptNo"));
+				try {
+					paymentDto.setInvoiceNo(charge.getId());
+				}catch (Exception e){
+					paymentDto.setInvoiceNo(fields.get("vpc_ReceiptNo"));
+				}
 				paymentDto.setPmtStatus(status);
 				PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
@@ -184,18 +236,18 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		try {
 			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 
-			PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
 			String bigsUrl ="https://" + request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
-//			bud.append(bigsURL).append('?');
-//			appendQueryFields(bud, fields);
+
 
 			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
 		} catch (UnsupportedEncodingException e) {
+			log.info(e.getMessage(),e);
 			logger.debug(e.getMessage());
 
 			throw new PaymentException(e);
 		} catch (IOException e) {
+			log.info(e.getMessage(),e);
 			logger.debug(e.getMessage());
 
 			throw new PaymentException(e);
@@ -211,17 +263,19 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			fields.put("vpc_SecureHash", secureHash);
 			fields.put("vpc_SecureHashType", DEFAULT_SECURE_HASH_TYPE);
 		} catch (UnsupportedEncodingException | NoSuchAlgorithmException e1) {
+			log.info(e1.getMessage(),e1);
 			logger.debug(e1.getMessage());
 			throw new PaymentException(e1);
 		}
-
 		String reqNo = fields.get("vpc_MerchTxnRef");
+		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
 		String results="?result="+MaskUtil.maskValue("result","cancelled")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt",DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","");
-		String bigsUrl ="https://" + bpc.request.getServerName()+"/hcsa-licence-web/eservice/INTERNET/MohNewApplication/1/doPayment"+results;
+		String bigsUrl ="https://" + bpc.request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
 
 		try {
 			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
 		} catch (IOException e) {
+			log.info(e.getMessage(),e);
 			logger.info(e.getMessage(),e);
 		}
 	}
@@ -382,9 +436,11 @@ public class PaymentBaiduriProxy extends PaymentProxy {
     }
 	
 	public static void main(String[] args) throws Exception {
+		log.info(String.valueOf(mul(4.10, 100)));
 		logger.debug(String.valueOf(mul(4.10, 100)));
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
 		byte[] ba = md.digest(SMCStringHelperUtil.getStringBytes("123"));
+		log.info(hex(ba));
 		logger.debug(hex(ba));
 	}
 
