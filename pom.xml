@@ -286,14 +286,25 @@
             </activation>
             <repositories>
                 <repository>
-                    <id>pd-nexus</id>
-                    <url>http://192.168.4.165:8080/repository/maven-releases/</url>
+                    <id>moh-iais-nexus</id>
+                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
                 </repository>
                 <repository>
-                    <id>moh-iais-nexus</id>
-                    <url>https://hub.ecquaria.com/nexus/repository/maven-mohiais-grp/</url>
+                    <id>pd-nexus</id>
+                    <url>http://192.168.4.165:8080/repository/maven-releases/</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
                 </repository>
-
             </repositories>
             <distributionManagement>
                 <repository>
