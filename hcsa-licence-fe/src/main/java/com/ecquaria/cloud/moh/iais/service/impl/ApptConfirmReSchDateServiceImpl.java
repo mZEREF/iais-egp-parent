@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -31,7 +30,9 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
@@ -83,6 +84,9 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
 
     @Value("${iais.email.sender}")
     private String mailSender;
+
+    @Autowired
+    private AppSubmissionService appSubmissionService;
 
     @Override
     public String getAppPremCorrIdByAppId(String appId) {
@@ -237,6 +241,7 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
                 emailDto.setSender(mailSender);
                 emailDto.setClientQueryCode(applicationDto.getId());
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(applicationGroupDto.getLicenseeId()));
+                //appSubmissionService.feSendEmail(emailDto);
             } catch (Exception e){
                 log.info(e.getMessage(),e);
             }

@@ -296,7 +296,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 emailDto.setSender(mailSender);
                 emailDto.setClientQueryCode(appDto.getId());
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                emailClient.sendNotification(emailDto);
+                //emailClient.sendNotification(emailDto);
             } catch (Exception e) {
                 log.info(e.getMessage(), e);
             }
