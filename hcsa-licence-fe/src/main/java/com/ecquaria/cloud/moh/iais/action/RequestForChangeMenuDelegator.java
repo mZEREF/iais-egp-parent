@@ -1308,7 +1308,7 @@ public class RequestForChangeMenuDelegator {
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo());
             try {
-                String html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, "hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment");
+                String html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, "/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/doPayment");
                 ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
             } catch (Exception e) {
                 log.info(e.getMessage(), e);
