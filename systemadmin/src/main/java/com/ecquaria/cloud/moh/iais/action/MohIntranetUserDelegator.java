@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+import com.ecquaria.csrfguard.action.IAction;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -306,24 +307,67 @@ public class MohIntranetUserDelegator {
         CommonsMultipartFile sessionFile = (CommonsMultipartFile) request.getFile("xmlFile");
         File file = File.createTempFile("temp", "xml");
         File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
-        List<OrgUserDto> orgUserDtos = importXML(xmlFile, bpc);
+        List<OrgUserDto> orgUserDtos = importXML(xmlFile);
         ParamUtil.setRequestAttr(bpc.request, "orgUserDtos", orgUserDtos);
         return;
     }
 
     public void prepareImportAck(BaseProcessClass bpc) throws DocumentException {
         List<OrgUserDto> orgUserDtos = (List<OrgUserDto>)ParamUtil.getRequestAttr(bpc.request, "orgUserDtos");
+        //do valiant
+        //1. ge shi shi fou fu he
+        List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+            OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
+            for(OrgUserDto orgUserDto : orgUserDtos){
+                List<String> valiant = valiantDto(orgUserDto);
+                if(!IaisCommonUtils.isEmpty(valiant)){
+                    orgUserUpLoadDto.setUserId(orgUserDto.getUserId());
+                    orgUserUpLoadDto.setMsg(valiant);
+                    orgUserUpLoadDtos.add(orgUserUpLoadDto);
+                }
+            }
+        }
+        //2 you mei you chong fu de
+        List<OrgUserDto> existUsersNew = IaisCommonUtils.genNewArrayList();
+        List<OrgUserDto> existUsersOld = IaisCommonUtils.genNewArrayList();
         for(OrgUserDto orgUserDto :orgUserDtos){
             String userId = orgUserDto.getUserId();
-            OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
-            if(intranetUserByUserId!=null){
-
+            if(!StringUtil.isEmpty(userId)){
+                OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
+                if(intranetUserByUserId!=null){
+                    existUsersNew.add(orgUserDto);
+                    existUsersOld.add(orgUserDto);
+                }
             }
+        }
+        if(IaisCommonUtils.isEmpty(existUsersNew)&&IaisCommonUtils.isEmpty(orgUserUpLoadDtos)){
+            intranetUserService.createIntranetUsers(orgUserDtos);
+            for(OrgUserDto orgUserDto :orgUserDtos){
+                saveEgpUser(orgUserDto);
+            }
+            ParamUtil.setRequestAttr(bpc.request, "orgUserUpLoadDtos", orgUserUpLoadDtos);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            return;
+        }else if(IaisCommonUtils.isEmpty(existUsersNew)&&!IaisCommonUtils.isEmpty(orgUserUpLoadDtos)){
+            ParamUtil.setRequestAttr(bpc.request, "orgUserUpLoadDtos", orgUserUpLoadDtos);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+            return;
+        }else if(!IaisCommonUtils.isEmpty(existUsersNew)){
+            ParamUtil.setRequestAttr(bpc.request, "existUsersNew", existUsersNew);
+            ParamUtil.setRequestAttr(bpc.request, "existUsersOld", existUsersOld);
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+            return;
         }
     }
 
     public void importSwitch(BaseProcessClass bpc) throws DocumentException {
-        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
+        String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
+        if("back".equals(actionType)){
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
+        }
         return;
     }
 
@@ -482,10 +526,7 @@ public class MohIntranetUserDelegator {
         SearchResultHelper.doPage(request, filterParameter);
     }
 
-
-    /*
-    utils
-     */
+    /*utils*/
     private OrgUserDto prepareOrgUserDto(HttpServletRequest request) {
         OrgUserDto orgUserDto = new OrgUserDto();
         String userId = ParamUtil.getRequestString(request, IntranetUserConstant.INTRANET_USERID);
@@ -528,7 +569,6 @@ public class MohIntranetUserDelegator {
         return orgUserDto;
     }
 
-
     private OrgUserDto prepareEditOrgUserDto(BaseProcessClass bpc) {
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         String displayName = ParamUtil.getRequestString(bpc.request, IntranetUserConstant.INTRANET_DISPLAYNAME);
@@ -564,7 +604,6 @@ public class MohIntranetUserDelegator {
         orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
         return orgUserDto;
     }
-
 
     private void saveEgpUser(OrgUserDto orgUserDto) {
         ClientUser clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
@@ -612,11 +651,9 @@ public class MohIntranetUserDelegator {
         intranetUserService.updateEgpUser(clientUser);
     }
 
-
     private Boolean deleteEgpUser(String userDomian, String userId) {
         return intranetUserService.deleteEgpUser(userDomian, userId);
     }
-
 
     private void prepareOption(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
@@ -650,8 +687,7 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
     }
 
-
-    private List<OrgUserDto> importXML(File file, BaseProcessClass bpc) throws DocumentException {
+    private List<OrgUserDto> importXML(File file) throws DocumentException {
         SAXReader saxReader = new SAXReader();
         Document document = saxReader.read(file);
         //root
@@ -701,7 +737,6 @@ public class MohIntranetUserDelegator {
                 orgUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 orgUserDto.setAvailable(Boolean.FALSE);
                 orgUserDtos.add(orgUserDto);
-
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 continue;
@@ -710,99 +745,7 @@ public class MohIntranetUserDelegator {
         return orgUserDtos ;
     }
 
-    private void importXMLExistUserId(File file, BaseProcessClass bpc) throws DocumentException {
-        SAXReader saxReader = new SAXReader();
-        Document document = saxReader.read(file);
-        //root
-        Element root = document.getRootElement();
-        //ele
-        List list = root.elements();
-        List<OrgUserDto> orgUserDtos1 = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i < list.size(); i++) {
-            try {
-                Element element = (Element) list.get(i);
-                String userId = element.element("userId").getText();
-                String displayName = element.element("displayName").getText();
-                String startDateStr = element.element("accountActivationStart").getText();
-                Date startDate = DateUtil.parseDate(startDateStr, "yyyy-MM-dd");
-                String endDateStr = element.element("accountActivationEnd").getText();
-                Date endDate = DateUtil.parseDate(endDateStr, "yyyy-MM-dd");
-                String salutation = element.element("salutation").getText();
-                String firstName = element.element("firstName").getText();
-                String lastName = element.element("lastName").getText();
-                String organization = element.element("organization").getText();
-                String division = element.element("division").getText();
-                String branchUnit = element.element("branchUnit").getText();
-                String mobileNo = element.element("mobileNo").getText();
-                String officeNo = element.element("officeNo").getText();
-                String email = element.element("email").getText();
-                String remarks = element.element("remarks").getText();
-                OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
-                OrgUserDto orgUserDto = new OrgUserDto();
-                if (intranetUserByUserId != null) {
-                    orgUserDto.setId(intranetUserByUserId.getId());
-                }
-                orgUserDto.setUserId(userId);
-                orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
-                orgUserDto.setFirstName(firstName);
-                orgUserDto.setLastName(lastName);
-                orgUserDto.setDisplayName(displayName);
-                orgUserDto.setAccountActivateDatetime(startDate);
-                orgUserDto.setAccountDeactivateDatetime(endDate);
-                orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
-                orgUserDto.setBranchUnit(branchUnit);
-                orgUserDto.setDivision(division);
-                orgUserDto.setSalutation(salutation);
-                orgUserDto.setOrganization(organization);
-                orgUserDto.setEmail(email);
-                orgUserDto.setMobileNo(mobileNo);
-                orgUserDto.setOfficeTelNo(officeNo);
-                orgUserDto.setRemarks(remarks);
-                orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
-                orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
-                orgUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                orgUserDto.setAvailable(Boolean.FALSE);
-                orgUserDtos1.add(orgUserDto);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                continue;
-            }
-        }
-        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", (Serializable) orgUserDtos1);
-    }
-
-    private boolean importUserIdValiant(File file) throws DocumentException {
-        SAXReader saxReader = new SAXReader();
-        Document document = saxReader.read(file);
-        //root
-        Element root = document.getRootElement();
-        //ele
-        List list = root.elements();
-        List<String> userIds = IaisCommonUtils.genNewArrayList();
-        for (int i = 0; i < list.size(); i++) {
-            try {
-                Element element = (Element) list.get(i);
-                String userId = element.element("userId").getText();
-                if(!StringUtil.isEmpty(userId)){
-                    userIds.add(userId);
-                }
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                continue;
-            }
-        }
-        if (!IaisCommonUtils.isEmpty(userIds)) {
-            for (String userId : userIds) {
-                OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
-                if (intranetUserByUserId != null) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private List<String> valiant(OrgUserDto orgUserDto) {
+    private List<String> valiant (OrgUserDto orgUserDto) {
         List<String> errors = IaisCommonUtils.genNewArrayList();
         String userId = orgUserDto.getUserId();
         if (!StringUtil.isEmpty(userId)) {
@@ -924,7 +867,6 @@ public class MohIntranetUserDelegator {
         }
         return errors;
     }
-
 
     private List<SelectOption> getStatusOption() {
         List<SelectOption> result = IaisCommonUtils.genNewArrayList();

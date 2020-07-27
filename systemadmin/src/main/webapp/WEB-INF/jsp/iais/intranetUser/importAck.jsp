@@ -14,7 +14,7 @@
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
                 <div class="form-horizontal">
                     <div class="tab-content">
-                        <h2 class="component-title">Uploaded Result</h2>
+                        <h2 class="component-title">Import Users</h2>
                         <table class="table">
                             <thead>
                             <tr>
@@ -24,16 +24,16 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <c:forEach var="result" items="${orgUserUpLoadDtos}" varStatus="status">
+                            <c:forEach var="oldUser" items="${orgUserUpLoadDtos}" varStatus="status">
                                 <tr>
                                     <td>
                                         <p>${status.count}</p>
                                     </td>
                                     <td>
-                                        <p>${result.userId}</p>
+                                        <p>${oldUser.userId}</p>
                                     </td>
                                     <td>
-                                        <c:forEach var="msg" items="${result.msg}">
+                                        <c:forEach var="msg" items="${oldUser.msg}">
                                             <p style="color: red">${msg}</p>
                                         </c:forEach>
                                     </td>
@@ -46,7 +46,7 @@
             </div>
         </div>
         <iais:action>
-            <a style="margin-left: 0%" class="back" onclick="submit()"><em class="fa fa-angle-left"></em> Back</a>
+            <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
         </iais:action>
     </form>
 </div>
@@ -59,7 +59,8 @@
 
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script>
-    function submit() {
+    function submit(action) {
+        $("[name='crud_action_type']").val(action);
         $("#mainForm").submit();
     }
 </script>
