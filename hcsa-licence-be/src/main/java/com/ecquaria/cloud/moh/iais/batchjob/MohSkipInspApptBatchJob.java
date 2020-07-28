@@ -139,7 +139,7 @@ public class MohSkipInspApptBatchJob {
             fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
         } else {
             appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appPremisesRecommendationDto.setAuditTrailDto(intranet);
             fillUpCheckListGetAppClient.updateAppRecom(appPremisesRecommendationDto);
             AppPremisesRecommendationDto appPremRecDto = new AppPremisesRecommendationDto();
             appPremRecDto.setId(null);
