@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocCheckListConifgDt
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -16,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.CheckListVadlidateDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -66,6 +68,8 @@ public class InspectionNcCheckListDelegator {
     private static final String CHECKLISTFILEDTO = "checkListFileDto";
     private static final String TASKDTOLIST = "InspectionNcCheckListDelegator_taskDtoList";
     private static final String INSPECTION_ADHOC_CHECKLIST_LIST_ATTR  = "inspection_adhoc_checklist_list_attr";
+    private static final String INSPECTION_USERS = "inspectorsParticipant";
+    private static final String INSPECTION_USER_FINISH = "inspectorUserFinishChecklistId";
     public InspectionNcCheckListDelegator(InsepctionNcCheckListService insepctionNcCheckListService){
         this.insepctionNcCheckListService = insepctionNcCheckListService;
     }
@@ -81,6 +85,8 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request, TASKDTOLIST, null);
         ParamUtil.setSessionAttr(request, INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
         ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
+        ParamUtil.setSessionAttr(request,INSPECTION_USERS,null);
+        ParamUtil.setSessionAttr(request,INSPECTION_USER_FINISH,null);
     }
 
     public void successViewPre(BaseProcessClass bpc){
@@ -131,8 +137,11 @@ public class InspectionNcCheckListDelegator {
         if(adchklDto==null){
             adchklDto = fillupChklistService.getAdhoc(appPremCorrId);
         }
+        List<OrgUserDto> orgUserDtoUsers = fillupChklistService.getOrgUserDtosByTaskDatos(taskDtos);
+        ParamUtil.setSessionAttr(request,INSPECTION_USERS,(Serializable) orgUserDtoUsers);
+        ParamUtil.setSessionAttr(request,INSPECTION_USER_FINISH, IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        Map<String,String> orgUserDtos = fillupChklistService.userIdNameMapByOrgUserDtos(orgUserDtoUsers);
 
-        Map<String,String> orgUserDtos = fillupChklistService.userIdNameMapByOrgUserDtos(fillupChklistService.getOrgUserDtosByTaskDatos(taskDtos));
         // get ah draft
         adchklDto = fillupChklistService.getAdCheckListShowDtoByAdCheckListShowDto(adchklDto,orgUserDtos);
         ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
@@ -171,6 +180,7 @@ public class InspectionNcCheckListDelegator {
             }
            serListDto.setOtherinspectionofficer(fillupChklistService.getOtherOffGropByInspectionFillCheckListDtos(inspectionFillCheckListDtos));
        }
+        fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
         //comparative data for sef and check list nc
         fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
@@ -401,11 +411,8 @@ public class InspectionNcCheckListDelegator {
         if(cDto!=null&&cDto.getCheckList()!=null&&!cDto.getCheckList().isEmpty()){
             List<InspectionCheckQuestionDto> checkListDtoList = cDto.getCheckList();
             for(InspectionCheckQuestionDto temp:checkListDtoList){
-                String answer = temp.getChkanswer();
-                if( !temp.isNcSelfAnswer()){
-                    answer = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrad");
+                    String answer = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrad");
                     temp.setChkanswer(answer);
-                }
                 String remark = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comremark");
                 String rectified = ParamUtil.getString(request,temp.getSectionNameShow()+temp.getItemId()+"comrec");
                 if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
@@ -468,11 +475,8 @@ public class InspectionNcCheckListDelegator {
 
 
     public void getServiceData(InspectionCheckQuestionDto temp,InspectionFillCheckListDto fdto,HttpServletRequest request){
-        String answer = temp.getChkanswer();
-        if(!temp.isNcSelfAnswer()){
-            answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rad");
+        String answer = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rad");
             temp.setChkanswer(answer);
-        }
         String remark = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"remark");
         String rectified = ParamUtil.getString(request,fdto.getSubName()+temp.getSectionNameShow()+temp.getItemId()+"rec");
         if(!StringUtil.isEmpty(rectified)&&"No".equals(answer)){
@@ -596,4 +600,16 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, null);
     }
 
+    public void changeTab(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+        log.info("----------changeTab --");
+        String nowTabIn = ParamUtil.getString(request,"nowTabIn");
+        ParamUtil.setRequestAttr(request, "nowTabIn",  nowTabIn);
+        String nowComTabIn = ParamUtil.getString(request,"nowComTabIn");
+        ParamUtil.setRequestAttr(request, "nowComTabIn",  nowComTabIn);
+    }
+
+    public void changeDataForCheckList(HttpServletRequest request){
+
+    }
 }

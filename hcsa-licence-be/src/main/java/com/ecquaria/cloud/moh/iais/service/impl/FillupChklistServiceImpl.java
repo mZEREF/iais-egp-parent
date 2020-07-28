@@ -1009,7 +1009,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         int doNum = 0;
         for(AdhocNcCheckItemDto aditem : adchklDto.getAdItemList()){
             totalNum++;
-            if(!StringUtil.isEmpty(aditem)){
+            if(!StringUtil.isEmpty(aditem.getAdAnswer())){
                 doNum++;
                 if("No".equals(aditem.getAdAnswer())){
                     ncNum++;
@@ -1390,42 +1390,57 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             return inspectionFillCheckListDto;
         }
 
-        List<InspectionCheckQuestionDto>  inspectionCheckQuestionDtos = inspectionFillCheckListDto.getCheckList();
+        int userNum = orgUserDtos.size();
+        if(userNum > 1){
+            inspectionFillCheckListDto.setMoreOneDraft(true);
+        }
 
+        List<InspectionCheckQuestionDto>  inspectionCheckQuestionDtos = inspectionFillCheckListDto.getCheckList();
         if(IaisCommonUtils.isEmpty( inspectionCheckQuestionDtos)){
             return inspectionFillCheckListDto;
+        }
+
+        for(InspectionCheckQuestionDto inspectionCheckQuestionDto : inspectionCheckQuestionDtos){
+            List<AnswerForDifDto> answerForDifDtos = new ArrayList<>(userNum);
+            Map<String, AnswerForDifDto> answerForDifDtoMaps = new HashMap<>(userNum);
+            for (Map.Entry<String, String> entry : orgUserDtos.entrySet()) {
+                AnswerForDifDto answerForDifDto = new AnswerForDifDto();
+                answerForDifDto.setSubmitId(entry.getKey());
+                answerForDifDto.setSubmitName(entry.getValue());
+                answerForDifDtos.add(answerForDifDto);
+                answerForDifDtoMaps.put(entry.getKey(),answerForDifDto);
+            }
+            inspectionCheckQuestionDto.setAnswerForDifDtos(answerForDifDtos);
+            inspectionCheckQuestionDto.setAnswerForDifDtoMaps(answerForDifDtoMaps);
         }
 
         List<AppPremInsDraftDto> appPremInsDraftDtos =   fillUpCheckListGetAppClient.getInspDraftAnswer(getCheckListIdsByInspectionCheckQuestionDtos(inspectionFillCheckListDto.getPreCheckId())).getEntity();
         if(IaisCommonUtils.isEmpty(appPremInsDraftDtos)){
             return inspectionFillCheckListDto;
         }else {
-            int userNum = orgUserDtos.size();
-            if(userNum > 1){
-                inspectionFillCheckListDto.setMoreOneDraft(true);
-            }
             inspectionFillCheckListDto.setStringInspectionCheckQuestionDtoMap( getStringInspectionCheckQuestionDtoMapByList( inspectionCheckQuestionDtos));
             inspectionFillCheckListDto.setOtherInspectionOfficer(getOtherOffs(appPremInsDraftDtos));
             List<InspectionCheckListAnswerDto> answerDtos = getInspectionCheckListAnswerDtosByAppPremInsDraftDtos(appPremInsDraftDtos);
             for(InspectionCheckQuestionDto inspectionCheckQuestionDto :  inspectionCheckQuestionDtos ){
                  List<InspectionCheckListAnswerDto> answerDtosOne = new ArrayList<>(1);
                   for(InspectionCheckListAnswerDto inspectionCheckListAnswerDto : answerDtos){
-                     if(inspectionCheckQuestionDto.getItemId().equalsIgnoreCase(inspectionCheckQuestionDto.getItemId())){
+                     if(inspectionCheckQuestionDto.getItemId().equalsIgnoreCase(inspectionCheckListAnswerDto.getItemId())){
                          answerDtosOne.add(inspectionCheckListAnswerDto);
                      }
                   }
                 if(IaisCommonUtils.isEmpty(answerDtosOne)){
                     log.info(StringUtil.changeForLog(" inspectionCheckQuestionDto id is " + inspectionCheckQuestionDto.getId() +" no draft."));
                 }else {
+                    setDraftAnswerByAnswerDtosOne(answerDtosOne,inspectionCheckQuestionDto.getAnswerForDifDtoMaps());
                     if(userNum == 1 && answerDtosOne .size() == 1){
                         getInspectionCheckQuestionDtoByInspectionCheckQuestionDto(inspectionCheckQuestionDto,answerDtosOne.get(0));
                     }else if(userNum == appPremInsDraftDtos .size()){
-                        List<AnswerForDifDto> answerForDifDtos =  getAnswerForDifDtosByInspectionCheckQuestionDtos(answerDtosOne,orgUserDtos);
+                        List<AnswerForDifDto> answerForDifDtos =  inspectionCheckQuestionDto.getAnswerForDifDtos();
                         AnswerForDifDto  answerForSame =  getAnswerForDifDtoByAnswerForDifDtos(answerForDifDtos);
-                        inspectionCheckQuestionDto.setAnswerForDifDtos(answerForDifDtos);
+                        if(!StringUtil.isEmpty(answerForSame.getAnswer()) && !StringUtil.isEmpty( answerForSame.getIsRec()) && !StringUtil.isEmpty( answerForSame.getRemark())){
+                            inspectionCheckQuestionDto.setSameAnswer(true);
+                        }
                         getInspectionCheckQuestionDtoByAnswerForDifDto(inspectionCheckQuestionDto, answerForSame);
-                    }else if(userNum > answerDtosOne.size()){
-                        inspectionCheckQuestionDto.setAnswerForDifDtos(getAnswerForDifDtosByInspectionCheckQuestionDtos(answerDtosOne,orgUserDtos));
                     }
                 }
 
@@ -1433,6 +1448,20 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
 
         return inspectionFillCheckListDto;
+    }
+
+    private  void  setDraftAnswerByAnswerDtosOne( List<InspectionCheckListAnswerDto> answerDtosOne ,  Map<String, AnswerForDifDto> answerForDifDtoMaps ){
+        for (Map.Entry<String, AnswerForDifDto> entry : answerForDifDtoMaps.entrySet()) {
+            AnswerForDifDto answerForDifDto = entry.getValue();
+            for(InspectionCheckListAnswerDto inspectionCheckListAnswerDto : answerDtosOne){
+                if( entry.getKey().equalsIgnoreCase(inspectionCheckListAnswerDto.getSubBy())){
+                    answerForDifDto.setRemark(inspectionCheckListAnswerDto.getRemark());
+                    answerForDifDto.setAnswer(inspectionCheckListAnswerDto.getAnswer());
+                    answerForDifDto.setIsRec(inspectionCheckListAnswerDto.getIsRec());
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -1496,21 +1525,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
         return map;
     }
-    private List<AnswerForDifDto>  getAnswerForDifDtosByInspectionCheckQuestionDtos(  List<InspectionCheckListAnswerDto> answerDtosOne, Map<String,String> orgUserDtos){
-        List<AnswerForDifDto> answerForDifDtos = new ArrayList<>(answerDtosOne .size());
-        for(InspectionCheckListAnswerDto inspectionCheckListAnswerDto : answerDtosOne){
-            if( !StringUtil.isEmpty(inspectionCheckListAnswerDto.getAnswer())){
-                AnswerForDifDto adhocAnswerForDifDto = new AnswerForDifDto();
-                adhocAnswerForDifDto.setRemark(inspectionCheckListAnswerDto.getRemark());
-                adhocAnswerForDifDto.setAnswer(inspectionCheckListAnswerDto.getAnswer());
-                adhocAnswerForDifDto.setIsRec(inspectionCheckListAnswerDto.getIsRec());
-                adhocAnswerForDifDto.setSubmitName(orgUserDtos.get(inspectionCheckListAnswerDto.getSubBy()));
-                answerForDifDtos.add(adhocAnswerForDifDto);
-            }
-        }
 
-        return  answerForDifDtos;
-    }
     private InspectionCheckQuestionDto getInspectionCheckQuestionDtoByAnswerForDifDto(InspectionCheckQuestionDto inspectionCheckQuestionDto,AnswerForDifDto answerForDifDto){
         inspectionCheckQuestionDto.setRemark(answerForDifDto.getRemark());
         inspectionCheckQuestionDto.setAnswer(answerForDifDto.getAnswer());
@@ -1518,7 +1533,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return  inspectionCheckQuestionDto;
     }
 
-    private InspectionCheckQuestionDto getInspectionCheckQuestionDtoByInspectionCheckQuestionDto(InspectionCheckQuestionDto inspectionCheckQuestionDto, InspectionCheckListAnswerDto inspectionCheckListAnswerDto){
+    private InspectionCheckQuestionDto getInspectionCheckQuestionDtoByInspectionCheckQuestionDto(InspectionCheckQuestionDto inspectionCheckQuestionDto,InspectionCheckListAnswerDto inspectionCheckListAnswerDto){
         inspectionCheckQuestionDto.setRemark(inspectionCheckListAnswerDto.getRemark());
         inspectionCheckQuestionDto.setAnswer(inspectionCheckListAnswerDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(inspectionCheckListAnswerDto.getIsRec()));
@@ -1530,12 +1545,30 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             return adCheckListShowDto;
         }
 
+        int userNum = orgUserDtos.size();
+        if(userNum > 1){
+            adCheckListShowDto.setMoreOneDraft(true);
+        }
+
         List<AdhocNcCheckItemDto> adItemList =  adCheckListShowDto.getAdItemList();
 
         if(IaisCommonUtils.isEmpty(adItemList)){
             return adCheckListShowDto;
         }
 
+        for(AdhocNcCheckItemDto adhocNcCheckItemDto :  adItemList){
+            List<AnswerForDifDto> answerForDifDtos = new ArrayList<>(userNum);
+            Map<String, AnswerForDifDto> answerForDifDtoMaps = new HashMap<>(userNum);
+            for (Map.Entry<String, String> entry : orgUserDtos.entrySet()) {
+                AnswerForDifDto answerForDifDto = new AnswerForDifDto();
+                answerForDifDto.setSubmitName(entry.getValue());
+                answerForDifDto.setSubmitId(entry.getKey());
+                answerForDifDtos.add(answerForDifDto);
+                answerForDifDtoMaps.put(entry.getKey(),answerForDifDto);
+            }
+            adhocNcCheckItemDto.setAdhocAnswerForDifDtos(answerForDifDtos);
+            adhocNcCheckItemDto.setAnswerForDifDtoMaps(answerForDifDtoMaps);
+        }
 
         List<String> itemList = new ArrayList<>(adItemList.size());
         for(AdhocNcCheckItemDto adhocNcCheckItemDto : adItemList){
@@ -1546,10 +1579,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         if(IaisCommonUtils.isEmpty(adhocDraftDtos)){
             return  adCheckListShowDto;
         }else {
-            int userNum = orgUserDtos.size();
-            if(userNum > 1){
-                adCheckListShowDto.setMoreOneDraft(true);
-            }
+
             // Distinguish between different answers
             for(AdhocNcCheckItemDto adhocNcCheckItemDto : adItemList) {
                 List<AdhocDraftDto> adhocDraftDtosOne = new ArrayList<>(1);
@@ -1558,28 +1588,47 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                          adhocDraftDtosOne.add(adhocDraftDto);
                      }
                 }
+
                if(IaisCommonUtils.isEmpty(adhocDraftDtosOne)){
                   log.info(StringUtil.changeForLog(" adhocNcCheckItemDto id is " + adhocNcCheckItemDto.getId() +" no draft."));
                }else {
+                   setAnswerForDifDtoMapsByAdhocDraftDtosOne(adhocDraftDtosOne,adhocNcCheckItemDto.getAnswerForDifDtoMaps());
                    if(userNum == 1 && adhocDraftDtosOne .size() == 1){
                        if( !StringUtil.isEmpty(adhocDraftDtosOne.get(0).getAnswer())){
                            AdhocAnswerDto adhocAnswerDto = JsonUtil.parseToObject(adhocDraftDtosOne.get(0).getAnswer(),AdhocAnswerDto.class);
                            getAdhocNcCheckItemDtoByAdhocAnswerDto(adhocNcCheckItemDto,adhocAnswerDto);
                        }
                    }else if(userNum == adhocDraftDtosOne .size()){
-                       List<AnswerForDifDto> answerForDifDtos = getAnswerForDifDtosByAdhocDraftDtos(adhocDraftDtosOne,orgUserDtos);
+                       List<AnswerForDifDto> answerForDifDtos = adhocNcCheckItemDto.getAdhocAnswerForDifDtos();
                        AnswerForDifDto  answerForSame =  getAnswerForDifDtoByAnswerForDifDtos(answerForDifDtos);
-                       adhocNcCheckItemDto.setAdhocAnswerForDifDtos(answerForDifDtos);
-                       getAdhocNcCheckItemDtoByAnswerForDifDto(adhocNcCheckItemDto, answerForSame);
-                   }else if(userNum > adhocDraftDtosOne .size()){
-                       adhocNcCheckItemDto.setAdhocAnswerForDifDtos(getAnswerForDifDtosByAdhocDraftDtos(adhocDraftDtosOne,orgUserDtos));
+                       if(!StringUtil.isEmpty(answerForSame.getAnswer()) && !StringUtil.isEmpty( answerForSame.getIsRec()) && !StringUtil.isEmpty( answerForSame.getRemark())){
+                           adhocNcCheckItemDto.setSameAnswer(true);
+                           getAdhocNcCheckItemDtoByAnswerForDifDto(adhocNcCheckItemDto, answerForSame);
+                       }
                    }
                }
             }
         }
         return adCheckListShowDto;
     }
-    private AdhocNcCheckItemDto getAdhocNcCheckItemDtoByAdhocAnswerDto(AdhocNcCheckItemDto adhocNcCheckItemDto, AdhocAnswerDto  adhocAnswerDto){
+
+    private  void setAnswerForDifDtoMapsByAdhocDraftDtosOne(List<AdhocDraftDto> adhocDraftDtosOne,  Map<String, AnswerForDifDto> answerForDifDtoMaps ){
+        for (Map.Entry<String, AnswerForDifDto> entry : answerForDifDtoMaps.entrySet()) {
+            AnswerForDifDto answerForDifDto = entry.getValue();
+            for(AdhocDraftDto adhocDraftDto : adhocDraftDtosOne){
+                if( entry.getKey().equalsIgnoreCase( adhocDraftDto.getCreatedBy())){
+                    if(!StringUtil.isEmpty(adhocDraftDto.getAnswer())){
+                        AdhocAnswerDto adhocAnswerDto = JsonUtil.parseToObject(adhocDraftDto.getAnswer(),AdhocAnswerDto.class);
+                        answerForDifDto.setRemark(adhocAnswerDto.getRemark());
+                        answerForDifDto.setAnswer(adhocAnswerDto.getAnswer());
+                        answerForDifDto.setIsRec(adhocAnswerDto.getIsRec());
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    private AdhocNcCheckItemDto getAdhocNcCheckItemDtoByAdhocAnswerDto(AdhocNcCheckItemDto adhocNcCheckItemDto, AdhocAnswerDto adhocAnswerDto){
         adhocNcCheckItemDto.setRemark(adhocAnswerDto.getRemark());
         adhocNcCheckItemDto.setAdAnswer(adhocAnswerDto.getAnswer());
         adhocNcCheckItemDto.setRectified("1".equalsIgnoreCase(adhocAnswerDto.getIsRec()));
@@ -1592,61 +1641,33 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         adhocNcCheckItemDto.setRectified("1".equalsIgnoreCase(adhocAnswerDto.getIsRec()));
         return  adhocNcCheckItemDto;
     }
-    private   List<AnswerForDifDto> getAnswerForDifDtosByAdhocDraftDtos( List<AdhocDraftDto> adhocDraftDtosOne,Map<String,String> orgUserDtos){
-        List<AnswerForDifDto> adhocAnswerForDifDtos = new ArrayList<>(adhocDraftDtosOne .size());
-        for(AdhocDraftDto adhocDraftDto : adhocDraftDtosOne){
-            if( !StringUtil.isEmpty(adhocDraftDto.getAnswer())){
-                AnswerForDifDto adhocAnswerForDifDto = new AnswerForDifDto();
-                AdhocAnswerDto adhocAnswerDto = JsonUtil.parseToObject(adhocDraftDto.getAnswer(),AdhocAnswerDto.class);
-                adhocAnswerForDifDto.setRemark(adhocAnswerDto.getRemark());
-                adhocAnswerForDifDto.setAnswer(adhocAnswerDto.getAnswer());
-                adhocAnswerForDifDto.setIsRec(adhocAnswerDto.getIsRec());
-                adhocAnswerForDifDto.setSubmitName(orgUserDtos.get(adhocDraftDto.getCreatedBy()));
-                adhocAnswerForDifDtos.add(adhocAnswerForDifDto);
-            }
-        }
-
-        return  adhocAnswerForDifDtos;
-    }
 
     private AnswerForDifDto getAnswerForDifDtoByAnswerForDifDtos( List<AnswerForDifDto> adhocAnswerForDifDtos){
         List<AnswerForDifDto> answerForDifDtoCopys = copyAnswerForDifDtos(adhocAnswerForDifDtos);
          AnswerForDifDto  answerForSame = new AnswerForDifDto();
-        for(AnswerForDifDto answerForDifDto : adhocAnswerForDifDtos){
+         AnswerForDifDto answerForDifDto = adhocAnswerForDifDtos.get(0);
             Boolean recSame = Boolean.TRUE;
             Boolean answerSame = Boolean.TRUE;
             Boolean reamrkSame = Boolean.TRUE;
            for(AnswerForDifDto answerForDifDtoCopy :  answerForDifDtoCopys){
                Boolean isSameSubmit = isSameByStrins(answerForDifDtoCopy.getSubmitName(),answerForDifDto.getSubmitName());
-                if(isSameSubmit && !isSameByStrins( answerForDifDtoCopy.getAnswer(),answerForDifDto.getAnswer())){
+                if( answerSame && !isSameSubmit && !isSameByStrins( answerForDifDtoCopy.getAnswer(),answerForDifDto.getAnswer())){
                     answerSame = Boolean.FALSE;
                 }
-               if(isSameSubmit &&  !isSameByStrins( answerForDifDtoCopy.getIsRec(),answerForDifDto.getIsRec())){
+               if( recSame && !isSameSubmit &&  !isSameByStrins( answerForDifDtoCopy.getIsRec(),answerForDifDto.getIsRec())){
                    recSame = Boolean.FALSE;
                }
-               if( isSameSubmit && !isSameByStrins( answerForDifDtoCopy.getRemark(),answerForDifDto.getRemark())){
+               if( reamrkSame && !isSameSubmit && !isSameByStrins( answerForDifDtoCopy.getRemark(),answerForDifDto.getRemark())){
                    reamrkSame = Boolean.FALSE;
                }
            }
 
-           if(answerSame){
-               answerForSame.setAnswer( answerForDifDto.getAnswer());
-               answerForDifDto.setAnswer(null);
-           }
-           if(recSame){
-               answerForSame.setIsRec( answerForDifDto.getIsRec());
-               answerForDifDto.setIsRec(null);
-           }
-
-           if(reamrkSame){
-               answerForSame.setRemark(answerForDifDto.getRemark());
-               answerForDifDto.setRemark(null);
-           }
-
            if(answerSame && recSame && reamrkSame){
+               answerForSame.setIsRec( answerForDifDto.getIsRec());
+               answerForSame.setAnswer( answerForDifDto.getAnswer());
+               answerForSame.setRemark(answerForDifDto.getRemark());
                return  answerForDifDto;
            }
-        }
 
         return answerForSame;
     }
@@ -1828,7 +1849,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                         if(inspectionFillCheckListDto.getConfigId().equalsIgnoreCase(selfAssessmentConfig.getConfigId())){
                             List<PremCheckItem> question =  selfAssessmentConfig.getQuestion();
                             if(!IaisCommonUtils.isEmpty(question)){
-                                List<PremCheckItem> ncQs = getNcQs(question);
+                                List<PremCheckItem> ncQs = getAllSelfQs(question);
                                if( !IaisCommonUtils.isEmpty(ncQs)){
                                    if(IaisCommonUtils.isEmpty(inspectionFillCheckListDto.getCheckList())){
                                        setSefNcAnswerToSevCheckList(ncQs,inspectionFillCheckListDto.getSectionDtoList());
@@ -1846,6 +1867,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         }
     }
 
+    // now no use
    private  List<PremCheckItem> getNcQs( List<PremCheckItem> question){
        List<PremCheckItem> ncQs = new ArrayList<>(2);
        for(PremCheckItem premCheckItem : question){
@@ -1855,6 +1877,23 @@ public class FillupChklistServiceImpl implements FillupChklistService {
        }
        return ncQs;
    }
+
+    private  List<PremCheckItem> getAllSelfQs( List<PremCheckItem> question){
+        List<PremCheckItem> ncQs = new ArrayList<>(2);
+        for(PremCheckItem premCheckItem : question){
+            if("NO".equalsIgnoreCase(premCheckItem.getAnswer())){
+                premCheckItem.setAnswer("No");
+                ncQs.add(premCheckItem);
+            }else if("YES".equalsIgnoreCase(premCheckItem.getAnswer())){
+                premCheckItem.setAnswer("Yes");
+                ncQs.add(premCheckItem);
+            }else if("NA".equalsIgnoreCase(premCheckItem.getAnswer())){
+                premCheckItem.setAnswer("Na");
+                ncQs.add(premCheckItem);
+            }
+        }
+        return ncQs;
+    }
     private void setSefNcAnswerToSevCheckList( List<PremCheckItem> ncQs,List<SectionDto> sectionDtoList){
         if(IaisCommonUtils.isEmpty(sectionDtoList)){
             return;
@@ -1866,8 +1905,10 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                     for(PremCheckItem premCheckItem : ncQs){
                         InspectionCheckQuestionDto incqDto =  itemDto.getIncqDto();
                        if( itemDto.getItemId().equalsIgnoreCase(premCheckItem.getChecklistItemId())){
-                           incqDto.setAnswer("No");
-                           incqDto.setNcSelfAnswer(true);
+                           if("No".equalsIgnoreCase(premCheckItem.getAnswer())){
+                               incqDto.setNcSelfAnswer(true);
+                           }
+                           incqDto.setSelfAnswer(premCheckItem.getAnswer());
                        }
                     }
                 }
@@ -1878,8 +1919,10 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                for(InspectionCheckQuestionDto itemDto : checkQuestionDtos){
                     for(PremCheckItem premCheckItem : ncQs){
                         if(itemDto.getItemId().equalsIgnoreCase(premCheckItem.getChecklistItemId())){
-                            itemDto.setChkanswer("No");
-                            itemDto.setNcSelfAnswer(true);
+                            if("No".equalsIgnoreCase(premCheckItem.getAnswer())){
+                                itemDto.setNcSelfAnswer(true);
+                            }
+                            itemDto.setChkanswer(premCheckItem.getAnswer());
                         }
                     }
             }
