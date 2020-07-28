@@ -44,6 +44,7 @@
                                 <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="Email" value="Email"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="REQUEST_DATE" value="Start Date"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="DUE_DATE" value="Due Date"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                             </tr>
                             </thead>
@@ -63,6 +64,7 @@
                                             <td><c:out value="${pool.licenceNo}"/></td>
                                             <td><c:out value="${pool.email}"/></td>
                                             <td><fmt:formatDate value="${pool.requestDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
+                                            <td><fmt:formatDate value="${pool.dueDateSubmission}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
                                             <td>
                                                 <iais:action >
                                                     <a onclick="javascript:doView('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.id)}');" >View</a>
