@@ -1156,6 +1156,10 @@ public class NewApplicationHelper {
         if (!IaisCommonUtils.isEmpty(licPsnDtos)) {
             for (PersonnelListQueryDto psnDto : licPsnDtos) {
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(psnDto.getSvcName());
+                if(hcsaServiceDto == null){
+                    log.info(StringUtil.changeForLog("service name:"+psnDto.getSvcName()+" can not get HcsaServiceDto ..."));
+                    continue;
+                }
                 String svcCode = hcsaServiceDto.getSvcCode();
                 String personMapKey = psnDto.getIdType() + "," + psnDto.getIdNo();
                 AppSvcPrincipalOfficersDto person = personMap.get(personMapKey);
@@ -1543,6 +1547,10 @@ public class NewApplicationHelper {
                     //specified svc
                     if(!StringUtil.isEmpty(baseSvcId)){
                         HcsaServiceDto baseSvcDto = HcsaServiceCacheHelper.getServiceById(baseSvcId);
+                        if(baseSvcDto == null){
+                            log.info(StringUtil.changeForLog("current svc id is dirty data ..."));
+                            continue;
+                        }
                         if(svcCode.equals(baseSvcDto.getSvcCode())){
                             break;
                         }
@@ -1578,6 +1586,10 @@ public class NewApplicationHelper {
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 String svcCode = appSvcRelatedInfoDto.getServiceCode();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(svcCode);
+                if(hcsaServiceDto == null){
+                    log.info(StringUtil.changeForLog("svc code:"+svcCode+" can not found HcsaServiceDto"));
+                    continue;
+                }
                 String serviceType = hcsaServiceDto.getSvcType();
                 appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
                 if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceType)){
@@ -1819,10 +1831,6 @@ public class NewApplicationHelper {
                 appSvcCgoDto.setSpecialityHtml(selPerson.getSpecialityHtml());
                 //set lic person info
                 appSvcCgoDto.setLicPerson(selPerson.isLicPerson());
-//                appSvcCgoDto.setCgoPsn(selPerson.isCgoPsn());
-//                appSvcCgoDto.setPoPsn(selPerson.isPoPsn());
-//                appSvcCgoDto.setDpoPsn(selPerson.isDpoPsn());
-//                appSvcCgoDto.setMapPsn(selPerson.isMapPsn());
             }
         }
     }
