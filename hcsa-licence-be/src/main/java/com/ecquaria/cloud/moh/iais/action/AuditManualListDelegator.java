@@ -175,7 +175,7 @@ public class AuditManualListDelegator {
             List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
             ParamUtil.setSessionAttr(request,"aduitTypeOp",(Serializable) aduitTypeOp);
             List<AuditTaskDataFillterDto> auditTaskDataDtos =  auditSystemPotitalListService.getSystemPotentailAdultList(dto);
-            auditSystemListService.getInspectors(auditTaskDataDtos);
+            auditTaskDataDtos = auditSystemListService.getInspectors(auditTaskDataDtos);
             if( !IaisCommonUtils.isEmpty(auditTaskDataDtos)){
                 for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
                     ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());
