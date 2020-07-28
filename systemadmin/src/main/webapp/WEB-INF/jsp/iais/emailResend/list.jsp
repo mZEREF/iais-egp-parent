@@ -40,7 +40,6 @@
                                     <span class="error-msg" name="iaisErrorMsg" id="error_later"></span>
                                 </div>
                             </div>
-
                         </div>
                         <div class="application-tab-footer">
                             <div class="row">
@@ -126,9 +125,9 @@
         </div>
         <input hidden id="emailId" name="emailId" value="">
         <input hidden id="notiId" name="notiId" value="">
-
     </form>
 </div>
+<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function edit(id,notiId) {
         $("#emailId").val(id);

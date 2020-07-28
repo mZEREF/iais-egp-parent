@@ -127,7 +127,7 @@
                 </div>
             </div>
         </div>
-<iais:confirm msg="Content could not exceed 8000"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+<iais:confirm msg="content cannot be exceeded 8000 characters"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
@@ -219,7 +219,16 @@
         $('#' + el.id).prev().find('.char_count').text(len + '/' + el.settings.max_chars);
     }
 
+    function removeHTMLTag(str) {
+        str = str.replace(/<\/?[^>]*>/g, '');
+        str = str.replace(/[ | ]*\n/g, '\n');
+        //str = str.replace(/\n[\s| | ]*\r/g,'\n');
+        str = str.replace(/ /ig, '');
+        return str;
+    }
+
+
     function tinymce_getContentLength() {
-        return tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText.length;
+        return removeHTMLTag(tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText).length;
     }
 </script>
