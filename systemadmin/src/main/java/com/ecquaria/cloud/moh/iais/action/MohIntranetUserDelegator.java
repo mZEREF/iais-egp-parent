@@ -295,7 +295,7 @@ public class MohIntranetUserDelegator {
             }
             intranetUserService.removeRole(removeRoleIds);
             removeRoleIds.clear();
-            intranetUserService.removeEgpRoles(orgUserDto.getUserDomain(),orgUserDto.getUserId(),removeRoleIds);
+            intranetUserService.removeEgpRoles(orgUserDto.getUserDomain(), orgUserDto.getUserId(), removeRoleIds);
         }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
         ParamUtil.setRequestAttr(bpc.request, "userAccId", userAccId);
@@ -308,20 +308,20 @@ public class MohIntranetUserDelegator {
         File file = File.createTempFile("temp", "xml");
         File xmlFile = inputStreamToFile(sessionFile.getInputStream(), file);
         List<OrgUserDto> orgUserDtos = importXML(xmlFile);
-        ParamUtil.setRequestAttr(bpc.request, "orgUserDtos", orgUserDtos);
+        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos", (Serializable) orgUserDtos);
         return;
     }
 
-    public void prepareImportAck(BaseProcessClass bpc) throws DocumentException {
-        List<OrgUserDto> orgUserDtos = (List<OrgUserDto>)ParamUtil.getRequestAttr(bpc.request, "orgUserDtos");
+    public void prepareImportAck(BaseProcessClass bpc) {
+        List<OrgUserDto> orgUserDtos = (List<OrgUserDto>) ParamUtil.getSessionAttr(bpc.request, "orgUserDtos");
         //do valiant
         //1. ge shi shi fou fu he
         List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+        if (!IaisCommonUtils.isEmpty(orgUserDtos)) {
             OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
-            for(OrgUserDto orgUserDto : orgUserDtos){
+            for (OrgUserDto orgUserDto : orgUserDtos) {
                 List<String> valiant = valiantDto(orgUserDto);
-                if(!IaisCommonUtils.isEmpty(valiant)){
+                if (!IaisCommonUtils.isEmpty(valiant)) {
                     orgUserUpLoadDto.setUserId(orgUserDto.getUserId());
                     orgUserUpLoadDto.setMsg(valiant);
                     orgUserUpLoadDtos.add(orgUserUpLoadDto);
@@ -331,29 +331,39 @@ public class MohIntranetUserDelegator {
         //2 you mei you chong fu de
         List<OrgUserDto> existUsersNew = IaisCommonUtils.genNewArrayList();
         List<OrgUserDto> existUsersOld = IaisCommonUtils.genNewArrayList();
-        for(OrgUserDto orgUserDto :orgUserDtos){
+        for (OrgUserDto orgUserDto : orgUserDtos) {
             String userId = orgUserDto.getUserId();
-            if(!StringUtil.isEmpty(userId)){
+            if (!StringUtil.isEmpty(userId)) {
                 OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
-                if(intranetUserByUserId!=null){
+                if (intranetUserByUserId != null) {
                     existUsersNew.add(orgUserDto);
-                    existUsersOld.add(orgUserDto);
+                    transform(intranetUserByUserId);
+                    existUsersOld.add(intranetUserByUserId);
                 }
             }
         }
-        if(IaisCommonUtils.isEmpty(existUsersNew)&&IaisCommonUtils.isEmpty(orgUserUpLoadDtos)){
+
+        if (IaisCommonUtils.isEmpty(orgUserUpLoadDtos)&&IaisCommonUtils.isEmpty(existUsersNew)) {
+            List<String> msg = IaisCommonUtils.genNewArrayList();
+            String s = "add success !";
+            msg.add(s);
             intranetUserService.createIntranetUsers(orgUserDtos);
-            for(OrgUserDto orgUserDto :orgUserDtos){
+            for (OrgUserDto orgUserDto : orgUserDtos) {
                 saveEgpUser(orgUserDto);
+                OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
+                String userId = orgUserDto.getUserId();
+                orgUserUpLoadDto.setMsg(msg);
+                orgUserUpLoadDto.setUserId(userId);
             }
             ParamUtil.setRequestAttr(bpc.request, "orgUserUpLoadDtos", orgUserUpLoadDtos);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
-        }else if(IaisCommonUtils.isEmpty(existUsersNew)&&!IaisCommonUtils.isEmpty(orgUserUpLoadDtos)){
+        }
+        if(!IaisCommonUtils.isEmpty(orgUserUpLoadDtos)){
             ParamUtil.setRequestAttr(bpc.request, "orgUserUpLoadDtos", orgUserUpLoadDtos);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
-            return;
-        }else if(!IaisCommonUtils.isEmpty(existUsersNew)){
+        }
+        if (IaisCommonUtils.isEmpty(orgUserUpLoadDtos)&&!IaisCommonUtils.isEmpty(existUsersNew)) {
             ParamUtil.setRequestAttr(bpc.request, "existUsersNew", existUsersNew);
             ParamUtil.setRequestAttr(bpc.request, "existUsersOld", existUsersOld);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -361,23 +371,115 @@ public class MohIntranetUserDelegator {
         }
     }
 
-    public void importSwitch(BaseProcessClass bpc) throws DocumentException {
+    private void transform(OrgUserDto orgUserDto) {
+        String branchUnit = orgUserDto.getBranchUnit();
+        String designation = orgUserDto.getDesignation();
+        String division = orgUserDto.getDivision();
+        String firstName = orgUserDto.getFirstName();
+        String lastName = orgUserDto.getLastName();
+        String remarks = orgUserDto.getRemarks();
+        String mobileNo = orgUserDto.getMobileNo();
+        String officeTelNo = orgUserDto.getOfficeTelNo();
+        String salutation = orgUserDto.getSalutation();
+        String displayName = orgUserDto.getDisplayName();
+        String organization = orgUserDto.getOrganization();
+
+        if (StringUtil.isEmpty(branchUnit)) {
+            orgUserDto.setBranchUnit(null);
+        }
+        if (StringUtil.isEmpty(designation)) {
+            orgUserDto.setDesignation(null);
+        }
+        if (StringUtil.isEmpty(division)) {
+            orgUserDto.setDivision(null);
+        }
+        if (StringUtil.isEmpty(firstName)) {
+            orgUserDto.setFirstName(null);
+        }
+        if (StringUtil.isEmpty(lastName)) {
+            orgUserDto.setFirstName(null);
+        }
+        if (StringUtil.isEmpty(remarks)) {
+            orgUserDto.setRemarks(remarks);
+        }
+        if (StringUtil.isEmpty(mobileNo)) {
+            orgUserDto.setMobileNo(null);
+        }
+        if (StringUtil.isEmpty(officeTelNo)) {
+            orgUserDto.setOfficeTelNo(null);
+        }
+        if (StringUtil.isEmpty(salutation)) {
+            orgUserDto.setSalutation(null);
+        }
+        if (StringUtil.isEmpty(displayName)) {
+            orgUserDto.setDisplayName(null);
+        }
+        if (StringUtil.isEmpty(organization)) {
+            orgUserDto.setOrganization(null);
+        }
+    }
+
+    public void importSwitch(BaseProcessClass bpc) {
+        List<OrgUserDto> orgUserDtos = (List<OrgUserDto>) ParamUtil.getRequestAttr(bpc.request, "orgUserDtos");
+        ParamUtil.setRequestAttr(bpc.request, "orgUserDtos", orgUserDtos);
         String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
-        if("back".equals(actionType)){
+        if ("back".equals(actionType)) {
+            ParamUtil.setSessionAttr(bpc.request, "orgUserDtos", null);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
-        }else {
+        } else {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         }
         return;
     }
 
-    public void importSubmit(BaseProcessClass bpc) throws DocumentException {
-        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
+    public void importSubmit(BaseProcessClass bpc) {
+        List<OrgUserDto> orgUserDtos = (List<OrgUserDto>) ParamUtil.getSessionAttr(bpc.request, "orgUserDtos");
+        List<OrgUserDto> orgUserDtosNew = IaisCommonUtils.genNewArrayList();
+        List<OrgUserDto> orgUserDtosOld = IaisCommonUtils.genNewArrayList();
+        if (!IaisCommonUtils.isEmpty(orgUserDtos)) {
+            for (OrgUserDto orgUserDto : orgUserDtos) {
+                String userId = orgUserDto.getUserId();
+                OrgUserDto oldOrgUserDto = intranetUserService.findIntranetUserByUserId(userId);
+                if (oldOrgUserDto != null) {
+                    String id = oldOrgUserDto.getId();
+                    orgUserDto.setId(id);
+                    orgUserDtosOld.add(oldOrgUserDto);
+                }else {
+                    orgUserDtosNew.add(orgUserDto);
+                }
+            }
+            //new
+            intranetUserService.createIntranetUsers(orgUserDtosNew);
+            for (OrgUserDto orgUserDto : orgUserDtosNew) {
+                saveEgpUser(orgUserDto);
+            }
+            //update
+            if(!IaisCommonUtils.isEmpty(orgUserDtosOld)){
+                for (OrgUserDto orgUserDto : orgUserDtos) {
+                    intranetUserService.updateOrgUser(orgUserDto);
+                    editEgpUser(orgUserDto);
+                }
+            }
+            List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
+            List<String> msg = IaisCommonUtils.genNewArrayList();
+            String s = "add success !";
+            msg.add(s);
+            for (OrgUserDto orgUserDto : orgUserDtos) {
+                String userId = orgUserDto.getUserId();
+                OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
+                orgUserUpLoadDto.setUserId(userId);
+                orgUserUpLoadDto.setMsg(msg);
+                orgUserUpLoadDtos.add(orgUserUpLoadDto);
+            }
+            ParamUtil.setRequestAttr(bpc.request, "orgUserUpLoadDtos", orgUserUpLoadDtos);
+        }
+        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos", null);
         return;
     }
 
     public void importBack(BaseProcessClass bpc) {
-        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
+        ParamUtil.setSessionAttr(bpc.request, "orgUserDtos", null);
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
         return;
     }
 
@@ -626,29 +728,33 @@ public class MohIntranetUserDelegator {
         String userId = orgUserDto.getUserId();
         String userDomain = orgUserDto.getUserDomain();
         ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, userDomain);
-        Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
-        Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
-        String email = orgUserDto.getEmail();
-        String displayName = orgUserDto.getDisplayName();
-        String firstName = orgUserDto.getFirstName();
-        String lastName = orgUserDto.getLastName();
-        String salutation = orgUserDto.getSalutation();
-        String mobileNo = orgUserDto.getMobileNo();
+        if(clientUser!=null){
+            Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
+            Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
+            String email = orgUserDto.getEmail();
+            String displayName = orgUserDto.getDisplayName();
+            String firstName = orgUserDto.getFirstName();
+            String lastName = orgUserDto.getLastName();
+            String salutation = orgUserDto.getSalutation();
+            String mobileNo = orgUserDto.getMobileNo();
 
-        clientUser.setUserDomain(userDomain);
-        clientUser.setId(userId);
-        clientUser.setDisplayName(displayName);
-        clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
-        clientUser.setPasswordChallengeQuestion("A");
-        clientUser.setPasswordChallengeAnswer("A");
-        clientUser.setAccountActivateDatetime(accountActivateDatetime);
-        clientUser.setAccountDeactivateDatetime(accountDeactivateDatetime);
-        clientUser.setFirstName(firstName);
-        clientUser.setLastName(lastName);
-        clientUser.setEmail(email);
-        clientUser.setMobileNo(mobileNo);
-        clientUser.setSalutation(salutation);
-        intranetUserService.updateEgpUser(clientUser);
+            clientUser.setUserDomain(userDomain);
+            clientUser.setId(userId);
+            clientUser.setDisplayName(displayName);
+            clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
+            clientUser.setPasswordChallengeQuestion("A");
+            clientUser.setPasswordChallengeAnswer("A");
+            clientUser.setAccountActivateDatetime(accountActivateDatetime);
+            clientUser.setAccountDeactivateDatetime(accountDeactivateDatetime);
+            clientUser.setFirstName(firstName);
+            clientUser.setLastName(lastName);
+            clientUser.setEmail(email);
+            clientUser.setMobileNo(mobileNo);
+            clientUser.setSalutation(salutation);
+            intranetUserService.updateEgpUser(clientUser);
+        }else {
+            log.error(StringUtil.changeForLog("===========egpUser can not found============"));
+        }
     }
 
     private Boolean deleteEgpUser(String userDomian, String userId) {
@@ -695,7 +801,6 @@ public class MohIntranetUserDelegator {
         //ele
         List list = root.elements();
         List<OrgUserDto> orgUserDtos = IaisCommonUtils.genNewArrayList();
-        List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < list.size(); i++) {
             try {
                 Element element = (Element) list.get(i);
@@ -716,22 +821,50 @@ public class MohIntranetUserDelegator {
                 String email = element.element("email").getText();
                 String remarks = element.element("remarks").getText();
                 OrgUserDto orgUserDto = new OrgUserDto();
-                orgUserDto.setUserId(userId);
+                if (!StringUtil.isEmpty(userId)) {
+                    orgUserDto.setUserId(userId);
+                }
+                if (!StringUtil.isEmpty(firstName)) {
+                    orgUserDto.setFirstName(firstName);
+                }
+                if (!StringUtil.isEmpty(lastName)) {
+                    orgUserDto.setLastName(lastName);
+                }
+                if (!StringUtil.isEmpty(displayName)) {
+                    orgUserDto.setDisplayName(displayName);
+                }
+                if (!StringUtil.isEmpty(startDate)) {
+                    orgUserDto.setAccountActivateDatetime(startDate);
+                }
+                if (!StringUtil.isEmpty(endDate)) {
+                    orgUserDto.setAccountDeactivateDatetime(endDate);
+                }
+                if (!StringUtil.isEmpty(branchUnit)) {
+                    orgUserDto.setBranchUnit(branchUnit);
+                }
+                if (!StringUtil.isEmpty(division)) {
+                    orgUserDto.setDivision(division);
+                }
+                if (!StringUtil.isEmpty(salutation)) {
+                    orgUserDto.setSalutation(salutation);
+                }
+                if (!StringUtil.isEmpty(organization)) {
+                    orgUserDto.setOrganization(organization);
+                }
+                if (!StringUtil.isEmpty(email)) {
+                    orgUserDto.setEmail(email);
+                }
+                if (!StringUtil.isEmpty(mobileNo)) {
+                    orgUserDto.setMobileNo(mobileNo);
+                }
+                if (!StringUtil.isEmpty(officeNo)) {
+                    orgUserDto.setOfficeTelNo(officeNo);
+                }
+                if (!StringUtil.isEmpty(remarks)) {
+                    orgUserDto.setRemarks(remarks);
+                }
                 orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
-                orgUserDto.setFirstName(firstName);
-                orgUserDto.setLastName(lastName);
-                orgUserDto.setDisplayName(displayName);
-                orgUserDto.setAccountActivateDatetime(startDate);
-                orgUserDto.setAccountDeactivateDatetime(endDate);
                 orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
-                orgUserDto.setBranchUnit(branchUnit);
-                orgUserDto.setDivision(division);
-                orgUserDto.setSalutation(salutation);
-                orgUserDto.setOrganization(organization);
-                orgUserDto.setEmail(email);
-                orgUserDto.setMobileNo(mobileNo);
-                orgUserDto.setOfficeTelNo(officeNo);
-                orgUserDto.setRemarks(remarks);
                 orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
                 orgUserDto.setUserDomain(IntranetUserConstant.DOMAIN_INTRANET);
                 orgUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -742,73 +875,7 @@ public class MohIntranetUserDelegator {
                 continue;
             }
         }
-        return orgUserDtos ;
-    }
-
-    private List<String> valiant (OrgUserDto orgUserDto) {
-        List<String> errors = IaisCommonUtils.genNewArrayList();
-        String userId = orgUserDto.getUserId();
-        if (!StringUtil.isEmpty(userId)) {
-            if (!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")) {
-                String error = "User ID is Alphanumeric.";
-                errors.add(error);
-            }else{
-                OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
-                if (intranetUserByUserId != null) {
-                    String valiuserId = intranetUserByUserId.getUserId();
-                    if (userId.equals(valiuserId)) {
-                        String error = "User ID is exist.";
-                        errors.add(error);
-                    }
-                }
-            }
-        } else {
-            String error = "User ID is a mandatory field.";
-            errors.add(error);
-        }
-        String displayName = orgUserDto.getDisplayName();
-        if (StringUtil.isEmpty(displayName)) {
-            String error = "DisplayName is a mandatory field.";
-            errors.add(error);
-        }
-        Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
-        if (accountActivateDatetime == null) {
-            String error = "AccountActivationStart is a mandatory field.";
-            errors.add(error);
-        }
-        Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
-        if (accountDeactivateDatetime == null) {
-            String error = "AccountActivationEnd is a mandatory field.";
-            errors.add(error);
-        }
-        if (accountDeactivateDatetime != null && accountActivateDatetime != null) {
-            boolean after = accountDeactivateDatetime.after(accountActivateDatetime);
-            if (!after) {
-                String error = "AccountActivationEnd date must be after accountActivationStart date.";
-                errors.add(error);
-            }
-        }
-        String lastName = orgUserDto.getLastName();
-        if (StringUtil.isEmpty(lastName)) {
-            String error = "LastName is a mandatory field.";
-            errors.add(error);
-        }
-        String firstName = orgUserDto.getFirstName();
-        if (StringUtil.isEmpty(firstName)) {
-            String error = "FirstName is a mandatory field.";
-            errors.add(error);
-        }
-        String email = orgUserDto.getEmail();
-        if (StringUtil.isEmpty(email)) {
-            String error = "Email is a mandatory field.";
-            errors.add(error);
-        } else {
-            if (!ValidationUtils.isEmail(email)) {
-                String error = "Email is not  correct.";
-                errors.add(error);
-            }
-        }
-        return errors;
+        return orgUserDtos;
     }
 
     private List<String> valiantDto(OrgUserDto orgUserDto) {

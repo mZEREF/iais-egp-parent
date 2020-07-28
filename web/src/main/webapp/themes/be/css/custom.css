@@ -755,3 +755,18 @@ text-decoration-color: white !important;
   background-position: 15px 50%;
   background-color: #e4fbdb;
 }
+
+.compareTdStyleUser {
+  display: inline;
+  padding: 5px 18px 5px 43px;
+  line-height: 1;
+  color: #53ab27;
+  text-align: left;
+  vertical-align: middle;
+  border-radius: 50px;
+  font-size: 100%;
+  background-image: url("../img/signs.png");
+  background-repeat: no-repeat;
+  background-position: 15px 50%;
+  background-color: #e4fbdb;
+}
