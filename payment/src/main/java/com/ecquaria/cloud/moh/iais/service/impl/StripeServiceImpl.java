@@ -37,7 +37,7 @@ public class StripeServiceImpl implements StripeService {
         Map<String, Object> params = new HashMap<>();
         params.put("type", "custom");
         params.put("country", "US");
-        params.put("email", "jenny.rosen@example.com");
+        params.put("email", GatewayConfig.seller_email);
         params.put(
                 "requested_capabilities",
                 requestedCapabilities
