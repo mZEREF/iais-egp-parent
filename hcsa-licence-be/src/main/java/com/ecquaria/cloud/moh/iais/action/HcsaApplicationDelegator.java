@@ -645,7 +645,7 @@ public class HcsaApplicationDelegator {
         hcsaSvcStageWorkingGroupDto.setOrder(1);
         hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
         HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
-        if ("round".equals(dto.getType())) {
+        if ("round".equals(dto.getSchemeType())) {
             routingTask(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,RoleConsts.USER_ROLE_INSPECTIOR);
         } else {
             routingTask(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT,RoleConsts.USER_ROLE_INSPECTIOR);
