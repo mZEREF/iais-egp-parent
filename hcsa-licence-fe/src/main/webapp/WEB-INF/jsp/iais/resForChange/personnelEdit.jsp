@@ -193,7 +193,7 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Subspeciality or relevant qualification " width="12"
+                                            <iais:field value="Subspecialty or relevant qualification " width="12"
                                                         mandatory="false"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                                 <iais:input cssClass="needDisableI" maxLength="100" type="text"
@@ -309,7 +309,7 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Subspeciality or relevant qualification " width="12"
+                                            <iais:field value="Subspecialty or relevant qualification " width="12"
                                                         mandatory="false"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                                 <iais:input maxLength="100" type="text" name="subspeciality"
@@ -424,7 +424,7 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Subspeciality or relevant qualification " width="12"
+                                            <iais:field value="Subspecialty or relevant qualification " width="12"
                                                         mandatory="false"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                                 <iais:input maxLength="100" type="text" name="qualification1"
@@ -530,7 +530,7 @@
                                             </iais:value>
                                         </iais:row>
                                         <iais:row>
-                                            <iais:field value="Subspeciality or relevant qualification " width="12"
+                                            <iais:field value="Subspecialty or relevant qualification " width="12"
                                                         mandatory="false"/>
                                             <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
                                                 <iais:input cssClass="needDisableI" maxLength="100" type="text"
