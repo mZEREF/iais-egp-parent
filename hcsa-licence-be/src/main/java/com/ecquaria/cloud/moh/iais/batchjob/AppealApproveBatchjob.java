@@ -302,19 +302,15 @@ public class AppealApproveBatchjob {
            }
         }
         try {
-
-
             if(appealDto!=null){
                 String relateRecId = appealDto.getRelateRecId();
                 if(!StringUtil.isEmpty(relateRecId)){
                     ApplicationDto applicationDto = applicationClient.getApplicationById(relateRecId).getEntity();
                     if(applicationDto!=null){
-
                         sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME,"","",appealDto.getNewHciName());
                     }
                 }
             }
-
         }catch (Exception e){
 
             log.error(e.getMessage(),e);

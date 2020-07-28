@@ -215,8 +215,8 @@ public class ConfigServiceImpl implements ConfigService {
 
         Map<String, List<HcsaConfigPageDto>> tables = getTables(request);
         request.setAttribute("routingStagess", tables);
-        List<HcsaServiceCategoryDto> hcsaServiceCategoryDto = getHcsaServiceCategoryDto();
-        request.getSession().setAttribute("hcsaServiceCategoryDtos",hcsaServiceCategoryDto);
+        List<HcsaServiceDto> baseHcsaServiceDto = hcsaConfigClient.baseHcsaService().getEntity();
+        request.getSession().setAttribute("baseHcsaServiceDto",baseHcsaServiceDto);
 
     }
 
@@ -549,7 +549,7 @@ public class ConfigServiceImpl implements ConfigService {
             for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto:v){
                 String stageWrkGrpID = hcsaSvcSpeRoutingSchemeDto.getStageWrkGrpID();
                 for(HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto:hcsaSvcStageWorkingGroupDtos){
-                    if(stageWrkGrpID.equals(hcsaSvcStageWorkingGroupDto.getId())){
+                    if(stageWrkGrpID.equals(hcsaSvcStageWorkingGroupDto.getId())&&1==hcsaSvcStageWorkingGroupDto.getOrder()){
                         hcsaSvcStageWorkingGroupDtos1.add(hcsaSvcStageWorkingGroupDto);
                     }
 
@@ -573,7 +573,7 @@ public class ConfigServiceImpl implements ConfigService {
                     String schemeType = hcsaSvcSpeRoutingSchemeDto.getSchemeType();
                         for(HcsaConfigPageDto hcsaConfigPageDto:hcsaConfigPageDtos){
                             String workingGroupId = hcsaConfigPageDto.getWorkingGroupId();
-                            if(workingGroupId.equals(hcsaSvcStageWorkingGroupDto.getStageWorkGroupId())&&stageWrkGrpID.equals(hcsaSvcStageWorkingGroupDto.getId())){
+                            if(hcsaSvcStageWorkingGroupDto.getStageWorkGroupId().equals(workingGroupId)&&stageWrkGrpID.equals(hcsaSvcStageWorkingGroupDto.getId())){
                                 hcsaConfigPageDto.setRoutingSchemeName(schemeType);
                             }
 
@@ -924,6 +924,7 @@ public class ConfigServiceImpl implements ConfigService {
         request.getSession().setAttribute("hcsaServiceCategoryDtos",hcsaServiceCategoryDto);
         request.setAttribute("hcsaServiceDto", hcsaServiceDto);
         String id = hcsaServiceDto.getId();
+        List<HcsaServiceDto> baseHcsaServiceDtos = hcsaConfigClient.baseHcsaService().getEntity();
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaConfigClient.getHcsaSvcDocConfigDto(id).getEntity();
         StringBuilder stringBuilder=new StringBuilder();
         for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos){
