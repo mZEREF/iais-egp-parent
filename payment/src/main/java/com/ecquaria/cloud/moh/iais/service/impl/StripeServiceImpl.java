@@ -197,7 +197,7 @@ public class StripeServiceImpl implements StripeService {
             paymentMethod=
                     PaymentMethod.create(params);
         } catch (StripeException e) {
-            e.printStackTrace();
+            log.info(e.getMessage(),e);
         }
         return paymentMethod;
     }
