@@ -98,7 +98,7 @@ public class MohSkipInspApptBatchJob {
                     //update inspection status
                     updateInspectionStatus(appPremCorrId, InspectionConstants.INSPECTION_STATUS_PENDING_PRE);
                     AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                    createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, new Date());
+                    createOrUpdateRecommendation(appPremisesRecommendationDto, appPremCorrId, new Date(), intranet);
                     AppPremInspCorrelationDto appPremInspCorrelationDto = new AppPremInspCorrelationDto();
                     appPremInspCorrelationDto.setId(null);
                     appPremInspCorrelationDto.setUserId(taskDto.getUserId());
@@ -126,7 +126,7 @@ public class MohSkipInspApptBatchJob {
         return applicationViewService.updateApplicaiton(applicationDto);
     }
 
-    private void createOrUpdateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto, String appPremCorrId, Date saveDate) {
+    private void createOrUpdateRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto, String appPremCorrId, Date saveDate, AuditTrailDto intranet) {
         if (appPremisesRecommendationDto == null) {
             appPremisesRecommendationDto = new AppPremisesRecommendationDto();
             appPremisesRecommendationDto.setAppPremCorreId(appPremCorrId);
@@ -135,7 +135,7 @@ public class MohSkipInspApptBatchJob {
             appPremisesRecommendationDto.setRecomInDate(saveDate);
             appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
             appPremisesRecommendationDto.setRecomDecision(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY);
-            appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appPremisesRecommendationDto.setAuditTrailDto(intranet);
             fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
         } else {
             appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
@@ -149,7 +149,7 @@ public class MohSkipInspApptBatchJob {
             appPremRecDto.setRecomInDate(saveDate);
             appPremRecDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
             appPremRecDto.setRecomDecision(InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY);
-            appPremRecDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            appPremRecDto.setAuditTrailDto(intranet);
             fillUpCheckListGetAppClient.saveAppRecom(appPremRecDto);
         }
     }
