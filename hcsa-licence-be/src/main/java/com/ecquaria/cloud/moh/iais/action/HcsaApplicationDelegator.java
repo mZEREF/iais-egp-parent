@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -622,7 +623,7 @@ public class HcsaApplicationDelegator {
      */
     public void rontingTaskToINS(BaseProcessClass bpc) throws FeignException, CloneNotSupportedException, IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS start ...."));
-        routingTask(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT,RoleConsts.USER_ROLE_INSPECTIOR);
+        routingTask(bpc,HcsaConsts.ROUTING_STAGE_INS,ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING,RoleConsts.USER_ROLE_INSPECTIOR);
         log.debug(StringUtil.changeForLog("the do rontingTaskToINS end ...."));
     }
 
@@ -1642,6 +1643,12 @@ public class HcsaApplicationDelegator {
             }
 
         }
+
+        //set inspector leads
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING.equals(appStatus)){
+            setInspLeadsInRecommendation(taskDto,taskDto.getWkGrpId(),IaisEGPHelper.getCurrentAuditTrailDto());
+        }
+
         //save the broadcast
         broadcastOrganizationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         broadcastApplicationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -1702,6 +1709,35 @@ public class HcsaApplicationDelegator {
             }
 
         log.info(StringUtil.changeForLog("The routingTask end ..."));
+    }
+
+    private void setInspLeadsInRecommendation(TaskDto taskDto, String workGroupId, AuditTrailDto auditTrailDto) {
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
+        if(appPremisesRecommendationDto == null){
+            List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
+            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+            String nameStr = "";
+            for (String id : leadIds) {
+                for (OrgUserDto oDto : orgUserDtos) {
+                    if (id.equals(oDto.getId())) {
+                        if(StringUtil.isEmpty(nameStr)){
+                            nameStr = oDto.getDisplayName();
+                        } else {
+                            nameStr = nameStr + "," + oDto.getDisplayName();
+                        }
+                    }
+                }
+            }
+            appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+            appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPremisesRecommendationDto.setVersion(1);
+            appPremisesRecommendationDto.setRecomInDate(null);
+            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPECTION_LEAD);
+            appPremisesRecommendationDto.setRecomDecision(nameStr);
+            appPremisesRecommendationDto.setAuditTrailDto(auditTrailDto);
+            fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+        }
     }
 
     private void updateFeApplications(List<ApplicationDto> applications){
