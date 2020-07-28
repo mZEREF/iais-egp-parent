@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
@@ -24,9 +25,11 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +38,7 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -326,13 +330,9 @@ public class MassEmailDelegator {
 
     private List<String> getAllData(MultipartFile mulfile) throws IOException {
         List<String> list = IaisCommonUtils.genNewArrayList();
-        XSSFWorkbook hb= null;
         try{
-            File file = null;
-            file = File.createTempFile("temp", null);
-            mulfile.transferTo(file);
-            hb=new XSSFWorkbook(file);
-            XSSFSheet sheet=hb.getSheetAt(0);
+            File file = FileUtils.multipartFileToFile(mulfile);
+            Sheet sheet= parseFile(file,0);
             int firstrow=    sheet.getFirstRowNum() + 1;
             int lastrow=    sheet.getLastRowNum();
             for (int i = firstrow; i < lastrow+1; i++) {
@@ -358,6 +358,27 @@ public class MassEmailDelegator {
 
         }
         return list;
+    }
+
+    @SuppressWarnings("resource")
+    private static Sheet parseFile(final File file, int sheetAt) throws Exception {
+        Workbook workBook = null;
+        try (FileInputStream in = new FileInputStream(file)){
+            char indexChar = ".".charAt(0);
+            String suffix = file.getName().substring(file.getName().indexOf(indexChar) + 1);
+            workBook = suffix.equals(FileUtils.EXCEL_TYPE_XSSF) ? new XSSFWorkbook(in) : new HSSFWorkbook(in);
+            return workBook.getSheetAt(sheetAt);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage(),e);
+        }finally {
+            try {
+                if (workBook != null){
+                    workBook.close();
+                }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
     }
 
     private void setServiceSelect(BaseProcessClass bpc){
