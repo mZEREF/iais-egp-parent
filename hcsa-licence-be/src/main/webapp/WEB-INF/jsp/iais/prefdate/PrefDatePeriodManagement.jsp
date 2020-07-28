@@ -85,7 +85,6 @@
                         <div class="col-xs-12">
                             <div class="components">
                                 <iais:pagination param="prefPeriodSearch" result="prefPeriodResult"/>
-                                <div class="table-gp">
                                     <table class="table">
                                         <thead>
                                         <tr>
@@ -150,9 +149,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-
-                                </div>
                             </div>
                         </div>
                     </div>
