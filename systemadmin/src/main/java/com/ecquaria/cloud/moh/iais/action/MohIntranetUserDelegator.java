@@ -322,7 +322,12 @@ public class MohIntranetUserDelegator {
             for (OrgUserDto orgUserDto : orgUserDtos) {
                 List<String> valiant = valiantDto(orgUserDto);
                 if (!IaisCommonUtils.isEmpty(valiant)) {
-                    orgUserUpLoadDto.setUserId(orgUserDto.getUserId());
+                    String userId = orgUserDto.getUserId();
+                    if(StringUtil.isEmpty(userId)){
+                        orgUserUpLoadDto.setUserId("-");
+                    }else {
+                        orgUserUpLoadDto.setUserId(userId);
+                    }
                     orgUserUpLoadDto.setMsg(valiant);
                     orgUserUpLoadDtos.add(orgUserUpLoadDto);
                 }
