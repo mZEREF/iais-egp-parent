@@ -580,6 +580,7 @@ public class BlastManagementDelegator {
 
     public void auditTrial(BaseProcessClass bpc){
         String msgid =  ParamUtil.getString(bpc.request, "editBlast");
+        String mode =  ParamUtil.getString(bpc.request, "mode");
         SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
         auditSearchParam.setSort("sent_time", SearchParam.ASCENDING);
         auditSearchParam.addFilter("client_query_code", msgid,true);
@@ -587,6 +588,7 @@ public class BlastManagementDelegator {
         QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
         SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
         ParamUtil.setRequestAttr(bpc.request,"SearchResult",searchResult);
+        ParamUtil.setRequestAttr(bpc.request,"mode",mode);
     }
 
     public void preview(BaseProcessClass bpc){

@@ -27,17 +27,28 @@
                     <div class="table-gp">
                         <table class="table">
                             <thead>
-                            <tr align="center">
-                                <th>Notification Type</th>
-                                <th>Recipient</th>
-                                <th>Sender</th>
-                                <th>Subject</th>
-                                <th>Content</th>
-                                <th>Number Attempts</th>
-                                <th>log Msg</th>
-                                <th>Sent Time</th>
-                                <th>File Name</th>
-                            </tr>
+                            <c:choose>
+                                <c:when test="${'Email'.equals(mode)}">
+                                    <tr align="center">
+                                        <th>Recipient</th>
+                                        <th>Subject</th>
+                                        <th>Content</th>
+                                        <th>Number of attempts</th>
+                                        <th>Log message</th>
+                                        <th>Sent date time</th>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <tr align="center">
+                                        <th>Recipient</th>
+                                        <th>Header</th>
+                                        <th>Text</th>
+                                        <th>Number of attempts</th>
+                                        <th>Log message</th>
+                                        <th>Sent date time</th>
+                                    </tr>
+                                </c:otherwise>
+                            </c:choose>
                             </thead>
                             <tbody>
                                 <c:choose>
@@ -53,20 +64,7 @@
                                         <c:forEach var="item" items="${SearchResult.rows}" varStatus="status">
                                             <tr style="display: table-row;">
                                                 <td>
-                                                    <p><c:choose>
-                                                        <c:when test="${item.type == 1}">
-                                                            Email
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            SMS
-                                                        </c:otherwise>
-                                                    </c:choose></p>
-                                                </td>
-                                                <td>
                                                     <p><c:out value="${item.recipient}"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.sender}"/></p>
                                                 </td>
                                                 <td>
                                                     <p><c:out value="${item.subject}"/></p>
@@ -82,9 +80,6 @@
                                                 </td>
                                                 <td>
                                                     <p><fmt:formatDate value="${item.sentTime}" pattern="MM/dd/yyyy"/></p>
-                                                </td>
-                                                <td>
-                                                    <p><c:out value="${item.fileName}"/></p>
                                                 </td>
                                             </tr>
                                         </c:forEach>
