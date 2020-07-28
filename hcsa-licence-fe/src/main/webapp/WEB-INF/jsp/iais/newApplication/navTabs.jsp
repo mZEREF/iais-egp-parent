@@ -96,7 +96,8 @@
             submit('documents',null,null);
         });
         $('#serviceForms').click(function(){
-            submit('serviceForms',null,null);
+            // submit('serviceForms',null,null);
+            submitFormTabs('${hcsaServiceDtoList.get(0).svcCode}',null,null);
         });
         $('#preview').click(function(){
             submit('preview',null,null);
