@@ -61,7 +61,7 @@
                       <label style="font-size: 16px">HCI Name / Address</label>
                     </div>
                     <div class="col-md-6">
-                      <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.hciName}"/></span>
+                      <span style="font-size: 16px">${inspectionTaskPoolListDto.hciName}</span>
                     </div>
                   </div>
                   <p></p>
