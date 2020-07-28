@@ -240,32 +240,38 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         setInspectorByOrgUserDto(inspecTaskCreAndAssDto, orgUserDtos, loginContext);
         setInspectorLeadName(inspecTaskCreAndAssDto, orgUserDtos, workGroupId);
         //set recommendation leads
-        setInspectorLeadRecom(inspecTaskCreAndAssDto, appCorrelationId);
+        setInspectorLeadRecom(inspecTaskCreAndAssDto, appCorrelationId, workGroupId);
         return inspecTaskCreAndAssDto;
     }
 
-    private void setInspectorLeadRecom(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String appCorrelationId) {
-        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorrelationId, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
-        if(appPremisesRecommendationDto == null){
-            List<String> leadNames = inspecTaskCreAndAssDto.getInspectionLeads();
-            if(!IaisCommonUtils.isEmpty(leadNames)){
-                String nameStr = "";
-                for(String name : leadNames){
-                    if(StringUtil.isEmpty(nameStr)){
-                        nameStr = name;
-                    } else {
-                        nameStr = nameStr + "," + name;
+    private void setInspectorLeadRecom(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, String appCorrelationId, String workGroupId) {
+        if(!StringUtil.isEmpty(workGroupId)) {
+            WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
+            String workGroupName = workingGroupDto.getGroupName();
+            if (!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Inspection")) {
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appCorrelationId, InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
+                if (appPremisesRecommendationDto == null) {
+                    List<String> leadNames = inspecTaskCreAndAssDto.getInspectionLeads();
+                    if (!IaisCommonUtils.isEmpty(leadNames)) {
+                        String nameStr = "";
+                        for (String name : leadNames) {
+                            if (StringUtil.isEmpty(nameStr)) {
+                                nameStr = name;
+                            } else {
+                                nameStr = nameStr + "," + name;
+                            }
+                        }
+                        appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                        appPremisesRecommendationDto.setAppPremCorreId(appCorrelationId);
+                        appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                        appPremisesRecommendationDto.setVersion(1);
+                        appPremisesRecommendationDto.setRecomInDate(null);
+                        appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPECTION_LEAD);
+                        appPremisesRecommendationDto.setRecomDecision(nameStr);
+                        appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                        fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
                     }
                 }
-                appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-                appPremisesRecommendationDto.setAppPremCorreId(appCorrelationId);
-                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                appPremisesRecommendationDto.setVersion(1);
-                appPremisesRecommendationDto.setRecomInDate(null);
-                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPECTION_LEAD);
-                appPremisesRecommendationDto.setRecomDecision(nameStr);
-                appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
             }
         }
     }

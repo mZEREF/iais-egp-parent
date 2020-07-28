@@ -206,29 +206,33 @@ public class RoundRobinCommPoolBatchJob {
     private void setInspLeadsInRecommendation(TaskDto taskDto, String workGroupId, AuditTrailDto auditTrailDto) {
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
         if(appPremisesRecommendationDto == null){
-            List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
-            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-            String nameStr = "";
-            for (String id : leadIds) {
-                for (OrgUserDto oDto : orgUserDtos) {
-                    if (id.equals(oDto.getId())) {
-                        if(StringUtil.isEmpty(nameStr)){
-                            nameStr = oDto.getDisplayName();
-                        } else {
-                            nameStr = nameStr + "," + oDto.getDisplayName();
+            WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
+            String workGroupName = workingGroupDto.getGroupName();
+            if(!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Inspection")){
+                List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
+                List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+                String nameStr = "";
+                for (String id : leadIds) {
+                    for (OrgUserDto oDto : orgUserDtos) {
+                        if (id.equals(oDto.getId())) {
+                            if(StringUtil.isEmpty(nameStr)){
+                                nameStr = oDto.getDisplayName();
+                            } else {
+                                nameStr = nameStr + "," + oDto.getDisplayName();
+                            }
                         }
                     }
                 }
+                appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+                appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+                appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appPremisesRecommendationDto.setVersion(1);
+                appPremisesRecommendationDto.setRecomInDate(null);
+                appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPECTION_LEAD);
+                appPremisesRecommendationDto.setRecomDecision(nameStr);
+                appPremisesRecommendationDto.setAuditTrailDto(auditTrailDto);
+                fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
             }
-            appPremisesRecommendationDto = new AppPremisesRecommendationDto();
-            appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
-            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appPremisesRecommendationDto.setVersion(1);
-            appPremisesRecommendationDto.setRecomInDate(null);
-            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPECTION_LEAD);
-            appPremisesRecommendationDto.setRecomDecision(nameStr);
-            appPremisesRecommendationDto.setAuditTrailDto(auditTrailDto);
-            fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
         }
     }
 
