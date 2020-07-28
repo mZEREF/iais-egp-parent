@@ -35,18 +35,18 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
-import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @Author: Hc
@@ -256,14 +256,24 @@ public class InterInboxDelegator {
         MasterCodePair mcp = new MasterCodePair("message_type", "message_type_desc", inboxTypes);
         inboxParam.addMasterCode(mcp);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
+        log.info("inboxResult start=>>>>>>>>");
+        log.info("inboxResult ==>>> row " + inboxResult.getRowCount() );
+
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxQueryDtoList) {
             List<InboxMsgMaskDto> inboxMsgMaskDtoList = inboxService.getInboxMaskEntity(inboxQueryDto.getId());
+            log.info("inboxMsgMaskDtoList ==>>> row " + inboxMsgMaskDtoList.size());
+
+            int i = 0;
             for (InboxMsgMaskDto inboxMsgMaskDto:inboxMsgMaskDtoList){
+
+                log.info("inboxMsgMaskDtoList ==>>> count " + i++);
+
                 inboxQueryDto.setMsgContent(inboxQueryDto.getMsgContent().replaceAll("="+inboxMsgMaskDto.getParamValue(),
                         "="+MaskUtil.maskValue(inboxMsgMaskDto.getParamName(),inboxMsgMaskDto.getParamValue())));
             }
         }
+        log.info("inboxResult end=>>>>>>>>");
         if(!StringUtil.isEmpty(inboxResult)){
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
             ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);

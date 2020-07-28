@@ -55,7 +55,7 @@
             <div class="components">
                 <iais:pagination  param="msgSearchParam" result="msgSearchResult"/>
                 <br><br>
-                <div class="table-gp">
+                <div >
                     <table class="table">
                         <thead>
                         <tr>
@@ -69,7 +69,7 @@
                             <iais:sortableHeader needSort="false"   field="action" style="padding-bottom:22px" value="Action"></iais:sortableHeader>
                         </tr>
                         </thead>
-                        <tbody style="text-align: center">
+                        <tbody style="text-align: left">
                         <c:choose>
                             <c:when test="${empty msgSearchResult.rows}">
                                 <tr>
