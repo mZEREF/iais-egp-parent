@@ -22,6 +22,7 @@
 
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
+        <input itype="textKey13" style="display:none" />
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="currentValidateId" value="">
 
