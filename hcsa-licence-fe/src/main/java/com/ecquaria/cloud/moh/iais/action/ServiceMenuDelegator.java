@@ -656,16 +656,19 @@ public class ServiceMenuDelegator {
             appSelectSvcDto.setNewLicensee(newLicensee);
             if(newLicensee){
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
+                    //64570
                     if(basechks.length == 1){
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }
                 }else if(nextstep.equals(CHOOSE_ALIGN)){
-                    if(basechks.length == 1){
-                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-                    }else{
-                        //todo: wait design if choose align
-                        nextstep = CHOOSE_ALIGN;
-                    }
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
+                    //todo open
+//                    if(basechks.length == 1){
+//                        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
+//                    }else{
+//                        //todo: wait design if choose align
+//                        nextstep = CHOOSE_ALIGN;
+//                    }
                 }
             }else{
                 //todo logic
