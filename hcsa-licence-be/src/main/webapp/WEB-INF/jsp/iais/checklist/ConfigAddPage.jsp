@@ -112,6 +112,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <div class="text-right text-center-mobile">
+                    <a class="btn btn-primary next" onclick="javascript: clearInput();">Clear</a>
                     <a class="btn btn-primary next" onclick="javascript: doNext();">Next</a>
                 </div>
             </div>
@@ -125,26 +126,39 @@
         checkInputStatus();
     })
 
-    function checkInputStatus() {
-        if ($('#common').val() == '1') {
-            $('#common').attr("checked", "checked");
-            $('#commonField').append("<span style=\"color: red\"> *</span>");
-            $('#serviceNameField span').hide();
-            $('#moduleField span').hide();
-            $('#typeField span').hide();
-            Utils.clearClickStatus('serviceFieldGroup')
+    let hasClick = false;
+    function checkInputStatus(){
+        let commonVal = $('#common').val();
+        if ('1' == commonVal && !hasClick) {
+            setCommon();
             disableInput();
-        } else {
+        }else {
+            openInput();
+        }
+    }
 
-            var aaa = $(".form-horizontal select").val();
-            if (aaa != '') {
-                $('#common').attr('disabled', 'disabled')
-                $('#common').val()
-            }
+    function setCommon(){
+        $('#common').attr("checked", "checked");
+        $('#common').val(1);
+        $('#commonField').append("<span style=\"color: red\"> *</span>");
+        hasClick = true;
+    }
 
-            $('#serviceNameField').append("<span style=\"color: red\"> *</span>");
-            $('#moduleField').append("<span style=\"color: red\"> *</span>");
-            $('#typeField').append("<span style=\"color: red\"> *</span>");
+    function clearInput(){
+        $('#commonField span').hide();
+        $('#common').attr('disabled', null);
+        Utils.clearClickStatus('form-horizontal');
+        $('#serviceNameField span').hide();
+        $('#moduleField span').hide();
+        $('#typeField span').hide();
+        checkInputStatus()
+    }
+
+
+    common.onclick = function () {
+        if (!hasClick){
+            setCommon();
+            disableInput();
         }
     }
 
@@ -152,26 +166,30 @@
         $('#common').attr('disabled', 'disabled')
     });
 
-    var flag = false;
-    common.onclick = function () {
-        var checkedStatus = $('#common').attr("checked");
-        if (checkedStatus && !flag) {
-            $('#common').val(1);
-            $('#commonField').append("<span style=\"color: red\"> *</span>");
-
-            disableInput();
-
-            Utils.clearClickStatus('serviceFieldGroup')
-            flag = true;
-        }
-    }
-
     function disableInput() {
         $('.nice-select').addClass('disabled');
         $('#hciCode').attr('disabled', 'disabled');
         $('#serviceNameField span').hide();
         $('#moduleField span').hide();
         $('#typeField span').hide();
+
+        Utils.clearClickStatus('serviceFieldGroup')
+    }
+
+    function openInput() {
+        let selectVal = $(".form-horizontal select").val();
+        if (selectVal != '') {
+            $('#common').attr('disabled', 'disabled')
+            $('#common').val()
+        }
+
+        $('#serviceNameField').append("<span style=\"color: red\"> *</span>");
+        $('#moduleField').append("<span style=\"color: red\"> *</span>");
+        $('#typeField').append("<span style=\"color: red\"> *</span>");
+
+        $('.nice-select').removeClass('disabled');
+        $('#hciCode').attr('disabled');
+        hasClick = false;
     }
 
     function doNext() {

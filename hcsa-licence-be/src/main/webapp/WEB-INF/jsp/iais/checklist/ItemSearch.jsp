@@ -100,6 +100,16 @@
               <div class="components">
                 <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
                   <table class="table">
+                    <colgroup>
+                      <col style="width: 1%;"/>
+                      <col style="width: 3%;"/>
+                      <col style="width: 15%;"/>
+                      <col style="width: 30%;"/>
+                      <col style="width: 20%;"/>
+                      <col style="width: 10%;"/>
+                      <col style="width: 10%;"/>
+                      <col style="width: 5%;"/>
+                    </colgroup>
                     <thead>
                     <tr>
                       <iais:sortableHeader needSort="false" field="" style="padding-bottom:15px" value="No."></iais:sortableHeader>
