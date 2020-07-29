@@ -56,7 +56,7 @@ public class UserValidator implements CustomizeValidator {
             }
 
             if (IaisEGPConstant.YES.equals(isNeedValidateField)){
-                if(dto.getId() == null){
+                if(dto.getId() == null && dto.getIdentityNo() != null){
                     FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNric(dto.getIdentityNo());
                     if(feUserDto != null){
                         map.put("identityNo", "A user account has already been created for this ID");
