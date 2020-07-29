@@ -177,6 +177,28 @@ public class RoundRobinCommPoolBatchJob {
                       taskDto.setDateAssigned(new Date());
                       taskDto.setAuditTrailDto(auditTrailDto);
                       taskDto = taskService.updateTask(taskDto);
+                      //update the application.
+                      String taskType = taskDto.getTaskType();
+                      String appNo = taskDto.getApplicationNo();
+                      log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskType -- >:" + taskType));
+                      log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob appNo -- >:" + appNo));
+                      if(TaskConsts.TASK_TYPE_INSPECTION.equals(taskType)){
+                          List<ApplicationDto> applicationDtos = applicationService.getApplicationDtosByApplicationNo(appNo);
+                          if(!IaisCommonUtils.isEmpty(applicationDtos)){
+                              ApplicationDto applicationDto = applicationDtos.get(0);
+                              if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())){
+                                  log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob update this applicaiton status to -- >:"
+                                          + ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING));
+                                  applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+                                  applicationDto = applicationService.updateBEApplicaiton(applicationDto);
+                                  log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob BE update success ..."));
+                                  applicationDto = applicationService.updateFEApplicaiton(applicationDto);
+                                  log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob FE update success ..."));
+                              }
+                          }else{
+                              log.error(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob this appNo can not get the Application"));
+                          }
+                      }
                       ApplicationViewDto applicationViewDto=applicationClient.getAppViewByCorrelationId(taskDto.getRefNo()).getEntity();
                       if(ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL.equals(applicationViewDto.getApplicationDto().getStatus()) ||
                               ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT.equals(applicationViewDto.getApplicationDto().getStatus())){

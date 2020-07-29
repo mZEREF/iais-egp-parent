@@ -10,8 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformatio
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import freemarker.template.TemplateException;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -27,6 +25,8 @@ public interface ApplicationService {
     //
     public List<AppPremisesCorrelationDto> getAppPremisesCorrelationByAppGroupId(String appGroupId);
     public Integer getAppBYGroupIdAndStatus(String appGroupId,String  status);
+
+    public ApplicationDto updateBEApplicaiton(ApplicationDto applicationDto);
 
     public ApplicationDto updateFEApplicaiton(ApplicationDto applicationDto);
 
