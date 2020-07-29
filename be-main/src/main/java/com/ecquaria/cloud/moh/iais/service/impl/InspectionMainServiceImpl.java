@@ -83,6 +83,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
     };
 
     private static final String[] INSP_LEADER_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
             ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
@@ -95,6 +96,7 @@ public class InspectionMainServiceImpl implements InspectionMainService {
     };
 
     private static final String[] INSP_STATUS = new String[]{
+            ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS,
             ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,
             ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,
