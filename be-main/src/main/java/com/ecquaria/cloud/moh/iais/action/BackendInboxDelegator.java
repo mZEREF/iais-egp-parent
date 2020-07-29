@@ -292,6 +292,7 @@ public class BackendInboxDelegator {
     public void doApprove(BaseProcessClass bpc)  throws FeignException, CloneNotSupportedException {
 
         ParamUtil.setSessionAttr(bpc.request,"BackendInboxApprove",null);
+        ParamUtil.setSessionAttr(bpc.request,"BackendInboxReturnFee",null);
 
         String[] taskList =  ParamUtil.getMaskedStrings(bpc.request, "taskId");
         String action =  ParamUtil.getString(bpc.request, "action");
@@ -492,6 +493,9 @@ public class BackendInboxDelegator {
             }
         }
 
+        Map<String, String> returnFeeMap = IaisCommonUtils.genNewHashMap();
+        returnFeeMap.put(applicationDto.getApplicationNo(),appStatus);
+        ParamUtil.setSessionAttr(bpc.request,"BackendInboxReturnFee",(Serializable) returnFeeMap);
         //appeal save return fee
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
@@ -632,7 +636,7 @@ public class BackendInboxDelegator {
                 broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
                 if(isAllSubmit){
                     //update current application status in db search result
-                    updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
+                    updateCurrentApplicationStatus(bpc,saveApplicationDtoList);
                     //get and set return fee
                     saveApplicationDtoList = hcsaConfigMainClient.returnFee(saveApplicationDtoList).getEntity();
                     //save return fee
@@ -699,11 +703,15 @@ public class BackendInboxDelegator {
         return  result;
     }
 
-    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos,String applicationId,String status){
-        if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(applicationId)){
+    private void updateCurrentApplicationStatus(BaseProcessClass bpc,List<ApplicationDto> applicationDtos){
+        Map<String, String> returnFee = IaisCommonUtils.genNewHashMap();
+        returnFee = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request,"BackendInboxReturnFee");
+        if(!IaisCommonUtils.isEmpty(applicationDtos)){
             for (ApplicationDto applicationDto : applicationDtos){
-                if(applicationId.equals(applicationDto.getId())){
-                    applicationDto.setStatus(status);
+                for(Map.Entry<String, String> entry : returnFee.entrySet()) {
+                    if (entry.getKey().equals(applicationDto.getApplicationNo())) {
+                        applicationDto.setStatus(entry.getValue());
+                    }
                 }
             }
         }
