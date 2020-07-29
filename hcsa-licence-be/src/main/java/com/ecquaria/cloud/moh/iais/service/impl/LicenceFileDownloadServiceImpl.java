@@ -649,6 +649,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto("INTRANET");
         List<ApplicationDto> listNewApplicationDto =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> requestForInfList  =IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> updateTaskList  =IaisCommonUtils.genNewArrayList();
             List<Submission> submissionList = eventClient.getSubmission(submissionId).getEntity();
             ApplicationListFileDto dto = null;
             log.info(StringUtil.changeForLog(submissionList .size() +"submissionList .size()"));
@@ -668,6 +669,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                   log.info("update requeste Application status");
                   requestForInfList= applicationClient.updateApplicationOfRfi(requestForInfList).getEntity();
                   log.info(StringUtil.changeForLog(JsonUtil.parseToJson(requestForInfList)));
+                  updateTaskList = applicationNewAndRequstDto.getUpdateTaskList();
                 }
             }
             log.info(StringUtil.changeForLog(listNewApplicationDto.size()+"listNewApplicationDto size"));
@@ -718,7 +720,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization());
             }
-
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(updateTaskList)+"updateTaskList"));
+            updateTask(updateTaskList);
         }
 
     }
@@ -876,12 +879,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     }
 
     private void updateTask(List<ApplicationDto>  updateTaskList){
+        log.info("update task");
         if(updateTaskList==null){
             return;
         }
         for(ApplicationDto applicationDto : updateTaskList){
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
             List<TaskDto> taskbyApplicationNo = taskService.getTaskbyApplicationNo(applicationDto.getApplicationNo());
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(taskbyApplicationNo)+"taskbyApplicationNo"));
             for(TaskDto taskDto : taskbyApplicationNo){
                 for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
                     taskDto.setRefNo(appPremisesCorrelationDto.getId());
