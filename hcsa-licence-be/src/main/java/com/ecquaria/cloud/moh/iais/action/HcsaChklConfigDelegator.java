@@ -341,7 +341,6 @@ public class HcsaChklConfigDelegator {
     private void setToSession(HttpServletRequest request, String value){
         if (!StringUtils.isEmpty(value)){
             ChecklistConfigDto configDto = hcsaChklService.getChecklistConfigById(value);
-            configDto.getSectionDtos().sort(Comparator.comparing(ChecklistSectionDto::getOrder));
 
             List<String> selectedItemIdToConfig = IaisCommonUtils.genNewArrayList();
             configDto.getSectionDtos().forEach(i -> {
