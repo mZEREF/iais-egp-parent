@@ -4065,6 +4065,19 @@ public class NewApplicationDelegator {
             }
 
             if(appSubmissionDto != null){
+                //clear svcDoc id
+                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                    for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                        List<AppSvcDocDto> appSvcDocDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
+                        if(!IaisCommonUtils.isEmpty(appSvcDocDtos)){
+                            for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
+                                appSvcDocDto.setId(null);
+                            }
+                        }
+                    }
+                }
+
                 String appType =  appSubmissionDto.getAppType();
                 boolean isRenewalOrRfc = ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
                 appSubmissionDto.setNeedEditController(true);
