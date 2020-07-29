@@ -24,6 +24,7 @@
                     <h3>
                         <span>Audit Trial</span>
                     </h3>
+                    <iais:pagination param="auditSearchParam" result="searchResult"/>
                     <div class="table-gp">
                         <table class="table">
                             <thead>
@@ -52,7 +53,7 @@
                             </thead>
                             <tbody>
                                 <c:choose>
-                                    <c:when test="${empty SearchResult.rows}">
+                                    <c:when test="${empty searchResult.rows}">
                                         <tr>
                                             <td  colspan="10" >
                                                 <iais:message key="ACK018" escape="true"></iais:message>
@@ -61,7 +62,7 @@
                                         </tr>
                                     </c:when>
                                     <c:otherwise>
-                                        <c:forEach var="item" items="${SearchResult.rows}" varStatus="status">
+                                        <c:forEach var="item" items="${searchResult.rows}" varStatus="status">
                                             <tr style="display: table-row;">
                                                 <td>
                                                     <p><c:out value="${item.recipient}"/></p>
@@ -91,12 +92,14 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">
                             <a class="back" id="back"><em class="fa fa-angle-left"></em> Back</a>
+                            <a class="btn btn-primary" href="${pageContext.request.contextPath}/audit-repo?editBlast=${editBlast}&mode=${mode}" title="Download">Download</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-      <input hidden id="editBlast" name="editBlast" value="">
+      <input hidden id="editBlast" name="editBlast" value="${editBlast}">
+      <input hidden id="mode" name="mode" value="${mode}">
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
