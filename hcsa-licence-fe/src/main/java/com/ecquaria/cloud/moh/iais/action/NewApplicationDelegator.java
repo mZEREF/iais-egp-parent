@@ -1538,7 +1538,6 @@ public class NewApplicationDelegator {
         autoAppSubmissionListDto.setEventRefNo(autoTime.toString());
         notAutoAppSubmissionListDto.setEventRefNo(notAutoTime.toString());
         if(!notAutoSaveAppsubmission.isEmpty()){
-            AppSubmissionDto appSu = requestForChangeService.submitChange(notAutoAppSubmissionListDto.getAppSubmissionDtos().get(0));
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(notAutoSaveAppsubmission);
             notAutoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(notAutoAppSubmissionListDto,notAuto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
@@ -1553,7 +1552,6 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
         if(!autoSaveAppsubmission.isEmpty()){
-            AppSubmissionDto appSu = requestForChangeService.submitChange(notAutoAppSubmissionListDto.getAppSubmissionDtos().get(0));
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoSaveAppsubmission);
             autoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto,auto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
