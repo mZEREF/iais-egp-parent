@@ -3051,9 +3051,9 @@ public class NewApplicationDelegator {
                 String certIssuedDtStr = Formatter.formatDate(fireSafetyCertIssuedDateDate);
                 appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
                 if(AppConsts.YES.equals(isOtherLic[i])){
-                    appGrpPremisesDto.setLocateWithOthers(1);
-                }else if("-1".equals(isOtherLic[i])){
-                    appGrpPremisesDto.setLocateWithOthers(-1);
+                    appGrpPremisesDto.setLocateWithOthers(AppConsts.YES);
+                }else if(AppConsts.NO.equals(isOtherLic[i])){
+                    appGrpPremisesDto.setLocateWithOthers(AppConsts.NO);
                 }
                 for(int j =0; j<length; j++){
                     AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();
