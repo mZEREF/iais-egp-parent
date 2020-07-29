@@ -2300,6 +2300,14 @@ public class NewApplicationDelegator {
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
             serviceConfigService.updatePaymentStatus(appGrp);
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
+            //todo change
+            StringBuilder url = new StringBuilder();
+            url.append("https://")
+                    .append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PrepareAckPage");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+            return;
         }
         log.info(StringUtil.changeForLog("the do jumpBank end ...."));
     }
