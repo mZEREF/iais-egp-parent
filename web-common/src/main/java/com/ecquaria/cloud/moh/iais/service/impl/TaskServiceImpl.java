@@ -142,15 +142,39 @@ public class TaskServiceImpl implements TaskService {
                // List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = this.getAppPremisesCorrelationByAppGroupId(applicationDtos.get(0).getAppGrpId());
                 List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
                 List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
+
+                Map map = IaisCommonUtils.genNewHashMap();
+                map.put("applications",applicationDtos);
+                map.put("stage",stageId);
+                String scheme = taskHcsaConfigClient.getSendTaskType(map).getEntity();
+                log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison scheme is -->:"+scheme));
+                String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
+                String userId = taskScoreDto.getUserId();
+                Date  assignDate = new Date();
+                log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
+                switch (scheme){
+                    case TaskConsts.TASK_SCHEME_TYPE_COMMON :
+                        userId = null;
+                        assignDate = null;
+                        break;
+                    case TaskConsts.TASK_SCHEME_TYPE_ASSIGN :
+                        userId = null;
+                        taskType = TaskConsts.TASK_TYPE_MAIN_FLOW_SUPER;
+                        assignDate = null;
+                        break;
+                }
+                log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison taskType is -->:"+taskType));
+                log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
+                log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison assignDate is -->:"+assignDate));
                 for(ApplicationDto applicationDto : applicationDtos){
                     int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                             stageId,applicationDto.getApplicationType());
                     List<AppPremisesCorrelationDto> appPremisesCorrelations = getAppPremisesCorrelationId(applicationDto.getId());
                     if(!IaisCommonUtils.isEmpty(appPremisesCorrelations)){
                         for (AppPremisesCorrelationDto appPremisesCorrelationDto :appPremisesCorrelations ){
-                            TaskDto taskDto = TaskUtil.getUserTaskDto(applicationDto.getApplicationNo(),stageId,
+                            TaskDto taskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,taskType,
                                     appPremisesCorrelationDto.getId(),workGroupId,
-                                    taskScoreDto.getUserId(),score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
+                                    userId, assignDate,score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
                                     auditTrailDto);
                             taskDtos.add(taskDto);
                             //create history
