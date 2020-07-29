@@ -1375,17 +1375,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return serListDto;
     }
 
-    @Override
-    public  Map<String,String> userIdNameMapByOrgUserDtos(List<OrgUserDto> orgUserDtos){
-        Map<String,String> userIdNameMap  = Maps.newHashMapWithExpectedSize( orgUserDtos.size());
-        for(OrgUserDto orgUserDto :  orgUserDtos){
-            userIdNameMap.put(orgUserDto.getId(),orgUserDto.getUserId());
-        }
-        return userIdNameMap;
-    }
 
     @Override
-    public InspectionFillCheckListDto getInspectionFillCheckListDtoByInspectionFillCheckListDto(InspectionFillCheckListDto inspectionFillCheckListDto, Map<String,String> orgUserDtos){
+    public InspectionFillCheckListDto getInspectionFillCheckListDtoByInspectionFillCheckListDto(InspectionFillCheckListDto inspectionFillCheckListDto, List<OrgUserDto> orgUserDtos){
         if(inspectionFillCheckListDto == null){
             return inspectionFillCheckListDto;
         }
@@ -1403,12 +1395,12 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         for(InspectionCheckQuestionDto inspectionCheckQuestionDto : inspectionCheckQuestionDtos){
             List<AnswerForDifDto> answerForDifDtos = new ArrayList<>(userNum);
             Map<String, AnswerForDifDto> answerForDifDtoMaps = new HashMap<>(userNum);
-            for (Map.Entry<String, String> entry : orgUserDtos.entrySet()) {
+            for (OrgUserDto entry : orgUserDtos) {
                 AnswerForDifDto answerForDifDto = new AnswerForDifDto();
-                answerForDifDto.setSubmitId(entry.getKey());
-                answerForDifDto.setSubmitName(entry.getValue());
+                answerForDifDto.setSubmitId(entry.getId());
+                answerForDifDto.setSubmitName(entry.getUserId());
                 answerForDifDtos.add(answerForDifDto);
-                answerForDifDtoMaps.put(entry.getKey(),answerForDifDto);
+                answerForDifDtoMaps.put(entry.getId(),answerForDifDto);
             }
             inspectionCheckQuestionDto.setAnswerForDifDtos(answerForDifDtos);
             inspectionCheckQuestionDto.setAnswerForDifDtoMaps(answerForDifDtoMaps);
@@ -1528,19 +1520,19 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     private InspectionCheckQuestionDto getInspectionCheckQuestionDtoByAnswerForDifDto(InspectionCheckQuestionDto inspectionCheckQuestionDto,AnswerForDifDto answerForDifDto){
         inspectionCheckQuestionDto.setRemark(answerForDifDto.getRemark());
-        inspectionCheckQuestionDto.setAnswer(answerForDifDto.getAnswer());
+        inspectionCheckQuestionDto.setChkanswer(answerForDifDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(answerForDifDto.getIsRec()));
         return  inspectionCheckQuestionDto;
     }
 
     private InspectionCheckQuestionDto getInspectionCheckQuestionDtoByInspectionCheckQuestionDto(InspectionCheckQuestionDto inspectionCheckQuestionDto,InspectionCheckListAnswerDto inspectionCheckListAnswerDto){
         inspectionCheckQuestionDto.setRemark(inspectionCheckListAnswerDto.getRemark());
-        inspectionCheckQuestionDto.setAnswer(inspectionCheckListAnswerDto.getAnswer());
+        inspectionCheckQuestionDto.setChkanswer(inspectionCheckListAnswerDto.getAnswer());
         inspectionCheckQuestionDto.setRectified("1".equalsIgnoreCase(inspectionCheckListAnswerDto.getIsRec()));
         return  inspectionCheckQuestionDto;
     }
     @Override
-    public  AdCheckListShowDto getAdCheckListShowDtoByAdCheckListShowDto(AdCheckListShowDto adCheckListShowDto, Map<String,String> orgUserDtos){
+    public  AdCheckListShowDto getAdCheckListShowDtoByAdCheckListShowDto(AdCheckListShowDto adCheckListShowDto,  List<OrgUserDto> orgUserDtos){
         if(adCheckListShowDto == null){
             return adCheckListShowDto;
         }
@@ -1559,12 +1551,12 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         for(AdhocNcCheckItemDto adhocNcCheckItemDto :  adItemList){
             List<AnswerForDifDto> answerForDifDtos = new ArrayList<>(userNum);
             Map<String, AnswerForDifDto> answerForDifDtoMaps = new HashMap<>(userNum);
-            for (Map.Entry<String, String> entry : orgUserDtos.entrySet()) {
+            for (OrgUserDto entry : orgUserDtos) {
                 AnswerForDifDto answerForDifDto = new AnswerForDifDto();
-                answerForDifDto.setSubmitName(entry.getValue());
-                answerForDifDto.setSubmitId(entry.getKey());
+                answerForDifDto.setSubmitId(entry.getId());
+                answerForDifDto.setSubmitName(entry.getUserId());
                 answerForDifDtos.add(answerForDifDto);
-                answerForDifDtoMaps.put(entry.getKey(),answerForDifDto);
+                answerForDifDtoMaps.put(entry.getId(),answerForDifDto);
             }
             adhocNcCheckItemDto.setAdhocAnswerForDifDtos(answerForDifDtos);
             adhocNcCheckItemDto.setAnswerForDifDtoMaps(answerForDifDtoMaps);
@@ -1888,7 +1880,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 premCheckItem.setAnswer("Yes");
                 ncQs.add(premCheckItem);
             }else if("NA".equalsIgnoreCase(premCheckItem.getAnswer())){
-                premCheckItem.setAnswer("Na");
+                premCheckItem.setAnswer("N/A");
                 ncQs.add(premCheckItem);
             }
         }
@@ -1928,4 +1920,44 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             }
         }
 
+    @Override
+    public void setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(InspectionCheckQuestionDto inspectionCheckQuestionDto, List<AnswerForDifDto> answerForDifDtos, String deconflict) {
+        AnswerForDifDto  answerForSame =  getAnswerForDifDtoByAnswerForDifDtos(answerForDifDtos);
+        if(!StringUtil.isEmpty(answerForSame.getAnswer()) && !StringUtil.isEmpty( answerForSame.getIsRec()) && !StringUtil.isEmpty( answerForSame.getRemark())){
+            inspectionCheckQuestionDto.setSameAnswer(true);
+        }
+        getInspectionCheckQuestionDtoByAnswerForDifDto(inspectionCheckQuestionDto, answerForSame);
+        if(!inspectionCheckQuestionDto.isSameAnswer()){
+            inspectionCheckQuestionDto.setDeconflict(deconflict);
+            if( !StringUtil.isEmpty(deconflict)){
+                for(AnswerForDifDto answerForDifDto : answerForDifDtos){
+                    if(deconflict.equalsIgnoreCase(answerForDifDto.getSubmitId())){
+                       getInspectionCheckQuestionDtoByAnswerForDifDto(inspectionCheckQuestionDto, answerForDifDto);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void setAdhocNcCheckItemDtoByAnswerForDifDtosAndDeconflict(AdhocNcCheckItemDto adhocNcCheckItemDto, List<AnswerForDifDto> answerForDifDtos, String deconflict) {
+        AnswerForDifDto  answerForSame =  getAnswerForDifDtoByAnswerForDifDtos(answerForDifDtos);
+        if(!StringUtil.isEmpty(answerForSame.getAnswer()) && !StringUtil.isEmpty( answerForSame.getIsRec()) && !StringUtil.isEmpty( answerForSame.getRemark())){
+            adhocNcCheckItemDto.setSameAnswer(true);
+            getAdhocNcCheckItemDtoByAnswerForDifDto(adhocNcCheckItemDto, answerForSame);
+        }
+
+        if( !adhocNcCheckItemDto.isSameAnswer()){
+            adhocNcCheckItemDto.setDeconflict(deconflict);
+            if( !StringUtil.isEmpty(deconflict)) {
+                for (AnswerForDifDto answerForDifDto : answerForDifDtos) {
+                    if (deconflict.equalsIgnoreCase(answerForDifDto.getSubmitId())) {
+                        getAdhocNcCheckItemDtoByAnswerForDifDto(adhocNcCheckItemDto, answerForDifDto);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
