@@ -126,7 +126,7 @@ public class BlackedOutDateDelegator {
 
 
         String isValid = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ISVALID);
-        if (IaisEGPConstant.YES.equals(isValid)){
+        if (!IaisEGPConstant.NO.equals(isValid)){
             SearchParam blackQuery = IaisEGPHelper.getSearchParam(request, filterParameter);
 
             String isNew = (String) ParamUtil.getSessionAttr(request, "isNewViewData");
