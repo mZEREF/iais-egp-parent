@@ -58,21 +58,21 @@
     <JavaCode defClass="" executor="" methodName="doPaging_OnStepProcess_0" name="doPaging_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preparePayment" x="770" y="550">
+  <AutomaticStep defClass="" executor="" icon="" name="preparePayment" x="760" y="550">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preparePayment_OnStepProcess_0" name="preparePayment_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="jumpBank" x="790" y="290">
+  <AutomaticStep defClass="" executor="" icon="" name="jumpBank" x="780" y="200">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="jumpBank_OnStepProcess_0" name="jumpBank_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="dash" x="920" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="dash" x="1130" y="360">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -93,19 +93,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="790" y="200">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ack" stageIndicator="" x="950" y="360">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="payment" stageIndicator="" x="790" y="420">
-   <OnPageLoad/>
-   <OnPageSubmit/>
-   <Description/>
-   <probepoint type="none"/>
-  </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="bank" stageIndicator="" x="940" y="290">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="payment" stageIndicator="" x="780" y="360">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -166,22 +160,16 @@
    <position>{(720,570)(571,570)(660,210)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preparePayment" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch1" style="rectanular">
-   <position>{(720,570)(790,570)}</position>
+   <position>{(720,570)(780,570)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/payment" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preparePayment" style="rectanular">
-   <position>{(790,570)(810,440)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/payment" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preparePayment" style="oblique">
+   <position>{(780,570)(800,380)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/jumpBank" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/payment" style="rectanular">
-   <position>{(810,440)(810,310)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/bank" style="rectanular">
-   <position>{(985,340)(810,220)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ack" linkstyle="Direct" name="" sourceName="/Pages/WebPage/payment" style="oblique">
+   <position>{(800,380)(970,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/dash" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/ack" style="rectanular">
-   <position>{(810,220)(940,220)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/bank" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/jumpBank" style="oblique">
-   <position>{(810,310)(985,340)}</position>
+   <position>{(970,380)(1150,380)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

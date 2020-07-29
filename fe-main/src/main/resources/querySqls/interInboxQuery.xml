@@ -48,7 +48,6 @@
             where  A.status = 'CMSTAT001') AS B
          WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009'
          AND B.STATUS !='APST051' AND B.STATUS != 'APST072'
-         AND B.STATUS !='APST074' AND B.STATUS != 'APST075'
          AND B.STATUS != 'APST073' AND B.APP_TYPE != 'APTY007'
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>

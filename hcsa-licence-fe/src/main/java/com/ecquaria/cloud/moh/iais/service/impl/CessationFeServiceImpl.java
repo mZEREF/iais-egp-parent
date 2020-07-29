@@ -207,7 +207,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     @Override
     public List<String> saveCessations(List<AppCessationDto> appCessationDtos, LoginContext loginContext) {
         String licenseeId = loginContext.getLicenseeId();
-        List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
+            List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         Map<String, List<String>> licPremiseIdMap = IaisCommonUtils.genNewHashMap();
         for (AppCessationDto appCessationDto : appCessationDtos) {

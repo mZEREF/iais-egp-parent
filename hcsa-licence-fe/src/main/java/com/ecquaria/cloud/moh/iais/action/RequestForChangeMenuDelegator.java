@@ -540,9 +540,9 @@ public class RequestForChangeMenuDelegator {
                 List<String> personIds = requestForChangeService.getPersonnelIdsByIdNo(idNo);
                 PersonnelListDto personnelListDto = MiscUtil.transferEntityDto(dto, PersonnelListDto.class);
                 Map<String, LicPsnTypeDto> map = IaisCommonUtils.genNewHashMap();
-                List<LicKeyPersonnelDto> licByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
+                List<LicKeyPersonnelDto> KeyPersonnelDtos = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
                 List<String> licIds = IaisCommonUtils.genNewArrayList();
-                for (LicKeyPersonnelDto dto1 : licByPerId) {
+                for (LicKeyPersonnelDto dto1 : KeyPersonnelDtos) {
                     String licSvcName = dto1.getLicSvcName();
                     String psnType = dto1.getPsnType();
                     String licenceId = dto1.getLicenceId();
@@ -1194,36 +1194,37 @@ public class RequestForChangeMenuDelegator {
 
     public void jumpPersonnelBank(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the do jumpBank start ...."));
-        String payMethod = ParamUtil.getString(bpc.request, "payMethod");
-        if (StringUtil.isEmpty(payMethod)) {
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
-            return;
-        }
-        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("appSubmissionDtos");
-        bpc.request.getSession().setAttribute("payMethod", payMethod);
-        if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
-                || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
-                || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-            Map<String, String> fieldMap = new HashMap<String, String>();
-            fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(appSubmissionDtos.get(0).getAmount()));
-            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
-            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo());
-            try {
-                String html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, "/hcsa-licence-web/eservice/INTERNET/MohRfcPersonnelList/1/ack");
-                ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
-            } catch (Exception e) {
-                log.info(e.getMessage(), e);
-            }
-            return;
-        } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
-            String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
-            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-            appGrp.setId(appGrpId);
-            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
-            serviceConfigService.updatePaymentStatus(appGrp);
-            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
-        }
+//        String payMethod = ParamUtil.getString(bpc.request, "payMethod");
+//        if (StringUtil.isEmpty(payMethod)) {
+//            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
+//            return;
+//        }
+//        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("appSubmissionDtos");
+//        bpc.request.getSession().setAttribute("payMethod", payMethod);
+//        if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
+//                || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
+//                || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
+//            Map<String, String> fieldMap = new HashMap<String, String>();
+//            fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(appSubmissionDtos.get(0).getAmount()));
+//            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
+//            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo());
+//            try {
+//                String html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, "/hcsa-licence-web/eservice/INTERNET/MohRfcPersonnelList/1/ack");
+//                ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
+//            } catch (Exception e) {
+//                log.info(e.getMessage(), e);
+//            }
+//            return;
+//        } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
+//            String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
+//            ApplicationGroupDto appGrp = new ApplicationGroupDto();
+//            appGrp.setId(appGrpId);
+//            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
+//            serviceConfigService.updatePaymentStatus(appGrp);
+//            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
+//            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+//        }
+        ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
         log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
     }
 
