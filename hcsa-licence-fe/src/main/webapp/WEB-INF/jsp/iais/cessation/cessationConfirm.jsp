@@ -250,17 +250,17 @@
                     <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read and
                         agreed with the above information</label>
                 </div>
-                <div class="application-tab-footer">
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-6">
-                            <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <div class="button-group"><a class="btn btn-primary next" onclick="confirmSubmit('submit')">Submit</a>
-                            </div>
-                        </div>
+                <div class="row">
+                    <div>
+                    <span style="padding-right: 10%" class="components">
+                        <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
+                    </span>
+                        <span style="padding-left: 75%" class="components">
+                       <a class="btn btn-primary next" onclick="confirmSubmit('submit')">Submit</a>
+                    </span>
                     </div>
                 </div>
+                <br/>
             </div>
         </div>
     </div>

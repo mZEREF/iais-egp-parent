@@ -26,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.csrfguard.action.IAction;
+import com.google.inject.internal.util.$ImmutableList;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -315,25 +316,34 @@ public class MohIntranetUserDelegator {
     public void prepareImportAck(BaseProcessClass bpc) {
         List<OrgUserDto> orgUserDtos = (List<OrgUserDto>) ParamUtil.getSessionAttr(bpc.request, "orgUserDtos");
         //do valiant
-        //1. ge shi shi fou fu he
+        //2. ge shi shi fou fu he
         List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
-        if (!IaisCommonUtils.isEmpty(orgUserDtos)) {
+        List<String> userIds = IaisCommonUtils.genNewArrayList();
+        String dup = "Duplication of record(s)";
+        List<String> msgDup = IaisCommonUtils.genNewArrayList();
+        msgDup.add(dup);
+        for (OrgUserDto orgUserDto : orgUserDtos) {
             OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
-            for (OrgUserDto orgUserDto : orgUserDtos) {
-                List<String> valiant = valiantDto(orgUserDto);
-                if (!IaisCommonUtils.isEmpty(valiant)) {
-                    String userId = orgUserDto.getUserId();
-                    if(StringUtil.isEmpty(userId)){
-                        orgUserUpLoadDto.setUserId("-");
-                    }else {
-                        orgUserUpLoadDto.setUserId(userId);
-                    }
-                    orgUserUpLoadDto.setMsg(valiant);
-                    orgUserUpLoadDtos.add(orgUserUpLoadDto);
+            List<String> valiant = valiantDto(orgUserDto);
+            String userId = orgUserDto.getUserId();
+            if (!IaisCommonUtils.isEmpty(valiant)) {
+                if (StringUtil.isEmpty(userId)) {
+                    orgUserUpLoadDto.setUserId("-");
+                } else {
+                    orgUserUpLoadDto.setUserId(userId);
                 }
+                orgUserUpLoadDto.setMsg(valiant);
+                orgUserUpLoadDtos.add(orgUserUpLoadDto);
+            }
+            if(userIds.contains(userId)){
+                orgUserUpLoadDto.setUserId(userId);
+                orgUserUpLoadDto.setMsg(msgDup);
+                orgUserUpLoadDtos.add(orgUserUpLoadDto);
+            }else {
+                userIds.add(userId);
             }
         }
-        //2 you mei you chong fu de
+        //3 you mei you chong fu de
         List<OrgUserDto> existUsersNew = IaisCommonUtils.genNewArrayList();
         List<OrgUserDto> existUsersOld = IaisCommonUtils.genNewArrayList();
         for (OrgUserDto orgUserDto : orgUserDtos) {
@@ -348,7 +358,7 @@ public class MohIntranetUserDelegator {
             }
         }
 
-        if (IaisCommonUtils.isEmpty(orgUserUpLoadDtos)&&IaisCommonUtils.isEmpty(existUsersNew)) {
+        if (IaisCommonUtils.isEmpty(orgUserUpLoadDtos) && IaisCommonUtils.isEmpty(existUsersNew)) {
             List<String> msg = IaisCommonUtils.genNewArrayList();
             String s = "add success !";
             msg.add(s);
@@ -364,11 +374,11 @@ public class MohIntranetUserDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
-        if(!IaisCommonUtils.isEmpty(orgUserUpLoadDtos)){
+        if (!IaisCommonUtils.isEmpty(orgUserUpLoadDtos)) {
             ParamUtil.setRequestAttr(bpc.request, "orgUserUpLoadDtos", orgUserUpLoadDtos);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
         }
-        if (IaisCommonUtils.isEmpty(orgUserUpLoadDtos)&&!IaisCommonUtils.isEmpty(existUsersNew)) {
+        if (IaisCommonUtils.isEmpty(orgUserUpLoadDtos) && !IaisCommonUtils.isEmpty(existUsersNew)) {
             ParamUtil.setRequestAttr(bpc.request, "existUsersNew", existUsersNew);
             ParamUtil.setRequestAttr(bpc.request, "existUsersOld", existUsersOld);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -449,7 +459,7 @@ public class MohIntranetUserDelegator {
                     String id = oldOrgUserDto.getId();
                     orgUserDto.setId(id);
                     orgUserDtosOld.add(oldOrgUserDto);
-                }else {
+                } else {
                     orgUserDtosNew.add(orgUserDto);
                 }
             }
@@ -459,7 +469,7 @@ public class MohIntranetUserDelegator {
                 saveEgpUser(orgUserDto);
             }
             //update
-            if(!IaisCommonUtils.isEmpty(orgUserDtosOld)){
+            if (!IaisCommonUtils.isEmpty(orgUserDtosOld)) {
                 for (OrgUserDto orgUserDto : orgUserDtos) {
                     intranetUserService.updateOrgUser(orgUserDto);
                     editEgpUser(orgUserDto);
@@ -733,7 +743,7 @@ public class MohIntranetUserDelegator {
         String userId = orgUserDto.getUserId();
         String userDomain = orgUserDto.getUserDomain();
         ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, userDomain);
-        if(clientUser!=null){
+        if (clientUser != null) {
             Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
             Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
             String email = orgUserDto.getEmail();
@@ -757,7 +767,7 @@ public class MohIntranetUserDelegator {
             clientUser.setMobileNo(mobileNo);
             clientUser.setSalutation(salutation);
             intranetUserService.updateEgpUser(clientUser);
-        }else {
+        } else {
             log.error(StringUtil.changeForLog("===========egpUser can not found============"));
         }
     }

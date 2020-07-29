@@ -90,6 +90,12 @@ public class CessationEffectiveDateBatchjob {
                         if (statusSet.size() == 1) {
                             continue;
                         }
+                        if (statusSet.size() == 1&&statusSet.contains(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE)) {
+                            String originLicenceId = applicationDtos.get(0).getOriginLicenceId();
+                            LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(originLicenceId).getEntity();
+                            licenceDtos.add(licenceDto);
+                            continue;
+                        }
                         for (ApplicationDto applicationDto : applicationDtos) {
                             try {
                                 String appId = applicationDto.getId();

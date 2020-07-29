@@ -235,14 +235,27 @@ public class CessationBeServiceImpl implements CessationBeService {
             licIds.add(licId);
             String appId = appIds.get(i);
             ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+            String applicationNo = applicationDto.getApplicationNo();
+            String id = applicationDto.getId();
             applicationDtos.add(applicationDto);
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
+            AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
+            String hciCode = appGrpPremisesDto.getHciCode();
+            String hciName = null;
+            String hciAddress = null;
+            List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
+            if(!IaisCommonUtils.isEmpty(appCessHciDtos)){
+                for(AppCessHciDto appCessHciDto : appCessHciDtos){
+                    String hciCode1 = appCessHciDto.getHciCode();
+                    if(hciCode.equals(hciCode1)){
+                        hciName = appCessHciDto.getHciName();
+                        hciAddress = appCessHciDto.getHciAddress();
+                    }
+                }
+            }
             String licenceNo = appCessLicDto.getLicenceNo();
             String svcName = appCessLicDto.getSvcName();
-            String hciName = appCessLicDto.getAppCessHciDtos().get(0).getHciName();
-            String hciAddress = appCessLicDto.getAppCessHciDtos().get(0).getHciAddress();
-            String applicationNo = applicationDto.getApplicationNo();
             Date effectiveDate = appCessationDto.getEffectiveDate();
             try {
                 if (effectiveDate.after(new Date())) {

@@ -267,17 +267,17 @@
                 </div>
                 <div id="readInfo" hidden ><span class="error-msg">Please agree to the declaration statement</span></div>
                 <div><span id="error_choose" name="iaisErrorMsg" class="error-msg"/></div>
-                <div class="application-tab-footer">
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-6">
-                            <a href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
-                        </div>
-                        <div class="col-xs-12 col-sm-6">
-                            <div class="button-group"><a class="btn btn-primary next" onclick="submitSure('submit')">Next</a>
-                            </div>
-                        </div>
+                <div class="row">
+                    <div>
+                    <span style="padding-right: 10%" class="components">
+                        <a href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
+                    </span>
+                        <span style="padding-left: 75%" class="components">
+                       <a class="btn btn-primary next" onclick="submitSure('submit')">Next</a>
+                    </span>
                     </div>
                 </div>
+                <br/>
             </div>
         </div>
     </div>
