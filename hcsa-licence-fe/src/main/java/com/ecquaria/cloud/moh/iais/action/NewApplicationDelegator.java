@@ -1275,7 +1275,8 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "N");
             return;
         }
-
+        String effectiveDateStr = appSubmissionDto.getEffectiveDateStr();
+        Date effectiveDate = appSubmissionDto.getEffectiveDate();
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
         Boolean otherOperation = requestForChangeService.isOtherOperation(appSubmissionDto.getLicenceId());
@@ -1344,8 +1345,6 @@ public class NewApplicationDelegator {
         appSubmissionDto.setAmount(amount);
         if(appGrpPremisesDtoList!=null){
             int size = appGrpPremisesDtoList.size();
-            String effectiveDateStr = appSubmissionDto.getEffectiveDateStr();
-            Date effectiveDate = appSubmissionDto.getEffectiveDate();
             for(int i=0;i<size;i++){
                 //Get the selected license from page to save
                 List<LicenceDto> attribute =(List<LicenceDto>)bpc.request.getSession().getAttribute("selectLicence" + i);
@@ -1538,6 +1537,11 @@ public class NewApplicationDelegator {
         autoAppSubmissionListDto.setEventRefNo(autoTime.toString());
         notAutoAppSubmissionListDto.setEventRefNo(notAutoTime.toString());
         if(!notAutoSaveAppsubmission.isEmpty()){
+            //set missing data
+            for(AppSubmissionDto appSubmissionDto1:notAutoSaveAppsubmission){
+                appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
+                appSubmissionDto.setEffectiveDate(effectiveDate);
+            }
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(notAutoSaveAppsubmission);
             notAutoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(notAutoAppSubmissionListDto,notAuto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
@@ -1552,6 +1556,11 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
         if(!autoSaveAppsubmission.isEmpty()){
+            //set missing data
+            for(AppSubmissionDto appSubmissionDto1:autoSaveAppsubmission){
+                appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
+                appSubmissionDto.setEffectiveDate(effectiveDate);
+            }
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoSaveAppsubmission);
             autoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto,auto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
