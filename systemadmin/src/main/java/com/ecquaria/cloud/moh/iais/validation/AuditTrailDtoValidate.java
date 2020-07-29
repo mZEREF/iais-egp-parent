@@ -45,7 +45,8 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
 							IaisEGPHelper.parseToDate(endDate, AppConsts.DEFAULT_DATE_FORMAT));
 
 					int value = systemParamConfig.getAuditTrailSearchWeek();
-					log.info("value" + value);
+					value = value == 0 ? 3 : value;
+					log.info("audit trail week" + value);
 					String msg = MessageUtil.getMessageDesc("GENERAL_ERR0010");
 
 					if ((reduceDay >= (value * MONTH_DAY))){
