@@ -126,7 +126,7 @@ public class BlackedOutDateDelegator {
 
 
         String isValid = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.ISVALID);
-        if (IaisEGPConstant.YES.equals(isValid)){
+        if (!IaisEGPConstant.NO.equals(isValid)){
             SearchParam blackQuery = IaisEGPHelper.getSearchParam(request, filterParameter);
 
             String isNew = (String) ParamUtil.getSessionAttr(request, "isNewViewData");
@@ -154,11 +154,12 @@ public class BlackedOutDateDelegator {
                 }
             }
 
-            ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
             ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_QUERY, blackQuery);
-            ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_GROUP_NAME_TO_ID_MAP, (Serializable) groupNameToIdMap);
             ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_BLACKED_OUT_DATE_RESULT, blackoutDateQueryList);
         }
+
+        ParamUtil.setSessionAttr(request, AppointmentConstants.APPOINTMENT_WORKING_GROUP_NAME_OPT, (Serializable) wrlGrpNameOpt);
+        ParamUtil.setSessionAttr(bpc.request, AppointmentConstants.APPOINTMENT_GROUP_NAME_TO_ID_MAP, (Serializable) groupNameToIdMap);
     }
 
     /**

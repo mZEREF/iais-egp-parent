@@ -204,9 +204,15 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
         List<SelectOption> selectOptions= IaisCommonUtils.genNewArrayList();
         for (HcsaServiceSubTypeDto subTypeName:subTypeNames
         ) {
-            if("C64DAF1F-1023-EA11-BE78-000C29D29DB0".equals(subTypeName.getId())|| "12B5496B-1123-EA11-BE78-000C29D29DB0".equals(subTypeName.getId())|| "0C0FF57E-1123-EA11-BE78-000C29D29DB0".equals(subTypeName.getId())){
+            if( "12B5496B-1123-EA11-BE78-000C29D29DB0".equals(subTypeName.getId())|| "0C0FF57E-1123-EA11-BE78-000C29D29DB0".equals(subTypeName.getId())){
                 SelectOption selectOption=new SelectOption();
                 selectOption.setText(subTypeName.getSubtypeName());
+                selectOption.setValue(subTypeName.getId());
+                selectOptions.add(selectOption);
+            }
+            if("AF58E13F-1023-EA11-BE78-000C29D29DB0".equals(subTypeName.getId())){
+                SelectOption selectOption=new SelectOption();
+                selectOption.setText("Human Immunodeficiency Virus");
                 selectOption.setValue(subTypeName.getId());
                 selectOptions.add(selectOption);
             }

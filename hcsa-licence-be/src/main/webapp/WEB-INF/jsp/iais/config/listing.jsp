@@ -43,7 +43,7 @@
       <tr>
         <td  style="text-align: center">${hcsaServiceDto.svcName}</td>
         <td  style="text-align: center"><c:if test="${hcsaServiceDto.status=='CMSTAT001'}">Active</c:if>
-          <c:if test="${hcsaServiceDto.status=='CMSTAT003'}">NonActive</c:if></td>
+          <c:if test="${hcsaServiceDto.status=='CMSTAT003'}">Inactive</c:if></td>
 
         <td  style="text-align: center">${hcsaServiceDto.effectiveDate}</td>
         <td  style="text-align: center"><fmt:formatDate value="${hcsaServiceDto.endDate}" pattern="dd/MM/yyyy"/></td>

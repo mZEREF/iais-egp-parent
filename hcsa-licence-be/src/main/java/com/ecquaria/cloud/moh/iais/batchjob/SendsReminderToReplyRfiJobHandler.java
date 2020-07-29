@@ -70,11 +70,11 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
     @Value("${iais.email.sender}")
     private String mailSender;
 
-    @Value("iais.system.rfc.sms.reminder.day")
+    @Value("${iais.system.rfc.sms.reminder.day}")
     String reminderMax1Day;
-    @Value("iais.system.rfc.sms.sec.reminder.day")
+    @Value("${iais.system.rfc.sms.sec.reminder.day}")
     String reminderMax2Day;
-    @Value("iais.system.rfc.sms.third.reminder.day")
+    @Value("${iais.system.rfc.sms.third.reminder.day}")
     String reminderMax3Day;
 
     @Override
@@ -96,7 +96,7 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
                         case 2:reminderMaxDay=reminderMax3Day;break;
                         default:reminderMaxDay="0";
                     }
-                    cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay));
+                    cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay)-1);
                     if(cal.getTime().compareTo(new Date())<0&&cal1.getTime().compareTo(new Date())>0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
                         reminder(rfi);
                     }
@@ -154,6 +154,7 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
             smsDto.setOnlyOfficeHour(true);
             if (!IaisCommonUtils.isEmpty(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId))) {
                 emailClient.sendSMS(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId),smsDto, requestRefNum);
+                emailClient.sendNotification(emailDto);
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);
@@ -172,7 +173,7 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
         interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
         interMessageDto.setUserId(licenseeId);
         interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        inboxMsgService.saveInterMessage(interMessageDto);
+        //inboxMsgService.saveInterMessage(interMessageDto);
 
         licPremisesReqForInfoDto.setReminder(licPremisesReqForInfoDto.getReminder()+1);
         Calendar cal = Calendar.getInstance();

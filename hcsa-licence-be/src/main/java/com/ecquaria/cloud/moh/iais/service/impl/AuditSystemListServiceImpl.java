@@ -107,18 +107,26 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     @Override
-    public void getInspectors(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
+    public List<AuditTaskDataFillterDto> getInspectors(List<AuditTaskDataFillterDto> auditTaskDataDtos) {
         if (!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
+            List<AuditTaskDataFillterDto> auditTaskDataFillterDtos = new ArrayList<>(5);
             Map<String,String> workGroupIds = getAllWorkGrpIds(auditTaskDataDtos);
             for(AuditTaskDataFillterDto temp : auditTaskDataDtos){
-                temp.setWorkGroupId(workGroupIds.get(temp.getSvcName()));
+                String groupId = workGroupIds.get(temp.getSvcName());
+                if( !StringUtil.isEmpty(groupId)){
+                    temp.setWorkGroupId(groupId);
+                    auditTaskDataFillterDtos.add(temp);
+                }
+
             }
-            Map<String, List<OrgUserDto>> map = getAllOrgUsersByAuditTaskDataFillterDtos(auditTaskDataDtos);
-            for (AuditTaskDataFillterDto temp : auditTaskDataDtos) {
+            Map<String, List<OrgUserDto>> map = getAllOrgUsersByAuditTaskDataFillterDtos(auditTaskDataFillterDtos);
+            for (AuditTaskDataFillterDto temp : auditTaskDataFillterDtos) {
                 getinspectorOp(map.get(temp.getWorkGroupId()), temp);
             }
+            return auditTaskDataFillterDtos;
         }
 
+      return auditTaskDataDtos;
     }
 
     private Map<String, List<OrgUserDto>> getAllOrgUsersByAuditTaskDataFillterDtos(List<AuditTaskDataFillterDto> auditTaskDataDtos){
@@ -147,20 +155,32 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
         Map<String,String> map = IaisCommonUtils.genNewHashMap();
         for(String s : svcNames){
-            map.put(s,getWorkGroupIdBySvcName(s)) ;
+            String groupId = getWorkGroupIdBySvcName(s);
+            if( !StringUtil.isEmpty(groupId)) {
+                map.put(s, getWorkGroupIdBySvcName(s));
+            }
         }
         return map;
     }
 
     private String  getWorkGroupIdBySvcName( String svcName){
         HcsaSvcStageWorkingGroupDto dto = new HcsaSvcStageWorkingGroupDto();
-        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
-        dto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
-        dto.setOrder(1);
-        dto.setServiceId(svcDto.getId());
-        dto.setType("APTY002");
-        dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
-        return  dto.getGroupId();
+        try {
+            HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(svcName).getEntity();
+            if(svcDto == null){
+                log.info(StringUtil.changeForLog("dirty data Service Name is :" + svcName));
+                return null;
+            }
+            dto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
+            dto.setOrder(1);
+            dto.setServiceId(svcDto.getId());
+            dto.setType("APTY002");
+            dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(dto).getEntity();
+            return  dto.getGroupId();
+        }catch (Exception e){
+            log.info(StringUtil.changeForLog("dirty data Service Name is " + svcName));
+            return null;
+        }
     }
 
 

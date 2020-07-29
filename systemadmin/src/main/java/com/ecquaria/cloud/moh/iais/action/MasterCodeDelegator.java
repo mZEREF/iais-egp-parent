@@ -364,6 +364,16 @@ public class MasterCodeDelegator {
                     errItems.add(errMsg);
                     result = true;
                 }
+                if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeDescription())){
+                    String errMsg = "Code Description is a mandatory field.";
+                    errItems.add(errMsg);
+                    result = true;
+                }
+                if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())){
+                    String errMsg = "Code Value From is a mandatory field.";
+                    errItems.add(errMsg);
+                    result = true;
+                }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
                     String errMsg = "Status is a mandatory field.";
                     errItems.add(errMsg);
@@ -406,10 +416,6 @@ public class MasterCodeDelegator {
                 errResult.add(errMap);
             }
             if (result){
-                if (errorMap != null){
-                    errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "There is an error in the file contents");
-                }
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
                 ParamUtil.setRequestAttr(request,"ERR_RESULT_LIST_MAP",errResult);

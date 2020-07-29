@@ -60,7 +60,7 @@
         </c:choose>
 
       <div class="form-group">
-            <iais:field value="Blacked Out Date Start :" required="true"></iais:field>
+            <iais:field value="Blacked Out Date From :" required="true"></iais:field>
             <div class="col-md-5">
               <%Date ssd = Formatter.parseDate((String) request.getAttribute("startDate"));%>
               <iais:datePicker name="startDate"
@@ -71,7 +71,7 @@
       </div>
 
       <div class="form-group">
-            <iais:field value="Blacked Out Date End:" required="true"></iais:field>
+            <iais:field value="Blacked Out Date To:" required="true"></iais:field>
 
             <div class="col-md-5">
               <%Date esd = Formatter.parseDate((String) request.getAttribute("endDate"));%>

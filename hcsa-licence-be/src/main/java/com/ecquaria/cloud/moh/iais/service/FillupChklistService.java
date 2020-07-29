@@ -6,17 +6,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.CheckListDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFDtosDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Guyin
@@ -81,7 +76,7 @@ public interface FillupChklistService {
     InspectionFDtosDto getInspectionFDtosDtoOnlyForChecklistLetter(String refNo);
     AppPremisesSpecialDocDto getAppPremisesSpecialDocDtoByRefNo(String RefNo);
 
-    AdCheckListShowDto getAdCheckListShowDtoByAdCheckListShowDto(AdCheckListShowDto adCheckListShowDto, Map<String,String> orgUserDtos);
+    AdCheckListShowDto getAdCheckListShowDtoByAdCheckListShowDto(AdCheckListShowDto adCheckListShowDto,  List<OrgUserDto>  orgUserDtos);
 
     List<TaskDto> getCurrTaskByRefNo(TaskDto taskDto);
 
@@ -89,9 +84,7 @@ public interface FillupChklistService {
 
     List<OrgUserDto> getOrgUserDtosByTaskDatos(List<TaskDto> taskDtos);
 
-    Map<String,String> userIdNameMapByOrgUserDtos(List<OrgUserDto> orgUserDtos);
-
-    InspectionFillCheckListDto getInspectionFillCheckListDtoByInspectionFillCheckListDto(InspectionFillCheckListDto inspectionFillCheckListDto, Map<String,String> orgUserDtos);
+    InspectionFillCheckListDto getInspectionFillCheckListDtoByInspectionFillCheckListDto(InspectionFillCheckListDto inspectionFillCheckListDto,  List<OrgUserDto>  orgUserDtos);
 
     String getOtherOffGropByInspectionFillCheckListDtos(List<InspectionFillCheckListDto> inspectionFillCheckListDtos);
 
@@ -104,4 +97,8 @@ public interface FillupChklistService {
     void saveAdhocDto(AdhocCheckListConifgDto adhocCheckListConifgDto);
 
     void changeDataForNc( List<InspectionFillCheckListDto> inspectionFillCheckListDtos,String refNo);
+
+    void setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(InspectionCheckQuestionDto inspectionCheckQuestionDto, List<AnswerForDifDto> answerForDifDtos,String deconflict);
+
+    void setAdhocNcCheckItemDtoByAnswerForDifDtosAndDeconflict(AdhocNcCheckItemDto  adhocNcCheckItemDto, List<AnswerForDifDto> answerForDifDtos,String deconflict);
 }

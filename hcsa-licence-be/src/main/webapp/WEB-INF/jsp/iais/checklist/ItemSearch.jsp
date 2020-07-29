@@ -99,11 +99,10 @@
             <div class="col-xs-12">
               <div class="components">
                 <iais:pagination  param="checklistItemSearch" result="checklistItemResult"/>
-                <div class="table-gp">
                   <table class="table">
                     <thead>
                     <tr>
-                      <iais:sortableHeader needSort="false" field="" value="No."></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" field="" style="padding-bottom:15px" value="No."></iais:sortableHeader>
                       <td></td>
                       <iais:sortableHeader needSort="true" field="CLAUSE_NO"
                                            value="Regulation Clause Number"></iais:sortableHeader>
@@ -112,8 +111,8 @@
                       <iais:sortableHeader needSort="true" field="CHECKLISTITEM"
                                            value="Checklist Item"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true" field="RISK_LEVEL" value="Risk Level"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="status" value="Status"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false" field="action" value="Action"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true" field="status" value="Status"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false" style="padding-bottom:15px" field="action" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>
@@ -222,9 +221,6 @@
 
 
                   </div>
-
-
-                </div>
               </div>
             </div>
           </div>

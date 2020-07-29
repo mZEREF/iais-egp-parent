@@ -9,12 +9,10 @@ import com.stripe.model.Charge;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentMethod;
 import com.stripe.net.RequestOptions;
+import com.stripe.param.AccountCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,19 +27,13 @@ public class StripeServiceImpl implements StripeService {
     @Override
     public Account createAccount() throws StripeException {
         Stripe.apiKey = GatewayConfig.stripeKey;
-
-        List<Object> requestedCapabilities =
-                new ArrayList<>();
-        requestedCapabilities.add("card_payments");
-        requestedCapabilities.add("transfers");
-        Map<String, Object> params = new HashMap<>();
-        params.put("type", "custom");
-        params.put("country", "US");
-        params.put("email", "jenny.rosen@example.com");
-        params.put(
-                "requested_capabilities",
-                requestedCapabilities
-        );
+        AccountCreateParams params =
+                AccountCreateParams.builder()
+                        .setCountry("US")
+                        .setType(AccountCreateParams.Type.CUSTOM)
+                        .addRequestedCapability(AccountCreateParams.RequestedCapability.CARD_PAYMENTS)
+                        .addRequestedCapability(AccountCreateParams.RequestedCapability.TRANSFERS)
+                        .build();
 
         return Account.create(params);
     }
@@ -197,7 +189,7 @@ public class StripeServiceImpl implements StripeService {
             paymentMethod=
                     PaymentMethod.create(params);
         } catch (StripeException e) {
-            e.printStackTrace();
+            log.info(e.getMessage(),e);
         }
         return paymentMethod;
     }

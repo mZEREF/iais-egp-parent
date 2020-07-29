@@ -4,6 +4,7 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -286,7 +287,19 @@
       </div>
 
       <div class="Numberfields">
-
+        <c:forEach items="${commonDoc}" var="doc">
+          <div class="form-group">
+            <div class="col-xs-12 col-md-8">
+              <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
+              <div class="col-xs-12 col-md-4">
+                <input  type="text" name="descriptionCommDoc" maxlength="255" value="${doc.docDesc}">
+              </div>
+              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%"> <input class="form-check-input"  type="checkbox" name="descriptionCommDocMandatory" value="">
+                <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+              </div>
+            </div>
+          </div>
+        </c:forEach>
       </div>
 
       <div class="form-group">
@@ -359,22 +372,26 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
-          <div class="col-xs-10 col-md-3">
+          <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
+          <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showRENEW()"><span class="view">RENEW</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
+          <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showRFC()"><span class="view">REQUEST FOR CHANGE</span></a>
             </div>
@@ -382,31 +399,33 @@
         </div>
       </div>
 
-
       <div  class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
-          <div class="col-xs-10 col-md-3">
+          <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showCESSATION()"><span class="view">CESSATION</span></a>
             </div>
           </div>
-         <%-- <div class="col-xs-10 col-md-3">
+         <%-- <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
             </div>
           </div>--%>
 
-          <div class="col-xs-10 col-md-3">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
             </div>
           </div>
-         <%-- <div class="col-xs-10 col-md-3">
-            <div class="components width-center">
-              <a class="btn btn-secondary width-70" onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
-            </div>
-          </div>--%>
-
+          <%-- <div class="col-xs-10 col-md-6">
+             <div class="components width-center">
+               <a class="btn btn-secondary width-70" onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
+             </div>
+           </div>--%>
         </div>
       </div>
 
@@ -586,9 +605,7 @@
         <div class="row">
           <div class="col-xs-10 col-md-3">
             <div class="components">
-
-              <a class="btn  btn-secondary" onclick="cancel()">Cancel</a>
-
+              <a class="btn  btn-secondary"data-toggle="modal" data-target= "#cancel">Cancel</a>
             </div>
           </div>
           <div class="col-xs-10 col-md-3">
@@ -635,23 +652,24 @@
 <iais:confirm msg="Are you sure you want to leave this page!" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
 
 <iais:confirm msg="Are you sure you want to leave this page!" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
+<iais:confirm msg="Are you sure you want to cancel?" callBack="cancel()" popupOrder="cancel"></iais:confirm>
 <script type="text/javascript">
 
-
     function kpi() {
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohKPIAndReminder";
+
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
+
     }
 
 
     function  checklists(){
-
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration";
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohChecklistConfiguration",request)%>';
     }
 
     function riskScore(){
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohRiskConigMenu";
-    }
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohRiskConigMenu",request)%>';
 
+    }
     $('#versionSelect').change(function () {
 
         SOP.Crud.cfxSubmit("mainForm","version","version",$('#version').val());
@@ -936,7 +954,7 @@
 
 
     });
-    $('#Numberfields').change(function () {
+    $('#Numberfields').keyup(function () {
         let val = $('#Numberfields').val();
         let number = parseInt(val);
         let jQuery = $(this).closest("div.form-group").next(".Numberfields").children();

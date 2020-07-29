@@ -62,6 +62,9 @@
                                                     <th>Yes</th>
                                                     <th>No</th>
                                                     <th>N/A</th>
+                                                    <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
+                                                    <th>Self-assessment Answer</th>
+                                                    </c:if>
                                                     <th>Remark</th>
                                                     <th>Rectified</th>
                                                     <th></th>
@@ -97,6 +100,7 @@
                                                             <input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No"  />
                                                         </td>
                                                         <td><input name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comrad" id="<c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>comitemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A" /></td>
+                                                       <td>${item.incqDto.selfAnswer}</td>
                                                         <td>
                                                             <textarea cols="70" rows="7" name="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comremark" id="<c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>comremark" maxlength="500"><c:out value="${item.incqDto.remark}"/></textarea>
                                                         </td>
@@ -136,6 +140,9 @@
                                                           <th>Yes</th>
                                                           <th>No</th>
                                                           <th>N/A</th>
+                                                          <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
+                                                              <th >Self-assessment Answer</th>
+                                                          </c:if>
                                                           <th>Remark</th>
                                                           <th>Rectified</th>
                                                           <th></th>
@@ -171,6 +178,7 @@
                                                                   <input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNo"  onclick="showCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'No'}">checked</c:if> value="No"  />
                                                               </td>
                                                               <td><input name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>rad" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxNa" onclick="hideCheckBox('${ckkId}')" type="radio" <c:if test="${item.incqDto.chkanswer eq'N/A'}">checked</c:if> value="N/A"  /></td>
+                                                              <td>${item.incqDto.selfAnswer}</td>
                                                               <td>
                                                                   <textarea cols="70" rows="7" name="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.sectionNameShow}"/><c:out value="${item.incqDto.itemId}"/>remark" id="<c:out value="${cdto.subName}"/><c:out value="${item.incqDto.itemId}"/><c:out value="${item.incqDto.sectionNameShow}"/>itemCheckboxRemark" maxlength="500"><c:out value="${item.incqDto.remark}"/></textarea>
                                                               </td>

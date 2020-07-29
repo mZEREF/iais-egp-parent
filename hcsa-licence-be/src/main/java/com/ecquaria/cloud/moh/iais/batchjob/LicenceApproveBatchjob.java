@@ -658,9 +658,6 @@ public class LicenceApproveBatchjob {
                 }
                 String originLicenceId = firstApplicationDto.getOriginLicenceId();
                 LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
-                if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
-                    originLicenceDto = licenceService.getCeasedGroupLicDto(originLicenceId);
-                }
                 LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), null, applicationGroupDto, appPremisesRecommendationDto,
                         originLicenceDto, firstApplicationDto, applicationDtos, true);
                 licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
@@ -944,9 +941,6 @@ public class LicenceApproveBatchjob {
                 String applicationType = applicationDto.getApplicationType();
 
                 LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
-                if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
-                    originLicenceDto = licenceService.getCeasedGroupLicDto(originLicenceId);
-                }
                 LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
                         originLicenceDto, applicationDto, null, false);
                 licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
@@ -1465,9 +1459,7 @@ public class LicenceApproveBatchjob {
         Date effectiveDate = applicationGroupDto.getEffectDate();
         licenceDto.setEffectiveDate(effectiveDate);
         licenceDto.setStatus(getLicenceStatus(applicationGroupDto));
-        if (applicationDto != null && originLicenceDto != null &&
-                ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationDto.getApplicationType()))
-                || ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType()))) {
+        if (applicationDto != null && originLicenceDto != null && ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationDto.getApplicationType())) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType()))) {
             log.info(StringUtil.changeForLog("The  getLicenceDto APPType is RFC ..."));
             licenceDto.setStartDate(originLicenceDto.getStartDate());
             licenceDto.setExpiryDate(originLicenceDto.getExpiryDate());
@@ -1503,7 +1495,7 @@ public class LicenceApproveBatchjob {
                 }
             }
         } else {
-            if (applicationGroupDto != null) {
+            if (applicationGroupDto != null) {          
                 Date startDate = null;
                 Date expiryDate = null;
                 if (applicationDto != null && originLicenceDto != null && ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {

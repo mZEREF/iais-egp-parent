@@ -4,6 +4,7 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -598,17 +599,18 @@
 <script type="text/javascript">
     function kpi() {
 
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohKPIAndReminder";
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
+
     }
 
 
     function  checklists(){
-
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration";
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohChecklistConfiguration",request)%>';
     }
 
     function riskScore(){
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohRiskConigMenu";
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohRiskConigMenu",request)%>';
+
     }
 
     $(document).ready(function(){

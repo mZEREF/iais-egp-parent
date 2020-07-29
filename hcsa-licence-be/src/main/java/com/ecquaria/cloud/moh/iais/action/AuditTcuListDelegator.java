@@ -50,9 +50,9 @@ public class AuditTcuListDelegator {
         HttpServletRequest request = bpc.request;
         ParamUtil.setSessionAttr(request,"ISTUC",Boolean.TRUE);
         List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultList();
-        ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
         List<SelectOption> aduitTypeOp = auditSystemListService.getAuditOp();
-        auditSystemListService.getInspectors(auditTaskDataDtos);
+        auditTaskDataDtos = auditSystemListService.getInspectors(auditTaskDataDtos);
+        ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
         if(!IaisCommonUtils.isEmpty(auditTaskDataDtos)) {
             for(AuditTaskDataFillterDto auditTaskDataFillterDto : auditTaskDataDtos ){
                 ParamUtil.setSessionAttr(request, "inspectors"+auditTaskDataFillterDto.getWorkGroupId(), (Serializable) auditTaskDataFillterDto.getInspectors());

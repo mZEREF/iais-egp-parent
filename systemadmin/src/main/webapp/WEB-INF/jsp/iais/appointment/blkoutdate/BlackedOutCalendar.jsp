@@ -30,7 +30,7 @@
       <iais:row>
         <iais:field value="Working Group" required="true"/>
         <iais:value width="18">
-          <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  onchange="doSearch()" options = "wrlGrpNameOpt" value="${wrlGrpNameOpt}" ></iais:select>
+          <iais:select name="wrlGrpNameOpt" id="wrlGrpNameOpt"  options = "wrlGrpNameOpt" value="${wrlGrpNameOpt}" ></iais:select>
         </iais:value>
       </iais:row>
       <div class="clearRow">
@@ -94,17 +94,16 @@
             <div class="col-xs-12">
               <div class="components">
                 <iais:pagination  param="blackedOutDateQueryAttr" result="blackedOutDateResultAttr"/>
-                <div class="table-gp">
                   <table class="table">
                     <thead>
                     <tr>
-                      <iais:sortableHeader needSort="false"   field="index" value="No."></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="year" value="Year"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   style="padding-bottom:15px" field="index" value="No."></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   style="padding-bottom:15px" field="year" value="Year"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="START_DATE" value="Blacked Out Date Start"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="END_DATE" value="Blacked Out Date End"></iais:sortableHeader>
                       <iais:sortableHeader needSort="true"   field="[DESC]" value="Blacked Out Date Description"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="status" value="Status"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   style="padding-bottom:15px" field="status" value="Status"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"   style="padding-bottom:15px" field="action" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>
@@ -141,7 +140,6 @@
                     </tbody>
                   </table>
 
-                </div>
               </div>
             </div>
           </div>
@@ -149,7 +147,6 @@
       </div>
 
       <div class="application-tab-footer">
-        <div class="row">
           <div class="col-xs-12 col-md-11">
             <div class="text-right">
               <a class="btn btn-primary" id="addBtnId" value="doSearch" href="#">Create</a>

@@ -242,7 +242,7 @@ public class OfficerOnlineEnquiriesDelegator {
             if (appParam != null) {
                 SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
 
-                if(!StringUtil.isEmpty(appResult)){
+                if(appResult.getRowCount()!=0){
                     SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
                     searchListDtoSearchResult.setRowCount(appResult.getRowCount());
                     List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
@@ -323,7 +323,6 @@ public class OfficerOnlineEnquiriesDelegator {
             SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
             if(licResult.getRowCount()!=0) {
                 List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
-                searchListDtoSearchResult.setRowCount(licResult.getRowCount());
                 for (RfiLicenceQueryDto lic:licResult.getRows()
                 ) {
                     ReqForInfoSearchListDto reqForInfoSearchListDto=new ReqForInfoSearchListDto();
@@ -346,7 +345,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         appParam.setPageNo(0);
                         QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
                         SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
-                        if(!StringUtil.isEmpty(appResult)){
+                        if(appResult.getRowCount()!=0){
                             for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                             ) {
                                 rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto,lic.getId());
@@ -381,6 +380,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         }
                     }
                 }
+                searchListDtoSearchResult.setRowCount(licResult.getRowCount());
                 setSearchResult( request, searchListDtoSearchResult, licenceIds, reqForInfoSearchListDtos);
             }
             ParamUtil.setRequestAttr(request,"SearchParam", licParam);
@@ -416,7 +416,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
         searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
-        if(reqForInfoSearchListDtos.size()<10){
+        if(reqForInfoSearchListDtos.size()<5){
             searchListDtoSearchResult.setRowCount(reqForInfoSearchListDtos.size());
         }
         ParamUtil.setSessionAttr(request,"SearchResult", searchListDtoSearchResult);
@@ -799,7 +799,7 @@ public class OfficerOnlineEnquiriesDelegator {
             if (appParam != null) {
                 SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
 
-                if(!StringUtil.isEmpty(appResult)){
+                if(appResult.getRowCount()!=0){
                     SearchResult<ReqForInfoSearchListDto> searchListDtoSearchResult=new SearchResult<>();
                     searchListDtoSearchResult.setRowCount(appResult.getRowCount());
                     List<ReqForInfoSearchListDto> reqForInfoSearchListDtos=IaisCommonUtils.genNewArrayList();
@@ -897,7 +897,7 @@ public class OfficerOnlineEnquiriesDelegator {
                         appParam.setPageNo(0);
                         QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
                         SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
-                        if(!StringUtil.isEmpty(appResult)){
+                        if(appResult.getRowCount()!=0){
                             for (RfiApplicationQueryDto rfiApplicationQueryDto:appResult.getRows()
                             ) {
                                 rfiApplicationQueryDtoToReqForInfoSearchListDto(rfiApplicationQueryDto,reqForInfoSearchListDto,lic.getId());

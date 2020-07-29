@@ -11,7 +11,7 @@ import java.util.List;
  * @Date: 2020/2/19 10:54
  */
 public interface AuditSystemListService {
-    void getInspectors(List<AuditTaskDataFillterDto> auditTaskDataDtos);
+    List<AuditTaskDataFillterDto> getInspectors(List<AuditTaskDataFillterDto> auditTaskDataDtos);
 
     List<SelectOption> getAuditOp();
 

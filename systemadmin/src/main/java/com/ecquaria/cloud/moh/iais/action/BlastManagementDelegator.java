@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.DistributionListWebDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailEmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailSMSDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -521,6 +523,95 @@ public class BlastManagementDelegator {
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
     }
 
+    @GetMapping(value = "/audit-repo")
+    public @ResponseBody
+    void auditfileDownload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String msgid =  ParamUtil.getString(request, "editBlast");
+        String mode =  ParamUtil.getString(request, "mode");
+        SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
+        auditSearchParam.setSort("sent_time", SearchParam.ASCENDING);
+        auditSearchParam.addFilter("client_query_code", msgid,true);
+        CrudHelper.doPaging(auditSearchParam,request);
+        QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
+        SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
+        File file = null;
+        try {
+            if("SMS".equals(mode)){
+                List<EmailAuditTrailSMSDto> smsDtos = IaisCommonUtils.genNewArrayList();
+                for (EmailAuditTrailDto item:searchResult.getRows()
+                     ) {
+                    EmailAuditTrailSMSDto emailAuditTrailSMSDto = new EmailAuditTrailSMSDto();
+                    emailAuditTrailSMSDto.setRecipient(item.getRecipient());
+                    emailAuditTrailSMSDto.setSubject(item.getSubject());
+                    emailAuditTrailSMSDto.setContent(item.getContent());
+                    emailAuditTrailSMSDto.setNumberAttempts(item.getNumberAttempts());
+                    emailAuditTrailSMSDto.setLogMsg(item.getLogMsg());
+                    String date = Formatter.formatDate(item.getSentTime());
+                    emailAuditTrailSMSDto.setSentTime(date);
+                    smsDtos.add(emailAuditTrailSMSDto);
+                }
+                if (!smsDtos.isEmpty()){
+                    try {
+                        file = ExcelWriter.writerToExcel(smsDtos, EmailAuditTrailSMSDto.class, "audit");
+                    } catch (Exception e) {
+                        log.error("=======>fileDownload error >>>>>", e);
+                    }
+
+                }else{
+                    List<EmailAuditTrailSMSDto> EmailAuditTrailSMSDtos = IaisCommonUtils.genNewArrayList();
+                    try {
+                        file = ExcelWriter.writerToExcel(EmailAuditTrailSMSDtos, EmailAuditTrailSMSDto.class, "audit");
+                    } catch (Exception e) {
+                        log.error("=======>fileDownload error >>>>>", e);
+                    }
+                }
+            }else{
+                List<EmailAuditTrailEmailDto> emailDtos = IaisCommonUtils.genNewArrayList();
+                for (EmailAuditTrailDto item:searchResult.getRows()
+                ) {
+                    EmailAuditTrailEmailDto emailAuditTrailEmailDto = new EmailAuditTrailEmailDto();
+                    emailAuditTrailEmailDto.setRecipient(item.getRecipient());
+                    emailAuditTrailEmailDto.setSubject(item.getSubject());
+                    emailAuditTrailEmailDto.setContent(item.getContent());
+                    emailAuditTrailEmailDto.setNumberAttempts(item.getNumberAttempts());
+                    emailAuditTrailEmailDto.setLogMsg(item.getLogMsg());
+                    String date = Formatter.formatDate(item.getSentTime());
+                    emailAuditTrailEmailDto.setSentTime(date);
+                    emailDtos.add(emailAuditTrailEmailDto);
+                }
+                if (!emailDtos.isEmpty()){
+                    try {
+                        file = ExcelWriter.writerToExcel(emailDtos, EmailAuditTrailEmailDto.class, "audit");
+                    } catch (Exception e) {
+                        log.error("=======>fileDownload error >>>>>", e);
+                    }
+
+                }else{
+                    List<EmailAuditTrailEmailDto> emailAuditTrailEmailDtos = IaisCommonUtils.genNewArrayList();
+                    try {
+                        file = ExcelWriter.writerToExcel(emailAuditTrailEmailDtos, EmailAuditTrailEmailDto.class, "audit");
+                    } catch (Exception e) {
+                        log.error("=======>fileDownload error >>>>>", e);
+                    }
+                }
+            }
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
+
+
+        if(file != null){
+            try {
+                FileUtils.writeFileResponseContent(response, file);
+                FileUtils.deleteTempFile(file);
+            } catch (IOException e) {
+                log.debug(e.getMessage());
+            }
+        }
+
+        log.debug(StringUtil.changeForLog("fileHandler end ...."));
+    }
+
     private String getDate(String date){
         char indexChar = ".".charAt(0);
         int index=date.lastIndexOf(indexChar);
@@ -580,13 +671,17 @@ public class BlastManagementDelegator {
 
     public void auditTrial(BaseProcessClass bpc){
         String msgid =  ParamUtil.getString(bpc.request, "editBlast");
+        String mode =  ParamUtil.getString(bpc.request, "mode");
         SearchParam auditSearchParam = new SearchParam(EmailAuditTrailDto.class.getName());
         auditSearchParam.setSort("sent_time", SearchParam.ASCENDING);
         auditSearchParam.addFilter("client_query_code", msgid,true);
         CrudHelper.doPaging(auditSearchParam,bpc.request);
         QueryHelp.setMainSql("systemAdmin", "audit",auditSearchParam);
         SearchResult<EmailAuditTrailDto> searchResult = blastManagementListService.auditList(auditSearchParam);
-        ParamUtil.setRequestAttr(bpc.request,"SearchResult",searchResult);
+        ParamUtil.setRequestAttr(bpc.request,"searchResult",searchResult);
+        ParamUtil.setRequestAttr(bpc.request,"auditSearchParam",auditSearchParam);
+        ParamUtil.setRequestAttr(bpc.request,"mode",mode);
+        ParamUtil.setRequestAttr(bpc.request,"editBlast",msgid);
     }
 
     public void preview(BaseProcessClass bpc){

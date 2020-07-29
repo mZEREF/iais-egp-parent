@@ -46,7 +46,7 @@ public class AuditCancelTaskDelegator {
         log.debug(StringUtil.changeForLog("the doStart start ...."));
         HttpServletRequest request = bpc.request;
         List<AuditTaskDataFillterDto> auditTaskDataDtos = auditSystemPotitalListService.getSystemPotentailAdultCancelList();
-        auditSystemListService.getInspectors(auditTaskDataDtos);
+        auditTaskDataDtos = auditSystemListService.getInspectors(auditTaskDataDtos);
         ParamUtil.setSessionAttr(request, "auditTaskDataDtos", (Serializable) auditTaskDataDtos);
         ParamUtil.setSessionAttr(request, "modulename", "Audit Cancel Task List");
     }

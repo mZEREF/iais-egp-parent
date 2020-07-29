@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -427,6 +428,8 @@ public class NewApplicationAjaxController {
         sql = sql.replace("(OFFSITESTARTMM)", offSiteStartMM);
         sql = sql.replace("(OFFSITEENDHH)", offSiteEndHH);
         sql = sql.replace("(OFFSITEENDMM)", offSiteEndMM);
+        String fireTooltip = MessageUtil.getMessageDesc("NEW_ACK006");
+        sql = sql.replace("(fireTooltip)",fireTooltip);
 
         //ph
         sql = sql.replace("(PUBLICHOLIDAYDD)", publicHolidayDD);

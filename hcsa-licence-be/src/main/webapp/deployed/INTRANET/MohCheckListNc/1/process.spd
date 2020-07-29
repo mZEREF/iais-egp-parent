@@ -44,7 +44,7 @@
     <JavaCode defClass="" executor="" methodName="preViewCheckList_OnStepProcess_0" name="preViewCheckList_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doCheckList" x="310" y="370">
+  <AutomaticStep defClass="" executor="" icon="" name="doCheckList" x="190" y="250">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -90,6 +90,13 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="deleteAhoc_OnStepProcess_0" name="deleteAhoc_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="changeTab" x="350" y="280">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="changeTab_OnStepProcess_0" name="changeTab_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -160,9 +167,6 @@
   <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/preViewCheckList" style="rectanular">
    <position>{(610,250)(520,270)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doCheckList" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page1" style="rectanular">
-   <position>{(520,270)(330,390)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/confirm" style="rectanular">
    <position>{(1000,120)(1000,240)}</position>
   </SynchronousLink>
@@ -176,7 +180,7 @@
    <position>{(860,370)(1000,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doCheckList" style="rectanular">
-   <position>{(330,390)(390,220)}</position>
+   <position>{(210,270)(390,220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/pre" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
    <position>{(390,220)(340,120)}</position>
@@ -208,6 +212,18 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/pre" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/saveAhoc" style="rectanular">
    <position>{(800,490)(321,549)(340,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/Page1" style="rectanular">
+   <position>{(520,270)(440,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doCheckList" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(440,370)(263,376)(210,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/changeTab" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(440,370)(370,300)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/Page1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/changeTab" style="rectanular">
+   <position>{(370,300)(520,270)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Pages/WebPage/confirm" componentIfTrue="/Steps/AutomaticStep/pre" defClass="" executor="" icon="" leftOperand="&quot;Y&quot;" name="Cond1" operator="!=" rightOperand="isValid" x="830" y="100">
@@ -229,6 +245,11 @@
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/addAhoc" value="&quot;add&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/saveAhoc" value="&quot;delete&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="420" y="350">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/doCheckList" value="&quot;back&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/changeTab" value="&quot;change&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

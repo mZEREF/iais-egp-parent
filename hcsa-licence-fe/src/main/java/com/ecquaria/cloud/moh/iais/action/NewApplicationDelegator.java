@@ -1538,7 +1538,6 @@ public class NewApplicationDelegator {
         autoAppSubmissionListDto.setEventRefNo(autoTime.toString());
         notAutoAppSubmissionListDto.setEventRefNo(notAutoTime.toString());
         if(!notAutoSaveAppsubmission.isEmpty()){
-            AppSubmissionDto appSu = requestForChangeService.submitChange(notAutoAppSubmissionListDto.getAppSubmissionDtos().get(0));
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(notAutoSaveAppsubmission);
             notAutoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(notAutoAppSubmissionListDto,notAuto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
@@ -1553,7 +1552,6 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
         if(!autoSaveAppsubmission.isEmpty()){
-            AppSubmissionDto appSu = requestForChangeService.submitChange(notAutoAppSubmissionListDto.getAppSubmissionDtos().get(0));
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoSaveAppsubmission);
             autoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto,auto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
@@ -2302,6 +2300,14 @@ public class NewApplicationDelegator {
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
             serviceConfigService.updatePaymentStatus(appGrp);
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
+            //todo change
+            StringBuilder url = new StringBuilder();
+            url.append("https://")
+                    .append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication/PrepareAckPage");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+            return;
         }
         log.info(StringUtil.changeForLog("the do jumpBank end ...."));
     }
@@ -3045,9 +3051,9 @@ public class NewApplicationDelegator {
                 String certIssuedDtStr = Formatter.formatDate(fireSafetyCertIssuedDateDate);
                 appGrpPremisesDto.setCertIssuedDtStr(certIssuedDtStr);
                 if(AppConsts.YES.equals(isOtherLic[i])){
-                    appGrpPremisesDto.setLocateWithOthers(1);
-                }else if("-1".equals(isOtherLic[i])){
-                    appGrpPremisesDto.setLocateWithOthers(-1);
+                    appGrpPremisesDto.setLocateWithOthers(AppConsts.YES);
+                }else if(AppConsts.NO.equals(isOtherLic[i])){
+                    appGrpPremisesDto.setLocateWithOthers(AppConsts.NO);
                 }
                 for(int j =0; j<length; j++){
                     AppPremPhOpenPeriodDto appPremPhOpenPeriod = new AppPremPhOpenPeriodDto();

@@ -324,7 +324,7 @@ public class HcsaChklItemDelegator {
         if(checkBoxItemId.length > maxNum){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr("cloneItemMsg",
-                    "CHKL_ERR026"));
+                    MessageUtil.replaceMessage("CHKL_ERR026", String.valueOf(maxNum), "number")));
             return;
         }
 

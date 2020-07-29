@@ -69,7 +69,6 @@
         <div class="col-xs-12">
           <div class="components">
             <iais:pagination  param="auditTrailSearch" result="auditTrailSearchResult"/>
-            <div class="table-gp">
               <table class="table">
                 <thead>
                 <tr>
@@ -140,7 +139,6 @@
                 </c:choose>
                 </tbody>
               </table>
-            </div>
           </div>
         </div>
       </div>

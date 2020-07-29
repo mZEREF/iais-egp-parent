@@ -134,7 +134,7 @@
                                             <td>
                                                 <p>
                                                     <a onclick="edit('${item.id}')">Edit</a>
-                                                    <a onclick="audit('${item.messageId}')">Audit</a>
+                                                    <a onclick="audit('${item.messageId}','${item.mode}')">Audit</a>
                                                 </p>
                                             </td>
                                         </tr>
@@ -160,6 +160,7 @@
             </div>
         </div>
         <input hidden id="editBlast" name="editBlast" value="">
+        <input hidden id="mode" name="mode" value="">
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -187,8 +188,9 @@
         $("#editBlast").val(id);
         SOP.Crud.cfxSubmit("mainForm", "preview");
     }
-    function audit(id) {
+    function audit(id,mode) {
         $("#editBlast").val(id);
+        $("#mode").val(mode);
         SOP.Crud.cfxSubmit("mainForm", "audit");
     }
 

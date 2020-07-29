@@ -87,9 +87,6 @@ public interface HcsaLicenceClient {
     @GetMapping(value = "/hcsa-licence/licence/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicenceDtoById(@PathVariable(name="licenceId") String licenceId);
 
-    @GetMapping(value = "/hcsa-licence/licence-ceased/{licenceId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<LicenceDto> getCeasedGroupLicDtoById(@PathVariable("licenceId") String licenceId);
-
     @GetMapping(value = "/hcsa-licence/licenceById/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenceDto> getLicDtoById(@PathVariable("licId") String licenceId);
 

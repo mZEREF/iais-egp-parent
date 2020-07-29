@@ -98,6 +98,7 @@
         cl();
         preperChange();
         retrieveAddr();
+        otherLic();
         $("select[name='onSiteAddressType']").trigger('change');
         $("select[name='conveyanceAddrType']").trigger('change');
         $("select[name='offSiteAddrType']").trigger('change');

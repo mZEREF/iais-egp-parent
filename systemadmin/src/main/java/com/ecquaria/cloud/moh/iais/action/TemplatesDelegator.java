@@ -225,7 +225,7 @@ public class TemplatesDelegator {
                 errorMap.put("messageContent","The content should not exceed 8000 words");
             }
             if (contentSize < 2) {
-                errorMap.put("messageContent","The content should not be null");
+                errorMap.put("messageContent","The content should not be empty");
             }
             String recipientString = "";
             String ccrecipientString = "";

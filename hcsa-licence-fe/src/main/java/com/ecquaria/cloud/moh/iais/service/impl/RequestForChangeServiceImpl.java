@@ -489,8 +489,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
 
-                        Integer locateWithOthers = appGrpPremisesDtoList.get(i).getLocateWithOthers();
-                        if(locateWithOthers == null){
+                        String locateWithOthers = appGrpPremisesDtoList.get(i).getLocateWithOthers();
+                        if(StringUtil.isEmpty(locateWithOthers)){
                             errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR001");
                         }
 

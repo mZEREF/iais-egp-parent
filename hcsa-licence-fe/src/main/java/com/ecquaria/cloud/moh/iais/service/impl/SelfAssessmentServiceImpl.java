@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -108,7 +109,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
         //common data
         ChecklistConfigDto common = appConfigClient.getMaxVersionCommonConfig().getEntity();
-        Map<String, List<PremCheckItem>> sqMap  = FeSelfChecklistHelper.loadPremisesQuestion(common, false);
+        LinkedHashMap<String, List<PremCheckItem>> sqMap  = FeSelfChecklistHelper.loadPremisesQuestion(common, false);
 
         SelfAssessmentConfig commonConfig = new SelfAssessmentConfig();
         commonConfig.setConfigId(common.getId());
@@ -157,7 +158,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 svcConfig.setSvcCode(serviceConfig.getSvcCode());
                 svcConfig.setSvcName(serviceConfig.getSvcName());
 
-                Map<String, List<PremCheckItem>> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
+                LinkedHashMap<String, List<PremCheckItem>> serviceQuestion = FeSelfChecklistHelper.loadPremisesQuestion(serviceConfig, false);
                 List<String> serviceSubtypeName = getServiceSubTypeName(corrId);
                 for(String subTypeName : serviceSubtypeName){
                     ChecklistConfigDto subTypeConfig = appConfigClient.getMaxVersionConfigByParams(svcCode, type, module, subTypeName).getEntity();

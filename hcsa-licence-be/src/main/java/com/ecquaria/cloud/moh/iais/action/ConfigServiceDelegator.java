@@ -453,8 +453,7 @@ public class ConfigServiceDelegator {
         String numberDocument = request.getParameter("NumberDocument");
         String descriptionDocument = request.getParameter("DescriptionDocument");
         String numberfields = request.getParameter("Numberfields");
-        String descriptionGeneral = request.getParameter("DescriptionGeneral");
-        String numberfieldsMandatory = request.getParameter("NumberfieldsMandatory");
+
         String numberDocumentMandatory = request.getParameter("NumberDocumentMandatory");
         String descriptionDocumentMandatory = request.getParameter("DescriptionDocumentMandatory");
         String individualPremises = request.getParameter("individualPremises");
@@ -492,27 +491,19 @@ public class ConfigServiceDelegator {
         }
         try {
             request.setAttribute("numberfields",numberfields);
-            request.setAttribute("descriptionGeneral",descriptionGeneral);
-            Integer integer = Integer.valueOf(numberfields);
-           /* List<String> split = configService.split(descriptionGeneral);
-            if(integer!=split.size()){
-
-            }else {
-                for(int i=0;i<integer;i++){
+            String[] descriptionCommDocs = request.getParameterValues("descriptionCommDoc");
+            List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtoList=IaisCommonUtils.genNewArrayList();
+            String[] descriptionCommDocMandatories = request.getParameterValues("descriptionCommDocMandatory");
+            if(descriptionCommDocs!=null){
+                for(int i=0;i<descriptionCommDocs.length;i++){
                     HcsaSvcDocConfigDto hcsaSvcDocConfigDto=new HcsaSvcDocConfigDto();
-                    hcsaSvcDocConfigDto.setDocDesc(split.get(i));
-                    hcsaSvcDocConfigDto.setDocTitle(split.get(i));
-                    hcsaSvcDocConfigDto.setStatus("CMSTAT001");
-                    hcsaSvcDocConfigDto.setDispOrder(0);
-                    hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
-                    hcsaSvcDocConfigDto.setDupForPrem("0");
-                    if(numberfieldsMandatory!=null){
-                        hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
-                    }
-                    hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
-                }
+                    hcsaSvcDocConfigDto.setDocTitle(descriptionCommDocs[i]);
+                    hcsaSvcDocConfigDto.setDocDesc(descriptionCommDocs[i]);
 
-            }*/
+                    hcsaSvcDocConfigDtoList.add(hcsaSvcDocConfigDto);
+                }
+            }
+            request.setAttribute("commonDoc",hcsaSvcDocConfigDtoList);
         }catch (NumberFormatException e){
 
 

@@ -222,7 +222,7 @@
                 </c:if>
                 <tr>
                   <td class="col-xs-6">
-                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspeciality or relevant qualification</p>
+                    <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>Subspecialty or relevant qualification</p>
                   </td>
                   <td>
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>

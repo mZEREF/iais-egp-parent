@@ -129,12 +129,12 @@
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>
                                         <c:choose>
-                                            <c:when test="${appGrpPremDto.locateWithOthers =='1'}">
+                                            <c:when test="${appGrpPremDto.locateWithOthers}">
                                                 Yes
                                             </c:when>
-                                            <c:when test="${appGrpPremDto.locateWithOthers =='-1'}">
+                                            <c:otherwise>
                                                 No
-                                            </c:when>
+                                            </c:otherwise>
                                         </c:choose>
                                     </span></p>
                                 </div>
@@ -706,7 +706,7 @@
                     </div>
                 </div>
             </c:forEach>
-            <c:if test="${FirstView && !('APTY004' == AppSubmissionDto.appType)}">
+            <c:if test="${FirstView && !('APTY004' == AppSubmissionDto.appType || 'APTY005' == AppSubmissionDto.appType)}">
                 <br/>
                 <p class="font-size-14">Please note that you will not be able to add  or remove any premises here.</p>
                 <p class="font-size-14">If you wish to do so, please click <a href="#">here</a>.</p>

@@ -74,4 +74,9 @@ public class INTRANET___MohCheckListNc___1 extends BaseProcessClass {
 	// 		listAhocs->OnStepProcess
 		EngineHelper.delegate(DELEGATOR, "listAhocs", this);
 	}
+
+	public void changeTab_OnStepProcess_0() throws Exception {
+		// 		changeTab->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "changeTab", this);
+	}
 }

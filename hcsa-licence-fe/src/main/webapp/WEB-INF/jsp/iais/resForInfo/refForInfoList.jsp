@@ -35,6 +35,7 @@
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="LICENCE_NO" value="Licence No."></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="REQUEST_DATE " value="Start Date"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false"  field="DUE_DATE " value="Due Date"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false"  field="REQUESTER_ID" value="Requester ID"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="Action"></iais:sortableHeader>
                             </tr>
@@ -54,6 +55,7 @@
                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                             <td><c:out value="${pool.licenceNo}"/></td>
                                             <td><fmt:formatDate value="${pool.requestDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
+                                            <td><fmt:formatDate value="${pool.dueDateSubmission}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
                                             <td><c:out value="${pool.requestUser}" /></td>
                                             <td>
                                                 <iais:action >

@@ -10,6 +10,7 @@
 <div class="main-content">
     <form class="form-horizontal" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <br/><br/> <br/><br/>
+        <input type="hidden" name="crud_action_type" value="">
         <div class="container">
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
                 <div class="form-horizontal">

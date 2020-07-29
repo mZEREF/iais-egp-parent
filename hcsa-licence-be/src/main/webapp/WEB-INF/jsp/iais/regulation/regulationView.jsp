@@ -60,17 +60,16 @@
                 <div class="col-xs-12">
                     <div class="components">
                         <iais:pagination  param="regulationSearch" result="regulationResult"/>
-                        <div class="table-gp">
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <iais:sortableHeader needSort="false" field="" value="No."></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" style="padding-bottom:15px" field="" value="No."></iais:sortableHeader>
                                     <iais:sortableHeader needSort="true" field="CLAUSE_NO"
                                                          value="Regulation Clause Number"></iais:sortableHeader>
                                     <iais:sortableHeader needSort="true" field="CLAUSE"
                                                          value="Regulations"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="false" field="status" value="Status"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="false" field="action" value="Action"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="true" field="status" value="Status"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" style="padding-bottom:15px" field="action" value="Action"></iais:sortableHeader>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -124,9 +123,6 @@
 
 
                             </div>
-
-
-                        </div>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="com.ecquaria.cloud.RedirectUtil" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -16,9 +17,14 @@
   .view{
     color: #2199E8;
   }
-
+  .width-center{
+    text-align: center;width: 100%
+  }
   .marg-1{
     margin-top: 1%;
+  }
+  .width-70{
+    width: 70%;
   }
 </style>
 <div class="main-content">
@@ -141,10 +147,10 @@
           <div class="col-xs-12 col-md-4">
             <select  name="Subsumption">
               <option value="">Select one</option>
-              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}"
-                        <c:if test="${hcsaServiceDto.svcType=='SVTP002'&&hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected="selected"</c:if>
-                >${hcsaServiceCategoryDto.name}</option>
+              <c:forEach items="${baseHcsaServiceDto}" var="baseHcsaService">
+                <option value="${baseHcsaService.id}"
+                        <c:if test="${fn:contains(hcsaServiceDto.serviceSubTypeDtos,baseHcsaService.id)&&hcsaServiceDto.svcType=='SVTP003'}">selected="selected"</c:if>
+                >${baseHcsaService.svcName}</option>
               </c:forEach>
             </select>
             <span id="error_Subsumption" class="error-msg" name="iaisErrorMsg" ></span>
@@ -158,12 +164,12 @@
         <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select  name="Subsumption">
+            <select  name="Pre-requisite">
               <option value="">Select one</option>
-              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}"
-                        <c:if test="${hcsaServiceDto.svcType=='SVTP002'&&hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected="selected"</c:if>
-                >${hcsaServiceCategoryDto.name}</option>
+              <c:forEach items="${baseHcsaServiceDto}" var="baseHcsaService">
+                <option value="${baseHcsaService.id}"
+                        <c:if test="${hcsaServiceDto.svcType=='SVTP002'&&hcsaServiceDto.categoryId==baseHcsaService.id}">selected="selected"</c:if>
+                >${baseHcsaService.svcName}</option>
               </c:forEach>
             </select>
             <span id="error_Prerequisite" class="error-msg" name="iaisErrorMsg" ></span>
@@ -236,8 +242,9 @@
             <span class="error-msg" name="iaisErrorMsg" id="error_mandatoryCount3"></span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-ServicePersonnel" maxlength="2"  placeholder="maximum count" value="${SVCPSN.pageMaximumCount}"></div>
-          <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount3"></span>
+            <input  type="text" name="mix-ServicePersonnel" maxlength="2"  placeholder="maximum count" value="${SVCPSN.pageMaximumCount}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_maximumCount3"></span>
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -286,7 +293,19 @@
       </div>
 
       <div class="Numberfields">
-
+        <c:forEach items="${commonDoc}" var="doc">
+          <div class="form-group">
+            <div class="col-xs-12 col-md-8">
+              <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
+              <div class="col-xs-12 col-md-4">
+                <input  type="text" name="descriptionCommDoc" maxlength="255" value="${doc.docDesc}">
+              </div>
+              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%"> <input class="form-check-input"  type="checkbox" name="descriptionCommDocMandatory" value="">
+                <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+              </div>
+            </div>
+          </div>
+        </c:forEach>
       </div>
 
       <div class="form-group">
@@ -361,24 +380,30 @@
 --%>
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
-          <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
+          <div class="col-xs-10 col-md-6">
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showRENEW()"><span class="view">RENEW</span></a>
+          <div class="col-xs-10 col-md-6">
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showRENEW()"><span class="view">RENEW</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
+
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-6">
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showRFC()"><span class="view">REQUEST FOR CHANGE</span></a>
+          <div class="col-xs-10 col-md-6">
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showRFC()"><span class="view">REQUEST FOR CHANGE</span></a>
             </div>
           </div>
         </div>
@@ -386,32 +411,36 @@
 
       <div  class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
-          <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showCESSATION()"><span class="view">CESSATION</span></a>
+          <div class="col-xs-10 col-md-6">
+            <div class="components  width-center">
+              <a class="btn btn-secondary width-70" onclick="showCESSATION()"><span class="view">CESSATION</span></a>
             </div>
           </div>
-         <%-- <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
+         <%-- <div class="col-xs-10 col-md-6">
+            <div class="components  width-center">
+              <a class="btn btn-secondary width-70" onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
             </div>
           </div>--%>
 
-          <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
-            </div>
-          </div>
-        <%--  <div class="col-xs-10 col-md-3">
-            <div class="components">
-              <a class="btn btn-secondary " onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
-            </div>
-          </div>--%>
 
         </div>
       </div>
 
+      <div class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-6">
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
+            </div>
+          </div>
+          <%--  <div class="col-xs-10 col-md-6">
+              <div class="components  width-center">
+                <a class="btn btn-secondary width-70" onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
+              </div>
+            </div>--%>
 
+        </div>
+      </div>
 
       <c:set var="index" value="0"></c:set>
       <c:forEach items="${routingStagess}" var="routingStages" varStatus="sta">
@@ -594,15 +623,13 @@
         <div class="row">
           <div class="col-xs-10 col-md-8">
             <div class="components">
-
-              <a class="btn  btn-secondary"  onclick="cancel()">Cancel</a>
-
+              <a class="btn  btn-secondary"data-toggle="modal" data-target= "#cancel">Cancel</a>
             </div>
           </div>
           <div class="col-xs-10 col-md-3">
             <div class="components">
 
-              <a class="btn btn-primary" onclick="save()">Save</a>
+              <a class="btn btn-primary"  onclick="save()">Save</a>
 
             </div>
           </div>
@@ -628,7 +655,7 @@
 
 <iais:confirm msg="Are you sure you want to leave this page!" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
 
-
+<iais:confirm msg="Are you sure you want to cancel?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel"></iais:confirm>
 <script type="text/javascript">
 
     function cancel() {
@@ -638,17 +665,20 @@
 
     function kpi() {
 
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohKPIAndReminder";
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
+
+    }
+    function  displays() {
+      $('#cancel').modal('hide');
     }
 
-
     function  checklists(){
-
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration";
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohChecklistConfiguration",request)%>';
     }
 
     function riskScore(){
-        location.href="https://egp.sit.intra.iais.com/hcsa-licence-web/eservice/INTRANET/MohRiskConigMenu";
+        location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohRiskConigMenu",request)%>';
+
     }
 
     function manhours(){
@@ -921,7 +951,8 @@
 
     });
 
-    $('#Numberfields').change(function () {
+
+    $('#Numberfields').keyup(function () {
         let val = $('#Numberfields').val();
         let number = parseInt(val);
         let jQuery = $(this).closest("div.form-group").next(".Numberfields").children();
@@ -930,11 +961,11 @@
             for(var i=0;i<number-number1;i++){
                 $(this).closest("div.form-group").next(".Numberfields").append(" <div class=\"form-group\">\n" +
                     "        <div class=\"col-xs-12 col-md-8\">\n" +
-                    "          <label class=\"col-xs-12 col-md-6 control-label\" for=\"DescriptionGeneral\">Name of Info Field</label>\n" +
+                    "          <label class=\"col-xs-12 col-md-6 control-label\" >Name of Info Field</label>\n" +
                     "          <div class=\"col-xs-12 col-md-4\">\n" +
                     "            <input  type=\"text\" name=\"descriptionCommDoc\" maxlength=\"255\" value=\"\">\n" +
                     "          </div>\n" +
-                    "          <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">   <input class=\"form-check-input\"  type=\"checkbox\" name=\"POMandatory\" aria-invalid=\"false\">\n" +
+                    "          <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">   <input class=\"form-check-input\"  type=\"checkbox\" name=\"descriptionCommDocMandatory\" aria-invalid=\"false\">\n" +
                     "            <label class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
                     "          </div>\n" +
                     "        </div>\n" +
