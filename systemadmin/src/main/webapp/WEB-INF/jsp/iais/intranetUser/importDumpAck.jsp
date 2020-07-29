@@ -11,14 +11,14 @@
     <form class="form-horizontal" method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
         <br/><br/> <br/><br/>
         <input type="hidden" name="crud_action_type" value="">
-        <div class="container">
+        <div class="container" style="margin-left: 23%">
             <div class="tab-pane active" id="tabInbox" role="tabpanel">
                 <div class="form-horizontal">
                     <div class="tab-content">
                         <h2 class="component-title">Import Users</h2>
                         <c:forEach var="oldUser" items="${existUsersOld}" varStatus="status">
                             <span style="font-size: 2rem;">User${status.count} - ${oldUser.userId}</span>
-                        <table style="width: 50%;border-collapse:separate;border-spacing:10px;border: 1px solid #151515">
+                        <table  style="width: 50%;border-collapse:separate;border-spacing:10px;border: 1px solid #151515">
                             <thead>
                             <tr>
                                 <th style="width: 20%"></th>
@@ -219,10 +219,16 @@
                 </div>
             </div>
         </div>
-        <iais:action>
-            <a style="margin-left: 0%" class="back" onclick="submit('back')"><em class="fa fa-angle-left"></em> Back</a>
-            <a style="margin-left: 90%" class="btn btn-primary" href="#" onclick="submit()">SUBMIT</a>
-        </iais:action>
+            <div class="row">
+                <div style="margin-left: 50%">
+                    <span class="components">
+                        <a class="btn  btn-secondary"data-toggle="modal" data-target= "#cancel" onclick="submit('back')">Cancel</a>
+                    </span>
+                    <span class="components">
+                        <a class="btn btn-primary" onclick="submit()">Continue</a>
+                    </span>
+                </div>
+            </div>
     </form>
 </div>
 
