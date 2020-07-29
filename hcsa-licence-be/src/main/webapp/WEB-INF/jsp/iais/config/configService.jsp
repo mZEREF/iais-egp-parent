@@ -4,6 +4,7 @@
 <%@ taglib prefix="iasi" uri="ecquaria/sop/egov-mc" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="com.ecquaria.cloud.RedirectUtil" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <webui:setLayout name="iais-intranet"/>
 
 <%
@@ -108,7 +109,7 @@
       <div class="form-group">
         <div class="col-xs-12 col-md-10">
           <label class="col-xs-12 col-md-10 control-label" >Premises Type<span class="mandatory">*</span></label>
-          <span class="error-msg" name="iaisErrorMsg" id="error_premieseType"></span>
+
         </div>
       </div>
 
@@ -134,9 +135,8 @@
                 <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
               </div>
             </div>
-
-
           </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_premieseType"></span>
         </div>
       </div>
 
@@ -264,43 +264,55 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
-            uploaded<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument" type="text" maxlength="2" name="NumberDocument" value="${numberDocument}">
+            <input id="NumberDocument" type="text" maxlength="2" name="NumberDocument" value="${serviceDocSize}">
           </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_NumberDocument"></span>
         </div>
+      </div>
+
+      <div class="serviceNumberfields">
+        <c:forEach items="${serviceDoc}" var="doc">
+          <div class="form-group">
+            <div class="col-xs-12 col-md-8">
+              <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
+              <input type="hidden" value="${doc.id}" name="commDocId">
+              <div class="col-xs-12 col-md-4">
+                <input  type="text" name="descriptionServiceDoc" maxlength="255" value="${doc.docDesc}">
+              </div>
+              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
+                <input type="hidden" name="serviceDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
+                <input class="form-check-input" <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocMandatory">
+                <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+              </div>
+            </div>
+          </div>
+        </c:forEach>
       </div>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="DescriptionDocument">Description of each Service-Related Document to
-            be Uploaded<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="DescriptionDocument" type="text" name="DescriptionDocument" maxlength="255" value="${descriptionDocument}">
+            <input id="Numberfields" type="text" name="Numberfields" maxlength="2" value="${comDocSize}">
           </div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to
-            be captured<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-4">
-            <input id="Numberfields" type="text" name="Numberfields" maxlength="2" value="${numberfields}">
-          </div>
+          <span class="error-msg" name="iaisErrorMsg" id="error_Numberfields"></span>
         </div>
       </div>
 
       <div class="Numberfields">
-        <c:forEach items="${commonDoc}" var="doc">
+        <c:forEach items="${comDoc}" var="doc">
           <div class="form-group">
             <div class="col-xs-12 col-md-8">
               <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
+              <input type="hidden" value="${doc.id}" name="commDocId">
               <div class="col-xs-12 col-md-4">
                 <input  type="text" name="descriptionCommDoc" maxlength="255" value="${doc.docDesc}">
               </div>
-              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%"> <input class="form-check-input"  type="checkbox" name="descriptionCommDocMandatory" value="">
+              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
+                <input type="hidden" name="commDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
+                <input class="form-check-input" <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocMandatory">
                 <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
               </div>
             </div>
@@ -614,8 +626,9 @@
       <div class="form-group">
         <label class="col-xs-12 col-md-8 control-label">Effective End Date</label>
         <div class=" col-xs-7 col-sm-4 col-md-3">
-          <input type="text" autocomplete="off" class="date_picker form-control form_datetime" name="EndDate" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_EndDate" name="iaisErrorMsg" class="error-msg"></span>
+          <input type="text" autocomplete="off" value="<fmt:formatDate value="${hcsaServiceDto.endDate}" pattern="dd/MM/yyyy"/>" class="date_picker form-control form_datetime" name="EndDate" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_EndDate" name="iaisErrorMsg" class="error-msg"></span>
         </div>
+        <span class="error-msg" name="iaisErrorMsg" id="error_effectiveEndDate"></span>
         <div class="clear"></div></div>
     </div>
 
@@ -628,7 +641,6 @@
           </div>
           <div class="col-xs-10 col-md-3">
             <div class="components">
-
               <a class="btn btn-primary"  onclick="save()">Save</a>
 
             </div>
@@ -881,17 +893,11 @@
 
              ;
           }
-
-
         }else {
             jQuery2.val(parseInt(jQuery2.val())+1);
             $(jQuery).attr("style","margin-left:60px");
 
         }
-
-
-
-
     }
     
     function outdent(obj) {
@@ -926,7 +932,15 @@
     }
 
 
-    $('#NumberDocumentMandatory').click(function () {
+    function checkboxOnclick(checkbox) {
+        if (checkbox.checked == true) {
+            $(checkbox).prev().val("1");
+        } else {
+            $(checkbox).prev().val("0");
+        }
+    }
+
+        $('#NumberDocumentMandatory').click(function () {
         let jQuery = $("#NumberDocumentMandatory").prop("checked");
         let jQuery1 = $("#DescriptionDocumentMandatory").prop("checked");
         if(jQuery==true){
@@ -960,16 +974,19 @@
         if(number-number1>0){
             for(var i=0;i<number-number1;i++){
                 $(this).closest("div.form-group").next(".Numberfields").append(" <div class=\"form-group\">\n" +
-                    "        <div class=\"col-xs-12 col-md-8\">\n" +
-                    "          <label class=\"col-xs-12 col-md-6 control-label\" >Name of Info Field</label>\n" +
-                    "          <div class=\"col-xs-12 col-md-4\">\n" +
-                    "            <input  type=\"text\" name=\"descriptionCommDoc\" maxlength=\"255\" value=\"\">\n" +
-                    "          </div>\n" +
-                    "          <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">   <input class=\"form-check-input\"  type=\"checkbox\" name=\"descriptionCommDocMandatory\" aria-invalid=\"false\">\n" +
-                    "            <label class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
-                    "          </div>\n" +
-                    "        </div>\n" +
-                    "      </div>");
+                    "            <div class=\"col-xs-12 col-md-8\">\n" +
+                    "           <input type=\"hidden\" value=\"\" name=\"commDocId\">\n" +
+                    "              <label class=\"col-xs-12 col-md-6 control-label\">Name of Info Field</label>\n" +
+                    "              <div class=\"col-xs-12 col-md-4\">\n" +
+                    "                <input  type=\"text\" name=\"descriptionCommDoc\" maxlength=\"255\">\n" +
+                    "              </div>\n" +
+                    "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
+                    "                <input type=\"hidden\" name=\"commDocMandatory\" value=\"0\">\n" +
+                    "                <input class=\"form-check-input\"  type=\"checkbox\" onclick=\"checkboxOnclick(this)\" name=\"descriptionCommDocMandatory\">\n" +
+                    "                <label class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
+                    "              </div>\n" +
+                    "            </div>\n" +
+                    "          </div>");
             }
         }else if(number1-number>0){
             for(var i=0;i<number1-number;i++){
@@ -978,6 +995,45 @@
         }
 
     });
+
+    $('#NumberDocument').keyup(function () {
+        let val = $('#NumberDocument').val();
+        let number = parseInt(val);
+        let jQuery = $(this).closest("div.form-group").next(".serviceNumberfields").children();
+        let number1 = parseInt(jQuery.length);
+        if(number-number1>0){
+            for(var i=0;i<number-number1;i++){
+                $(this).closest("div.form-group").next(".serviceNumberfields").append(" <div class=\"form-group\">\n" +
+                    "            <div class=\"col-xs-12 col-md-8\">\n" +
+                    "           <input type=\"hidden\" value=\"\" name=\"serviceDocId\">\n" +
+                    "              <label class=\"col-xs-12 col-md-6 control-label\">Name of Info Field</label>\n" +
+                    "              <div class=\"col-xs-12 col-md-4\">\n" +
+                    "                <input  type=\"text\" name=\"descriptionServiceDoc\" maxlength=\"255\">\n" +
+                    "              </div>\n" +
+                    "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
+                    "                <input type=\"hidden\" name=\"serviceDocMandatory\" value=\"0\">\n" +
+                    "                <input class=\"form-check-input\"  type=\"checkbox\" onclick=\"serviceCheckboxOnclick(this)\" name=\"descriptionServiceDocMandatory\">\n" +
+                    "                <label class=\"form-check-label\" ><span class=\"check-square\"></span>Mandatory</label>\n" +
+                    "              </div>\n" +
+                    "            </div>\n" +
+                    "          </div>");
+            }
+        }else if(number1-number>0){
+            for(var i=0;i<number1-number;i++){
+                $(this).closest("div.form-group").next(".serviceNumberfields").children().last().remove();
+            }
+        }
+
+    });
+
+
+    function serviceCheckboxOnclick(checkbox) {
+        if (checkbox.checked == true) {
+            $(checkbox).prev().val("1");
+        } else {
+            $(checkbox).prev().val("0");
+        }
+    }
 
 </script>
 </>

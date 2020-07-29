@@ -431,7 +431,7 @@ public class InterInboxDelegator {
         String licId = ParamUtil.getMaskedString(bpc.request,licMaskId);
         Boolean result = inboxService.checkEligibility(licId);
         Map<String, String> map = inboxService.appealIsApprove(licId, "licence");
-        if (result){
+        if (result&&map.isEmpty()){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
@@ -441,21 +441,12 @@ public class InterInboxDelegator {
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }else{
+            if(!result){
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"An appeal has already been submitted for this licence/application");
+            }else if(!map.isEmpty()){
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"There is already a pending application for the selected licence");
+            }
             ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",result);
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"An appeal has already been submitted for this licence/application");
-        }
-        if(map.isEmpty()){
-            StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
-                    .append("?appealingFor=")
-                    .append(MaskUtil.maskValue("appealingFor",licId))
-                    .append("&type=licence");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-        }else {
-            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",result);
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,"There is already a pending application for the selected licence");
         }
     }
 
@@ -729,7 +720,7 @@ public class InterInboxDelegator {
         String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         Boolean result = inboxService.checkEligibility(appId);
         Map<String, String> map = inboxService.appealIsApprove(appId, "application");
-        if (result){
+        if (result&&map.isEmpty()){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
@@ -739,21 +730,12 @@ public class InterInboxDelegator {
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }else{
+            if(!result){
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"An appeal has already been submitted for this licence/application");
+            } else if(!map.isEmpty()){
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"There is already a pending application for the selected licence");
+            }
             ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",result);
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"An appeal has already been submitted for this licence/application");
-        }
-        if(map.isEmpty()){
-            StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
-                    .append("?appealingFor=")
-                    .append(MaskUtil.maskValue("appealingFor",appId))
-                    .append("&type=application");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-        }else {
-            ParamUtil.setRequestAttr(bpc.request,"appIsAppealed",result);
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.APP_RECALL_RESULT,"There is already a pending application for the selected licence");
         }
     }
 

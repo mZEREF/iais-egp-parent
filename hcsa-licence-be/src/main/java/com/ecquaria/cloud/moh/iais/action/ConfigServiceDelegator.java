@@ -451,64 +451,59 @@ public class ConfigServiceDelegator {
         }
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = IaisCommonUtils.genNewArrayList();
         String numberDocument = request.getParameter("NumberDocument");
-        String descriptionDocument = request.getParameter("DescriptionDocument");
+        String[] descriptionServiceDocs = request.getParameterValues("descriptionServiceDoc");
+        String[] serviceDocMandatories = request.getParameterValues("serviceDocMandatory");
         String numberfields = request.getParameter("Numberfields");
-
-        String numberDocumentMandatory = request.getParameter("NumberDocumentMandatory");
-        String descriptionDocumentMandatory = request.getParameter("DescriptionDocumentMandatory");
         String individualPremises = request.getParameter("individualPremises");
-        try {
-            request.setAttribute("numberDocument",numberDocument);
-            request.setAttribute("descriptionDocument",descriptionDocument);
-            Integer integer = Integer.valueOf(numberDocument);
-            List<String> split = configService.split(descriptionDocument);
-            if(integer!=split.size()){
-
-            }else {
-                for(int i=0;i<integer;i++){
-                    HcsaSvcDocConfigDto hcsaSvcDocConfigDto=new HcsaSvcDocConfigDto();
-                    hcsaSvcDocConfigDto.setDocDesc(split.get(i));
-                    hcsaSvcDocConfigDto.setDocTitle(split.get(i));
-                    hcsaSvcDocConfigDto.setStatus("CMSTAT001");
-                    hcsaSvcDocConfigDto.setDispOrder(0);
-                    hcsaSvcDocConfigDto.setServiceId("");
-                    hcsaSvcDocConfigDto.setDupForPrem(individualPremises);
-                    hcsaSvcDocConfigDto.setIsMandatory(Boolean.FALSE);
-                    if(numberDocumentMandatory!=null&&descriptionDocumentMandatory!=null){
-                        hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
-                    }
-                    hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
+        request.setAttribute("serviceDocSize",numberDocument);
+        if(descriptionServiceDocs!=null){
+            for(int i=0;i<descriptionServiceDocs.length;i++){
+                HcsaSvcDocConfigDto hcsaSvcDocConfigDto=new HcsaSvcDocConfigDto();
+                hcsaSvcDocConfigDto.setDocDesc(descriptionServiceDocs[i]);
+                hcsaSvcDocConfigDto.setDocTitle(descriptionServiceDocs[i]);
+                hcsaSvcDocConfigDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                hcsaSvcDocConfigDto.setDispOrder(0);
+                hcsaSvcDocConfigDto.setServiceId("");
+                hcsaSvcDocConfigDto.setDupForPrem("0");
+                if("0".equals(serviceDocMandatories[i])){
+                    hcsaSvcDocConfigDto.setIsMandatory(false);
+                }else if("1".equals(serviceDocMandatories[i])){
+                    hcsaSvcDocConfigDto.setIsMandatory(true);
                 }
-                HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
-                hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
-                hcsaServiceStepSchemeDto.setStepCode("SVST005");
-                hcsaServiceStepSchemeDto.setSeqNum(count);
-                hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
-                count++;
+                hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
             }
-        }catch (NumberFormatException e){
-
+            HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
+            hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            hcsaServiceStepSchemeDto.setStepCode("SVST005");
+            hcsaServiceStepSchemeDto.setSeqNum(count);
+            hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
+            count++;
         }
-        try {
-            request.setAttribute("numberfields",numberfields);
-            String[] descriptionCommDocs = request.getParameterValues("descriptionCommDoc");
-            List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtoList=IaisCommonUtils.genNewArrayList();
-            String[] descriptionCommDocMandatories = request.getParameterValues("descriptionCommDocMandatory");
-            if(descriptionCommDocs!=null){
-                for(int i=0;i<descriptionCommDocs.length;i++){
-                    HcsaSvcDocConfigDto hcsaSvcDocConfigDto=new HcsaSvcDocConfigDto();
-                    hcsaSvcDocConfigDto.setDocTitle(descriptionCommDocs[i]);
-                    hcsaSvcDocConfigDto.setDocDesc(descriptionCommDocs[i]);
-
-                    hcsaSvcDocConfigDtoList.add(hcsaSvcDocConfigDto);
+        request.setAttribute("serviceDoc",hcsaSvcDocConfigDtos);
+        request.setAttribute("comDocSize",numberfields);
+        String[] descriptionCommDocs = request.getParameterValues("descriptionCommDoc");
+        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtoList=IaisCommonUtils.genNewArrayList();
+        String[] commDocMandatory = request.getParameterValues("commDocMandatory");
+        String[] commDocIds = request.getParameterValues("commDocId");
+        if(descriptionCommDocs!=null){
+            for(int i=0;i<descriptionCommDocs.length;i++){
+                HcsaSvcDocConfigDto hcsaSvcDocConfigDto=new HcsaSvcDocConfigDto();
+                hcsaSvcDocConfigDto.setDocTitle(descriptionCommDocs[i]);
+                hcsaSvcDocConfigDto.setDocDesc(descriptionCommDocs[i]);
+                hcsaSvcDocConfigDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                if("0".equals(commDocMandatory[i])){
+                    hcsaSvcDocConfigDto.setIsMandatory(false);
+                }else if("1".equals(commDocMandatory[i])){
+                    hcsaSvcDocConfigDto.setIsMandatory(true);
                 }
+                hcsaSvcDocConfigDto.setDupForPrem("0");
+                if(!StringUtil.isEmpty(commDocIds[i])){
+                    hcsaSvcDocConfigDto.setId(commDocIds[i]);
+                }
+                hcsaSvcDocConfigDtoList.add(hcsaSvcDocConfigDto);
             }
-            request.setAttribute("commonDoc",hcsaSvcDocConfigDtoList);
-        }catch (NumberFormatException e){
-
-
         }
-
+        request.setAttribute("comDoc",hcsaSvcDocConfigDtoList);
         List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtoList = IaisCommonUtils.genNewArrayList();
         List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtoList = IaisCommonUtils.genNewArrayList();
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();

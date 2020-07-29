@@ -217,20 +217,28 @@
           <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="NumberDocument"  readonly  type="text" maxlength="2" value="${NumberDocument}">
+            <input id="NumberDocument"  readonly  type="text" maxlength="2" value="${serviceDocSize}">
           </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="DescriptionDocument">Description of each Service-Related Document to
-            be Uploaded<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-4">
-            <input id="DescriptionDocument" maxlength="255"  value="${DescriptionDocument}" readonly type="text">
+      <div class="serviceNumberfields">
+        <c:forEach items="${serviceDoc}" var="doc">
+          <div class="form-group">
+            <div class="col-xs-12 col-md-8">
+              <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
+              <input type="hidden" value="${doc.id}" name="serviceDocId">
+              <div class="col-xs-12 col-md-4">
+                <input  type="text" name="descriptionServiceDoc" disabled maxlength="255" value="${doc.docDesc}">
+              </div>
+              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
+                <input type="hidden" name="serviceDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
+                <input class="form-check-input" disabled <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocMandatory">
+                <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+              </div>
+            </div>
           </div>
-
-        </div>
+        </c:forEach>
       </div>
 
       <div class="form-group">
@@ -238,19 +246,30 @@
           <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to
             be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="Numberfields" readonly type="text" maxlength="2" value="${comDocConfigDtoSize}">
+            <input id="Numberfields" readonly type="text" maxlength="2" value="${comDocSize}">
           </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="DescriptionGeneral">Description of each Service-Related General Info field to be captured<span class="mandatory">*</span></label>
-          <div class="col-xs-12 col-md-4">
-            <input id="DescriptionGeneral" readonly type="text" maxlength="255" value="${comDocConfigDtosTitle}">
+      <div class="Numberfields">
+        <c:forEach items="${comDoc}" var="doc">
+          <div class="form-group">
+            <div class="col-xs-12 col-md-8">
+              <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
+              <input type="hidden" value="${doc.id}" name="commDocId">
+              <div class="col-xs-12 col-md-4">
+                <input  type="text" name="descriptionCommDoc" disabled maxlength="255" value="${doc.docDesc}">
+              </div>
+              <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
+                <input type="hidden" name="commDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
+                <input class="form-check-input" disabled <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocMandatory">
+                <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+              </div>
+            </div>
           </div>
-        </div>
+        </c:forEach>
       </div>
+
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label">Will the doc be duplicated for individual premises?</label>

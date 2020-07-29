@@ -355,7 +355,7 @@ public class ConfigServiceImpl implements ConfigService {
 
 
 
-    private void doValidate(HcsaServiceConfigDto hcsaServiceConfigDto, Map<String, String> errorMap,HttpServletRequest request) {
+    private void doValidate(HcsaServiceConfigDto hcsaServiceConfigDto, Map<String, String> errorMap,HttpServletRequest request) throws Exception {
         HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaServiceConfigDto.getHcsaSvcStageWorkingGroupDtos();
         for (int i = 0; i < hcsaSvcStageWorkingGroupDtos.size(); i++) {
@@ -412,8 +412,15 @@ public class ConfigServiceImpl implements ConfigService {
         String svcDisplayDesc = hcsaServiceDto.getSvcDisplayDesc();
         String svcType = hcsaServiceDto.getSvcType();
         String effectiveDate = hcsaServiceDto.getEffectiveDate();
+        Date endDate = hcsaServiceDto.getEndDate();
         if (StringUtil.isEmpty(effectiveDate)) {
             errorMap.put("effectiveDate", "UC_CHKLMD001_ERR001");
+        }
+        if(!StringUtil.isEmpty(endDate)){
+            Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
+            if(endDate.before(parse)){
+                errorMap.put("effectiveEndDate", "CHKL_ERR002");
+            }
         }
         if (StringUtil.isEmpty(svcCode)) {
             errorMap.put("svcCode", "UC_CHKLMD001_ERR001");
@@ -498,6 +505,14 @@ public class ConfigServiceImpl implements ConfigService {
             if(StringUtil.isEmpty(manhourCount)){
                errorMap.put("manhourCount"+i,"UC_CHKLMD001_ERR001");
             }
+        }
+        String numberDocument = request.getParameter("NumberDocument");
+        if(!numberDocument.matches("^[0-9]+$")){
+            errorMap.put("NumberDocument","NEW_ERR0003");
+        }
+        String numberfields = request.getParameter("Numberfields");
+        if(!numberfields.matches("^[0-9]+$")){
+            errorMap.put("Numberfields","NEW_ERR0003");
         }
 
     }
@@ -926,31 +941,18 @@ public class ConfigServiceImpl implements ConfigService {
         String id = hcsaServiceDto.getId();
         List<HcsaServiceDto> baseHcsaServiceDtos = hcsaConfigClient.baseHcsaService().getEntity();
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaConfigClient.getHcsaSvcDocConfigDto(id).getEntity();
-        StringBuilder stringBuilder=new StringBuilder();
-        for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocConfigDtos){
-            stringBuilder.append(',');
-            stringBuilder.append(hcsaSvcDocConfigDto.getDocTitle());
-        }
+
         if(!hcsaSvcDocConfigDtos.isEmpty()){
-            Boolean isMandatory = hcsaSvcDocConfigDtos.get(0).getIsMandatory();
-            if(isMandatory){
-                request.setAttribute("documentMandatory",isMandatory);
-            }
-            request.setAttribute("NumberDocument",hcsaSvcDocConfigDtos.size());
-            request.setAttribute("DescriptionDocument",stringBuilder.toString().substring(1));
+            request.setAttribute("serviceDocSize",hcsaSvcDocConfigDtos.size());
+            request.setAttribute("serviceDoc",hcsaSvcDocConfigDtos);
         }
         Map<String,String> docMap = IaisCommonUtils.genNewHashMap();
         docMap.put("common", "0");
         docMap.put("premises", "1");
         String docMapJson = JsonUtil.parseToJson(docMap);
         List<HcsaSvcDocConfigDto> comDocConfigDtos =  hcsaConfigClient.getHcsaSvcDocConfig(docMapJson).getEntity();
-        request.setAttribute("comDocConfigDtoSize",comDocConfigDtos.size());
-        StringBuilder stringBuilder1 =new StringBuilder();
-        for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto : comDocConfigDtos){
-            stringBuilder1.append(',');
-            stringBuilder1.append(hcsaSvcDocConfigDto.getDocTitle());
-        }
-        request.setAttribute("comDocConfigDtosTitle",stringBuilder1.toString().substring(1));
+        request.setAttribute("comDocSize",comDocConfigDtos.size());
+        request.setAttribute("comDoc",comDocConfigDtos);
         List<HcsaSvcSubtypeOrSubsumedDto> entity = hcsaConfigClient.listSubtype(id).getEntity();
         request.setAttribute("hcsaSvcSubtypeOrSubsumedDto",entity);
         List<String> ids = IaisCommonUtils.genNewArrayList();
