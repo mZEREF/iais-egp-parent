@@ -1,1 +1,1 @@
-<%@include file="/WEB-INF/jsp/iais/interInbox//lic/licencePrint.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/interInbox/lic/licencePrint.jsp"%>

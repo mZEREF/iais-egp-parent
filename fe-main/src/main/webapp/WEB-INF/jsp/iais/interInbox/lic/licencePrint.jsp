@@ -2,7 +2,7 @@
 <%@page import = "java.io.BufferedOutputStream" %>
 <%
     byte[] content = (byte[])request.getAttribute("pdf");
-    String fileName = "licence.pdf" ;
+    String fileName = "Licence.pdf" ;
     response.addHeader("Content-Disposition", "attachment;filename="+fileName);
     response.addHeader("Content-Length", "" + content.length);
     out.clear();
