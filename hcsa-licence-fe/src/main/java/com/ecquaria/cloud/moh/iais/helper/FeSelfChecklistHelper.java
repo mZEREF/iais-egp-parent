@@ -11,8 +11,8 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -32,8 +32,8 @@ public final class FeSelfChecklistHelper {
      * @Param: []
      * @return:
      **/
-    public static Map<String, List<PremCheckItem>> loadPremisesQuestion(final ChecklistConfigDto configDto, final boolean isSubType){
-        Map<String, List<PremCheckItem>> sqMap = IaisCommonUtils.genNewHashMap();
+    public static LinkedHashMap<String, List<PremCheckItem>> loadPremisesQuestion(final ChecklistConfigDto configDto, final boolean isSubType){
+        LinkedHashMap<String, List<PremCheckItem>> sqMap = new LinkedHashMap<>();
         List<ChecklistSectionDto> checklistSectionDtos = configDto.getSectionDtos();
         if (!IaisCommonUtils.isEmpty(checklistSectionDtos)){
             for(ChecklistSectionDto i : checklistSectionDtos){
