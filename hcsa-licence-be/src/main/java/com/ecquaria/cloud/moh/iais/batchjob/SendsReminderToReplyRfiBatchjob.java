@@ -65,7 +65,8 @@ public class SendsReminderToReplyRfiBatchjob {
     HcsaConfigClient hcsaConfigClient;
     @Value("${iais.email.sender}")
     private String mailSender;
-
+    @Value("${iais.system.adhoc.rfi.due.day}")
+    String reminderDueDay;
     @Value("${iais.system.rfc.sms.reminder.day}")
     String reminderMax1Day;
     @Value("${iais.system.rfc.sms.sec.reminder.day}")
@@ -85,7 +86,7 @@ public class SendsReminderToReplyRfiBatchjob {
         try{
             for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
             ) {
-                if(rfi.getReminder()<3){
+                if(rfi.getReminder()<4){
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(rfi.getDueDateSubmission());
                     cal.add(Calendar.DAY_OF_MONTH, 1);
@@ -93,9 +94,10 @@ public class SendsReminderToReplyRfiBatchjob {
                     cal1.setTime(rfi.getRequestDate());
                     String reminderMaxDay;
                     switch (rfi.getReminder()){
-                        case 0:reminderMaxDay=reminderMax1Day;break;
-                        case 1:reminderMaxDay=reminderMax2Day;break;
-                        case 2:reminderMaxDay=reminderMax3Day;break;
+                        case 0:reminderMaxDay=reminderDueDay;break;
+                        case 1:reminderMaxDay=reminderMax1Day;break;
+                        case 2:reminderMaxDay=reminderMax2Day;break;
+                        case 3:reminderMaxDay=reminderMax3Day;break;
                         default:reminderMaxDay="0";
                     }
                     cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay)-1);
