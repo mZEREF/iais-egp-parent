@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * TaskHcsaConfigClient
@@ -25,9 +26,8 @@ public interface TaskHcsaConfigClient {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcStageWorkingGroupDto>> getWrkGrp(@RequestBody List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDto);
 
-    @RequestMapping(path = "/iais-hcsa-service/task-type-list-applications",method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> getSendTaskType(@RequestBody Map map);
+    @RequestMapping(path = "/iais-hcsa-service/task-type-list-applications",method = RequestMethod.POST)
+    FeignResponseEntity<String> getSendTaskType(@RequestParam("map")String stringMap);
 
 
 }

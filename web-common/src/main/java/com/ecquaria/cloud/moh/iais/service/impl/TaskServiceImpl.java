@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -146,7 +147,8 @@ public class TaskServiceImpl implements TaskService {
                 Map map = IaisCommonUtils.genNewHashMap();
                 map.put("applications",applicationDtos);
                 map.put("stage",stageId);
-                String scheme = taskHcsaConfigClient.getSendTaskType(map).getEntity();
+                String s = JsonUtil.parseToJson(map);
+                String scheme = taskHcsaConfigClient.getSendTaskType(s).getEntity();
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison scheme is -->:"+scheme));
                 String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
                 String userId = taskScoreDto.getUserId();
