@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -29,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApptConfirmReSchDateService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
@@ -41,12 +43,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * ClientReschedulingDelegator
@@ -117,6 +122,11 @@ public class ClientReschedulingDelegator {
 
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        String [] keyIds=ParamUtil.getStrings(bpc.request,"appIds");
+        Set<String> keys=IaisCommonUtils.genNewHashSet() ;
+        if(keyIds!=null){
+            keys.addAll(Arrays.asList(keyIds));
+        }
 
 
         try {
@@ -150,6 +160,12 @@ public class ClientReschedulingDelegator {
                     apptViewDto.setInspStartDate(reschApptGrpPremsQueryDto.getRecomInDate());
                     apptViewDto.setFastTracking(reschApptGrpPremsQueryDto.getFastTracking());
                     apptViewDto.setViewCorrId(viewCorrId);
+                    apptViewDto.setChecked(Boolean.FALSE);
+                    if(keyIds!=null){
+                        if(keys.contains(viewCorrId)){
+                            apptViewDto.setChecked(Boolean.TRUE);
+                        }
+                    }
                     apptViewDtos.put(viewCorrId,apptViewDto);
                 }
                 List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
@@ -177,14 +193,25 @@ public class ClientReschedulingDelegator {
 
     public void preCommPool(BaseProcessClass bpc)  {
         String [] keyIds=ParamUtil.getStrings(bpc.request,"appIds");
+        ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
+        Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        errorMap=validate(bpc.request,keyIds);
+        if (!errorMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+            ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
+            ParamUtil.setRequestAttr(bpc.request,"appIds",keyIds);
+            //
+            return;
+        }
         Map<String ,ApptViewDto> apptViewDtos= (Map<String, ApptViewDto>) ParamUtil.getSessionAttr(bpc.request,"apptViewDtosMap");
 
         List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
         for (String key: keyIds
              ) {
             ApptViewDto apptViewDto=apptViewDtos.get(key);
+            String reason=ParamUtil.getString(bpc.request,"reason"+key);
+            apptViewDto.setReason(reason);
             apptViewDtos1.add(apptViewDto);
-
 
             String serviceId = apptViewDto.getSvcIds().get(0);
             if (!StringUtil.isEmpty(serviceId)){
@@ -240,4 +267,16 @@ public class ClientReschedulingDelegator {
         return emailDto;
     }
 
-}
+    public Map<String, String> validate(HttpServletRequest httpServletRequest , String[] apptIds) {
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        for (String id:apptIds
+             ) {
+            String reason=ParamUtil.getString(httpServletRequest,"reason"+id);
+            if("".equals(reason)||reason==null){
+                errMap.put("reason","ERR0009");
+            }
+        }
+
+        return errMap;
+    }
+    }

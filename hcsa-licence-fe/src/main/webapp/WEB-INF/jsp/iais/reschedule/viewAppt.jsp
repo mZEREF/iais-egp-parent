@@ -36,8 +36,9 @@
                                 </th>
                                 <iais:sortableHeader needSort="false" field="" value="S/N"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Premises"></iais:sortableHeader>
-                                <iais:sortableHeader needSort="false" field="" value="SERVICES"></iais:sortableHeader>
+                                <iais:sortableHeader needSort="false" field="" value="Service(s)"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>
+                                <th class="sorting">Reason for Request<strong style="color:#ff0000;">*</strong></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -54,7 +55,7 @@
                                             <tr>
                                                 <td class="form-check" >
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                           name="appIds" value="${pool.viewCorrId}" onclick="javascript:controlCease()"  >
+                                                           name="appIds" value="${pool.viewCorrId}" onclick="javascript:controlCease()" <c:if test="${pool.checked}">checked</c:if> >
                                                     <label class="form-check-label" for="licence${status.index + 1}"><span
                                                             class="check-square"></span>
                                                     </label>
@@ -67,12 +68,16 @@
                                                     </c:forEach>
                                                 </td>
                                                 <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
+                                                <td class="col-sm-7 col-md-3 col-xs-10">
+                                                    <input type="text" name="reason${pool.viewCorrId}">
+                                                </td>
                                             </tr>
                                         </c:forEach>
                                     </c:otherwise>
                                 </c:choose>
                             </tbody>
                         </table>
+                        <span style="text-align:right;"  id="error_reason" name="iaisErrorMsg" class="error-msg"></span>
 
                         <iais:row>
                             <iais:action style="text-align:left;">
@@ -91,6 +96,8 @@
     </div>
     <h3></h3>
 </form>
+<%@include file="/WEB-INF/jsp/include/validation.jsp" %>
+<%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script type="text/javascript">
     function checkAll() {
         if ($('#checkboxAll').is(':checked')) {

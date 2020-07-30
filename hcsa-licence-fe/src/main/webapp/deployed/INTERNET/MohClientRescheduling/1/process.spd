@@ -30,14 +30,14 @@
     <JavaCode defClass="" executor="" methodName="preCommPool_OnStepProcess_0" name="preCommPool_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPage" x="710" y="230">
+  <AutomaticStep defClass="" executor="" icon="" name="doPage" x="640" y="0">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPage_OnStepProcess_0" name="doPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSort" x="710" y="10">
+  <AutomaticStep defClass="" executor="" icon="" name="doSort" x="790" y="200">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -52,7 +52,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="cpMessagePage" stageIndicator="" x="1000" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="cpMessagePage" stageIndicator="" x="960" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -76,23 +76,33 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/preCommPool" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(720,120)(870,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/cpMessagePage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preCommPool" style="oblique">
-   <position>{(870,120)(1020,120)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/cpMessagePage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(925,340)(980,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(730,250)}</position>
+   <position>{(720,120)(660,20)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(730,30)}</position>
+   <position>{(720,120)(810,220)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doSort" style="rectanular">
-   <position>{(730,30)(270,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSort" style="oblique">
+   <position>{(810,220)(270,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doPage" style="rectanular">
-   <position>{(730,250)(270,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPage" style="oblique">
+   <position>{(660,20)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preCommPool" style="oblique">
+   <position>{(870,120)(925,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(925,340)(270,120)}</position>
   </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/init" componentIfTrue="/Pages/WebPage/cpMessagePage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="880" y="290">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doPage" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="700" y="100">
    <Description/>

@@ -472,9 +472,17 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             String appId=appPremisesCorrelationDto.getApplicationId();
             String appCorrId=appPremisesCorrelationDto.getId();
             ApplicationDto applicationDto=applicationClient.getApplicationById(appId).getEntity();
-
             ProcessReSchedulingDto processReSchedulingDto;
             processReSchedulingDto = getApptComPolSystemDateByCorrId(appCorrId);
+            for (ApptViewDto appt:apptViewDtos
+            ) {
+                if(appt.getAppId().equals(appId)){
+                    for (AppPremisesInspecApptDto insAppt: processReSchedulingDto.getAppPremisesInspecApptDtoList()
+                         ) {
+                        insAppt.setReason(appt.getReason());
+                    }
+                }
+            }
             processReSchedulingDto.setApplicationDto(applicationDto);
             processReSchedulingDto.setCreateFlag(AppConsts.COMMON_POOL);
             //eic update to be status and task
