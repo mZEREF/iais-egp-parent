@@ -35,11 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -647,7 +643,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
         ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Personnel List");
-        List<SelectOption> specialtySelectList = genSpecialtySelectList("CLB");
+        List<SelectOption> specialtySelectList = genSpecialtySelectList();
         List<SelectOption> replaceOptions = genReplacePersonnel(licenseeId);
         ParamUtil.setSessionAttr(bpc.request, "SpecialtySelectList", (Serializable) specialtySelectList);
         ParamUtil.setSessionAttr(bpc.request, "replaceOptions", (Serializable) replaceOptions);
@@ -656,7 +652,7 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the preparePersonnel end ...."));
     }
 
-    private List<SelectOption> genSpecialtySelectList(String svcCode) {
+    private List<SelectOption> genSpecialtySelectList() {
         List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();
         SelectOption ssl2 = new SelectOption("Pathology", "Pathology");
         SelectOption ssl3 = new SelectOption("Haematology", "Haematology");
@@ -721,10 +717,6 @@ public class RequestForChangeMenuDelegator {
         return personelRoles;
     }
 
-    /**
-     * @param bpc
-     * @Decription doPersonnelList
-     */
     public void doPersonnelList(BaseProcessClass bpc) {
         setLicseeAndPsnDropDown(bpc);
         log.debug(StringUtil.changeForLog("the do doPersonnelList start ...."));
@@ -733,10 +725,6 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do doPersonnelList end ...."));
     }
 
-    /**
-     * @param bpc
-     * @Decription search
-     */
     public void personnleSearch(BaseProcessClass bpc) {
         log.info("search================????>>>>>");
         String personName = ParamUtil.getString(bpc.request, "personName");
@@ -756,31 +744,17 @@ public class RequestForChangeMenuDelegator {
         }
     }
 
-    /**
-     * @param bpc
-     * @Decription sort
-     */
     public void personnleSorting(BaseProcessClass bpc) {
         SearchResultHelper.doSort(bpc.request, filterParameter);
     }
 
-
-    /**
-     * @param bpc
-     * @Decription page
-     */
     public void personnlePaging(BaseProcessClass bpc) {
         SearchResultHelper.doPage(bpc.request, filterParameter);
     }
 
-    /**
-     * @param bpc
-     * @Decription preparePersonnelEdit
-     */
     public void preparePersonnelEdit(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do doPersonnelList start ...."));
-        String statusIndex = ParamUtil.getString(bpc.request, "statusIndex");
-        String idNo = ParamUtil.getMaskedString(bpc.request, "personnelNo" + statusIndex);
+        String idNo = ParamUtil.getMaskedString(bpc.request, "personnelNo");
         List<PersonnelListDto> personnelList = (List<PersonnelListDto>) ParamUtil.getSessionAttr(bpc.request, "personnelListDtos");
         PersonnelListDto personnelEditDto = new PersonnelListDto();
         if (StringUtil.isEmpty(idNo)) {
@@ -817,11 +791,6 @@ public class RequestForChangeMenuDelegator {
         log.debug(StringUtil.changeForLog("the do preparePersonnelEdit end ...."));
     }
 
-
-    /**
-     * @param bpc
-     * @Decription doPersonnelEdit
-     */
     public void doPersonnelEdit(BaseProcessClass bpc) throws CloneNotSupportedException {
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit start ...."));
         String actionType = ParamUtil.getRequestString(bpc.request, "actionType");

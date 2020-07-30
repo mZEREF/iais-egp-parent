@@ -13,7 +13,7 @@
     <form class="form-inline" method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
         <input type="hidden" name="crud_action_type" value="">
-        <input type="hidden" id="hiddenIndex" name="hiddenIndex" value=""/>
+        <input type="hidden" id="personnelNo" name="personnelNo" value=""/>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="row" style="margin-left: 15%;margin-right: 10%">
             <div class="col-xs-12">
@@ -62,10 +62,8 @@
     }
 </style>
 <script>
-    function doPersonnel() {
-        $personnelEle = $(this).closest('tr.personnel');
-        var index = $personnelEle.find('.statusIndex').val();
-        $('#hiddenIndex').val(index);
+    function doPersonnel(obj) {
+        $('#personnelNo').val(obj);
         doSubmitForm('edit', '', '');
     }
 

@@ -189,8 +189,15 @@
                                                 <iais:select cssClass="specialty" name="specialtyShow"
                                                              firstOption="Please Select" options="SpecialtySelectList"
                                                              value="${personnelEditDto.speciality}"
-                                                             disabled="true"></iais:select>
+                                                             disabled="true" id="showSpecialtyId"></iais:select>
+                                                <div hidden id="specialityShowOtherId">
+                                                    <iais:input cssClass="needDisableI" maxLength="20" type="text"
+                                                                name="specialityOtherShow"
+                                                                value="${personnelEditDto.specialityOther}"
+                                                                needDisabled="true"></iais:input>
+                                                </div>
                                             </iais:value>
+
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Subspecialty or relevant qualification " width="12"
@@ -300,7 +307,7 @@
                                                              firstOption="Please Select" options="SpecialtySelectList"
                                                              value="${personnelEditDto.speciality}"
                                                              onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
-                                                <div hidden id="specialityOtherId">
+                                                <div hidden id="specialityOtherShowId">
                                                     <input maxlength="20" type="text" name="specialityOther"
                                                            value="${personnelEditDto.specialityOther}">
                                                     <span id="error_specialityOther" name="iaisErrorMsg"
@@ -682,6 +689,13 @@
         } else {
             $('#specialityOtherNewId').hide();
         }
+        var val3 = $('#showSpecialtyId').val();
+        if (val3 == 'other') {
+            $('#specialityShowOtherId').show();
+        } else {
+            $('#specialityShowOtherId').hide();
+        }
+
 
         const personSelect = $('#replaceOptionsId').val();
         if (personSelect == 'new' && $("input[type='radio']:checked").val() == 'replace') {
