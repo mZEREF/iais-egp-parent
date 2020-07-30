@@ -608,15 +608,14 @@ public class InterInboxDelegator {
         SearchResult appResult = inboxService.appDoQuery(appParam);
         if(!StringUtil.isEmpty(appResult)){
             List<InboxAppQueryDto> inboxAppQueryDtoList = appResult.getRows();
-            List<RecallApplicationDto> recallApplicationDtoList = IaisCommonUtils.genNewArrayList();
-            List<RecallApplicationDto> finalRecallApplicationDtoList = recallApplicationDtoList;
+            List<RecallApplicationDto> finalRecallApplicationDtoList = IaisCommonUtils.genNewArrayList();
             inboxAppQueryDtoList.forEach(h ->{
                 RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
                 recallApplicationDto.setAppId(h.getId());
                 recallApplicationDto.setAppNo(h.getApplicationNo());
                 finalRecallApplicationDtoList.add(recallApplicationDto);
             });
-            recallApplicationDtoList = inboxService.canRecallApplications(recallApplicationDtoList);
+            List<RecallApplicationDto> recallApplicationDtoList = inboxService.canRecallApplications(finalRecallApplicationDtoList);
             recallApplicationDtoList.forEach(h ->{
                 inboxAppQueryDtoList.forEach(f -> {
                     if(f.getApplicationNo().equals(h.getAppNo())){
@@ -821,8 +820,11 @@ public class InterInboxDelegator {
         recallApplicationDto.setAppId(appId);
         recallApplicationDto.setAppNo(appNo);
         Boolean recallResult = inboxService.recallApplication(recallApplicationDto);
-        ParamUtil.setRequestAttr(request,"appCannotRecall", recallResult);
-        ParamUtil.setRequestAttr(request,InboxConst.APP_RECALL_RESULT, "The application can not recall");
+        if(!recallResult){
+            ParamUtil.setRequestAttr(request,"appCannotRecall", recallResult);
+            ParamUtil.setRequestAttr(request,InboxConst.APP_RECALL_RESULT, "The application can not recall");
+        }
+
     }
 
     public void appToAppView(BaseProcessClass bpc) throws IOException {

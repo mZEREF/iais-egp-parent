@@ -63,7 +63,7 @@ public interface AppInboxClient {
     @GetMapping(path = "/appeal/appeal-eligibility", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> isAppealEligibility(@RequestParam("id") String id);
 
-    @PutMapping(value = "/app-fe-status")
+    @PutMapping(value = "/iais-application/app-fe-status")
     FeignResponseEntity<Void> updateFeAppStatus(@RequestParam(value = "appId") String appId,@RequestParam(value = "appStatus") String appStatus);
 
     @PostMapping(value = "/appeal/list-can-ceased",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)

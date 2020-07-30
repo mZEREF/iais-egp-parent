@@ -204,7 +204,7 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public List<RecallApplicationDto> canRecallApplications(List<RecallApplicationDto> recallApplicationDtos) {
         List<String> refNoList = IaisCommonUtils.genNewArrayList();
-        List<RecallApplicationDto > recallApplicationDtoList = IaisCommonUtils.genNewArrayList();
+        List<RecallApplicationDto> recallApplicationDtoList = IaisCommonUtils.genNewArrayList();
         for (RecallApplicationDto h:recallApplicationDtos
              ) {
             String appId = h.getAppId();
@@ -313,11 +313,11 @@ public class InboxServiceImpl implements InboxService {
                     errorMap.put("errorMessage1","This application is performing the renew process");
                 }
             }
-            //Verify whether the new licence is generated
-            LicenceDto entity = licenceInboxClient.getLicdtoByOrgId(licenceId).getEntity();
-            if(entity != null){
-                errorMap.put("errorMessage2","You have already renewed this licence.");
-            }
+        }
+        //Verify whether the new licence is generated
+        LicenceDto entity = licenceInboxClient.getLicdtoByOrgId(licenceId).getEntity();
+        if(entity != null){
+            errorMap.put("errorMessage2","You have already renewed this licence.");
         }
         //check expiry date
         Date expiryDate = licenceDto.getExpiryDate();
