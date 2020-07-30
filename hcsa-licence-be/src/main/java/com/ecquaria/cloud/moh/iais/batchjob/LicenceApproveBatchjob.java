@@ -1415,31 +1415,31 @@ public class LicenceApproveBatchjob {
         return result;
     }
 
-    private boolean effective(Date effectiveDate){
-        //0066047
-        boolean effectiveBoolean = true;
+    private  String getLicenceStatus(LicenceDto licenceDto,ApplicationGroupDto applicationGroupDto){
+        log.info(StringUtil.changeForLog("The  getLicenceStatus start ..."));
+        String result =  ApplicationConsts.LICENCE_STATUS_ACTIVE;;
+        Date effectiveDate = applicationGroupDto.getEffectDate();
+        Date startDate = licenceDto.getStartDate();
         Date today=new Date();
-        log.info(StringUtil.changeForLog("The effectiveDate is -->:"+effectiveDate));
+        log.info(StringUtil.changeForLog("The effectiveBoolean is -->:"+effectiveDate));
+        log.info(StringUtil.changeForLog("The startDate is -->:"+startDate));
+        log.info(StringUtil.changeForLog("The today is -->:"+today));
         if(effectiveDate != null){
             if(today.before(effectiveDate)){
-                effectiveBoolean =  false;
+                result = ApplicationConsts.LICENCE_STATUS_APPROVED;
+            }else if(today.after(startDate)){
+                result = ApplicationConsts.LICENCE_STATUS_ACTIVE;
+            }else{
+                result = ApplicationConsts.LICENCE_STATUS_APPROVED;
+            }
+        }else{
+            if(today.before(startDate)){
+                result = ApplicationConsts.LICENCE_STATUS_APPROVED;
+            }else{
+                result = ApplicationConsts.LICENCE_STATUS_ACTIVE;
             }
         }
-        return effectiveBoolean;
-    }
-
-    private  String getLicenceStatus(ApplicationGroupDto applicationGroupDto){
-        log.info(StringUtil.changeForLog("The  getLicenceStatus start ..."));
-        String result;
-        Date effectiveDate = applicationGroupDto.getEffectDate();
-        boolean effectiveBoolean = effective(effectiveDate);
-        log.info(StringUtil.changeForLog("The effectiveBoolean is -->:"+effectiveBoolean));
         //0065635
-        if(!effectiveBoolean){
-            result = ApplicationConsts.LICENCE_STATUS_APPROVED;
-        }else{
-            result = ApplicationConsts.LICENCE_STATUS_ACTIVE;
-        }
         log.info(StringUtil.changeForLog("The result is -->:"+result));
         log.info(StringUtil.changeForLog("The  getLicenceStatus end ..."));
         return result;
@@ -1458,7 +1458,6 @@ public class LicenceApproveBatchjob {
         }
         Date effectiveDate = applicationGroupDto.getEffectDate();
         licenceDto.setEffectiveDate(effectiveDate);
-        licenceDto.setStatus(getLicenceStatus(applicationGroupDto));
         if (applicationDto != null && originLicenceDto != null && ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationDto.getApplicationType())) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType()))) {
             log.info(StringUtil.changeForLog("The  getLicenceDto APPType is RFC ..."));
             licenceDto.setStartDate(originLicenceDto.getStartDate());
@@ -1598,6 +1597,8 @@ public class LicenceApproveBatchjob {
         }else if (applicationDto != null) {
                 applicationDtos1.add(applicationDto);
         }
+        //status
+        licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
         licenceDto.setApplicationDtos(applicationDtos1);
         log.info(StringUtil.changeForLog("The  getLicenceDto end ..."));
         return licenceDto;
