@@ -37,7 +37,6 @@ import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.Date;
@@ -80,9 +79,6 @@ public class InspRemindRecNcMesgBatchJob {
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-
-    @Value("${iais.email.sender}")
-    private String mailSender;
 
     @Autowired
     private SystemBeLicClient systemBeLicClient;
