@@ -140,6 +140,11 @@ public class NotificationHelper {
 	}
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
+								 String reqRefNum) {
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, null, null, null);
+	}
+
+	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId) {
 		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null);
 	}
