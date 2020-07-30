@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
@@ -268,7 +269,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
                                 templateContent.put("appNumber", StringUtil.viewHtml(split[0]));
                                 templateContent.put("appType", StringUtil.viewHtml(appType));
-                                templateContent.put("appSubmitDate", StringUtil.viewHtml(IaisEGPHelper.parseToString(appSubmitDate, "dd/MM/yyyy HH:mm:ss")));
+                                templateContent.put("appSubmitDate", StringUtil.viewHtml(Formatter.formatDate(appSubmitDate)));
                                 flag = true;
                             }
 
@@ -291,7 +292,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     reqRefNum = app.getApplicationNo();
                     templateContent.put("appNumber", reqRefNum);
                     templateContent.put("appType", app.getApplicationType());
-                    templateContent.put("appSubmitDate", IaisEGPHelper.parseToString(app.getStartDate(), "dd/MM/yyyy HH:mm:ss"));
+                    templateContent.put("appSubmitDate", Formatter.formatDate(app.getStartDate()));
 
                     StringBuilder svcNameStr = new StringBuilder();
                     HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(app.getServiceId());
