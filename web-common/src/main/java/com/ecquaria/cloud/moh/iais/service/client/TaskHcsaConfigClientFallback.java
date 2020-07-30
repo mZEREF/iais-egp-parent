@@ -5,6 +5,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import java.util.List;
 import java.util.Map;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * TaskHcsaConfigClientFallback
@@ -20,7 +21,7 @@ public class TaskHcsaConfigClientFallback {
         return entity;
     }
 
-    public FeignResponseEntity<String> getSendTaskType(Map map){
+    public FeignResponseEntity<String> getSendTaskType(SendTaskTypeDto sendTaskTypeDto){
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

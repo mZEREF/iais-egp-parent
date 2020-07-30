@@ -10,10 +10,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.SendTaskTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -23,16 +23,15 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DurationFormatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -144,11 +143,10 @@ public class TaskServiceImpl implements TaskService {
                 List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
                 List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = IaisCommonUtils.genNewArrayList();
 
-                Map map = IaisCommonUtils.genNewHashMap();
-                map.put("applications",applicationDtos);
-                map.put("stage",stageId);
-                String s = JsonUtil.parseToJson(map);
-                String scheme = taskHcsaConfigClient.getSendTaskType(s).getEntity();
+                SendTaskTypeDto sendTaskTypeDto = new SendTaskTypeDto();
+                sendTaskTypeDto.setApplicationDtos(applicationDtos);
+                sendTaskTypeDto.setStage(stageId);
+                String scheme = taskHcsaConfigClient.getSendTaskType(sendTaskTypeDto).getEntity();
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison scheme is -->:"+scheme));
                 String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
                 String userId = taskScoreDto.getUserId();
