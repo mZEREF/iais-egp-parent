@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +101,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 if(autoOrNon){
 
                     try {
-                        isAuto(v.get(i),request);
+                        isAuto(v.get(i),k);
 
                     } catch (Exception e) {
                         log.info(e.getMessage(),e);
@@ -108,7 +109,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 }else {
 
                     try {
-                        isNoAuto(v.get(i),request);
+                        isNoAuto(v.get(i),k);
                     } catch (Exception e) {
                         log.error(e.getMessage(),e);
                     }
@@ -186,7 +187,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     * non auto to send
     *
     * */
-    private void  isNoAuto(LicenceDto licenceDto ,HttpServletRequest request) throws IOException, TemplateException {
+    private void  isNoAuto(LicenceDto licenceDto ,String time) throws IOException, TemplateException {
 
         String svcName = licenceDto.getSvcName();
 
@@ -196,7 +197,11 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         Date expiryDate = licenceDto.getExpiryDate();
 
         String id = licenceDto.getId();
-
+        boolean b = checkEmailIsSend(id, "IS_NO_AUTO" + time);
+        if(!b){
+            return;
+        }
+        saveMailJob(id,"IS_NO_AUTO"+time);
         List<String> list = useLicenceIdFindHciNameAndAddress(id);
             for(String every:list){
             String address = every.substring(every.indexOf('/')+1);
@@ -237,7 +242,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     *
     * auto to send
     * */
-    private void isAuto(LicenceDto licenceDto ,HttpServletRequest request ) throws IOException, TemplateException {
+    private void isAuto(LicenceDto licenceDto ,String time ) throws IOException, TemplateException {
         /*Name of Service*/
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId());
 
@@ -248,7 +253,11 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
 
         Double total=0.0;
         String id = licenceDto.getId();
-
+        boolean b = checkEmailIsSend(id, "IS_AUTO" + time);
+        if(!b){
+            return;
+        }
+        saveMailJob(id,"IS_AUTO"+time);
         List<String> useLicenceIdFindHciNameAndAddress = useLicenceIdFindHciNameAndAddress(id);
 
         Boolean isMigrated = licenceDto.isMigrated();
@@ -327,8 +336,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         Date expiryDate = licenceDto.getExpiryDate();
         String id = licenceDto.getId();
         List<String> useLicenceIdFindHciNameAndAddress = useLicenceIdFindHciNameAndAddress(id);
-        for (String every:useLicenceIdFindHciNameAndAddress
-             ) {
+        for (String every:useLicenceIdFindHciNameAndAddress) {
             String svcName = licenceDto.getSvcName();
             String hciName = every.substring(0, every.indexOf('/'));
             String address = every.substring(every.indexOf('/') + 1);
@@ -360,13 +368,28 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     *
     * */
 
-    private void saveMailJob(){
+    private void saveMailJob(String licence,String magKey){
         JobRemindMsgTrackingDto jobRemindMsgTrackingDto=new JobRemindMsgTrackingDto();
-
-        Void entity = systemBeLicClient.saveSendMailJob(jobRemindMsgTrackingDto).getEntity();
+        jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        jobRemindMsgTrackingDto.setMsgKey(magKey);
+        jobRemindMsgTrackingDto.setRefNo(licence);
+        List<JobRemindMsgTrackingDto> jobRemindMsgTrackingDtos=new ArrayList<>(1);
+        jobRemindMsgTrackingDtos.add(jobRemindMsgTrackingDto);
+        systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos).getEntity();
+    }
+    private boolean checkEmailIsSend(String licence,String magKey){
+        try {
+            JobRemindMsgTrackingDto auto_renew = systemBeLicClient.getJobRemindMsgTrackingDto(licence, magKey).getEntity();
+            if(auto_renew==null){
+                return true;
+            }else {
+                return false;
+            }
+        }catch (Exception e){
+            return false;
+        }
 
     }
-
         /*
         * message id
         * */
