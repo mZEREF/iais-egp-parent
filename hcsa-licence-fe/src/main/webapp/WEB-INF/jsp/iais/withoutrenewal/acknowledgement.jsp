@@ -1,5 +1,6 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =

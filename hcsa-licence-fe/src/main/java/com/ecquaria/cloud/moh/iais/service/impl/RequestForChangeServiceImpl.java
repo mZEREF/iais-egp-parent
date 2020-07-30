@@ -747,8 +747,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }else if(StringUtil.isEmpty(isOtherLic) && !StringUtil.isEmpty(hciNameUsed) && errorMap.size() == 1){
                                 String premisesHci = hciName + NewApplicationHelper.getPremKey(appGrpPremisesDto);
                                 Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci).getEntity();
+                                String hciNameMsg = MessageUtil.getMessageDesc(hciNameUsed);
                                 if(flag){
-                                    errorMap.put("hciNameUsed",hciNameUsed+"<br/>"+errMsg);
+                                    errorMap.put("hciNameUsed",hciNameMsg+"<br/>"+errMsg);
                                 }
                             }
                         }
