@@ -1160,7 +1160,12 @@ public class NewApplicationDelegator {
         appSubmissionService.updateMsgStatus(msgId,MessageConstants.MESSAGE_STATUS_RESPONSE);
        /* applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);*/
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
-         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+            List<AppSubmissionDto> appSubmissionDtos=new ArrayList<>(1);
+            appSubmissionDtos.add(appSubmissionDto);
+            ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos);
+        }
+        ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","Y");
         ParamUtil.setRequestAttr(bpc.request,ACKMESSAGE,"The request for information save success");
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit end ...."));

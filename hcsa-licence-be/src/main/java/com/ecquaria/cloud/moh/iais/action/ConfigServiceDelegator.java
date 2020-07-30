@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
@@ -545,6 +547,7 @@ public class ConfigServiceDelegator {
                 }
                 hcsaSvcSpeRoutingSchemeDto.setStageId(id);
                 if (!StringUtil.isEmpty(workingGroupId)) {
+                    hcsaSvcStageWorkingGroupDto.setOrder(1);
                     hcsaSvcStageWorkingGroupDto.setStageWorkGroupId(workingGroupId);
                     hcsaSvcStageWorkingGroupDto.setStageId(id);
                     hcsaConfigPageDto.setWorkingGroupId(workingGroupId);
@@ -567,6 +570,31 @@ public class ConfigServiceDelegator {
                     hcsaSvcSpecificStageWorkloadDto.setStatus("CMSTAT001");
                     hcsaSvcSpecificStageWorkloadDtoList.add(hcsaSvcSpecificStageWorkloadDto);
                     hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto);
+                    if("INS".equals(stageCode)){
+                        HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto1=new HcsaSvcSpeRoutingSchemeDto();
+                        HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto2=new HcsaSvcSpeRoutingSchemeDto();
+                        hcsaSvcSpeRoutingSchemeDto1.setStageId(id);
+                        hcsaSvcSpeRoutingSchemeDto1.setSchemeType(TaskConsts.TASK_SCHEME_TYPE_ROUND);
+                        hcsaSvcSpeRoutingSchemeDto1.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                        hcsaSvcSpeRoutingSchemeDto1.setAppType(every);
+                        hcsaSvcSpeRoutingSchemeDto2.setStageId(id);
+                        hcsaSvcSpeRoutingSchemeDto2.setSchemeType(TaskConsts.TASK_SCHEME_TYPE_ROUND);
+                        hcsaSvcSpeRoutingSchemeDto2.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                        hcsaSvcSpeRoutingSchemeDto2.setAppType(every);
+                        HcsaSvcStageWorkingGroupDto order3=new HcsaSvcStageWorkingGroupDto();
+                        HcsaSvcStageWorkingGroupDto order2=new HcsaSvcStageWorkingGroupDto();
+                        order2.setOrder(2);
+                        order2.setStageId(id);
+                        //toto change
+                        order2.setStageWorkGroupId("5BA84189-FA0C-EA11-BE7D-000C29F371DC");
+                        order3.setStageWorkGroupId(workingGroupId);
+                        order3.setOrder(3);
+                        order3.setStageId(id);
+                        hcsaSvcStageWorkingGroupDtos.add(order2);
+                        hcsaSvcStageWorkingGroupDtos.add(order3);
+                        hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto1);
+                        hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto2);
+                    }
                 }
                 hcsaConfigPageDto.setWorkStageId(workstageId);
                 hcsaConfigPageDto.setRoutingSchemeName(routingScheme);

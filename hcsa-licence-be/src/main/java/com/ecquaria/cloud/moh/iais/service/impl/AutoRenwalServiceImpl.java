@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -70,19 +71,22 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     @Value("${iais.email.sender}")
     private String mailSender;
 
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+
     private static final String EMAIL_SUBJECT="MOH IAIS – REMINDER TO RENEW LICENCE";
     private static final String EMAIL_TO_OFFICER_SUBJECT="MOH IAIS – Licence is due to expiry";
     @Override
     public void startRenwal(HttpServletRequest request) {
         List<Integer> dayList= IaisCommonUtils.genNewArrayList();
         dayList.add(-1);
-        dayList.add(30);
-        dayList.add(45);
-        dayList.add(60);
-        dayList.add(90);
-        dayList.add(120);
-        dayList.add(150);
-        dayList.add(180);
+        dayList.add(systemParamConfig.getLicenceIsEligible());
+        dayList.add(systemParamConfig.getSecondLicenceReminder());
+        dayList.add(systemParamConfig.getThirdLicenceReminder());
+        dayList.add(systemParamConfig.getFourthLicenceReminder());
+        dayList.add(systemParamConfig.getFifthLicenceReminder());
+        dayList.add(systemParamConfig.getSixthLicenceReminder());
+        dayList.add(systemParamConfig.getSeventhLicenceReminder());
         List<JobRemindMsgTrackingDto> JobRemindMsgTrackingDto = systemBeLicClient.listJob().getEntity();
         Map<String, List<LicenceDto>> entity = hcsaLicenClient.licenceRenwal(dayList).getEntity();
         entity.forEach((k, v) -> {
