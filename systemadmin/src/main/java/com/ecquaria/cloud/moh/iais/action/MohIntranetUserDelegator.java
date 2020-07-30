@@ -335,11 +335,11 @@ public class MohIntranetUserDelegator {
                 orgUserUpLoadDto.setMsg(valiant);
                 orgUserUpLoadDtos.add(orgUserUpLoadDto);
             }
-            if(userIds.contains(userId)){
+            if (userIds.contains(userId)) {
                 orgUserUpLoadDto.setUserId(userId);
                 orgUserUpLoadDto.setMsg(msgDup);
                 orgUserUpLoadDtos.add(orgUserUpLoadDto);
-            }else {
+            } else {
                 userIds.add(userId);
             }
         }
@@ -898,11 +898,11 @@ public class MohIntranetUserDelegator {
         String userId = orgUserDto.getUserId();
         if (!StringUtil.isEmpty(userId)) {
             if (!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")) {
-                String error = "UserId is Alphanumeric.";
+                String error = "User ID is Alphanumeric.";
                 errors.add(error);
             }
         } else {
-            String error = "UserId is a mandatory field.";
+            String error = "User ID is a mandatory field.";
             errors.add(error);
         }
         String displayName = orgUserDto.getDisplayName();
@@ -912,18 +912,18 @@ public class MohIntranetUserDelegator {
         }
         Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
         if (accountActivateDatetime == null) {
-            String error = "AccountActivationStart is a mandatory field.";
+            String error = "Account Activation Start is a mandatory field.";
             errors.add(error);
         }
         Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
         if (accountDeactivateDatetime == null) {
-            String error = "AccountActivationEnd is a mandatory field.";
+            String error = "Account Activation End is a mandatory field.";
             errors.add(error);
         }
         if (accountDeactivateDatetime != null && accountActivateDatetime != null) {
             boolean after = accountDeactivateDatetime.after(accountActivateDatetime);
             if (!after) {
-                String error = "AccountActivationEnd date must be after accountActivationStart date.";
+                String error = "Account Activation Start cannot be later than Account Activation End.";
                 errors.add(error);
             }
         }

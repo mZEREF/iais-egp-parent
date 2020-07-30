@@ -35,7 +35,7 @@
                                     </td>
                                     <td>
                                         <c:forEach var="msg" items="${oldUser.msg}">
-                                            <p style="color: red">${msg}</p>
+                                            <p style="color: red">${msg}</p><br/>
                                         </c:forEach>
                                     </td>
                                 </tr>
