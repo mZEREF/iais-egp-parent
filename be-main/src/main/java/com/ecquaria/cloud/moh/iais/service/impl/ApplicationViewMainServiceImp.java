@@ -145,6 +145,12 @@ public class ApplicationViewMainServiceImp implements ApplicationViewMainService
     }
 
     @Override
+    public ApplicationDto updateApplicaiton(ApplicationDto applicationDto) {
+
+        return  applicationClient.updateApplication(applicationDto).getEntity();
+    }
+
+    @Override
     public ApplicationGroupDto getApplicationGroupDtoById(String appGroupId) {
         return applicationClient.getAppById(appGroupId).getEntity();
     }

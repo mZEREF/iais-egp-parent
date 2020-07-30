@@ -335,6 +335,8 @@ public class BackendInboxDelegator {
                             log.info(e.getMessage(),e);
                         }
 
+                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW.equals(status)){
+                        inspectorAo1(bpc,applicationViewDto,taskDto);
                     }else{
                         routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
                     }
@@ -396,6 +398,45 @@ public class BackendInboxDelegator {
             ParamUtil.setRequestAttr(bpc.request,"successInfo",successInfo);
         }
 
+    }
+
+    private void inspectorAo1(BaseProcessClass bpc, ApplicationViewDto applicationViewDto,TaskDto taskDto){
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String userId = loginContext.getUserId();
+        applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING);
+        applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
+        AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusMainClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
+        appInspectionStatusDto.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER);
+        appInspectionStatusDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appInspectionStatusMainClient.update(appInspectionStatusDto);
+        taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        taskService.updateTask(taskDto);
+
+        createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_EMAIL_CONTENT, taskDto, userId,"inspector ao1 approve in backend inbox",HcsaConsts.ROUTING_STAGE_POT);
+        createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING, taskDto, userId,"",HcsaConsts.ROUTING_STAGE_POT);
+
+        //update FE  application status.
+        applicationViewService.updateFEApplicaiton(applicationViewDto.getApplicationDto());
+    }
+
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String decision,
+                                                                         TaskDto taskDto, String userId, String remarks,String subStage) {
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
+        appPremisesRoutingHistoryDto.setStageId(HcsaConsts.ROUTING_STAGE_AO1);
+        appPremisesRoutingHistoryDto.setProcessDecision(decision);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(userId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(remarks);
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesRoutingHistoryDto.setRoleId(taskDto.getRoleId());
+        appPremisesRoutingHistoryDto.setWrkGrpId(taskDto.getWkGrpId());
+        appPremisesRoutingHistoryDto.setSubStage(subStage);
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryService.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        return appPremisesRoutingHistoryDto;
     }
 
     /**

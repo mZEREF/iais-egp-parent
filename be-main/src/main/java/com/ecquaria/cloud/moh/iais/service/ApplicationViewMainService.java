@@ -18,6 +18,8 @@ public interface ApplicationViewMainService {
 
     ApplicationViewDto searchByCorrelationIdo(String correlationId);
 
+    ApplicationDto updateApplicaiton(ApplicationDto applicationDto);
+
     public AppPremisesCorrelationDto getLastAppPremisesCorrelationDtoById(String id);
 
     public ApplicationGroupDto getApplicationGroupDtoById(String appGroupId);

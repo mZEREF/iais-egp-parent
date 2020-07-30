@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,13 @@ public class AppPremisesRoutingHistoryMainServiceImpl implements AppPremisesRout
     @Autowired
     private AppPremisesRoutingHistoryMainClient appPremisesRoutingHistoryClient;
 
+    @Override
+    public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto) {
+        FeignResponseEntity<AppPremisesRoutingHistoryDto> response = appPremisesRoutingHistoryClient.
+                createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto);
+        return response.getEntity();
+        // return RestApiUtil.postGetObject(RestApiUrlConsts.IAIS_APPLICATION_HISTORY,appPremisesRoutingHistoryDto,AppPremisesRoutingHistoryDto.class);
+    }
 
     @Override
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId) {

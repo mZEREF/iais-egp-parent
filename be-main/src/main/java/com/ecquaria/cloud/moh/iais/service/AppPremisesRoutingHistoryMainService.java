@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
  * @date 11/26/2019
  */
 public interface AppPremisesRoutingHistoryMainService {
+    public AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto);
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId) ;
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId, String roleId) ;
     public AppPremisesRoutingHistoryDto getAppPremisesRoutingHistoryForCurrentStage(String appNo, String stageId, String roleId, String appStatus) ;

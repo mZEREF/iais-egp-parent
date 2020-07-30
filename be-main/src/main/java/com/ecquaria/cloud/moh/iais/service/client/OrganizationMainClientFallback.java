@@ -28,6 +28,14 @@ public class OrganizationMainClientFallback implements OrganizationMainClient{
     }
 
     @Override
+    public FeignResponseEntity<TaskDto> updateTask(TaskDto taskDto) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<OrgUserDto> retrieveOrgUserAccountById(String id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
