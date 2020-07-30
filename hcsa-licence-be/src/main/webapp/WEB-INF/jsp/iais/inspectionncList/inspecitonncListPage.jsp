@@ -73,10 +73,11 @@
                                         <div class="col-xs-12">
                                             <div align="right">
                                                 <input type="hidden" name="viewchk" id = "viewchk">
+                                                <button type="button" class="btn btn-primary" onclick="javascript: doListAhoc();">List Adhoc</button>
                                                 <button type="button" class="btn btn-primary" onclick="javascript: doViewCheckList();">
                                                     View CheckList
                                                 </button>
-                                                <button type="button" class="btn btn-primary" onclick="javascript: doListAhoc();">List Adhoc</button>
+
                                             </div>
                                             <div align="right">
                                             <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>

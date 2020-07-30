@@ -57,18 +57,6 @@ public interface FillupChklistService {
 
     void getSvcName( InspectionFDtosDto serListDto);
 
-    InspectionFillCheckListDto getMaxVersionComAppChklDraft(String appPremCorrId);
-
-    List<InspectionFillCheckListDto> getAllVersionComAppChklDraft(String appPremCorrId);
-
-    List<InspectionFDtosDto> geAllVersionServiceDraftList(String appPremCorrId);
-
-    InspectionFDtosDto getMaxVersionServiceDraft(List<InspectionFDtosDto> fdtosdraft);
-
-    List<InspectionFDtosDto> getOtherVersionfdtos(List<InspectionFDtosDto> fdtosdraft);
-
-    List<AdCheckListShowDto> getOtherAdhocList(String appPremCorrId);
-
     String  getStringByRecomType(String appPremCorrId,String recomType);
 
     InspectionFDtosDto  getInspectionFDtosDto(String appPremCorrId,TaskDto taskDto,List<InspectionFillCheckListDto> cDtoList);

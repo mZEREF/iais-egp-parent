@@ -874,6 +874,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             if("common".equals(conifgType)&&dto.isCommon()){
                 fDto = transferToInspectionCheckListDto(dto,appPremCorrId);
                 fDto.setConfigId(temp.getChkLstConfId());
+                fDto.setPreCheckId(temp.getId());
                 chkDtoList.add(fDto);
             }else if("service".equals(conifgType)&&!dto.isCommon()){
                 fDto = transferToInspectionCheckListDto(dto,appPremCorrId);
@@ -1073,36 +1074,9 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         serListDto.setServiceNc(ncNum);
     }
 
-    @Override
-    public InspectionFillCheckListDto getMaxVersionComAppChklDraft(String appPremCorrId) {
-        List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklListFOrDraft(appPremCorrId).getEntity();
-        InspectionFillCheckListDto maxVersionAppDto = getComAppChklDraft(appPremCorrId);
-        InspectionFillCheckListDto comDto = null;
-        if(!IaisCommonUtils.isEmpty(chkList)){
-            for(AppPremisesPreInspectChklDto temp:chkList){
-                if(maxVersionAppDto != null && temp.getChkLstConfId().equals(maxVersionAppDto.getConfigId())){
-                    AppPremInsDraftDto draftDto = fillUpCheckListGetAppClient.getAppInsDraftByChkId(temp.getId()).getEntity();
-                    if(draftDto!=null && !StringUtil.isEmpty(draftDto.getAnswer())){
-                        comDto = JsonUtil.parseToObject(draftDto.getAnswer(),InspectionFillCheckListDto.class);
-                    }
-                }
-            }
-        }
-        return comDto;
-    }
 
-    @Override
-    public List<InspectionFillCheckListDto> getAllVersionComAppChklDraft(String appPremCorrId) {
-        List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
-        List<InspectionFillCheckListDto> fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,"common");
-        List<InspectionFillCheckListDto> otherVersionCommList = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(fillChkDtoList)){
-            InspectionFillCheckListDto maxVersionChklList = fillChkDtoList.get(0);
-            otherVersionCommList = getOtherVersionCommList(chkList,maxVersionChklList,appPremCorrId);
 
-        }
-        return otherVersionCommList;
-    }
+
 
     private List<InspectionFillCheckListDto> getOtherVersionCommList(List<AppPremisesPreInspectChklDto> chkList,InspectionFillCheckListDto maxVersionChkl, String appPremCorrId) {
         List<InspectionFillCheckListDto> otherVersionChkList = IaisCommonUtils.genNewArrayList();
@@ -1201,19 +1175,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return fdto;
     }
 
-    @Override
-    public List<InspectionFDtosDto> geAllVersionServiceDraftList(String appPremCorrId){
-        List<InspectionFDtosDto> fdtoList = IaisCommonUtils.genNewArrayList();
-        List<AppPremisesPreInspectChklDto> chkList = fillUpCheckListGetAppClient.getPremInsChklList(appPremCorrId).getEntity();
-        List<InspectionFillCheckListDto> fillChkDtoList;
-        if(chkList!=null && !chkList.isEmpty()){
-            fillChkDtoList = getServiceChkDtoListByAppPremId(chkList,appPremCorrId,"service");
-            if(!IaisCommonUtils.isEmpty(fillChkDtoList)){
-                fdtoList = getAllVersionfdtoList(chkList,appPremCorrId);
-            }
-        }
-        return fdtoList;
-    }
+
 
     private List<InspectionFDtosDto> getAllVersionfdtoList( List<AppPremisesPreInspectChklDto> chkList,String appPremCorrId) {
         String version = chkList.get(0).getVersion();
@@ -1259,29 +1221,6 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         return fDtosDto;
     }
 
-    @Override
-    public InspectionFDtosDto getMaxVersionServiceDraft(List<InspectionFDtosDto> fdtosdraftList) {
-        if(!IaisCommonUtils.isEmpty(fdtosdraftList)){
-           return fdtosdraftList.get(0);
-        }
-        return null;
-    }
-
-    @Override
-    public List<InspectionFDtosDto> getOtherVersionfdtos(List<InspectionFDtosDto> fdtosdraft) {
-        List<InspectionFDtosDto> otherVersionList = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(fdtosdraft)){
-            for(int i = fdtosdraft.size()-2;i>0;i--){
-                otherVersionList.add(fdtosdraft.get(i));
-            }
-        }
-        return otherVersionList;
-    }
-
-    @Override
-    public List<AdCheckListShowDto> getOtherAdhocList(String appPremCorrId) {
-        return applicationClient.getAllVersionAdhocList(appPremCorrId).getEntity();
-    }
     @Override
     public  InspectionFDtosDto  getInspectionFDtosDto(String appPremCorrId,TaskDto taskDto,List<InspectionFillCheckListDto> cDtoList){
         InspectionFDtosDto serListDto = new InspectionFDtosDto();
@@ -1429,9 +1368,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                     }else if(userNum == appPremInsDraftDtos .size()){
                         List<AnswerForDifDto> answerForDifDtos =  inspectionCheckQuestionDto.getAnswerForDifDtos();
                         AnswerForDifDto  answerForSame =  getAnswerForDifDtoByAnswerForDifDtos(answerForDifDtos);
-                        if(!StringUtil.isEmpty(answerForSame.getAnswer()) && !StringUtil.isEmpty( answerForSame.getIsRec()) && !StringUtil.isEmpty( answerForSame.getRemark())){
-                            inspectionCheckQuestionDto.setSameAnswer(true);
-                        }
+                        inspectionCheckQuestionDto.setSameAnswer(answerForSame.isSameAnswer());
                         getInspectionCheckQuestionDtoByAnswerForDifDto(inspectionCheckQuestionDto, answerForSame);
                     }
                 }
@@ -1593,10 +1530,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                    }else if(userNum == adhocDraftDtosOne .size()){
                        List<AnswerForDifDto> answerForDifDtos = adhocNcCheckItemDto.getAdhocAnswerForDifDtos();
                        AnswerForDifDto  answerForSame =  getAnswerForDifDtoByAnswerForDifDtos(answerForDifDtos);
-                       if(!StringUtil.isEmpty(answerForSame.getAnswer()) && !StringUtil.isEmpty( answerForSame.getIsRec()) && !StringUtil.isEmpty( answerForSame.getRemark())){
-                           adhocNcCheckItemDto.setSameAnswer(true);
-                           getAdhocNcCheckItemDtoByAnswerForDifDto(adhocNcCheckItemDto, answerForSame);
-                       }
+                       adhocNcCheckItemDto.setSameAnswer(answerForSame.isSameAnswer());
+                       getAdhocNcCheckItemDtoByAnswerForDifDto(adhocNcCheckItemDto, answerForSame);
                    }
                }
             }
@@ -1658,7 +1593,12 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                answerForSame.setIsRec( answerForDifDto.getIsRec());
                answerForSame.setAnswer( answerForDifDto.getAnswer());
                answerForSame.setRemark(answerForDifDto.getRemark());
-               return  answerForDifDto;
+               answerForSame.setSameAnswer(true);
+           }else {
+               answerForSame.setIsRec( null);
+               answerForSame.setAnswer( null);
+               answerForSame.setRemark(null);
+               answerForSame.setSameAnswer(false);
            }
 
         return answerForSame;
@@ -1923,9 +1863,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     @Override
     public void setInspectionCheckQuestionDtoByAnswerForDifDtosAndDeconflict(InspectionCheckQuestionDto inspectionCheckQuestionDto, List<AnswerForDifDto> answerForDifDtos, String deconflict) {
         AnswerForDifDto  answerForSame =  getAnswerForDifDtoByAnswerForDifDtos(answerForDifDtos);
-        if(!StringUtil.isEmpty(answerForSame.getAnswer()) && !StringUtil.isEmpty( answerForSame.getIsRec()) && !StringUtil.isEmpty( answerForSame.getRemark())){
-            inspectionCheckQuestionDto.setSameAnswer(true);
-        }
+        inspectionCheckQuestionDto.setSameAnswer(answerForSame.isSameAnswer());
         getInspectionCheckQuestionDtoByAnswerForDifDto(inspectionCheckQuestionDto, answerForSame);
         if(!inspectionCheckQuestionDto.isSameAnswer()){
             inspectionCheckQuestionDto.setDeconflict(deconflict);
@@ -1943,11 +1881,8 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     @Override
     public void setAdhocNcCheckItemDtoByAnswerForDifDtosAndDeconflict(AdhocNcCheckItemDto adhocNcCheckItemDto, List<AnswerForDifDto> answerForDifDtos, String deconflict) {
         AnswerForDifDto  answerForSame =  getAnswerForDifDtoByAnswerForDifDtos(answerForDifDtos);
-        if(!StringUtil.isEmpty(answerForSame.getAnswer()) && !StringUtil.isEmpty( answerForSame.getIsRec()) && !StringUtil.isEmpty( answerForSame.getRemark())){
-            adhocNcCheckItemDto.setSameAnswer(true);
-            getAdhocNcCheckItemDtoByAnswerForDifDto(adhocNcCheckItemDto, answerForSame);
-        }
-
+        adhocNcCheckItemDto.setSameAnswer(answerForSame.isSameAnswer());
+        getAdhocNcCheckItemDtoByAnswerForDifDto(adhocNcCheckItemDto, answerForSame);
         if( !adhocNcCheckItemDto.isSameAnswer()){
             adhocNcCheckItemDto.setDeconflict(deconflict);
             if( !StringUtil.isEmpty(deconflict)) {

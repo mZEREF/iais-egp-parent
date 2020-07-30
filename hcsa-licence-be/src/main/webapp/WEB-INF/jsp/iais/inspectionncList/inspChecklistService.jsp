@@ -15,7 +15,7 @@
                     <th>Yes</th>
                     <th>No</th>
                     <th>N/A</th>
-                    <th>Remark</th>
+                    <th>Remarks</th>
                     <th>Rectified</th>
                 </tr>
                 </thead>

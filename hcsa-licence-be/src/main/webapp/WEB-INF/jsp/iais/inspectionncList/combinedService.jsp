@@ -14,7 +14,7 @@
                                                           <th>Item</th>
                                                           <th>Inspector</th>
                                                           <th>Yes/No/NA</th>
-                                                          <th>Remark</th>
+                                                          <th>Remarks</th>
                                                           <th>Rectified</th>
                                                           <th>Deconflict</th>
                                                       </tr>
@@ -33,7 +33,9 @@
                                                                   <td>${answerForDifDto.answer}</td>
                                                                   <td>${answerForDifDto.remark}</td>
                                                                   <td>
+                                                                      <c:if test="${'No'== answerForDifDto.answer}">
                                                                       <input  disabled type="checkbox" ${answerForDifDto.isRec == '1' ? 'checked' : null} />
+                                                                      </c:if>
                                                                   </td>
                                                                   <td>
                                                                       <c:if test="${!item.incqDto.sameAnswer}">
@@ -70,7 +72,7 @@
                                                           <th>Item</th>
                                                           <th>Inspector</th>
                                                           <th>Yes/No/NA</th>
-                                                          <th>Remark</th>
+                                                          <th>Remarks</th>
                                                           <th>Rectified</th>
                                                           <th>Deconflict</th>
                                                       </tr>
@@ -88,7 +90,9 @@
                                                               <td>${answerForDifDto.answer}</td>
                                                               <td>${answerForDifDto.remark}</td>
                                                               <td>
+                                                                  <c:if test="${'No'== answerForDifDto.answer}">
                                                                   <input  disabled type="checkbox" ${answerForDifDto.isRec == '1' ? 'checked' : null} />
+                                                                  </c:if>
                                                               </td>
                                                               <td>
                                                                   <c:if test="${ !item.sameAnswer}">

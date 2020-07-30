@@ -444,16 +444,7 @@ public class InspectionRectificationProDelegator {
         String appPremCorrId = taskDto.getRefNo();
         String taskId = taskDto.getId();
         //draft start
-        InspectionFillCheckListDto maxComChkDto = fillupChklistService.getMaxVersionComAppChklDraft(appPremCorrId);
-        List<InspectionFillCheckListDto> allComChkDtoList = fillupChklistService.getAllVersionComAppChklDraft(appPremCorrId);
-        List<InspectionFDtosDto> fdtosdraft= fillupChklistService.geAllVersionServiceDraftList(appPremCorrId);
-        InspectionFDtosDto maxVersionfdtos = fillupChklistService.getMaxVersionServiceDraft(fdtosdraft);
-        List<InspectionFDtosDto> otherVersionfdtos = fillupChklistService.getOtherVersionfdtos(fdtosdraft);
-        List<AdCheckListShowDto> otherVersionAdhocDraftList = fillupChklistService.getOtherAdhocList(appPremCorrId);
-        ParamUtil.setSessionAttr(bpc.request,"otherVersionAdhocDraftList",(Serializable) otherVersionAdhocDraftList);
-        ParamUtil.setSessionAttr(bpc.request,"otherVersionfdtos",(Serializable) otherVersionfdtos);
-        ParamUtil.setSessionAttr(bpc.request,"allComChkDtoList",(Serializable)allComChkDtoList);
-        ParamUtil.setSessionAttr(bpc.request,"maxComChkDto", maxComChkDto);
+
         //draft end
         InspectionFillCheckListDto commonDto = null;
         List<InspectionFillCheckListDto> cDtoList = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
@@ -469,19 +460,11 @@ public class InspectionRectificationProDelegator {
 
         ParamUtil.setSessionAttr(bpc.request,TASKDTO,taskDto);
         ParamUtil.setSessionAttr(bpc.request,ADHOCLDTO,adchklDto);
-        if(maxComChkDto != null){
-            List<InspectionFillCheckListDto> coms = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
-            if(!IaisCommonUtils.isEmpty(coms)){
-                commonDto = coms.get(0);
-            }
-        }
+
         // change common data;
         insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(commonDto);
         ParamUtil.setSessionAttr(bpc.request,COMMONDTO,commonDto);
-        if(maxVersionfdtos != null && !IaisCommonUtils.isEmpty(maxVersionfdtos.getFdtoList())){
-            List<InspectionFillCheckListDto> ftos = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
-            serListDto.setFdtoList(ftos);
-        }
+
         //  change service checklist data
         if(serListDto != null){
             List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();

@@ -65,7 +65,7 @@
                                                     <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
                                                     <th>Self-assessment Answer</th>
                                                     </c:if>
-                                                    <th>Remark</th>
+                                                    <th>Remarks</th>
                                                     <th>Rectified</th>
                                                     <th></th>
                                                 </tr>
@@ -143,7 +143,7 @@
                                                           <c:if test="${ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION == applicationViewDto.applicationDto.status}">
                                                               <th >Self-assessment Answer</th>
                                                           </c:if>
-                                                          <th>Remark</th>
+                                                          <th>Remarks</th>
                                                           <th>Rectified</th>
                                                           <th></th>
                                                       </tr>
@@ -213,7 +213,7 @@
                                                           <th>Yes</th>
                                                           <th>No</th>
                                                           <th>N/A</th>
-                                                          <th>Remark</th>
+                                                          <th>Remarks</th>
                                                           <th>Rectified</th>
                                                           <th></th>
                                                       </tr>

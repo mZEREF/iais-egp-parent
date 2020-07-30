@@ -113,17 +113,7 @@ public class FillupChklistDelegator {
         //fillupChklistService.getDraftByTaskId(taskId,serviceType);
         //fillupChklistService.getAllAppChklDraftList(appPremCorrId);
         ApplicationViewDto appViewDto = fillupChklistService.getAppViewDto(taskId);
-        //draft start
-        InspectionFillCheckListDto maxComChkDto = fillupChklistService.getMaxVersionComAppChklDraft(appPremCorrId);
-        List<InspectionFillCheckListDto> allComChkDtoList = fillupChklistService.getAllVersionComAppChklDraft(appPremCorrId);
-        List<InspectionFDtosDto> fdtosdraft= fillupChklistService.geAllVersionServiceDraftList(appPremCorrId);
-        InspectionFDtosDto maxVersionfdtos = fillupChklistService.getMaxVersionServiceDraft(fdtosdraft);
-        List<InspectionFDtosDto> otherVersionfdtos = fillupChklistService.getOtherVersionfdtos(fdtosdraft);
-        List<AdCheckListShowDto> otherVersionAdhocDraftList = fillupChklistService.getOtherAdhocList(appPremCorrId);
-        ParamUtil.setSessionAttr(request,"otherVersionAdhocDraftList",(Serializable) otherVersionAdhocDraftList);
-        ParamUtil.setSessionAttr(request,"otherVersionfdtos",(Serializable) otherVersionfdtos);
-        ParamUtil.setSessionAttr(request,"allComChkDtoList",(Serializable)allComChkDtoList);
-        ParamUtil.setSessionAttr(request,"maxComChkDto", maxComChkDto);
+        //draft start;
         //draft end
         InspectionFillCheckListDto commonDto = null;
        //  List<InspectionFillCheckListDto> cDtoList = null
@@ -141,17 +131,7 @@ public class FillupChklistDelegator {
         ParamUtil.setSessionAttr(request,TASKDTO,taskDto);
         ParamUtil.setSessionAttr(request,APPLICATIONVIEWDTO,appViewDto);
         ParamUtil.setSessionAttr(request,ADHOCLDTO,adchklDto);
-        if(maxComChkDto!=null){
-            List<InspectionFillCheckListDto> coms = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"common");
-            if(!IaisCommonUtils.isEmpty(coms)){
-                commonDto = coms.get(0);
-            }
-        }
         ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
-        if(!IaisCommonUtils.isEmpty(maxVersionfdtos.getFdtoList())){
-            List<InspectionFillCheckListDto> ftos = fillupChklistService.getInspectionFillCheckListDtoListForReview(taskId,"service");
-            serListDto.setFdtoList(ftos);
-        }
         ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
     }
     /**
