@@ -1393,9 +1393,14 @@ public class NewApplicationHelper {
     }
 
     public static void setPremSelect(HttpServletRequest request,Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap){
-        List premisesSelect = getPremisesSel();
-        List conveyancePremSel = getPremisesSel();
-        List offSitePremSel = getPremisesSel();
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(request,NewApplicationDelegator.APPSUBMISSIONDTO);
+        String appType = ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION;
+        if(appSubmissionDto != null){
+            appType = appSubmissionDto.getAppType();
+        }
+        List premisesSelect = getPremisesSel(appType);
+        List conveyancePremSel = getPremisesSel(appType);
+        List offSitePremSel = getPremisesSel(appType);
         if (licAppGrpPremisesDtoMap != null && !licAppGrpPremisesDtoMap.isEmpty()) {
             for (AppGrpPremisesDto item : licAppGrpPremisesDtoMap.values()) {
                 SelectOption sp= new SelectOption(item.getPremisesSelect(), item.getAddress());
@@ -1709,12 +1714,17 @@ public class NewApplicationHelper {
     //=============================================================================
     //private method
     //=============================================================================
-    private static List<SelectOption> getPremisesSel(){
+    private static List<SelectOption> getPremisesSel(String appType){
         List<SelectOption> selectOptionList = IaisCommonUtils.genNewArrayList();
         SelectOption cps1 = new SelectOption("-1", NewApplicationDelegator.FIRESTOPTION);
-        SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
         selectOptionList.add(cps1);
-        selectOptionList.add(cps2);
+        if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            SelectOption cps2 = new SelectOption("newPremise", "Moving to a new address");
+            selectOptionList.add(cps2);
+        }else{
+            SelectOption cps2 = new SelectOption("newPremise", "Add a new premises");
+            selectOptionList.add(cps2);
+        }
         return selectOptionList;
     }
 
