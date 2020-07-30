@@ -268,7 +268,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
                                 templateContent.put("appNumber", StringUtil.viewHtml(split[0]));
                                 templateContent.put("appType", StringUtil.viewHtml(appType));
-                                templateContent.put("appSubmitDate", StringUtil.viewHtml(IaisEGPHelper.parseToString(appSubmitDate, "yyyy-MM-dd HH:mm:ss")));
+                                templateContent.put("appSubmitDate", StringUtil.viewHtml(IaisEGPHelper.parseToString(appSubmitDate, "dd/MM/yyyy HH:mm:ss")));
                                 flag = true;
                             }
 
@@ -291,7 +291,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     reqRefNum = app.getApplicationNo();
                     templateContent.put("appNumber", reqRefNum);
                     templateContent.put("appType", app.getApplicationType());
-                    templateContent.put("appSubmitDate", IaisEGPHelper.parseToString(app.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
+                    templateContent.put("appSubmitDate", IaisEGPHelper.parseToString(app.getStartDate(), "dd/MM/yyyy HH:mm:ss"));
 
                     StringBuilder svcNameStr = new StringBuilder();
                     HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(app.getServiceId());
