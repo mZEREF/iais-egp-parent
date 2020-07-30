@@ -498,6 +498,7 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> autoAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> noAutoAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
+        List<FeeExtDto> laterFeeDatails = IaisCommonUtils.genNewArrayList();
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             appEditSelectDto.setPremisesEdit(true);
             appEditSelectDto.setServiceEdit(false);
@@ -613,19 +614,20 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setLicenseeId(licenseeId);
             //set fee detail
             List<FeeExtDto> detailFeeDtos = feeDto.getDetailFeeDto();
+            Double lateFee = 0.0;
             if (!IaisCommonUtils.isEmpty(detailFeeDtos)) {
                 appSubmissionDto.setDetailFeeDto(detailFeeDtos.get(0));
+                laterFeeDatails.add(detailFeeDtos.get(0));
+                for (FeeExtDto feeExtDto : detailFeeDtos) {
+                    Double lateFeeAmoumt = feeExtDto.getLateFeeAmoumt();
+                    if (lateFeeAmoumt != null) {
+                        lateFee += lateFeeAmoumt;
+                    }
+                }
             } else {
                 log.error(StringUtil.changeForLog("feeDto detailFeeDtos null"));
             }
             Double amount = feeDto.getTotal();
-            Double lateFee = 0.0;
-            for (FeeExtDto feeExtDto : detailFeeDtos) {
-                Double lateFeeAmoumt = feeExtDto.getLateFeeAmoumt();
-                if (lateFeeAmoumt != null) {
-                    lateFee += lateFeeAmoumt;
-                }
-            }
             appFeeDetailsDto.setAdmentFee(0.0);
             appFeeDetailsDto.setLaterFee(lateFee);
             appFeeDetailsDto.setBaseFee(amount - lateFee);
@@ -639,6 +641,8 @@ public class WithOutRenewalDelegator {
             }
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
         }
+        HashMap<String, List<FeeExtDto>> laterFeeDatailsMap = getLaterFeeDatailsMap(laterFeeDatails);
+        ParamUtil.setRequestAttr(bpc.request,"laterFeeDatailsMap",(Serializable)laterFeeDatailsMap);
         requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
@@ -771,7 +775,7 @@ public class WithOutRenewalDelegator {
                     try {
                         NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
                     } catch (CloneNotSupportedException e) {
-                       log.error(e.getMessage(),e);
+                        log.error(e.getMessage(),e);
                     }
                     appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                     appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
@@ -872,6 +876,32 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "serviceNamesAck", (Serializable) serviceNamesAck);
         //has app submit
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", "Y");
+    }
+
+    public static HashMap<String, List<FeeExtDto>> getLaterFeeDatailsMap(List<FeeExtDto> laterFeeDatails){
+        HashMap<String, List<FeeExtDto>> laterFeeDatailsMap = IaisCommonUtils.genNewHashMap();
+        if(laterFeeDatails == null || laterFeeDatails.size() == 0){
+            return null;
+        }
+
+        for(FeeExtDto laterFeeDetail : laterFeeDatails){
+            String targetLaterFeeType = laterFeeDetail.getLateFeeType();
+            if("".equals(targetLaterFeeType) || null == targetLaterFeeType){
+                continue;
+            }
+
+            if(laterFeeDatailsMap.get(targetLaterFeeType) == null){
+                List<FeeExtDto> list = IaisCommonUtils.genNewArrayList();
+                list.add(laterFeeDetail);
+                laterFeeDatailsMap.put(laterFeeDetail.getLateFeeType(),list);
+                continue;
+            }else {
+                List<FeeExtDto> list = laterFeeDatailsMap.get(laterFeeDetail.getLateFeeType());
+                list.add(laterFeeDetail);
+                laterFeeDatailsMap.put(laterFeeDetail.getLateFeeType(),list);
+            }
+        }
+        return laterFeeDatailsMap;
     }
 
     private boolean eqGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) throws Exception {
