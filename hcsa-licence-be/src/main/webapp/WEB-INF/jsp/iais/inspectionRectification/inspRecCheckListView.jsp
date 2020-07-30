@@ -67,7 +67,7 @@
                             <th width="5%">Yes</th>
                             <th width="5%">No</th>
                             <th width="5%">N/A</th>
-                            <th width="15%">Remark</th>
+                            <th width="15%">Remarks</th>
                             <th width="10%">Rectified</th>
                           </tr>
                           </thead>
@@ -114,7 +114,7 @@
                               <th width="5%">Yes</th>
                               <th width="5%">No</th>
                               <th width="5%">N/A</th>
-                              <th width="15%">Remark</th>
+                              <th width="15%">Remarks</th>
                               <th width="10%">Rectified</th>
                             </tr>
                             </thead>
@@ -159,7 +159,7 @@
                             <th width="5%">Yes</th>
                             <th width="5%">No</th>
                             <th width="5%">N/A</th>
-                            <th width="15%">Remark</th>
+                            <th width="15%">Remarks</th>
                             <th width="10%">Rectified</th>
                           </tr>
                           </thead>
