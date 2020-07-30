@@ -2,12 +2,14 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.message.MessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.parameter.SystemParameterDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.Collection;
 import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -41,4 +43,10 @@ public interface IaisSystemClient {
 
 	@PostMapping(path = "/iais-jobmsg-track", consumes = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<List<JobRemindMsgTrackingDto>> createJobRemindMsgTracking(@RequestBody List<JobRemindMsgTrackingDto> jobRemindMsgTrackingDtoList);
+
+	@GetMapping(value = "/iais-message/pendRefresh")
+	FeignResponseEntity<List<MessageDto>> getMessagesToRefresh();
+
+	@PutMapping(value = "/messages", consumes = MediaType.APPLICATION_JSON_VALUE)
+	FeignResponseEntity<Void> saveMessages(@RequestBody Collection<MessageDto> messageDtos);
 }
