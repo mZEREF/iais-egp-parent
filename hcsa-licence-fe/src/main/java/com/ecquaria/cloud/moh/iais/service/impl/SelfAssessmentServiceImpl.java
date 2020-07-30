@@ -320,11 +320,12 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     public Boolean hasSubmittedSelfAssMtByGroupId(String groupId) {
         FeignResponseEntity<Integer> result = applicationClient.getApplicationSelfAssMtStatusByGroupId(groupId);
         if (HttpStatus.SC_OK == result.getStatusCode()){
-            if (ApplicationConsts.PENDING_SUBMIT_SELF_ASSESSMENT == result.getEntity().intValue()){
-                return Boolean.FALSE;
+            int status = result.getEntity().intValue();
+            if (ApplicationConsts.SUBMITTED_SELF_ASSESSMENT == status){
+                return Boolean.TRUE;
             }
         }
-        return Boolean.TRUE;
+        return Boolean.FALSE;
     }
 
     @Override
