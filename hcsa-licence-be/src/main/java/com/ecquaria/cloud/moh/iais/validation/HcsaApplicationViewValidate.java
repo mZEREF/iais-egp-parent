@@ -123,7 +123,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 }
                 //AO route back to
                 //65189
-                if (isAoRouteBackStatus(status) && !isCessation && !isAudit) {
+                if (isAoRouteBackStatus(status) && !isCessation && !isAudit && !isAppealType) {
                     if (StringUtil.isEmpty(recommendationStr)) {
                         errMap.put("recommendation", "GENERAL_ERR0024");
                     }
