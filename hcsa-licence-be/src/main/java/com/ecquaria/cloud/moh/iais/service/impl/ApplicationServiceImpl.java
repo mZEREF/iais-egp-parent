@@ -48,15 +48,16 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * ApplicationServiceImpl
@@ -238,9 +239,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         final String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT;
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
 
-        templateContent.put("newSystem", "<a href=\"https://egp.sit.inter.iais.com/main-web\">HALP</a>");
+        templateContent.put("newSystem", "<a href=\"/main-web\">HALP</a>");
         templateContent.put("moh_email", "test");
-        templateContent.put("MOH_NAME", StringUtil.viewHtml("MOH-HALP"));
 
         for (SelfAssMtEmailDto i : allAssLt) {
             String reqRefNum;
