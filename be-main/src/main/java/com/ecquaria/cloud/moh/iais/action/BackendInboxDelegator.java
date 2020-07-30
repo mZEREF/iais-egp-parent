@@ -534,7 +534,10 @@ public class BackendInboxDelegator {
             }
         }
 
-        Map<String, String> returnFeeMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> returnFeeMap = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request,"BackendInboxReturnFee");
+        if(returnFeeMap == null){
+            returnFeeMap = IaisCommonUtils.genNewHashMap();
+        }
         returnFeeMap.put(applicationDto.getApplicationNo(),appStatus);
         ParamUtil.setSessionAttr(bpc.request,"BackendInboxReturnFee",(Serializable) returnFeeMap);
         //appeal save return fee
@@ -745,12 +748,12 @@ public class BackendInboxDelegator {
     }
 
     private void updateCurrentApplicationStatus(BaseProcessClass bpc,List<ApplicationDto> applicationDtos){
-        Map<String, String> returnFee = IaisCommonUtils.genNewHashMap();
-        returnFee = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request,"BackendInboxReturnFee");
-        if(!IaisCommonUtils.isEmpty(applicationDtos)){
+        Map<String, String> returnFee = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request,"BackendInboxReturnFee");
+        if(!IaisCommonUtils.isEmpty(returnFee) && !IaisCommonUtils.isEmpty(applicationDtos)){
             for (ApplicationDto applicationDto : applicationDtos){
                 for(Map.Entry<String, String> entry : returnFee.entrySet()) {
                     if (entry.getKey().equals(applicationDto.getApplicationNo())) {
+                        log.info(StringUtil.changeForLog("****application return fee***** " + entry.getKey() +" *****" + entry.getValue()));
                         applicationDto.setStatus(entry.getValue());
                     }
                 }
