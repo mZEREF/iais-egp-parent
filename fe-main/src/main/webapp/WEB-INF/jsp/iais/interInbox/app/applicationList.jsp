@@ -232,7 +232,7 @@
                                             </c:if>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY008'}">
-                                            <c:if test="${app.status == 'APST005'}">
+                                            <c:if test="${app.status == 'APST005'||app.status == 'APST075'}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
