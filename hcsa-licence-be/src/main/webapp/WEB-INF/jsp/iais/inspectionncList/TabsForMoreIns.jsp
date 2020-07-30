@@ -49,6 +49,7 @@
         }
 
         if( !samTabCom && !samTabInp){
+            showWaiting();
           SOP.Crud.cfxSubmit("mainForm", "change");
         }
 

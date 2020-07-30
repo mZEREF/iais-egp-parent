@@ -33,8 +33,10 @@
                                                                 <input  disabled type="checkbox" ${answerForDifDto.isRec == '1' ? 'checked' : null} />
                                                             </td>
                                                             <td>
+                                                                <c:if test="${!item.incqDto.sameAnswer}">
                                                                 <input name="${ckkId}Deconflict" id="<${ckkId}Deconflict${answerForDifDtoStatus.index}" type="radio" <c:if test="${item.incqDto.deconflict == answerForDifDto.submitId}">checked</c:if> value="${answerForDifDto.submitId}"
                                                                        onclick="javascript: doChangeDeconflict(1,'${ckkId}','${inspectorsParticipant.size()}')"/>
+                                                                </c:if>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>

@@ -98,6 +98,7 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function cancelAudit(action) {
+         showWaiting();
          $("#actionTodo").val(action);
         SOP.Crud.cfxSubmit("mainForm","cancelTask");
     }

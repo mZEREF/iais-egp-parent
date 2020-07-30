@@ -91,9 +91,11 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function addToAudit() {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm","donext");
     }
     function cancel() {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm","doback");
     }
 

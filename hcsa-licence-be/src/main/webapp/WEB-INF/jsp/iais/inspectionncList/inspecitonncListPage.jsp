@@ -114,7 +114,6 @@
         $("#viewchk").val("");
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "next");
-        dismissWaiting();
     }
     function showCheckBox(str){
         var name = str;

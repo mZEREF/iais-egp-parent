@@ -224,6 +224,7 @@
 <%@ include file="validationForRisk.jsp" %>
 <script type="text/javascript">
     function doNext() {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm","next");
     }
 
@@ -232,11 +233,13 @@
     }
 
     function removeColum(str){
+        showWaiting();
         $("#removeValue").val(str);
         SOP.Crud.cfxSubmit("mainForm","next");
     }
 
     function addColum(str){
+        showWaiting();
         $("#addValue").val(str);
         SOP.Crud.cfxSubmit("mainForm","next");
     }

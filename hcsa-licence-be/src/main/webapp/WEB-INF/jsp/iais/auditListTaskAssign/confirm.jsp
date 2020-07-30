@@ -102,9 +102,11 @@
 </form>
 <script type="text/javascript">
     function confirm(act) {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm",act);
     }
     function cancel(act) {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm",act);
     }
     /*function remove() {

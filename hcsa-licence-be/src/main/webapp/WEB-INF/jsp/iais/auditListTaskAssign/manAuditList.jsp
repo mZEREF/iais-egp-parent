@@ -114,6 +114,7 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function confirm() {
+        showWaiting();
         $('#actionTodo').val("confirm");
         SOP.Crud.cfxSubmit("mainForm","confirm");
     }
@@ -122,6 +123,7 @@
     }
 
     function cancelAudit() {
+        showWaiting();
         $('#actionTodo').val("cancel");
         SOP.Crud.cfxSubmit("mainForm","precancel");
     }

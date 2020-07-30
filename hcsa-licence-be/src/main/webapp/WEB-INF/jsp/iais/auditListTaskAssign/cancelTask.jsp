@@ -89,6 +89,7 @@
 <%@ include file="/WEB-INF/jsp/include/yesNoConfirm.jsp" %>
 <script type="text/javascript">
     function cancel(act) {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm",act);
     }
 
@@ -99,6 +100,7 @@
     }
 
     function cancelAuditBack(data) {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm",data.act);
     }
 </script>

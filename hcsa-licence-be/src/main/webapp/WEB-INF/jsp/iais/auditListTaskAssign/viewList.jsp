@@ -130,19 +130,23 @@
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function confirm() {
+        showWaiting();
         $('#actionTodo').val("confirm");
         SOP.Crud.cfxSubmit("mainForm", "confirm");
     }
 
     function cancel() {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "doback");
     }
 
     function remove() {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "remove");
     }
 
     function cancelAudit() {
+        showWaiting();
         $('#actionTodo').val("cancel");
         SOP.Crud.cfxSubmit("mainForm", "cancel");
     }

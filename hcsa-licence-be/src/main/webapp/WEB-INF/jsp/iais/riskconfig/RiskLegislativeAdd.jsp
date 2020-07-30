@@ -141,6 +141,7 @@
 <%@ include file="RiskModerateChange.jsp" %>
 <script type="text/javascript">
     function doNext() {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm","next");
     }
 

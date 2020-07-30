@@ -62,6 +62,7 @@
 
 <script type="text/javascript">
     function doNext(){
+         showWaiting();
         $("#saveflag").val("save");
         SOP.Crud.cfxSubmit("mainForm", "save");
     }
