@@ -384,18 +384,18 @@ public class MasterCodeDelegator {
                     errItems.add(errMsg);
                     result = true;
                 }
-//                if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
-//                    List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
-//                    List<String> codeValueList = IaisCommonUtils.genNewArrayList();
-//                    masterCodeToExcelDtos.forEach(h -> {
-//                        codeValueList.add(h.getCodeValue());
-//                    });
-//                    if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
-//                        String errMsg = "Filter Value must be an existing Code Value";
-//                        errItems.add(errMsg);
-//                        result = true;
-//                    }
-//                }
+                if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
+                    List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
+                    List<String> codeValueList = IaisCommonUtils.genNewArrayList();
+                    masterCodeToExcelDtos.forEach(h -> {
+                        codeValueList.add(h.getCodeValue());
+                    });
+                    if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
+                        String errMsg = "Filter Value must be an existing Code Value";
+                        errItems.add(errMsg);
+                        result = true;
+                    }
+                }
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
                     masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
                 }
