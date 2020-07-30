@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
@@ -60,8 +61,8 @@ public class UserDownloadDelegator {
                 String salutationText = orgUserDto.getSalutation();
                 Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
                 Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
-                String startStr = DateUtil.formatDate(accountActivateDatetime, "yyyy-MM-dd");
-                String endStr = DateUtil.formatDate(accountDeactivateDatetime, "yyyy-MM-dd");
+                String startStr = DateUtil.formatDate(accountActivateDatetime, "dd/MM/yyyy");
+                String endStr = DateUtil.formatDate(accountDeactivateDatetime, "dd/MM/yyyy");
                 String firstNameText = orgUserDto.getFirstName();
                 String lastNameText = orgUserDto.getLastName();
                 String organizationText = orgUserDto.getOrganization();

@@ -369,6 +369,7 @@ public class MohIntranetUserDelegator {
                 String userId = orgUserDto.getUserId();
                 orgUserUpLoadDto.setMsg(msg);
                 orgUserUpLoadDto.setUserId(userId);
+                orgUserUpLoadDtos.add(orgUserUpLoadDto);
             }
             ParamUtil.setRequestAttr(bpc.request, "orgUserUpLoadDtos", orgUserUpLoadDtos);
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
@@ -822,9 +823,9 @@ public class MohIntranetUserDelegator {
                 String userId = element.element("userId").getText();
                 String displayName = element.element("displayName").getText();
                 String startDateStr = element.element("accountActivationStart").getText();
-                Date startDate = DateUtil.parseDate(startDateStr, "yyyy-MM-dd");
+                Date startDate = DateUtil.parseDate(startDateStr, "dd/MM/yyyy");
                 String endDateStr = element.element("accountActivationEnd").getText();
-                Date endDate = DateUtil.parseDate(endDateStr, "yyyy-MM-dd");
+                Date endDate = DateUtil.parseDate(endDateStr, "dd/MM/yyyy");
                 String salutation = element.element("salutation").getText();
                 String firstName = element.element("firstName").getText();
                 String lastName = element.element("lastName").getText();
@@ -947,6 +948,10 @@ public class MohIntranetUserDelegator {
                 errors.add(error);
             }
         }
+       // String salutation = orgUserDto.getSalutation();
+//        if(!StringUtil.isEmpty(salutation)){
+//            if(salutation.equals(Mr))
+//        }
         return errors;
     }
 

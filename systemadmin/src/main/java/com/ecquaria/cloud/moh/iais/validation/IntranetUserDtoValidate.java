@@ -51,17 +51,14 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
             String[] eftEndDateStr = endDateStr.split("/");
             StringBuilder nStr = new StringBuilder();
             StringBuilder eStr = new StringBuilder();
-
             int len = Math.min(eftStartDateStr.length, eftEndDateStr.length);
             for (int i = len - 1; i >= 0; i--){
                 nStr.append(eftStartDateStr[i]);
                 eStr.append(eftEndDateStr[i]);
             }
-
             DateTimeFormatter formatter =  DateTimeFormatter.ofPattern("yyyyMMdd");
             LocalDate startDate = LocalDate.parse(nStr.toString(), formatter);
             LocalDate endDate = LocalDate.parse(eStr.toString(), formatter);
-
             int comparatorValue = endDate.compareTo(startDate);
             if (comparatorValue < 0){
                 errorMap.put("accountDeactivateDatetime", "USER_ERR006");
