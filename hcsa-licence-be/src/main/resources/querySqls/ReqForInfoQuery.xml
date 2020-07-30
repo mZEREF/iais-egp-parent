@@ -16,6 +16,7 @@
              LEFT JOIN APP_GRP_PREMISES T3 ON T3.ID = T2.APP_GRP_PREM_ID
              LEFT JOIN APPLICATION_GROUP T4 ON T4.ID = app.APP_GRP_ID
              LEFT JOIN app_grp_personnel appGrpPer ON appGrpPer.APP_GRP_ID = T4.ID
+             LEFT JOIN app_svc_personnel appSvcPer ON appSvcPer.APPLICATION_ID = app.ID
              LEFT JOIN app_grp_personnel_ext appGrpPerExt ON appGrpPer.ID = appGrpPerExt.APP_GRP_PSN_ID
              LEFT JOIN app_svc_key_personnel appKeyPsn ON appKeyPsn.APPLICATION_ID = app.ID
              LEFT JOIN app_premises_recommendation appRec ON (appRec.APP_PREM_CORRE_ID = T2.ID AND appRec.RECOM_TYPE='RETYPE012' AND appRec.STATUS='CMSTAT001')
@@ -33,9 +34,9 @@
             <#if hciName??> AND charindex(:hciName, T3.HCI_NAME )>0</#if>
             <#if hciStreetName??> AND charindex(:hciStreetName, T3.STREET_NAME )>0</#if>
             <#if hciPostalCode??> AND charindex(:hciPostalCode, T3.POSTAL_CODE )>0</#if>
-            <#if personnelName??> AND  charindex(:personnelName, appGrpPer.NAME )>0</#if>
+            <#if personnelName??> AND  charindex(:personnelName, appSvcPer.NAME )>0</#if>
             <#if personnelId??> AND charindex(:personnelId, appGrpPer.ID_NO )>0</#if>
-            <#if personnelRegnNo??> AND charindex( :personnelRegnNo, appGrpPerExt.PROF_REG_NO )>0</#if>
+            <#if personnelRegnNo??> AND charindex( :personnelRegnNo, appSvcPer.PROF_REG_NO )>0</#if>
             <#if personnelRole??> AND  appKeyPsn.PSN_TYPE = :personnelRole</#if>
 
             <#if licence_status??>AND :licence_status = :licence_status</#if>
