@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.dto.PersonFieldDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -1069,11 +1070,11 @@ public class NewApplicationHelper {
         return psnDtos;
     }
 
-    public static void setPsnIntoSelMap(HttpServletRequest request, List<AppSvcPrincipalOfficersDto> psnDtos, String svcCode){
-        if(IaisCommonUtils.isEmpty(psnDtos)){
-            return;
-        }
+    public static Map<String,AppSvcPrincipalOfficersDto> setPsnIntoSelMap(HttpServletRequest request, List<AppSvcPrincipalOfficersDto> psnDtos, String svcCode){
         Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+        if(IaisCommonUtils.isEmpty(psnDtos)){
+            return personMap;
+        }
         for(AppSvcPrincipalOfficersDto psnDto:psnDtos){
             if(StringUtil.isEmpty(psnDto.getIdNo()) || StringUtil.isEmpty(psnDto.getIdType())){
                 continue;
@@ -1149,6 +1150,7 @@ public class NewApplicationHelper {
             }
         }
         ParamUtil.setSessionAttr(request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
+        return personMap;
     }
 
     public static Map<String,AppSvcPrincipalOfficersDto> getLicPsnIntoSelMap(HttpServletRequest request, List<PersonnelListQueryDto> licPsnDtos) {
@@ -1301,11 +1303,10 @@ public class NewApplicationHelper {
         return specialtySelectList;
     }
 
-    public static AppSubmissionDto syncPsnData(HttpServletRequest request, AppSubmissionDto appSubmissionDto, List<AppSvcPrincipalOfficersDto> psnDtos){
-        if(appSubmissionDto == null || IaisCommonUtils.isEmpty(psnDtos)){
+    public static AppSubmissionDto syncPsnData(AppSubmissionDto appSubmissionDto, Map<String,AppSvcPrincipalOfficersDto> personMap){
+        if(appSubmissionDto == null || personMap == null){
            return appSubmissionDto;
         }
-        Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
@@ -1633,7 +1634,8 @@ public class NewApplicationHelper {
             Class psnClsa = personFieldDto.getClass();
             Field[] fs = psnClsa.getDeclaredFields();
             for(Field f:fs){
-                f.setAccessible(true);
+                ReflectionUtils.makeAccessible(f);
+                //f.setAccessible(true);
                 Object value = IaisCommonUtils.getFieldValue(personFieldDto, f);
                 if(!StringUtil.isEmpty(value)){
                     result = false;
@@ -1657,14 +1659,16 @@ public class NewApplicationHelper {
                 if( Modifier.isStatic(f.getModifiers())) {
                     continue;
                 }
-                f.setAccessible(true);
+                ReflectionUtils.makeAccessible(f);
+//                f.setAccessible(true);
                 Object value = IaisCommonUtils.getFieldValue(personFieldDto, f);
                 if(StringUtil.isEmpty(value)){
                     String fieldName = f.getName();
                     Field field = null;
                     try {
                         field = appPsnEditDto.getClass().getDeclaredField(fieldName);
-                        field.setAccessible(true);
+                        ReflectionUtils.makeAccessible(field);
+//                        field.setAccessible(true);
                         field.setBoolean(appPsnEditDto,true);
                     } catch (NoSuchFieldException e) {
                         log.debug(StringUtil.changeForLog("not found this field:"+fieldName));
@@ -1689,7 +1693,8 @@ public class NewApplicationHelper {
             e.printStackTrace();
         }
         if(field != null){
-            field.setAccessible(true);
+            ReflectionUtils.makeAccessible(field);
+//            field.setAccessible(true);
             try {
                 field.set(person,value);
             } catch (IllegalAccessException e) {

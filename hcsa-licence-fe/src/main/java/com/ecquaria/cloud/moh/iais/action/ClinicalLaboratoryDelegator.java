@@ -756,9 +756,9 @@ public class ClinicalLaboratoryDelegator {
                     //set person into dropdown
                     List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
                     String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-                    NewApplicationHelper.setPsnIntoSelMap(bpc.request, appSvcCgoDtos, svcCode);
+                    Map<String,AppSvcPrincipalOfficersDto> personMap = NewApplicationHelper.setPsnIntoSelMap(bpc.request, appSvcCgoDtos, svcCode);
                     //sync data
-                    NewApplicationHelper.syncPsnData(bpc.request, appSubmissionDto, appSvcCgoDtos);
+                    NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
                     if (allChecked.isEmpty()) {
                         coMap.put("information", "information");
                     }
@@ -972,9 +972,9 @@ public class ClinicalLaboratoryDelegator {
                 if (map.isEmpty()) {
                     //set person into dropdown
                     String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-                    NewApplicationHelper.setPsnIntoSelMap(bpc.request, appSvcPrincipalOfficersDtoList, svcCode);
+                    Map<String,AppSvcPrincipalOfficersDto> personMap = NewApplicationHelper.setPsnIntoSelMap(bpc.request, appSvcPrincipalOfficersDtoList, svcCode);
                     //sync data
-                    NewApplicationHelper.syncPsnData(bpc.request, appSubmissionDto, appSvcPrincipalOfficersDtoList);
+                    NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
                     if (allChecked.isEmpty()) {
                         coMap.put("information", "information");
                     }
@@ -1396,9 +1396,9 @@ public class ClinicalLaboratoryDelegator {
                 } else {
                     //set person into dropdown
                     String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-                    NewApplicationHelper.setPsnIntoSelMap(bpc.request, appSvcMedAlertPersonList, svcCode);
+                    Map<String,AppSvcPrincipalOfficersDto> personMap = NewApplicationHelper.setPsnIntoSelMap(bpc.request, appSvcMedAlertPersonList, svcCode);
                     //sync data
-                    NewApplicationHelper.syncPsnData(bpc.request, appSubmissionDto, appSvcMedAlertPersonList);
+                    NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
@@ -2522,7 +2522,7 @@ public class ClinicalLaboratoryDelegator {
                         }
                     }
                 }
-
+                appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
                 appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
                 appSvcPrincipalOfficersDto.setLicPerson(true);
                 appSvcPrincipalOfficersDto.setSelectDropDown(true);
@@ -2538,6 +2538,7 @@ public class ClinicalLaboratoryDelegator {
                 --length;
                 ++preferredModeLength;
             }else if(getPageData){
+                appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
                 appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
                 appSvcPrincipalOfficersDto.setSalutation(salutation[i]);
                 appSvcPrincipalOfficersDto.setName(name[i]);

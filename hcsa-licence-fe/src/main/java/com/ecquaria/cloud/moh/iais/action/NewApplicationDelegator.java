@@ -306,6 +306,7 @@ public class NewApplicationDelegator {
 
         String licenseeId = appSubmissionDto.getLicenseeId();
         log.info(StringUtil.changeForLog("The preparePremises licenseeId is -->:"+licenseeId));
+        //PremisesKey,
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
         if(!StringUtil.isEmpty(licenseeId)){
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
@@ -2151,8 +2152,9 @@ public class NewApplicationDelegator {
             bpc.request.getSession().setAttribute("coMap",coMap);
         }
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-
-
+        //sync person data
+        Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
+        NewApplicationHelper.syncPsnData(appSubmissionDto,personMap);
 
         String draftNo = appSubmissionDto.getDraftNo();
         if(StringUtil.isEmpty(draftNo)){
@@ -4175,29 +4177,29 @@ public class NewApplicationDelegator {
             hcsaServiceDtoList = serviceConfigService.getHcsaServiceByNames(names);
         }
         if(hcsaServiceDtoList!=null){
-            sortHcsaServiceDto(hcsaServiceDtoList);
+            hcsaServiceDtoList = sortHcsaServiceDto(hcsaServiceDtoList);
         }
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
         log.info(StringUtil.changeForLog("the do loadingServiceConfig end ...."));
         return true;
     }
 
-    private void sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList) {
+    private List<HcsaServiceDto> sortHcsaServiceDto(List<HcsaServiceDto> hcsaServiceDtoList) {
         List<HcsaServiceDto> baseList = new ArrayList();
         List<HcsaServiceDto> specifiedList = new ArrayList();
         List<HcsaServiceDto> subList = new ArrayList();
         List<HcsaServiceDto> otherList = new ArrayList();
         //class
         for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtoList) {
-            switch (hcsaServiceDto.getSvcCode()) {
+            switch (hcsaServiceDto.getSvcType()) {
                 case ApplicationConsts.SERVICE_CONFIG_TYPE_BASE:
                     baseList.add(hcsaServiceDto);
                     break;
                 case ApplicationConsts.SERVICE_CONFIG_TYPE_SPECIFIED:
-                    specifiedList.add(hcsaServiceDto);
+                    subList.add(hcsaServiceDto);
                     break;
                 case ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED:
-                    subList.add(hcsaServiceDto);
+                    specifiedList.add(hcsaServiceDto);
                     break;
                 default:
                     otherList.add(hcsaServiceDto);
@@ -4214,6 +4216,7 @@ public class NewApplicationDelegator {
         hcsaServiceDtoList.addAll(specifiedList);
         hcsaServiceDtoList.addAll(subList);
         hcsaServiceDtoList.addAll(otherList);
+        return hcsaServiceDtoList;
     }
 
     private void sortService(List<HcsaServiceDto> list) {
