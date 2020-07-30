@@ -53,6 +53,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -284,6 +285,7 @@ public class InspectionMergeSendNcEmailDelegator {
 
                     applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_DRAFT_LETTER);
                     applicationViewService.updateApplicaiton(applicationViewDto1.getApplicationDto());
+                    applicationService.updateFEApplicaitons(Collections.singletonList(applicationViewDto1.getApplicationDto()));
                     AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremCorrIds.get(i)).getEntity();
                     appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_INSPECTOR_LEAD_ROUTE_BACK_EMAIL);
                     appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -359,6 +361,7 @@ public class InspectionMergeSendNcEmailDelegator {
             {
                 applicationViewDto.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
                 applicationViewService.updateApplicaiton(applicationViewDto.getApplicationDto());
+                applicationService.updateFEApplicaitons(Collections.singletonList(applicationViewDto.getApplicationDto()));
                 AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto.getAppPremisesCorrelationId()).getEntity();
                 appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_NC_RECTIFICATION_EMAIL);
                 appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -382,6 +385,7 @@ public class InspectionMergeSendNcEmailDelegator {
 
                     applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT);
                     applicationViewService.updateApplicaiton(applicationViewDto1.getApplicationDto());
+                    applicationService.updateFEApplicaitons(Collections.singletonList(applicationViewDto1.getApplicationDto()));
                     AppInspectionStatusDto appInspectionStatusDto2 = appInspectionStatusClient.getAppInspectionStatusByPremId(appPremCorrIdsNoNc.get(i)).getEntity();
                     appInspectionStatusDto2.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_PREPARE_REPORT);
                     appInspectionStatusDto2.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -414,6 +418,7 @@ public class InspectionMergeSendNcEmailDelegator {
                     ApplicationViewDto applicationViewDto1=applicationViewService.searchByCorrelationIdo(appPremCorrIdsIsNc.get(i));
                     applicationViewDto1.getApplicationDto().setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_RECTIFICATION_CREATE_MESG);
                     applicationViewService.updateApplicaiton(applicationViewDto1.getApplicationDto());
+                    applicationService.updateFEApplicaitons(Collections.singletonList(applicationViewDto1.getApplicationDto()));
                     AppInspectionStatusDto appInspectionStatusDto1 = appInspectionStatusClient.getAppInspectionStatusByPremId(applicationViewDto1.getAppPremisesCorrelationId()).getEntity();
                     appInspectionStatusDto1.setStatus(InspectionConstants.INSPECTION_STATUS_PENDING_NC_RECTIFICATION_EMAIL);
                     appInspectionStatusDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
