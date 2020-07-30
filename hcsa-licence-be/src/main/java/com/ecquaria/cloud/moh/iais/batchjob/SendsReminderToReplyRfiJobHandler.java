@@ -85,11 +85,8 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
             for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
             ) {
                 if(rfi.getReminder()<4){
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(rfi.getDueDateSubmission());
-                    cal.add(Calendar.DAY_OF_MONTH, 1);
                     Calendar cal1 = Calendar.getInstance();
-                    cal1.setTime(rfi.getRequestDate());
+                    cal1.setTime(rfi.getDueDateSubmission());
                     String reminderMaxDay;
                     switch (rfi.getReminder()){
                         case 0:reminderMaxDay=reminderDueDay;break;
@@ -99,7 +96,7 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
                         default:reminderMaxDay="0";
                     }
                     cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay)-1);
-                    if(cal.getTime().compareTo(new Date())<0&&cal1.getTime().compareTo(new Date())>0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
+                    if(cal1.getTime().compareTo(new Date())>0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
                         reminder(rfi);
                     }
                 }
