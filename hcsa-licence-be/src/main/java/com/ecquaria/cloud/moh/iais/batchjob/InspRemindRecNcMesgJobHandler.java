@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
-import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
@@ -75,6 +74,9 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
     private HcsaConfigClient hcsaConfigClient;
 
     @Autowired
+    private SystemParamConfig systemParamConfig;
+
+    @Autowired
     private InspectionTaskClient inspectionTaskClient;
 
     @Autowired
@@ -92,7 +94,6 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
             if(IaisCommonUtils.isEmpty(applicationDtos)){
                 return ReturnT.SUCCESS;
             }
-            SystemParamConfig systemParamConfig = SpringContextHelper.getContext().getBean(SystemParamConfig.class);
             int weeks = systemParamConfig.getReminderRectification();
             int days = weeks * 7;
             log.info(StringUtil.changeForLog("System days = " + days));
