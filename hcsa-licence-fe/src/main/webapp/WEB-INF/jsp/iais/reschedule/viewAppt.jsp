@@ -77,7 +77,7 @@
                                 </c:choose>
                             </tbody>
                         </table>
-                        <span style="text-align:right;"  id="error_reason" name="iaisErrorMsg" class="error-msg"></span>
+                        <span style="float:right;"  id="error_reason" name="iaisErrorMsg" class="error-msg"></span>
 
                         <iais:row>
                             <iais:action style="text-align:left;">

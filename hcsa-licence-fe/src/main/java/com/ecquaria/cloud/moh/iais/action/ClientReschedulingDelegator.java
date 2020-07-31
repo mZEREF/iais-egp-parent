@@ -137,7 +137,6 @@ public class ClientReschedulingDelegator {
             if(rows!=null){
                 LinkedHashMap<String ,ApptViewDto> apptViewDtos= new LinkedHashMap<>(rows.size());
 
-                ParamUtil.setRequestAttr(bpc.request,"SearchResult",result);
                 for (ReschApptGrpPremsQueryDto reschApptGrpPremsQueryDto : rows) {
                     ApptViewDto apptViewDto=new ApptViewDto();
                     List<String> svcIds=IaisCommonUtils.genNewArrayList();
@@ -175,6 +174,8 @@ public class ClientReschedulingDelegator {
                 }
                 ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos1);
                 ParamUtil.setSessionAttr(bpc.request, "apptViewDtosMap", apptViewDtos);
+                result.setRowCount(apptViewDtos1.size());
+                ParamUtil.setRequestAttr(bpc.request,"SearchResult",result);
             }
             ParamUtil.setRequestAttr(bpc.request,"SearchParam",rescheduleParam);
         }catch (Exception e){
