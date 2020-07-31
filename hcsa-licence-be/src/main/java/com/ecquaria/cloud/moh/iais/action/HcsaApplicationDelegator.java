@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -22,17 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -61,12 +52,7 @@ import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -94,15 +80,6 @@ import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -111,6 +88,16 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * HcsaApplicationDelegator
@@ -2251,7 +2238,7 @@ public class HcsaApplicationDelegator {
         }
 
         //appeal
-        setAppealTypeValues(bpc.request,applicationViewDto,roleId);
+        setAppealTypeValues(bpc.request,applicationViewDto,roleId,taskDto.getTaskKey());
 
         //check route back review
         setRouteBackReview(bpc.request,applicationViewDto,roleId,taskDto,status);
@@ -2328,7 +2315,7 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void setAppealTypeValues(HttpServletRequest request, ApplicationViewDto applicationViewDto, String roleId){
+    private void setAppealTypeValues(HttpServletRequest request, ApplicationViewDto applicationViewDto, String roleId,String taskKey){
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         boolean isOtherAppealType = false;
         boolean isChangePeriodAppealType = false;
@@ -2418,8 +2405,11 @@ public class HcsaApplicationDelegator {
                 String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
                 boolean isAppealApprove = "approve".equals(recomDecision);
                 boolean isAppealReject = "reject".equals(recomDecision);
+                boolean isAso = HcsaConsts.ROUTING_STAGE_ASO.equals(taskKey) || RoleConsts.USER_ROLE_ASO.equals(roleId);
+                boolean isPso = HcsaConsts.ROUTING_STAGE_PSO.equals(taskKey) || RoleConsts.USER_ROLE_PSO.equals(roleId);
+                boolean isAO = RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId) || RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId);
                 //pso
-                if(RoleConsts.USER_ROLE_PSO.equals(roleId) || RoleConsts.USER_ROLE_ASO.equals(roleId)){
+                if(isPso || isAso){
                     if(isAppealApprove){
                         recomDecision = "appealApprove";
                     }else if(isAppealReject){
@@ -2433,7 +2423,7 @@ public class HcsaApplicationDelegator {
                         ParamUtil.setRequestAttr(request,"otherChrono",chronoUnit);
                         ParamUtil.setRequestAttr(request,"otherNumber",recomInNumber);
                     }
-                }else if(RoleConsts.USER_ROLE_AO1.equals(roleId) || RoleConsts.USER_ROLE_AO2.equals(roleId) || RoleConsts.USER_ROLE_AO3.equals(roleId)){
+                }else if(isAO){
                     if(isAppealApprove){
                         recomDecision = "Approve";
                     }else if(isAppealReject){

@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.validation;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
@@ -79,7 +80,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
         //verified recommendation other dropdown
         //0063971
-        checkRecommendationOtherDropdown(errMap,recommendationStr,request,applicationType,roleId);
+        checkRecommendationOtherDropdown(errMap,recommendationStr,request,applicationType,roleId,taskDto.getTaskKey());
 
         //DMS recommendation
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
@@ -130,11 +131,13 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 }
                 //appeal if route back to ASO or PSO
                 boolean rbStatusFlag = isRouteBackStatus(status);
-                if(rbStatusFlag && isAppealType){
-                    appealTypeValidate(errMap,request,applicationType,roleId);
+                //appeal broadcast
+                boolean appealBroadcastStatus = isAppealType && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status);
+                if(rbStatusFlag && isAppealType || appealBroadcastStatus){
+                    appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
                 }
                 //ASO PSO broadcast
-                if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
+                if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status) && !isAppealType) {
                     checkBroadcast(roleId, errMap, status, recommendationStr, request);
                 }
             } else {
@@ -143,7 +146,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 //verify appeal type
                 if(!ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage)){
                     //appeal rfi recommendation is not required
-                    appealTypeValidate(errMap,request,applicationType,roleId);
+                    appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
                 }
                 if (StringUtil.isEmpty(nextStage)) {
                     errMap.put("nextStage", "GENERAL_ERR0024");
@@ -205,10 +208,10 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             }
     }
 
-    private void appealTypeValidate(Map<String, String> errMap, HttpServletRequest request, String applicationType, String roleId){
+    private void appealTypeValidate(Map<String, String> errMap, HttpServletRequest request, String applicationType, String roleId, String taskKey){
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
-            boolean isAso = RoleConsts.USER_ROLE_ASO.equals(roleId);
-            boolean isPso = RoleConsts.USER_ROLE_PSO.equals(roleId);
+            boolean isAso = HcsaConsts.ROUTING_STAGE_ASO.equals(taskKey) || RoleConsts.USER_ROLE_ASO.equals(roleId);
+            boolean isPso = HcsaConsts.ROUTING_STAGE_PSO.equals(taskKey) || RoleConsts.USER_ROLE_PSO.equals(roleId);
             boolean isLateFeeAppealType = (boolean)ParamUtil.getSessionAttr(request,"isLateFeeAppealType");
             if(isAso || isPso){
                 String appealRecommendationValues = ParamUtil.getString(request, "appealRecommendationValues");
@@ -251,9 +254,11 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     }
 
 
-    private void checkRecommendationOtherDropdown(Map<String, String> errMap,String recommendationStr,HttpServletRequest request, String applicationType, String roleId){
+    private void checkRecommendationOtherDropdown(Map<String, String> errMap,String recommendationStr,HttpServletRequest request, String applicationType, String roleId, String taskKey){
         boolean isChangePeriodAppealType = (boolean)ParamUtil.getSessionAttr(request, "isChangePeriodAppealType");
-        boolean isAsoPso = RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId);
+        boolean isAso = HcsaConsts.ROUTING_STAGE_ASO.equals(taskKey) || RoleConsts.USER_ROLE_ASO.equals(roleId);
+        boolean isPso = HcsaConsts.ROUTING_STAGE_PSO.equals(taskKey) || RoleConsts.USER_ROLE_PSO.equals(roleId);
+        boolean isAsoPso = isPso || isAso;
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
         String appealRecommendationValues = ParamUtil.getString(request, "appealRecommendationValues");
         boolean isAppealApprove = "appealApprove".equals(appealRecommendationValues);
