@@ -244,15 +244,19 @@ public class BlackedOutDateDelegator {
                 errorMap.put("inspectionEndDate", "ERR0010");
             }
 
-
             if (mandatory){
-                String convertStartDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(startDate), SystemAdminBaseConstants.DATE_FORMAT);
-                blackQuery.addFilter("startDate", convertStartDate, true);
 
+               Date fromDate =  IaisEGPHelper.parseToDate(startDate);
+               Date toDate =  IaisEGPHelper.parseToDate(endDate);
 
-                String convertEndDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(endDate), SystemAdminBaseConstants.DATE_FORMAT);
-                blackQuery.addFilter("endDate", convertEndDate, true);
-
+               if (fromDate.after(toDate)){
+                   errorMap.put("inspectionStartDate", "GENERAL_ERR0032");
+               }else {
+                   String convertStartDate = Formatter.formatDateTime(fromDate, SystemAdminBaseConstants.DATE_FORMAT);
+                   blackQuery.addFilter("startDate", convertStartDate, true);
+                   String convertEndDate = Formatter.formatDateTime(toDate, SystemAdminBaseConstants.DATE_FORMAT);
+                   blackQuery.addFilter("endDate", convertEndDate, true);
+               }
             }
         }
 
