@@ -32,7 +32,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
     }
 
     private void fillUpVad(HttpServletRequest request, Map<String, String> errMap) {
-        if(!(commFillUpVad(request, errMap)& serviceFillUpVad(request, errMap)& adhocFillUpVad(request, errMap))){
+        if(!( serviceFillUpVad(request, errMap)& adhocFillUpVad(request, errMap)&commFillUpVad(request, errMap))){
             errMap.put("fillchkl","UC_INSTA004_ERR008");
         }
     }
@@ -48,6 +48,7 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
             }
         }
         if(flagNum>0){
+            ParamUtil.setSessionAttr(request,"errorTab","ServiceInfo");
             return false;
         }
         return true;
@@ -75,6 +76,9 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                             }
                         }
                     }
+                }
+                if( !isError){
+                    ParamUtil.setSessionAttr(request,"errorTab","General");
                 }
             }
             return isError;
@@ -129,6 +133,9 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
                             }
                         }
                     }
+                }
+                if(!isError){
+                    ParamUtil.setSessionAttr(request,"errorTab","ServiceInfo");
                 }
                 return  isError;
             }

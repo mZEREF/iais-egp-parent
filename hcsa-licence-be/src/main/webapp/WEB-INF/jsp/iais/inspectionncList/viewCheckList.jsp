@@ -29,8 +29,8 @@
                         </div>
                         <div class="tab-pane <c:if test="${serListDto.checkListTab=='chkList'}">active</c:if>" id="tabPayment" role="tabpanel">
                             <ul class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-                                <li class="active" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General Regulations</a></li>
-                                <li class="complete" role="presentation"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"
+                                <li class="complete ${(nowComTabIn == null || nowComTabIn== 'General') ? 'active' : ''}" role="presentation"><a href="#General" aria-controls="General" role="tab" data-toggle="tab">General Regulations</a></li>
+                                <li class="complete ${(nowComTabIn== 'ServiceInfo') ? 'active' : ''}" role="presentation"><a href="#ServiceInfo" aria-controls="ServiceInfo" role="tab"
                                                                             data-toggle="tab"><c:out value="${serListDto.serviceName}"/></a></li>
                             </ul>
 
@@ -45,7 +45,7 @@
                             </div>
                             <span class="error-msg" id="error_fillchkl" name="iaisErrorMsg"></span>
                             <div class="tab-content">
-                                <div class="tab-pane active" id="General" role="tabpanel">
+                                <div class="tab-pane ${(nowComTabIn == null || nowComTabIn== 'General') ? 'active' : ''}" id="General" role="tabpanel">
                                     <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.generalDo}"/>/<c:out value="${serListDto.generalTotal}"/><br>
                                     <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.generalNc}"/>
                                     <h3>General</h3>
@@ -120,7 +120,7 @@
                                           </c:forEach>
                                       </div>
                                   </div>
-                                  <div class="tab-pane" id="ServiceInfo" role="tabpanel">
+                                  <div class="tab-pane ${(nowComTabIn== 'ServiceInfo') ? 'active' : ''}" id="ServiceInfo" role="tabpanel">
                                       <c:if test="${not empty serListDto.fdtoList}">
                                       <span><strong>do/total:</strong></span>&nbsp;<c:out value="${serListDto.serviceDo}"/>/<c:out value="${serListDto.serviceTotal}"/><br>
                                       <span><strong>No of Non-Compliance:</strong></span>&nbsp;<c:out value="${serListDto.serviceNc}"/>

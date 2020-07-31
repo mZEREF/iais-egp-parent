@@ -590,6 +590,12 @@ public class InspectReviseNcEmailDelegator {
             ParamUtil.setSessionAttr(request,SER_LIST_DTO,serListDto);
             ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
         }
+
+        String errTab = (String) ParamUtil.getSessionAttr(request,"errorTab");
+        if( !StringUtil.isEmpty(errTab)){
+            ParamUtil.setSessionAttr(request,"errorTab",null);
+            ParamUtil.setRequestAttr(request, "nowComTabIn",  errTab);
+        }
     }
 
     private InspectionFDtosDto getOtherInfo(MultipartHttpServletRequest request) throws IOException {
