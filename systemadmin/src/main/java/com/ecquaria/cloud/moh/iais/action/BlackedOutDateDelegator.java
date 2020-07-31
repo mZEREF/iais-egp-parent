@@ -229,21 +229,31 @@ public class BlackedOutDateDelegator {
 
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         SearchParam blackQuery = IaisEGPHelper.getSearchParam(request, true, filterParameter);
-        if (StringUtils.isEmpty(startDate)){
-            errorMap.put("inspectionStartDate", "ERR0010");
-        }else {
-            String convertStartDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(startDate), SystemAdminBaseConstants.DATE_FORMAT);
-            blackQuery.addFilter("startDate", convertStartDate, true);
-            ParamUtil.setRequestAttr(request, "startDate", startDate);
-        }
+
+        boolean anySelect = StringUtils.isEmpty(startDate) & StringUtils.isEmpty(endDate);
+        boolean mandatory = !StringUtils.isEmpty(startDate) && !StringUtils.isEmpty(endDate);
+        ParamUtil.setRequestAttr(request, "startDate", startDate);
+        ParamUtil.setRequestAttr(request, "endDate", endDate);
+        if (!anySelect){
+
+            if (StringUtils.isEmpty(startDate)){
+                errorMap.put("inspectionStartDate", "ERR0010");
+            }
+
+            if (StringUtils.isEmpty(endDate)){
+                errorMap.put("inspectionEndDate", "ERR0010");
+            }
 
 
-        if (StringUtils.isEmpty(endDate)){
-            errorMap.put("inspectionEndDate", "ERR0010");
-        }else {
-            String convertEndDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(endDate), SystemAdminBaseConstants.DATE_FORMAT);
-            blackQuery.addFilter("endDate", convertEndDate, true);
-            ParamUtil.setRequestAttr(request, "endDate", endDate);
+            if (mandatory){
+                String convertStartDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(startDate), SystemAdminBaseConstants.DATE_FORMAT);
+                blackQuery.addFilter("startDate", convertStartDate, true);
+
+
+                String convertEndDate = Formatter.formatDateTime(IaisEGPHelper.parseToDate(endDate), SystemAdminBaseConstants.DATE_FORMAT);
+                blackQuery.addFilter("endDate", convertEndDate, true);
+
+            }
         }
 
         if (!StringUtils.isEmpty(groupName)){
