@@ -498,7 +498,7 @@ public class WithOutRenewalDelegator {
         List<AppSubmissionDto> autoAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> noAutoAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
         List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
-        List<FeeExtDto> laterFeeDatails = IaisCommonUtils.genNewArrayList();
+        List<FeeExtDto> laterFeeDetails = IaisCommonUtils.genNewArrayList();
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
             appEditSelectDto.setPremisesEdit(true);
             appEditSelectDto.setServiceEdit(false);
@@ -617,7 +617,7 @@ public class WithOutRenewalDelegator {
             Double lateFee = 0.0;
             if (!IaisCommonUtils.isEmpty(detailFeeDtos)) {
                 appSubmissionDto.setDetailFeeDto(detailFeeDtos.get(0));
-                laterFeeDatails.add(detailFeeDtos.get(0));
+                laterFeeDetails.add(detailFeeDtos.get(0));
                 for (FeeExtDto feeExtDto : detailFeeDtos) {
                     Double lateFeeAmoumt = feeExtDto.getLateFeeAmoumt();
                     if (lateFeeAmoumt != null) {
@@ -641,8 +641,8 @@ public class WithOutRenewalDelegator {
             }
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
         }
-        HashMap<String, List<FeeExtDto>> laterFeeDatailsMap = getLaterFeeDatailsMap(laterFeeDatails);
-        ParamUtil.setRequestAttr(bpc.request,"laterFeeDatailsMap",(Serializable)laterFeeDatailsMap);
+        HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(laterFeeDetails);
+        ParamUtil.setRequestAttr(bpc.request,"laterFeeDetailsMap",(Serializable)laterFeeDetailsMap);
         requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
@@ -878,30 +878,30 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", "Y");
     }
 
-    public static HashMap<String, List<FeeExtDto>> getLaterFeeDatailsMap(List<FeeExtDto> laterFeeDatails){
-        HashMap<String, List<FeeExtDto>> laterFeeDatailsMap = IaisCommonUtils.genNewHashMap();
-        if(laterFeeDatails == null || laterFeeDatails.size() == 0){
+    public static HashMap<String, List<FeeExtDto>> getLaterFeeDetailsMap(List<FeeExtDto> laterFeeDetails){
+        HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = IaisCommonUtils.genNewHashMap();
+        if(laterFeeDetails == null || laterFeeDetails.size() == 0){
             return null;
         }
 
-        for(FeeExtDto laterFeeDetail : laterFeeDatails){
+        for(FeeExtDto laterFeeDetail : laterFeeDetails){
             String targetLaterFeeType = laterFeeDetail.getLateFeeType();
-            if("".equals(targetLaterFeeType) || null == targetLaterFeeType){
+            if(StringUtil.isEmpty(targetLaterFeeType)){
                 continue;
             }
 
-            if(laterFeeDatailsMap.get(targetLaterFeeType) == null){
+            if(laterFeeDetailsMap.get(targetLaterFeeType) == null){
                 List<FeeExtDto> list = IaisCommonUtils.genNewArrayList();
                 list.add(laterFeeDetail);
-                laterFeeDatailsMap.put(laterFeeDetail.getLateFeeType(),list);
+                laterFeeDetailsMap.put(laterFeeDetail.getLateFeeType(),list);
                 continue;
             }else {
-                List<FeeExtDto> list = laterFeeDatailsMap.get(laterFeeDetail.getLateFeeType());
+                List<FeeExtDto> list = laterFeeDetailsMap.get(laterFeeDetail.getLateFeeType());
                 list.add(laterFeeDetail);
-                laterFeeDatailsMap.put(laterFeeDetail.getLateFeeType(),list);
+                laterFeeDetailsMap.put(laterFeeDetail.getLateFeeType(),list);
             }
         }
-        return laterFeeDatailsMap;
+        return laterFeeDetailsMap;
     }
 
     private boolean eqGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList, List<AppGrpPremisesDto> oldAppGrpPremisesDtoList) throws Exception {
