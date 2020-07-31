@@ -59,6 +59,7 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.submission.client.App;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
@@ -1136,65 +1137,30 @@ public class RequestForChangeMenuDelegator {
                 appSubmissionDto.setAutoRfc(true);
                 appSubmissionDto.setAmount(0.0);
                 appSubmissionDto.setAmountStr("$0");
+                appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
                 appSubmissionDtos1.add(appSubmissionDto1);
             }
-            appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+
         }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDtos1.get(0).getAppSvcRelatedInfoDtoList();
         if (appSvcRelatedInfoDtoList.equals(oldSvcDto)) {
             requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
         }
         ParamUtil.setRequestAttr(bpc.request, "action_type", "bank");
-        ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
+        appSubmissionDtos1.get(0).setLicenceNo(null);
+        ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos1);
-        /*ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos1);*/
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
     }
 
     public void preparePersonnelBank(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prePayment start ...."));
-        Double dAmount = 0.0;
-        String amount = Formatter.formatterMoney(dAmount);
-        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getRequestAttr(bpc.request, "AppSubmissionDto");
-        ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
-        bpc.request.getSession().setAttribute("dAmount", "$0.0");
+        ParamUtil.setSessionAttr(bpc.request,"pmtRefNo", "N/A");
+        ParamUtil.setSessionAttr(bpc.request,"createDate", new Date());
+        ParamUtil.setSessionAttr(bpc.request,"dAmount", "$0");
+        ParamUtil.setSessionAttr(bpc.request,"payMethod", "N/A");
+        ParamUtil.setSessionAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
-    }
-
-    public void jumpPersonnelBank(BaseProcessClass bpc) throws IOException {
-        log.debug(StringUtil.changeForLog("the do jumpBank start ...."));
-//        String payMethod = ParamUtil.getString(bpc.request, "payMethod");
-//        if (StringUtil.isEmpty(payMethod)) {
-//            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
-//            return;
-//        }
-//        List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("appSubmissionDtos");
-//        bpc.request.getSession().setAttribute("payMethod", payMethod);
-//        if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
-//                || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
-//                || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-//            Map<String, String> fieldMap = new HashMap<String, String>();
-//            fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(appSubmissionDtos.get(0).getAmount()));
-//            fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
-//            fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo());
-//            try {
-//                String html = GatewayAPI.create_partner_trade_by_buyer(fieldMap, bpc.request, "/hcsa-licence-web/eservice/INTERNET/MohRfcPersonnelList/1/ack");
-//                ParamUtil.setRequestAttr(bpc.request, "jumpHtml", html);
-//            } catch (Exception e) {
-//                log.info(e.getMessage(), e);
-//            }
-//            return;
-//        } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
-//            String appGrpId = appSubmissionDtos.get(0).getAppGrpId();
-//            ApplicationGroupDto appGrp = new ApplicationGroupDto();
-//            appGrp.setId(appGrpId);
-//            appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
-//            serviceConfigService.updatePaymentStatus(appGrp);
-//            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
-//            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
-//        }
-        ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
-        log.debug(StringUtil.changeForLog("the do jumpBank end ...."));
     }
 
     public void personnelDashboard(BaseProcessClass bpc) {
@@ -1203,6 +1169,8 @@ public class RequestForChangeMenuDelegator {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
         try {
             bpc.response.sendRedirect(tokenUrl);
+            bpc.request.getSession().setAttribute("appSubmissionDtos", null);
+            bpc.request.getSession().setAttribute("appSubmissionDto", null);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -1218,7 +1186,6 @@ public class RequestForChangeMenuDelegator {
         String premisesId = premisesListQueryDto.getPremisesId();
         List<LicenceDto> licenceDtoList = requestForChangeService.getLicenceDtoByPremisesId(premisesId);
         bpc.request.setAttribute("licenceDtoList", licenceDtoList);
-
         log.debug(StringUtil.changeForLog("the do selectLicence end ...."));
     }
 
