@@ -1,15 +1,16 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
@@ -26,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditInspectorDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -38,14 +38,13 @@ import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.kafka.model.Submission;
-import com.ecquaria.sz.commons.util.MsgUtil;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import java.util.*;
 
 /**
@@ -88,11 +87,9 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
     @Autowired
-    private MsgTemplateClient msgTemplateClient;
-    @Value("${iais.email.sender}")
-    private String mailSender;
+    private NotificationHelper notificationHelper;
     @Autowired
-    private EmailClient emailClient;
+    private SystemParamConfig systemParamConfig;
 
     static String[] category = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
 
@@ -100,9 +97,9 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     public void sendMailForAuditPlaner(String emailKey) {
         List<OrgUserDto> userDtoList = organizationClient. retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_AUDIT_PLAN).getEntity();
         if( !IaisCommonUtils.isEmpty(userDtoList)){
-            for(OrgUserDto orgUserDto :  userDtoList){
-               sendEmailToIns(orgUserDto.getDisplayName(),emailKey,null,orgUserDto.getEmail());
-            }
+               sendEmailToIns(emailKey,null,null);
+        }else {
+            log.info("----------no audit plan user ---------");
         }
     }
 
@@ -236,7 +233,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
 
        // send email
         if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
-            sendEmailToIns(temp.getInspector(),MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK,auditCombinationDto.getEventRefNo(),temp.getUserIdToEmails().get(temp.getInspector()));
+            sendEmailToIns(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK,auditCombinationDto.getEventRefNo(),temp);
         }else {
             log.info("-----------Inspector id is null or UserIdToEmails is null");
         }
@@ -354,7 +351,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             saveAppForAuditToFe(appSubmissionForAuditDto,true);
         //send email to insp
         if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
-            sendEmailToIns(temp.getInspector(),MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK,groupNo,temp.getUserIdToEmails().get(temp.getInspector()));
+            sendEmailToIns(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK,groupNo,temp);
         }else {
             log.info("-----------Inspector id is null or UserIdToEmails is null");
         }
@@ -366,41 +363,60 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     @Override
-    public void sendEmailToIns(String ins, String emailKey, String appGroupNo,String email) {
-        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(emailKey).getEntity();
-        if (autoEntity == null){
-            log.info(StringUtil.changeForLog("===>>>>sendEmailToIns can not find message template. " + "key is" + emailKey));
-            return;
+    public void sendEmailToIns( String emailKey, String appGroupNo,AuditTaskDataFillterDto auditTaskDataFillterDto) {
+        if(!StringUtil.isEmpty(appGroupNo)){
+            appGroupNo +="-01";
         }
-
-        Map<String,Object> param;
-        boolean needAppGNo = true;
-        if(StringUtil.isEmpty(appGroupNo)){
-          param = new HashMap(2);
-            needAppGNo  = false;
-        }else {
-            param =  new HashMap(3);
-        }
-        param.put("userName",ins);
-        if(needAppGNo){
-            param.put("appno",appGroupNo+"-01");
-        }
-        param.put("syName",AppConsts.MOH_AGENCY_NAME);
+        Map<String,Object> param = getParamByMesskey(emailKey,appGroupNo,auditTaskDataFillterDto);
         try {
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), param);
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(templateMessageByContent);
-            emailDto.setSubject(autoEntity.getTemplateName());
-            emailDto.setSender(mailSender);
-            List<String> emailAdresss = new ArrayList<>(1);
-            emailAdresss.add(email);
-            emailDto.setReceipts(emailAdresss);
-            emailDto.setClientQueryCode(emailKey);
-            //send
-            emailClient.sendNotification(emailDto).getEntity();
+            if(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND.equalsIgnoreCase(emailKey)
+                    || MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND.equalsIgnoreCase(emailKey)){
+                notificationHelper.sendNotification(emailKey,param,emailKey,emailKey,null,null);
+            }else {
+                notificationHelper.sendNotification(emailKey,param,appGroupNo,appGroupNo, NotificationHelper.RECEIPT_TYPE_APP,appGroupNo);
+            }
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
+    }
+
+    private Map<String,Object> getParamByMesskey(String key,String appNo,AuditTaskDataFillterDto auditTaskDataFillterDto){
+        Map<String,Object> param =   IaisCommonUtils.genNewHashMap();
+        String syName = AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME;
+        String newDateString = Formatter.formatDate(new Date());
+        String licenceDueDateString;
+        if(auditTaskDataFillterDto.getLicenceDueDate() != null){
+            licenceDueDateString =  Formatter.formatDate(auditTaskDataFillterDto.getLicenceDueDate());
+        }else {
+            licenceDueDateString = "";
+        }
+        if(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK.equalsIgnoreCase(key)){
+            param.put("DDMMYYYY",newDateString);
+            param.put("appno", appNo);
+            param.put("hCIName",  auditTaskDataFillterDto.getHclName());
+            param.put("hCICode",  auditTaskDataFillterDto.getHclCode());
+            param.put("hCIAddress",auditTaskDataFillterDto.getAddress());
+            param.put("serviceName", auditTaskDataFillterDto.getSvcName());
+            param.put("licenceDueDate", licenceDueDateString);
+        }else if(MsgTemplateConstants. MSG_TEMPLATE_AUDIT_CANCELED_TASK .equalsIgnoreCase(key)){
+            param.put("appno", appNo);
+            param.put("hCIName",  auditTaskDataFillterDto.getHclName());
+            param.put("hCICode",  auditTaskDataFillterDto.getHclCode());
+            param.put("hCIAddress",auditTaskDataFillterDto.getAddress());
+            param.put("serviceName", auditTaskDataFillterDto.getSvcName());
+            param.put("licenceDueDate", licenceDueDateString);
+        }else if(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND.equalsIgnoreCase(key)){
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(InboxConst.URL_HTTPS).append(systemParamConfig.getIntraServerName()).append(InboxConst.URL_LICENCE_WEB_MODULE).append("MohAduitSystemList");
+            String url = stringBuilder.toString();
+            param.put("url", url);
+        }else if(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND.equalsIgnoreCase(key)){
+            param.put("List No","");//todo
+            param.put("generatedDate",newDateString);
+            param.put("byDate",newDateString);
+        }
+        param.put("syName",syName);
+        return param;
     }
 
     public  void saveAppForAuditToFe(AppSubmissionForAuditDto appSubmissionForAuditDto, boolean isCancel){

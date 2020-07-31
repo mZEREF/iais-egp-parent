@@ -28,7 +28,7 @@ public interface AuditSystemListService {
     void doRejectCancelTask(List<AuditTaskDataFillterDto> auditTaskDataDtos);
     void doCanceledTask(List<AuditTaskDataFillterDto> auditTaskDataDtos);
 
-    void sendEmailToIns(String ins,String emailKey,String appGroupNo,String email);
+    void sendEmailToIns(String emailKey,String appGroupNo,AuditTaskDataFillterDto auditTaskDataFillterDto);
 
     void sendMailForAuditPlaner(String emailKey);
 }

@@ -5,12 +5,18 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AuditTaskDataFillterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemPotitalListService;
+import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,13 +43,15 @@ public class AuditTcuListReminderJobHandler extends IJobHandler {
     AuditSystemPotitalListService auditSystemPotitalListService;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    @Autowired
+    private SystemBeLicClient systemBeLicClient;
     @Override
     public ReturnT<String> execute(String s) {
         logAbout("AuditTcuListReminderJob");
         try{
               if(isSendEmail() && isHaveTcuAudited(auditSystemPotitalListService.getSystemPotentailAdultList())){
                   auditSystemListService.sendMailForAuditPlaner(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND);
+                  saveJobRemindMsgTrackingDto();
               }else {
                   JobLogger.log("AuditTcuListReminderJob is no tcu task or no system send email time");
               }
@@ -77,9 +85,27 @@ public class AuditTcuListReminderJobHandler extends IJobHandler {
         calendar.setTime(new Date());
         int weekDay = calendar.get(Calendar.DAY_OF_WEEK);
         if((weekDay -1 == auditInspectorListReminderWeek) || (weekDay == 1 && auditInspectorListReminderWeek ==7)){
+            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDtoByMsgAAndCreatedAt(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND,"AuditTcuListReminderJob").getEntity();
+            if(jobRemindMsgTrackingDto == null ){
+                return true;
+            }
+            Calendar calendar2 =  Calendar.getInstance();
+            calendar2.setTime(jobRemindMsgTrackingDto.getCreateTime());
+            if(IaisEGPHelper.getCompareDate(calendar2.getTime(),calendar.getTime()) != 1){
             return true;
+            }
         }
         return false;
+    }
+
+    private void saveJobRemindMsgTrackingDto(){
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
+        JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
+        jobRemindMsgTrackingDto.setRefNo(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND);
+        jobRemindMsgTrackingDto.setMsgKey("AuditTcuListReminderJob");
+        jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        jobRemindMsgTrackingDto.setAuditTrailDto(intranet);
+        systemBeLicClient.updateJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
     }
 
 }
