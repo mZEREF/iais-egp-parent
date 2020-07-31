@@ -557,7 +557,18 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 
         //update appt
-        setApptUpdateList(processReSchedulingDto);
+        for(AppPremisesInspecApptDto apptDto : processReSchedulingDto.getAppPremisesInspecApptDtoList()){
+            apptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            apptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        }
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.updateAppPremisesInspecApptDtoList(processReSchedulingDto.getAppPremisesInspecApptDtoList()).getEntity();
+        if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtoList)){
+            for(AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtoList){
+                appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appPremisesInspecApptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            }
+            processReSchedulingDto.setAppPremisesInspecApptUpdateList(appPremisesInspecApptDtoList);
+        }
         //update application
         setUpdateApplicationDto(processReSchedulingDto,ApplicationConsts.APPLICATION_STATUS_RE_SCHEDULING_COMMON_POOL);
         //set history
