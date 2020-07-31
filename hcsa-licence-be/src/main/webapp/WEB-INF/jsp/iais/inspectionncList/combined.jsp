@@ -14,6 +14,7 @@
                                                     <th>Remarks</th>
                                                     <th>Rectified</th>
                                                     <th>Deconflict</th>
+                                                    <th></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -40,11 +41,18 @@
                                                                        onclick="javascript: doChangeDeconflict(1,'${ckkId}','${inspectorsParticipant.size()}')"/>
                                                                 </c:if>
                                                             </td>
+                                                            <td>
+                                                                <c:if test="${answerForDifDtoStatus.index == 0}">
+                                                                    <c:set value = "error_${item.incqDto.sectionNameShow}${item.incqDto.itemId}com" var = "err"/>
+                                                                    <span class="error-msg" id="<c:out value="${err}"/>" name="iaisErrorMsg"></span>
+                                                            </c:if>
+                                                            </td>
                                                         </tr>
                                                     </c:forEach>
                                                     <tr id="${ckkId}comDiv${inspectorsParticipant.size()}" style="background-color:${ item.incqDto.sameAnswer ? 'white' : (empty item.incqDto.deconflict ? 'lightcoral': 'lightgreen')}" >
                                                         <td>Self Assessment</td>
                                                         <td>${item.incqDto.selfAnswer}</td>
+                                                        <td></td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>

@@ -504,11 +504,11 @@ public class InspectionNcCheckListDelegator {
         InspectionCheckListItemValidate inspectionCheckListItemValidate = new InspectionCheckListItemValidate();
         Map errMap =  inspectionCheckListItemValidate.validate(request);
         if(!errMap.isEmpty()){
-            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
+            ParamUtil.setRequestAttr(request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
             serListDto.setCheckListTab("chkList");
             ParamUtil.setSessionAttr(request,SERLISTDTO,serListDto);
             setRate(request);
-           // ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
         }else {
             serListDto.setCheckListTab("chkList");
             setRate(request);

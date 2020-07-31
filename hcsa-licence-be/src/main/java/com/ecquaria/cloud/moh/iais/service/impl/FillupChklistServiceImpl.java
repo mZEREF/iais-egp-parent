@@ -1011,9 +1011,15 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         for(AdhocNcCheckItemDto aditem : adchklDto.getAdItemList()){
             totalNum++;
             if(!StringUtil.isEmpty(aditem.getAdAnswer())){
-                doNum++;
-                if("No".equals(aditem.getAdAnswer())){
-                    ncNum++;
+                if( !"Yes".equalsIgnoreCase(aditem.getAdAnswer())){
+                    if(!StringUtil.isEmpty(aditem.getRemark())){
+                        doNum++;
+                        if("No".equals(aditem.getAdAnswer())){
+                            ncNum++;
+                        }
+                    }
+                }else {
+                    doNum++;
                 }
             }
         }
@@ -1040,10 +1046,16 @@ public class FillupChklistServiceImpl implements FillupChklistService {
         for(InspectionCheckQuestionDto cqDto : commonDto.getCheckList()){
             totalNum++;
             if(!StringUtil.isEmpty(cqDto.getChkanswer())){
-                doNum++;
-            }
-            if("No".equals(cqDto.getChkanswer())){
-                ncNum++;
+                if( !"Yes".equalsIgnoreCase(cqDto.getChkanswer())){
+                    if(!StringUtil.isEmpty(cqDto.getRemark())){
+                        doNum++;
+                        if("No".equals(cqDto.getChkanswer())){
+                            ncNum++;
+                        }
+                    }
+                }else {
+                    doNum++;
+                }
             }
         }
         serListDto.setGeneralTotal(totalNum);
@@ -1061,10 +1073,17 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                 for(InspectionCheckQuestionDto cqDto : temp.getCheckList()){
                     totalNum++;
                     if(!StringUtil.isEmpty(cqDto.getChkanswer())){
-                        doNum++;
-                        if("No".equals(cqDto.getChkanswer())){
-                            ncNum++;
+                        if( !"Yes".equalsIgnoreCase(cqDto.getChkanswer())){
+                            if(!StringUtil.isEmpty(cqDto.getRemark())){
+                                doNum++;
+                                if("No".equals(cqDto.getChkanswer())){
+                                    ncNum++;
+                                }
+                            }
+                        }else {
+                            doNum++;
                         }
+
                     }
                 }
             }

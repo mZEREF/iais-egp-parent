@@ -37,29 +37,6 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
         }
     }
 
-    private boolean adhocFillUpVad(HttpServletRequest request,Map<String, String> errMap) {
-        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
-        if(showDto!=null){
-            List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
-            if(itemDtoList!=null && !itemDtoList.isEmpty()){
-                boolean isError = true;
-                for(AdhocNcCheckItemDto temp:itemDtoList){
-                    if(StringUtil.isEmpty(temp.getAdAnswer())){
-                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","The field"));
-                        if(isError)
-                            isError = false;
-                    } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getRemark())){
-                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Remark","The field"));
-                        if(isError)
-                            isError = false;
-                    }
-                }
-                return  isError;
-            }
-        }
-        return true;
-    }
-
     private boolean serviceFillUpVad(HttpServletRequest request,Map<String, String> errMap) {
         InspectionFDtosDto serListDto = (InspectionFDtosDto)ParamUtil.getSessionAttr(request,"serListDto");
         int flagNum = 0;
@@ -83,14 +60,20 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
             List<InspectionCheckQuestionDto> cqDtoList = icDto.getCheckList();
             if(cqDtoList!=null && !cqDtoList.isEmpty()){
                 for(InspectionCheckQuestionDto temp:cqDtoList){
-                    if(StringUtil.isEmpty(temp.getChkanswer())){
-                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","The field"));
-                        if(isError)
-                        isError = false;
-                    }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
-                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Remark","The field"));
-                        if(isError)
-                            isError = false;
+                    if( !(StringUtil.isEmpty(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark()))){
+                        if(StringUtil.isEmpty(temp.getChkanswer())){
+                            if( !StringUtil.isEmpty(temp.getRemark())){
+                                errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","The field"));
+                                if(isError){
+                                    isError = false;
+                                }
+                            }
+                        }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
+                            errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Remarks","The field"));
+                            if(isError){
+                                isError = false;
+                            }
+                        }
                     }
                 }
             }
@@ -104,17 +87,51 @@ public class InspectionCheckListItemValidate implements CustomizeValidator {
         if(!IaisCommonUtils.isEmpty(cqDtoList)){
             boolean isError = true;
             for(InspectionCheckQuestionDto temp:cqDtoList){
-                if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Yes No N/A","The field"));
-                    if(isError)
-                        isError = false;
-                }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
-                    errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Remark","The field"));
-                    if(isError)
-                        isError = false;
+                if( !(StringUtil.isEmpty(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark()))){
+                    if(StringUtil.isEmpty(temp.getChkanswer())){
+                        if( !StringUtil.isEmpty(temp.getRemark())) {
+                            errMap.put(fDto.getSubName() + temp.getSectionNameShow() + temp.getItemId(), MessageUtil.replaceMessage(ERR0010, "Yes No N/A", "The field"));
+                            if (isError){
+                                isError = false;
+                            }
+                        }
+                    }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
+                        errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Remarks","The field"));
+                        if(isError){
+                            isError = false;
+                        }
+                    }
                 }
             }
             return  isError;
+        }
+        return true;
+    }
+
+    private boolean adhocFillUpVad(HttpServletRequest request,Map<String, String> errMap) {
+        AdCheckListShowDto showDto = (AdCheckListShowDto)ParamUtil.getSessionAttr(request,"adchklDto");
+        if(showDto!=null){
+            List<AdhocNcCheckItemDto> itemDtoList = showDto.getAdItemList();
+            if(itemDtoList!=null && !itemDtoList.isEmpty()){
+                boolean isError = true;
+                for(AdhocNcCheckItemDto temp:itemDtoList){
+                    if(!(StringUtil.isEmpty(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getRemark()))){
+                        if(StringUtil.isEmpty(temp.getAdAnswer())){
+                            errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","The field"));
+                            if(isError){
+                                isError = false;
+                            }
+
+                        } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getRemark())){
+                            errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Remarks","The field"));
+                            if(isError){
+                                isError = false;
+                            }
+                        }
+                    }
+                }
+                return  isError;
+            }
         }
         return true;
     }
