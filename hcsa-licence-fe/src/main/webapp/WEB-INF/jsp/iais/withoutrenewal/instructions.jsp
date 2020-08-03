@@ -64,7 +64,10 @@
                                 </div>
                             </div>
                             <c:if test="${isSingle == 'Y'}">
-                                <p>Click proceed to view your licence details and if necessary make amendment, before renewal. </p>
+                                <p>Click proceed to view your licence details and if necessary make amendment, before renewal.</p>
+                            </c:if>
+                            <c:if test="${isSingle == 'N'}">
+                                <p>Please submit renewal application for each individual licence if you wish to amend the details.</p>
                             </c:if>
                             <div class="application-tab-footer">
                                 <div class="row">
