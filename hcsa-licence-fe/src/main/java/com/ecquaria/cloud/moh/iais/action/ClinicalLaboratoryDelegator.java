@@ -737,6 +737,10 @@ public class ClinicalLaboratoryDelegator {
             currentSvcRelatedDto.setAppSvcCgoDtoList(appSvcCgoDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
             String crud_action_additional = bpc.request.getParameter("nextStep");
+            String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+            List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
+            //sync person dropdown and submisson dto
+            syncDropDownAndPsn(bpc,appSubmissionDto,appSvcCgoDtos,svcCode);
             if ("next".equals(crud_action_additional)) {
                 List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
                 Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
@@ -753,12 +757,6 @@ public class ClinicalLaboratoryDelegator {
                 HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
                 if (errList.isEmpty()) {
-                    //set person into dropdown
-                    List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
-                    String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-                    Map<String,AppSvcPrincipalOfficersDto> personMap = NewApplicationHelper.setPsnIntoSelMap(bpc.request, appSvcCgoDtos, svcCode);
-                    //sync data
-                    NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
                     if (allChecked.isEmpty()) {
                         coMap.put("information", "information");
                     }
@@ -948,7 +946,9 @@ public class ClinicalLaboratoryDelegator {
             }
             appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
-
+            String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+            //sync person dropdown and submisson dto
+            syncDropDownAndPsn(bpc,appSubmissionDto,appSvcPrincipalOfficersDtoList,svcCode);
             if ("next".equals(crud_action_additional)) {
                 List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
                 Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
@@ -970,11 +970,6 @@ public class ClinicalLaboratoryDelegator {
                 HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
                 if (map.isEmpty()) {
-                    //set person into dropdown
-                    String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-                    Map<String,AppSvcPrincipalOfficersDto> personMap = NewApplicationHelper.setPsnIntoSelMap(bpc.request, appSvcPrincipalOfficersDtoList, svcCode);
-                    //sync data
-                    NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
                     if (allChecked.isEmpty()) {
                         coMap.put("information", "information");
                     }
@@ -1370,6 +1365,9 @@ public class ClinicalLaboratoryDelegator {
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, currentSvcRelatedDto);
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
             String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
+            String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+            //sync person dropdown and submisson dto
+            syncDropDownAndPsn(bpc,appSubmissionDto,appSvcMedAlertPersonList,svcCode);
             if ("next".equals(nextStep)) {
                 if (appSubmissionDto.isNeedEditController()) {
 //                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
@@ -1392,15 +1390,10 @@ public class ClinicalLaboratoryDelegator {
                 if (!errorMap.isEmpty()) {
                     ParamUtil.setRequestAttr(bpc.request, "errorMsg", WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, HcsaLicenceFeConstant.MEDALERT_PERSON);
-                    //todo change
+                    //todo change(medAlert page is the final svc page,will jump to preview page)
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,AppServicesConsts.NAVTABS_SERVICEFORMS);
                     return;
                 } else {
-                    //set person into dropdown
-                    String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
-                    Map<String,AppSvcPrincipalOfficersDto> personMap = NewApplicationHelper.setPsnIntoSelMap(bpc.request, appSvcMedAlertPersonList, svcCode);
-                    //sync data
-                    NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
@@ -2639,4 +2632,22 @@ public class ClinicalLaboratoryDelegator {
         appPsnEditDto.setSubSpeciality(false);
         appPsnEditDto.setPreferredMode(false);
     }
+
+    private void syncDropDownAndPsn(BaseProcessClass bpc,AppSubmissionDto appSubmissionDto,List<AppSvcPrincipalOfficersDto> personList,String svcCode){
+        for(AppSvcPrincipalOfficersDto person:personList){
+            String idType = person.getIdType();
+            String idNo = person.getIdNo();
+            String name = person.getName();
+            //Provisional judgment
+            //personnel data=>sync , personnel ext data => the same svc =>sync
+            boolean needSync = !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !StringUtil.isEmpty(name);
+            if(needSync){
+                //set person into dropdown
+                Map<String,AppSvcPrincipalOfficersDto> personMap = NewApplicationHelper.setPsnIntoSelMap(bpc.request, personList, svcCode);
+                //sync data
+                NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
+            }
+        }
+    }
+
 }
