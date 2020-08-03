@@ -1011,26 +1011,30 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     }
 
     private void inspectionDateSendEmail(Date submitDt, String url, String licenseeId, String taskId) {
-        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
-        if(inspectionEmailTemplateDto != null) {
-            String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
-            map.put("process_url", StringUtil.viewHtml(url));
-            String mesContext;
-            try {
-                mesContext = MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(), map);
-            } catch (IOException | TemplateException e) {
-                log.error(e.getMessage(), e);
-                throw new IaisRuntimeException(e);
+        try{
+            InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
+            if(inspectionEmailTemplateDto != null) {
+                String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
+                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+                map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
+                map.put("process_url", StringUtil.viewHtml(url));
+                String mesContext;
+                try {
+                    mesContext = MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(), map);
+                } catch (IOException | TemplateException e) {
+                    log.error(e.getMessage(), e);
+                    throw new IaisRuntimeException(e);
+                }
+                EmailDto emailDto = new EmailDto();
+                emailDto.setContent(mesContext);
+                emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
+                emailDto.setSender(mailSender);
+                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+                emailDto.setClientQueryCode(taskId);
+                emailClient.sendNotification(emailDto);
             }
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
-            emailDto.setSender(mailSender);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            emailDto.setClientQueryCode(taskId);
-            emailClient.sendNotification(emailDto);
+        } catch (Exception e){
+            log.error(e.getMessage(), e);
         }
     }
 
