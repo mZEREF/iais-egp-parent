@@ -8,8 +8,10 @@ import com.stripe.model.Account;
 import com.stripe.model.Charge;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentMethod;
+import com.stripe.model.checkout.Session;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.AccountCreateParams;
+import com.stripe.param.checkout.SessionCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +36,30 @@ public class StripeServiceImpl implements StripeService {
                         .addRequestedCapability(AccountCreateParams.RequestedCapability.CARD_PAYMENTS)
                         .addRequestedCapability(AccountCreateParams.RequestedCapability.TRANSFERS)
                         .build();
-
         return Account.create(params);
+    }
+
+    @Override
+    public Session createSession(SessionCreateParams params) throws StripeException {
+        // Set your secret key. Remember to switch to your live secret key in production!
+// See your keys here: https://dashboard.stripe.com/account/apikeys
+        Stripe.apiKey = GatewayConfig.stripeKey;
+
+
+        Session session = Session.create(params);
+        return session;
+
+    }
+
+    @Override
+    public Session retrieveSession(String csId) throws StripeException {
+        Stripe.apiKey = GatewayConfig.stripeKey;
+
+        Session session =
+                Session.retrieve(
+                        csId
+                );
+        return session;
     }
 
     @Override
@@ -46,12 +70,13 @@ public class StripeServiceImpl implements StripeService {
     }
 
     @Override
-    public void authentication() {
+    public RequestOptions authentication() {
         Stripe.apiKey = GatewayConfig.stripeKey;
 
         RequestOptions requestOptions = RequestOptions.builder()
                 .setApiKey(GatewayConfig.stripeKey)
                 .build();
+        return requestOptions;
 
     }
 

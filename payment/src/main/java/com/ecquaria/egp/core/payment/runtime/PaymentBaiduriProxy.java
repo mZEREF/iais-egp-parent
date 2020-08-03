@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.ServerConfig;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
@@ -14,8 +15,9 @@ import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Account;
-import com.stripe.model.Charge;
+import com.stripe.model.checkout.Session;
+import com.stripe.net.RequestOptions;
+import com.stripe.param.checkout.SessionCreateParams;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
@@ -72,7 +74,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		Map<String, String> fields = null;
 		try {
 			fields = getFieldsMap(bpc);
-			fields.put("vpc_ReturnURL","https://" + bpc.request.getServerName()+fields.get("vpc_ReturnURL"));
+			fields.put("vpc_ReturnURL",AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+fields.get("vpc_ReturnURL"));
 			String secureHash = hashAllFields(fields, DEFAULT_SECURE_HASH_TYPE);
 			fields.put("vpc_SecureHash", secureHash);
 			fields.put("vpc_SecureHashType", DEFAULT_SECURE_HASH_TYPE);
@@ -88,21 +90,41 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		String reqNo = fields.get("vpc_MerchTxnRef");
 		String returnUrl=this.getPaymentData().getContinueUrl();
 		try {
-			PaymentBaiduriProxyUtil.getStripeService().authentication();
-			Account account= PaymentBaiduriProxyUtil.getStripeService().createAccount();
-			srcSystemConfDto.setClientKey(account.getId());
-			List<Object> paymentMethodTypes =
-					new ArrayList<>();
-			paymentMethodTypes.add("card");
-			Map<String, Object> params = new HashMap<>();
-			params.put("amount", Double.parseDouble(amo)/100);
-			params.put("currency", "sgd");
-			params.put(
-					"payment_method_types",
-					paymentMethodTypes
-			);
-			PaymentBaiduriProxyUtil.getStripeService().createPaymentIntent(params);
-
+			RequestOptions requestOptions=PaymentBaiduriProxyUtil.getStripeService().authentication();
+//			Map<String, Object> params = new HashMap<>();
+//			params.put("amount", Double.parseDouble(amo)/100);
+//			params.put("currency", "eur");
+//			params.put("source",fields.get("tok_amex"));
+//			params.put(
+//					"description",
+//					"My First Test Charge (created for API docs)"
+//			);
+//			Charge charge= PaymentBaiduriProxyUtil.getStripeService().createCharge(params);
+			SessionCreateParams createParams =
+					SessionCreateParams.builder()
+							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.IDEAL)
+							.setMode(SessionCreateParams.Mode.PAYMENT)
+							.setSuccessUrl(AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+returnUrl)
+							.setCancelUrl(AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+returnUrl)
+							.addLineItem(
+									SessionCreateParams.LineItem.builder()
+											.setQuantity(1L)
+											.setPriceData(
+													SessionCreateParams.LineItem.PriceData.builder()
+															.setCurrency("eur")
+															.setUnitAmount(Long.parseLong(amo)/100)
+															.setProductData(
+																	SessionCreateParams.LineItem.PriceData.ProductData.builder()
+																			.setName("T-shirt")
+																			.build())
+															.build())
+											.build())
+							.build();
+			Session session= PaymentBaiduriProxyUtil.getStripeService().createSession(createParams);
+			srcSystemConfDto.setClientKey(session.getId());
+//			PaymentIntent paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(session.getPaymentIntent());
+//			System.out.println(paymentIntent.getCharges());
 		} catch (StripeException e) {
 			log.info(e.getMessage(),e);
 			logger.info(e.getMessage(),e);
@@ -166,7 +188,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		try{
 
 			PaymentBaiduriProxyUtil.getStripeService().authentication();
-			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+			Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
 			Map<String, Object> card = new HashMap<>();
 			card.put("number", fields.get("vpc_CardNum"));
 			card.put("exp_month", 7);
@@ -179,15 +201,15 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		}catch (Exception e){
 			log.info(e.getMessage(),e);
 		}
-		Map<String, Object> params = new HashMap<>();
-		params.put("amount", amount);
-		params.put("currency", "sgd");
-		params.put("source",fields.get("card"));
-		params.put(
-				"description",
-				"My First Test Charge (created for API docs)"
-		);
-		Charge charge= PaymentBaiduriProxyUtil.getStripeService().createCharge(params);
+//		Map<String, Object> params = new HashMap<>();
+//		params.put("amount", amount);
+//		params.put("currency", "eur");
+//		params.put("source",fields.get("tok_amex"));
+//		params.put(
+//				"description",
+//				"My First Test Charge (created for API docs)"
+//		);
+//		Charge charge= PaymentBaiduriProxyUtil.getStripeService().createCharge(params);
 
 		String response = "payment success";
 		setPaymentResponse(response);
@@ -214,11 +236,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 				paymentDto.setAmount(amount);
 				paymentDto.setReqRefNo(refNo);
 				paymentDto.setTxnRefNo(transNo);
-				try {
-					paymentDto.setInvoiceNo(charge.getId());
-				}catch (Exception e){
-					paymentDto.setInvoiceNo(fields.get("vpc_ReceiptNo"));
-				}
+				paymentDto.setInvoiceNo(fields.get("vpc_ReceiptNo"));
+
 				paymentDto.setPmtStatus(status);
 				PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
@@ -237,7 +256,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
-			String bigsUrl ="https://" + request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
+			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
 
 
 			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
@@ -270,7 +289,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		String reqNo = fields.get("vpc_MerchTxnRef");
 		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
 		String results="?result="+MaskUtil.maskValue("result","cancelled")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt",DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","");
-		String bigsUrl ="https://" + bpc.request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
+		String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
 
 		try {
 			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);

@@ -11,8 +11,9 @@ import com.ecquaria.cloud.moh.iais.service.StripeService;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentAppGrpClient;
 import com.ecquaria.cloud.moh.iais.service.client.PaymentClient;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
-import com.stripe.model.Charge;
-import com.stripe.net.RequestOptions;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.stripe.model.checkout.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -39,7 +40,7 @@ public class PaymentCheckNotResultFromBankJob {
         log.debug(StringUtil.changeForLog("the do doStart start ...."));
     }
 
-    public void action(BaseProcessClass bpc){
+    public void action(BaseProcessClass bpc) throws StripeException {
         log.debug(StringUtil.changeForLog("the do action start ...."));
         List<PaymentRequestDto> paymentRequestDtos=paymentClient.getAllPayingPaymentRequestDto().getEntity();
         for (PaymentRequestDto payReq:paymentRequestDtos
@@ -47,13 +48,13 @@ public class PaymentCheckNotResultFromBankJob {
             PaymentRequestDto paymentRequestDto=paymentClient.getPaymentRequestDtoByReqRefNo(payReq.getReqRefNo()).getEntity();
             PaymentBaiduriProxyUtil.getStripeService().authentication();
 
-            RequestOptions requestOptions=stripeService.connectedAccounts(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+            Session session=stripeService.retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+            PaymentIntent paymentIntent=stripeService.retrievePaymentIntent(session.getPaymentIntent());
 
             PaymentDto paymentDto=paymentClient.getPaymentDtoByReqRefNo(paymentRequestDto.getReqRefNo()).getEntity();
             ApplicationGroupDto applicationGroupDto=paymentAppGrpClient.paymentUpDateByGrpNo(paymentRequestDto.getReqRefNo()).getEntity();
             if(paymentDto!=null){
-                Charge charge=stripeService.retrieveCharge(paymentDto.getInvoiceNo());
-                if(charge!=null && "succeeded".equals(charge.getStatus())){
+                if(paymentIntent!=null && "succeeded".equals(paymentIntent.getStatus())){
                     paymentDto.setPmtStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                     paymentRequestDto.setStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
                     applicationGroupDto.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);

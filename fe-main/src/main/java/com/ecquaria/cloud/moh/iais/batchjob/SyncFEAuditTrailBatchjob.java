@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.SyncAuditTrailRecordsService;
+import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -21,6 +22,8 @@ import java.util.List;
 public class SyncFEAuditTrailBatchjob {
     @Autowired
     private SyncAuditTrailRecordsService syncAuditTrailRecordsService;
+    @Autowired
+    private AuditTrailMainClient auditTrailMainClient;
 
     public void start(BaseProcessClass bpc){
         log.info("-------------------   start --------------");
@@ -37,6 +40,11 @@ public class SyncFEAuditTrailBatchjob {
             syncAuditTrailRecordsService.saveFile(data);
             log.info("------------------- saveFile  end --------------");
             syncAuditTrailRecordsService.compressFile();
+            for (AuditTrailEntityDto a:auditTrailDtos
+            ) {
+                a.setMigrated(2);
+            }
+            auditTrailMainClient.syucUpdateAuditTrail(auditTrailDtos);
             log.info("------------------- compressFile  end --------------");
             auditTrailDtos= syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
         }while (auditTrailDtos.size()>2);

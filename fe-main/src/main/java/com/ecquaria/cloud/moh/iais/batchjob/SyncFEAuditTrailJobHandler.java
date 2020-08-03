@@ -6,6 +6,7 @@ import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
 import com.ecquaria.cloud.moh.iais.service.SyncAuditTrailRecordsService;
+import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,8 @@ public class SyncFEAuditTrailJobHandler extends IJobHandler {
 
     @Autowired
     private SyncAuditTrailRecordsService syncAuditTrailRecordsService;
+    @Autowired
+    private AuditTrailMainClient auditTrailMainClient;
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
@@ -36,6 +39,11 @@ public class SyncFEAuditTrailJobHandler extends IJobHandler {
                 syncAuditTrailRecordsService.saveFile(data);
                 log.info("------------------- saveFile  end --------------");
                 syncAuditTrailRecordsService.compressFile();
+                for (AuditTrailEntityDto a:auditTrailDtos
+                     ) {
+                    a.setMigrated(2);
+                }
+                auditTrailMainClient.syucUpdateAuditTrail(auditTrailDtos);
                 log.info("------------------- compressFile  end --------------");
                 auditTrailDtos= syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
             }while (auditTrailDtos.size()>2);
