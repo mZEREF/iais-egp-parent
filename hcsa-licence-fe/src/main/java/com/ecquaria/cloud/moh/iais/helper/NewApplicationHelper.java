@@ -1695,7 +1695,7 @@ public class NewApplicationHelper {
         try {
             field = person.getClass().getDeclaredField(fieldName);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            log.error(StringUtil.changeForLog("not found this field:"+fieldName));
         }
         if(field != null){
             ReflectionUtils.makeAccessible(field);
@@ -1704,6 +1704,7 @@ public class NewApplicationHelper {
                 field.set(person,value);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
+                log.error(StringUtil.changeForLog(e.getMessage()),e);
             }
         }
         return removeArrIndex(arr,i);
