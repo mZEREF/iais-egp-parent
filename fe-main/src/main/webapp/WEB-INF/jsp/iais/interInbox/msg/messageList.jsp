@@ -47,7 +47,7 @@
                         <C:if test="${msgPage == 'msgView'}">
                             <iais:sortableHeader needSort="false" field="" value=" "/>
                         </C:if>
-                        <iais:sortableHeader needSort="true" field="subject" value="Subject"/>
+                        <iais:sortableHeader needSort="true" field="subject" value="Subject" style="width:30%"/>
                         <iais:sortableHeader needSort="true" field="message_type_desc"
                                              value="Message Type"/>
                         <iais:sortableHeader needSort="true" field="ref_no" value="Ref. No."/>
