@@ -467,27 +467,27 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
     public boolean closeTaskWhenWhAppApprove(String appId) {
+        boolean result = false;
         AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
         if (premiseMiscDto != null){
-            String oldApplicationId = premiseMiscDto.getAppPremCorreId();
+            String oldApplicationId = premiseMiscDto.getRelateRecId();
             if (!StringUtil.isEmpty(oldApplicationId)){
                 List<String> applicationList = IaisCommonUtils.genNewArrayList();
                 applicationList.add(oldApplicationId);
-                List<ApplicationDto> applicationDtoList = applicationClient.getApplicationDtosByIds(applicationList).getEntity();
-                if (applicationDtoList != null){
-                    applicationDtoList.forEach(h -> {
-                        List<TaskDto> taskDtoList = taskOrganizationClient.getTaskbyApplicationNo(h.getApplicationNo()).getEntity();
-                        if (taskDtoList != null && taskDtoList.size()>0){
-                            taskDtoList.forEach(c -> {
-                                c.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
-                                taskOrganizationClient.updateTask(c).getEntity();
-                            });
-                        }
-                    });
+                ApplicationDto applicationDto = applicationClient.getApplicationById(oldApplicationId).getEntity();
+                if (applicationDto != null){
+                    List<TaskDto> taskDtoList = taskOrganizationClient.getTaskbyApplicationNo(applicationDto.getApplicationNo()).getEntity();
+                    if (taskDtoList != null && taskDtoList.size()>0){
+                        taskDtoList.forEach(c -> {
+                            c.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                            taskOrganizationClient.updateTask(c).getEntity();
+                        });
+                    }
+                    result = true;
                 }
             }
         }
-        return false;
+        return result;
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -1521,19 +1522,19 @@ public class HcsaApplicationDelegator {
                     }
                 }
             }else if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
-                if (applicationDto != null){
-                    AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
-                    AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
-                    String oldAppId = premiseMiscDto.getRelateRecId();
-                    ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
-                    appReturnFeeDto.setApplicationNo(oldApplication.getApplicationNo());
-                    appReturnFeeDto.setReturnAmount(oldApplication.getReturnFee());
-                    appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
-                    List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
-                    saveReturnFeeDtos.add(appReturnFeeDto);
-                    broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
-                    broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
-                }
+                AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
+                AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                String oldAppId = premiseMiscDto.getRelateRecId();
+                ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+
+//                AppFeeDetailsDto appFeeDetailsDto = applicationService.getAppFeeDetailsDtoByApplicationNo(oldApplication.getApplicationNo());
+//                appReturnFeeDto.setApplicationNo(oldApplication.getApplicationNo());
+//                appReturnFeeDto.setReturnAmount(appFeeDetailsDto.getLaterFee());
+//                appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
+//                List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
+//                saveReturnFeeDtos.add(appReturnFeeDto);
+//                broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+//                broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
             }
         }
 
