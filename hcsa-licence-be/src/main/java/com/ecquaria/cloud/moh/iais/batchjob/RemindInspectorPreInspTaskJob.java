@@ -17,14 +17,9 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -44,16 +39,7 @@ import java.util.Map;
 public class RemindInspectorPreInspTaskJob {
 
     @Autowired
-    private InspectionRectificationProService inspectionRectificationProService;
-
-    @Autowired
     private InspectionAssignTaskService inspectionAssignTaskService;
-
-    @Autowired
-    private OrganizationClient organizationClient;
-
-    @Autowired
-    private HcsaChklClient hcsaChklClient;
 
     @Autowired
     private NotificationHelper notificationHelper;
@@ -68,13 +54,7 @@ public class RemindInspectorPreInspTaskJob {
     private SystemParamConfig systemParamConfig;
 
     @Autowired
-    private InspectionTaskClient inspectionTaskClient;
-
-    @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-
-    @Autowired
-    private SystemBeLicClient systemBeLicClient;
 
     /**
      * StartStep: remindDoPreInspTaskStart
@@ -140,6 +120,9 @@ public class RemindInspectorPreInspTaskJob {
         String hciCode = appGrpPremisesDto.getHciCode();
         if(StringUtil.isEmpty(hciName)){
             hciName = "-";
+        }
+        if(StringUtil.isEmpty(hciCode)){
+            hciCode = "-";
         }
         String appNo = applicationDto.getApplicationNo();
         String appType = applicationDto.getApplicationType();

@@ -49,11 +49,11 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -63,7 +63,6 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -98,10 +97,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     private OrganizationClient organizationClient;
 
     @Autowired
-    private InspEmailService inspEmailService;
-
-    @Autowired
-    private EmailClient emailClient;
+    private NotificationHelper notificationHelper;
 
     @Autowired
     private AppEicClient appEicClient;
@@ -1048,6 +1044,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             map.put("emailAddressOne", address1);
             map.put("emailAddressTwo", address2);
             map.put("phoneNo", phoneNo);
+            notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST, map, appNo, appNo,
+                    NotificationHelper.RECEIPT_TYPE_LICENCE_ID, licenseeId);
         } catch (Exception e){
             log.error(e.getMessage(), e);
         }

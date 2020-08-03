@@ -134,6 +134,9 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
         if(StringUtil.isEmpty(hciName)){
             hciName = "-";
         }
+        if(StringUtil.isEmpty(hciCode)){
+            hciCode = "-";
+        }
         String appNo = applicationDto.getApplicationNo();
         String appType = applicationDto.getApplicationType();
         String serviceId = applicationDto.getServiceId();

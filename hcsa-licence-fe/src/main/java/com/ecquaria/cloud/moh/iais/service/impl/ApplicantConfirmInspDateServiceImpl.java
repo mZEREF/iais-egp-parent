@@ -1,7 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
@@ -18,7 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -26,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -36,11 +35,15 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
+import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionFeClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrgEicClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,6 +77,12 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Autowired
     private OrgEicClient orgEicClient;
+
+    @Autowired
+    private NotificationHelper notificationHelper;
+
+    @Autowired
+    private AppConfigClient appConfigClient;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -256,7 +265,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         appEicClient.updateStatus(eicRequestTrackingDtos);
         //create task
         apptFeConfirmDateDto.setEmailDto(null);
-        createApptDateTaskEmail(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
@@ -469,7 +478,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         appEicClient.updateStatus(eicRequestTrackingDtos);
 
         apptFeConfirmDateDto.setEmailDto(null);
-        createApptDateTaskEmail(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
@@ -509,7 +518,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         appEicClient.updateStatus(eicRequestTrackingDtos);
 
         apptFeConfirmDateDto.setEmailDto(null);
-        createApptDateTaskEmail(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
+        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
     }
 
     private void setCreateInspectionStatus(ApptInspectionDateDto apptInspectionDateDto, String status) {
@@ -591,7 +600,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         }
     }
 
-    private void createApptDateTaskEmail(ApptFeConfirmDateDto apptFeConfirmDateDto, String processUrl) {
+    private void createApptDateTask(ApptFeConfirmDateDto apptFeConfirmDateDto, String processUrl) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         String applicationNo = getApplicationByCorrId(apptFeConfirmDateDto.getAppPremCorrId());
@@ -709,23 +718,90 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         eicRequestTrackingDtos.add(eicRequestTrackingDto);
         appEicClient.updateStatus(eicRequestTrackingDtos);
         //send email and create task
-        Date date = apptFeConfirmDateDto.getSaveDate();
-        String dateStr = "no date";
-        if(date != null){
-            dateStr = Formatter.formatDateTime(date, "yyyy-MM-dd");
-        }
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(dateStr);
-        emailDto.setSubject("Applicant submits a request for a particular date");
-        emailDto.setSender(mailSender);
-        emailDto.setClientQueryCode(apptFeConfirmDateDto.getAppPremCorrId());
-        apptFeConfirmDateDto.setEmailDto(emailDto);
-        createApptDateTaskEmail(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
+        sendEmailRequestNewDate(apptFeConfirmDateDto);
+        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
         ccCalendarStatusEic(apptCalendarStatusDto);
+    }
+
+    private void sendEmailRequestNewDate(ApptFeConfirmDateDto apptFeConfirmDateDto) {
+        try{
+            String appPremCorrId = apptFeConfirmDateDto.getAppPremCorrId();
+            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            String appType = applicationDto.getApplicationType();
+            String appNo = applicationDto.getApplicationNo();
+            String appGroupId = applicationDto.getAppGrpId();
+            String licenceId = applicationDto.getOriginLicenceId();
+            String licenceDueDateStr = "-";
+            if(!StringUtil.isEmpty(licenceId)){
+                LicenceDto licenceDto = licenceClient.getLicBylicId(licenceId).getEntity();
+                Date licenceDueDate = licenceDto.getExpiryDate();
+                licenceDueDateStr = Formatter.formatDateTime(licenceDueDate, "yyyy/MM/dd");
+            }
+            List<String> appGroupIds = IaisCommonUtils.genNewArrayList();
+            appGroupIds.add(appGroupId);
+            List<ApplicationGroupDto> applicationGroupDtos = applicationClient.getApplicationGroupsByIds(appGroupIds).getEntity();
+            Date submitDate = new Date();
+            if(!IaisCommonUtils.isEmpty(applicationGroupDtos)){
+                ApplicationGroupDto applicationGroupDto = applicationGroupDtos.get(0);
+                if(applicationGroupDto != null){
+                    if(applicationGroupDto.getSubmitDt() != null){
+                        submitDate = applicationGroupDto.getSubmitDt();
+                    }
+                }
+            }
+            String submitDtStr = Formatter.formatDateTime(submitDate, "yyyy/MM/dd HH:mm:ss");
+            AppGrpPremisesDto appGrpPremisesDto = applicationClient.getAppGrpPremisesByCorrId(appPremCorrId).getEntity();
+            String hciName = appGrpPremisesDto.getHciName();
+            if(StringUtil.isEmpty(hciName)){
+                hciName = "-";
+            }
+            String hciCode = appGrpPremisesDto.getHciCode();
+            if(StringUtil.isEmpty(hciCode)){
+                hciCode = "-";
+            }
+            String serviceId = applicationDto.getServiceId();
+            HcsaServiceDto hcsaServiceDto = appConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+            String serviceName = hcsaServiceDto.getSvcName();
+            Date date = apptFeConfirmDateDto.getSaveDate();
+            String dateStr = "no date";
+            if(date != null){
+                dateStr = Formatter.formatDateTime(date, "yyyy/MM/dd");
+                StringBuilder html = new StringBuilder(dateStr);
+                html.append(" ");
+                html.append(apptFeConfirmDateDto.getAmPm());
+                dateStr = html.toString();
+            }
+            List<SelectOption> inspDateOption = apptFeConfirmDateDto.getInspectionDate();
+            List<String> dateStrList = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(inspDateOption)){
+                for(SelectOption so : inspDateOption){
+                    String inspDateStr = so.getText();
+                    dateStrList.add(inspDateStr);
+                }
+            } else {
+                dateStrList.add("-");
+            }
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            map.put("hciName", hciName);
+            map.put("hciCode", hciCode);
+            map.put("appType", appType);
+            map.put("appDate", submitDtStr);
+            map.put("hciCode", hciCode);
+            map.put("serviceName", serviceName);
+            map.put("licence_due_date", licenceDueDateStr);
+            map.put("applicationNo", appNo);
+            map.put("dateStrList", dateStrList);
+            map.put("fe_date", dateStr);
+            //TODO
+            /*notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION, map, appNo, appNo,
+                    NotificationHelper.RECEIPT_TYPE_LICENCE_ID, licenseeId);*/
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        }
     }
 
     /**
@@ -865,7 +941,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         appEicClient.updateStatus(eicRequestTrackingDtos);
 
         apptFeConfirmDateDto.setEmailDto(null);
-        createApptDateTaskEmail(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
+        createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_RE_CONFIRM_INSPECTION_DATE);
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
