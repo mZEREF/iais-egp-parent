@@ -140,12 +140,7 @@
         <div class="col-xs-12 col-md-8"  style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select  name="Subsumption">
-              <option value="" >Select one</option>
-              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected</c:if>>${hcsaServiceCategoryDto.name}</option>
-              </c:forEach>
-            </select>
+            <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
             <span id="error_Subsumption" class="error-msg" name="iaisErrorMsg" ></span>
           </div>
         </div>
@@ -157,12 +152,7 @@
         <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select  name="Pre-requisite">
-              <option value="">Select one</option>
-              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected</c:if>>${hcsaServiceCategoryDto.name}</option>
-              </c:forEach>
-            </select>
+            <iais:multipleSelect name="Pre-requisite" selectValue="${selectPreRequisite}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
             <span id="error_Prerequisite" class="error-msg" name="iaisErrorMsg" ></span>
           </div>
         </div>
@@ -463,7 +453,7 @@
                   <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
                     <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
                       <option value="">Please Select</option>
-                      <option value="mandatory" selected="selected">Mandatory</option>
+                      <option value="mandatory" >Mandatory</option>
                       <option value="optional">Optional</option>
                     </select>
                   </div>

@@ -236,7 +236,6 @@ public class LicenceViewServiceDelegator {
 
                     }
                 }
-
             } else {
                 ParamUtil.setSessionAttr(bpc.request, NOT_VIEW, NOT_VIEW);
 

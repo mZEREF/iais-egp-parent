@@ -35,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -2169,9 +2170,10 @@ public class ClinicalLaboratoryDelegator {
                             }
                             Boolean flag = Boolean.FALSE;
                             String substring = docName.substring(docName.lastIndexOf('.') + 1);
-                            FileType[] fileType = FileType.values();
-                            for (FileType f : fileType) {
-                                if (f.name().equalsIgnoreCase(substring)) {
+                            String sysFileType = systemParamConfig.getUploadFileType();
+                            String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
+                            for (String f : sysFileTypeArr) {
+                                if (f.equalsIgnoreCase(substring)) {
                                     flag = Boolean.TRUE;
                                 }
                             }

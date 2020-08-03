@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.action.AppealDelegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -33,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -107,7 +109,8 @@ public class AppealServiceImpl implements AppealService {
     private FeEicGatewayClient feEicGatewayClient;
     @Autowired
     private RequestForChangeService requestForChangeService;
-
+    @Autowired
+    private SystemParamConfig systemParamConfig;
     @Override
     public String submitData(HttpServletRequest request) {
         String appealingFor = (String) request.getSession().getAttribute(APPEALING_FOR);
@@ -490,12 +493,17 @@ public class AppealServiceImpl implements AppealService {
                 }
                 String filename = appPremisesSpecialDocDto.getDocName();
                 String fileType = filename.substring(filename.lastIndexOf('.') + 1);
-                //todo change
-                if (!"PDF".equalsIgnoreCase(fileType) && !"PNG".equalsIgnoreCase(fileType) &&
-                        !"JPG".equalsIgnoreCase(fileType) && !"DOC".equalsIgnoreCase(fileType) && !"DOCX".equalsIgnoreCase(fileType)) {
+                String sysFileType = systemParamConfig.getUploadFileType();
+                String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
+                Boolean flag=Boolean.FALSE;
+                for(String f:sysFileTypeArr){
+                    if(f.equalsIgnoreCase(fileType)){
+                        flag=Boolean.TRUE;
+                    }
+                }
+                if (!flag) {
                     map.put("file", "Wrong file type");
                 }
-
             }
 
         }

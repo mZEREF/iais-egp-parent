@@ -112,12 +112,7 @@
         <div class="col-xs-12 col-md-8"  style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select  name="Subsumption">
-              <option value="">Select one</option>
-              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected</c:if>>${hcsaServiceCategoryDto.name}</option>
-              </c:forEach>
-            </select>
+            <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
           </div>
         </div>
       </div>
@@ -128,12 +123,7 @@
         <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
           <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select  name="Subsumption">
-              <option value="">Select one</option>
-              <c:forEach items="${hcsaServiceCategoryDtos}" var="hcsaServiceCategoryDto">
-                <option value="${hcsaServiceCategoryDto.id}" <c:if test="${hcsaServiceDto.categoryId==hcsaServiceCategoryDto.id}">selected</c:if>>${hcsaServiceCategoryDto.name}</option>
-              </c:forEach>
-            </select>
+            <iais:multipleSelect name="Pre-requisite" selectValue="${selectPreRequisite}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
           </div>
         </div>
       </div>
@@ -338,24 +328,28 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
-          <div class="col-xs-10 col-md-3">
+          <div class="col-xs-10 col-md-6">
             <div class="components width-center">
-              <a class="btn btn-secondary width-70 " onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
+              <a class="btn btn-secondary width-70" onclick="showNEW()"><span class="view">NEW APPLICATION</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
+          <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showRENEW()"><span class="view">RENEW</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showAPPEAL()"><span class="view">APPEAL</span></a>
             </div>
           </div>
-          <div class="col-xs-10 col-md-3">
-            <div class="components width-center" style="text-align: center;width: 100%">
-              <a class="btn btn-secondary width-70" style="width: 70%" onclick="showRFC()"><span class="view">REQUEST FOR CHANGE</span></a>
+          <div class="col-xs-10 col-md-6">
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showRFC()"><span class="view">REQUEST FOR CHANGE</span></a>
             </div>
           </div>
         </div>
@@ -363,28 +357,31 @@
 
       <div  class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
-          <div class="col-xs-10 col-md-3">
+          <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showCESSATION()"><span class="view">CESSATION</span></a>
             </div>
           </div>
-         <%-- <div class="col-xs-10 col-md-3">
-            <div class="components width-center">
-              <a class="btn btn-secondary width-70" onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
-            </div>
-          </div>--%>
+          <%-- <div class="col-xs-10 col-md-6">
+             <div class="components width-center">
+               <a class="btn btn-secondary width-70" onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
+             </div>
+           </div>--%>
 
-          <div class="col-xs-10 col-md-3">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+          <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
             </div>
           </div>
-         <%-- <div class="col-xs-10 col-md-3">
-            <div class="components width-center">
-              <a class="btn btn-secondary width-70 " onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
-            </div>
-          </div>--%>
-
+          <%-- <div class="col-xs-10 col-md-6">
+             <div class="components width-center">
+               <a class="btn btn-secondary width-70" onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
+             </div>
+           </div>--%>
         </div>
       </div>
 
@@ -410,7 +407,7 @@
                   <div class="col-xs-12 col-md-6"  style="margin-top: 1%;margin-bottom: 1%">
                     <select disabled name="isMandatory${routingStage.stageCode}${routingStages.key}">
                       <option value="">Please Select</option>
-                      <option value="mandatory" selected="selected">Mandatory</option>
+                      <option value="mandatory" >Mandatory</option>
                       <option value="optional">Optional</option>
                     </select>
                   </div>

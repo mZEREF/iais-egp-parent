@@ -609,13 +609,14 @@
                                   <div class="pop-up-body">
                                     <div class="field col-sm-12 control-label formtext">
 
-                                      <div class="row">
+                                      <div class="row" style="margin-top: 1%;margin-bottom: 1%">
                                         <div class="col-md-6">
                                           <label>Licensee Information</label>
                                         </div>
                                         <div class="col-md-6">
                                         </div>
                                       </div>
+
                                       <div class="row">
                                         <div class="col-md-8">
                                           Who is the Licensee?
@@ -786,15 +787,13 @@
                                           </div>
                                         </div>
                                       </div>
-
-                                      <div class="row">
+                                      <div class="row" style="margin-top: 1%;margin-bottom: 1%">
                                         <div class="col-md-6">
                                           <label>Board Member 1</label>
                                         </div>
                                         <div class="col-md-6">
                                         </div>
                                       </div>
-
 
                                       <div class="row">
                                         <div class="col-md-6">
@@ -810,7 +809,7 @@
 
                                       <div class="row">
                                         <div class="col-md-6">
-                                          name
+                                          Name
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
@@ -864,14 +863,13 @@
                                         </div>
                                       </div>
 
-                                      <div class="row">
+                                      <div class="row" style="margin-top: 1%;margin-bottom: 1%">
                                         <div class="col-md-6">
-                                          <label>Board Member 1</label>
+                                          <label>Board Member 2</label>
                                         </div>
                                         <div class="col-md-6">
                                         </div>
                                       </div>
-
                                       <div class="row">
                                         <div class="col-md-6">
                                           Salutation
@@ -885,7 +883,7 @@
 
                                       <div class="row">
                                         <div class="col-md-6">
-                                          name
+                                          Name
                                         </div>
                                         <div class="col-md-6">
                                           <div  class="col-md-6">
@@ -926,9 +924,7 @@
                                           </div>
                                         </div>
                                       </div>
-
-
-                                      <div class="row">
+                                      <div class="row" style="margin-top: 1%;margin-bottom: 1%">
                                         <div class="col-md-6">
                                           <label>Authorised Person 1</label>
                                         </div>
@@ -996,9 +992,18 @@
                                           </div>
                                         </div>
                                       </div>
+
+                                      <div class="row" style="margin-top: 1%;margin-bottom: 1%">
+                                        <div class="col-md-6">
+                                          <label>Authorised Person 2</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                        </div>
+                                      </div>
+
                                       <div class="row">
                                         <div class="col-md-6">
-                                          name
+                                          Name
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">

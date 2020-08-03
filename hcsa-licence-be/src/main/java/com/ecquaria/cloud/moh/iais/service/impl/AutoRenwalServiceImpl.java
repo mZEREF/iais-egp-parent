@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -88,6 +89,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         dayList.add(systemParamConfig.getFifthLicenceReminder());
         dayList.add(systemParamConfig.getSixthLicenceReminder());
         dayList.add(systemParamConfig.getSeventhLicenceReminder());
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(dayList))+"dayList");
         List<JobRemindMsgTrackingDto> JobRemindMsgTrackingDto = systemBeLicClient.listJob().getEntity();
         Map<String, List<LicenceDto>> entity = hcsaLicenClient.licenceRenwal(dayList).getEntity();
         entity.forEach((k, v) -> {

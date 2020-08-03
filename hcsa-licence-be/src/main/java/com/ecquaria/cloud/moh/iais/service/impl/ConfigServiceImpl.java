@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCategoryDto;
@@ -16,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingS
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpePremisesTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpeRoutingSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecificStageWorkloadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSpecifiedCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
@@ -216,8 +218,14 @@ public class ConfigServiceImpl implements ConfigService {
         Map<String, List<HcsaConfigPageDto>> tables = getTables(request);
         request.setAttribute("routingStagess", tables);
         List<HcsaServiceDto> baseHcsaServiceDto = hcsaConfigClient.baseHcsaService().getEntity();
-        request.getSession().setAttribute("baseHcsaServiceDto",baseHcsaServiceDto);
-
+        List<SelectOption> selectOptionList=new ArrayList<>(baseHcsaServiceDto.size());
+        for(HcsaServiceDto hcsaServiceDto : baseHcsaServiceDto){
+            SelectOption selectOption=new SelectOption();
+            selectOption.setValue(hcsaServiceDto.getId());
+            selectOption.setText(hcsaServiceDto.getSvcCode());
+            selectOptionList.add(selectOption);
+        }
+        request.getSession().setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
     }
 
     @Override
@@ -252,6 +260,15 @@ public class ConfigServiceImpl implements ConfigService {
                      String stepCode = hcsaServiceStepSchemeDto.getStepCode();
                      stringList.add(stepCode);
                  }
+                 List<HcsaServiceDto> baseHcsaServiceDtos = hcsaConfigClient.baseHcsaService().getEntity();
+                 List<SelectOption> selectOptionList=new ArrayList<>(baseHcsaServiceDtos.size());
+                 for(HcsaServiceDto baseHcsaService : baseHcsaServiceDtos){
+                     SelectOption selectOption =new SelectOption();
+                     selectOption.setText(baseHcsaService.getSvcCode());
+                     selectOption.setValue(baseHcsaService.getId());
+                     selectOptionList.add(selectOption);
+                 }
+                 request.setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
                  request.setAttribute("hcsaServiceStepSchemeDto", stringList);
                  request.setAttribute("PremisesType", premisesSet);
                  request.setAttribute("hcsaServiceDto", hcsaServiceDto);
@@ -506,11 +523,11 @@ public class ConfigServiceImpl implements ConfigService {
                errorMap.put("manhourCount"+i,"UC_CHKLMD001_ERR001");
             }
         }
-        String numberDocument = request.getParameter("NumberDocument");
+        String numberDocument = hcsaServiceConfigDto.getComDocSize();
         if(!numberDocument.matches("^[0-9]+$")){
             errorMap.put("NumberDocument","NEW_ERR0003");
         }
-        String numberfields = request.getParameter("Numberfields");
+        String numberfields = hcsaServiceConfigDto.getServiceDocSize();
         if(!numberfields.matches("^[0-9]+$")){
             errorMap.put("Numberfields","NEW_ERR0003");
         }
@@ -760,23 +777,23 @@ public class ConfigServiceImpl implements ConfigService {
         List<WorkingGroupDto> workingGroupDtoList = IaisCommonUtils.genNewArrayList();
         for (WorkingGroupDto workingGroupDto : hcsa) {
             String groupName = workingGroupDto.getGroupName();
-            String stageName = hcsaSvcRoutingStageDto.getStageName();
-            if (groupName.contains("Admin Screening") && stageName.contains("Admin Screening")) {
+            String stageCode = hcsaSvcRoutingStageDto.getStageCode();
+            if (groupName.contains("Admin Screening") && stageCode.contains("ASO")) {
                 workingGroupDtoList.add(workingGroupDto);
             }
-            if (groupName.contains("Professional Screening") && stageName.contains("Professional Screening")) {
+            if (groupName.contains("Professional Screening") && stageCode.contains("PSO")) {
                 workingGroupDtoList.add(workingGroupDto);
             }
-            if (groupName.contains("Inspection Stage") && stageName.contains("Inspection Stage")) {
+            if (groupName.contains("Inspection Stage") && stageCode.contains("INS")) {
                 workingGroupDtoList.add(workingGroupDto);
             }
-            if (groupName.contains("Level 1 Approval") && stageName.contains("Level 1 Approval")) {
+            if (groupName.contains("Level 1 Approval") && stageCode.contains("AO1")) {
                 workingGroupDtoList.add(workingGroupDto);
             }
-            if (groupName.contains("Level 2 Approval") && stageName.contains("Level 2 Approval")) {
+            if (groupName.contains("Level 2 Approval") && stageCode.contains("AO2")) {
                 workingGroupDtoList.add(workingGroupDto);
             }
-            if (groupName.contains("Level 3 Approval") && stageName.contains("Level 3 Approval")) {
+            if (groupName.contains("Level 3 Approval") && stageCode.contains("AO3")) {
                 workingGroupDtoList.add(workingGroupDto);
             }
             hcsaConfigPageDto.setWorkingGroup(workingGroupDtoList);
@@ -796,23 +813,23 @@ public class ConfigServiceImpl implements ConfigService {
             List<WorkingGroupDto> workingGroupDtoList = IaisCommonUtils.genNewArrayList();
             for (WorkingGroupDto workingGroupDto : workingGroup) {
                 String groupName = workingGroupDto.getGroupName();
-                String stageName = hcsaSvcRoutingStageDto.getStageName();
-                if (groupName.contains("Admin Screening") && stageName.contains("Admin Screening")) {
+                String stageCode = hcsaSvcRoutingStageDto.getStageCode();
+                if (groupName.contains("Admin Screening") && stageCode.contains("ASO")) {
                     workingGroupDtoList.add(workingGroupDto);
                 }
-                if (groupName.contains("Professional Screening") && stageName.contains("Professional Screening")) {
+                if (groupName.contains("Professional Screening") && stageCode.contains("PSO")) {
                     workingGroupDtoList.add(workingGroupDto);
                 }
-                if (groupName.contains("Inspection Stage") && stageName.contains("Inspection Stage")) {
+                if (groupName.contains("Inspection Stage") && stageCode.contains("INS")) {
                     workingGroupDtoList.add(workingGroupDto);
                 }
-                if (groupName.contains("Level 1 Approval") && stageName.contains("Level 1 Approval")) {
+                if (groupName.contains("Level 1 Approval") && stageCode.contains("AO1")) {
                     workingGroupDtoList.add(workingGroupDto);
                 }
-                if (groupName.contains("Level 2 Approval") && stageName.contains("Level 2 Approval")) {
+                if (groupName.contains("Level 2 Approval") && stageCode.contains("AO2")) {
                     workingGroupDtoList.add(workingGroupDto);
                 }
-                if (groupName.contains("Level 3 Approval") && stageName.contains("Level 3 Approval")) {
+                if (groupName.contains("Level 3 Approval") && stageCode.contains("AO3")) {
                     workingGroupDtoList.add(workingGroupDto);
                 }
                 hcsaConfigPageDto.setWorkingGroup(workingGroupDtoList);
@@ -935,14 +952,28 @@ public class ConfigServiceImpl implements ConfigService {
         }
         List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getServiceVersions(hcsaServiceDto.getSvcCode()).getEntity();
         request.setAttribute("hcsaServiceDtosVersion",hcsaServiceDtos);
-        List<HcsaServiceCategoryDto> hcsaServiceCategoryDto = getHcsaServiceCategoryDto();
-        request.getSession().setAttribute("hcsaServiceCategoryDtos",hcsaServiceCategoryDto);
+        List<HcsaServiceDto> baseHcsaServiceDtos = hcsaConfigClient.baseHcsaService().getEntity();
+        List<SelectOption> selectOptionList=new ArrayList<>(baseHcsaServiceDtos.size());
+        for(HcsaServiceDto baseHcsaService : baseHcsaServiceDtos){
+            SelectOption selectOption =new SelectOption();
+            selectOption.setText(baseHcsaService.getSvcCode());
+            selectOption.setValue(baseHcsaService.getId());
+            selectOptionList.add(selectOption);
+        }
+        List<HcsaSvcSpecifiedCorrelationDto> hcsaSvcSpecifiedCorrelationDtos = hcsaConfigClient.getHcsaSvcSpecifiedCorrelationDto(hcsaServiceDto.getId()).getEntity();
+        StringBuilder stringBuilder=new StringBuilder();
+        for(HcsaSvcSpecifiedCorrelationDto hcsaSvcSpecifiedCorrelationDto : hcsaSvcSpecifiedCorrelationDtos){
+            stringBuilder.append(hcsaSvcSpecifiedCorrelationDto.getBaseSvcId()).append('#');
+        }
+        String string = stringBuilder.toString();
+        request.setAttribute("selectSubsumption",string.substring(0,string.lastIndexOf('#')));
+        request.setAttribute("selectPreRequisite",string.substring(0,string.lastIndexOf('#')));
+        request.setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
         request.setAttribute("hcsaServiceDto", hcsaServiceDto);
         String id = hcsaServiceDto.getId();
-        List<HcsaServiceDto> baseHcsaServiceDtos = hcsaConfigClient.baseHcsaService().getEntity();
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaConfigClient.getHcsaSvcDocConfigDto(id).getEntity();
 
-        if(!hcsaSvcDocConfigDtos.isEmpty()){
+        if(hcsaSvcDocConfigDtos!=null){
             request.setAttribute("serviceDocSize",hcsaSvcDocConfigDtos.size());
             request.setAttribute("serviceDoc",hcsaSvcDocConfigDtos);
         }

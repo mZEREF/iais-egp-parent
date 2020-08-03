@@ -50,7 +50,7 @@ public class ConfigServiceDelegator {
     private OrganizationClient organizationClient;
 
     public void start(BaseProcessClass bpc){
-        log.info("*********startt***********");
+        log.info("*********start***********");
         removeSession(bpc);
         AuditTrailHelper.auditFunction("ConfigServiceDelegator", "Assign Report");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr( bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -158,8 +158,12 @@ public class ConfigServiceDelegator {
         List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = configService.getHcsaSvcRoutingStageDtos();
         //if service type is sub must to chose
         String[] subsumption = request.getParameterValues("Subsumption");
+        String selectSubsumption = ParamUtil.getStringsToString(request, "Subsumption");
         // if service type is pre must be Choice
         String[] preRequisite = request.getParameterValues("Pre-requisite");
+        String selectPreRequisite = ParamUtil.getStringsToString(request, "Pre-requisite");
+        request.setAttribute("selectSubsumption",selectSubsumption);
+        request.setAttribute("selectPreRequisite",selectPreRequisite);
         String serviceId = request.getParameter("serviceId");
         String serviceName = request.getParameter("serviceName");
         String description = request.getParameter("description");
@@ -170,7 +174,6 @@ public class ConfigServiceDelegator {
         String version = request.getParameter("version");
         String[] subTypes = request.getParameterValues("subType");
         String[] levels = request.getParameterValues("level");
-
         List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos= IaisCommonUtils.genNewArrayList();
         Map<Integer ,String> level1=IaisCommonUtils.genNewHashMap();
         if(levels!=null){
@@ -457,6 +460,7 @@ public class ConfigServiceDelegator {
         String[] serviceDocMandatories = request.getParameterValues("serviceDocMandatory");
         String numberfields = request.getParameter("Numberfields");
         String individualPremises = request.getParameter("individualPremises");
+
         request.setAttribute("serviceDocSize",numberDocument);
         if(descriptionServiceDocs!=null){
             for(int i=0;i<descriptionServiceDocs.length;i++){
@@ -472,7 +476,7 @@ public class ConfigServiceDelegator {
                 }else if("1".equals(serviceDocMandatories[i])){
                     hcsaSvcDocConfigDto.setIsMandatory(true);
                 }
-                hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
+              /*  hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);*/
             }
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -553,7 +557,7 @@ public class ConfigServiceDelegator {
                     hcsaConfigPageDto.setWorkingGroupId(workingGroupId);
                 }
                 if(!StringUtil.isEmpty(workstageId)){
-                    hcsaSvcStageWorkingGroupDto.setId(workstageId);
+                    /*hcsaSvcStageWorkingGroupDto.setId(workstageId);*/
                     //todo delete
                     /*  hcsaSvcSpecificStageWorkloadDto.setId(workloadId);*/
                 }
@@ -564,10 +568,10 @@ public class ConfigServiceDelegator {
                     hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
                     hcsaSvcSpeRoutingSchemeDto.setSchemeType(routingScheme);
                     hcsaSvcSpeRoutingSchemeDto.setAppType(every);
-                    hcsaSvcSpeRoutingSchemeDto.setStatus("CMSTAT001");
+                    hcsaSvcSpeRoutingSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     hcsaSvcSpecificStageWorkloadDto.setStageId(id);
                     hcsaSvcSpecificStageWorkloadDto.setAppType(every);
-                    hcsaSvcSpecificStageWorkloadDto.setStatus("CMSTAT001");
+                    hcsaSvcSpecificStageWorkloadDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                     hcsaSvcSpecificStageWorkloadDtoList.add(hcsaSvcSpecificStageWorkloadDto);
                     hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto);
                     if("INS".equals(stageCode)){
@@ -660,6 +664,8 @@ public class ConfigServiceDelegator {
         hcsaServiceConfigDto.setHcsaSvcStageWorkingGroupDtos(hcsaSvcStageWorkingGroupDtos);
         request.setAttribute("hcsaConfigPageDtos", hcsaConfigPageDtos);
         request.setAttribute("hcsaServiceStepSchemeDtos", hcsaServiceStepSchemeDtos);
+        hcsaServiceConfigDto.setComDocSize(numberDocument);
+        hcsaServiceConfigDto.setServiceDocSize(numberfields);
         return hcsaServiceConfigDto;
     }
 

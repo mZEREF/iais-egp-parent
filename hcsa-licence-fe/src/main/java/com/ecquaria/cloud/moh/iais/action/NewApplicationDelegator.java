@@ -67,6 +67,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.ServiceStepDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -5283,9 +5284,10 @@ public class NewApplicationDelegator {
             Boolean flag=Boolean.FALSE;
             String name = appGrpPrimaryDocDto.getDocName();
             String substring = name.substring(name.lastIndexOf('.')+1);
-            FileType[] fileType = FileType.values();
-            for(FileType f:fileType){
-                if(f.name().equalsIgnoreCase(substring)){
+            String sysFileType = systemParamConfig.getUploadFileType();
+            String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
+            for(String f:sysFileTypeArr){
+                if(f.equalsIgnoreCase(substring)){
                     flag=Boolean.TRUE;
                 }
             }
