@@ -35,6 +35,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -370,7 +371,7 @@ public class MasterCodeDelegator {
                     result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())){
-                    String errMsg = "Code Value From is a mandatory field.";
+                    String errMsg = "Code Value is a mandatory field.";
                     errItems.add(errMsg);
                     result = true;
                 }
@@ -380,7 +381,7 @@ public class MasterCodeDelegator {
                     result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom())){
-                    String errMsg = "Effective From is a mandatory field.";
+                    String errMsg = "Effective Start Date is a mandatory field.";
                     errItems.add(errMsg);
                     result = true;
                 }
@@ -412,22 +413,33 @@ public class MasterCodeDelegator {
                         result = true;
                     }
                 }
-                errMap.put(masterCodeToExcelDto.getCodeValue(),errItems);
-                errResult.add(errMap);
+                if (errItems.size()>0){
+                    errMap.put(masterCodeToExcelDto.getCodeValue(),errItems);
+                    errResult.add(errMap);
+                }
             }
             if (result){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
                 ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
-                ParamUtil.setRequestAttr(request,"ERR_RESULT_LIST_MAP",errResult);
+                ParamUtil.setSessionAttr(request,"ERR_RESULT_LIST_MAP",(Serializable) errResult);
             }else{
                 masterCodeService.saveMasterCodeList(masterCodeToExcelDtoList);
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
-                ParamUtil.setRequestAttr(request, "UPLOAD_DATE", new Date());
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
             }
         }catch (Exception e){
             errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "File save failed");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+        }
+    }
+
+    public void checkUploadFile(BaseProcessClass bpc) {
+        List<Map<String,List<String>>> errResult = (List<Map<String, List<String>>>) ParamUtil.getSessionAttr(bpc.request,"ERR_RESULT_LIST_MAP");
+        if (errResult != null && errResult.size()>0){
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+        }else{
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+            ParamUtil.setRequestAttr(bpc.request, "UPLOAD_DATE", new Date());
         }
     }
 

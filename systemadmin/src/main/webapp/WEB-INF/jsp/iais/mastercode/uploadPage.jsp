@@ -46,38 +46,7 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-            <c:choose>
-                <c:when test="${empty ERR_CONTENT}">
-                </c:when>
-                <c:otherwise>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>S/N</th>
-                            <th>Code Value</th>
-                            <th>Error Message</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach var="errCodeResultListMap" items="${ERR_RESULT_LIST_MAP}" varStatus="status">
-                                <c:forEach var="errCodeResultMap" items="${errCodeResultListMap}">
-                                    <tr>
-                                        <td>${status.index + 1}</td>
-                                        <td>${errCodeResultMap.key}</td>
-                                        <td>
-                                            <c:forEach items="${errCodeResultMap.value}" var="errCodeResultValue">
-                                                <p style="color: red">${errCodeResultValue}</p>
-                                            </c:forEach>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </c:forEach>
-                        </tbody>
-                    </table>
-                </c:otherwise>
-            </c:choose>
         </div>
         <div class="row">
             <div class="col-xs-6 col-md-4" style="padding-top: 4%">

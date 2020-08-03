@@ -66,7 +66,7 @@
     <JavaCode defClass="" executor="" methodName="doEdit_OnStepProcess_0" name="doEdit_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doUpload" x="1020" y="170">
+  <AutomaticStep defClass="" executor="" icon="" name="doUpload" x="1030" y="80">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -101,11 +101,18 @@
     <JavaCode defClass="" executor="" methodName="createCode_OnStepProcess_0" name="createCode_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="uploadStep" x="1220" y="250">
+  <AutomaticStep defClass="" executor="" icon="" name="uploadStep" x="1160" y="240">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="uploadStep_OnStepProcess_0" name="uploadStep_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="checkUploadFile" x="1120" y="340">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="checkUploadFile_OnStepProcess_0" name="checkUploadFile_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -152,13 +159,19 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="uploadPage" stageIndicator="" x="1150" y="170">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="uploadPage" stageIndicator="" x="1150" y="140">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="uploadAckPage" stageIndicator="" x="1120" y="480">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="uploadAckPage" stageIndicator="" x="1090" y="590">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="errMsgPage" stageIndicator="" x="1210" y="580">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -176,7 +189,10 @@
   <Condition componentIfFalse="/Steps/AutomaticStep/preateCreateCode" componentIfTrue="/Pages/WebPage/createCodeAckPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="460" y="550">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/doUpload" componentIfTrue="/Pages/WebPage/uploadAckPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="1140" y="320">
+  <Condition componentIfFalse="/Steps/AutomaticStep/doUpload" componentIfTrue="/Steps/AutomaticStep/checkUploadFile" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="1060" y="240">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Pages/WebPage/errMsgPage" componentIfTrue="/Pages/WebPage/uploadAckPage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond4" operator="=" rightOperand="&quot;Y&quot;" x="1150" y="430">
    <Description/>
   </Condition>
  </Conditions>
@@ -259,10 +275,10 @@
    <position>{(1050,440)(190,674)(200,20)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doUpload" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(660,20)(1040,190)}</position>
+   <position>{(660,20)(1050,100)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/uploadPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doUpload" style="oblique">
-   <position>{(1040,190)(1170,190)}</position>
+   <position>{(1050,100)(1170,160)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCreateCode" linkstyle="Direct" name="" sourceName="/Pages/WebPage/doCreateCodePage" style="oblique">
    <position>{(300,330)(310,490)}</position>
@@ -313,19 +329,31 @@
    <position>{(450,330)(480,460)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/uploadStep" linkstyle="Direct" name="" sourceName="/Pages/WebPage/uploadPage" style="oblique">
-   <position>{(1170,190)(1240,270)}</position>
+   <position>{(1170,160)(1180,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond3" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/uploadStep" style="oblique">
-   <position>{(1240,270)(1160,340)}</position>
+   <position>{(1180,260)(1080,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doUpload" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
-   <position>{(1160,340)(1040,190)}</position>
+   <position>{(1080,260)(1050,100)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/uploadAckPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
-   <position>{(1160,340)(1140,500)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/checkUploadFile" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
+   <position>{(1080,260)(1140,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/uploadAckPage" style="oblique">
-   <position>{(1140,500)(1050,440)}</position>
+   <position>{(1110,610)(1050,440)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond4" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/checkUploadFile" style="rectanular">
+   <position>{(1140,360)(1170,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/errMsgPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(1170,450)(1230,600)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/uploadAckPage" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond4" style="rectanular">
+   <position>{(1170,450)(1110,610)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doUpload" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/errMsgPage" style="rectanular">
+   <position>{(1230,600)(1050,100)}</position>
   </SynchronousLink>
  </Links>
 </Application>
