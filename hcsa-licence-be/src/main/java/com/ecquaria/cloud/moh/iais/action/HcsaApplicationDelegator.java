@@ -1012,13 +1012,21 @@ public class HcsaApplicationDelegator {
             //send sms
             sendSMS(msgId,licenseeId,msgInfoMap);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT).getEntity();
-            if(msgTemplateDto != null){
-                Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-                tempMap.put("APP_NO",StringUtil.viewHtml(applicationNo));
-                String subject = " " + applicationNo + "– Rejected ";
-                sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT,subject,licenseeId,appGrpId);
-            }
+//            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT).getEntity();
+//            if(msgTemplateDto != null){
+//                Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
+//                tempMap.put("APP_NO",StringUtil.viewHtml(applicationNo));
+//                String subject = " " + applicationNo + "– Rejected ";
+//                sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT,subject,licenseeId,appGrpId);
+//            }
+            //send email
+            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+            String applicationName = licenseeDto.getName();
+            Date date = new Date();
+            String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
+            String appType = MasterCodeUtil.getCodeDesc(applicationType);
+
+
             //send sms
             sendSMS(msgId,licenseeId,msgInfoMap);
             //send message
@@ -2503,7 +2511,7 @@ public class HcsaApplicationDelegator {
             //role is ao3 && status is 'Pending AO3 Approval'  have no verified
             if(!(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))){
                 if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
-                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
+                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Assign To"));
                 }
             }
         }
