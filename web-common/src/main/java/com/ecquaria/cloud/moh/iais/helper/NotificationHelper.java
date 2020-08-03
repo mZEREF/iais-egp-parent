@@ -234,7 +234,7 @@ public class NotificationHelper {
 		} else if (RECEIPT_TYPE_APP.equals(refType)) {
 			all.addAll(getRecriptApp(role, refId));
 		} else {
-
+			all.addAll(getOfficer(role));
 		}
 
 		return all;
