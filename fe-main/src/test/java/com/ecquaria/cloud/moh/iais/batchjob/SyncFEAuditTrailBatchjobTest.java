@@ -81,6 +81,7 @@ public class SyncFEAuditTrailBatchjobTest {
         auditList.add(dto);
         Whitebox.setInternalState(service, "sharedPath", "sharedPath");
         Whitebox.setInternalState(service, "auditTrailClient", auditTrailMainClient);
+        Whitebox.setInternalState(job, "auditTrailMainClient", auditTrailMainClient);
     }
 
     @Test
