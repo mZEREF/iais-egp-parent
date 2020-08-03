@@ -148,7 +148,7 @@
                                     </td>
                                     <td>
                                         <c:if test="${licenceQuery.status == 'LICEST001'}">
-                                            <a href="#" class="licToView">${licenceQuery.licenceNo}</a>
+                                            <a href="#" class="licToView" style="font-size: 16px">${licenceQuery.licenceNo}</a>
                                             <input type="hidden" name="licenId${status.index}"
                                                    value="<iais:mask name= "licenId${status.index}" value="${licenceQuery.id}"/>"/>
                                         </c:if>
