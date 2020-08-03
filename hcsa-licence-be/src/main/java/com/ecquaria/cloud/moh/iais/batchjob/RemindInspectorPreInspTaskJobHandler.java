@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
-import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
+import com.ecquaria.cloud.job.executor.handler.IJobHandler;
+import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -17,16 +19,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
-import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.Date;
@@ -39,21 +37,13 @@ import java.util.Map;
  * @author Shicheng
  * @date 2020/7/29 17:49
  **/
-@Delegator("remindInspectorPreInspTask")
+@JobHandler(value="kpiColourByWorkDaysJobHandler")
+@Component
 @Slf4j
-public class RemindInspectorPreInspTaskJob {
-
-    @Autowired
-    private InspectionRectificationProService inspectionRectificationProService;
+public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
 
     @Autowired
     private InspectionAssignTaskService inspectionAssignTaskService;
-
-    @Autowired
-    private OrganizationClient organizationClient;
-
-    @Autowired
-    private HcsaChklClient hcsaChklClient;
 
     @Autowired
     private NotificationHelper notificationHelper;
@@ -68,30 +58,33 @@ public class RemindInspectorPreInspTaskJob {
     private SystemParamConfig systemParamConfig;
 
     @Autowired
-    private InspectionTaskClient inspectionTaskClient;
-
-    @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
-    @Autowired
-    private SystemBeLicClient systemBeLicClient;
-
-    /**
-     * StartStep: remindDoPreInspTaskStart
-     *
-     * @param bpc
-     * @throws
-     */
-    public void remindDoPreInspTaskStart(BaseProcessClass bpc){
-        logAbout("Remind Inspector Do Pre Inspection");
+    @Override
+    public ReturnT<String> execute(String s) throws Exception {
+        try {
+            logAbout("Remind Inspector Do Pre Inspection");
+            List<ApplicationDto> applicationDtos =
+                    applicationClient.getApplicationByStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS).getEntity();
+            if(!IaisCommonUtils.isEmpty(applicationDtos)){
+                for(ApplicationDto applicationDto : applicationDtos){
+                    try {
+                        sendEmailByInspReadiness(applicationDto);
+                    } catch (Exception e) {
+                        JobLogger.log(e);
+                        log.error(e.getMessage(), e);
+                        continue;
+                    }
+                }
+            }
+            return ReturnT.SUCCESS;
+        } catch (Throwable e) {
+            log.error(e.getMessage(), e);
+            JobLogger.log(e);
+            return ReturnT.FAIL;
+        }
     }
 
-    /**
-     * StartStep: remindDoPreInspTaskStep
-     *
-     * @param bpc
-     * @throws
-     */
     public void remindDoPreInspTaskStep(BaseProcessClass bpc) {
         logAbout("Remind Inspector Do Pre Inspection");
         List<ApplicationDto> applicationDtos =
