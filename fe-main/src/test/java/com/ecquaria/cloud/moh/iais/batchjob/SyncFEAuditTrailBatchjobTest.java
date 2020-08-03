@@ -114,6 +114,7 @@ public class SyncFEAuditTrailBatchjobTest {
         when(content.listFiles()).thenReturn(null);
         when(content.getName()).thenReturn(".text");
         doNothing().when(zipOutputStream).closeEntry();
+        when(auditTrailMainClient.syucUpdateAuditTrail(auditList)).thenReturn(null);
         job.preDate(bpc);
         assertNotNull(bpc);
     }
