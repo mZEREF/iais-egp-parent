@@ -35,7 +35,7 @@ public class FrontendMsgRefreshJobHandler extends IJobHandler {
             List<MessageDto> list = systemBeLicClient.getMessagesToRefresh().getEntity();
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             for (MessageDto mc : list) {
-                map.put(mc.getCodeKey(), mc.getDescription());
+                map.put(mc.getCodeKey(), mc.getMessage());
                 mc.setNeedFlush(false);
             }
             MessageUtil.loadMessages(map);
