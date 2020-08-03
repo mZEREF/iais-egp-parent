@@ -2982,6 +2982,12 @@ public class NewApplicationDelegator {
             }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premisesType[i])){
                 premisesSel = offSitePremisesSelect[i];
             }
+            String premIndexNo = "";
+            try {
+                premIndexNo = premisesIndexNo[i];
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+            }
             String appType = appSubmissionDto.getAppType();
             boolean newApp =  requestInformationConfig ==null&&!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) && !ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType) ;
             if(newApp){
@@ -3002,7 +3008,7 @@ public class NewApplicationDelegator {
                 if(!AppConsts.YES.equals(isParyEdit[i])){
                     List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
                     for(AppGrpPremisesDto prem:appGrpPremisesDtos){
-                        if(prem.getPremisesSelect().equals(premisesSel)){
+                        if(prem.getPremisesIndexNo().equals(premIndexNo)){
                             appGrpPremisesDto = prem;
                             break;
                         }
@@ -4090,8 +4096,10 @@ public class NewApplicationDelegator {
                             for(AppSvcDocDto appSvcDocDto:appSvcDocDtos){
                                 appSvcDocDto.setId(null);
                             }
+                            appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
                         }
                     }
+                    appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
                 }
 
                 String appType =  appSubmissionDto.getAppType();
