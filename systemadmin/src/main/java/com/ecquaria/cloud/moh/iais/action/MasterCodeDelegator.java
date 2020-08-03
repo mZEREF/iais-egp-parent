@@ -216,7 +216,9 @@ public class MasterCodeDelegator {
         HttpServletRequest request = bpc.request;
         String categoryDescription = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_CATEGORY);
         String codeDescription = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_DESCRIPTION);
+        String codeValue = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_VALUE);
         String codeStatus = ParamUtil.getString(request, MasterCodeConstants.MASTER_CODE_STATUS);
+        String filterValue = ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         Date codeEffFrom = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM));
         Date codeEffTo = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO));
         String codeStartDate = Formatter.formatDateTime(codeEffFrom, SystemAdminBaseConstants.DATE_FORMAT);
@@ -237,6 +239,16 @@ public class MasterCodeDelegator {
             searchParam.addFilter(MasterCodeConstants.MASTER_CODE_DESCRIPTION, "%" + codeDescription + "%",true);
         } else {
             searchParam.removeFilter(MasterCodeConstants.MASTER_CODE_DESCRIPTION);
+        }
+        if (!StringUtil.isEmpty(codeValue)) {
+            searchParam.addFilter(MasterCodeConstants.MASTER_CODE_VALUE, "%" + codeValue + "%",true);
+        } else {
+            searchParam.removeFilter(MasterCodeConstants.MASTER_CODE_VALUE);
+        }
+        if (!StringUtil.isEmpty(filterValue)) {
+            searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE, "%" + filterValue + "%",true);
+        } else {
+            searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_FILTER_VALUE);
         }
         if (codeEffFrom != null && codeEffTo != null) {
             if (codeEffFrom.compareTo(codeEffTo) <= 0) {
