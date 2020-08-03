@@ -15,6 +15,7 @@ import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
 import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.RequestOptions;
 import com.stripe.param.checkout.SessionCreateParams;
@@ -113,7 +114,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 											.setPriceData(
 													SessionCreateParams.LineItem.PriceData.builder()
 															.setCurrency("eur")
-															.setUnitAmount(Long.parseLong(amo)/100)
+															.setUnitAmount(Long.parseLong(amo))
 															.setProductData(
 																	SessionCreateParams.LineItem.PriceData.ProductData.builder()
 																			.setName("T-shirt")
@@ -184,32 +185,32 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
 		HttpServletRequest request = bpc.request;
-
+		PaymentIntent paymentIntent=null;
 		try{
 
 			PaymentBaiduriProxyUtil.getStripeService().authentication();
 			Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
-			Map<String, Object> card = new HashMap<>();
-			card.put("number", fields.get("vpc_CardNum"));
-			card.put("exp_month", 7);
-			card.put("exp_year", 2021);
-			card.put("cvc", "314");
-			Map<String, Object> params = new HashMap<>();
-			params.put("type", "card");
-			params.put("card", card);
-			PaymentBaiduriProxyUtil.getStripeService().createPaymentMethod(params);
+//			Map<String, Object> card = new HashMap<>();
+//			if(StringUtil.isEmpty(fields.get("vpc_CardNum"))){
+//				card.put("number", "4242424242424242");
+//			}else {
+//				card.put("number", fields.get("vpc_CardNum"));
+//			}
+//			card.put("exp_month", 7);
+//			card.put("exp_year", 2021);
+//			card.put("cvc", "314");
+//			Map<String, Object> params = new HashMap<>();
+//			params.put("type", "card");
+//			params.put("card", card);
+//			PaymentMethod paymentMethod= PaymentBaiduriProxyUtil.getStripeService().createPaymentMethod(params);
+			//paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(checkoutSession.getPaymentIntent());
+			//PaymentMethod paymentMethod=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentMethod(paymentIntent.getPaymentMethod());
+			//Map<String, Object> paramsPaymentMethod = new HashMap<>();
+			//paramsPaymentMethod.put("payment_method",paymentMethod);
+			//paymentIntent= PaymentBaiduriProxyUtil.getStripeService().confirmPaymentIntent(checkoutSession.getPaymentIntent(),paramsPaymentMethod);
 		}catch (Exception e){
 			log.info(e.getMessage(),e);
 		}
-//		Map<String, Object> params = new HashMap<>();
-//		params.put("amount", amount);
-//		params.put("currency", "eur");
-//		params.put("source",fields.get("tok_amex"));
-//		params.put(
-//				"description",
-//				"My First Test Charge (created for API docs)"
-//		);
-//		Charge charge= PaymentBaiduriProxyUtil.getStripeService().createCharge(params);
 
 		String response = "payment success";
 		setPaymentResponse(response);
@@ -226,6 +227,13 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 					status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
 				}else{
 					status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
+				}
+				if(paymentIntent!=null){
+					if(paymentIntent.getStatus().equals("succeeded")){
+						status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+					}else {
+						status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
+					}
 				}
 //				setReceiptStatus(status);
 				setPaymentTransStatus(status);

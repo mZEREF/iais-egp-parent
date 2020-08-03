@@ -31,4 +31,5 @@ public interface StripeService {
     PaymentIntent capturePaymentIntent(String pi) throws StripeException;
     PaymentIntent cancelPaymentIntent(String pi) throws StripeException;
     PaymentMethod createPaymentMethod(Map<String, Object> params);
+    PaymentMethod retrievePaymentMethod(String pm) throws StripeException;
 }

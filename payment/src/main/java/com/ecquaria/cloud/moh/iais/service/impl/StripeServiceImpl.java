@@ -158,7 +158,7 @@ public class StripeServiceImpl implements StripeService {
                 null;
         try {
             paymentIntent = PaymentIntent.retrieve(
-                    "pi_1EUnCGJnvmXwwenz1Ayma5Ya"
+                    pi
             );
         } catch (StripeException e) {
             log.info(e.getMessage(),e);
@@ -216,6 +216,17 @@ public class StripeServiceImpl implements StripeService {
         } catch (StripeException e) {
             log.info(e.getMessage(),e);
         }
+        return paymentMethod;
+    }
+
+    @Override
+    public PaymentMethod retrievePaymentMethod(String pm) throws StripeException {
+        Stripe.apiKey = GatewayConfig.stripeKey;
+
+        PaymentMethod paymentMethod =
+                PaymentMethod.retrieve(
+                        "pm_1EUn5VJnvmXwwenzTDs9xSu5"
+                );
         return paymentMethod;
     }
 }
