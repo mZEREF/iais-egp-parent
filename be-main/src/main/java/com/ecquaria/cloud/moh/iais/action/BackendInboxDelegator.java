@@ -681,6 +681,11 @@ public class BackendInboxDelegator {
                 if(isAllSubmit){
                     //update current application status in db search result
                     updateCurrentApplicationStatus(bpc,saveApplicationDtoList);
+
+                    for (ApplicationDto viewitem:saveApplicationDtoList
+                         ) {
+                        log.info(StringUtil.changeForLog("****viewitem ***** " + viewitem.getApplicationNo()));
+                    }
                     //get and set return fee
                     saveApplicationDtoList = hcsaConfigMainClient.returnFee(saveApplicationDtoList).getEntity();
                     //save return fee
@@ -706,12 +711,15 @@ public class BackendInboxDelegator {
         List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
         //save return fee
         for(ApplicationDto applicationDto : applicationDtos){
+            log.info(StringUtil.changeForLog("**** saveRejectReturnFee applicationDto ***** " + applicationDto.getApplicationNo()));
+            log.info(StringUtil.changeForLog("**** saveRejectReturnFee applicationDto ***** " + applicationDto.getStatus()));
             if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
                 appReturnFeeDto.setReturnAmount(applicationDto.getReturnFee());
                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                 saveReturnFeeDtos.add(appReturnFeeDto);
+                log.info(StringUtil.changeForLog("**** saveRejectReturnFee applicationDto ReturnFee***** " +applicationDto.getApplicationNo() + " and " + applicationDto.getReturnFee()));
 //                applicationService.saveAppReturnFee(appReturnFeeDto);
             }
         }
@@ -751,7 +759,9 @@ public class BackendInboxDelegator {
         Map<String, String> returnFee = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request,"BackendInboxReturnFee");
         if(!IaisCommonUtils.isEmpty(returnFee) && !IaisCommonUtils.isEmpty(applicationDtos)){
             for (ApplicationDto applicationDto : applicationDtos){
+                log.info(StringUtil.changeForLog("****application return fee applicationDto***** " + applicationDto.getApplicationNo()));
                 for(Map.Entry<String, String> entry : returnFee.entrySet()) {
+                    log.info(StringUtil.changeForLog("****application return fee returnFee***** " + entry.getKey()));
                     if (entry.getKey().equals(applicationDto.getApplicationNo())) {
                         log.info(StringUtil.changeForLog("****application return fee***** " + entry.getKey() +" *****" + entry.getValue()));
                         applicationDto.setStatus(entry.getValue());
