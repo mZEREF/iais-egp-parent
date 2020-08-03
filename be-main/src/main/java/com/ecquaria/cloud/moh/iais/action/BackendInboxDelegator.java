@@ -331,17 +331,20 @@ public class BackendInboxDelegator {
                     if(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO.equals(status)){
                         try{
                             replay(bpc,applicationViewDto,taskDto);
+                            successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
                         }catch (Exception e){
                             log.info(e.getMessage(),e);
                         }
 
                     }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW.equals(status)){
+                        successStatus = InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER;
                         inspectorAo1(bpc,applicationViewDto,taskDto);
                     }else{
+                        successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
                         routingTask(bpc, HcsaConsts.ROUTING_STAGE_AO2, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02, RoleConsts.USER_ROLE_AO2,applicationViewDto,taskDto);
                     }
 
-                    successStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO2 end ...."));
                 }else if(RoleConsts.USER_ROLE_AO2.equals(loginContext.getCurRoleId())){
                     log.debug(StringUtil.changeForLog("the do rontingTaskToAO3 start ...."));
@@ -394,6 +397,9 @@ public class BackendInboxDelegator {
             }else if(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS.equals(successStatus)){
                 //AO3 DMS
                 successInfo = "LOLEV_ACK024";
+            }else if(InspectionConstants.INSPECTION_STATUS_PENDING_JOB_CREATE_TASK_TO_LEADER.equals(successStatus)){
+                //AO1 inspector draft email
+                successInfo = "LOLEV_ACK035";
             }
             ParamUtil.setRequestAttr(bpc.request,"successInfo",successInfo);
         }
