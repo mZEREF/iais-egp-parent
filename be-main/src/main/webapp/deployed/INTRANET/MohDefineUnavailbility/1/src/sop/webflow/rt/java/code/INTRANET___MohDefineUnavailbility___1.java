@@ -16,7 +16,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTRANET___MohDefineUnavailbility___1 extends BaseProcessClass {
 
-	private static final String DELEGATOR ="defineUnavailbilityDelegate";
+	private static final String DELEGATOR ="defineUnavailabilityDelegate";
 	
 	public void step1_OnStepProcess_0() throws Exception {
 	// 		Step1->OnStepProcess

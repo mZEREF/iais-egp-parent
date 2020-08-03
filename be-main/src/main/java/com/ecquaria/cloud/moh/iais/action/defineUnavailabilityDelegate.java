@@ -19,14 +19,14 @@ import sop.webflow.rt.api.BaseProcessClass;
  * @date 2019/11/26 14:07
  */
 
-@Delegator("defineUnavailbilityDelegate")
+@Delegator("defineUnavailabilityDelegate")
 @Slf4j
-public class DefineUnavailbilityDelegate {
+public class defineUnavailabilityDelegate {
 
     @Autowired
     UserRoleService userRoleService;
     public void doStart(BaseProcessClass bpc){
-        AuditTrailHelper.auditFunction("defineUnavailbilityDelegate", "defineUnavailbilityDelegate");
+        AuditTrailHelper.auditFunction("defineUnavailabilityDelegate", "defineUnavailabilityDelegate");
     }
 
     /**
