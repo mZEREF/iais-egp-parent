@@ -21,17 +21,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -510,7 +510,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     public void saveLeadSpecificDate(ApptInspectionDateDto apptInspectionDateDto, ApplicationViewDto applicationViewDto) {
         List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = IaisCommonUtils.genNewArrayList();
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
-        String taskId = apptInspectionDateDto.getTaskDto().getId();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         String serviceId;
         Date submitDt;
@@ -561,12 +560,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                 MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + urlId;
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         maskParams.put("appPremCorrId", urlId);
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         //send email
-        inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
-        //get service code to send message
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+        inspectionDateSendEmail(loginUrl, licenseeId, applicationViewDto, hcsaServiceDto, urlId);
+        //get service code to send message
         String serviceCode = hcsaServiceDto.getSvcCode();
         createMessage(url, serviceCode, submitDt, licenseeId, maskParams);
         //update app Info and insp Info
@@ -631,18 +630,17 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         //send message and email
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
-        String taskId = apptInspectionDateDto.getTaskDto().getId();
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE + urlId;
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         maskParams.put("appPremCorrId", urlId);
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName();
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         //send email
-        inspectionDateSendEmail(submitDt, loginUrl, licenseeId, taskId);
-        //get service code to send message
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+        inspectionDateSendEmail(loginUrl, licenseeId, applicationViewDto, hcsaServiceDto, urlId);
+        //get service code to send message
         String serviceCode = hcsaServiceDto.getSvcCode();
         createMessage(url, serviceCode, submitDt, licenseeId, maskParams);
         //save data to app table
@@ -1010,29 +1008,46 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
 
-    private void inspectionDateSendEmail(Date submitDt, String url, String licenseeId, String taskId) {
+    private void inspectionDateSendEmail(String url, String licenseeId, ApplicationViewDto applicationViewDto, HcsaServiceDto hcsaServiceDto, String appPremCorrId) {
         try{
-            InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
-            if(inspectionEmailTemplateDto != null) {
-                String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
-                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
-                map.put("process_url", StringUtil.viewHtml(url));
-                String mesContext;
-                try {
-                    mesContext = MsgUtil.getTemplateMessageByContent(inspectionEmailTemplateDto.getMessageContent(), map);
-                } catch (IOException | TemplateException e) {
-                    log.error(e.getMessage(), e);
-                    throw new IaisRuntimeException(e);
-                }
-                EmailDto emailDto = new EmailDto();
-                emailDto.setContent(mesContext);
-                emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
-                emailDto.setSender(mailSender);
-                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                emailDto.setClientQueryCode(taskId);
-                emailClient.sendNotification(emailDto);
+            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+            String licName = licenseeDto.getName();
+            ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            String appNo = applicationDto.getApplicationNo();
+            String appType = applicationDto.getApplicationType();
+            Date submitDt = applicationGroupDto.getSubmitDt();
+            if(submitDt == null){
+                submitDt = new Date();
             }
+            Date today = new Date();
+            String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy HH:mm:ss");
+            String todayDate = Formatter.formatDateTime(today, "dd/MM/yyyy");
+            String todayTime = Formatter.formatDateTime(today, "HH:mm:ss");
+            AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremCorrId);
+            String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+            String hciName = appGrpPremisesDto.getHciName();
+            String hciCode = appGrpPremisesDto.getHciCode();
+            if(StringUtil.isEmpty(hciName)){
+                hciName = "-";
+            }
+            String address1 = "";
+            String address2 = "";
+            String phoneNo = "";
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            map.put("applicant", licName);
+            map.put("applicationType", appType);
+            map.put("applicationNo", appNo);
+            map.put("submitDate", strSubmitDt);
+            map.put("hciName", hciName);
+            map.put("hciCode", hciCode);
+            map.put("hciAddress", address);
+            map.put("today", todayDate);
+            map.put("time", todayTime);
+            map.put("systemLink", url);
+            map.put("emailAddressOne", address1);
+            map.put("emailAddressTwo", address2);
+            map.put("phoneNo", phoneNo);
         } catch (Exception e){
             log.error(e.getMessage(), e);
         }

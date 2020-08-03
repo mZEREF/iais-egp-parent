@@ -37,7 +37,7 @@ import java.util.Map;
  * @author Shicheng
  * @date 2020/7/29 17:49
  **/
-@JobHandler(value="kpiColourByWorkDaysJobHandler")
+@JobHandler(value="remindInspectorPreInspTaskJobHandler")
 @Component
 @Slf4j
 public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
