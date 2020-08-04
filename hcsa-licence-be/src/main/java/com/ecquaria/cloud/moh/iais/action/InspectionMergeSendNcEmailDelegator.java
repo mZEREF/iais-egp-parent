@@ -265,7 +265,7 @@ public class InspectionMergeSendNcEmailDelegator {
 
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
-            completedTask(taskDto);
+            completedTask(taskDto,appPremCorrIds);
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING,InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,taskDto, userId,inspectionEmailTemplateDto.getRemarks(),HcsaConsts.ROUTING_STAGE_INP);
 
             for(int i=0;i<appPremCorrIds.size();i++){
@@ -318,7 +318,7 @@ public class InspectionMergeSendNcEmailDelegator {
         else {
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
-            completedTask(taskDto);
+            completedTask(taskDto,appPremCorrIds);
             List<String>appPremCorrIdsIsNc=IaisCommonUtils.genNewArrayList();
             List<String>appPremCorrIdsNoNc=IaisCommonUtils.genNewArrayList();
 
@@ -500,11 +500,18 @@ public class InspectionMergeSendNcEmailDelegator {
         list.add(taskDto);
         return list;
     }
-    private TaskDto completedTask(TaskDto taskDto) {
-        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
-        taskDto.setSlaDateCompleted(new Date());
-        taskDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        return taskService.updateTask(taskDto);
+    private void completedTask(TaskDto taskDto, List<String> appPremCorrIds) {
+        for (String refNo:appPremCorrIds
+             ) {
+            List<TaskDto> taskDtos=taskService.getTaskByUrlAndRefNo(refNo,TaskConsts.TASK_PROCESS_URL_INSPECTION_MERGE_NCEMAIL);
+            for (TaskDto dto:taskDtos
+            ) {
+                dto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+                dto.setSlaDateCompleted(new Date());
+                dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                taskService.updateTask(taskDto);
+            }
+        }
     }
 
 

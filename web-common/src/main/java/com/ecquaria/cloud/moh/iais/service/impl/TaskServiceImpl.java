@@ -23,15 +23,16 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DurationFormatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -332,6 +333,11 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDto> getTaskbyApplicationNo(String applicationNo) {
 
         return  taskOrganizationClient.getTaskbyApplicationNo(applicationNo).getEntity();
+    }
+
+    @Override
+    public List<TaskDto> getTaskByUrlAndRefNo(String refNo, String processUrl) {
+        return taskOrganizationClient.getTaskByUrlAndRefNo(refNo,processUrl).getEntity();
     }
 
 

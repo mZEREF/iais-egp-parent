@@ -5,10 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * TaskOrganizationClient
@@ -56,6 +57,9 @@ public interface TaskOrganizationClient {
 
     @GetMapping(value = "/iais-task/inspector-task/{applicationNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getInspectorByAppNo(@PathVariable(name = "applicationNo") String applicationNo);
+
+    @GetMapping(value = "/iais-task/refNo-processUrl/{refNo}/{processUrl}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getTaskByUrlAndRefNo(@PathVariable(name = "refNo") String refNo, @PathVariable(name = "processUrl") String processUrl);
 
     @GetMapping(value = "/iais-task/corrid-inspectors",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Set<String>> getInspectors(@RequestParam(name = "appNo") String appNo, @RequestParam(name = "processUrl") String processUrl, @RequestParam(name = "roleId") String roleId);
