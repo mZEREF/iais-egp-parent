@@ -67,16 +67,6 @@ public class CessationFeServiceImpl implements CessationFeService {
     private SystemAdminClient systemAdminClient;
     @Autowired
     private ApplicationClient applicationClient;
-    @Autowired
-    private FeEicGatewayClient feEicGatewayClient;
-    @Value("${iais.hmac.keyId}")
-    private String keyId;
-    @Value("${iais.hmac.second.keyId}")
-    private String secKeyId;
-    @Value("${iais.hmac.secretKey}")
-    private String secretKey;
-    @Value("${iais.hmac.second.secretKey}")
-    private String secSecretKey;
     @Value("${iais.email.sender}")
     private String mailSender;
     @Autowired
@@ -127,44 +117,6 @@ public class CessationFeServiceImpl implements CessationFeService {
         } else {
             return null;
         }
-
-    }
-
-
-    @Override
-    public List<AppCessLicDto> getOldCessationByIds(List<String> licIds) {
-        List<AppCessLicDto> appCessLicDtos = cessationClient.getCessationByLicIds(licIds).getEntity();
-        if (appCessLicDtos != null && !appCessLicDtos.isEmpty()) {
-            for (AppCessLicDto appCessLicDto : appCessLicDtos) {
-                String licenceId = appCessLicDto.getLicenceId();
-                LicenceDto licenceDto = licenceClient.getLicBylicId(licenceId).getEntity();
-                List<PremisesDto> premisesDtos = licenceClient.getPremisesDto(licenceId).getEntity();
-                String svcName = licenceDto.getSvcName();
-                String licenceNo = licenceDto.getLicenceNo();
-                appCessLicDto.setLicenceNo(licenceNo);
-                appCessLicDto.setSvcName(svcName);
-                if (premisesDtos != null && !premisesDtos.isEmpty()) {
-                    String hciAddress;
-                    String hciName;
-                    List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
-                    for (int i = 0; i < premisesDtos.size(); i++) {
-                        PremisesDto premisesDto = premisesDtos.get(i);
-                        String blkNo = premisesDto.getBlkNo();
-                        String streetName = premisesDto.getStreetName();
-                        String buildingName = premisesDto.getBuildingName();
-                        String floorNo = premisesDto.getFloorNo();
-                        String unitNo = premisesDto.getUnitNo();
-                        String postalCode = premisesDto.getPostalCode();
-                        hciAddress = MiscUtil.getAddress(blkNo, streetName, buildingName, floorNo, unitNo, postalCode);
-                        hciName = premisesDto.getHciName();
-                        AppCessHciDto appCessHciDto = appCessHciDtos.get(i);
-                        appCessHciDto.setHciName(hciName);
-                        appCessHciDto.setHciAddress(hciAddress);
-                    }
-                }
-            }
-        }
-        return appCessLicDtos;
     }
 
     @Override
@@ -179,13 +131,6 @@ public class CessationFeServiceImpl implements CessationFeService {
         } else {
             licenceDtos = IaisCommonUtils.genNewArrayList();
         }
-//        List<String> partCeasedLicIds = cessationClient.isAllCeased(licIds).getEntity();
-//        if(!IaisCommonUtils.isEmpty(partCeasedLicIds)){
-//            for(String licId : partCeasedLicIds){
-//                LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
-//                licenceDtos.remove(licenceDto);
-//            }
-//        }
         List<String> specLicIds = licenceClient.getSpecLicIdsByLicIds(licIds).getEntity();
         if (!IaisCommonUtils.isEmpty(specLicIds) && !IaisCommonUtils.isEmpty(licenceDtos)) {
             for (String specId : specLicIds) {
@@ -199,9 +144,6 @@ public class CessationFeServiceImpl implements CessationFeService {
                 licenceClient.doUpdate(licenceDto);
             }
         }
-//        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-//        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-//        feEicGatewayClient.updateLicenceStatus(licenceDtos, signature.date(), signature.authorization(), signature2.date(), signature2.authorization());
     }
 
     @Override
@@ -247,12 +189,6 @@ public class CessationFeServiceImpl implements CessationFeService {
 
 
     @Override
-    public AppPremisesCorrelationDto getAppPreCorDto(String appId) {
-        List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = applicationClient.listAppPremisesCorrelation(appId).getEntity();
-        return appPremisesCorrelationDtoList.get(0);
-    }
-
-    @Override
     public List<String> listHciName() {
         List<String> hciNames = cessationClient.listHciNames().getEntity();
         return hciNames;
@@ -292,10 +228,6 @@ public class CessationFeServiceImpl implements CessationFeService {
         return appSpecifiedLicDtos;
     }
 
-    @Override
-    public Map<String, Boolean> listResultCeased(List<String> licIds) {
-        return cessationClient.listCanCeased(licIds).getEntity();
-    }
 
     @Override
     public void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId, String licNo) throws IOException, TemplateException {
@@ -387,6 +319,12 @@ public class CessationFeServiceImpl implements CessationFeService {
 
         }
         return appCessationDtosConfirms;
+    }
+
+    @Override
+    public boolean isGrpLicence(List<String> licIds) {
+        LicenceDto entity = licenceClient.getLicBylicId(licIds.get(0)).getEntity();
+        return entity.isGrpLic();
     }
 
     /*

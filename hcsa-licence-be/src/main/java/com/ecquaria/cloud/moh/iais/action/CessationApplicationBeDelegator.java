@@ -65,14 +65,12 @@ public class CessationApplicationBeDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPCESSATIONDTOS, null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfo", null);
         ParamUtil.setSessionAttr(bpc.request, "specLicInfoFlag",null);
+        ParamUtil.setSessionAttr(bpc.request, "isGrpLic",null);
     }
 
     public void init(BaseProcessClass bpc) {
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
-        if (licIds == null || licIds.size() == 0) {
-            licIds = IaisCommonUtils.genNewArrayList();
-            licIds.add("B61C1AE8-5988-EA11-BE82-000C29F371DC");
-        }
+        boolean isGrpLicence = cessationBeService.isGrpLicence(licIds);
         List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
         List<AppSpecifiedLicDto> specLicInfo = cessationBeService.getSpecLicInfo(licIds);
         if(specLicInfo.size()>0) {
@@ -87,6 +85,7 @@ public class CessationApplicationBeDelegator {
         ParamUtil.setSessionAttr(bpc.request, "patientsOption", (Serializable) patientsOption);
         ParamUtil.setSessionAttr(bpc.request, "size", size);
         ParamUtil.setSessionAttr(bpc.request, READINFO, null);
+        ParamUtil.setSessionAttr(bpc.request, "isGrpLic",isGrpLicence);
     }
 
     public void prepareData(BaseProcessClass bpc) {

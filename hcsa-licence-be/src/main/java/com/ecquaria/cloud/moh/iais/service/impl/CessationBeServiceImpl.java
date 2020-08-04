@@ -307,6 +307,12 @@ public class CessationBeServiceImpl implements CessationBeService {
         emailClient.sendNotification(emailDto).getEntity();
     }
 
+    @Override
+    public boolean isGrpLicence(List<String> licIds) {
+        LicenceDto entity = hcsaLicenceClient.getLicenceDtoById(licIds.get(0)).getEntity();
+        return entity.isGrpLic();
+    }
+
     private void routingTaskToAo3(List<ApplicationDto> applicationDtos, LoginContext loginContext) throws FeignException {
         String curRoleId = loginContext.getCurRoleId();
         List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_ASO);

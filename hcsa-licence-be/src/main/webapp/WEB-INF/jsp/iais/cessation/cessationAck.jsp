@@ -15,7 +15,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 col-xs-12 cesform-box">
-                    <p><strong>Your cessation application has been successfully submitted,below are the summary
+                    <p><strong>Your cessation application has been successfully submitted, below are the summary
                         information</strong></p>
                     <table class="table">
                         <thead>

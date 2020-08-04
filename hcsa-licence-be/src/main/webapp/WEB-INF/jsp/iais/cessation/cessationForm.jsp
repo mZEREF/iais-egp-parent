@@ -185,30 +185,37 @@
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
-                                                <iais:row>
-                                                    <iais:field value="To Cease"/>
-                                                    <iais:value width="7">
-                                                        <div class="form-check-gp">
-                                                            <div class="row">
-                                                                <div class="col-xs-12 col-md-2">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input"
-                                                                               id="icon5checkboxSample" type="checkbox"
-                                                                               name="${num.count}whichTodo${uid.count}"
-                                                                               value="${appCessHci.premiseId}"
-                                                                               <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>
-                                                                               aria-invalid="false">
-                                                                        <label class="form-check-label"
-                                                                               for="icon5checkboxSample"><span
-                                                                                class="check-square"></span></label>
-                                                                        <span id="error_whichTodo" name="iaisErrorMsg"
-                                                                              class="error-msg"></span>
+                                                <c:if test="${isGrpLic}">
+                                                        <iais:row>
+                                                            <iais:field value="To Cease"/>
+                                                            <iais:value width="7">
+                                                                <div class="form-check-gp">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 col-md-2">
+                                                                            <div class="form-check">
+                                                                                <input class="form-check-input"
+                                                                                       id="icon5checkboxSample" type="checkbox"
+                                                                                       name="${num.count}whichTodo${uid.count}"
+                                                                                       value="${appCessHci.premiseId}"
+                                                                                       <c:if test="${appCessHci.premiseIdChecked != null}">checked</c:if>
+                                                                                       aria-invalid="false">
+                                                                                <label class="form-check-label"
+                                                                                       for="icon5checkboxSample"><span
+                                                                                        class="check-square"></span></label>
+                                                                                <span id="error_whichTodo" name="iaisErrorMsg"
+                                                                                      class="error-msg"></span>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    </iais:value>
-                                                </iais:row>
+                                                            </iais:value>
+                                                        </iais:row>
+                                                        </c:if>
+                                                <c:if test="${!isGrpLic}">
+                                                    <div hidden>
+                                                        <input class="form-check-input" type="text" name="${num.count}whichTodo${uid.count}" value="${appCessHci.premiseId}">
+                                                    </div>
+                                                </c:if>
                                             </iais:section>
                                         </div>
                                     </div>
@@ -224,8 +231,8 @@
                                     <th style="text-align:center;width: 25%">Base Service Licence No.</th>
                                     <th style="text-align:center;width: 25%">Base Service Name</th>
                                 </tr>
-                                <tr style="text-align:center">
                                     <c:forEach items="${specLicInfo}" var="spec" varStatus="index">
+                                <tr style="text-align:center">
                                     <td>
                                         <p><c:out value="${index.count}"/></p>
                                     </td>

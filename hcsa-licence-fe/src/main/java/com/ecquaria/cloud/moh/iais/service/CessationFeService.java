@@ -24,21 +24,17 @@ public interface CessationFeService {
 
     List<AppCessLicDto> getAppCessDtosByLicIds(List<String> licIds);
 
-    List<AppCessLicDto> getOldCessationByIds(List<String> licIds);
-
     void updateLicenceFe(List<String> licNos);
 
     List<String> saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext);
-
-    AppPremisesCorrelationDto getAppPreCorDto(String appId);
 
     List<String> listHciName();
 
     List<AppSpecifiedLicDto> getSpecLicInfo(List<String> licIds);
 
-    Map<String,Boolean> listResultCeased(List<String> licIds);
-
     void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId,String licNo) throws IOException, TemplateException;
 
     List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, List<String> appIds, LoginContext loginContext) throws Exception;
+
+    boolean isGrpLicence(List<String> licIds);
 }
