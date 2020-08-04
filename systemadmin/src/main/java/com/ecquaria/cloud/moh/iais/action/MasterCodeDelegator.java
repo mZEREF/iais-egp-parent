@@ -294,8 +294,8 @@ public class MasterCodeDelegator {
             masterCodeToExcelDto.setSequence(String.valueOf(h.getSequence()));
             masterCodeToExcelDto.setCodeDescription(h.getCodeDescription());
             masterCodeToExcelDto.setCodeValue(h.getCodeValue());
-            masterCodeToExcelDto.setEffectiveFrom(Formatter.formatDateTime(h.getEffectiveStartDate()));
-            masterCodeToExcelDto.setEffectiveTo(Formatter.formatDateTime(h.getEffectiveEndDate()));
+            masterCodeToExcelDto.setEffectiveFrom(Formatter.formatDate(h.getEffectiveStartDate()));
+            masterCodeToExcelDto.setEffectiveTo(Formatter.formatDate(h.getEffectiveEndDate()));
             masterCodeToExcelDto.setRemakes(h.getRemarks());
             masterCodeToExcelDto.setStatus(MasterCodeUtil.getCodeDesc(h.getStatus()));
             masterCodeToExcelDtoList.add(masterCodeToExcelDto);
@@ -392,8 +392,18 @@ public class MasterCodeDelegator {
                     errItems.add(errMsg);
                     result = true;
                 }
+                if (StringUtil.isEmpty(masterCodeToExcelDto.getSequence())){
+                    String errMsg = "Sequence is a mandatory field.";
+                    errItems.add(errMsg);
+                    result = true;
+                }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom())){
                     String errMsg = "Effective Start Date is a mandatory field.";
+                    errItems.add(errMsg);
+                    result = true;
+                }
+                if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveTo())){
+                    String errMsg = "Effective End Date is a mandatory field.";
                     errItems.add(errMsg);
                     result = true;
                 }
