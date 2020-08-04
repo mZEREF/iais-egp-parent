@@ -94,8 +94,8 @@ public class WithdrawalServiceImpl implements WithdrawalService {
 
     @Override
     public void saveWithdrawn(List<WithdrawnDto> withdrawnDtoList) {
-        String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
         withdrawnDtoList.forEach(h -> {
+            String grpNo = systemAdminClient.applicationNumber(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL).getEntity();
             String licenseeId = h.getLicenseeId();
             AppSubmissionDto appSubmissionDto = applicationClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
             transform(appSubmissionDto,licenseeId);
