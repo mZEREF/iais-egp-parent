@@ -120,7 +120,7 @@
             </div>
             <div class="col-xs-12 col-md-3">
               <div class="form-check ">
-                <input class="form-check-input" name="PremisesType"<c:if test="${fn:contains(type,'OFFSIET')}">checked="checked"</c:if> id="icon4checkboxSample" type="checkbox" name="Offsite"  value="OFFSIET" aria-invalid="false">
+                <input class="form-check-input" name="PremisesType"<c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> id="icon4checkboxSample" type="checkbox" name="Offsite"  value="OFFSITE" aria-invalid="false">
                 <label class="form-check-label" for="icon4checkboxSample"><span class="check-square"></span>Offsite</label>
               </div>
             </div>

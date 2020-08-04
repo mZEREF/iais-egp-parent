@@ -63,7 +63,7 @@
           <td>
             <c:if test="${prem.premisesType=='ONSITE'}"><c:out value="On-site"/></c:if>
             <c:if test="${prem.premisesType=='CONVEYANCE'}"><c:out value="Conveyance"/></c:if>
-            <c:if test="${prem.premisesType=='OFFSIET'}"><c:out value="Off-site"/></c:if>
+            <c:if test="${prem.premisesType=='OFFSITE'}"><c:out value="Off-site"/></c:if>
           </td>
           <td><c:out value="${prem.svcId}"/></td>
         </tr>

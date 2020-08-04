@@ -26,7 +26,7 @@
                 <!--change hidden length value -->
                 var length =  $premSelect.find('.new-premise-form-conv div.pubHolidayContent').length;
                 $premSelect.find('.phLength').val(length);
-            }else if('OFFSIET' == checkedType){
+            }else if('OFFSITE' == checkedType){
                 $premSelect.find('.onSiteSelect').addClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
                 $premSelect.find('.offSiteSelect').removeClass('hidden');
@@ -332,7 +332,7 @@
             }else if('CONVEYANCE' == name){
                 name = premVal+"conveyance";
                 type = 'conveyance';
-            }else if('OFFSIET' == name){
+            }else if('OFFSITE' == name){
                 name = premVal+"offSite";
                 type = 'offSite';
             }
@@ -674,7 +674,7 @@
                     $premCountEle.find('a.retrieveAddr').addClass('hidden');
                     $premCountEle.find('button.addPubHolDay').addClass('hidden');
                 }
-            }else if('OFFSIET' == checkedType){
+            }else if('OFFSITE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').addClass('hidden');
                 $premCountEle.find('.onSiteSelect').addClass('hidden');
                 $premCountEle.find('.offSiteSelect').removeClass('hidden');

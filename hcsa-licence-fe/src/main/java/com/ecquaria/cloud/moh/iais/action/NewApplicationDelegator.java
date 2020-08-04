@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
@@ -2357,6 +2358,12 @@ public class NewApplicationDelegator {
     public void prepareAckPage(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do prepareAckPage start ...."));
         String txnRefNo=(String)bpc.request.getSession().getAttribute("txnDt");
+        AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        String licenceId = appSubmissionDto.getLicenceId();
+        List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(licenceId).getEntity();
+        for(ApplicationSubDraftDto applicationSubDraftDto : entity){
+            applicationClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+        }
         if(StringUtil.isEmpty(txnRefNo)){
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
             ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);

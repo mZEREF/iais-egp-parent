@@ -472,13 +472,18 @@ public class AppealServiceImpl implements AppealService {
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = (AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
         CommonsMultipartFile file = (CommonsMultipartFile) request.getFile("selectedFile");
         if (file != null && file.getSize() > 0) {
+            AppPremisesSpecialDocDto specialDocDto=new AppPremisesSpecialDocDto();
+
             long size = file.getSize() / 1024;
-            req.getSession().setAttribute("appPremisesSpecialDocDto", appPremisesSpecialDocDto);
+
             if (size > 5 * 1024) {
                 map.put("file", "UC_GENERAL_ERR0015");
             }
             String filename = file.getOriginalFilename();
             String fileType = filename.substring(filename.lastIndexOf('.') + 1);
+            specialDocDto.setDocName(filename);
+            specialDocDto.setDocSize(Integer.parseInt(size+""));
+            req.getSession().setAttribute("appPremisesSpecialDocDto", specialDocDto);
             //todo change
             if (!"PDF".equalsIgnoreCase(fileType) && !"PNG".equalsIgnoreCase(fileType) &&
                     !"JPG".equalsIgnoreCase(fileType) && !"DOC".equalsIgnoreCase(fileType) && !"DOCX".equalsIgnoreCase(fileType)) {

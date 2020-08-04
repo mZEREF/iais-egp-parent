@@ -30,7 +30,7 @@
                                 <p class="form-check-label" aria-label="premise-1-cytology"><span>
                                     <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">On-site</c:if>
                                     <c:if test="${appGrpPremDto.premisesType=='CONVEYANCE'}">Conveyance</c:if>
-                                    <c:if test="${appGrpPremDto.premisesType=='OFFSIET'}">Off-site</c:if>
+                                    <c:if test="${appGrpPremDto.premisesType=='OFFSITE'}">Off-site</c:if>
                                     </span>
                                 </p>
                             </div>
@@ -501,7 +501,7 @@
                             </c:forEach>
                         </c:if>
 
-                        <c:if test="${'OFFSIET'==appGrpPremDto.premisesType}">
+                        <c:if test="${'OFFSITE'==appGrpPremDto.premisesType}">
                             <div class="row">
                                 <div class="col-md-6">
                                     <p class="form-check-label" aria-label="premise-1-cytology"><span>Postal Code</span></p>

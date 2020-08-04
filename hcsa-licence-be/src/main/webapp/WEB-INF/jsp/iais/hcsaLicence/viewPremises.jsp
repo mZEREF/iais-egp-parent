@@ -8,7 +8,7 @@
   String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
 <input style="display: none" value="${NOT_VIEW}" id="view">
-<c:set var="appEdit" value="${applicationViewDto.appEditSelectDto}"/>
+<c:set var="appEdit" value="${appEditSelectDto}"/>
 <div class="main-content">
   <div class="container">
     <div class="row">
@@ -68,7 +68,7 @@
                                     <div class="col-md-6">
                                       <div class="col-md-6">
                                         <span class="newVal " attr="${appGrpPremDto.premisesType}">
-                                          <c:if test="${appGrpPremDto.premisesType=='OFFSIET'}">
+                                          <c:if test="${appGrpPremDto.premisesType=='OFFSITE'}">
                                             Off-site
                                           </c:if>
                                          <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">
@@ -80,7 +80,7 @@
                                       </div>
                                       <div class="col-md-6">
                                         <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}" style="display: none">
-                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='OFFSIET'}">
+                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='OFFSITE'}">
                                              Off-site
                                            </c:if>
                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='ONSITE'}">

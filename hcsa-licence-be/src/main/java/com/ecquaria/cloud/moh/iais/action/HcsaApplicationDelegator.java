@@ -260,6 +260,7 @@ public class HcsaApplicationDelegator {
                 applicationViewDto.setAppEditSelectDto(appEditSelectDto);
             }
         }
+        bpc.request.getSession().removeAttribute("appEditSelectDto");
         String roleId = taskDto.getRoleId();
         log.debug(StringUtil.changeForLog("the do prepareData get the appPremisesRecommendationDto"));
         log.debug(StringUtil.changeForLog("the do prepareData roleId -->:"+roleId));

@@ -110,6 +110,12 @@ public class LicenceViewServiceDelegator {
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
             return;
         }
+        AppEditSelectDto appEditSelectDto;
+        appEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
+        if(appEditSelectDto==null){
+            appEditSelectDto = applicationViewDto.getAppEditSelectDto();
+        }
+        bpc.request.getSession().setAttribute("appEditSelectDto",appEditSelectDto);
         AppSubmissionDto appSubmissionDto;
         String newCorrelationId = "";
         String oldCorrelationId = "";

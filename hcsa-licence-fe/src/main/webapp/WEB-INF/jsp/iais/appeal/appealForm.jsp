@@ -18,12 +18,12 @@
     <input type="hidden" name="crud_action_additional" value="">
 
   <div class="form-group">
-    <div class="col-xs-12 col-md-10" style="margin-left: 1%">
+    <div class="col-xs-12 col-md-10" style="margin-left: 2%">
       <label style="font-size: 25px">You are appealing for:</label>
     </div>
 
     <div  class="col-xs-12 col-md-10">
-      <div class="col-xs-12 col-md-6">
+      <div class="col-xs-12 col-md-6" style="margin-left: 1%">
         <input type="text" name="appealingFor" disabled  value="${appealNo}" >
         <span name="iaisErrorMsg" class="error-msg" id="error_submit"></span>
       </div>
@@ -31,10 +31,10 @@
   </div>
 
     <div class="form-group">
-      <div class="col-xs-12 col-md-10">
+      <div class="col-xs-12 col-md-10" style="margin-left: 1%">
         <div class="col-xs-12 col-md-6" style="margin-bottom: 20px">
           <label style="font-size: 25px">Reason For Appeal<span class="mandatory"> *</span></label>
-          <select id="reasonSelect" name="reasonSelect">
+          <select id="reasonSelect" name="reasonSelect" style="margin-left: 2%">
             <option value="">Please Select</option>
           <c:if test="${type=='application'}"><c:if test="${applicationAPPROVED=='APPROVED'}">
             <option value="MS001" <c:if test="${appPremiseMiscDto.reason=='MS001'}">selected="selected"</c:if> >Appeal against rejection</option></c:if>
@@ -91,12 +91,12 @@
       <%@include file="cgo.jsp"%>
 
     </div>
-      <div class="col-xs-12 col-md-10" style="margin-left: 1%">
+      <div class="col-xs-12 col-md-10" style="margin-left: 2%">
 
         <label style="font-size: 25px">Any supporting remarks<span class="mandatory"> *</span></label>
 
       </div >
-    <div  class="col-xs-12 col-md-10" style="margin-left: 1%" >
+    <div  class="col-xs-12 col-md-10" style="margin-left: 2%" >
 
       <textarea cols="120" style="font-size: 20px" rows="10" name="remarks" maxlength="300" >${appPremiseMiscDto.remarks}</textarea>
 
@@ -169,7 +169,7 @@
       }
       var reason= $('#reasonSelect option:selected').val();
       if("MS003"==reason){
-          $('#cgo').attr("style" ,"display: block;margin-top: 20px");
+          $('#cgo').attr("style" ,"display: block;margin-top: 10px;margin-left: 1%");
 
       }else  {
           $('#cgo').attr("style" ,"display: none");

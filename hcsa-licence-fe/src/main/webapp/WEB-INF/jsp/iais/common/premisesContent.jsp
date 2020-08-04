@@ -22,7 +22,7 @@
     <div class="row premContent <c:if test="${!status.first}">underLine</c:if>  " id="mainPrem">
         <c:set var="onSite" value="ONSITE" ></c:set>
         <c:set var="conv" value="CONVEYANCE" ></c:set>
-        <c:set var="offSite" value="OFFSIET" ></c:set>
+        <c:set var="offSite" value="OFFSITE" ></c:set>
         <input type="hidden" name="chooseExistData" value="0"/>
         <c:choose>
             <c:when test="${'1' == premisesList}">
@@ -107,7 +107,7 @@
                               <c:if test="${'CONVEYANCE' == appGrpPremisesDto.premisesType}">
                                   <c:out value="Conveyance: "/>
                               </c:if>
-                              <c:if test="${'OFFSIET' == appGrpPremisesDto.premisesType}">
+                              <c:if test="${'OFFSITE' == appGrpPremisesDto.premisesType}">
                                   <c:out value="Off-site: "/>
                               </c:if>
                             </strong>
@@ -138,7 +138,7 @@
                             <c:when test="${'CONVEYANCE' == premisesType}">
                                 <c:set var="className" value="conveyance" />
                             </c:when>
-                            <c:when test="${'OFFSIET' == premisesType }">
+                            <c:when test="${'OFFSITE' == premisesType }">
                                 <c:set var="className" value="offSite" />
                             </c:when>
                         </c:choose>
@@ -808,7 +808,7 @@
                     <div class="phFormMarkPoint">
                     </div>
                     <c:choose>
-                        <c:when test="${appGrpPremisesDto.appPremPhOpenPeriodList.size()>0 && 'OFFSIET'== appGrpPremisesDto.premisesType}">
+                        <c:when test="${appGrpPremisesDto.appPremPhOpenPeriodList.size()>0 && 'OFFSITE'== appGrpPremisesDto.premisesType}">
                             <c:forEach var="ph" items="${appGrpPremisesDto.appPremPhOpenPeriodList}" varStatus="phStat" >
                                 <div class="pubHolidayContent">
                                     <iais:row>

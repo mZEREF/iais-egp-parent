@@ -113,7 +113,7 @@ public class LicenceServiceImpl implements LicenceService {
     @Override
     public String getLicenceNo(String hciCode, String serviceCode, AppPremisesRecommendationDto appPremisesRecommendationDto) {
         log.info(StringUtil.changeForLog("The getLicenceNo start ..."));
-        Integer licenceSeq =  hcsaLicenceClient.licenceNumber(hciCode).getEntity();
+        Integer licenceSeq =  hcsaLicenceClient.licenceNumber(hciCode,serviceCode).getEntity();
         log.info(StringUtil.changeForLog("The getLicenceNo licenceSeq -->:"+licenceSeq));
         int yearLength = 0;
         if(appPremisesRecommendationDto != null && RiskConsts.YEAR.equals(appPremisesRecommendationDto.getChronoUnit())){

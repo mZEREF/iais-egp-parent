@@ -76,7 +76,7 @@
                                                                         <div class="col-md-6">
                                                                             <div class="col-md-6">
                                         <span class="newVal " attr="${appGrpPremDto.premisesType}">
-                                          <c:if test="${appGrpPremDto.premisesType=='OFFSIET'}">
+                                          <c:if test="${appGrpPremDto.premisesType=='OFFSITE'}">
                                             Off-site
                                           </c:if>
                                          <c:if test="${appGrpPremDto.premisesType=='ONSITE'}">
@@ -90,7 +90,7 @@
                                         <span class="oldVal "
                                               attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType}"
                                               style="display: none">
-                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='OFFSIET'}">
+                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='OFFSITE'}">
                                                Off-site
                                            </c:if>
                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesType=='ONSITE'}">

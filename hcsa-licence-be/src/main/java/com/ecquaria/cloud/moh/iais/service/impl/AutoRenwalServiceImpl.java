@@ -90,10 +90,8 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         dayList.add(systemParamConfig.getSixthLicenceReminder());
         dayList.add(systemParamConfig.getSeventhLicenceReminder());
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(dayList))+"dayList");
-        List<JobRemindMsgTrackingDto> JobRemindMsgTrackingDto = systemBeLicClient.listJob().getEntity();
         Map<String, List<LicenceDto>> entity = hcsaLicenClient.licenceRenwal(dayList).getEntity();
         entity.forEach((k, v) -> {
-            licenceToRemove(v,JobRemindMsgTrackingDto);
             for(int i=0;i<v.size();i++){
 
                 String licenceNo = v.get(i).getLicenceNo();
@@ -215,12 +213,10 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             map.put("Name_of_Service",svcName);
             map.put("Licence_Expiry_Date",format);
             map.put("HCI_Address",address);
-            MsgTemplateDto entity = msgTemplateClient.getMsgTemplate("079E4C27-7937-EA11-BE7E-000C29F371DC").getEntity();
-
-            String messageContent = entity.getMessageContent();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+            StringBuilder stringBuilder =new StringBuilder();
+                stringBuilder.append("License expiration time").append(format).append("---").append(time).append(licenceDto.getLicenceNo());
                 EmailDto emailDto=new EmailDto();
-                emailDto.setContent(templateMessageByContent);
+                emailDto.setContent(stringBuilder.toString());
                 emailDto.setSubject(EMAIL_SUBJECT);
                 emailDto.setSender(mailSender);
                 emailDto.setClientQueryCode("isNotAuto");
@@ -231,7 +227,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 String messageNo = inboxMsgService.getMessageNo();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
                 InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(licenceDto.getId(), MessageConstants.MESSAGE_TYPE_NOTIFICATION,
-                        messageNo, hcsaServiceDto.getSvcCode()+"@", templateMessageByContent, licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
+                        messageNo, hcsaServiceDto.getSvcCode()+"@", stringBuilder.toString(), licenceDto.getLicenseeId(), IaisEGPHelper.getCurrentAuditTrailDto());
                 interMessageDto.setSubject("MOH IAIS – Licence is due to expiry");
                 HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();
                 mapParam.put("licenceId",licenceDto.getId());
@@ -388,6 +384,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 return false;
             }
         }catch (Exception e){
+            log.info("checkEmailIsSend error"+e);
             return false;
         }
 

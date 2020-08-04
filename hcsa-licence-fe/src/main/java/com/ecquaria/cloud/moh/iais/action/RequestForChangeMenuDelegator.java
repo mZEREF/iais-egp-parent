@@ -249,7 +249,7 @@ public class RequestForChangeMenuDelegator {
         conveyance.setValue("CONVEYANCE");
         SelectOption offsiet = new SelectOption();
         offsiet.setText("Off-site");
-        offsiet.setValue("OFFSIET");
+        offsiet.setValue("OFFSITE");
         list.add(offsiet);
         list.add(conveyance);
         list.add(onsite);

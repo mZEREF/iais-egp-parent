@@ -966,8 +966,10 @@ public class ConfigServiceImpl implements ConfigService {
             stringBuilder.append(hcsaSvcSpecifiedCorrelationDto.getBaseSvcId()).append('#');
         }
         String string = stringBuilder.toString();
-        request.setAttribute("selectSubsumption",string.substring(0,string.lastIndexOf('#')));
-        request.setAttribute("selectPreRequisite",string.substring(0,string.lastIndexOf('#')));
+        if(!StringUtil.isEmpty(string)){
+            request.setAttribute("selectSubsumption",string.substring(0,string.lastIndexOf('#')));
+            request.setAttribute("selectPreRequisite",string.substring(0,string.lastIndexOf('#')));
+        }
         request.setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
         request.setAttribute("hcsaServiceDto", hcsaServiceDto);
         String id = hcsaServiceDto.getId();
