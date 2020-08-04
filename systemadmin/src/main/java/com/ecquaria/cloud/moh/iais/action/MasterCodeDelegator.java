@@ -447,7 +447,7 @@ public class MasterCodeDelegator {
             ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
             ParamUtil.setSessionAttr(request,"ERR_RESULT_LIST_MAP",(Serializable) errResult);
         }catch (Exception e){
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "File save failed");
+//            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "File save failed");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }
