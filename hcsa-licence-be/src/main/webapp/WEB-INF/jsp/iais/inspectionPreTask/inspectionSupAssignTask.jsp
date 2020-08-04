@@ -115,23 +115,45 @@
                       <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupMemBerName}"/><span style="color: red"> *</span></label>
                     </div>
                     <div class="col-md-6">
-                      <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
-                        <c:if test="${inspectionTaskPoolListDto.inspectorCheck == null}">
-                          <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
-                            <input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"/>
+                      <c:if test="${'APST029' eq applicationViewDto.applicationDto.status}">
+                        <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
+                          <c:if test="${inspectionTaskPoolListDto.inspectorCheck == null}">
+                            <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
+                              <input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"/>
                               <span style="font-size: 16px"><c:out value="${name.text}"/></span><p></p>
-                          </c:forEach>
+                            </c:forEach>
+                          </c:if>
+                          <c:if test="${inspectionTaskPoolListDto.inspectorCheck != null}">
+                            <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
+                              <input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"
+                                      <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="checkName">
+                                        <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
+                                      </c:forEach>
+                              /><span style="font-size: 16px"><c:out value="${name.text}"/></span><p></p>
+                            </c:forEach>
+                          </c:if>
+                          <span class="error-msg" name="iaisErrorMsg" id="error_inspectorCheck"></span><p></p>
                         </c:if>
-                        <c:if test="${inspectionTaskPoolListDto.inspectorCheck != null}">
-                          <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
-                            <input type="checkbox" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"
-                                    <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="checkName">
-                                      <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
-                                    </c:forEach>
-                            /><span style="font-size: 16px"><c:out value="${name.text}"/></span><p></p>
-                          </c:forEach>
+                      </c:if>
+                      <c:if test="${'APST029' ne applicationViewDto.applicationDto.status}">
+                        <c:if test="${'true' == inspectionTaskPoolListDto.inspectorFlag}">
+                          <c:if test="${inspectionTaskPoolListDto.inspectorCheck == null}">
+                            <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
+                              <input type="radio" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"/>
+                              <span style="font-size: 16px"><c:out value="${name.text}"/></span><p></p>
+                            </c:forEach>
+                          </c:if>
+                          <c:if test="${inspectionTaskPoolListDto.inspectorCheck != null}">
+                            <c:forEach items="${inspectionTaskPoolListDto.inspectorOption}" var="name">
+                              <input type="radio" name="inspectorCheck" id="inspectorCheck" value="<c:out value="${name.value}"/>"
+                                      <c:forEach items="${inspectionTaskPoolListDto.inspectorCheck}" var="checkName">
+                                        <c:if test="${name.value eq checkName.value}">checked="checked"</c:if>
+                                      </c:forEach>
+                              /><span style="font-size: 16px"><c:out value="${name.text}"/></span><p></p>
+                            </c:forEach>
+                          </c:if>
+                          <span class="error-msg" name="iaisErrorMsg" id="error_inspectorCheck"></span><p></p>
                         </c:if>
-                        <span class="error-msg" name="iaisErrorMsg" id="error_inspectorCheck"></span><p></p>
                       </c:if>
                       <c:if test="${'false' == inspectionTaskPoolListDto.inspectorFlag}">
                         <span style="font-size: 16px">-</span><p></p>
