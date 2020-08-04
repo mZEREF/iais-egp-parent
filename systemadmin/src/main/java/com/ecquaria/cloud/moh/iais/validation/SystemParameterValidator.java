@@ -75,7 +75,7 @@ public class SystemParameterValidator implements CustomizeValidator {
 			for (int i = 0; i < values.length; i++){
 				int val = Integer.parseInt(values[i]);
 				if (val < 10 || val > 100){
-					errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "GENERAL_ERR0022");
+					errorMap.put(MessageCodeKey.CUSTOM_ERROR_MESSAGE_KEY, "SYSPAM_ERROR0003");
 					return;
 				}
 
