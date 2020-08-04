@@ -82,34 +82,42 @@ public class FECorppassLandingDelegator {
         log.info("<== Now Start True CorpPass Login ==>");
         String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
         LoginInfo oLoginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
-        if (oLoginInfo != null) {
-            UserInfoToken userInfoToken = oLoginInfo.getUserInfo();
-            if (userInfoToken != null){
-                String uen = userInfoToken.getEntityId();
-                String userId  = userInfoToken.getUserIdentity();
 
-                log.info(StringUtil.changeForLog("corppassCallBack uen " + uen));
-                log.info(StringUtil.changeForLog("corppassCallBack userId " + userId));
-
-                FeUserDto userDto = new FeUserDto();
-                userDto.setUenNo(uen);
-                userDto.setIdentityNo(userId);
-                userDto.setIdType(OrganizationConstants.ID_TYPE_NRIC);
-
-                ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, "N");
-                ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userDto);
-                ParamUtil.setSessionAttr(request, UserConstants.ENTITY_ID, uen);
-                ParamUtil.setSessionAttr(request, UserConstants.CORPPASS_ID, userId);
-
-                OrganizationDto organizationDto = orgUserManageService.findOrganizationByUen(userId);
-                if (organizationDto != null){
-                    ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "N");
-                }else {
-                    ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "Y");
-                }
-            }
-            log.info("corppassCallBack===========>>>End");
+        if (oLoginInfo == null) {
+            log.info("<== oLoginInfo is empty ==>");
+            return;
         }
+
+        UserInfoToken userInfoToken = oLoginInfo.getUserInfo();
+
+        if (userInfoToken == null) {
+            log.info("<== userInfoToken is empty ==>");
+            return;
+        }
+
+        String uen = userInfoToken.getEntityId();
+        String userId  = userInfoToken.getUserIdentity();
+
+        log.info(StringUtil.changeForLog("corppassCallBack uen " + uen));
+        log.info(StringUtil.changeForLog("corppassCallBack userId " + userId));
+
+        FeUserDto userDto = new FeUserDto();
+        userDto.setUenNo(uen);
+        userDto.setIdentityNo(userId);
+        userDto.setIdType(OrganizationConstants.ID_TYPE_NRIC);
+
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, "N");
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userDto);
+        ParamUtil.setSessionAttr(request, UserConstants.ENTITY_ID, uen);
+        ParamUtil.setSessionAttr(request, UserConstants.CORPPASS_ID, userId);
+
+        OrganizationDto organizationDto = orgUserManageService.findOrganizationByUen(userId);
+        if (organizationDto != null){
+            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "N");
+        }else {
+            ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "Y");
+        }
+        log.info("corppassCallBack===========>>>End");
     }
 
 
