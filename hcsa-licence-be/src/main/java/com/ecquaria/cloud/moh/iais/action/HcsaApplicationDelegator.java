@@ -2511,7 +2511,7 @@ public class HcsaApplicationDelegator {
             //role is ao3 && status is 'Pending AO3 Approval'  have no verified
             if(!(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))){
                 if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
-                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Assign To"));
+                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
                 }
             }
         }

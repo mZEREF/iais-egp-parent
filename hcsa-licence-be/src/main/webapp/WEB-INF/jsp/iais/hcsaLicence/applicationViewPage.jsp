@@ -162,15 +162,6 @@
                                                         <iais:row>
                                                             <iais:field value="Route Back To" required="true"/>
                                                             <iais:value width="10">
-<%--                                                                <select name="rollBack" class="nice-select input-large rollBack">--%>
-<%--                                                                    <option value="">Please Select</option>--%>
-<%--                                                                    <c:forEach items="${applicationViewDto.rollBack}"--%>
-<%--                                                                               var="rollBack">--%>
-<%--                                                                        <option value="<iais:mask name="rollBack" value="${rollBack.value}"/>" <c:if test="${rollBack.value == selectRollBack}">selected</c:if>>${rollBack.key}</option>--%>
-<%--                                                                    </c:forEach>--%>
-<%--                                                                </select>--%>
-<%--                                                                <span id="error_rollBack" name="iaisErrorMsg" class="error-msg"></span>--%>
-                                                                <%--routeBackValues--%>
                                                                 <iais:select cssClass="rollBack" name="rollBack" id="rollBack"
                                                                              firstOption="Please Select"
                                                                              options="routeBackValues"
@@ -194,7 +185,7 @@
                                                     </c:if>
                                                     <div id="verifiedDropdown" class="hidden">
                                                         <iais:row>
-                                                            <iais:field value="Verified" required="false"/>
+                                                            <iais:field value="Assign To" required="false"/>
                                                             <iais:value width="10">
                                                                 <iais:select cssClass="verified" name="verified"
                                                                              options="verifiedValues"
