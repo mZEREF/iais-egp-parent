@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -143,15 +142,8 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
             emailDto.setSender(mailSender);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(licPremisesReqForInfoDto.getLicPremId());
-            String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
-            SmsDto smsDto = new SmsDto();
-            smsDto.setSender(mailSender);
-            smsDto.setContent(mesContext);
-            smsDto.setOnlyOfficeHour(true);
-            if (!IaisCommonUtils.isEmpty(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId))) {
-                emailClient.sendSMS(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId),smsDto, requestRefNum);
-                emailClient.sendNotification(emailDto);
-            }
+            emailClient.sendNotification(emailDto).getEntity();
+
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
