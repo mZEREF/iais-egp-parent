@@ -257,17 +257,17 @@ public class InterInboxDelegator {
         inboxParam.addMasterCode(mcp);
         SearchResult inboxResult = inboxService.inboxDoQuery(inboxParam);
         log.info("inboxResult start=>>>>>>>>");
-        log.info("inboxResult ==>>> row " + inboxResult.getRowCount() );
+        log.info(StringUtil.changeForLog("inboxResult ==>>> row " + inboxResult.getRowCount()) );
 
         List<InboxQueryDto> inboxQueryDtoList = inboxResult.getRows();
         for (InboxQueryDto inboxQueryDto:inboxQueryDtoList) {
             List<InboxMsgMaskDto> inboxMsgMaskDtoList = inboxService.getInboxMaskEntity(inboxQueryDto.getId());
-            log.info("inboxMsgMaskDtoList ==>>> row " + inboxMsgMaskDtoList.size());
+            log.info(StringUtil.changeForLog("inboxMsgMaskDtoList ==>>> row " + inboxMsgMaskDtoList.size()));
 
             int i = 0;
             for (InboxMsgMaskDto inboxMsgMaskDto:inboxMsgMaskDtoList){
 
-                log.info("inboxMsgMaskDtoList ==>>> count " + i++);
+                log.info(StringUtil.changeForLog("inboxMsgMaskDtoList ==>>> count " + i++));
 
                 inboxQueryDto.setMsgContent(inboxQueryDto.getMsgContent().replaceAll("="+inboxMsgMaskDto.getParamValue(),
                         "="+MaskUtil.maskValue(inboxMsgMaskDto.getParamName(),inboxMsgMaskDto.getParamValue())));
