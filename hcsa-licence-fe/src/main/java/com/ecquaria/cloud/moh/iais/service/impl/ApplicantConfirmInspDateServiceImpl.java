@@ -521,6 +521,12 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         createApptDateTask(apptFeConfirmDateDto, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION);
     }
 
+    @Override
+    public String getAppPremCorrIdByAppNo(String applicationNo) {
+        String appPremCorrId = applicationClient.getCorrelationByAppNo(applicationNo).getEntity().getId();
+        return appPremCorrId;
+    }
+
     private void setCreateInspectionStatus(ApptInspectionDateDto apptInspectionDateDto, String status) {
         List<AppInspectionStatusDto> appInspectionStatusDtos = IaisCommonUtils.genNewArrayList();
         AppInspectionStatusDto appInspectionStatusDto = new AppInspectionStatusDto();

@@ -551,11 +551,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
         apptCalendarStatusDto.setSysClientKey(AppConsts.MOH_IAIS_SYSTEM_APPT_CLIENT_KEY);
         cancelOrConfirmApptDate(apptCalendarStatusDto);
-        //
+        //url
+        String applicationNo = apptInspectionDateDto.getTaskDto().getApplicationNo();
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + urlId;
+                MessageConstants.MESSAGE_INBOX_URL_APPT_LEAD_INSP_DATE + applicationNo;
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-        maskParams.put("appPremCorrId", urlId);
+        maskParams.put("applicationNo", applicationNo);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         //send email
@@ -626,10 +627,11 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         cancelOrConfirmApptDate(apptCalendarStatusDto);
         //send message and email
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
+        String applicationNo = apptInspectionDateDto.getTaskDto().getApplicationNo();
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
-                MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE + urlId;
+                MessageConstants.MESSAGE_INBOX_URL_APPT_SYS_INSP_DATE + applicationNo;
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-        maskParams.put("appPremCorrId", urlId);
+        maskParams.put("applicationNo", applicationNo);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
@@ -1027,6 +1029,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             if(StringUtil.isEmpty(hciName)){
                 hciName = "-";
             }
+            //todo
             String address1 = "";
             String address2 = "";
             String phoneNo = "";

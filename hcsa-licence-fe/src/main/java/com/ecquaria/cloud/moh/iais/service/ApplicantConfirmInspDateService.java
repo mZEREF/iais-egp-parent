@@ -105,4 +105,13 @@ public interface ApplicantConfirmInspDateService {
       * @Descripation: saveAccSpecificDate
       */
     void saveAccSpecificDate(ApptFeConfirmDateDto apptFeConfirmDateDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/8/4
+      * @Param: applicationNo
+      * @return: String
+      * @Descripation: get AppPremCorrId By AppNo
+      */
+    String getAppPremCorrIdByAppNo(String applicationNo);
 }
