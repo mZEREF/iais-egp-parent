@@ -47,6 +47,6 @@ public interface IaisSystemClient {
 	@GetMapping(value = "/iais-message/pendRefresh")
 	FeignResponseEntity<List<MessageDto>> getMessagesToRefresh();
 
-	@PutMapping(value = "/messages", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/iais-message/messages", consumes = MediaType.APPLICATION_JSON_VALUE)
 	FeignResponseEntity<Void> saveMessages(@RequestBody Collection<MessageDto> messageDtos);
 }
