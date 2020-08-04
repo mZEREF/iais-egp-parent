@@ -69,8 +69,6 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
     HcsaConfigClient hcsaConfigClient;
     @Value("${iais.email.sender}")
     private String mailSender;
-    @Value("${iais.system.adhoc.rfi.due.day}")
-    String reminderDueDay;
     @Value("${iais.system.rfc.sms.reminder.day}")
     String reminderMax1Day;
     @Value("${iais.system.rfc.sms.sec.reminder.day}")
@@ -84,19 +82,18 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtos= requestForInformationService.getAllReqForInfo();
             for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
             ) {
-                if(rfi.getReminder()<4){
+                if(rfi.getReminder()<3){
                     Calendar cal1 = Calendar.getInstance();
                     cal1.setTime(rfi.getDueDateSubmission());
                     String reminderMaxDay;
                     switch (rfi.getReminder()){
-                        case 0:reminderMaxDay=reminderDueDay;break;
-                        case 1:reminderMaxDay=reminderMax1Day;break;
-                        case 2:reminderMaxDay=reminderMax2Day;break;
-                        case 3:reminderMaxDay=reminderMax3Day;break;
+                        case 0:reminderMaxDay=reminderMax1Day;break;
+                        case 1:reminderMaxDay=reminderMax2Day;break;
+                        case 2:reminderMaxDay=reminderMax3Day;break;
                         default:reminderMaxDay="0";
                     }
                     cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay)-1);
-                    if(cal1.getTime().compareTo(new Date())>0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
+                    if(cal1.getTime().compareTo(new Date())<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
                         reminder(rfi);
                     }
                 }
