@@ -472,9 +472,9 @@ public class ConfigServiceDelegator {
                 hcsaSvcDocConfigDto.setServiceId("");
                 hcsaSvcDocConfigDto.setDupForPrem("0");
                 if("0".equals(serviceDocMandatories[i])){
-                    hcsaSvcDocConfigDto.setIsMandatory(false);
+                    hcsaSvcDocConfigDto.setIsMandatory(Boolean.FALSE);
                 }else if("1".equals(serviceDocMandatories[i])){
-                    hcsaSvcDocConfigDto.setIsMandatory(true);
+                    hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                 }
               /*  hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);*/
             }
@@ -498,9 +498,9 @@ public class ConfigServiceDelegator {
                 hcsaSvcDocConfigDto.setDocDesc(descriptionCommDocs[i]);
                 hcsaSvcDocConfigDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 if("0".equals(commDocMandatory[i])){
-                    hcsaSvcDocConfigDto.setIsMandatory(false);
+                    hcsaSvcDocConfigDto.setIsMandatory(Boolean.FALSE);
                 }else if("1".equals(commDocMandatory[i])){
-                    hcsaSvcDocConfigDto.setIsMandatory(true);
+                    hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                 }
                 hcsaSvcDocConfigDto.setDupForPrem("0");
                 if(!StringUtil.isEmpty(commDocIds[i])){
