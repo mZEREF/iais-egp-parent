@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="6" minorVersion="0" name="FE_Landing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
+<Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="9" minorVersion="0" name="FE_Landing" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
   <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="100">
@@ -23,18 +23,32 @@
     <JavaCode defClass="" executor="" methodName="switchAction_OnStepProcess_0" name="switchAction_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="FE_Singpass_Landing" project="" version="-1" x="920" y="430">
+  <InvokeStep defClass="" executor="" icon="" name="Step4" processname="FE_Singpass_Landing" project="" version="-1" x="1040" y="350">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
-  <InvokeStep defClass="" executor="" icon="" name="Step5" processname="FE_Croppass_Landing" project="" version="-1" x="1010" y="340">
+  <InvokeStep defClass="" executor="" icon="" name="Step5" processname="FE_Croppass_Landing" project="" version="-1" x="1130" y="260">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="singpassSendRedirect" x="490" y="550">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="singpassSendRedirect_OnStepProcess_0" name="singpassSendRedirect_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="corppassSendRedirect" x="850" y="180">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="corppassSendRedirect_OnStepProcess_0" name="corppassSendRedirect_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="prelogin" stageIndicator="" x="420" y="100">
@@ -49,13 +63,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="singpass" stageIndicator="" x="670" y="420">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="singpass" stageIndicator="" x="700" y="430">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="corppass" stageIndicator="" x="850" y="180">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="corppass" stageIndicator="" x="1010" y="140">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -88,11 +102,11 @@
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
    <position>{(560,370)(440,490)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/corppass" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(750,120)(870,200)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/singpass" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch2" style="oblique">
-   <position>{(560,370)(690,440)}</position>
+   <position>{(560,370)(720,450)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/corppass" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(750,120)(1030,160)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

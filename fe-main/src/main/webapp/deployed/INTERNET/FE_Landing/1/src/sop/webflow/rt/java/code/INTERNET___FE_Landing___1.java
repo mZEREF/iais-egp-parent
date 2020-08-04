@@ -10,8 +10,8 @@
  * reasons.
  */
 package sop.webflow.rt.java.code;
-import com.ecquaria.cloud.helper.EngineHelper;
 
+import com.ecquaria.cloud.helper.EngineHelper;
 import sop.webflow.rt.api.BaseProcessClass;
 
 public class INTERNET___FE_Landing___1 extends BaseProcessClass {
@@ -28,6 +28,14 @@ public class INTERNET___FE_Landing___1 extends BaseProcessClass {
 
 	public void step1_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "startStep", this);
+	}
+
+	public void singpassSendRedirect_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "singpassSendRedirect", this);
+	}
+
+	public void corppassSendRedirect_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "corppassSendRedirect", this);
 	}
 
 }
