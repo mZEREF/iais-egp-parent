@@ -1705,7 +1705,6 @@ public class NewApplicationHelper {
             try {
                 field.set(person,value);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
                 log.error(StringUtil.changeForLog(e.getMessage()),e);
             }
         }

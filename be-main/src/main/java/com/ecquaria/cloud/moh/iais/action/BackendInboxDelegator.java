@@ -303,9 +303,12 @@ public class BackendInboxDelegator {
             for (String item:taskList
             ) {
                 TaskDto taskDto = taskService.getTaskById(item);
-                String correlationId = "";
+                String correlationId;
                 if(taskDto != null){
                     correlationId = taskDto.getRefNo();
+                }else {
+                    log.info(StringUtil.changeForLog("-------- task id "+ item+" is no task dto----"));
+                    continue;
                 }
 
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationViewService.getLastAppPremisesCorrelationDtoById(correlationId);
