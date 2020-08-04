@@ -40,6 +40,7 @@
     });
 
     $("#applyLicence").attr('checked', 'true');
+
     $(document).ready(function () {
         //disabled
         $('.disabledPart').find('input[type="radio"]').prop('disabled',true);

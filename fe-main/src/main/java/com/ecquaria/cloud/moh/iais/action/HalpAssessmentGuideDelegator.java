@@ -683,8 +683,8 @@ public class HalpAssessmentGuideDelegator {
                             if(i == basechks.length-1){
                                 flag = false;
                                 String specSvcName = HcsaServiceCacheHelper.getServiceById(specSvcId).getSvcName();
-                                String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
-//                                String errMsg = MessageUtil.getMessageDesc("NEW_ERR0008");
+//                                    String errMsg = "You are not allowed to apply for <service name> as you do not have the required base service licence, please apply for <base service name>";
+                                String errMsg = MessageUtil.getMessageDesc("NEW_ERR0008");
                                 errMsg =  errMsg.replace("<service name>",specSvcName);
                                 String baseNameStr = baseSvcNameList.stream().collect(Collectors.joining(","));
                                 errMsg = errMsg.replace("<base service name>",baseNameStr);
@@ -1015,15 +1015,20 @@ public class HalpAssessmentGuideDelegator {
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
             List<HcsaServiceDto> otherSvcDtoList = IaisCommonUtils.genNewArrayList();
             for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
-                int i = 0;
                 String svcCode = hcsaServiceDto.getSvcCode();
+                int i = 0;
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                     if(svcCode.equals(appSvcRelatedInfoDto.getServiceCode())){
                         break;
                     }
                     String baseSvcId = appSvcRelatedInfoDto.getBaseServiceId();
+                    //specified svc
                     if(!StringUtil.isEmpty(baseSvcId)){
                         HcsaServiceDto baseSvcDto = HcsaServiceCacheHelper.getServiceById(baseSvcId);
+                        if(baseSvcDto == null){
+                            log.info(StringUtil.changeForLog("current svc id is dirty data ..."));
+                            continue;
+                        }
                         if(svcCode.equals(baseSvcDto.getSvcCode())){
                             break;
                         }
@@ -1034,12 +1039,13 @@ public class HalpAssessmentGuideDelegator {
                     i++;
                 }
             }
+            //create other appSvcDto
             if(!IaisCommonUtils.isEmpty(otherSvcDtoList)){
                 for(HcsaServiceDto hcsaServiceDto:otherSvcDtoList){
                     AppSvcRelatedInfoDto appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
                     appSvcRelatedInfoDto.setServiceId(hcsaServiceDto.getId());
-                    appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
                     appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                    appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
                     appSvcRelatedInfoDto.setServiceType(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE);
                     appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                 }
@@ -1052,31 +1058,33 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public static void sortAppSvcRelatDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
-        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-            List<AppSvcRelatedInfoDto> baseDtos = IaisCommonUtils.genNewArrayList();
-            List<AppSvcRelatedInfoDto> specDtos = IaisCommonUtils.genNewArrayList();
-            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                String svcCode = appSvcRelatedInfoDto.getServiceCode();
-                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(svcCode);
-                String serviceType = hcsaServiceDto.getSvcType();
-                appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
-                if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceType)){
-                    baseDtos.add(appSvcRelatedInfoDto);
-                }else if (ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(serviceType)){
-                    specDtos.add(appSvcRelatedInfoDto);
-                }
+        List<AppSvcRelatedInfoDto> baseDtos = IaisCommonUtils.genNewArrayList();
+        List<AppSvcRelatedInfoDto> specDtos = IaisCommonUtils.genNewArrayList();
+        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+            String svcCode = appSvcRelatedInfoDto.getServiceCode();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(svcCode);
+            if(hcsaServiceDto == null){
+                log.info(StringUtil.changeForLog("svc code:"+svcCode+" can not found HcsaServiceDto"));
+                continue;
             }
-            List<AppSvcRelatedInfoDto> newAppSvcDto = IaisCommonUtils.genNewArrayList();
-            if(!IaisCommonUtils.isEmpty(baseDtos)){
-                baseDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
-                newAppSvcDto.addAll(baseDtos);
+            String serviceType = hcsaServiceDto.getSvcType();
+            appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
+            if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(serviceType)){
+                baseDtos.add(appSvcRelatedInfoDto);
+            }else if (ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(serviceType)){
+                specDtos.add(appSvcRelatedInfoDto);
             }
-            if(!IaisCommonUtils.isEmpty(specDtos)){
-                specDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
-                newAppSvcDto.addAll(specDtos);
-            }
-            appSvcRelatedInfoDtos = newAppSvcDto;
         }
+        List<AppSvcRelatedInfoDto> newAppSvcDto = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(baseDtos)){
+            baseDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+            newAppSvcDto.addAll(baseDtos);
+        }
+        if(!IaisCommonUtils.isEmpty(specDtos)){
+            specDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
+            newAppSvcDto.addAll(specDtos);
+        }
+        appSvcRelatedInfoDtos = newAppSvcDto;
     }
 
     public void doRenewStep(BaseProcessClass bpc) throws IOException {

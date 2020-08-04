@@ -16,7 +16,6 @@
                 <div class="row">
                     <div class="col-xs-12 col-md-3">
                         <div class="text-center-mobile">
-                            <a class="back" id="baseBack"><em class="fa fa-angle-left"></em> Back</a>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-4">
@@ -25,7 +24,6 @@
                         </div>
                     </div>
                 </div>
-
                 <br>
                 <input type="text" style="display: none" id="draftsave" name="draftsave" value="${selectDraftNo}">
                 <c:if test="${ not empty selectDraftNo }">
@@ -40,8 +38,8 @@
 <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2.jsp" %>
 <%@include file="../assessmentGuideMenuFoot.jsp" %>
 <script type="text/javascript">
-    $(function () {
-        $(".assessment-level-2").attr("hidden","true")
+    $(function (){
+        $(".assessment-level-2").attr("hidden","true");
     });
 
     $("#applyLicence").attr('checked', 'true');
@@ -56,13 +54,13 @@
         $('.existing-base').find('input[type="radio"]').prop('disabled',true);
 
 
-        // $('#baseBack').click(function () {
-        //     submit('chooseSvc',null,'back');
-        // });
-        // $('#baseContinue').click(function () {
-        //     submit('chooseAlign',null,'next');
-        //
-        // });
+        $('#baseBack').click(function () {
+            submit('chooseSvc',null,'back');
+        });
+        $('#baseContinue').click(function () {
+            submit('chooseAlign',null,'next');
+
+        });
 
         if( $('#draftsave').val()!=null|| $('#draftsave').val()!=''){
             $('#saveDraft').modal('show');
@@ -70,7 +68,7 @@
 
 
 
-        $('.form-check-input').click(function () {
+        $('.assessment-service').click(function () {
             var $currSpecContent = $(this).closest('div.speSvcContent');
             var $baseLicContent = $(this).closest('div.exist-base-lic-content');
 
@@ -128,8 +126,8 @@
                 });
             }else{
                 $('.speSvcContent').each(function (k,v) {
-                    if( $(this).find('.form-check-input:checked').length == 0){
-                        $(this).find('.form-check-input:eq(0)').prop('checked',true);
+                    if( $(this).find('.assessment-service:checked').length == 0){
+                        $(this).find('.assessment-service:eq(0)').prop('checked',true);
                     }
                 });
             }
@@ -138,21 +136,21 @@
                 $('.speSvcContent').each(function (v,k) {
                     $(this).find('.base-svc-content:eq(0) .exist-base-lic-content input[type="radio"]:eq(0)').prop('checked',true);
                     $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
-                    $('.form-check-input:checked').trigger('click');
+                    $('.assessment-service:checked').trigger('click');
                 });
                 $('.existing-base-content input[type="radio"]:checked').each(function () {
                     $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
                 });
                 //
             }else{
-                $('.form-check-input:checked').trigger('click');
+                $('.assessment-service:checked').trigger('click');
                 $('.existing-base-content input[type="radio"]:checked').each(function () {
                     $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
                 });
 
                 $('.speSvcContent').each(function (k,v) {
-                    if( $(this).find('.form-check-input:checked').length == 0){
-                        $(this).find('.form-check-input:eq(0)').prop('checked',true);
+                    if( $(this).find('.assessment-service:checked').length == 0){
+                        $(this).find('.assessment-service:eq(0)').prop('checked',true);
                         $(this).find('.existing-base-content:eq(0) input[type="radio"]:eq(0)').prop('checked',true);
                     }
                 });
@@ -161,19 +159,19 @@
 
     });
 
-    // function saveDraft() {
-    //     let val = $('#draftsave').val();
-    //     $("[name='draftNo']").val(val);
-    //     $("[name='crud_action_value']").val('continue');
-    //     $('#mainForm').submit();
-    // }
-    //
-    // function cancelSaveDraft() {
-    //     let val = $('#draftsave').val();
-    //     $("[name='draftNo']").val(val);
-    //     $("[name='crud_action_value']").val('resume');
-    //     $('#mainForm').submit();
-    // }
+    function saveDraft() {
+        let val = $('#draftsave').val();
+        $("[name='draftNo']").val(val);
+        $("[name='crud_action_value']").val('continue');
+        $('#mainForm').submit();
+    }
+
+    function cancelSaveDraft() {
+        let val = $('#draftsave').val();
+        $("[name='draftNo']").val(val);
+        $("[name='crud_action_value']").val('resume');
+        $('#mainForm').submit();
+    }
 
 
 

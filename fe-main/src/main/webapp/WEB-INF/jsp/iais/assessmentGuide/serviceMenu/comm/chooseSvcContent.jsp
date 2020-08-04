@@ -26,7 +26,7 @@
                 <p class="assessment-title">Special Licensable Healthcare Services</p>
                 <c:forEach var="specified" items="${specifiedService}">
                     <div class="form-check">
-                        <input class="form-check-input"
+                        <input class="form-check-input assessment-service"
                         <c:if test="${specifiedServiceChecked != null}">
                         <c:forEach var="specifiedchecked" items="${specifiedServiceChecked}">
                                <c:if test="${specified.getId().equals(specifiedchecked)}">checked="checked"</c:if>
@@ -43,7 +43,7 @@
                 <p class="assessment-title">Base Services</p>
                 <c:forEach var="base" items="${baseService}">
                     <div class="form-check">
-                        <input class="form-check-input"
+                        <input class="form-check-input assessment-service"
                         <c:if test="${baseServiceChecked != null}">
                         <c:forEach var="checked" items="${baseServiceChecked}">
                                <c:if test="${base.getId().equals(checked)}">checked="checked"</c:if>
