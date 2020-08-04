@@ -56,13 +56,13 @@
         $('.existing-base').find('input[type="radio"]').prop('disabled',true);
 
 
-        $('#baseBack').click(function () {
-            submit('chooseSvc',null,'back');
-        });
-        $('#baseContinue').click(function () {
-            submit('chooseAlign',null,'next');
-
-        });
+        // $('#baseBack').click(function () {
+        //     submit('chooseSvc',null,'back');
+        // });
+        // $('#baseContinue').click(function () {
+        //     submit('chooseAlign',null,'next');
+        //
+        // });
 
         if( $('#draftsave').val()!=null|| $('#draftsave').val()!=''){
             $('#saveDraft').modal('show');
@@ -161,19 +161,19 @@
 
     });
 
-    function saveDraft() {
-        let val = $('#draftsave').val();
-        $("[name='draftNo']").val(val);
-        $("[name='crud_action_value']").val('continue');
-        $('#mainForm').submit();
-    }
-
-    function cancelSaveDraft() {
-        let val = $('#draftsave').val();
-        $("[name='draftNo']").val(val);
-        $("[name='crud_action_value']").val('resume');
-        $('#mainForm').submit();
-    }
+    // function saveDraft() {
+    //     let val = $('#draftsave').val();
+    //     $("[name='draftNo']").val(val);
+    //     $("[name='crud_action_value']").val('continue');
+    //     $('#mainForm').submit();
+    // }
+    //
+    // function cancelSaveDraft() {
+    //     let val = $('#draftsave').val();
+    //     $("[name='draftNo']").val(val);
+    //     $("[name='crud_action_value']").val('resume');
+    //     $('#mainForm').submit();
+    // }
 
 
 

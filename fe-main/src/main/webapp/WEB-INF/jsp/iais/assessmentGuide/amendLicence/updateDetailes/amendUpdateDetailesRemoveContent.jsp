@@ -50,6 +50,5 @@
             </tbody>
         </table>
     </div>
-
-    <a class="btn btn-primary "  onclick="Utils.submit('mainForm','cease')" style="background: #1F92FF; color: white"  >NEXT</a>
+    <a class="btn btn-primary " onclick="guideSubmit('amendLic1','second')">NEXT</a>
 </div>

@@ -108,7 +108,7 @@ preChooseSvc<%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
         }
 
         $('#submitService').click(function () {
-            SOP.Crud.cfxSubmit("mainForm", "validation");
+            SOP.Crud.cfxSubmit("mainForm", "startApplication");
         });
     });
 

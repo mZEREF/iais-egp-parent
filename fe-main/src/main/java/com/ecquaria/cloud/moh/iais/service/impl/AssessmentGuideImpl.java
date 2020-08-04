@@ -63,4 +63,9 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
     public SearchResult<MenuLicenceDto> getMenuLicence(SearchParam searchParam) {
         return licenceClient.getMenuLicence(searchParam).getEntity();
     }
+
+    @Override
+    public Boolean isNewLicensee(String licenseeId) {
+        return licenceClient.checkIsNewLicsee(licenseeId).getEntity();
+    }
 }

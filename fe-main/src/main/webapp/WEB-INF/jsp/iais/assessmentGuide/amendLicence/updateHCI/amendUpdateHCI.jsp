@@ -39,4 +39,16 @@
 <script type="application/javascript">
     $("#amendLicence").attr('checked', 'true');
     $("#amendLicence2").attr('checked', 'true');
+
+    function jumpToPagechangePage() {
+        $("[name='guide_action_type']").val("updateHCIPage");
+        $("#mainForm").submit();
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        $("[name='guide_action_type']").val("updateHCISort");
+        $("#mainForm").submit();
+    }
 </script>

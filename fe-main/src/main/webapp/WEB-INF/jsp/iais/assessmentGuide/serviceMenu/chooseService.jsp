@@ -26,9 +26,12 @@
             $('#saveDraft').modal('show');
         }
 
+        $('#Back').click(function(){
+            submit('toInbox',null,'back');
+        });
+
         $('#submitService').click(function(){
-            $("#mainForm").submit();
+            submit('chooseSvc',null,'next');
         });
     });
-
 </script>

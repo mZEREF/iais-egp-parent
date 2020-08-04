@@ -19,4 +19,5 @@ public interface AssessmentGuideService {
     List<HcsaServiceDto> getHcsaServiceDtosById(List<String> ids);
     String selectDarft(Map<String, Object> map);
     public SearchResult<MenuLicenceDto> getMenuLicence(SearchParam searchParam);
+    Boolean isNewLicensee(String licenseeId);
 }
