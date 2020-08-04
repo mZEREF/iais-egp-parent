@@ -58,7 +58,7 @@ public interface TaskOrganizationClient {
     @GetMapping(value = "/iais-task/inspector-task/{applicationNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> getInspectorByAppNo(@PathVariable(name = "applicationNo") String applicationNo);
 
-    @GetMapping(value = "/refNo-processUrl",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/iais-task/refNo-processUrl",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<TaskDto>> getTaskByUrlAndRefNo(@RequestParam(name = "refNo") String refNo, @RequestParam(name = "processUrl") String processUrl);
 
     @GetMapping(value = "/iais-task/corrid-inspectors",produces = MediaType.APPLICATION_JSON_VALUE)

@@ -509,7 +509,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 dto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
                 dto.setSlaDateCompleted(new Date());
                 dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                taskService.updateTask(taskDto);
+                taskService.updateTask(dto);
             }
         }
     }
