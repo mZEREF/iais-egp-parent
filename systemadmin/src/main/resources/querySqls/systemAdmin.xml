@@ -275,7 +275,7 @@
 				WHERE T1.ID = M1.MESSAGE_TEMPLATE_ID and M1.RECIPIENT_TYPE = 'TO'
 				FOR XML PATH('')
 			) C (REC)
-            WHERE 1=1
+            WHERE 1=1 and process is not null
             <#if id??> and charindex(:id, id) >0</#if>
             <#if msgType??> AND T1.message_type = :msgType</#if>
             <#if templateName??> AND T1.template_name like :templateName</#if>
