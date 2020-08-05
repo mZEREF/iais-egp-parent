@@ -165,6 +165,11 @@ public class NotificationHelper {
 		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, subject);
 	}
 
+	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
+								 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto, String subject) {
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, subject);
+	}
+
 	@Async("emailAsyncExecutor")
 	public void sendNotificationWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode,
 											 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto, String subject) {
@@ -345,10 +350,13 @@ public class NotificationHelper {
 	private Collection<String> getAssignedOfficer(List<String> roles, String appNo) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		Set<String> userIds = IaisCommonUtils.genNewHashSet();
+		List<AppPremisesRoutingHistoryDto> hisList;
 		if (!AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
-			return set;
+			//todo eic
+			hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
+		} else {
+			hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
 		}
-		List<AppPremisesRoutingHistoryDto> hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
 		if (IaisCommonUtils.isEmpty(hisList)) {
 			return set;
 		}
@@ -376,7 +384,13 @@ public class NotificationHelper {
 				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD));
 			}
 		}
-		List<OrgUserDto> userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
+		List<OrgUserDto> userList;
+		if (!AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+			//todo eic
+			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
+		} else {
+			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
+		}
 		if (!IaisCommonUtils.isEmpty(userList)) {
 			for (OrgUserDto u : userList) {
 				if (!StringUtil.isEmpty(u.getEmail())) {
