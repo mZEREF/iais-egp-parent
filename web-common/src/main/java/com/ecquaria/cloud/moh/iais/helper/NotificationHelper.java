@@ -353,8 +353,15 @@ public class NotificationHelper {
 	}
 
 	private Collection<String> getAssignedOfficer(List<String> roles, String appNo, String moduleType) {
-
 		Set<String> set = IaisCommonUtils.genNewHashSet();
+		if(StringUtil.isEmpty(moduleType)) {
+			//The default function
+			set = getDefaultAssignedOfficer(roles, set, appNo);
+		}
+		return set;
+	}
+
+	private Set<String> getDefaultAssignedOfficer(List<String> roles, Set<String> set, String appNo) {
 		Set<String> userIds = IaisCommonUtils.genNewHashSet();
 		List<AppPremisesRoutingHistoryDto> hisList;
 		if (!AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
@@ -404,7 +411,6 @@ public class NotificationHelper {
 				}
 			}
 		}
-
 		return set;
 	}
 
