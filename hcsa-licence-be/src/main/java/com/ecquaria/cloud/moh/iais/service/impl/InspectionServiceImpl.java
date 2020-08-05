@@ -480,16 +480,6 @@ public class InspectionServiceImpl implements InspectionService {
                             }
                         }
                         organizationClient.assignSupTasks(inspectionTaskPoolListDto);
-                        //Self-Checklist
-                        boolean selfCheckListFlag = inspectionAssignTaskService.applicantIsSubmit(td.getRefNo());
-                        if(selfCheckListFlag) {
-                            List<String> taskUserIds = IaisCommonUtils.genNewArrayList();
-                            for (SelectOption so : inspectionTaskPoolListDto.getInspectorCheck()) {
-                                taskUserIds.add(so.getValue());
-                            }
-                            String taskId = td.getId();
-                            //inspectionAssignTaskService.sendSelfCheckListEmail(taskId, taskUserIds);
-                        }
                     }
                 } else {
                     td.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);

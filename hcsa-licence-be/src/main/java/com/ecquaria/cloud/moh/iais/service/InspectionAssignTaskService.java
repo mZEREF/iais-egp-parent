@@ -190,13 +190,4 @@ public interface InspectionAssignTaskService {
       * @Descripation: applicantIsSubmit
       */
     boolean applicantIsSubmit(String refNo);
-
-    /**
-      * @author: shicheng
-      * @Date 2020/7/7
-      * @Param: taskId, taskUserIds
-      * @return: void
-      * @Descripation: sendSelfCheckListEmail
-      */
-    void sendSelfCheckListEmail(String taskId, List<String> taskUserIds);
 }

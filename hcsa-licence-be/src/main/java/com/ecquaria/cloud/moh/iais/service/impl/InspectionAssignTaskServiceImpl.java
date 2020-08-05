@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -28,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
@@ -70,6 +68,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
@@ -515,15 +514,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                             }
                         }
                     }
-                    //Self-Checklist
-                    boolean selfCheckListFlag = applicantIsSubmit(td.getRefNo());
-                    if(selfCheckListFlag) {
-                        String taskUserId = loginContext.getUserId();
-                        List<String> taskUserIds = IaisCommonUtils.genNewArrayList();
-                        taskUserIds.add(taskUserId);
-                        String taskId = td.getId();
-                        //sendSelfCheckListEmail(taskId, taskUserIds);
-                    }
                 }
             }
         }
@@ -551,33 +541,6 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             }
         }
         return flag;
-    }
-
-    @Override
-    public void sendSelfCheckListEmail(String taskId, List<String> taskUserIds) {
-        try{
-            if(!IaisCommonUtils.isEmpty(taskUserIds)){
-                List<String> addressList = IaisCommonUtils.genNewArrayList();
-                for(String userId : taskUserIds){
-                    OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
-                    String address = orgUserDto.getEmail();
-                    if(!StringUtil.isEmpty(address)){
-                        addressList.add(address);
-                    }
-                }
-                if(!IaisCommonUtils.isEmpty(addressList)) {
-                    EmailDto emailDto = new EmailDto();
-                    emailDto.setContent("Self-Checklist Complete");
-                    emailDto.setSubject("MOH lAIS - Self-assessment Checklist Submission");
-                    emailDto.setSender(mailSender);
-                    emailDto.setReceipts(addressList);
-                    emailDto.setClientQueryCode(taskId);
-                    emailClient.sendNotification(emailDto);
-                }
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
     }
 
     @Override
