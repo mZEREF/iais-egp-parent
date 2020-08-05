@@ -879,6 +879,12 @@ public class MohIntranetUserDelegator {
                 if (!StringUtil.isEmpty(remarks)) {
                     orgUserDto.setRemarks(remarks);
                 }
+                if(!StringUtil.isEmpty(startDateStr)){
+                    orgUserDto.setStartDateStr(startDateStr);
+                }
+                if(!StringUtil.isEmpty(endDateStr)){
+                    orgUserDto.setStartDateStr(endDateStr);
+                }
                 orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
                 orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
                 orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
@@ -911,14 +917,25 @@ public class MohIntranetUserDelegator {
             String error = "Display Name is a mandatory field.";
             errors.add(error);
         }
+
         Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
-        if (accountActivateDatetime == null) {
+        String startDateStr = orgUserDto.getStartDateStr();
+        if (StringUtil.isEmpty(startDateStr)) {
             String error = "Account Activation Start is a mandatory field.";
             errors.add(error);
         }
+        if (!StringUtil.isEmpty(startDateStr)&&accountActivateDatetime==null) {
+            String error = "Please key in a valid account activation start date.";
+            errors.add(error);
+        }
         Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
-        if (accountDeactivateDatetime == null) {
+        String endDateStr = orgUserDto.getEndDateStr();
+        if (StringUtil.isEmpty(endDateStr)) {
             String error = "Account Activation End is a mandatory field.";
+            errors.add(error);
+        }
+        if (!StringUtil.isEmpty(startDateStr)&&accountDeactivateDatetime == null) {
+            String error = "Please key in a valid account activation end date.";
             errors.add(error);
         }
         if (accountDeactivateDatetime != null && accountActivateDatetime != null) {
