@@ -694,11 +694,11 @@ public class NewApplicationHelper {
         if(appSubmissionDto == null || StringUtil.isEmpty(svcId)){
             return null;
         }
-        log.info(svcId+"svcId");
+        log.info(StringUtil.changeForLog(svcId+"svcId"));
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = null;
         if(!IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
             for(AppSvcRelatedInfoDto item:appSubmissionDto.getAppSvcRelatedInfoDtoList()){
-                log.info(item.getServiceId()+"item.getServiceId()");
+                log.info(StringUtil.changeForLog(item.getServiceId()+"item.getServiceId()"));
                 if(svcId.equals(item.getServiceId())){
                     appSvcRelatedInfoDto = item;
                     break;

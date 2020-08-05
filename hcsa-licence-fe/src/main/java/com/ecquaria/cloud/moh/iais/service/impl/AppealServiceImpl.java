@@ -158,7 +158,7 @@ public class AppealServiceImpl implements AppealService {
             }
             appPremisesSpecialDocDto.setDocName(selectedFile.getOriginalFilename());
             if (size < 5 * 1024) {
-                appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
+                appPremisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
                 String s = FileUtil.genMd5FileChecksum(selectedFile.getBytes());
                 appPremisesSpecialDocDto.setMd5Code(s);
                 try {
@@ -482,7 +482,7 @@ public class AppealServiceImpl implements AppealService {
             String filename = file.getOriginalFilename();
             String fileType = filename.substring(filename.lastIndexOf('.') + 1);
             specialDocDto.setDocName(filename);
-            specialDocDto.setDocSize(Integer.parseInt(size+""));
+            specialDocDto.setDocSize(Integer.valueOf(size+""));
             req.getSession().setAttribute("appPremisesSpecialDocDto", specialDocDto);
             //todo change
             if (!"PDF".equalsIgnoreCase(fileType) && !"PNG".equalsIgnoreCase(fileType) &&
@@ -820,7 +820,7 @@ public class AppealServiceImpl implements AppealService {
             applicationDto1.setVersion(rfiApplication.getVersion() + 1);
             //if need new group
             applicationGroupDto.setId(rfiApplication.getAppGrpId());
-            applicationGroupDto.setGroupNo(rfiApplication.getApplicationNo().substring(0,rfiApplication.getApplicationNo().lastIndexOf("-")));
+            applicationGroupDto.setGroupNo(rfiApplication.getApplicationNo().substring(0,rfiApplication.getApplicationNo().lastIndexOf('-')));
             applicationDto1.setApplicationNo(rfiApplication.getApplicationNo());
             appealDto.setAppealType("APPEAL006");
             applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);

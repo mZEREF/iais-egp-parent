@@ -70,25 +70,26 @@ import java.util.List;
 @Service
 @Slf4j
 public class AppSubmissionServiceImpl implements AppSubmissionService {
-    String draftUrl =  RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION_DRAFT;
-    String submission = RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION;
+   // String draftUrl =  RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION_DRAFT;
+    //String submission = RestApiUrlConsts.HCSA_APP + RestApiUrlConsts.HCSA_APP_SUBMISSION;
 
     @Autowired
     private ApplicationClient applicationClient;
     @Autowired
     private AppConfigClient appConfigClient;
     @Autowired
-    private SystemParamConfig systemParamConfig;
-    @Autowired
     private LicenceClient licenceClient;
     @Autowired
     private EventBusHelper eventBusHelper;
-    @Autowired
-    private HcsaLicenClient hcsaLicenClient;
 
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 
     @Autowired

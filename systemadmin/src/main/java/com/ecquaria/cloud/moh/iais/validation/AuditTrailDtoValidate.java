@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -46,7 +47,7 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
 
 					int value = systemParamConfig.getAuditTrailSearchWeek();
 					value = value == 0 ? 3 : value;
-					log.info("audit trail week" + value);
+					log.info(StringUtil.changeForLog("audit trail week" + value));
 					String msg = MessageUtil.getMessageDesc("GENERAL_ERR0010");
 
 					if ((reduceDay >= (value * MONTH_DAY))){

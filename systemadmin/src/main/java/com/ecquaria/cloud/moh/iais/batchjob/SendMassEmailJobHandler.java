@@ -159,10 +159,10 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 List<HcsaServiceDto> hcsaServiceDtoList = distributionListService.getServicesInActive();
                 String serviceName = "";
                 HcsaServiceDto svcDto = new HcsaServiceDto();
-                for (HcsaServiceDto serviceDto:hcsaServiceDtoList
-                     ) {
+                for (HcsaServiceDto serviceDto:hcsaServiceDtoList) {
                     if(serviceDto.getSvcCode().equals(dis.getService())){
                         svcDto = serviceDto;
+                        break;
                     }
                 }
 

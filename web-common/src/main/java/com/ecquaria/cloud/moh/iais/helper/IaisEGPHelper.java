@@ -69,7 +69,7 @@ import sop.servlet.webflow.HttpHandler;
 import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 import static org.eclipse.jdt.internal.compiler.util.Util.UTF_8;
 
-@Slf4j
+@Slf4j //NOSONAR
 public final class IaisEGPHelper extends EGPHelper {
     /**
      * Role Application status constant
