@@ -138,7 +138,7 @@
 
       <div class="form-group" style="display: none" id="Subsumption">
         <div class="col-xs-12 col-md-8"  style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-6 control-label" >Base Service Subsumed Under<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
             <span id="error_Subsumption" class="error-msg" name="iaisErrorMsg" ></span>
@@ -647,12 +647,12 @@
   </form>
 </div>
 
-<iais:confirm msg="Are you sure you want to leave this page!" callBack="kpi()" popupOrder="kpi" ></iais:confirm>
+<iais:confirm msg="Are you sure you want to leave this page ?" callBack="kpi()" popupOrder="kpi" ></iais:confirm>
 
-<iais:confirm msg="Are you sure you want to leave this page!" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
+<iais:confirm msg="Are you sure you want to leave this page ?" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
 
-<iais:confirm msg="Are you sure you want to leave this page!" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
-<iais:confirm msg="Are you sure you want to cancel?" callBack="cancel()" popupOrder="cancel"></iais:confirm>
+<iais:confirm msg="Are you sure you want to leave this page ?" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
+<iais:confirm msg="Are you sure you want to cancel ?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel"></iais:confirm>
 <script type="text/javascript">
 
     function kpi() {
@@ -696,7 +696,7 @@
     });
 
     function cancel() {
-        SOP.Crud.cfxSubmit("mainForm", "cancel","cancel","");
+        SOP.Crud.cfxSubmit("mainForm", "back","back","");
     }
 
     function save() {

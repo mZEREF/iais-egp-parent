@@ -148,6 +148,9 @@ public class ConfigServiceImpl implements ConfigService {
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
             return;
+        }else if("back".equals(crud_action_value)){
+            request.setAttribute("crud_action_type", "back");
+            return;
         }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         doValidate(hcsaServiceConfigDto, errorMap,request);
@@ -234,6 +237,9 @@ public class ConfigServiceImpl implements ConfigService {
         String crud_action_value = request.getParameter("crud_action_value");
         if("cancel".equals(crud_action_value)){
             sendURL(request,response);
+            return;
+        }else if("back".equals(crud_action_value)){
+            request.setAttribute("crud_action_type", "back");
             return;
         }
          if("version".equals(crud_action_value)){
@@ -337,16 +343,18 @@ public class ConfigServiceImpl implements ConfigService {
 
     @Override
     public void deleteOrCancel(HttpServletRequest request,HttpServletResponse response) {
-        String serviceId = request.getParameter("crud_action_value");
-        if(!StringUtil.isEmpty(serviceId)){
-            if("cancel".equals(serviceId)){
+        String crud_action_value = request.getParameter("crud_action_value");
+        if(!StringUtil.isEmpty(crud_action_value)){
+            if("cancel".equals(crud_action_value)){
                 sendURL(request,response);
                 return;
+            } else if("back".equals(crud_action_value)){
+                return;
             }
-
-            Boolean flag = hcsaConfigClient.serviceIdIsUsed(serviceId).getEntity();
-            HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+            Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_value).getEntity();
+            HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
             List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
+
             if(!entity.isEmpty()){
                 request.setAttribute("delete","fail");
                 return;
@@ -364,7 +372,7 @@ public class ConfigServiceImpl implements ConfigService {
             } catch (Exception e) {
               log.error(e.getMessage(),e);
             }
-            hcsaConfigClient.updateService(serviceId);
+            hcsaConfigClient.updateService(crud_action_value);
             request.setAttribute("delete","success");
         }
 

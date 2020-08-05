@@ -526,6 +526,9 @@ public class AppealServiceImpl implements AppealService {
         } else {
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)) {
                 List<AppSvcCgoDto> appSvcCgoList = appealPageDto.getAppSvcCgoDto();
+                if(StringUtil.isEmpty(appSvcCgoList)){
+                    //todo
+                }
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 0; i < appSvcCgoList.size(); i++) {
                     StringBuilder stringBuilder1 = new StringBuilder();

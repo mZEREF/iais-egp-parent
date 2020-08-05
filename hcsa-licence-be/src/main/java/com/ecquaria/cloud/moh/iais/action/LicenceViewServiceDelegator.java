@@ -110,6 +110,7 @@ public class LicenceViewServiceDelegator {
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
             return;
         }
+        ApplicationDto applicationViewDtoapplicationDto = applicationViewDto.getApplicationDto();
         AppEditSelectDto appEditSelectDto;
         appEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
         if(appEditSelectDto==null){
@@ -273,11 +274,7 @@ public class LicenceViewServiceDelegator {
             stringList.add(hcsaServiceStepSchemeDto.getStepCode());
         }
         bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList", stringList);
-        try {
-            contrastNewAndOld(appSubmissionDto);
-        }catch (Exception e){
-           log.info("error");
-        }
+
         boolean canEidtPremise  = canEidtPremise(applicationViewDto.getApplicationGroupDto().getId());
         ParamUtil.setRequestAttr(bpc.request,"canEidtPremise",canEidtPremise);
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator prepareData end ..."));
@@ -288,6 +285,11 @@ public class LicenceViewServiceDelegator {
             if(oldAppSubmissionDto!=null){
                 svcDocToPresmise(oldAppSubmissionDto);
             }
+        }
+        try {
+            contrastNewAndOld(appSubmissionDto);
+        }catch (Exception e){
+            log.info("error");
         }
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if (appGrpPrimaryDocDtos != null) {
@@ -336,6 +338,8 @@ public class LicenceViewServiceDelegator {
                 appGrpPremisesDto.setApplicationViewAddress(applicationViewHciNameDtos);
             }
         }
+        premise(appSubmissionDto);
+        premise(appSubmissionDto.getOldAppSubmissionDto());
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
     }
@@ -1167,5 +1171,56 @@ public class LicenceViewServiceDelegator {
             }
         }
 
+    }
+
+    private void premise(AppSubmissionDto appSubmissionDto){
+        if(appSubmissionDto==null){
+            return;
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(appGrpPremisesDtoList==null || appGrpPremisesDtoList.isEmpty()){
+            return;
+        }
+        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+            if(StringUtil.isEmpty(appGrpPremisesDto.getStreetName())){
+                appGrpPremisesDto.setStreetName("-");
+            }
+            if(StringUtil.isEmpty(appGrpPremisesDto.getPostalCode())){
+                appGrpPremisesDto.setPostalCode("-");
+            }
+            if(StringUtil.isEmpty(appGrpPremisesDto.getBuildingName())){
+                appGrpPremisesDto.setBuildingName("-");
+            }
+            if(StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())){
+                appGrpPremisesDto.setFloorNo("-");
+            }
+            if(StringUtil.isEmpty(appGrpPremisesDto.getUnitNo())){
+                appGrpPremisesDto.setUnitNo("-");
+            }
+            if(StringUtil.isEmpty(appGrpPremisesDto.getAddrType())){
+                appGrpPremisesDto.setAddrType("-");
+            }
+        }
+    }
+
+    private void oldAppSubmission(AppSubmissionDto appSubmissionDto,String hciCode){
+        if(appSubmissionDto==null){
+            return;
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(appGrpPremisesDtoList==null || appGrpPremisesDtoList.isEmpty()||hciCode==null){
+            return;
+        }
+        List<AppGrpPremisesDto> appGrpPremisesDtos=IaisCommonUtils.genNewArrayList();
+        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+            String hciCode1 = appGrpPremisesDto.getHciCode();
+            if(hciCode1!=null){
+                if(hciCode1.equals(hciCode)){
+                    appGrpPremisesDtos.add(appGrpPremisesDto);
+                }
+            }else {
+                appGrpPremisesDtos.add(appGrpPremisesDto);
+            }
+        }
     }
 }

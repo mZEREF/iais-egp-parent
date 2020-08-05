@@ -325,6 +325,15 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/editView" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/selectVersionAsNewTem" style="oblique">
    <position>{(1110,480)(1350,620)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/start" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch3" style="oblique">
+   <position>{(560,220)(140,80)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/list" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
+   <position>{(1480,450)(690,-40)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/edit" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
+   <position>{(930,240)(1180,210)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -349,6 +358,7 @@
    <SwitchCase component="/Steps/InvokeStep/RiskScore" value="&quot;riskScore&quot;"/>
    <SwitchCase component="/Steps/InvokeStep/ServiceFees" value="&quot;serviceFee&quot;"/>
    <SwitchCase component="/Steps/InvokeStep/ServiceFeeBundles" value="&quot;feeBundles&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/start" value="&quot;back&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch4" x="680" y="-250">
    <Description/>
@@ -360,6 +370,7 @@
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/editView" value="&quot;edit&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/Step2" value="&quot;save&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/list" value="&quot;back&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/save" executor="" icon="" leftOperand="crud_action_type" name="Switch5" x="910" y="220">
    <Description/>
@@ -367,6 +378,7 @@
    <SwitchCase component="/Steps/AutomaticStep/editView" value="&quot;validate&quot;"/>
    <SwitchCase component="/Steps/InvokeStep/Step4" value="&quot;cancel&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/selectVersionAsNewTem" value="&quot;version&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/edit" value="   &quot;back&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

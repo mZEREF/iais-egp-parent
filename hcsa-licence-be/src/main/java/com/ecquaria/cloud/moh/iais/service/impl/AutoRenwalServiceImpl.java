@@ -91,6 +91,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         dayList.add(systemParamConfig.getSeventhLicenceReminder());
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(dayList)+"dayList"));
         Map<String, List<LicenceDto>> entity = hcsaLicenClient.licenceRenwal(dayList).getEntity();
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity+"------entity")));
         entity.forEach((k, v) -> {
             for(int i=0;i<v.size();i++){
 
@@ -197,7 +198,11 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         Date expiryDate = licenceDto.getExpiryDate();
 
         String id = licenceDto.getId();
+        log.info(StringUtil.changeForLog(time+"time"));
+        log.info(id);
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(licenceDto)));
         boolean b = checkEmailIsSend(id, "IS_NO_AUTO" + time);
+        log.info(StringUtil.changeForLog(b+"-------type"));
         if(!b){
             return;
         }
@@ -376,15 +381,12 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos).getEntity();
     }
     private boolean checkEmailIsSend(String licence,String magKey){
-        try {
-            JobRemindMsgTrackingDto auto_renew = systemBeLicClient.getJobRemindMsgTrackingDto(licence, magKey).getEntity();
-            if(auto_renew==null){
-                return true;
-            }else {
-                return false;
-            }
-        }catch (Exception e){
-            log.info(StringUtil.changeForLog("checkEmailIsSend error"+e));
+
+        JobRemindMsgTrackingDto auto_renew = systemBeLicClient.getJobRemindMsgTrackingDto(licence, magKey).getEntity();
+        if(auto_renew==null){
+            return true;
+        }else {
+            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(auto_renew+"auto_renew")));
             return false;
         }
 

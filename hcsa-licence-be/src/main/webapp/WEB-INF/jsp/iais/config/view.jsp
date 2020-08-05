@@ -110,7 +110,7 @@
 
       <div class="form-group" style="display: none" id="Subsumption">
         <div class="col-xs-12 col-md-8"  style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-6 control-label" >Subsumption Base Service:<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-6 control-label" >Base Service Subsumed Under<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
           </div>
@@ -564,14 +564,12 @@
         <div class="row">
           <div class="col-xs-10 col-md-8">
             <div class="components">
-              <button class="btn  btn-secondary" value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>" onclick="edit(this)">Update</button>
+              <a class="btn  btn-secondary"data-toggle="modal" data-target= "#cancel">Cancel</a>
             </div>
           </div>
           <div class="col-xs-10 col-md-3">
             <div class="components">
-
-              <a class="btn  btn-primary " onclick="save()">Save</a>
-
+              <button class="btn  btn-secondary" value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>" onclick="edit(this)">Update</button>
             </div>
           </div>
         </div>
@@ -588,11 +586,12 @@
     </div>
   </form>
 </div>
-<iais:confirm msg="Are you sure you want to leave this page!" callBack="kpi()" popupOrder="kpi" ></iais:confirm>
+<iais:confirm msg="Are you sure you want to leave this page ?" callBack="kpi()" popupOrder="kpi" ></iais:confirm>
 
-<iais:confirm msg="Are you sure you want to leave this page!" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
+<iais:confirm msg="Are you sure you want to leave this page ?" callBack="checklists()" popupOrder="checklists" ></iais:confirm>
 
-<iais:confirm msg="Are you sure you want to leave this page!" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
+<iais:confirm msg="Are you sure you want to leave this page ?" callBack="riskScore()" popupOrder="riskScore" ></iais:confirm>
+<iais:confirm msg="Are you sure you want to cancel?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel"></iais:confirm>
 <style>
   .mandatory{
     color: red;
@@ -645,6 +644,9 @@
 
     });
 
+    function cancel() {
+        SOP.Crud.cfxSubmit("mainForm","back","back","");
+    }
     function edit(obj) {
 
         SOP.Crud.cfxSubmit("mainForm","edit",$(obj).val(),"");

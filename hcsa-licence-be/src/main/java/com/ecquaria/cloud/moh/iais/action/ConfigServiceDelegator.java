@@ -476,7 +476,7 @@ public class ConfigServiceDelegator {
                 }else if("1".equals(serviceDocMandatories[i])){
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                 }
-              /*  hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);*/
+                hcsaSvcDocConfigDtos.add(hcsaSvcDocConfigDto);
             }
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -506,7 +506,7 @@ public class ConfigServiceDelegator {
                 if(!StringUtil.isEmpty(commDocIds[i])){
                     hcsaSvcDocConfigDto.setId(commDocIds[i]);
                 }
-                hcsaSvcDocConfigDtoList.add(hcsaSvcDocConfigDto);
+             /*   hcsaSvcDocConfigDtoList.add(hcsaSvcDocConfigDto);*/
             }
         }
         request.setAttribute("comDoc",hcsaSvcDocConfigDtoList);
