@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import java.io.IOException;
 import java.util.List;
@@ -95,7 +96,7 @@ public class SelectTagTest {
         int ret = tag.doStartTag();
         assertEquals(SelectTag.SKIP_BODY, ret);
     }
-    @Test(expected = JspTagException.class)
+    @Test(expected = IaisRuntimeException.class)
     public void testDoStartTagExp() throws JspException, IOException {
         doThrow(new RuntimeException()).when(jw).print(anyString());
         int ret = tag.doStartTag();

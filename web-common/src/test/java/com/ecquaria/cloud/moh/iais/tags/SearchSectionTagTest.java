@@ -13,6 +13,7 @@
 
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import org.junit.Assert;
 import org.junit.Before;
@@ -92,19 +93,19 @@ public class SearchSectionTagTest {
         assertEquals(SearchSectionTag.EVAL_BODY_INCLUDE, ret);
     }
 
-    @Test(expected = JspTagException.class)
+    @Test(expected = JspException.class)
     public void testDoStartTagExp() throws JspException, IOException {
         doThrow(new RuntimeException()).when(jw).print(anyString());
         int ret = tag.doStartTag();
     }
     @Test
-    public void testDoEndTag() throws JspException {
+    public void testDoEndTag()  {
         int ret = tag.doEndTag();
         assertEquals(SearchSectionTag.EVAL_PAGE, ret);
         tag.release();
     }
-    @Test(expected = JspTagException.class)
-    public void testDoEndTagExp() throws JspException, IOException {
+    @Test(expected = IaisRuntimeException.class)
+    public void testDoEndTagExp() throws  IOException {
         doThrow(new RuntimeException()).when(jw).print(anyString());
         int ret = tag.doEndTag();
     }
