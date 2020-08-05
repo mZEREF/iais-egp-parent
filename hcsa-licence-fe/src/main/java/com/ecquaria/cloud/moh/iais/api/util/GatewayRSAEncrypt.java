@@ -81,7 +81,7 @@ public class GatewayRSAEncrypt {
 			java.security.Signature signetcheck = java.security.Signature
 					.getInstance("SHA256withRSA");
 			signetcheck.initVerify(pubKey);
-			signetcheck.update(info.getBytes());
+			signetcheck.update(info.getBytes(StandardCharsets.UTF_8));
 			if (signetcheck.verify(signed)) {
 				return true;
 			} 

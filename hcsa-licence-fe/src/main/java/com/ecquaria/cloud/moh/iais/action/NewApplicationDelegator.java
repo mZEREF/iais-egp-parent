@@ -123,7 +123,7 @@ import static java.util.regex.Pattern.compile;
  * @date 9/23/2019
  */
 @Delegator("newApplicationDelegator")
-@Slf4j
+@Slf4j //NOSONAR
 public class NewApplicationDelegator {
     private static final String ERRORMAP_PREMISES = "errorMap_premises";
     public static final String PREMISESTYPE = "premisesType";
@@ -3406,7 +3406,7 @@ public class NewApplicationDelegator {
         doSvcDocument(errorMap,appSvcDocDtoLit,serviceId,sB);
         log.info(sB.toString());
 
-        log.info(JsonUtil.parseToJson(errorMap));
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)));
 
         return  errorMap;
     }
@@ -4254,7 +4254,7 @@ public class NewApplicationDelegator {
     }
 
     //todo:move to NewApplicationHelper
-    public static Map<String, String> doValidatePremiss(BaseProcessClass bpc) {
+    public static Map<String, String> doValidatePremiss(BaseProcessClass bpc) { //NOSONAR
         log.info("the do doValidatePremiss start ....");
         //do validate one premiss
         List<String> list=IaisCommonUtils.genNewArrayList();

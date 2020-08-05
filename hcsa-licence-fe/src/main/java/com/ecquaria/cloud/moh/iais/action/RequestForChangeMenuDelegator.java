@@ -4,7 +4,6 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
@@ -58,8 +57,6 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
-import com.ecquaria.cloud.submission.client.App;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
@@ -86,9 +83,6 @@ import static com.ecquaria.cloud.moh.iais.action.NewApplicationDelegator.ACKMESS
 @Slf4j
 @Delegator("MohRequestForChangeMenuDelegator")
 public class RequestForChangeMenuDelegator {
-    @Autowired
-    private SystemParamConfig systemParamConfig;
-
     private FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(PersonnelQueryDto.class)
             .searchAttr("PersonnelSearchParam")
@@ -112,8 +106,6 @@ public class RequestForChangeMenuDelegator {
     private EventBusHelper eventBusHelper;
     @Autowired
     private GenerateIdClient generateIdClient;
-    @Autowired
-    private SystemAdminClient systemAdminClient;
 
     /**
      * @param bpc
@@ -1620,7 +1612,7 @@ public class RequestForChangeMenuDelegator {
         return premisesVal;
     }
 
-    private String getPremisesVal(PremisesListQueryDto premisesListQueryDto) {
+  /*  private String getPremisesVal(PremisesListQueryDto premisesListQueryDto) {
         String premisesVal = "";
         if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesListQueryDto.getPremisesType())) {
             premisesVal = premisesListQueryDto.getHciName();
@@ -1628,7 +1620,7 @@ public class RequestForChangeMenuDelegator {
             premisesVal = premisesListQueryDto.getVehicleNo();
         }
         return premisesVal;
-    }
+    }*/
 
     private AppGrpPremisesDto genAppGrpPremisesDto(PremisesListQueryDto premisesListQueryDto, HttpServletRequest request) {
         AppGrpPremisesDto appGrpPremisesDto = new AppGrpPremisesDto();

@@ -657,7 +657,7 @@ public class ServiceMenuDelegator {
             if(newLicensee){
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
                     //64570
-                    if(basechks.length == 1){
+                    if(basechks!= null && basechks.length == 1){
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }
                 }else if(nextstep.equals(CHOOSE_ALIGN)){
@@ -870,7 +870,7 @@ public class ServiceMenuDelegator {
             return;
         }
 
-        if(AppConsts.YES.equals(isAlign)){
+       /* if(AppConsts.YES.equals(isAlign)){
             //todo
         }else{
             //to next
@@ -878,7 +878,7 @@ public class ServiceMenuDelegator {
         //todo only base
         if(appSelectSvcDto.isBasePage()){
 
-        }
+        }*/
 
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
         String nextstep = ParamUtil.getString(bpc.request,"crud_action_additional");

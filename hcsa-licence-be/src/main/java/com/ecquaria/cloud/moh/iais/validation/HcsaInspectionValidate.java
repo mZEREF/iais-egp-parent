@@ -185,48 +185,52 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     }
     public boolean doDateFormatVad(Map<String, String> errMap,String strEffDate,String strEndDate,String serviceCode,String level,HcsaRiskInspectionMatrixDto fdto){
         boolean vadFlag = true;
+        String ERR0009Message = MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field");
+        String ERR0017Message = MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea");
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
             if("C".equals(level)){
-                errMap.put(serviceCode+"caEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
+                errMap.put(serviceCode+"caEffDate",ERR0009Message);
             }else if("I".equals(level)){
-                errMap.put(serviceCode+"miEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
+                errMap.put(serviceCode+"miEffDate",ERR0009Message);
             }else if("A".equals(level)){
-                errMap.put(serviceCode+"mjEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
+                errMap.put(serviceCode+"mjEffDate",ERR0009Message);
             }
         }else{
             try {
                 Formatter.parseDate(strEffDate);
             }catch (Exception e){
                 if("C".equals(level)){
-                    errMap.put(serviceCode+"caEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
+                    errMap.put(serviceCode+"caEffDate", ERR0017Message);
                 }else if("I".equals(level)){
-                    errMap.put(serviceCode+"miEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
+                    errMap.put(serviceCode+"miEffDate", ERR0017Message);
                 }else if("A".equals(level)){
-                    errMap.put(serviceCode+"mjEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
+                    errMap.put(serviceCode+"mjEffDate", ERR0017Message);
                 }
                 vadFlag = false;
             }
         }
+        String ERR0009EMessage = MessageUtil.replaceMessage("ERR0009","Effective End Date","The field");
+        String ERR0017EMessage = MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea");
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
             if("C".equals(level)){
-                errMap.put(serviceCode+"caEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
+                errMap.put(serviceCode+"caEndDate",ERR0009EMessage);
             }else if("I".equals(level)){
-                errMap.put(serviceCode+"miEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
+                errMap.put(serviceCode+"miEndDate",ERR0009EMessage);
             }else if("A".equals(level)){
-                errMap.put(serviceCode+"mjEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
+                errMap.put(serviceCode+"mjEndDate",ERR0009EMessage);
             }
         }else{
             try {
                 Formatter.parseDate(strEndDate);
             }catch (Exception e){
                 if("C".equals(level)){
-                    errMap.put(serviceCode+"caEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
+                    errMap.put(serviceCode+"caEndDate",ERR0017EMessage);
                 }else if("I".equals(level)){
-                    errMap.put(serviceCode+"miEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
+                    errMap.put(serviceCode+"miEndDate",ERR0017EMessage);
                 }else if("A".equals(level)){
-                    errMap.put(serviceCode+"mjEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
+                    errMap.put(serviceCode+"mjEndDate",ERR0017EMessage);
                 }
                 return false;
             }

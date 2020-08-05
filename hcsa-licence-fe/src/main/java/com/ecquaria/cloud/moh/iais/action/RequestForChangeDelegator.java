@@ -375,9 +375,7 @@ public class RequestForChangeDelegator {
                appPremisesSpecialDocDto.setSubmitBy(auditTrailDto.getMohUserGuid());
                appPremisesSpecialDocDto.setSubmitDt(new Date());
            }
-        }else if(appPremisesSpecialDocDto == null ){
-            error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
-        }else if(StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())){
+        }else if(appPremisesSpecialDocDto == null || StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())){
             error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
         }
         if(!isEmail){
@@ -444,7 +442,7 @@ public class RequestForChangeDelegator {
 
                     //file
                     List<AppPremisesSpecialDocDto> appPremisesSpecialDocDtoList = IaisCommonUtils.genNewArrayList();
-                    if(!StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())){
+                    if(appPremisesSpecialDocDto != null && !StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())){
                         log.info(StringUtil.changeForLog("the appPremisesSpecialDocDto is not null"));
                         appPremisesSpecialDocDtoList.add(appPremisesSpecialDocDto);
                         appSubmissionDto.setAppPremisesSpecialDocDtos(appPremisesSpecialDocDtoList);

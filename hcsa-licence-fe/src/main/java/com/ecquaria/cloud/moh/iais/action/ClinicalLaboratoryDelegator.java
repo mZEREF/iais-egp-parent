@@ -845,12 +845,12 @@ public class ClinicalLaboratoryDelegator {
                                 .append(premisesValue)
                                 .append(i);
                         String[] chkAndCgoValue = ParamUtil.getStrings(bpc.request, chkAndCgoName.toString());
-                        if (chkAndCgoValue != null && chkAndCgoValue.length > 0) {
+                        if (chkAndCgoValue != null && chkAndCgoValue.length > 1) {
                             appSvcDisciplineAllocationDto = new AppSvcDisciplineAllocationDto();
                             //appSvcDisciplineAllocationDto.setPremiseType(premisesType);
                             appSvcDisciplineAllocationDto.setPremiseVal(premisesValue);
-                            appSvcDisciplineAllocationDto.setChkLstConfId(chkAndCgoValue[0]);
-                            appSvcDisciplineAllocationDto.setIdNo(chkAndCgoValue[1]);
+                            appSvcDisciplineAllocationDto.setChkLstConfId(chkAndCgoValue[0]);//NOSONAR
+                            appSvcDisciplineAllocationDto.setIdNo(chkAndCgoValue[1]);//NOSONAR
                             daList.add(appSvcDisciplineAllocationDto);
                         }
                     }
