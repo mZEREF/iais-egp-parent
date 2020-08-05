@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
@@ -740,12 +741,14 @@ public class ClinicalLaboratoryDelegator {
             String crud_action_additional = bpc.request.getParameter("nextStep");
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
             List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
+            Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
             //sync person dropdown and submisson dto
-            syncDropDownAndPsn(bpc,appSubmissionDto,appSvcCgoDtos,svcCode);
+            personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcCgoDtos,svcCode);
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
             if ("next".equals(crud_action_additional)) {
                 List<AppSvcCgoDto> appSvcCgoList = (List<AppSvcCgoDto>) ParamUtil.getSessionAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST);
-                Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
-                errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList, licPersonMap);
+                Map<String,AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.LICPERSONSELECTMAP);
+                errList = NewApplicationHelper.doValidateGovernanceOfficers(appSvcCgoList, licPersonMap, svcCode);
                 if (appSubmissionDto.isNeedEditController()) {
                     /*Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
                     clickEditPages.add(NewApplicationDelegator.APPLICATION_SVC_PAGE_NAME_GOVERNANCE_OFFICERS);
@@ -948,12 +951,14 @@ public class ClinicalLaboratoryDelegator {
             appSvcRelatedInfoDto.setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtoList);
             setAppSvcRelatedInfoMap(bpc.request, currentSvcId, appSvcRelatedInfoDto);
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+            Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
             //sync person dropdown and submisson dto
-            syncDropDownAndPsn(bpc,appSubmissionDto,appSvcPrincipalOfficersDtoList,svcCode);
+            personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcPrincipalOfficersDtoList,svcCode);
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
             if ("next".equals(crud_action_additional)) {
                 List<AppSvcPrincipalOfficersDto> poDto = (List<AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, "AppSvcPrincipalOfficersDto");
-                Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
-                map = NewApplicationHelper.doValidatePo(poDto, licPersonMap);
+                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+                map = NewApplicationHelper.doValidatePo(poDto, licPersonMap,svcCode);
                 if (appSubmissionDto.isNeedEditController()) {
 //                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
 //                    if (isGetDataFromPagePo) {
@@ -1367,8 +1372,10 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
             String nextStep = ParamUtil.getRequestString(bpc.request, "nextStep");
             String svcCode = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSVCCODE);
+            Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
             //sync person dropdown and submisson dto
-            syncDropDownAndPsn(bpc,appSubmissionDto,appSvcMedAlertPersonList,svcCode);
+            personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcMedAlertPersonList,svcCode);
+            ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
             if ("next".equals(nextStep)) {
                 if (appSubmissionDto.isNeedEditController()) {
 //                    Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();
@@ -1378,8 +1385,8 @@ public class ClinicalLaboratoryDelegator {
                     appEditSelectDto.setServiceEdit(true);
                     appSubmissionDto.setChangeSelectDto(appEditSelectDto);
                 }
-                Map<String, AppSvcPrincipalOfficersDto> licPersonMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
-                Map<String, String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap);
+                Map<String, AppSvcPersonAndExtDto> licPersonMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.LICPERSONSELECTMAP);
+                Map<String, String> errorMap = NewApplicationHelper.doValidateMedAlertPsn(appSvcMedAlertPersonList, licPersonMap, svcCode);
                 HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
                 if (errorMap.isEmpty() && allChecked.isEmpty()) {
@@ -2635,7 +2642,7 @@ public class ClinicalLaboratoryDelegator {
         appPsnEditDto.setPreferredMode(false);
     }
 
-    private void syncDropDownAndPsn(BaseProcessClass bpc,AppSubmissionDto appSubmissionDto,List<AppSvcPrincipalOfficersDto> personList,String svcCode){
+    private Map<String,AppSvcPersonAndExtDto> syncDropDownAndPsn(Map<String,AppSvcPersonAndExtDto> personMap,AppSubmissionDto appSubmissionDto,List<AppSvcPrincipalOfficersDto> personList,String svcCode){
         for(AppSvcPrincipalOfficersDto person:personList){
             String idType = person.getIdType();
             String idNo = person.getIdNo();
@@ -2645,11 +2652,12 @@ public class ClinicalLaboratoryDelegator {
             boolean needSync = !StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !StringUtil.isEmpty(name);
             if(needSync){
                 //set person into dropdown
-                Map<String,AppSvcPrincipalOfficersDto> personMap = NewApplicationHelper.setPsnIntoSelMap(bpc.request, personList, svcCode);
+                personMap = NewApplicationHelper.setPsnIntoSelMap(personMap, personList, svcCode);
                 //sync data
                 NewApplicationHelper.syncPsnData(appSubmissionDto, personMap);
             }
         }
+        return personMap;
     }
 
 }

@@ -315,7 +315,7 @@
             'psnType':psnType
         };
         $.ajax({
-            'url':'${pageContext.request.contextPath}/psn-select-info',
+            'url':'${pageContext.request.contextPath}/person-info/svc-code',
             'dataType':'json',
             'data':jsonData,
             'type':'GET',

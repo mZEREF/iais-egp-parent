@@ -2,6 +2,8 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
@@ -905,7 +907,8 @@ public class NewApplicationAjaxController {
     /**
      *
      * @param request
-     * @return
+     * @return AppSvcPrincipalOfficersDto
+     * @Designation  Deprecated
      */
     @GetMapping(value = "/psn-select-info")
     public @ResponseBody AppSvcPrincipalOfficersDto getPsnSelectInfo(HttpServletRequest request){
@@ -946,6 +949,56 @@ public class NewApplicationAjaxController {
         }
         log.debug(StringUtil.changeForLog("the getNewPsnInfo end ...."));
         return psn;
+    }
+
+    /**
+     *
+     * @param request
+     * @return AppSvcPrincipalOfficersDto
+     * @Designation
+     */
+    @GetMapping(value = "/person-info/svc-code")
+    public @ResponseBody AppSvcPrincipalOfficersDto getPsnSelectInfoVersionTwo(HttpServletRequest request){
+        log.debug(StringUtil.changeForLog("the getNewPsnInfo start ...."));
+        String idType = ParamUtil.getString(request,"idType");
+        String idNo = ParamUtil.getString(request,"idNo");
+        String psnType = ParamUtil.getString(request,"psnType");
+        String svcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
+        if(StringUtil.isEmpty(idNo) || StringUtil.isEmpty(idType) || StringUtil.isEmpty(svcCode)){
+            return null;
+        }
+        String psnKey = idType+","+idNo;
+        Map<String,AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+        AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(psnKey);
+        List<AppSvcPersonExtDto> appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
+        AppSvcPrincipalOfficersDto person = NewApplicationHelper.genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,false);
+        if(person == null){
+            log.info(StringUtil.changeForLog("can not get data from person dropdown ..."));
+            return new AppSvcPrincipalOfficersDto();
+        }
+        String currentSvcCode = (String) ParamUtil.getSessionAttr(request,NewApplicationDelegator.CURRENTSVCCODE);
+        if(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnType)){
+            List<SelectOption> specialityOpts = NewApplicationHelper.genSpecialtySelectList(currentSvcCode,false);
+            List<SelectOption> selectOptionList = person.getSpcOptList();
+            if(!IaisCommonUtils.isEmpty(selectOptionList)){
+                for(SelectOption sp:selectOptionList){
+                    if(!specialityOpts.contains(sp) && !sp.getValue().equals("other")){
+                        specialityOpts.add(sp);
+                    }
+                }
+            }
+            //set other
+            specialityOpts.add(new SelectOption("other", "Others"));
+            person.setSpcOptList(specialityOpts);
+            Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
+            specialtyAttr.put("name", "specialty");
+            specialtyAttr.put("class", "specialty");
+            specialtyAttr.put("style", "display: none;");
+            String specialityHtml = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
+            person.setSpecialityHtml(specialityHtml);
+        }
+        log.debug(StringUtil.changeForLog("the getNewPsnInfo end ...."));
+        return person;
     }
 
 

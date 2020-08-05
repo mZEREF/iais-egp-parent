@@ -6,6 +6,9 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
@@ -117,7 +120,7 @@ public class NewApplicationHelper {
         return map;
     }
 
-    public static Map<String,String> doValidateGovernanceOfficers(List<AppSvcCgoDto> appSvcCgoList, Map<String,AppSvcPrincipalOfficersDto> licPersonMap){
+    public static Map<String,String> doValidateGovernanceOfficers(List<AppSvcCgoDto> appSvcCgoList, Map<String,AppSvcPersonAndExtDto> licPersonMap, String svcCode){
 
         if(appSvcCgoList == null){
             return IaisCommonUtils.genNewHashMap();
@@ -135,7 +138,7 @@ public class NewApplicationHelper {
                 String idNo = appSvcCgoList.get(i).getIdNo();
                 boolean licPerson = appSvcCgoList.get(i).isLicPerson();
                 String idTypeNoKey = "idTypeNo"+i;
-                errMap = doPsnCommValidate(errMap,idTyp,idNo,licPerson,licPersonMap,idTypeNoKey);
+                errMap = doPsnCommValidate(errMap,idTyp,idNo,licPerson,licPersonMap,idTypeNoKey,svcCode);
                 String idTypeNoErr = errMap.get(idTypeNoKey);
                 if(!StringUtil.isEmpty(idTypeNoErr)){
                     continue;
@@ -332,7 +335,7 @@ public class NewApplicationHelper {
         return appSubmissionDto;
     }
     //todo change
-    public static Map<String,  String> doValidatePo(List<AppSvcPrincipalOfficersDto> poDto,Map<String,AppSvcPrincipalOfficersDto> licPersonMap) {
+    public static Map<String,  String> doValidatePo(List<AppSvcPrincipalOfficersDto> poDto,Map<String,AppSvcPersonAndExtDto> licPersonMap, String svcCode) {
         Map<String, String> oneErrorMap = IaisCommonUtils.genNewHashMap();
         List<String> stringList=IaisCommonUtils.genNewArrayList();
         int poIndex=0;
@@ -360,7 +363,7 @@ public class NewApplicationHelper {
                     String idType = poDto.get(i).getIdType();
                     boolean licPerson = poDto.get(i).isLicPerson();
                     String poIdTypeNoKey = "poIdTypeNo" + i;
-                    oneErrorMap = doPsnCommValidate(oneErrorMap,idType,idNo,licPerson,licPersonMap,poIdTypeNoKey);
+                    oneErrorMap = doPsnCommValidate(oneErrorMap,idType,idNo,licPerson,licPersonMap,poIdTypeNoKey,svcCode);
                     String idTypeNoErr = oneErrorMap.get(poIdTypeNoKey);
                     if(!StringUtil.isEmpty(idTypeNoErr)){
                         continue;
@@ -459,7 +462,7 @@ public class NewApplicationHelper {
 
                 boolean licPerson = poDto.get(i).isLicPerson();
                 String dpoIdTypeNoKey = "dpoIdTypeNo"+dpoIndex;
-                oneErrorMap = doPsnCommValidate(oneErrorMap,idType,idNo,licPerson,licPersonMap,dpoIdTypeNoKey);
+                oneErrorMap = doPsnCommValidate(oneErrorMap,idType,idNo,licPerson,licPersonMap,dpoIdTypeNoKey,svcCode);
                 String idTypeNoErr = oneErrorMap.get(dpoIdTypeNoKey);
                 if(!StringUtil.isEmpty(idTypeNoErr)){
                     continue;
@@ -955,7 +958,7 @@ public class NewApplicationHelper {
     }
 
 
-    public static Map<String,String> doValidateMedAlertPsn(List<AppSvcPrincipalOfficersDto> medAlertPsnDtos,Map<String,AppSvcPrincipalOfficersDto> licPersonMap){
+    public static Map<String,String> doValidateMedAlertPsn(List<AppSvcPrincipalOfficersDto> medAlertPsnDtos,Map<String,AppSvcPersonAndExtDto> licPersonMap, String svcCode){
         Map<String,String> errMap = IaisCommonUtils.genNewHashMap();
         if(IaisCommonUtils.isEmpty(medAlertPsnDtos)){
             return errMap;
@@ -970,7 +973,7 @@ public class NewApplicationHelper {
                 String idNo = medAlertPsnDtos.get(i).getIdNo();
                 boolean licPerson = medAlertPsnDtos.get(i).isLicPerson();
                 String idTypeNoKey = "idTypeNo"+i;
-                errMap = doPsnCommValidate(errMap,idTyp,idNo,licPerson,licPersonMap,idTypeNoKey);
+                errMap = doPsnCommValidate(errMap,idTyp,idNo,licPerson,licPersonMap,idTypeNoKey,svcCode);
                 String idTypeNoErr = errMap.get(idTypeNoKey);
                 if(!StringUtil.isEmpty(idTypeNoErr)){
                     continue;
@@ -1072,8 +1075,7 @@ public class NewApplicationHelper {
         return psnDtos;
     }
 
-    public static Map<String,AppSvcPrincipalOfficersDto> setPsnIntoSelMap(HttpServletRequest request, List<AppSvcPrincipalOfficersDto> psnDtos, String svcCode){
-        Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+    public static Map<String,AppSvcPersonAndExtDto> setPsnIntoSelMap(Map<String,AppSvcPersonAndExtDto> personMap, List<AppSvcPrincipalOfficersDto> psnDtos, String svcCode){
         if(IaisCommonUtils.isEmpty(psnDtos)){
             return personMap;
         }
@@ -1082,7 +1084,9 @@ public class NewApplicationHelper {
                 continue;
             }
             String personMapKey = psnDto.getIdType()+","+psnDto.getIdNo();
-            AppSvcPrincipalOfficersDto person = personMap.get(personMapKey);
+            AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personMapKey);
+            List<AppSvcPersonExtDto> appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
+            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,true);
             Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
             specialtyAttr.put("name", "specialty");
             specialtyAttr.put("class", "specialty");
@@ -1096,8 +1100,24 @@ public class NewApplicationHelper {
                     psnDto.setSpecialityHtml(specialtySelectStr);
                 }
                 psnDto.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
-                personMap.put(personMapKey,psnDto);
+                AppSvcPersonAndExtDto newPersonAndExtDto = new AppSvcPersonAndExtDto();
+                AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(psnDto,AppSvcPersonDto.class);
+                AppSvcPersonExtDto appSvcPersonExtDto = MiscUtil.transferEntityDto(psnDto,AppSvcPersonExtDto.class);
+                appSvcPersonExtDto.setServiceCode(svcCode);
+                appSvcPersonExtDtos.add(appSvcPersonExtDto);
+                newPersonAndExtDto.setPersonDto(appSvcPersonDto);
+                newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
+                newPersonAndExtDto.setLicPerson(psnDto.isLicPerson());
+                personMap.put(personMapKey,newPersonAndExtDto);
             }else{
+                //dropdown psn
+                String licPerson = String.valueOf(person.isLicPerson());
+                //dto psn
+                String licPsn = String.valueOf(psnDto.isLicPerson());
+                if(!licPerson.equals(licPsn)){
+                    log.info(StringUtil.changeForLog(""));
+                    continue;
+                }
                 //set different page column
                 person.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
                 person.setSalutation(psnDto.getSalutation());
@@ -1146,15 +1166,24 @@ public class NewApplicationHelper {
                 }
                 //person.setLicPerson(true);
                 //for person dtos
-                psnDto.setLicPerson(person.isLicPerson());
+                //psnDto.setLicPerson(person.isLicPerson());
                 psnDto.setAssignSelect(getPersonKey(psnDto.getIdType(),psnDto.getIdNo()));
-                personMap.put(personMapKey,person);
+
+                AppSvcPersonAndExtDto newPersonAndExtDto = new AppSvcPersonAndExtDto();
+                AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(person,AppSvcPersonDto.class);
+                AppSvcPersonExtDto appSvcPersonExtDto = MiscUtil.transferEntityDto(person,AppSvcPersonExtDto.class);
+                appSvcPersonExtDto.setServiceCode(svcCode);
+                appSvcPersonExtDtos.add(appSvcPersonExtDto);
+                newPersonAndExtDto.setPersonDto(appSvcPersonDto);
+                newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
+                newPersonAndExtDto.setLicPerson(person.isLicPerson());
+                personMap.put(personMapKey,newPersonAndExtDto);
             }
         }
-        ParamUtil.setSessionAttr(request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
         return personMap;
     }
 
+    @Deprecated
     public static Map<String,AppSvcPrincipalOfficersDto> getLicPsnIntoSelMap(HttpServletRequest request, List<PersonnelListQueryDto> licPsnDtos) {
         Map<String,AppSvcPrincipalOfficersDto> personMap = IaisCommonUtils.genNewHashMap();
         if (!IaisCommonUtils.isEmpty(licPsnDtos)) {
@@ -1235,6 +1264,89 @@ public class NewApplicationHelper {
         return personMap;
     }
 
+    public static Map<String,AppSvcPersonAndExtDto> getLicPsnIntoSelMap(List<PersonnelListQueryDto> licPsnDtos) {
+        Map<String,AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
+        if (!IaisCommonUtils.isEmpty(licPsnDtos)) {
+            Map<String,String> specialtyAttr = getSpecialtyAttr();
+            for (PersonnelListQueryDto psnDto : licPsnDtos) {
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(psnDto.getSvcName());
+                if(hcsaServiceDto == null){
+                    log.info(StringUtil.changeForLog("service name:"+psnDto.getSvcName()+" can not get HcsaServiceDto ..."));
+                    continue;
+                }
+                String svcCode = hcsaServiceDto.getSvcCode();
+                String personMapKey = psnDto.getIdType() + "," + psnDto.getIdNo();
+                AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personMapKey);
+                if (appSvcPersonAndExtDto == null) {
+//                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = MiscUtil.transferEntityDto(psnDto, AppSvcPrincipalOfficersDto.class);
+//                    appSvcPrincipalOfficersDto.setLicPerson(true);
+//                    appSvcPrincipalOfficersDto.setNeedDisabled(true);
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())) {
+                        psnDto.setNeedSpcOptList(true);
+                        List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode, true);
+                        psnDto.setSpcOptList(specialityOpts);
+                        String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, psnDto.getSpeciality());
+                        psnDto.setSpecialityHtml(specialtySelectStr);
+                    }
+                    appSvcPersonAndExtDto = new AppSvcPersonAndExtDto();
+                    AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(psnDto,AppSvcPersonDto.class);
+                    List<AppSvcPersonExtDto> appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
+                    AppSvcPersonExtDto appSvcPersonExtDto = MiscUtil.transferEntityDto(psnDto,AppSvcPersonExtDto.class);
+                    AppSvcPrincipalOfficersDto person = MiscUtil.transferEntityDto(psnDto,AppSvcPrincipalOfficersDto.class);
+                    AppPsnEditDto appPsnEditDto = NewApplicationHelper.setNeedEditField(person);
+                    appSvcPersonExtDto.setPsnEditDto(appPsnEditDto);
+                    appSvcPersonExtDto.setServiceCode(svcCode);
+                    appSvcPersonExtDtos.add(appSvcPersonExtDto);
+                    appSvcPersonAndExtDto.setPersonDto(appSvcPersonDto);
+                    appSvcPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
+                    appSvcPersonAndExtDto.setLicPerson(true);
+                    personMap.put(personMapKey, appSvcPersonAndExtDto);
+                }else{
+                    List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
+//                    AppSvcPersonExtDto currSvcPsnExtDto = getPsnExtDtoBySvcCode(appSvcPersonExtDtos,svcCode);
+                    AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,true);
+                    if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())) {
+                        person.setDesignation(psnDto.getDesignation());
+                        person.setProfessionType(psnDto.getProfessionType());
+                        person.setProfRegNo(psnDto.getProfRegNo());
+                        person.setSpeciality(psnDto.getSpeciality());
+                        person.setSpecialityOther(psnDto.getSpecialityOther());
+                        person.setSubSpeciality(psnDto.getSubSpeciality());
+                        //
+                        person.setNeedSpcOptList(true);
+                        List<SelectOption> spcOpts = person.getSpcOptList();
+                        List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode, false);
+                        if (!IaisCommonUtils.isEmpty(spcOpts)) {
+                            for (SelectOption sp : spcOpts) {
+                                if (!specialityOpts.contains(sp)) {
+                                    specialityOpts.add(sp);
+                                }
+                            }
+                            person.setSpcOptList(specialityOpts);
+                        } else {
+                            SelectOption sp = new SelectOption("other", "Others");
+                            specialityOpts.add(sp);
+                            person.setSpcOptList(specialityOpts);
+                        }
+                        String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
+                        person.setSpecialityHtml(specialtySelectStr);
+                    }
+                    AppSvcPersonExtDto currSvcPsnExtDto = MiscUtil.transferEntityDto(psnDto,AppSvcPersonExtDto.class);
+                    AppPsnEditDto appPsnEditDto = setNeedEditField(person);
+                    currSvcPsnExtDto.setPsnEditDto(appPsnEditDto);
+                    currSvcPsnExtDto.setServiceCode(svcCode);
+                    appSvcPersonExtDtos.add(currSvcPsnExtDto);
+                    AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(psnDto,AppSvcPersonDto.class);
+                    appSvcPersonAndExtDto.setPersonDto(appSvcPersonDto);
+                    appSvcPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
+                    appSvcPersonAndExtDto.setLicPerson(true);
+                    personMap.put(personMapKey, appSvcPersonAndExtDto);
+                }
+            }
+        }
+        return personMap;
+    }
+
     public static List<SelectOption> genSpecialtySelectList(String svcCode, boolean needOtherOpt){
         List<SelectOption> specialtySelectList = IaisCommonUtils.genNewArrayList();
         if(!StringUtil.isEmpty(svcCode)){
@@ -1305,16 +1417,17 @@ public class NewApplicationHelper {
         return specialtySelectList;
     }
 
-    public static AppSubmissionDto syncPsnData(AppSubmissionDto appSubmissionDto, Map<String,AppSvcPrincipalOfficersDto> personMap){
+    public static AppSubmissionDto syncPsnData(AppSubmissionDto appSubmissionDto, Map<String,AppSvcPersonAndExtDto> personMap ){
         if(appSubmissionDto == null || personMap == null){
            return appSubmissionDto;
         }
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                syncCgoDto(appSvcRelatedInfoDto.getAppSvcCgoDtoList(), personMap);
-                syncPsnDto(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), personMap);
-                syncPsnDto(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), personMap);
+                String svcCode = appSvcRelatedInfoDto.getServiceCode();
+                syncCgoDto(appSvcRelatedInfoDto.getAppSvcCgoDtoList(), personMap, svcCode);
+                syncPsnDto(appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), personMap,svcCode);
+                syncPsnDto(appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), personMap,svcCode);
             }
         }
         return appSubmissionDto;
@@ -1331,9 +1444,10 @@ public class NewApplicationHelper {
         psnSelectList.add(sp1);
 
         List<SelectOption> personList = IaisCommonUtils.genNewArrayList();
-        Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
+        Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         personMap.forEach((k,v)->{
-            SelectOption sp = new SelectOption(k,v.getName()+", "+v.getIdNo()+" ("+v.getIdType()+")");
+            AppSvcPersonDto personDto = v.getPersonDto();
+            SelectOption sp = new SelectOption(k,personDto.getName()+", "+personDto.getIdNo()+" ("+personDto.getIdType()+")");
             personList.add(sp);
         });
         //sort
@@ -1509,9 +1623,12 @@ public class NewApplicationHelper {
 
     public static AppSvcPrincipalOfficersDto getPsnInfoFromLic(HttpServletRequest request,String personKey) {
         AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
-        Map<String, AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.LICPERSONSELECTMAP);
+        Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.LICPERSONSELECTMAP);
+        String svcCode = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
         if (personMap != null) {
-            AppSvcPrincipalOfficersDto person = personMap.get(personKey);
+            AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
+            List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
+            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,true);
             if (person != null) {
                 appSvcPrincipalOfficersDto = person;
             }
@@ -1711,7 +1828,40 @@ public class NewApplicationHelper {
         return removeArrIndex(arr,i);
     }
 
+    public static AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(AppSvcPersonAndExtDto appSvcPersonAndExtDto, String svcCode, List<AppSvcPersonExtDto> appSvcPersonExtDtos, boolean removeCurrExt){
+        if(appSvcPersonAndExtDto == null){
+            return null;
+        }
+        AppSvcPrincipalOfficersDto person = new AppSvcPrincipalOfficersDto();
+        AppSvcPersonDto appSvcPersonDto = appSvcPersonAndExtDto.getPersonDto();
+        if(appSvcPersonDto != null){
+            person = MiscUtil.transferEntityDto(appSvcPersonDto,AppSvcPrincipalOfficersDto.class);
+        }
+        appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
+        AppSvcPersonExtDto appSvcPersonExtDto = getPsnExtDtoBySvcCode(appSvcPersonExtDtos,svcCode);
+        if(appSvcPersonExtDto == null){
+            appSvcPersonExtDto = new AppSvcPersonExtDto();
 
+        }
+        if(removeCurrExt){
+            appSvcPersonExtDtos.remove(appSvcPersonExtDto);
+        }
+        Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
+        person = MiscUtil.transferEntityDto(appSvcPersonExtDto,AppSvcPrincipalOfficersDto.class,fieldMap,person);
+        //transfer
+        person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
+        AppPsnEditDto appPsnEditDto = NewApplicationHelper.setNeedEditField(person);
+        person.setPsnEditDto(appPsnEditDto);
+        return person;
+    }
+
+    public static Map<String,String> getSpecialtyAttr(){
+        Map<String, String> specialtyAttr = IaisCommonUtils.genNewHashMap();
+        specialtyAttr.put("name", "specialty");
+        specialtyAttr.put("class", "specialty");
+        specialtyAttr.put("style", "display: none;");
+        return specialtyAttr;
+    }
 
     //=============================================================================
     //private method
@@ -1809,16 +1959,20 @@ public class NewApplicationHelper {
         psnDto.setSpeciality(appSvcCgoDto.getSpeciality());
         psnDto.setSpecialityOther(appSvcCgoDto.getSpecialityOther());
         psnDto.setSubSpeciality(appSvcCgoDto.getSubSpeciality());
+        psnDto.setLicPerson(appSvcCgoDto.isLicPerson());
         return psnDto;
     }
 
-    private static void syncCgoDto(List<AppSvcCgoDto> appSvcCgoDtos, Map<String,AppSvcPrincipalOfficersDto> personMap){
-        if(IaisCommonUtils.isEmpty(appSvcCgoDtos)){
+    private static void syncCgoDto(List<AppSvcCgoDto> appSvcCgoDtos, Map<String,AppSvcPersonAndExtDto> personMap, String svcCode){
+        if(IaisCommonUtils.isEmpty(appSvcCgoDtos) || personMap == null || StringUtil.isEmpty(svcCode)){
             return;
         }
         for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
+            boolean isLicPsn = appSvcCgoDto.isLicPerson();
             String personKey = appSvcCgoDto.getIdType()+ "," + appSvcCgoDto.getIdNo();
-            AppSvcPrincipalOfficersDto selPerson = personMap.get(personKey);
+            AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
+            List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
+            AppSvcPrincipalOfficersDto selPerson = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,false);
             if(selPerson != null){
                 appSvcCgoDto.setAssignSelect(getPersonKey(selPerson.getIdType(),selPerson.getIdNo()));
                 appSvcCgoDto.setSalutation(selPerson.getSalutation());
@@ -1847,18 +2001,20 @@ public class NewApplicationHelper {
                 appSvcCgoDto.setSpcOptList(selPerson.getSpcOptList());
                 appSvcCgoDto.setSpecialityHtml(selPerson.getSpecialityHtml());
                 //set lic person info
-                appSvcCgoDto.setLicPerson(selPerson.isLicPerson());
+                appSvcCgoDto.setLicPerson(isLicPsn);
             }
         }
     }
 
-    private static void syncPsnDto(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos, Map<String,AppSvcPrincipalOfficersDto> personMap){
-        if(IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)){
+    private static void syncPsnDto(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos, Map<String,AppSvcPersonAndExtDto> personMap, String svcCode){
+        if(IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos) || personMap == null || StringUtil.isEmpty(svcCode)){
             return;
         }
         for(AppSvcPrincipalOfficersDto person:appSvcPrincipalOfficersDtos){
             String personKey = person.getIdType()+ "," + person.getIdNo();
-            AppSvcPrincipalOfficersDto selPerson = personMap.get(personKey);
+            AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
+            List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
+            AppSvcPrincipalOfficersDto selPerson = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,false);
             if(selPerson != null){
                 person.setAssignSelect(getPersonKey(selPerson.getIdType(),selPerson.getIdNo()));
                 person.setSalutation(selPerson.getSalutation());
@@ -1925,13 +2081,12 @@ public class NewApplicationHelper {
         return text;
     }
 
-    private static Map<String,String> doPsnCommValidate(Map<String,String> errMap,String idType,String idNo,boolean licPerson,Map<String,AppSvcPrincipalOfficersDto> licPersonMap,String errKey){
+    private static Map<String,String> doPsnCommValidate(Map<String,String> errMap,String idType,String idNo,boolean licPerson,Map<String,AppSvcPersonAndExtDto> licPersonMap,String errKey,String svcCode){
         if(!StringUtil.isEmpty(idType) && !StringUtil.isEmpty(idNo) && !licPerson){
             String personKey = NewApplicationHelper.getPersonKey(idType, idNo);
-            AppSvcPrincipalOfficersDto person = licPersonMap.get(personKey);
-            if(person != null){
+            AppSvcPersonAndExtDto appSvcPersonAndExtDto = licPersonMap.get(personKey);
+            if(appSvcPersonAndExtDto != null){
                 String errMsg = MessageUtil.getMessageDesc("NEW_ERR0006");
-//                        errMsg = "The personnel of ID No. <ID No.> has already been registerted, please select from the dropdown list instead";
                 errMsg = errMsg.replace("<ID No.>",idNo);
                 errMap.put(errKey,errMsg);
             }
@@ -1952,6 +2107,30 @@ public class NewApplicationHelper {
             }
         }
         return newArrs;
+    }
+
+    private static AppSvcPersonExtDto getPsnExtDtoBySvcCode(List<AppSvcPersonExtDto> appSvcPersonExtDtos, String svcCode){
+        AppSvcPersonExtDto appSvcPersonExtDto = null;
+        if(!IaisCommonUtils.isEmpty(appSvcPersonExtDtos) && !StringUtil.isEmpty(svcCode)){
+            for(AppSvcPersonExtDto extPsn:appSvcPersonExtDtos){
+                String serviceCode = extPsn.getServiceCode();
+                String serviceName = extPsn.getServiceName();
+                if(!StringUtil.isEmpty(serviceCode)){
+                    if(svcCode.equals(serviceCode)){
+                        appSvcPersonExtDto = extPsn;
+                        break;
+                    }
+                }else if(!StringUtil.isEmpty(serviceName)){
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(svcCode);
+                    boolean flag = hcsaServiceDto != null && serviceName.equals(hcsaServiceDto.getSvcName());
+                    if(flag){
+                        appSvcPersonExtDto = extPsn;
+                        break;
+                    }
+                }
+            }
+        }
+        return appSvcPersonExtDto;
     }
 
 /*
