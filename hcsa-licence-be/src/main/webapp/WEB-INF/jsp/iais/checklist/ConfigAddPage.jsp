@@ -148,6 +148,7 @@
         $('#commonField span').hide();
         $('#common').attr('disabled', null);
         Utils.clearClickStatus('form-horizontal');
+        $('#common').attr('disabled', null)
         $('#serviceNameField span').hide();
         $('#moduleField span').hide();
         $('#typeField span').hide();
