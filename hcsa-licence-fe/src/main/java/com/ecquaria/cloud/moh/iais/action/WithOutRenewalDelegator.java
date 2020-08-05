@@ -971,7 +971,7 @@ public class WithOutRenewalDelegator {
             if (date.before(new Date())) {
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-                errorMap.put("rfcEffectiveDate", "Please select future date.");
+                errorMap.put("rfcEffectiveDate", "Please indicate a future date.");
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);
                 renewDto.getAppSubmissionDtos().get(0).setEffectiveDateStr(renewEffectiveDate);

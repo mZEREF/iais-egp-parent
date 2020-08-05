@@ -655,9 +655,7 @@ public class InsRepServiceImpl implements InsRepService {
         } else {
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, appPremisesRecommendationDto.getProcessRemarks(), InspectionConstants.INSPECTION_STATUS_PROCESSING_DECISION_REPLY, RoleConsts.USER_ROLE_INSPECTIOR, groupId1, subStage);
         }
-
         ApplicationDto updateApplicationDto = updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVIEW);
-
         createAppPremisesRoutingHistory(applicationNo, updateApplicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO1, groupId1, subStage);
     }
 
@@ -1042,11 +1040,14 @@ public class InsRepServiceImpl implements InsRepService {
         hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         String schemeType = dto.getSchemeType();
         String groupId = dto.getGroupId();
-        if (StringUtil.isEmpty(userId) && SystemParameterConstants.ROUND_ROBIN.equals(schemeType)) {
+        if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(schemeType)) {
             TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
             taskDto.setUserId(taskDto1.getUserId());
-        } else if (StringUtil.isEmpty(userId) && SystemParameterConstants.COMMON_POOL.equals(schemeType)) {
+        } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(schemeType)) {
             taskDto.setUserId(null);
+        }else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
+            taskDto.setUserId(null);
+            taskDto.setTaskKey(TaskConsts.TASK_TYPE_INSPECTION_SUPER);
         }
         taskDto.setId(null);
         taskDto.setScore(hcsaSvcStageWorkingGroupDtos.get(0).getCount());
@@ -1083,11 +1084,14 @@ public class InsRepServiceImpl implements InsRepService {
             taskDto.setUserId(userId);
         }
 
-        if (StringUtil.isEmpty(userId) && SystemParameterConstants.ROUND_ROBIN.equals(schemeType)) {
+        if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(schemeType)) {
             TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
             taskDto.setUserId(taskDto1.getUserId());
-        } else if (StringUtil.isEmpty(userId) && SystemParameterConstants.COMMON_POOL.equals(schemeType)) {
+        } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(schemeType)) {
             taskDto.setUserId(null);
+        }else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
+            taskDto.setUserId(null);
+            taskDto.setTaskKey(TaskConsts.TASK_TYPE_MAIN_FLOW_SUPER);
         }
         taskDto.setId(null);
         taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_AO2);
