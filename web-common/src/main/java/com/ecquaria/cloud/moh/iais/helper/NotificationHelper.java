@@ -170,6 +170,11 @@ public class NotificationHelper {
 		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, subject);
 	}
 
+	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
+								 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto) {
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, null);
+	}
+
 	@Async("emailAsyncExecutor")
 	public void sendNotificationWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode,
 											 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto, String subject) {

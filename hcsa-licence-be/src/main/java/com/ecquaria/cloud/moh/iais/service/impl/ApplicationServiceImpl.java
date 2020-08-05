@@ -310,7 +310,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                 jobRemindMsgTrackingDto.setRefNo(reqRefNum);
                 jobRemindMsgTrackingDto.setCreateTime(new Date());
                 jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                notificationHelper.sendNotificationWithJobTrack(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
+                notificationHelper.sendNotification(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
             }
 
             log.info("===>>>>alertSelfDeclNotification end");
