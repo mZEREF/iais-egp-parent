@@ -150,11 +150,11 @@
                                                         <td>&nbsp;S0002491J (NRIC)</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Authorised Person Name</td>
+                                                        <td align="right">MedAlert Contact Person Name</td>
                                                         <td>&nbsp;Shun Qiu</td>
                                                     </tr>
                                                     <tr>
-                                                        <td align="right">Authorised Person ID</td>
+                                                        <td align="right">MedAlert Contact Person ID</td>
                                                         <td>&nbsp;S7290054E (NRIC)</td>
                                                     </tr>
 
