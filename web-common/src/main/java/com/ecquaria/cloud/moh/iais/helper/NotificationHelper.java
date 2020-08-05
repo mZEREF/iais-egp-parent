@@ -152,17 +152,22 @@ public class NotificationHelper {
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, null, null, null);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, null, null, null, null);
 	}
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, null);
+	}
+
+	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
+								 String reqRefNum, String refIdType, String refId, String subject) {
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, subject);
 	}
 
 	@Async("emailAsyncExecutor")
 	public void sendNotificationWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode,
-											 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto) {
+											 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto, String subject) {
 		log.info(StringUtil.changeForLog("sendemail start... ref type is " + StringUtil.nullToEmptyStr(refIdType)
 				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
 				+ "templateId is "+ templateId+"thread name is " + Thread.currentThread().getName()));
@@ -180,7 +185,11 @@ public class NotificationHelper {
 			}
 
 			emailDto.setContent(mesContext);
-			emailDto.setSubject(msgTemplateDto.getTemplateName());
+			if(StringUtil.isEmpty(subject)){
+				emailDto.setSubject(msgTemplateDto.getTemplateName());
+			} else {
+				emailDto.setSubject(subject);
+			}
 			emailDto.setSender(this.mailSender);
 			if (msgTemplateDto.getRecipient()!= null && msgTemplateDto.getRecipient().size() > 0) {
 				receiptemail = getRecript(msgTemplateDto.getRecipient(), refIdType, refId);
