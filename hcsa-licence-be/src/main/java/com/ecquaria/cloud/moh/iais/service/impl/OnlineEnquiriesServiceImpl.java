@@ -250,12 +250,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 String ncId = appPremPreInspectionNcDto.getId();
                 List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
                 if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-                    for (AppPremisesPreInspectionNcItemDto preInspNc : listAppPremisesPreInspectionNcItemDtos) {
-                        ChecklistItemDto cDto = hcsaChklClient.getChklItemById(preInspNc.getItemId()).getEntity();
-                        ReportNcRectifiedDto reportNcRectifiedDto = new ReportNcRectifiedDto();
-                        reportNcRectifiedDto.setNc(cDto.getChecklistItem());
-                        reportNcRectifiedDto.setRectified(preInspNc.getIsRecitfied() == 1 ? "Yes" : "No");
-                    }
                     complianceHistoryDto.setComplianceTag("Partial Compliance");
                 }
             } else {
