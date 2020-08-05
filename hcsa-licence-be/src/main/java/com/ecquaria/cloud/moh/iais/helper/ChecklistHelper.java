@@ -86,19 +86,10 @@ public final class ChecklistHelper {
             }
         }
 
+        String GENERAL_ERR0031Message =  WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031");
         if (!isCommon){
-            if (StringUtil.isEmpty(module)){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031"));
-                return true;
-            }
-
-            if (StringUtil.isEmpty(type)){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031"));
-                return true;
-            }
-
-            if (StringUtil.isEmpty(service)){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031"));
+            if (StringUtil.isEmpty(module) || StringUtil.isEmpty(type) || StringUtil.isEmpty(service)){
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,GENERAL_ERR0031Message);
                 return true;
             }
         }
@@ -107,7 +98,7 @@ public final class ChecklistHelper {
         String effectiveEndDate = excelTemplate.getEftEndDate();
 
         if (StringUtils.isEmpty(effectiveStartDate) || StringUtils.isEmpty(effectiveEndDate)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031"));
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,GENERAL_ERR0031Message);
             return true;
         }else {
             try {
@@ -160,7 +151,7 @@ public final class ChecklistHelper {
             return;
         }
 
-        String msgContent = autoEntity.getMessageContent();
+    /*    String msgContent = autoEntity.getMessageContent();
         Map<String,Object> param = new HashMap(1);
         param.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
 
@@ -168,7 +159,7 @@ public final class ChecklistHelper {
         param.put("APPLICANT_NAME", "test");
 
 
-/*
+
 
         String subject = msgTemplate.getTemplateName();
         String messageContent = msgTemplate.getMessageContent();

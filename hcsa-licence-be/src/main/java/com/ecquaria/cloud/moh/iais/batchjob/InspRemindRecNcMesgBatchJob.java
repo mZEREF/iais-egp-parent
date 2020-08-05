@@ -220,6 +220,9 @@ public class InspRemindRecNcMesgBatchJob {
         //There are no matching items, search item from adhoc table
         String adhocItemId = itemId;
         AdhocChecklistItemDto adhocChecklistItemDto = inspectionRectificationProService.getAdhocChecklistItemById(adhocItemId);
+        if(inspEmailFieldDto == null){
+            inspEmailFieldDto = new InspEmailFieldDto();
+        }
         if(adhocChecklistItemDto != null){
             String checkItemId = adhocChecklistItemDto.getItemId();
             if(!StringUtil.isEmpty(checkItemId)){

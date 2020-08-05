@@ -1341,12 +1341,12 @@ public class OfficerOnlineEnquiriesDelegator {
         if(COUNTS.contains(count)){
             applicationParameter.setFilters(filters);
             SearchParam appParam = SearchResultHelper.getSearchParam(request, applicationParameter,true);
+            if (appParam != null) {
             appParam.setPageNo(0);
             if(parm.getFilters().get("appStatus")!=null && parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
                 appParam.addParam("appStatus_APPROVED", "(app.status = 'APST005' OR app.status = 'APST050')");
             }
             QueryHelp.setMainSql(RFI_QUERY,"applicationQuery",appParam);
-            if (appParam != null) {
                 SearchResult<RfiApplicationQueryDto> appResult = requestForInformationService.appDoQuery(appParam);
 
                 if(appResult.getRowCount()!=0){

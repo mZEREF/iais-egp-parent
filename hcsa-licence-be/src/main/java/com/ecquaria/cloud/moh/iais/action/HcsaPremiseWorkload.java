@@ -84,7 +84,7 @@ public class HcsaPremiseWorkload {
             if(manhour != null && !manhour.equals(Integer.toString(item.getManhourCount()))){
                 hcsaPrimiseWorkloadDto.setId(item.getId());
                 hcsaPrimiseWorkloadDto.setStageDesc(item.getStageDesc());
-                hcsaPrimiseWorkloadDto.setManhourCount(Integer.valueOf(manhour));
+                hcsaPrimiseWorkloadDto.setManhourCount(Integer.parseInt(manhour));
                 hcsaPrimiseWorkloadDto.setPremisesType(item.getPremisesType());
                 hcsaPrimiseWorkloadDto.setStageDesc(item.getStageDesc());
                 hcsaPrimiseWorkloadDto.setStageId(item.getStageId());

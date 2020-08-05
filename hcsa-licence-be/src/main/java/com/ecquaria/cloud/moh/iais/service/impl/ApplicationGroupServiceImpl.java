@@ -31,8 +31,6 @@ public class ApplicationGroupServiceImpl implements ApplicationGroupService {
     private GenerateIdClient generateIdClient;
     @Autowired
     private EventBusHelper eventBusHelper;
-    @Autowired
-    private SystemParamConfig systemParamConfig;
 
     @Override
     public ApplicationGroupDto getApplicationGroupDtoById(String appGroupId) {
@@ -52,7 +50,7 @@ public class ApplicationGroupServiceImpl implements ApplicationGroupService {
 
     @Override
     public EventApplicationGroupDto updateEventApplicationGroupDto(EventApplicationGroupDto eventApplicationGroupDto) {
-        SubmitResp submitResp = eventBusHelper.submitAsyncRequest(eventApplicationGroupDto, generateIdClient.getSeqId().getEntity(),
+           eventBusHelper.submitAsyncRequest(eventApplicationGroupDto, generateIdClient.getSeqId().getEntity(),
                 EventBusConsts.SERVICE_NAME_APPSUBMIT,
                 EventBusConsts.OPERATION_APPLICATION_UPDATE,
                 eventApplicationGroupDto.getEventRefNo(), null);

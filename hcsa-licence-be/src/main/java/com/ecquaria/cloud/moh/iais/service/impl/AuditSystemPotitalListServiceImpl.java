@@ -248,7 +248,7 @@ public class AuditSystemPotitalListServiceImpl implements AuditSystemPotitalList
             AuditTaskDataFillterDtos.sort((AuditTaskDataFillterDto d1, AuditTaskDataFillterDto d2) -> d2.getScore().compareTo(d1.getScore()));
         }
         if(dto.getGenerateNum() != null && dto.getGenerateNum()>0)  {
-            return  getNumberList(dto,AuditTaskDataFillterDtos);
+            return  getNumberList(dto,AuditTaskDataFillterDtos); //NOSONAR
         }
         return  AuditTaskDataFillterDtos;
     }

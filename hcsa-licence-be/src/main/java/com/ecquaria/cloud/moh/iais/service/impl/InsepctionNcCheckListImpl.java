@@ -83,9 +83,6 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     @Autowired
     FileRepoClient fileRepoClient;
     @Autowired
-    private FillUpCheckListGetAppClient uploadFileClient;
-
-    @Autowired
     private BeEicGatewayClient gatewayClient;
 
 
@@ -284,7 +281,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             AppPremisesSpecialDocDto appPremisesSpecialDocDto = serListDto.getAppPremisesSpecialDocDto();
             if( StringUtil.isEmpty(appPremisesSpecialDocDto.getId())){
                 if(serListDto.getCopyAppPremisesSpecialDocDto() != null){
-                    uploadFileClient.deleteAppIntranetDocsById(serListDto.getCopyAppPremisesSpecialDocDto().getId());
+                    fillUpCheckListGetAppClient.deleteAppIntranetDocsById(serListDto.getCopyAppPremisesSpecialDocDto().getId());
                 }
                 String oldFileGuid = serListDto.getOldFileGuid();
                 if(!StringUtil.isEmpty(oldFileGuid)){
@@ -302,7 +299,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         }else {
             String oldFileGuid = serListDto.getOldFileGuid();
             if(serListDto.getCopyAppPremisesSpecialDocDto() != null){
-                uploadFileClient.deleteAppIntranetDocsById(serListDto.getCopyAppPremisesSpecialDocDto().getId());
+                fillUpCheckListGetAppClient.deleteAppIntranetDocsById(serListDto.getCopyAppPremisesSpecialDocDto().getId());
             }
             if(!StringUtil.isEmpty(oldFileGuid)){
                 fileRepoClient.removeFileById(oldFileGuid);
@@ -330,7 +327,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         appIntranetDocDto.setDocDesc(fileName);
         appIntranetDocDto.setAppDocType(ApplicationConsts.APP_DOC_TYPE_CHECK_LIST);
         appIntranetDocDto.setDocStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        return   uploadFileClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
+        return  fillUpCheckListGetAppClient.saveAppIntranetDocByAppIntranetDoc(appIntranetDocDto).getEntity();
     }
     @Override
     public  String saveFiles( MultipartFile multipartFile){

@@ -283,8 +283,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 log.info(StringUtil.changeForLog(files.length+"FILE_FORMAT --files.length______"));
                 for(File  filzz:files){
                     if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
-                        try (  FileInputStream  fileInputStream =new FileInputStream(filzz);
-                                ByteArrayOutputStream by=new ByteArrayOutputStream();) {
+                           FileInputStream  fileInputStream =new FileInputStream(filzz);
+                           ByteArrayOutputStream by=new ByteArrayOutputStream();
                             int count=0;
                             byte [] size=new byte[1024];
                             count=fileInputStream.read(size);
@@ -294,15 +294,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             }
                             Long l = System.currentTimeMillis();
                             fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto,submissionId,l);
-
-
                             saveFileRepo( fileName,groupPath,submissionId,l);
-
-                        }catch (Exception e){
-                            log.error(e.getMessage(),e);
-                           throw new Exception();
-                        }
-
                     }
                 }
             }
@@ -489,8 +481,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         requeOrNew(requestForInfList,applicationGroup,application,updateTaskList);
         update(listApplicationDto,applicationGroup,application);
         log.info(StringUtil.changeForLog(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size()));
-        log.info(StringUtil.changeForLog(requestForInfList.toString()+"requestForInfList size" +requestForInfList .size()));
-        log.info(StringUtil.changeForLog(requestForInfList.toString()+"updateTaskList size" +updateTaskList .size()));
+        String requestForInfListString = requestForInfList.toString();
+        log.info(StringUtil.changeForLog(requestForInfListString +"requestForInfList size" +requestForInfList .size()));
+        log.info(StringUtil.changeForLog(requestForInfListString +"updateTaskList size" +updateTaskList .size()));
         ApplicationNewAndRequstDto applicationNewAndRequstDto=new ApplicationNewAndRequstDto();
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);

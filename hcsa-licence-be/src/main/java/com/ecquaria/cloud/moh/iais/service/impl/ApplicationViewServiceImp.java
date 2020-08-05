@@ -48,8 +48,6 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
     @Autowired
     ApplicationViewService applicationViewService;
     @Autowired
-    private FillUpCheckListGetAppClient uploadFileClient;
-    @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
@@ -205,7 +203,7 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
         applicationViewDto.setNewAppPremisesCorrelationDto(appPremisesCorrelationDto);
 
         //set internal files
-        List<AppIntranetDocDto> intranetDocDtos = uploadFileClient.getAppIntranetDocListByPremIdAndStatus(appCorId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        List<AppIntranetDocDto> intranetDocDtos =  fillUpCheckListGetAppClient.getAppIntranetDocListByPremIdAndStatus(appCorId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
         //applicationViewService
         for(AppIntranetDocDto intranetDocDto : intranetDocDtos){
             intranetDocDto.setDocSize(intranetDocDto.getDocSize()+"KB");

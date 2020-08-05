@@ -89,7 +89,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         dayList.add(systemParamConfig.getFifthLicenceReminder());
         dayList.add(systemParamConfig.getSixthLicenceReminder());
         dayList.add(systemParamConfig.getSeventhLicenceReminder());
-        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(dayList))+"dayList");
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(dayList)+"dayList"));
         Map<String, List<LicenceDto>> entity = hcsaLicenClient.licenceRenwal(dayList).getEntity();
         entity.forEach((k, v) -> {
             for(int i=0;i<v.size();i++){
@@ -207,12 +207,12 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             String address = every.substring(every.indexOf('/')+1);
             String substring = every.substring(0, every.indexOf('/'));
             String format = simpleDateFormat.format(expiryDate);
-            Map<String,Object> map =new HashMap();
+           /* Map<String,Object> map =new HashMap();
             map.put("IAIS_URL","https://egp.sit.inter.iais.com/hcsa-licence-web/eservice/INTERNET/MohWithOutRenewal?licenceId="+licenceDto.getId());
             map.put("NAME_OF_HCI",substring);
             map.put("Name_of_Service",svcName);
             map.put("Licence_Expiry_Date",format);
-            map.put("HCI_Address",address);
+            map.put("HCI_Address",address);*/
             StringBuilder stringBuilder =new StringBuilder();
                 stringBuilder.append("License expiration time").append(format).append("---").append(time).append(licenceDto.getLicenceNo());
                 EmailDto emailDto=new EmailDto();
@@ -222,7 +222,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 emailDto.setClientQueryCode("isNotAuto");
                 if(!licenseeEmailAddrs.isEmpty()){
                     emailDto.setReceipts(licenseeEmailAddrs);
-                    String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+                    emailClient.sendNotification(emailDto).getEntity();
                 }
                 String messageNo = inboxMsgService.getMessageNo();
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(licenceDto.getSvcName());
@@ -384,7 +384,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                 return false;
             }
         }catch (Exception e){
-            log.info("checkEmailIsSend error"+e);
+            log.info(StringUtil.changeForLog("checkEmailIsSend error"+e));
             return false;
         }
 

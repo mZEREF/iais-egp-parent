@@ -680,6 +680,9 @@ public class LicenceApproveBatchjob {
                 List<PersonnelsDto> personnelsDtos = IaisCommonUtils.genNewArrayList();
                 for (ApplicationListDto applicationListDto : applicationListDtos) {
                     ApplicationDto applicationDto = applicationListDto.getApplicationDto();
+                    if(applicationDto == null){
+                     continue;
+                    }
                     String appType = applicationDto.getApplicationType();
                     log.debug(StringUtil.changeForLog("The appType is -->:" + appType));
                     //create Premises
@@ -748,10 +751,7 @@ public class LicenceApproveBatchjob {
                             log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" + applicationDto.getApplicationNo()));
                         }
                     }
-
-                    if (applicationDto != null) {
                         sendEmailAndSms(applicationDto, licenceDto, oldLicenseeDto, originLicenceDto, serviceId);
-                    }
                 }
 
                 //create LicSvcSpecificPersonnelDto
@@ -1145,7 +1145,7 @@ public class LicenceApproveBatchjob {
             }
 
             //create LicPremisesScopeDto
-            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos, appPremCorrecId);
+            List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtoList = getAppSvcPremisesScopeDtoByCorrelationId(appSvcPremisesScopeDtos, appPremCorrecId);//NOSONAR
             if (!IaisCommonUtils.isEmpty(appSvcPremisesScopeDtoList)) {
                 List<LicPremisesScopeGroupDto> licPremisesScopeGroupDtoList = IaisCommonUtils.genNewArrayList();
                 for (AppSvcPremisesScopeDto appSvcPremisesScopeDto : appSvcPremisesScopeDtoList) {
@@ -1456,8 +1456,10 @@ public class LicenceApproveBatchjob {
         if (!StringUtil.isEmpty(svcType)) {
             licenceDto.setSvcType(svcType);
         }
-        Date effectiveDate = applicationGroupDto.getEffectDate();
-        licenceDto.setEffectiveDate(effectiveDate);
+        if(applicationGroupDto != null){
+            Date effectiveDate = applicationGroupDto.getEffectDate();
+            licenceDto.setEffectiveDate(effectiveDate);
+        }
         if (applicationDto != null && originLicenceDto != null && ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationDto.getApplicationType())) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType()))) {
             log.info(StringUtil.changeForLog("The  getLicenceDto APPType is RFC ..."));
             licenceDto.setStartDate(originLicenceDto.getStartDate());
@@ -1483,7 +1485,7 @@ public class LicenceApproveBatchjob {
                     String[] split = licenceNo.split("/");
                     if(split.length>5){
                         String runningNoS = split[5];
-                        Integer runningNoI = Integer.valueOf(Integer.parseInt(runningNoS));
+                        Integer runningNoI = Integer.valueOf(runningNoS);
                         String s = seqNumber(runningNoI+1, 3);
                         String ceasedLicNo = split[0]+"/"+split[1]+"/"+split[2]+"/"+split[3]+"/"+split[4]+"/"+s+"/"+split[6];
                         licenceDto.setCesedLicNo(ceasedLicNo);
@@ -1849,7 +1851,12 @@ public class LicenceApproveBatchjob {
                 //transfee
                 sendSMS(msgId, licenceDto.getLicenseeId(), notifyMap);
                 //transfor
-                sendSMS(msgId, originLicenceDto.getLicenseeId(), notifyMap);
+                if(originLicenceDto != null){
+                    sendSMS(msgId, originLicenceDto.getLicenseeId(), notifyMap);
+                }else {
+                    log.info(StringUtil.changeForLog("------ send transfor originLicenceDto is null"));
+                }
+
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send sms error"), e);
             }

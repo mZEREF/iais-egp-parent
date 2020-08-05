@@ -141,8 +141,8 @@ public class InspectReviseNcEmailDelegator {
         //  change service checklist data
         if(serListDto != null){
             List<InspectionFillCheckListDto> fdtoList = serListDto.getFdtoList();
-            inspectionFillCheckListDtos.addAll(fdtoList);
             if(fdtoList != null && fdtoList.size() >0){
+                inspectionFillCheckListDtos.addAll(fdtoList);
                 for(InspectionFillCheckListDto inspectionFillCheckListDto : fdtoList) {
                     insepctionNcCheckListService.getInspectionFillCheckListDtoForShow(inspectionFillCheckListDto);
                 }
@@ -150,7 +150,9 @@ public class InspectReviseNcEmailDelegator {
         }
         //set num
         fillupChklistService.getRateOfCheckList(serListDto,adchklDto,commonDto);
-
+        //
+        //comparative data for sef and check list nc.
+        fillupChklistService.changeDataForNc(inspectionFillCheckListDtos,appPremCorrId);
         ParamUtil.setSessionAttr(request,ADCHK_DTO,adchklDto);
         ParamUtil.setSessionAttr(request,TASK_DTO,taskDto);
         ParamUtil.setSessionAttr(request,MSG_CON, null);

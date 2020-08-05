@@ -42,36 +42,28 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     private HcsaChklClient hcsaChklClient;
     @Autowired
     private OrganizationClient organizationClient;
-
     @Autowired
     private TaskService taskService;
-
     @Autowired
     private ApplicationClient applicationClient;
-
     @Autowired
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
-    AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
-
+    private  AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
-    AppInspectionStatusClient appInspectionStatusClient;
+    private AppInspectionStatusClient appInspectionStatusClient;
     @Autowired
     private AppPremisesCorrClient appPremisesCorrClient;
     @Autowired
     private InspectionAssignTaskService inspectionAssignTaskService;
     @Autowired
-    InsepctionNcCheckListService insepctionNcCheckListService;
+    private  InsepctionNcCheckListService insepctionNcCheckListService;
     @Autowired
-    ApplicationViewService applicationViewService;
+    private ApplicationViewService applicationViewService;
     @Autowired
-    ApplicationService applicationService;
-    @Autowired
-    FileRepoClient fileRepoClient;
-    @Autowired
-    private FillUpCheckListGetAppClient uploadFileClient;
+    private  ApplicationService applicationService;
     @Autowired
     private InspectionTaskClient inspectionTaskClient;
     @Autowired
@@ -1282,7 +1274,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
     @Override
     public AppPremisesSpecialDocDto getAppPremisesSpecialDocDtoByRefNo(String RefNo){
-       AppIntranetDocDto appIntranetDocDto = uploadFileClient.getAppIntranetDocByPremIdAndStatusAndAppDocType(RefNo,AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.APP_DOC_TYPE_CHECK_LIST).getEntity();
+       AppIntranetDocDto appIntranetDocDto = fillUpCheckListGetAppClient.getAppIntranetDocByPremIdAndStatusAndAppDocType(RefNo,AppConsts.COMMON_STATUS_ACTIVE,ApplicationConsts.APP_DOC_TYPE_CHECK_LIST).getEntity();
        if(StringUtil.isEmpty(appIntranetDocDto.getId()))
            return null;
         AppPremisesSpecialDocDto appPremisesSpecialDocDto =  new AppPremisesSpecialDocDto();
@@ -1352,7 +1344,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
         for(InspectionCheckQuestionDto inspectionCheckQuestionDto : inspectionCheckQuestionDtos){
             List<AnswerForDifDto> answerForDifDtos = new ArrayList<>(userNum);
-            Map<String, AnswerForDifDto> answerForDifDtoMaps = new HashMap<>(userNum);
+            Map<String, AnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(userNum);
             for (OrgUserDto entry : orgUserDtos) {
                 AnswerForDifDto answerForDifDto = new AnswerForDifDto();
                 answerForDifDto.setSubmitId(entry.getId());
@@ -1506,7 +1498,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
 
         for(AdhocNcCheckItemDto adhocNcCheckItemDto :  adItemList){
             List<AnswerForDifDto> answerForDifDtos = new ArrayList<>(userNum);
-            Map<String, AnswerForDifDto> answerForDifDtoMaps = new HashMap<>(userNum);
+            Map<String, AnswerForDifDto> answerForDifDtoMaps = Maps.newHashMapWithExpectedSize(userNum);
             for (OrgUserDto entry : orgUserDtos) {
                 AnswerForDifDto answerForDifDto = new AnswerForDifDto();
                 answerForDifDto.setSubmitId(entry.getId());
