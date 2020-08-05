@@ -863,51 +863,52 @@ public class InterInboxDelegator {
 
         List<SelectOption> inboxTypSelectList = IaisCommonUtils.genNewArrayList();
         inboxTypSelectList.add(new SelectOption("All", "All"));
-        inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_NOTIFICATION, "Notification"));
-        inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT, "Announcement"));
-        inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED, "Action Required"));
+        inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_NOTIFICATION, MasterCodeUtil.getCodeDesc(MessageConstants.MESSAGE_TYPE_NOTIFICATION)));
+        inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT, MasterCodeUtil.getCodeDesc(MessageConstants.MESSAGE_TYPE_ANNONUCEMENT)));
+        inboxTypSelectList.add(new SelectOption(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED, MasterCodeUtil.getCodeDesc(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED)));
         ParamUtil.setRequestAttr(request, "inboxTypeSelect", inboxTypSelectList);
     }
 
     private void prepareAppSelectOption(HttpServletRequest request){
         List<SelectOption> applicationTypeSelectList = IaisCommonUtils.genNewArrayList();
         applicationTypeSelectList.add(new SelectOption("All", "All"));
-        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_APPEAL, "Appeal"));
-        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK, "Audit"));
-        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_CESSATION, "Cessation "));
-        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, "New Licence Application"));
-        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_RENEWAL, "Renewal"));
-        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, "Request For Change"));
-        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL, "Withdrawal"));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_APPEAL, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_DRAFT)));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK)));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_CESSATION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_CESSATION)));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION)));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_RENEWAL, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_RENEWAL)));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)));
+        applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)));
         ParamUtil.setRequestAttr(request, "appTypeSelect", applicationTypeSelectList);
 
         List<SelectOption> applicationStatusSelectList = IaisCommonUtils.genNewArrayList();
         applicationStatusSelectList.add(new SelectOption("All", "All"));
-        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_DRAFT, "Draft"));
-        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK, "Rollback"));
-        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_APPROVED, "Approved"));
-        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, "Pending"));
+        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_DRAFT, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_DRAFT)));
+        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK)));
+        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_APPROVED, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_APPROVED)));
+        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)));
         ParamUtil.setRequestAttr(request, "appStatusSelect", applicationStatusSelectList);
 
         List<SelectOption> appServiceStatusSelectList = IaisCommonUtils.genNewArrayList();
         appServiceStatusSelectList.add(new SelectOption("All", "All"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_DRAFT, "Draft"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_RECALLED, "Recalled"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION, "Pending Clarification"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_DRAFT, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_DRAFT)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_RECALLED, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_RECALLED)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION)));
 //        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST, "Pending Internal Clarification"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, "Pending Screening"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION, "Pending Inspection"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING, "Pending Appointment Scheduling"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING, "Pending Appointment Re-Scheduling"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION, "Pending NC Rectification"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01, "Pending Approval"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_APPROVED, "Approved"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_REJECTED, "Rejected"));
-        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN, "Withdrawn"));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_FE_APPOINTMENT_SCHEDULING)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_NC_RECTIFICATION)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_APPROVED, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_APPROVED)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_REJECTED, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_REJECTED)));
+        appServiceStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN)));
         ParamUtil.setRequestAttr(request, "appStatusSelect", appServiceStatusSelectList);
 
         List<SelectOption> appServiceTypeSelectList = IaisCommonUtils.genNewArrayList();
         appServiceTypeSelectList.add(new SelectOption("All", "All"));
+
         appServiceTypeSelectList.add(new SelectOption("34F99D15-820B-EA11-BE7D-000C29F371DC", "Blood Banking"));
         appServiceTypeSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
         appServiceTypeSelectList.add(new SelectOption("A11ADD49-820B-EA11-BE7D-000C29F371DC", "Radiological Service"));
@@ -920,15 +921,15 @@ public class InterInboxDelegator {
     private void prepareLicSelectOption(HttpServletRequest request){
         List<SelectOption> LicenceStatusList = IaisCommonUtils.genNewArrayList();
         LicenceStatusList.add(new SelectOption("All", "All"));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_ACTIVE, "Active"));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_IACTIVE, "Outdated"));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_EXPIRY, "Expired"));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_CEASED, "Ceased"));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_LAPSED, "Lapsed"));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_APPROVED, "Approved"));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_SUSPENDED, "Suspended"));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_REVOKED, "Revoked"));
-        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_TRANSFERRED, "Transferred"));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_ACTIVE, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_ACTIVE)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_IACTIVE, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_IACTIVE)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_EXPIRY, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_EXPIRY)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_CEASED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_IACTIVE)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_LAPSED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_LAPSED)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_APPROVED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_APPROVED)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_SUSPENDED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_SUSPENDED)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_REVOKED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_REVOKED)));
+        LicenceStatusList.add(new SelectOption(ApplicationConsts.LICENCE_STATUS_TRANSFERRED, MasterCodeUtil.getCodeDesc(ApplicationConsts.LICENCE_STATUS_TRANSFERRED)));
         ParamUtil.setRequestAttr(request, "licStatus", LicenceStatusList);
 
         List<SelectOption> LicenceTypeList = IaisCommonUtils.genNewArrayList();
