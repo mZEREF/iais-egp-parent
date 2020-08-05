@@ -267,7 +267,7 @@
       </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
-          <label class="col-xs-12 col-md-8 control-label" >Service-Related Checklists<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-8 control-label" >Service-Related Checklists</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
               <a class="btn btn-secondary " data-toggle="modal" data-target= "#checklists" style="padding: 12px 60px"><span class="view">view</span></a>
@@ -278,7 +278,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
-          <label class="col-xs-12 col-md-8 control-label" >Service Risk Score<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-8 control-label" >Service Risk Score</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
               <a class="btn btn-secondary "  data-toggle="modal" data-target= "#riskScore" style="padding: 12px 60px"><span class="view">view</span></a>
@@ -289,7 +289,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
-          <label class="col-xs-12 col-md-8 control-label" >Service KPI<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-8 control-label" >Service KPI</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
               <a class="btn btn-secondary " data-toggle="modal" data-target= "#kpi" style="padding: 12px 60px"><span class="view">view</span></a>
@@ -300,7 +300,7 @@
 
      <%-- <div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
-          <label class="col-xs-12 col-md-8 control-label" >Service Fees<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-8 control-label" >Service Fees</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
               <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
@@ -311,7 +311,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8 marg-1">
-          <label class="col-xs-12 col-md-8 control-label" >Service Fee Bundles<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-8 control-label" >Service Fee Bundles</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
               <a class="btn btn-secondary " style="padding: 12px 60px"><span class="view">view</span></a>
