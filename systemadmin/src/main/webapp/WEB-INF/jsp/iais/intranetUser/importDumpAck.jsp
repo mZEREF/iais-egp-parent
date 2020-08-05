@@ -37,7 +37,7 @@
                                     </td>
 
                                     <c:if test="${oldUser.userId != existUsersNew[status.index].userId}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].userId}</p>
                                         </td>
                                     </c:if>
@@ -59,7 +59,7 @@
                                         <p>${oldUser.displayName}</p>
                                     </td>
                                     <c:if test="${oldUser.displayName != existUsersNew[status.index].displayName}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].displayName}</p>
                                         </td>
                                     </c:if>
@@ -72,7 +72,7 @@
                                         <p><fmt:formatDate value='${oldUser.accountActivateDatetime}' pattern='dd/MM/yyyy'/></p>
                                     </td>
                                     <c:if test="${oldUser.accountActivateDatetime != existUsersNew[status.index].accountActivateDatetime}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p><fmt:formatDate value='${existUsersNew[status.index].accountActivateDatetime}' pattern='dd/MM/yyyy'/></p>
                                         </td>
                                     </c:if>
@@ -85,7 +85,7 @@
                                         <p><fmt:formatDate value='${oldUser.accountDeactivateDatetime}' pattern='dd/MM/yyyy'/></p>
                                     </td>
                                     <c:if test="${oldUser.accountDeactivateDatetime != existUsersNew[status.index].accountDeactivateDatetime}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p><fmt:formatDate value='${existUsersNew[status.index].accountDeactivateDatetime}' pattern='dd/MM/yyyy'/></p>
                                         </td>
                                     </c:if>
@@ -98,7 +98,7 @@
                                         <p>${oldUser.salutation}</p>
                                     </td>
                                     <c:if test="${oldUser.salutation != existUsersNew[status.index].salutation}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].salutation}</p>
                                         </td>
                                     </c:if>
@@ -111,7 +111,7 @@
                                         <p>${oldUser.firstName}</p>
                                     </td>
                                     <c:if test="${oldUser.firstName != existUsersNew[status.index].firstName}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].firstName}</p>
                                         </td>
                                     </c:if>
@@ -124,7 +124,7 @@
                                         <p>${oldUser.lastName}</p>
                                     </td>
                                     <c:if test="${oldUser.lastName != existUsersNew[status.index].lastName}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].lastName}</p>
                                         </td>
                                     </c:if>
@@ -137,7 +137,7 @@
                                         <strong><p>${oldUser.organization}</p></strong>
                                     </td>
                                     <c:if test="${oldUser.organization ne existUsersNew[status.index].organization}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].organization}</p>
                                         </td>
                                     </c:if>
@@ -150,7 +150,7 @@
                                         <p>${oldUser.division}</p>
                                     </td>
                                     <c:if test="${oldUser.division != existUsersNew[status.index].division}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].division}</p>
                                         </td>
                                     </c:if>
@@ -163,7 +163,7 @@
                                         <p>${oldUser.branchUnit}</p>
                                     </td>
                                     <c:if test="${oldUser.branchUnit != existUsersNew[status.index].branchUnit}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].branchUnit}</p>
                                         </td>
                                     </c:if>
@@ -176,7 +176,7 @@
                                         <p>${oldUser.email}</p>
                                     </td>
                                     <c:if test="${oldUser.email != existUsersNew[status.index].email}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].email}</p>
                                         </td>
                                     </c:if>
@@ -189,7 +189,7 @@
                                         <p>${oldUser.mobileNo}</p>
                                     </td>
                                     <c:if test="${oldUser.mobileNo != existUsersNew[status.index].mobileNo}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].mobileNo}</p>
                                         </td>
                                     </c:if>
@@ -202,7 +202,7 @@
                                         <p>${oldUser.officeTelNo}</p>
                                     </td>
                                     <c:if test="${oldUser.officeTelNo != existUsersNew[status.index].officeTelNo}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].officeTelNo}</p>
                                         </td>
                                     </c:if>
@@ -215,7 +215,7 @@
                                         <p>${oldUser.remarks}</p>
                                     </td>
                                     <c:if test="${oldUser.remarks != existUsersNew[status.index].remarks}">
-                                        <td class="compareTdStyleUser">
+                                        <td class="compareTdStyle">
                                             <p>${existUsersNew[status.index].remarks}</p>
                                         </td>
                                     </c:if>
@@ -246,8 +246,8 @@
         line-height: 10px;
     }
 
-    .compareTdStyleUser {
-        /*display: inline;*/
+    .compareTdStyle {
+        display: block;
         padding: 5px 18px 5px 43px;
         line-height: 1;
         color: #53ab27;

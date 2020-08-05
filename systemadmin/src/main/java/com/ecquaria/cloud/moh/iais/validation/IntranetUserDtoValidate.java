@@ -31,6 +31,8 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
         String userId = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_USERID);
         String startDateStr = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_STARTDATE);
         String endDateStr = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_ENDDATE);
+        String mobileNo = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_MOBILENO);
+        String officeNo = ParamUtil.getRequestString(httpServletRequest, IntranetUserConstant.INTRANET_OFFICETELNO);
         //userId
         if(!StringUtil.isEmpty(userId)){
             if(!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")){
@@ -64,7 +66,17 @@ public class IntranetUserDtoValidate implements CustomizeValidator {
                 errorMap.put("accountDeactivateDatetime", "USER_ERR006");
             }
         }
+        if(!StringUtil.isEmpty(mobileNo)){
+            if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+                errorMap.put("mobileNo", "Please key in a valid mobile number.");
+            }
+        }
 
+        if(!StringUtil.isEmpty(officeNo)) {
+            if (!officeNo.matches("^[6][0-9]{7}$")) {
+                errorMap.put("officeNo", "Please key in a valid phone number.");
+            }
+        }
         return errorMap;
     }
 }

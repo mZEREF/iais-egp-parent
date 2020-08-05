@@ -47,7 +47,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="userId">User ID:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="userId" type="text" name="userId" value="${orgUserDto.userId}">
+                                            <input id="userId" type="text" maxlength="20" name="userId" value="${orgUserDto.userId}">
                                             <span id="error_userId" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </iais:value>
@@ -56,7 +56,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="displayName">Display Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="displayName" type="text" name="displayName"
+                                            <input id="displayName" type="text" name="displayName" maxlength="20"
                                                    value="${orgUserDto.displayName}">
                                             <span id="error_displayName" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
@@ -102,7 +102,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="firstName">First Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="firstName" type="text" name="firstName"
+                                            <input id="firstName" type="text" name="firstName" maxlength="9"
                                                    value="${orgUserDto.firstName}">
                                             <span id="error_firstName" name="iaisErrorMsg"
                                                   class="error-msg"></span>
@@ -113,7 +113,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="lastName">Last Name:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="lastName" type="text" name="lastName" value="${orgUserDto.lastName}">
+                                            <input id="lastName" type="text" maxlength="9" name="lastName" value="${orgUserDto.lastName}">
                                             <span id="error_lastName" name="iaisErrorMsg"
                                                   class="error-msg"></span>
                                         </div>
@@ -123,7 +123,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="organization">Organization:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="organization" type="text" name="organization" value="${orgUserDto.organization}">
+                                            <input id="organization" type="text" maxlength="20" name="organization" value="${orgUserDto.organization}">
                                         </div>
                                     </iais:value>
                                 </div>
@@ -131,7 +131,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="division">Division:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="division" type="text" name="division"
+                                            <input id="division" type="text" maxlength="20" name="division"
                                                    value="${orgUserDto.division}">
                                         </div>
                                     </iais:value>
@@ -140,7 +140,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="branch">Branch / Unit:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="branch" type="text" name="branch"
+                                            <input id="branch" type="text" maxlength="20" name="branch"
                                                    value="${orgUserDto.branchUnit}">
                                         </div>
                                     </iais:value>
@@ -151,7 +151,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="email">Email:<span style="color:red">*</span></label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="email" type="text" name="email" value="${orgUserDto.email}">
+                                            <input id="email" type="text" maxLength="66" name="email" value="${orgUserDto.email}">
                                             <span id="error_email" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </iais:value>
@@ -160,8 +160,9 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="mobileNo">Mobile No:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="mobileNo" type="number" name="mobileNo"
+                                            <input id="mobileNo" type="text" maxLength="8" name="mobileNo"
                                                    value="${orgUserDto.mobileNo}">
+                                            <span id="error_mobileNo" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </iais:value>
                                 </div>
@@ -169,9 +170,9 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="officeNo">Office No:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="officeNo" type="number" name="officeNo"
+                                            <input id="officeNo" type="text" maxLength="8" name="officeNo"
                                                    value="${orgUserDto.officeTelNo}">
-                                            <span id="error_status" name="iaisErrorMsg" class="error-msg"></span>
+                                            <span id="error_officeNo" name="iaisErrorMsg" class="error-msg"></span>
                                         </div>
                                     </iais:value>
                                 </div>
@@ -179,7 +180,7 @@
                                     <label class="col-xs-12 col-md-4 control-label" for="remarks">Remarks:</label>
                                     <iais:value>
                                         <div class="col-xs-8 col-sm-6 col-md-5">
-                                            <input id="remarks" type="text" name="remarks"
+                                            <input id="remarks" type="text" maxLength="100" name="remarks"
                                                    value="${orgUserDto.remarks}">
                                         </div>
                                     </iais:value>

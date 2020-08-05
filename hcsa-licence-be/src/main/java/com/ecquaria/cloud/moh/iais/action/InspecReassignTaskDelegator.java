@@ -210,7 +210,7 @@ public class InspecReassignTaskDelegator {
         String hci_code = ParamUtil.getRequestString(bpc.request, "hci_code");
         String hci_name = ParamUtil.getRequestString(bpc.request, "hci_name");
         String hci_address = ParamUtil.getRequestString(bpc.request, "hci_address");
-        String userIdKey = ParamUtil.getMaskedString(bpc.request, "memberName");
+        String userIdKey = ParamUtil.getRequestString(bpc.request, "memberName");
         //get userId
         String memberValue = "";
         if (!StringUtil.isEmpty(userIdKey)) {

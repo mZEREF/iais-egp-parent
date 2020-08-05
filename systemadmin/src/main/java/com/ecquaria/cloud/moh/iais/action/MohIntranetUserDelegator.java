@@ -899,7 +899,7 @@ public class MohIntranetUserDelegator {
         String userId = orgUserDto.getUserId();
         if (!StringUtil.isEmpty(userId)) {
             if (!userId.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(.{1,64})$")) {
-                String error = "User ID is Alphanumeric.";
+                String error = "Please enter alphanumeric character.";
                 errors.add(error);
             }
         } else {
@@ -908,7 +908,7 @@ public class MohIntranetUserDelegator {
         }
         String displayName = orgUserDto.getDisplayName();
         if (StringUtil.isEmpty(displayName)) {
-            String error = "DisplayName is a mandatory field.";
+            String error = "Display Name is a mandatory field.";
             errors.add(error);
         }
         Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
@@ -930,12 +930,12 @@ public class MohIntranetUserDelegator {
         }
         String lastName = orgUserDto.getLastName();
         if (StringUtil.isEmpty(lastName)) {
-            String error = "LastName is a mandatory field.";
+            String error = "Last Name is a mandatory field.";
             errors.add(error);
         }
         String firstName = orgUserDto.getFirstName();
         if (StringUtil.isEmpty(firstName)) {
-            String error = "FirstName is a mandatory field.";
+            String error = "First Name is a mandatory field.";
             errors.add(error);
         }
         String email = orgUserDto.getEmail();
@@ -944,14 +944,22 @@ public class MohIntranetUserDelegator {
             errors.add(error);
         } else {
             if (!ValidationUtils.isEmail(email)) {
-                String error = "Email is not  correct.";
+                String error = "Please key in a valid email address.";
                 errors.add(error);
             }
         }
-       // String salutation = orgUserDto.getSalutation();
-//        if(!StringUtil.isEmpty(salutation)){
-//            if(salutation.equals(Mr))
-//        }
+        String mobileNo = orgUserDto.getMobileNo();
+        if(!StringUtil.isEmpty(mobileNo)){
+            if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
+                errors.add("Please key in a valid mobile number.");
+            }
+        }
+        String officeTelNo = orgUserDto.getOfficeTelNo();
+        if(!StringUtil.isEmpty(officeTelNo)) {
+            if (!officeTelNo.matches("^[6][0-9]{7}$")) {
+                errors.add("Please key in a valid office number.");
+            }
+        }
         return errors;
     }
 
