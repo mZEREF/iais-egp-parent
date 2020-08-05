@@ -522,7 +522,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                         List<String> taskUserIds = IaisCommonUtils.genNewArrayList();
                         taskUserIds.add(taskUserId);
                         String taskId = td.getId();
-                        sendSelfCheckListEmail(taskId, taskUserIds);
+                        //sendSelfCheckListEmail(taskId, taskUserIds);
                     }
                 }
             }

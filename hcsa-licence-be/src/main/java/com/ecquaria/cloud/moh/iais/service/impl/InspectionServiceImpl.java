@@ -488,7 +488,7 @@ public class InspectionServiceImpl implements InspectionService {
                                 taskUserIds.add(so.getValue());
                             }
                             String taskId = td.getId();
-                            inspectionAssignTaskService.sendSelfCheckListEmail(taskId, taskUserIds);
+                            //inspectionAssignTaskService.sendSelfCheckListEmail(taskId, taskUserIds);
                         }
                     }
                 } else {
