@@ -90,26 +90,45 @@ public class TaskServiceImpl implements TaskService {
         if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0){
             String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
             TaskDto taskScoreDto =new TaskDto();
-            Date assignDate = new Date();
-            if(SystemParameterConstants.COMMON_POOL.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
-                assignDate = null;
-            }else{
+            if(SystemParameterConstants.ROUND_ROBIN.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
                 taskScoreDto = getUserIdForWorkGroup(workGroupId);
             }
+
+            SendTaskTypeDto sendTaskTypeDto = new SendTaskTypeDto();
+            sendTaskTypeDto.setApplicationDtos(applicationDtos);
+            sendTaskTypeDto.setStage(statgId);
+            String scheme = taskHcsaConfigClient.getSendTaskType(sendTaskTypeDto).getEntity();
+            log.info(StringUtil.changeForLog("The getRoutingTask scheme is -->:"+scheme));
+            String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
+            String userId = taskScoreDto.getUserId();
+            Date  assignDate = new Date();
+            log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:"+userId));
+            switch (scheme){
+                case TaskConsts.TASK_SCHEME_TYPE_COMMON :
+                    userId = null;
+                    assignDate = null;
+                    break;
+                case TaskConsts.TASK_SCHEME_TYPE_ASSIGN :
+                    userId = null;
+                    taskType = TaskConsts.TASK_TYPE_MAIN_FLOW_SUPER;
+                    assignDate = null;
+                    break;
+            }
+            log.info(StringUtil.changeForLog("The getRoutingTask taskType is -->:"+taskType));
+            log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:"+userId));
+            log.info(StringUtil.changeForLog("The getRoutingTask assignDate is -->:"+assignDate));
 
             int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                     statgId,applicationDto.getApplicationType());
             //handle the taskUrl
-            String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
             String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
             if(HcsaConsts.ROUTING_STAGE_INS.equals(statgId)){
                 TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
-                taskType = TaskConsts.TASK_TYPE_INSPECTION;
             }
-            result = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),statgId,taskType,
-                    correlationId,workGroupId,
-                    taskScoreDto.getUserId(),assignDate,score,TaskUrl,roleId,
-                    IaisEGPHelper.getCurrentAuditTrailDto());
+             result = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),statgId,taskType,
+                     correlationId,workGroupId,
+                    userId, assignDate,score,TaskUrl,roleId,
+                     IaisEGPHelper.getCurrentAuditTrailDto());
         }else{
             log.error(StringUtil.changeForLog("can not get the HcsaSvcStageWorkingGroupDto ..."));
         }
@@ -167,6 +186,11 @@ public class TaskServiceImpl implements TaskService {
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison taskType is -->:"+taskType));
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison assignDate is -->:"+assignDate));
+                //handle the taskUrl
+                String TaskUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+                if(HcsaConsts.ROUTING_STAGE_INS.equals(stageId)){
+                    TaskUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
+                }
                 for(ApplicationDto applicationDto : applicationDtos){
                     int score =  getConfigScoreForService(hcsaSvcStageWorkingGroupDtos,applicationDto.getServiceId(),
                             stageId,applicationDto.getApplicationType());
@@ -175,7 +199,7 @@ public class TaskServiceImpl implements TaskService {
                         for (AppPremisesCorrelationDto appPremisesCorrelationDto :appPremisesCorrelations ){
                             TaskDto taskDto = TaskUtil.getTaskDto(applicationDto.getApplicationNo(),stageId,taskType,
                                     appPremisesCorrelationDto.getId(),workGroupId,
-                                    userId, assignDate,score,TaskConsts.TASK_PROCESS_URL_MAIN_FLOW,roleId,
+                                    userId, assignDate,score,TaskUrl,roleId,
                                     auditTrailDto);
                             taskDtos.add(taskDto);
                             //create history
