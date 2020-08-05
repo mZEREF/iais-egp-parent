@@ -7,7 +7,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -71,6 +74,11 @@ public class NotificationHelper {
 	public static final String RECEIPT_ROLE_AO3                                 = "EM-AO3";
 	public static final String RECEIPT_ROLE_INSPECTOR                           = "EM-INSPECTOR";
 	public static final String RECEIPT_ROLE_INSPECTOR_LEAD                      = "EM-INSPECTOR_LEAD";
+
+	/**
+	 * Get different Officer according to different types
+	 */
+	public static final String OFFICER_MODULE_TYPE_SCHEDULING                   = "Appt-Scheduling";
 
 	@Autowired
 	private Environment env;
@@ -159,12 +167,12 @@ public class NotificationHelper {
 				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
 				+ "templateId is "+ templateId+"thread name is " + Thread.currentThread().getName()));
 		try {
-			List<String> receiptemail = IaisCommonUtils.genNewArrayList();
-			List<String> ccemail = IaisCommonUtils.genNewArrayList();
-			List<String> bccemail = IaisCommonUtils.genNewArrayList();
+			List<String> receiptemail;
+			List<String> ccemail;
+			List<String> bccemail;
 			MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
 			EmailDto emailDto = new EmailDto();
-			String mesContext = "";
+			String mesContext;
 			if (templateContent != null && !templateContent.isEmpty()) {
 				mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
 			} else {
@@ -236,11 +244,49 @@ public class NotificationHelper {
 			all.addAll(getRecriptAppGrp(role, refId));
 		} else if (RECEIPT_TYPE_APP.equals(refType)) {
 			all.addAll(getRecriptApp(role, refId));
+		} else if (RECEIPT_TYPE_LICENCE_ID.equals(refType)){
+			all.addAll(getRecriptLic(role, refId));
 		} else {
 			all.addAll(getOfficer(role));
 		}
 
 		return all;
+	}
+
+	private Collection<String> getRecriptLic(List<String> roles, String licenceId) {
+		Set<String> set = IaisCommonUtils.genNewHashSet();
+		set.addAll(getRecrptPersonnel(roles, licenceId));
+		LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
+		if(licenceDto != null){
+			String licenseeId = licenceDto.getLicenseeId();
+			if(!StringUtil.isEmpty(licenseeId)) {
+				set.addAll(getRecrptLicensee(roles, licenseeId));
+			}
+		}
+		set.addAll(getOfficer(roles));
+		return set;
+	}
+
+	private Collection<String> getRecrptPersonnel(List<String> roles, String licenceId) {
+		Set<String> set = IaisCommonUtils.genNewHashSet();
+		for (String role : roles) {
+			if (RECEIPT_ROLE_SVC_PERSONNEL.equals(role)) {
+				List<PersonnelsDto> personnelsDtos = hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
+				log.info(StringUtil.changeForLog("PersonnelsDto Size = " + personnelsDtos.size()));
+				if(!IaisCommonUtils.isEmpty(personnelsDtos)){
+					for(PersonnelsDto personnelsDto : personnelsDtos){
+						KeyPersonnelDto keyPersonnelDto = personnelsDto.getKeyPersonnelDto();
+						if(keyPersonnelDto != null){
+							String emailAddress = keyPersonnelDto.getEmailAddr();
+							if(!StringUtil.isEmpty(emailAddress)){
+								set.add(emailAddress);
+							}
+						}
+					}
+				}
+			}
+		}
+		return set;
 	}
 
 	private Collection<String> getRecriptAppGrp(List<String> roles, String appGrpId) {
@@ -276,7 +322,7 @@ public class NotificationHelper {
 				List<LicenseeKeyApptPersonDto> pers = licenseeClient.getPersonByid(licenseeId).getEntity();
 				if (!IaisCommonUtils.isEmpty(pers)) {
 					pers.forEach(p -> {
-						if (StringUtil.isEmpty(p.getEmailAddr())) {
+						if (!StringUtil.isEmpty(p.getEmailAddr())) {
 							set.add(p.getEmailAddr());
 						}
 					});
