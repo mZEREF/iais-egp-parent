@@ -80,8 +80,9 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
 
         //verified recommendation other dropdown
         //0063971
-        checkRecommendationOtherDropdown(errMap,recommendationStr,request,applicationType,roleId,taskDto.getTaskKey());
-
+        if(taskDto != null){
+            checkRecommendationOtherDropdown(errMap,recommendationStr,request,applicationType,roleId,taskDto.getTaskKey());
+        }
         //DMS recommendation
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status)){
             //verify upload file
@@ -137,7 +138,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                     appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
                 }
                 //ASO PSO broadcast
-                if (ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status) && !isAppealType) {
+                if (!isAppealType && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status) ) {
                     checkBroadcast(roleId, errMap, status, recommendationStr, request);
                 }
             } else {

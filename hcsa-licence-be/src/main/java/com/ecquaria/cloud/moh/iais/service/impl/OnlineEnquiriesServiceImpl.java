@@ -555,7 +555,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 int recomInNumber=appPremisesRecommendationDto.getRecomInNumber();
                 String chronoUnit=MasterCodeUtil.retrieveOptionsByCodes(new String[]{appPremisesRecommendationDto.getChronoUnit()}).get(0).getText();
                 if(appPremisesRecommendationDto.getChronoUnit().equals(AppointmentConstants.RECURRENCE_MONTH)){
-                    if(recomInNumber/12>=1){
+                    if(recomInNumber/12 ==1 || recomInNumber/12 >1){
                         recomInNumber=recomInNumber/12;
                         chronoUnit=MasterCodeUtil.retrieveOptionsByCodes(new String[]{AppointmentConstants.RECURRENCE_YEAR}).get(0).getText();
                     }
