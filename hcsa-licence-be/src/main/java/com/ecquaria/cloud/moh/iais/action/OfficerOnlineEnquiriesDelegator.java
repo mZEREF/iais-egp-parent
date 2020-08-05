@@ -1176,17 +1176,17 @@ public class OfficerOnlineEnquiriesDelegator {
                 SystemAdminBaseConstants.DATE_FORMAT);
         String licExpToDate = Formatter.formatDateTime(Formatter.parseDate(ParamUtil.getString(request, "expiry_date")),
                 SystemAdminBaseConstants.DATE_FORMAT);
-        if(!StringUtil.isEmpty(appSubDate)||!StringUtil.isEmpty(appSubToDate)){
+        if(!StringUtil.isEmpty(appSubDate)&&!StringUtil.isEmpty(appSubToDate)){
             if(appSubDate.compareTo(appSubToDate)>0){
                 errMap.put("to_date","Application Submitted Date From cannot be later than Application Submitted Date To.");
             }
         }
-        if(!StringUtil.isEmpty(licStaDate)||!StringUtil.isEmpty(licStaToDate)){
+        if(!StringUtil.isEmpty(licStaDate)&&!StringUtil.isEmpty(licStaToDate)){
             if(licStaDate.compareTo(licStaToDate)>0){
                 errMap.put("start_to_date","Licence Start Date From cannot be later than Licence Start Date To.");
             }
         }
-        if(!StringUtil.isEmpty(licExpDate)||!StringUtil.isEmpty(licExpToDate)){
+        if(!StringUtil.isEmpty(licExpDate)&&!StringUtil.isEmpty(licExpToDate)){
             if(licExpDate.compareTo(licExpToDate)>0){
                 errMap.put("expiry_date","Licence Expiry Date From cannot be later than Licence Expiry Date To.");
             }
