@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +66,7 @@ public class ConfirmDialogTag extends TagSupport {
     }
 
     @Override
-    public int doStartTag() throws JspException {
+    public int doStartTag() {
         StringBuilder html = new StringBuilder();
         //html
         String divId = popupOrder;
@@ -134,8 +135,8 @@ public class ConfirmDialogTag extends TagSupport {
         try {
             pageContext.getOut().print(html.toString());
         } catch (Exception ex) {
-            log.error("", ex);
-            throw new JspTagException("LangSelectTag: " + ex.getMessage());
+            log.error(ex.getMessage(), ex);
+            throw new IaisRuntimeException("LangSelectTag: " + ex.getMessage());
         }
         release();
 

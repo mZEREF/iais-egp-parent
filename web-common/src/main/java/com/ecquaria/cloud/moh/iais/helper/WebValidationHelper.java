@@ -281,10 +281,9 @@ public class WebValidationHelper {
 
         try {
             Class valCls = Class.forName(ano.impClass());
-            Object obj = null;
+            Object obj;
             try {
                 obj = SpringContextHelper.getContext().getBean(valCls);
-                obj.hashCode();
             } catch (Exception e) {
                 obj = valCls.newInstance();
             }

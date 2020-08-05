@@ -7,6 +7,7 @@ package com.ecquaria.cloud.moh.iais.tags;
  */
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -140,7 +141,7 @@ public final class CheckBoxTag extends DivTagSupport {
 
 
     @Override
-    public int doStartTag() throws JspTagException {
+    public int doStartTag() {
         StringBuilder html = new StringBuilder();
         html.append("<div class=\"form-check-gp\">");
         try {
@@ -216,8 +217,8 @@ public final class CheckBoxTag extends DivTagSupport {
 
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (IOException e) {
-            log.error("", e);
-            throw new JspTagException("CheckBoxTag: " + e.getMessage());
+            log.error(e.getMessage(), e);
+            throw new IaisRuntimeException("CheckBoxTag: " + e.getMessage());
         }
 
         release();

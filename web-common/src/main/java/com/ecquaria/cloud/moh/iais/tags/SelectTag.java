@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -68,7 +69,7 @@ public class SelectTag extends DivTagSupport {
         init();
     }
     @Override
-    public int doStartTag() throws JspException {
+    public int doStartTag(){
         try {
             if (!StringUtil.isEmpty(codeCategory)) {
                 codeCategory = MasterCodeUtil.getCategoryId(codeCategory);
@@ -80,7 +81,7 @@ public class SelectTag extends DivTagSupport {
 
 
 
-            html.append("<select name=\"").append(name).append("\"");
+            html.append("<select name=\"").append(name).append('\"');
             if (!StringUtil.isEmpty(id)) {
                 id = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("id",
                         id, Object.class, this, pageContext));
@@ -112,7 +113,7 @@ public class SelectTag extends DivTagSupport {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
             log.error("", ex);
-            throw new JspTagException("SelectTag: " + ex.getMessage());
+            throw new IaisRuntimeException("SelectTag: " + ex.getMessage());
         }
         release();
 

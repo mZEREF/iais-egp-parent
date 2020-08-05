@@ -80,7 +80,7 @@ public class ProcessUrlTag extends TagSupport {
 
     public void setValue(String value) throws JspException {
         this.value = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("value",
-                 value.toString(), Object.class, this, pageContext));
+                 value, Object.class, this, pageContext));
     }
     public void setProject(String project) {
         this.project = project;

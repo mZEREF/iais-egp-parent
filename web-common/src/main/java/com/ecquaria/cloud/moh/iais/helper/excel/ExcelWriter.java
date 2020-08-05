@@ -94,7 +94,8 @@ public final class ExcelWriter {
 
             workbook.write(fileOutputStream);
         } catch (Exception e) {
-            throw new Exception("has IO error when when export excel");
+            log.error(e.getMessage(),e);
+            throw e;
         }finally {
             if (workbook != null){
                 workbook.close();

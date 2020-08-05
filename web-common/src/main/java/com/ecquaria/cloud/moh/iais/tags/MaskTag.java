@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -49,12 +50,12 @@ public class MaskTag extends DivTagSupport {
     }
 
     @Override
-    public int doStartTag() throws JspException {
+    public int doStartTag(){
         try {
             pageContext.getOut().print(MaskUtil.maskValue(name, value));
         } catch (Exception ex) {
-            log.error("", ex);
-            throw new JspTagException("Mask Tag: " + ex.getMessage());
+            log.error(ex.getMessage(), ex);
+            throw new IaisRuntimeException("Mask Tag: " + ex.getMessage());
         }
         release();
 

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.tags;
 
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 
@@ -123,11 +124,11 @@ public final class SearchSectionTag extends DivTagSupport {
         html.append('>');
     }
     @Override
-    public int doEndTag() throws JspException {
+    public int doEndTag(){
         try {
             pageContext.getOut().print("</div></div>");
         } catch (Exception ex) {
-            throw new JspTagException("RowTag: " + ex.getMessage(),ex);
+            throw new IaisRuntimeException("RowTag: " + ex.getMessage(),ex);
         }
         return EVAL_PAGE;
     }

@@ -112,9 +112,9 @@ public class PaginationTag extends DivTagSupport {
         if (pageSizeArr != null && pageSizeArr.length > 0){
             for (int s : pageSizeArr){
                 if (s == pageSize){
-                    sb.append("<option selected value=\"" + s + "\">" + s + "</option>");
+                    sb.append("<option selected value=\"") .append(s) .append("\">").append(s).append("</option>");
                 }else {
-                    sb.append("<option value=\"" + s + "\">" + s +"</option>");
+                    sb.append("<option value=\"") .append(s)  .append("\">").append(s).append("</option>");
                 }
             }
         }

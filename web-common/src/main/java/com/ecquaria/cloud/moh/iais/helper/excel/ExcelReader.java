@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.helper.excel;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -99,14 +100,14 @@ public final class ExcelReader {
         //int realRowCount = sheet.getPhysicalNumberOfRows();
         int realCellCount = sheet.getRow(startCellIndex).getLastCellNum();
 
-        List<List<String>> result = new ArrayList<>();
+        List<List<String>> result = IaisCommonUtils.genNewArrayList();
         for (int i =  startCellIndex + 1; i <= rowCount; i++) {
             Row row = sheet.getRow(i);
             if (row == null || row.getCell(0) == null ){
                 continue;
             }
 
-            List<String> cellResult = new ArrayList<>();
+            List<String> cellResult = IaisCommonUtils.genNewArrayList();
             for (int j = 0; j < realCellCount; j++) {
                 cellResult.add(getCellValue(sheet, i, j));
             }
@@ -124,7 +125,8 @@ public final class ExcelReader {
             workBook = suffix.equals(FileUtils.EXCEL_TYPE_XSSF) ? new XSSFWorkbook(in) : new HSSFWorkbook(in);
             return workBook.getSheetAt(sheetAt);
         } catch (Exception e) {
-            throw new Exception(e.getMessage(),e);
+            log.error(e.getMessage(),e);
+            throw e;
         }finally {
             try {
                 if (workBook != null){
