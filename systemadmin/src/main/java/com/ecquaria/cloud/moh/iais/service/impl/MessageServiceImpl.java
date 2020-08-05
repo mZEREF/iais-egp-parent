@@ -80,7 +80,7 @@ public class MessageServiceImpl implements MessageService {
                     MessageDto.class.getName(), JsonUtil.parseToJson(result.getEntity()));
 
             try {
-                FeignResponseEntity<EicRequestTrackingDto> fetchResult = trackingHelper.getOrgTrackingClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
+                FeignResponseEntity<EicRequestTrackingDto> fetchResult = trackingHelper.getEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
                 if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
                     EicRequestTrackingDto entity = fetchResult.getEntity();
                     if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
@@ -90,7 +90,7 @@ public class MessageServiceImpl implements MessageService {
                         entity.setFirstActionAt(now);
                         entity.setLastActionAt(now);
                         entity.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
-                        trackingHelper.getOrgTrackingClient().saveEicTrack(entity);
+                        trackingHelper.getEicClient().saveEicTrack(entity);
                     }
                 }
 
