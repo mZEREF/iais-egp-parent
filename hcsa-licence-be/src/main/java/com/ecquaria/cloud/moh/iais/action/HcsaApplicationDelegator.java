@@ -25,6 +25,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -42,28 +45,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.InsRepService;
-import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.LicenseeService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
@@ -169,7 +157,8 @@ public class HcsaApplicationDelegator {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
     @Autowired
     private SystemParamConfig systemParamConfig;
-
+    @Autowired
+    private CessationBeService cessationBeService;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -2252,6 +2241,73 @@ public class HcsaApplicationDelegator {
 
         //check route back review
         setRouteBackReview(bpc.request,applicationViewDto,roleId,taskDto,status);
+
+        //cessation
+        setCessation(bpc.request,applicationViewDto,correlationId);
+    }
+
+    private void setCessation(HttpServletRequest request, ApplicationViewDto applicationViewDto, String correlationId){
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String applicationType = applicationDto.getApplicationType();
+        if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
+            String originLicenceId = applicationDto.getOriginLicenceId();
+            List<String> licIds = IaisCommonUtils.genNewArrayList();
+            licIds.add(originLicenceId);
+            List<String> corrIds = IaisCommonUtils.genNewArrayList();
+            corrIds.add(correlationId);
+            List<AppCessLicDto> appCessDtosByLicIds = cessationBeService.getAppCessDtosByLicIds(licIds);
+            List<AppCessMiscDto> appCessMiscDtos = cessationClient.getAppCessMiscDtosByCorrIds(corrIds).getEntity();
+            if (!IaisCommonUtils.isEmpty(appCessDtosByLicIds)) {
+                AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
+                if (!IaisCommonUtils.isEmpty(appCessMiscDtos)) {
+                    AppCessMiscDto appCessMiscDto = appCessMiscDtos.get(0);
+                    AppCessHciDto appCessHciDto = appCessLicDto.getAppCessHciDtos().get(0);
+                    Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
+                    MiscUtil.transferEntityDto(appCessMiscDto, AppCessHciDto.class, fieldMap, appCessHciDto);
+                    Boolean patNeedTrans = appCessMiscDto.getPatNeedTrans();
+                    if(patNeedTrans){
+                        String patTransType = appCessMiscDto.getPatTransType();
+                        String patTransTo = appCessMiscDto.getPatTransTo();
+                        appCessHciDto.setPatientSelect(patTransType);
+                        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                            appCessHciDto.setPatHciName(patTransTo);
+                        }
+                        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                            appCessHciDto.setPatRegNo(patTransTo);
+                        }
+                        if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                            appCessHciDto.setPatOthers(patTransTo);
+                        }
+
+                    }
+                    ParamUtil.setSessionAttr(request, "confirmDtos", (Serializable) appCessDtosByLicIds);
+                    ParamUtil.setSessionAttr(request, "reasonOption", (Serializable) getReasonOption());
+                    ParamUtil.setSessionAttr(request, "patientsOption", (Serializable) getPatientsOption());
+                }
+            }
+        }
+    }
+
+    private List<SelectOption> getReasonOption() {
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
+        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_REASON_NOT_PROFITABLE, "Not Profitable");
+        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_REASON_REDUCE_WORKLOA, "Reduce Workload");
+        SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_REASON_OTHER, "Others");
+        riskLevelResult.add(so1);
+        riskLevelResult.add(so2);
+        riskLevelResult.add(so3);
+        return riskLevelResult;
+    }
+
+    private List<SelectOption> getPatientsOption() {
+        List<SelectOption> riskLevelResult = IaisCommonUtils.genNewArrayList();
+        SelectOption so1 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI, "HCI");
+        SelectOption so2 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO, "Professional Regn No.");
+        SelectOption so3 = new SelectOption(ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER, "Others");
+        riskLevelResult.add(so1);
+        riskLevelResult.add(so2);
+        riskLevelResult.add(so3);
+        return riskLevelResult;
     }
 
     private String getRecommendationOnlyShowStr (Integer recomInNumber){
