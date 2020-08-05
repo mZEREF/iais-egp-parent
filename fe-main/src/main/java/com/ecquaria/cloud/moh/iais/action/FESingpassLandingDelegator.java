@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
@@ -18,10 +17,7 @@ import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import com.ncs.secureconnect.sim.common.LoginInfo;
-import com.ncs.secureconnect.sim.lite.SIMUtil;
 import lombok.extern.slf4j.Slf4j;
-import ncs.secureconnect.sim.entities.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -77,19 +73,12 @@ public class FESingpassLandingDelegator {
      */
     public void singpassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        HttpServletResponse response = bpc.response;
+
         log.info("singpassCallBack===========>>>Start");
         AuditTrailHelper.auditFunction("FE Landing Singpass", "Login");
-
-        String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
-        LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
-        log.info("oLoginInfo =>>>>>>> " + oLoginInfo);
-        if (oLoginInfo == null){
-            return;
-        }
-
-        String nric = oLoginInfo.getLoginID();
-
-        log.info(StringUtil.changeForLog("singpassCallBack nric " + nric));
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
+        String nric = ParamUtil.getString(request, UserConstants.ENTITY_ID);
 
         List<String> mohIssueUenList = orgUserManageService.getUenListByNric(nric);
         if (!IaisCommonUtils.isEmpty(mohIssueUenList)){
@@ -99,7 +88,6 @@ public class FESingpassLandingDelegator {
             ParamUtil.setRequestAttr(request, "hasMohIssueUen", IaisEGPConstant.NO);
         }
 
-        ParamUtil.setRequestAttr(request, UserConstants.ENTITY_ID, nric);
         log.info("singpassCallBack===========>>>End");
     }
 
@@ -111,10 +99,9 @@ public class FESingpassLandingDelegator {
      */
     public void receiveUserInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String nric = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
+        HttpServletResponse response = bpc.response;
+        String nric = ParamUtil.getString(request, UserConstants.ENTITY_ID);
         log.info("receiveUserInfo===========>>>Start");
-        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
-
         FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNric(nric);
 
         if (feUserDto != null){

@@ -11,7 +11,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
@@ -23,11 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import com.ncs.secureconnect.sim.common.LoginInfo;
-import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import lombok.extern.slf4j.Slf4j;
-import ncs.secureconnect.sim.entities.Constants;
-import ncs.secureconnect.sim.entities.corpass.UserInfoToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -78,45 +73,30 @@ public class FECorppassLandingDelegator {
      */
     public void corppassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
+        HttpServletResponse response = bpc.response;
         AuditTrailHelper.auditFunction("FE Corppass", "Login");
-        log.info("<== Now Start True CorpPass Login ==>");
-        String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
-        LoginInfo oLoginInfo = SIMUtil4Corpass.doCorpPassArtifactResolution(request, samlArt);
-
-        if (oLoginInfo == null) {
-            log.info("<== oLoginInfo is empty ==>");
-            return;
-        }
-
-        UserInfoToken userInfoToken = oLoginInfo.getUserInfo();
-
-        if (userInfoToken == null) {
-            log.info("<== userInfoToken is empty ==>");
-            return;
-        }
-
-        String uen = userInfoToken.getEntityId();
-        String userId  = userInfoToken.getUserIdentity();
-
-        log.info(StringUtil.changeForLog("corppassCallBack uen " + uen));
-        log.info(StringUtil.changeForLog("corppassCallBack userId " + userId));
+        log.info("corppassCallBack===========>>>Start");
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
+        String uen = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
+        String nric =  ParamUtil.getRequestString(request, UserConstants.CORPPASS_ID);
 
         FeUserDto userDto = new FeUserDto();
         userDto.setUenNo(uen);
-        userDto.setIdentityNo(userId);
+        userDto.setIdentityNo(nric);
         userDto.setIdType(OrganizationConstants.ID_TYPE_NRIC);
 
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, "N");
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, userDto);
         ParamUtil.setSessionAttr(request, UserConstants.ENTITY_ID, uen);
-        ParamUtil.setSessionAttr(request, UserConstants.CORPPASS_ID, userId);
+        ParamUtil.setSessionAttr(request, UserConstants.CORPPASS_ID, nric);
 
-        OrganizationDto organizationDto = orgUserManageService.findOrganizationByUen(userId);
+        OrganizationDto organizationDto = orgUserManageService.findOrganizationByUen(uen);
         if (organizationDto != null){
             ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "N");
         }else {
             ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "Y");
         }
+
         log.info("corppassCallBack===========>>>End");
     }
 
