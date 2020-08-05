@@ -1048,7 +1048,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             map.put("emailAddressTwo", address2);
             map.put("phoneNo", phoneNo);
             notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST, map, appNo, appNo,
-                    NotificationHelper.RECEIPT_TYPE_LICENCE_ID, licenseeId);
+                    NotificationHelper.RECEIPT_TYPE_APP, appNo);
         } catch (Exception e){
             log.error(e.getMessage(), e);
         }
