@@ -152,32 +152,32 @@ public class NotificationHelper {
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, null, null, null, null);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, null, null, null, null, null);
 	}
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, null);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, null, null);
 	}
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId, String subject) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, subject);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, subject, null);
 	}
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto, String subject) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, subject);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, subject, null);
 	}
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, null);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, null, null);
 	}
 
 	@Async("emailAsyncExecutor")
-	public void sendNotificationWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode,
-											 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto, String subject) {
+	public void sendNotificationWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode, String reqRefNum,
+											 String refIdType, String refId, JobRemindMsgTrackingDto jrDto, String subject, String moduleType) {
 		log.info(StringUtil.changeForLog("sendemail start... ref type is " + StringUtil.nullToEmptyStr(refIdType)
 				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
 				+ "templateId is "+ templateId+"thread name is " + Thread.currentThread().getName()));
@@ -202,15 +202,15 @@ public class NotificationHelper {
 			}
 			emailDto.setSender(this.mailSender);
 			if (msgTemplateDto.getRecipient()!= null && msgTemplateDto.getRecipient().size() > 0) {
-				receiptemail = getRecript(msgTemplateDto.getRecipient(), refIdType, refId);
+				receiptemail = getRecript(msgTemplateDto.getRecipient(), refIdType, refId, moduleType);
 				emailDto.setReceipts(receiptemail);
 			}
 			if (msgTemplateDto.getCcrecipient()!= null && msgTemplateDto.getCcrecipient().size() > 0) {
-				ccemail = getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId);
+				ccemail = getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId, moduleType);
 				emailDto.setCcList(ccemail);
 			}
 			if (msgTemplateDto.getBccrecipient()!= null && msgTemplateDto.getBccrecipient().size() > 0) {
-				bccemail = getRecript(msgTemplateDto.getBccrecipient(), refIdType, refId);
+				bccemail = getRecript(msgTemplateDto.getBccrecipient(), refIdType, refId, moduleType);
 				emailDto.setBccList(bccemail);
 			}
 			if (queryCode != null) {
@@ -257,12 +257,12 @@ public class NotificationHelper {
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
 	}
 
-	public List<String> getRecript(List<String> role, String refType, String refId) {
+	public List<String> getRecript(List<String> role, String refType, String refId, String moduleType) {
 		List<String> all = IaisCommonUtils.genNewArrayList();
 		if (RECEIPT_TYPE_APP_GRP.equals(refType)) {
-			all.addAll(getRecriptAppGrp(role, refId));
+			all.addAll(getRecriptAppGrp(role, refId, moduleType));
 		} else if (RECEIPT_TYPE_APP.equals(refType)) {
-			all.addAll(getRecriptApp(role, refId));
+			all.addAll(getRecriptApp(role, refId, moduleType));
 		} else if (RECEIPT_TYPE_LICENCE_ID.equals(refType)){
 			all.addAll(getRecriptLic(role, refId));
 		} else {
@@ -308,12 +308,12 @@ public class NotificationHelper {
 		return set;
 	}
 
-	private Collection<String> getRecriptAppGrp(List<String> roles, String appGrpId) {
+	private Collection<String> getRecriptAppGrp(List<String> roles, String appGrpId, String moduleType) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpById(appGrpId).getEntity();
 		List<ApplicationDto> appList = hcsaAppClient.getAppsByGrpId(appGrpId).getEntity();
 		for (ApplicationDto app : appList) {
-			set.addAll(getAssignedOfficer(roles, app.getApplicationNo()));
+			set.addAll(getAssignedOfficer(roles, app.getApplicationNo(), moduleType));
 		}
 		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
 		set.addAll(getOfficer(roles));
@@ -321,11 +321,11 @@ public class NotificationHelper {
 		return set;
 	}
 
-	private Collection<String> getRecriptApp(List<String> roles, String appNo) {
+	private Collection<String> getRecriptApp(List<String> roles, String appNo, String moduleType) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
-		set.addAll(getAssignedOfficer(roles, appNo));
+		set.addAll(getAssignedOfficer(roles, appNo, moduleType));
 		set.addAll(getOfficer(roles));
 
 		return set;
@@ -352,7 +352,8 @@ public class NotificationHelper {
 		return set;
 	}
 
-	private Collection<String> getAssignedOfficer(List<String> roles, String appNo) {
+	private Collection<String> getAssignedOfficer(List<String> roles, String appNo, String moduleType) {
+
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		Set<String> userIds = IaisCommonUtils.genNewHashSet();
 		List<AppPremisesRoutingHistoryDto> hisList;
@@ -431,7 +432,13 @@ public class NotificationHelper {
 		}
 
 		if (!IaisCommonUtils.isEmpty(passRoles)){
-			List<OrgUserDto> userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
+			List<OrgUserDto> userList;
+			if (!AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+				//todo eic
+				userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
+			} else {
+				userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
+			}
 			if (!IaisCommonUtils.isEmpty(userList)) {
 				for (OrgUserDto u : userList) {
 					if (!StringUtil.isEmpty(u.getEmail())) {
