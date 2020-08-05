@@ -920,7 +920,7 @@ public class AppealServiceImpl implements AppealService {
                 } else {
                     appPremisesSpecialDocDto.setSubmitBy("68F8BB01-F70C-EA11-BE7D-000C29F371DC");
                 }
-                appPremisesSpecialDocDto.setDocSize(Integer.parseInt(size.toString()));
+                appPremisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
                 appealDto.setAppPremisesSpecialDocDto(appPremisesSpecialDocDto);
 
             } catch (IOException e) {

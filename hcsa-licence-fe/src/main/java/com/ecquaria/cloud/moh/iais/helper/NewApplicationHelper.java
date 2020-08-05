@@ -1086,7 +1086,7 @@ public class NewApplicationHelper {
             String personMapKey = psnDto.getIdType()+","+psnDto.getIdNo();
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personMapKey);
             List<AppSvcPersonExtDto> appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
-            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,true);
+            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
             Map<String,String> specialtyAttr = IaisCommonUtils.genNewHashMap();
             specialtyAttr.put("name", "specialty");
             specialtyAttr.put("class", "specialty");
@@ -1304,7 +1304,7 @@ public class NewApplicationHelper {
                 }else{
                     List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
 //                    AppSvcPersonExtDto currSvcPsnExtDto = getPsnExtDtoBySvcCode(appSvcPersonExtDtos,svcCode);
-                    AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,true);
+                    AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
                     if (ApplicationConsts.PERSONNEL_PSN_TYPE_CGO.equals(psnDto.getPsnType())) {
                         person.setDesignation(psnDto.getDesignation());
                         person.setProfessionType(psnDto.getProfessionType());
@@ -1627,8 +1627,7 @@ public class NewApplicationHelper {
         String svcCode = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSVCCODE);
         if (personMap != null) {
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
-            List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
-            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,true);
+            AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
             if (person != null) {
                 appSvcPrincipalOfficersDto = person;
             }
@@ -1828,7 +1827,7 @@ public class NewApplicationHelper {
         return removeArrIndex(arr,i);
     }
 
-    public static AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(AppSvcPersonAndExtDto appSvcPersonAndExtDto, String svcCode, List<AppSvcPersonExtDto> appSvcPersonExtDtos, boolean removeCurrExt){
+    public static AppSvcPrincipalOfficersDto genAppSvcPrincipalOfficersDto(AppSvcPersonAndExtDto appSvcPersonAndExtDto, String svcCode,  boolean removeCurrExt){
         if(appSvcPersonAndExtDto == null){
             return null;
         }
@@ -1837,7 +1836,7 @@ public class NewApplicationHelper {
         if(appSvcPersonDto != null){
             person = MiscUtil.transferEntityDto(appSvcPersonDto,AppSvcPrincipalOfficersDto.class);
         }
-        appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
+        List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
         AppSvcPersonExtDto appSvcPersonExtDto = getPsnExtDtoBySvcCode(appSvcPersonExtDtos,svcCode);
         if(appSvcPersonExtDto == null){
             appSvcPersonExtDto = new AppSvcPersonExtDto();
@@ -1971,8 +1970,7 @@ public class NewApplicationHelper {
             boolean isLicPsn = appSvcCgoDto.isLicPerson();
             String personKey = appSvcCgoDto.getIdType()+ "," + appSvcCgoDto.getIdNo();
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
-            List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
-            AppSvcPrincipalOfficersDto selPerson = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,false);
+            AppSvcPrincipalOfficersDto selPerson = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,false);
             if(selPerson != null){
                 appSvcCgoDto.setAssignSelect(getPersonKey(selPerson.getIdType(),selPerson.getIdNo()));
                 appSvcCgoDto.setSalutation(selPerson.getSalutation());
@@ -2013,8 +2011,7 @@ public class NewApplicationHelper {
         for(AppSvcPrincipalOfficersDto person:appSvcPrincipalOfficersDtos){
             String personKey = person.getIdType()+ "," + person.getIdNo();
             AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personKey);
-            List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
-            AppSvcPrincipalOfficersDto selPerson = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,false);
+            AppSvcPrincipalOfficersDto selPerson = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,false);
             if(selPerson != null){
                 person.setAssignSelect(getPersonKey(selPerson.getIdType(),selPerson.getIdNo()));
                 person.setSalutation(selPerson.getSalutation());

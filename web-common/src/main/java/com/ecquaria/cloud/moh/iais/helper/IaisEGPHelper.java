@@ -218,7 +218,7 @@ public final class IaisEGPHelper extends EGPHelper {
 
     public static String getRootPath() {
         String urlStr = IaisEGPHelper.class.getResource("").toString();
-        String serverPath = urlStr.substring(urlStr.lastIndexOf("file:/") + 6).replaceAll("%20", " ");
+        String serverPath = urlStr.substring(urlStr.lastIndexOf("file:/") + 6).replaceAll("%20", " "); //NOSONAR
         String path = "";
         if (serverPath.lastIndexOf("WEB-INF") > 0) {
             path = serverPath.substring(0, serverPath.lastIndexOf("WEB-INF"));

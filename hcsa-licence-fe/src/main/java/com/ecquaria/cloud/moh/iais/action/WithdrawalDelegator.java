@@ -52,14 +52,12 @@ public class WithdrawalDelegator {
     @Autowired
     private ApplicationClient applicationClient;
 
-    private String withdrawAppId;
 
-    private String withdrawAppNo;
 
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The Start Step****"));
-        withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
-        withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
+        String withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
+   //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
         if (!StringUtil.isEmpty(withdrawAppNo)){
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
         }
@@ -76,7 +74,7 @@ public class WithdrawalDelegator {
         withdrawalReason.add(new SelectOption("WDR004", "No longer wish to provide the service"));
         withdrawalReason.add(new SelectOption("WDR005", "Others"));
         ParamUtil.setRequestAttr(bpc.request, "withdrawalReasonList", withdrawalReason);
-        List<String[]> applicationTandS = new ArrayList<>();
+        List<String[]> applicationTandS = new ArrayList<>(41);
         applicationTandS.add(new String[]{"APTY002","APST007"});
         applicationTandS.add(new String[]{"APTY002","APST028"});
         applicationTandS.add(new String[]{"APTY002","APST003"});

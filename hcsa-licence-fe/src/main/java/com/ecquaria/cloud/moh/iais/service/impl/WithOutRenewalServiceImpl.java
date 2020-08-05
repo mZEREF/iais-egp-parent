@@ -107,11 +107,11 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
             List<AppSvcCgoDto> newCgoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
             List<AppSvcCgoDto> oldCgoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
             if (newCgoList.size() == oldCgoList.size()) {
-                AppSvcCgoDto newAppSvcCgoDtoE = new AppSvcCgoDto();
-                AppSvcCgoDto oldAppSvcCgoDtoE = new AppSvcCgoDto();
                 for (int j = 0; j < newCgoList.size(); j++) {
                     AppSvcCgoDto newAppSvcCgoDto = newCgoList.get(j);
                     AppSvcCgoDto oldAppSvcCgoDto = oldCgoList.get(j);
+                    AppSvcCgoDto newAppSvcCgoDtoE = new AppSvcCgoDto();
+                    AppSvcCgoDto oldAppSvcCgoDtoE = new AppSvcCgoDto();
                     newAppSvcCgoDtoE.setName(newAppSvcCgoDto.getName());
                     newAppSvcCgoDtoE.setDesignation(newAppSvcCgoDto.getDesignation());
                     newAppSvcCgoDtoE.setProfessionType(newAppSvcCgoDto.getProfessionType());
@@ -140,11 +140,11 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
             List<AppSvcPrincipalOfficersDto> newPoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcPrincipalOfficersDtoList();
             List<AppSvcPrincipalOfficersDto> oldPoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcPrincipalOfficersDtoList();
             if (newPoList.size() == oldPoList.size()) {
-                AppSvcPrincipalOfficersDto newPoE = new AppSvcPrincipalOfficersDto();
-                AppSvcPrincipalOfficersDto oldPoE = new AppSvcPrincipalOfficersDto();
                 for (int j = 0; j < newPoList.size(); j++) {
                     AppSvcPrincipalOfficersDto newPoDto = newPoList.get(j);
                     AppSvcPrincipalOfficersDto oldPoDto = oldPoList.get(j);
+                    AppSvcPrincipalOfficersDto newPoE = new AppSvcPrincipalOfficersDto();
+                    AppSvcPrincipalOfficersDto oldPoE = new AppSvcPrincipalOfficersDto();
                     String psnTypeNew = newPoDto.getPsnType();
                     String psnTypeOld = oldPoDto.getPsnType();
                     if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnTypeNew) && ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnTypeOld)) {

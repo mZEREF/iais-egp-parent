@@ -1418,6 +1418,10 @@ public class LicenceApproveBatchjob {
     private  String getLicenceStatus(LicenceDto licenceDto,ApplicationGroupDto applicationGroupDto){
         log.info(StringUtil.changeForLog("The  getLicenceStatus start ..."));
         String result =  ApplicationConsts.LICENCE_STATUS_ACTIVE;;
+        if( applicationGroupDto == null){
+            log.info("----getLicenceStatus applicationGroupDto is null  ------");
+            return result;
+        }
         Date effectiveDate = applicationGroupDto.getEffectDate();
         Date startDate = licenceDto.getStartDate();
         Date today=new Date();

@@ -970,8 +970,7 @@ public class NewApplicationAjaxController {
         String psnKey = idType+","+idNo;
         Map<String,AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(psnKey);
-        List<AppSvcPersonExtDto> appSvcPersonExtDtos = IaisCommonUtils.genNewArrayList();
-        AppSvcPrincipalOfficersDto person = NewApplicationHelper.genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,appSvcPersonExtDtos,false);
+        AppSvcPrincipalOfficersDto person = NewApplicationHelper.genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,false);
         if(person == null){
             log.info(StringUtil.changeForLog("can not get data from person dropdown ..."));
             return new AppSvcPrincipalOfficersDto();

@@ -96,8 +96,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     @Override
     public void sendMailForAuditPlaner(String emailKey) {
         List<OrgUserDto> userDtoList = organizationClient. retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_AUDIT_PLAN).getEntity();
-        if( !IaisCommonUtils.isEmpty(userDtoList)){ //NOSONAR
-               sendEmailToIns(emailKey,null,null);
+        if( !IaisCommonUtils.isEmpty(userDtoList)){
+               sendEmailToIns(emailKey,null,null);//NOSONAR
         }else {
             log.info("----------no audit plan user ---------");
         }

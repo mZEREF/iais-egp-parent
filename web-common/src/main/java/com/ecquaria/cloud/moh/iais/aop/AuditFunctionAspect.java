@@ -104,6 +104,7 @@ public class AuditFunctionAspect {
         dto.setOperation(AuditTrailConsts.OPERATION_VIEW_RECORD);
 
         if (args != null && args.length > 0) {
+
             for (Object obj : args) {
                 if (obj instanceof SearchParam) {
                     SearchParam param = (SearchParam) obj;

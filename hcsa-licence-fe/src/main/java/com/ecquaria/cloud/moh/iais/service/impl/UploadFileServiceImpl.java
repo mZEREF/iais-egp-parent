@@ -110,7 +110,13 @@ public class UploadFileServiceImpl implements UploadFileService {
             return null;
         }
         String groupId="";
-        String s = FileUtil.genMd5FileChecksum(str.getBytes());
+        String s = "";
+        try{
+          s = FileUtil.genMd5FileChecksum(str.getBytes("UTF-8"));
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+
         if(!applicationGroup.isEmpty()){
              groupId = applicationGroup.get(0).getId();
         }
@@ -122,7 +128,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                      log.info("***newFile createNewFile***");
                  }
              }
-            fileOutputStream.write(str.getBytes());
+            fileOutputStream.write(str.getBytes("UTF-8"));
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             return null;

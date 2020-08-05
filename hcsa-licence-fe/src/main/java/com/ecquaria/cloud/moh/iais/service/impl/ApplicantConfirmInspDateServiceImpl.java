@@ -777,7 +777,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             if(date != null){
                 dateStr = Formatter.formatDateTime(date, "yyyy/MM/dd");
                 StringBuilder html = new StringBuilder(dateStr);
-                html.append(" ");
+                html.append(' ');
                 html.append(apptFeConfirmDateDto.getAmPm());
                 dateStr = html.toString();
             }
@@ -796,7 +796,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             map.put("hciCode", hciCode);
             map.put("appType", appType);
             map.put("appDate", submitDtStr);
-            map.put("hciCode", hciCode);
             map.put("serviceName", serviceName);
             map.put("licence_due_date", licenceDueDateStr);
             map.put("applicationNo", appNo);

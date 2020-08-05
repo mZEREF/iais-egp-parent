@@ -158,7 +158,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 DistributionListWebDto dis = distributionListService.getDistributionListById(item.getDistributionId());
                 List<HcsaServiceDto> hcsaServiceDtoList = distributionListService.getServicesInActive();
                 String serviceName = "";
-                HcsaServiceDto svcDto = new HcsaServiceDto();
+                HcsaServiceDto svcDto = null;
                 for (HcsaServiceDto serviceDto:hcsaServiceDtoList) {
                     if(serviceDto.getSvcCode().equals(dis.getService())){
                         svcDto = serviceDto;
@@ -166,6 +166,9 @@ public class SendMassEmailJobHandler extends IJobHandler {
                     }
                 }
 
+                if( svcDto == null){
+                    svcDto = new HcsaServiceDto();
+                }
                 List<LicenceDto> licenceList = hcsaLicenceClient.getLicenceDtosBySvcName(serviceName).getEntity();
                 //send message to FE user.
                 interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);

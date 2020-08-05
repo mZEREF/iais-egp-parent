@@ -68,7 +68,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         checkAllHtml();
     }
 
-    public PaginationHandler(String paginationDiv, String recordsDiv, Collection<T> allData) {
+    public PaginationHandler(String paginationDiv, String recordsDiv, Collection<T>allData) {
         this.paginationDiv = paginationDiv;
         this.recordsDiv = recordsDiv;
         this.pageSize = SysParamUtil.getDefaultPageSize();
