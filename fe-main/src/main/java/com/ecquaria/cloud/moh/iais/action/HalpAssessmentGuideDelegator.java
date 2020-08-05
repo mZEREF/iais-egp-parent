@@ -726,7 +726,7 @@ public class HalpAssessmentGuideDelegator {
             if(newLicensee){
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
                     //64570
-                    if(basechks.length == 1){
+                    if(basechks != null && basechks.length == 1){
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }
                 }else if(nextstep.equals(CHOOSE_ALIGN)){

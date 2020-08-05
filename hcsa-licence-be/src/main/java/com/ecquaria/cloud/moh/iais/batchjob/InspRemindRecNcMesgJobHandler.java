@@ -212,6 +212,9 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
                 }
             }
         }
+        if( inspEmailFieldDto == null){
+            inspEmailFieldDto = new InspEmailFieldDto();
+        }
         //There are no matching items, search item from adhoc table
         String adhocItemId = itemId;
         AdhocChecklistItemDto adhocChecklistItemDto = inspectionRectificationProService.getAdhocChecklistItemById(adhocItemId);

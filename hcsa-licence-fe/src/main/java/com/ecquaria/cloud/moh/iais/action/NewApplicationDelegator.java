@@ -3389,7 +3389,7 @@ public class NewApplicationDelegator {
         doSvcDis(errorMap,appSvcDisciplineAllocationDtoList,serviceId,sB);
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)+"doSvcDis"));
         doSvcDisdolabory(errorMap,appSvcDisciplineAllocationDtoList,appSvcLaboratoryDisciplinesDtoList,serviceId,sB);
-        log.info(JsonUtil.parseToJson(errorMap)+"doSvcDisdolabory");
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(errorMap)+"doSvcDisdolabory"));
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = dto.getAppSvcPrincipalOfficersDtoList();
         Map<String, String> govenMap = NewApplicationHelper.doValidateGovernanceOfficers(dto.getAppSvcCgoDtoList(),licPersonMap,dto.getServiceCode());
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(govenMap)));
@@ -4255,7 +4255,7 @@ public class NewApplicationDelegator {
 
     //todo:move to NewApplicationHelper
     public static Map<String, String> doValidatePremiss(BaseProcessClass bpc) { //NOSONAR
-        log.info("the do doValidatePremiss start ....");
+        log.info("the do doValidatePremiss start ...."); //NOSONAR
         //do validate one premiss
         List<String> list=IaisCommonUtils.genNewArrayList();
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
