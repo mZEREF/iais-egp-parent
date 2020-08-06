@@ -106,7 +106,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         doPaging();
     }
 
-    public void doPaging() {
+    public final void doPaging() {
         this.totalRows = allData.size();
         this.totalPage = (this.totalRows % this.pageSize == 0) ? (this.totalRows/this.pageSize) : (this.totalRows/this.pageSize) + 1 ;
         currentPageNo = currentPageNo > totalPage ? totalPage : currentPageNo;
@@ -295,7 +295,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         return allCheckHtml;
     }
 
-    public void setAllData(Collection<T> allData) {
+    public final void setAllData(Collection<T> allData) {
         this.allData.clear();
         if (allData != null && allData.size() > 0) {
             for (T obj : allData) {
