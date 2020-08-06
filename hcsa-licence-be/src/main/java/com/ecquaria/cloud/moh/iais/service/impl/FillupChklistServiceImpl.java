@@ -1745,7 +1745,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
     @Override
     public void sendModifiedChecklistEmailToAOStage(ApplicationViewDto appViewDto){
         try{
-            ChecklistHelper.sendModifiedChecklistEmailToAOStage(appViewDto.getApplicationDto().getServiceId(),appViewDto.getApplicationDto().getApplicationType(),mailSender);
+            ChecklistHelper.sendModifiedChecklistEmailToAOStage(appViewDto, mailSender);
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }

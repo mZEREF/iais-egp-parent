@@ -316,9 +316,4 @@ public final class ChecklistHelper {
             log.error(e.getMessage(), e);
         }
     }
-
-    public static void sendModifiedChecklistEmailToAOStage(String serviceId, String applicationType, String mailSender){
-
-
-    }
 }
