@@ -78,6 +78,29 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     @Autowired
     private AppEicClient appEicClient;
 
+
+    public FeToBeRecFileImpl() {
+     setFileName("userRecFile");
+     setDownload(sharedPath,getFileName());
+     setBackups(sharedPath,"backupsRec");
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setDownload(String sharedPath,String fileName) {
+        this.download = sharedPath + fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void setBackups(String sharedPath,String backupsRec) {
+        this.backups = sharedPath+ backupsRec;
+    }
+
     @Override
     public void compressFile(Map<String, String> appIdItemIdMap) {
         if(appIdItemIdMap != null) {
@@ -92,9 +115,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     @Override
     public Map<String, String> getDocFile() {
-        fileName = "userRecFile";
-        download = sharedPath + fileName;
-        backups = sharedPath + "backupsRec";
         Map<String, List<AppPremPreInspectionNcDocDto>> fileReportIds = applicationClient.recFileId().getEntity();
         Map<String, String> appIdNcItemIdMap = IaisCommonUtils.genNewHashMap();
         if(fileReportIds != null) {

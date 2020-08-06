@@ -22,6 +22,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +82,7 @@ public final class ExcelWriter {
 
     private static File createNewExcel(String fileName, String sheetName, List<?> source, Class<?> sourceClz, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap, String pwd, int startCellIndex) throws Exception {
         File out = new File(fileName);
-        try (OutputStream fileOutputStream = Files.newOutputStream(out.toPath())) {
+        try (OutputStream fileOutputStream = Files.newOutputStream(Paths.get(out.getPath()))) {
             workbook = XSSFWorkbookFactory.createWorkbook();
 
             startInternal();
@@ -107,7 +108,7 @@ public final class ExcelWriter {
                                       final boolean block, final boolean headName, final Map<Integer, List<Integer>> unlockCellMap, final String pwd, final int startCellIndex) throws Exception {
         File out = new File(fileName);
 
-        try (InputStream fileInputStream = Files.newInputStream(file.toPath()); OutputStream outputStream = new FileOutputStream(out)) {
+        try (InputStream fileInputStream = Files.newInputStream(Paths.get(file.getPath())); OutputStream outputStream =  Files.newOutputStream(Paths.get(out.getPath()))) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
             startInternal();

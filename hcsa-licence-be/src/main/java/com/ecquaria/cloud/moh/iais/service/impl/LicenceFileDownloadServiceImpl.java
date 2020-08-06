@@ -73,6 +73,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -734,7 +735,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private void  moveFile(File file){
         String name = file.getName();
         File moveFile=new File(sharedPath+File.separator+"move"+File.separator+name);
-        try (OutputStream fileOutputStream=Files.newOutputStream(moveFile.toPath());
+        try (OutputStream fileOutputStream=Files.newOutputStream(Paths.get( moveFile.getPath()));
              InputStream fileInputStream=Files.newInputStream(file.toPath())) {
             int count;
             byte []size=new byte[1024];

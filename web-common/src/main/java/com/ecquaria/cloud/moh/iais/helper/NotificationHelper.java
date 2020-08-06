@@ -272,9 +272,6 @@ public class NotificationHelper {
 					if (templateContent != null && !templateContent.isEmpty()) {
 						templateContent.put("officer_name", orgName);
 						mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
-					} else {
-						templateContent.put("officer_name", orgName);
-						mesContext = emailTemplate;
 					}
 					emailDto.setContent(mesContext);
 					emailDto.setReceipts(officerEmails);

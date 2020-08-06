@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class EspecialExcelWriterUtil {
 
         XSSFWorkbook workbook = null;
         File out = new File(FileUtils.generationFileName("temp"+ System.currentTimeMillis(), EXCEL_TYPE_XSSF));
-        try (InputStream fileInputStream = Files.newInputStream(file.toPath()); OutputStream outputStream =  Files.newOutputStream(out.toPath())) {
+        try (InputStream fileInputStream = Files.newInputStream(Paths.get(file.getPath())); OutputStream outputStream =  Files.newOutputStream(out.toPath())) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
             Sheet sheet = workbook.getSheetAt(sheetAt);

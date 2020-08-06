@@ -38,7 +38,7 @@ public class HcsaServiceTag extends DivTagSupport{
 		super.init();
 		setValue(null);
 		setMaskValue(Boolean.FALSE);
-		setIsSvcCode(false);
+		setIsSvcCode(Boolean.FALSE);
 	}
 
 	@Override
