@@ -72,6 +72,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
@@ -148,7 +149,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 ProcessFileTrackDto processFileTrackDto = applicationClient.isFileExistence(map).getEntity();
                 if(processFileTrackDto!=null){
                     //check file is changed
-                    try (FileInputStream is=new FileInputStream(fil);
+                    try (InputStream is=Files.newInputStream(fil.toPath());
                          ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                         int count;
                         byte [] size=new byte[1024];
@@ -283,8 +284,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 log.info(StringUtil.changeForLog(files.length+"FILE_FORMAT --files.length______"));
                 for(File  filzz:files){
                     if(filzz.isFile() &&filzz.getName().endsWith(AppServicesConsts.FILE_FORMAT)){
-                           FileInputStream  fileInputStream =new FileInputStream(filzz);
-                           ByteArrayOutputStream by=new ByteArrayOutputStream();
+                        InputStream  fileInputStream = null;
+                        try{
+                            fileInputStream=Files.newInputStream(filzz.toPath());
+                            ByteArrayOutputStream by=new ByteArrayOutputStream();
                             int count=0;
                             byte [] size=new byte[1024];
                             count=fileInputStream.read(size);
@@ -295,6 +298,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                             Long l = System.currentTimeMillis();
                             fileToDto(by.toString(), listApplicationDto, requestForInfList,processFileTrackDto,submissionId,l);
                             saveFileRepo( fileName,groupPath,submissionId,l);
+                        }catch (Exception e){
+                            log.error(e.getMessage(),e);
+                        }finally {
+                            if(fileInputStream !=null){
+                                fileInputStream.close();
+                            }
+                        }
+
                     }
                 }
             }
@@ -723,8 +734,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
     private void  moveFile(File file){
         String name = file.getName();
         File moveFile=new File(sharedPath+File.separator+"move"+File.separator+name);
-        try (FileOutputStream fileOutputStream=new FileOutputStream(moveFile);
-        FileInputStream fileInputStream=new FileInputStream(file)) {
+        try (OutputStream fileOutputStream=Files.newOutputStream(moveFile.toPath());
+             InputStream fileInputStream=Files.newInputStream(file.toPath())) {
             int count;
             byte []size=new byte[1024];
             count= fileInputStream.read(size);

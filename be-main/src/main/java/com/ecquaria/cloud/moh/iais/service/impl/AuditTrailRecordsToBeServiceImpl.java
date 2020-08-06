@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.zip.CRC32;
@@ -93,7 +94,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                     ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
                         //check file is changed
-                        try (FileInputStream is=new FileInputStream(fil);
+                        try (InputStream is= Files.newInputStream(fil.toPath());
                              ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                             int count;
                             byte [] size=new byte[1024];
@@ -212,7 +213,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
         File[] files = file.listFiles();
         for(File  filzz:files){
             if(filzz.isFile() &&filzz.getName().endsWith(RequestForInformationConstants.FILE_FORMAT)){
-                try (FileInputStream fileInputStream =new FileInputStream(filzz)){
+                try ( InputStream fileInputStream =Files.newInputStream(filzz.toPath())){
                     ByteArrayOutputStream by=new ByteArrayOutputStream();
                     int count=0;
                     byte [] size=new byte[1024];

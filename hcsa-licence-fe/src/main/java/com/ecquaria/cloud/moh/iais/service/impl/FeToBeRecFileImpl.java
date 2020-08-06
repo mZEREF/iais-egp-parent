@@ -28,13 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -134,27 +129,27 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void writeFileByFileByte(File file, File backupsFile, byte[] fileByte) {
-        FileOutputStream fileOutputStream = null;
-        FileOutputStream fileOutputStream2 = null;
+        OutputStream fileOutputStream = null;
+        OutputStream fileOutputStream2 = null;
         try {
             if(!file.exists()){
                 boolean fileStatus = file.createNewFile();
                 if(fileStatus) {
-                    fileOutputStream = new FileOutputStream(file);
+                    fileOutputStream = Files.newOutputStream(file.toPath());
                     fileOutputStream.write(fileByte);
                 }
             } else {
-                fileOutputStream = new FileOutputStream(file);
+                fileOutputStream = Files.newOutputStream(file.toPath());
                 fileOutputStream.write(fileByte);
             }
             if(!backupsFile.exists()){
                 boolean fileStatus2 = backupsFile.createNewFile();
                 if(fileStatus2) {
-                    fileOutputStream2 = new FileOutputStream(backupsFile);
+                    fileOutputStream2 = Files.newOutputStream(backupsFile.toPath());
                     fileOutputStream2.write(fileByte);
                 }
             } else {
-                fileOutputStream2 = new FileOutputStream(backupsFile);
+                fileOutputStream2 = Files.newOutputStream(backupsFile.toPath());
                 fileOutputStream2.write(fileByte);
             }
 
@@ -213,7 +208,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                 zipFile(zos, f, curFileName);
             }
         } else {
-            try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
+            try(BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(file.toPath()))) {
             String filePath = file.getPath().substring(file.getPath().indexOf(curFileName));
             zos.putNextEntry(new ZipEntry(filePath));
             int count ;
@@ -240,7 +235,7 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                 return false;
             });
             for(File file:files){
-                try (FileInputStream is = new FileInputStream(file);
+                try (InputStream is = Files.newInputStream(file.toPath());
                      ByteArrayOutputStream by = new ByteArrayOutputStream()){
                     byte [] size = new byte[1024];
                     int count = is.read(size);

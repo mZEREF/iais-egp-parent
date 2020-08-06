@@ -28,10 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -68,7 +66,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
         FileItem item = factory.createItem(fieldName, "text/plain", true, file.getName());
         int bytesRead = 0;
         byte[] buffer = new byte[8192];
-        try (FileInputStream fis = new FileInputStream(file);
+        try (InputStream fis = Files.newInputStream(file.toPath());
              OutputStream os = item.getOutputStream()) {
             while ((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
                 os.write(buffer, 0, bytesRead);

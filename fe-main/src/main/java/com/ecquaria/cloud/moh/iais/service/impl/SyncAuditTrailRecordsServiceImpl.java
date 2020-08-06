@@ -27,14 +27,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -103,7 +98,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         File backupFile = MiscUtil.generateFile(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT, file.getName());
 
         try (FileOutputStream fileInputStream = new FileOutputStream(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+file.getName());
-             FileOutputStream fileOutputStream  =new FileOutputStream(file);){
+             OutputStream fileOutputStream = Files.newOutputStream(file.toPath()); ){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
             fileInputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -155,7 +150,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                 zipFile(zos,f);
             }
         } else {
-            try  (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))){
+            try  (BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(file.toPath()))){
 
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(RequestForInformationConstants.FILE_NAME_AUDIT))));
                 int count ;
@@ -185,7 +180,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
                 return false;
             });
             for(File file:files){
-                try (FileInputStream is=new FileInputStream(file);
+                try (InputStream is=Files.newInputStream(file.toPath());
                      ByteArrayOutputStream by=new ByteArrayOutputStream();){
 
                     int count=0;

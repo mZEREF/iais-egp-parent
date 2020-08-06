@@ -47,14 +47,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -253,8 +248,8 @@ public class UploadFileServiceImpl implements UploadFileService {
                return false;
            });
            for(File file:files){
-               try ( FileInputStream is=new FileInputStream(file);
-                     ByteArrayOutputStream by=new ByteArrayOutputStream();){
+               try (InputStream is= Files.newInputStream(file.toPath());
+                    ByteArrayOutputStream by=new ByteArrayOutputStream();){
                    int count=0;
                    byte [] size=new byte[1024];
                    count=is.read(size);

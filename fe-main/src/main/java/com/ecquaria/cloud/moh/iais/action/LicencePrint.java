@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class LicencePrint {
             File pdfFile = new File("LICENCE.pdf");
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
             map.put("licence","LICENCE");
-            OutputStream outputStream = Files.newOutputStream(pdfFile.toPath());
+            OutputStream outputStream = Files.newOutputStream(Paths.get(pdfFile.getPath()));
             try {
                 pdfGenerator.generate(outputStream, "licence.ftl", map);
             }catch (Exception e){

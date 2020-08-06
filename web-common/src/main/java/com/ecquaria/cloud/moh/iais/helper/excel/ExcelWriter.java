@@ -18,12 +18,10 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 
@@ -83,7 +81,7 @@ public final class ExcelWriter {
 
     private static File createNewExcel(String fileName, String sheetName, List<?> source, Class<?> sourceClz, boolean block, boolean headName, Map<Integer, List<Integer>> unlockCellMap, String pwd, int startCellIndex) throws Exception {
         File out = new File(fileName);
-        try (FileOutputStream fileOutputStream = new FileOutputStream(out)) {
+        try (OutputStream fileOutputStream = Files.newOutputStream(out.toPath())) {
             workbook = XSSFWorkbookFactory.createWorkbook();
 
             startInternal();
@@ -109,7 +107,7 @@ public final class ExcelWriter {
                                       final boolean block, final boolean headName, final Map<Integer, List<Integer>> unlockCellMap, final String pwd, final int startCellIndex) throws Exception {
         File out = new File(fileName);
 
-        try (FileInputStream fileInputStream = new FileInputStream(file); OutputStream outputStream = new FileOutputStream(out)) {
+        try (InputStream fileInputStream = Files.newInputStream(file.toPath()); OutputStream outputStream = new FileOutputStream(out)) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
             startInternal();

@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
 import java.util.Date;
 
 /**
@@ -161,7 +162,7 @@ public class UserDownloadDelegator {
             OutputFormat outputFormat = OutputFormat.createPrettyPrint();
             outputFormat.setEncoding("UTF-8");
             File tempFile = File.createTempFile("temp", ".xml");
-            XMLWriter xmlWriter = new XMLWriter(new FileOutputStream(tempFile), outputFormat);
+            XMLWriter xmlWriter = new XMLWriter(Files.newOutputStream(tempFile.toPath()), outputFormat);
             xmlWriter.write(document);
             xmlWriter.close();
             bytes = FileUtils.readFileToByteArray(tempFile);

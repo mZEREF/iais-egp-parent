@@ -41,11 +41,8 @@ import sop.webflow.rt.api.BaseProcessClass;
 import sun.security.krb5.internal.PAData;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 
 /**
@@ -1047,7 +1044,7 @@ public class MohIntranetUserDelegator {
     }
 
     private static File inputStreamToFile(InputStream ins, File file) {
-        try (FileOutputStream os = new FileOutputStream(file)) {
+        try (OutputStream os = Files.newOutputStream(file.toPath()) {
             int bytesRead;
             byte[] buffer = new byte[1024];
             while ((bytesRead = ins.read(buffer)) != -1) {

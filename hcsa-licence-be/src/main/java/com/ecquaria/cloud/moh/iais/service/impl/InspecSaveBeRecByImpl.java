@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -60,8 +61,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     private String zipFile;
     private String compressPath;
 
-    @Autowired
-    private SystemParamConfig systemParamConfig;
 
     @Autowired
     private SystemBeLicClient systemBeLicClient;
@@ -148,7 +147,7 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
             log.debug(StringUtil.changeForLog("reportId:" + reportId));
 
             File uploadRecFile = MiscUtil.generateFile(realPath, saveFileName);
-            try(OutputStream os = new FileOutputStream(uploadRecFile);
+            try(OutputStream os = Files.newOutputStream(uploadRecFile.toPath());
                 BufferedOutputStream bos = new BufferedOutputStream(os);
                 InputStream is = zipFile.getInputStream(zipEntry);
                 BufferedInputStream bis = new BufferedInputStream(is);

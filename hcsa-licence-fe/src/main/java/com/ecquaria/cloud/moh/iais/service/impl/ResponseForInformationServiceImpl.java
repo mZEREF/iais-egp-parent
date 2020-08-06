@@ -26,14 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -109,7 +104,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
             groupPath.mkdirs();
         }
         try (FileOutputStream fileInputStream = new FileOutputStream(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+file.getName());
-             FileOutputStream fileOutputStream  =new FileOutputStream(file);){
+             OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
             fileInputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -135,7 +130,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 byte[] entity = fileRepositoryClient.getFileFormDataBase(doc.getFileRepoId()).getEntity();
                 File file = MiscUtil.generateFile(sharedPath + RequestForInformationConstants.FILE_NAME_RFI + File.separator + "files",
                         doc.getFileRepoId() + "@" + doc.getDocName());
-                try (FileOutputStream outputStream=new FileOutputStream(file);){
+                try (OutputStream outputStream=Files.newOutputStream(file.toPath());){
                     outputStream.write(entity);
                 } catch (Exception e) {
                     log.error(e.getMessage(),e);
@@ -217,7 +212,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 return false;
             });
             for(File file:files){
-                try (FileInputStream is=new FileInputStream(file);
+                try (InputStream is= Files.newInputStream(file.toPath());
                      ByteArrayOutputStream by=new ByteArrayOutputStream();){
                     int count=0;
                     byte [] size=new byte[1024];

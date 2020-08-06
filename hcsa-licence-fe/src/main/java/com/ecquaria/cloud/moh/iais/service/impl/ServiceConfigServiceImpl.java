@@ -42,10 +42,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -226,9 +224,9 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     private void moveFile(String fileName, String path, byte[] fileData) throws IOException {
         File file = new File(path+"/"+fileName);
-        FileOutputStream fos = null;
+        OutputStream fos = null;
         try {
-            fos = new FileOutputStream(file);
+            fos = Files.newOutputStream(file.toPath());
             fos.write(fileData);
         } catch (FileNotFoundException e) {
             log.error(StringUtil.changeForLog("file not found"));
