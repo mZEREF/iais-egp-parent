@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -11,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -34,7 +34,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -187,13 +187,35 @@ public class NotificationHelper {
 			List<String> bccemail;
 			MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
 			EmailDto emailDto = new EmailDto();
+			//get assign officer address and other address
+			InspectionEmailTemplateDto inspectionEmailTemplateDto = new InspectionEmailTemplateDto();
+			if (msgTemplateDto.getRecipient()!= null && msgTemplateDto.getRecipient().size() > 0) {
+				inspectionEmailTemplateDto = getRecript(msgTemplateDto.getRecipient(), refIdType, refId, moduleType, inspectionEmailTemplateDto);
+				receiptemail = inspectionEmailTemplateDto.getReceiptEmails();
+				if(!IaisCommonUtils.isEmpty(receiptemail)){
+					emailDto.setReceipts(receiptemail);
+				}
+			}
+			if (msgTemplateDto.getCcrecipient()!= null && msgTemplateDto.getCcrecipient().size() > 0) {
+				inspectionEmailTemplateDto = getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId, moduleType, inspectionEmailTemplateDto);
+				ccemail = inspectionEmailTemplateDto.getReceiptEmails();
+				if(!IaisCommonUtils.isEmpty(ccemail)){
+					emailDto.setCcList(ccemail);
+				}
+			}
+			if (msgTemplateDto.getBccrecipient()!= null && msgTemplateDto.getBccrecipient().size() > 0) {
+				inspectionEmailTemplateDto = getRecript(msgTemplateDto.getBccrecipient(), refIdType, refId, moduleType, inspectionEmailTemplateDto);
+				bccemail = inspectionEmailTemplateDto.getReceiptEmails();
+				if(!IaisCommonUtils.isEmpty(bccemail)){
+					emailDto.setBccList(bccemail);
+				}
+			}
 			String mesContext;
 			if (templateContent != null && !templateContent.isEmpty()) {
 				mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
 			} else {
 				mesContext = msgTemplateDto.getMessageContent();
 			}
-
 			emailDto.setContent(mesContext);
 			if(StringUtil.isEmpty(subject)){
 				emailDto.setSubject(msgTemplateDto.getTemplateName());
@@ -201,18 +223,6 @@ public class NotificationHelper {
 				emailDto.setSubject(subject);
 			}
 			emailDto.setSender(this.mailSender);
-			if (msgTemplateDto.getRecipient()!= null && msgTemplateDto.getRecipient().size() > 0) {
-				receiptemail = getRecript(msgTemplateDto.getRecipient(), refIdType, refId, moduleType);
-				emailDto.setReceipts(receiptemail);
-			}
-			if (msgTemplateDto.getCcrecipient()!= null && msgTemplateDto.getCcrecipient().size() > 0) {
-				ccemail = getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId, moduleType);
-				emailDto.setCcList(ccemail);
-			}
-			if (msgTemplateDto.getBccrecipient()!= null && msgTemplateDto.getBccrecipient().size() > 0) {
-				bccemail = getRecript(msgTemplateDto.getBccrecipient(), refIdType, refId, moduleType);
-				emailDto.setBccList(bccemail);
-			}
 			if (queryCode != null) {
 				emailDto.setClientQueryCode(queryCode);
 			} else {
@@ -223,7 +233,7 @@ public class NotificationHelper {
 			} else {
 				emailDto.setReqRefNum("no reqRefNum");
 			}
-			//send
+			//send other address
 			if (!IaisCommonUtils.isEmpty(emailDto.getReceipts())) {
 				if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)) {
 					String gatewayUrl = env.getProperty("iais.inter.gateway.url");
@@ -244,6 +254,8 @@ public class NotificationHelper {
 			} else {
 				log.info("No receipts. Won't send email.");
 			}
+			//send assign officer address
+
 		} catch (Exception e) {
 			log.error("Error when sending email ==>", e);
 			if (jrDto != null) {
@@ -257,22 +269,20 @@ public class NotificationHelper {
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
 	}
 
-	public List<String> getRecript(List<String> role, String refType, String refId, String moduleType) {
-		List<String> all = IaisCommonUtils.genNewArrayList();
+	public InspectionEmailTemplateDto getRecript(List<String> role, String refType, String refId, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto) {
 		if (RECEIPT_TYPE_APP_GRP.equals(refType)) {
-			all.addAll(getRecriptAppGrp(role, refId, moduleType));
+			inspectionEmailTemplateDto = getRecriptAppGrp(role, refId, moduleType, inspectionEmailTemplateDto);
 		} else if (RECEIPT_TYPE_APP.equals(refType)) {
-			all.addAll(getRecriptApp(role, refId, moduleType));
+			inspectionEmailTemplateDto = getRecriptApp(role, refId, moduleType, inspectionEmailTemplateDto);
 		} else if (RECEIPT_TYPE_LICENCE_ID.equals(refType)){
-			all.addAll(getRecriptLic(role, refId));
+			inspectionEmailTemplateDto = getRecriptLic(role, refId, inspectionEmailTemplateDto);
 		} else {
-			all.addAll(getOfficer(role));
+			inspectionEmailTemplateDto = getOfficer(role, inspectionEmailTemplateDto);
 		}
-
-		return all;
+		return inspectionEmailTemplateDto;
 	}
 
-	private Collection<String> getRecriptLic(List<String> roles, String licenceId) {
+	private InspectionEmailTemplateDto getRecriptLic(List<String> roles, String licenceId, InspectionEmailTemplateDto inspectionEmailTemplateDto) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		set.addAll(getRecrptPersonnel(roles, licenceId));
 		LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(licenceId).getEntity();
@@ -282,8 +292,10 @@ public class NotificationHelper {
 				set.addAll(getRecrptLicensee(roles, licenseeId));
 			}
 		}
-		set.addAll(getOfficer(roles));
-		return set;
+		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto);
+		List<String> receiptEmails = new ArrayList<>(set);
+		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);
+		return inspectionEmailTemplateDto;
 	}
 
 	private Collection<String> getRecrptPersonnel(List<String> roles, String licenceId) {
@@ -308,27 +320,30 @@ public class NotificationHelper {
 		return set;
 	}
 
-	private Collection<String> getRecriptAppGrp(List<String> roles, String appGrpId, String moduleType) {
+	private InspectionEmailTemplateDto getRecriptAppGrp(List<String> roles, String appGrpId, String moduleType,
+														InspectionEmailTemplateDto inspectionEmailTemplateDto) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpById(appGrpId).getEntity();
 		List<ApplicationDto> appList = hcsaAppClient.getAppsByGrpId(appGrpId).getEntity();
 		for (ApplicationDto app : appList) {
-			set.addAll(getAssignedOfficer(roles, app.getApplicationNo(), moduleType));
+			inspectionEmailTemplateDto = getAssignedOfficer(roles, app.getApplicationNo(), moduleType, inspectionEmailTemplateDto);
 		}
 		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
-		set.addAll(getOfficer(roles));
-
-		return set;
+		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto);
+		List<String> receiptEmails = new ArrayList<>(set);
+		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);
+		return inspectionEmailTemplateDto;
 	}
 
-	private Collection<String> getRecriptApp(List<String> roles, String appNo, String moduleType) {
+	private InspectionEmailTemplateDto getRecriptApp(List<String> roles, String appNo, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto) {
 		Set<String> set = IaisCommonUtils.genNewHashSet();
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		set.addAll(getRecrptLicensee(roles, grpDto.getLicenseeId()));
-		set.addAll(getAssignedOfficer(roles, appNo, moduleType));
-		set.addAll(getOfficer(roles));
-
-		return set;
+		inspectionEmailTemplateDto = getAssignedOfficer(roles, appNo, moduleType, inspectionEmailTemplateDto);
+		inspectionEmailTemplateDto = getOfficer(roles, inspectionEmailTemplateDto);
+		List<String> receiptEmails = new ArrayList<>(set);
+		inspectionEmailTemplateDto.setReceiptEmails(receiptEmails);
+		return inspectionEmailTemplateDto;
 	}
 
 	private Collection<String> getRecrptLicensee(List<String> roles, String licenseeId) {
@@ -352,16 +367,15 @@ public class NotificationHelper {
 		return set;
 	}
 
-	private Collection<String> getAssignedOfficer(List<String> roles, String appNo, String moduleType) {
-		Set<String> set = IaisCommonUtils.genNewHashSet();
+	private InspectionEmailTemplateDto getAssignedOfficer(List<String> roles, String appNo, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto) {
 		if(StringUtil.isEmpty(moduleType)) {
 			//The default function
-			set = getDefaultAssignedOfficer(roles, set, appNo);
+			inspectionEmailTemplateDto = getDefaultAssignedOfficer(roles, inspectionEmailTemplateDto, appNo);
 		}
-		return set;
+		return inspectionEmailTemplateDto;
 	}
 
-	private Set<String> getDefaultAssignedOfficer(List<String> roles, Set<String> set, String appNo) {
+	private InspectionEmailTemplateDto getDefaultAssignedOfficer(List<String> roles, InspectionEmailTemplateDto inspectionEmailTemplateDto, String appNo) {
 		Set<String> userIds = IaisCommonUtils.genNewHashSet();
 		List<AppPremisesRoutingHistoryDto> hisList;
 		if (!AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
@@ -371,7 +385,7 @@ public class NotificationHelper {
 			hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
 		}
 		if (IaisCommonUtils.isEmpty(hisList)) {
-			return set;
+			return inspectionEmailTemplateDto;
 		}
 		Map<String, List<String>> userMap = IaisCommonUtils.genNewHashMap();
 		for (AppPremisesRoutingHistoryDto his : hisList) {
@@ -405,17 +419,29 @@ public class NotificationHelper {
 			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
 		}
 		if (!IaisCommonUtils.isEmpty(userList)) {
+			Map<String, String> officerNameMap = inspectionEmailTemplateDto.getOfficerNameMap();
+			Map<String, String> emailAddressMap = inspectionEmailTemplateDto.getEmailAddressMap();
+			if(officerNameMap == null){
+				officerNameMap = IaisCommonUtils.genNewHashMap();
+			}
+			if(emailAddressMap == null){
+				emailAddressMap = IaisCommonUtils.genNewHashMap();
+			}
+			int index = officerNameMap.size();
 			for (OrgUserDto u : userList) {
 				if (!StringUtil.isEmpty(u.getEmail())) {
-					set.add(u.getEmail());
+					officerNameMap.put(index + "", u.getDisplayName());
+					emailAddressMap.put(index + "", u.getEmail());
+					index++;
 				}
 			}
+			inspectionEmailTemplateDto.setOfficerNameMap(officerNameMap);
+			inspectionEmailTemplateDto.setEmailAddressMap(emailAddressMap);
 		}
-		return set;
+		return inspectionEmailTemplateDto;
 	}
 
-	private Collection<String> getOfficer(List<String> roles) {
-		Set<String> set = IaisCommonUtils.genNewHashSet();
+	private InspectionEmailTemplateDto getOfficer(List<String> roles, InspectionEmailTemplateDto inspectionEmailTemplateDto) {
 		List<String> adminRoles = IaisCommonUtils.genNewArrayList();
 		List<String> passRoles = IaisCommonUtils.genNewArrayList();
 		adminRoles.add(RoleConsts.USER_ROLE_ASO);
@@ -446,14 +472,27 @@ public class NotificationHelper {
 				userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
 			}
 			if (!IaisCommonUtils.isEmpty(userList)) {
+				Map<String, String> officerNameMap = inspectionEmailTemplateDto.getOfficerNameMap();
+				Map<String, String> emailAddressMap = inspectionEmailTemplateDto.getEmailAddressMap();
+				if(officerNameMap == null){
+					officerNameMap = IaisCommonUtils.genNewHashMap();
+				}
+				if(emailAddressMap == null){
+					emailAddressMap = IaisCommonUtils.genNewHashMap();
+				}
+				int index = officerNameMap.size();
 				for (OrgUserDto u : userList) {
 					if (!StringUtil.isEmpty(u.getEmail())) {
-						set.add(u.getEmail());
+						officerNameMap.put(index + "", u.getDisplayName());
+						emailAddressMap.put(index + "", u.getEmail());
+						index++;
 					}
 				}
+				inspectionEmailTemplateDto.setOfficerNameMap(officerNameMap);
+				inspectionEmailTemplateDto.setEmailAddressMap(emailAddressMap);
 			}
 		}
 
-		return set;
+		return inspectionEmailTemplateDto;
 	}
 }
