@@ -310,7 +310,7 @@ public class NotificationHelper {
 		int index = 1;
 		String replaceStr = "[num]";
 		while(emailTemplate.contains(replaceStr)){
-			emailTemplate.replaceFirst(replaceStr, index + ".");
+			emailTemplate = emailTemplate.replaceFirst(replaceStr, index + ".");
 			index++;
 		}
 		return emailTemplate;
