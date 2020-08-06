@@ -7,7 +7,10 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ConfigExcelItemDto;
@@ -24,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.ChecklistConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
@@ -86,10 +90,10 @@ public final class ChecklistHelper {
             }
         }
 
-        String GENERAL_ERR0031Message =  WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031");
+        String errorMsg =  WebValidationHelper.generateJsonStr(ChecklistConstant.FILE_UPLOAD_ERROR, "GENERAL_ERR0031");
         if (!isCommon){
             if (StringUtil.isEmpty(module) || StringUtil.isEmpty(type) || StringUtil.isEmpty(service)){
-                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,GENERAL_ERR0031Message);
+                ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, errorMsg);
                 return true;
             }
         }
@@ -98,7 +102,7 @@ public final class ChecklistHelper {
         String effectiveEndDate = excelTemplate.getEftEndDate();
 
         if (StringUtils.isEmpty(effectiveStartDate) || StringUtils.isEmpty(effectiveEndDate)){
-            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG,GENERAL_ERR0031Message);
+            ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, errorMsg);
             return true;
         }else {
             try {
@@ -135,46 +139,6 @@ public final class ChecklistHelper {
                 errorMsgContent.getErrorMsgList().set(idx++, msg);
             }
         }
-    }
-
-    public static void sendEmailToApplicant(List<ApplicationGroupDto> appGroup){
-        MsgTemplateClient msgTemplateClient = SpringContextHelper.getContext().getBean(MsgTemplateClient.class);
-        NotificationHelper notificationHelper = SpringContextHelper.getContext().getBean(NotificationHelper.class);
-        if (notificationHelper == null || msgTemplateClient == null){
-            log.info("===>>>>alertSelfDeclNotification can not find bean");
-            return;
-        }
-
-        MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT).getEntity();
-        if (autoEntity == null){
-            log.info("===>>>>alertSelfDeclNotification can not find message template ");
-            return;
-        }
-
-    /*    String msgContent = autoEntity.getMessageContent();
-        Map<String,Object> param = new HashMap(1);
-        param.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-
-        param.put("serviceName", "test");
-        param.put("APPLICANT_NAME", "test");
-
-
-
-
-        String subject = msgTemplate.getTemplateName();
-        String messageContent = msgTemplate.getMessageContent();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject(subject);
-        emailDto.setSender(mailSender);
-        emailDto.setReceipts(receiveEmail);
-        emailDto.setClientQueryCode(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
-        emailClient.sendNotification(emailDto).getEntity();*/
-
-
-
     }
 
     public static void sendNotificationToApplicant(List<ApplicationGroupDto> appGroup){
@@ -240,62 +204,121 @@ public final class ChecklistHelper {
         }
     }
 
-
-    public static void sendModifiedChecklistEmailToAOStage(String serviceId, String applicationType, String mailSender){
+    public static void sendModifiedChecklistEmailToAOStage(ApplicationViewDto appViewDto, String mailSender){
+        InspectionAssignTaskService inspectionAssignTaskService = SpringContextHelper.getContext().getBean(InspectionAssignTaskService.class);
         NotificationHelper notificationHelper = SpringContextHelper.getContext().getBean(NotificationHelper.class);
         EmailClient emailClient = SpringContextHelper.getContext().getBean(EmailClient.class);
         HcsaConfigClient hcsaConfigClient = SpringContextHelper.getContext().getBean(HcsaConfigClient.class);
         OrganizationClient organizationClient = SpringContextHelper.getContext().getBean(OrganizationClient.class);
 
-        if (notificationHelper == null || emailClient == null || hcsaConfigClient == null || organizationClient == null){
-            log.info("can not find context bean");
+        if (appViewDto == null){
+            log.info("can not find appViewDto");
             return;
         }
 
+        ApplicationDto applicationDto = appViewDto.getApplicationDto();
+
+        if (applicationDto == null){
+            log.info("can not find applicationDto");
+            return;
+        }
+
+        String appPremisesCorrelationId = appViewDto.getAppPremisesCorrelationId();
+        String svcId = applicationDto.getServiceId();
+        String appType = applicationDto.getApplicationType();
+        String refNum = applicationDto.getApplicationNo();
+
+        AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremisesCorrelationId);
+        String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+        String hciName = "-";
+        String hciCode = "-";
+        String svcName = "-";
+        if (!StringUtil.isEmpty(svcId)){
+            svcName = HcsaServiceCacheHelper.getServiceNameById(svcId);
+        }
+
+        if(!StringUtil.isEmpty(hciName)){
+            hciName = appGrpPremisesDto.getHciName();
+        }
+
+        if(!StringUtil.isEmpty(hciCode)){
+            hciCode = appGrpPremisesDto.getHciCode();
+        }
+
         HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-        hcsaSvcStageWorkingGroupDto.setServiceId(serviceId);
+        hcsaSvcStageWorkingGroupDto.setServiceId(svcId);
         hcsaSvcStageWorkingGroupDto.setStageId(HcsaConsts.ROUTING_STAGE_INS);
         hcsaSvcStageWorkingGroupDto.setOrder(2);
-        hcsaSvcStageWorkingGroupDto.setType(applicationType);
-        HcsaSvcStageWorkingGroupDto dto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
+        hcsaSvcStageWorkingGroupDto.setType(appType);
+        hcsaSvcStageWorkingGroupDto = hcsaConfigClient.getHcsaSvcStageWorkingGroupDto(hcsaSvcStageWorkingGroupDto).getEntity();
 
-        if (dto != null){
-            log.info("HcsaSvcStageWorkingGroupDto not null");
-            List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(dto.getGroupId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
-            if (!IaisCommonUtils.isEmpty(orgUserDtos)){
-                List<String> receiveEmail = IaisCommonUtils.genNewArrayList();
-                for(OrgUserDto orgUserDto : orgUserDtos){
-                    if(!StringUtil.isEmpty(orgUserDto.getEmail())){
-                        receiveEmail.add(orgUserDto.getEmail());
-                    }
-                }
+        if (hcsaSvcStageWorkingGroupDto == null){
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>hcsaSvcStageWorkingGroupDto is null");
+            return;
+        }
 
-                log.info(StringUtil.changeForLog("=====address====>>>"+ receiveEmail));
-                if(!IaisCommonUtils.isEmpty(receiveEmail)) {
-                    log.info("do send email");
-                    try {
-                        Map<String, Object> map = new HashMap(1);
-                        map.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(hcsaSvcStageWorkingGroupDto.getGroupId(), AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        if (IaisCommonUtils.isEmpty(orgUserDtos)){
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>orgUserDtos is null");
+            return;
+        }
 
-                        MsgTemplateDto msgTemplate = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
-                        String subject = msgTemplate.getTemplateName();
-                        String messageContent = msgTemplate.getMessageContent();
-                        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-
-                        EmailDto emailDto = new EmailDto();
-                        emailDto.setContent(templateMessageByContent);
-                        emailDto.setSubject(subject);
-                        emailDto.setSender(mailSender);
-                        emailDto.setReceipts(receiveEmail);
-                        emailDto.setClientQueryCode(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
-                        emailClient.sendNotification(emailDto).getEntity();
-                    } catch (IOException e) {
-                        log.error(e.getMessage(), e);
-                    } catch (TemplateException e) {
-                        log.error(e.getMessage(), e);
-                    }
-                }
+        List<String> receiveEmail = IaisCommonUtils.genNewArrayList();
+        for(OrgUserDto orgUserDto : orgUserDtos){
+            if(!StringUtil.isEmpty(orgUserDto.getEmail())){
+                receiveEmail.add(orgUserDto.getEmail());
             }
         }
+
+        if (IaisCommonUtils.isEmpty(receiveEmail)){
+            return;
+        }
+
+        log.info(StringUtil.changeForLog("=====address====>>>"+ receiveEmail));
+        log.info(StringUtil.changeForLog("===>>>>> appPremisesCorrelationId" + appPremisesCorrelationId));
+        log.info(StringUtil.changeForLog("===>>>>> svcId" + svcId));
+        log.info(StringUtil.changeForLog("===>>>>> appType" + appType));
+        log.info(StringUtil.changeForLog("===>>>>> refNum" + refNum));
+        log.info(StringUtil.changeForLog("===>>>>> address" + address));
+        log.info(StringUtil.changeForLog("===>>>>> hciName" + hciName));
+        log.info(StringUtil.changeForLog("===>>>>> hciCode" + hciCode));
+        log.info(StringUtil.changeForLog("===>>>>> svcName" + svcName));
+
+        Map<String, Object> map = new HashMap(1);
+        map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+        map.put("GROUP_NAME", "-");
+        map.put("INSPECTION_TASK_NUMBER", refNum);
+        map.put("HCI_NAME", hciName);
+        map.put("HCI_ADDRESS", address);
+        map.put("HCI_CODE", hciCode);
+        map.put("SERVICE_NAME", svcName);
+        map.put("APPLICATION_NO", refNum);
+        map.put("APPLICATION_TYPE", MasterCodeUtil.getCodeDesc(appType));
+        map.put("APPLICATION_DATE", svcName);
+
+        log.info("do send email");
+        try {
+            MsgTemplateDto msgTemplate = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
+            String subject = msgTemplate.getTemplateName();
+            String messageContent = msgTemplate.getMessageContent();
+            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent(templateMessageByContent);
+            emailDto.setSubject(subject);
+            emailDto.setSender(mailSender);
+            emailDto.setReceipts(receiveEmail);
+            emailDto.setClientQueryCode(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
+            emailClient.sendNotification(emailDto).getEntity();
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        } catch (TemplateException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    public static void sendModifiedChecklistEmailToAOStage(String serviceId, String applicationType, String mailSender){
+
+
     }
 }
