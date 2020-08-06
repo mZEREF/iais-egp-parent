@@ -15,6 +15,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -57,7 +58,7 @@ public class PDFGenerator {
 			}
 		}
 
-		try (Writer out = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(optHtmlFile.toPath()), Charsets.UTF_8.name()))){
+		try (Writer out = new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(Paths.get(optHtmlFile.getPath())), Charsets.UTF_8.name()))){
 			Template tp = cfg.getTemplate(ftlName);
 			tp.process(params, out);
 			ITextRenderer renderer = new ITextRenderer();

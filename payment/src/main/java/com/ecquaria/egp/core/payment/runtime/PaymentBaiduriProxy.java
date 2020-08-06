@@ -51,7 +51,7 @@ import java.util.UUID;
 public class PaymentBaiduriProxy extends PaymentProxy {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(PaymentBaiduriProxy.class);
+
     
 	public static final String DEFAULT_ENCODING = "UTF-8";
 	public static final String IMPL_CONTINUE_TOKEN_PREFIX = "IMPL_CONTINUE_TOKEN_";
@@ -82,7 +82,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			fields.put("vpc_SecureHashType", DEFAULT_SECURE_HASH_TYPE);
 		} catch (UnsupportedEncodingException | NoSuchAlgorithmException e1) {
 			log.info(e1.getMessage(),e1);
-			logger.debug(e1.getMessage());
+			log.debug(e1.getMessage());
 			throw new PaymentException(e1);
 		}
 		SrcSystemConfDto srcSystemConfDto =new SrcSystemConfDto();
@@ -157,12 +157,12 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 		} catch (UnsupportedEncodingException e) {
 			log.info(e.getMessage(),e);
-			logger.debug(e.getMessage());
+			log.debug(e.getMessage());
 
 			throw new PaymentException(e);
 		} catch (IOException e) {
 			log.info(e.getMessage(),e);
-			logger.debug(e.getMessage());
+			log.debug(e.getMessage());
 
 			throw new PaymentException(e);
 		}
@@ -256,12 +256,12 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
 		} catch (UnsupportedEncodingException e) {
 			log.info(e.getMessage(),e);
-			logger.debug(e.getMessage());
+			log.debug(e.getMessage());
 
 			throw new PaymentException(e);
 		} catch (IOException e) {
 			log.info(e.getMessage(),e);
-			logger.debug(e.getMessage());
+			log.debug(e.getMessage());
 
 			throw new PaymentException(e);
 		}
@@ -277,7 +277,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			fields.put("vpc_SecureHashType", DEFAULT_SECURE_HASH_TYPE);
 		} catch (UnsupportedEncodingException | NoSuchAlgorithmException e1) {
 			log.info(e1.getMessage(),e1);
-			logger.debug(e1.getMessage());
+			log.debug(e1.getMessage());
 			throw new PaymentException(e1);
 		}
 		String reqNo = fields.get("vpc_MerchTxnRef");
@@ -289,7 +289,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			RedirectUtil.redirect(bigsUrl, bpc.request, bpc.response);
 		} catch (IOException e) {
 			log.info(e.getMessage(),e);
-			logger.info(e.getMessage(),e);
+			log.info(e.getMessage(),e);
 		}
 	}
 
@@ -451,11 +451,11 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 	public static void main(String[] args) throws Exception {
 		String logInf = String.valueOf(mul(4.10, 100));
 		log.info(logInf);
-		logger.debug(logInf);
+		log.debug(logInf);
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
 		byte[] ba = md.digest(SMCStringHelperUtil.getStringBytes("123"));
 		log.info(hex(ba));
-		logger.debug(hex(ba));
+		log.debug(hex(ba));
 	}
 
 	@Override

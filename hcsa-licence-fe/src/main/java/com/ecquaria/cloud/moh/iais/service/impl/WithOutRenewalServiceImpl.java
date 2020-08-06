@@ -103,6 +103,10 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
 
     @Override
     public boolean isUpdate(List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList, List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList) {
+        AppSvcPrincipalOfficersDto newPoE = new AppSvcPrincipalOfficersDto();
+        AppSvcPrincipalOfficersDto oldPoE = new AppSvcPrincipalOfficersDto();
+        AppSvcPrincipalOfficersDto newMatE = new AppSvcPrincipalOfficersDto();
+        AppSvcPrincipalOfficersDto oldMatE = new AppSvcPrincipalOfficersDto();
         for (int i = 0; i < newAppSvcRelatedInfoDtoList.size(); i++) {
             List<AppSvcCgoDto> newCgoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
             List<AppSvcCgoDto> oldCgoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
@@ -143,8 +147,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                 for (int j = 0; j < newPoList.size(); j++) {
                     AppSvcPrincipalOfficersDto newPoDto = newPoList.get(j);
                     AppSvcPrincipalOfficersDto oldPoDto = oldPoList.get(j);
-                    AppSvcPrincipalOfficersDto newPoE = new AppSvcPrincipalOfficersDto();
-                    AppSvcPrincipalOfficersDto oldPoE = new AppSvcPrincipalOfficersDto();
+                    clearAppSvcPrincipalOfficersDto(newPoE);
+                    clearAppSvcPrincipalOfficersDto(oldPoE);
                     String psnTypeNew = newPoDto.getPsnType();
                     String psnTypeOld = oldPoDto.getPsnType();
                     if (ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnTypeNew) && ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnTypeOld)) {
@@ -187,8 +191,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                 for (int j = 0; j < newMatList.size(); j++) {
                     AppSvcPrincipalOfficersDto newMatDto = newMatList.get(j);
                     AppSvcPrincipalOfficersDto oldMatDto = oldMatList.get(j);
-                    AppSvcPrincipalOfficersDto newMatE = new AppSvcPrincipalOfficersDto();
-                    AppSvcPrincipalOfficersDto oldMatE = new AppSvcPrincipalOfficersDto();
+                    clearAppSvcPrincipalOfficersDto(newMatDto);
+                    clearAppSvcPrincipalOfficersDto(oldMatDto);
                     newMatE.setName(newMatDto.getName());
                     newMatE.setMobileNo(newMatDto.getMobileNo());
                     newMatE.setEmailAddr(newMatDto.getEmailAddr());
@@ -205,7 +209,13 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
         }
         return false;
     }
-
+   private void clearAppSvcPrincipalOfficersDto( AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto){
+       appSvcPrincipalOfficersDto.setName(null);
+       appSvcPrincipalOfficersDto.setDesignation(null);
+       appSvcPrincipalOfficersDto.setMobileNo(null);
+       appSvcPrincipalOfficersDto.setOfficeTelNo(null);
+       appSvcPrincipalOfficersDto.setEmailAddr(null);
+   }
     @Override
     public boolean isEditDoc(AppSubmissionDto newAppSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
 

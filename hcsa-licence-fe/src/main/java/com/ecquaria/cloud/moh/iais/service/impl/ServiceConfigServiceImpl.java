@@ -44,6 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -226,7 +227,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
         File file = new File(path+"/"+fileName);
         OutputStream fos = null;
         try {
-            fos = Files.newOutputStream(file.toPath());
+            fos = Files.newOutputStream(Paths.get(file.getPath()));
             fos.write(fileData);
         } catch (FileNotFoundException e) {
             log.error(StringUtil.changeForLog("file not found"));
