@@ -471,7 +471,7 @@ public class BlastManagementDelegator {
                  ) {
                 ids.add(item.getCreateBy());
             }
-            Map<String, String> userNameList = new HashMap<>();
+            Map<String, String> userNameList = IaisCommonUtils.genNewHashMap();
             List<OrgUserDto> actionByRealNameList=blastManagementListService.retrieveOrgUserAccount(ids);
             for (OrgUserDto item:actionByRealNameList
                  ) {

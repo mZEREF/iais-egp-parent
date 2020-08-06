@@ -121,7 +121,7 @@ public final class ExcelWriter {
             workbook.write(outputStream);
 
         } catch (Exception e) {
-            throw new Exception("has error when when export excel, may be is resource corrupted");
+            throw e;
         }finally {
             if (workbook != null){
                 workbook.close();

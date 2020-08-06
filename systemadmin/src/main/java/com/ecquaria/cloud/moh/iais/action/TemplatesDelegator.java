@@ -179,10 +179,10 @@ public class TemplatesDelegator {
             deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
             deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
             List<SelectOption> selectOptions = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_TEMPLATE_ROLE);
-            for (SelectOption item:selectOptions
+        /*    for (SelectOption item:selectOptions
                  ) {
                 item.setValue(item.getValue());
-            }
+            }*/
             ParamUtil.setSessionAttr(bpc.request,"recipient",(Serializable) selectOptions);
             ParamUtil.setSessionAttr(bpc.request,"recipientString", recipientString);
             ParamUtil.setSessionAttr(bpc.request,"ccrecipientString", ccrecipientString);

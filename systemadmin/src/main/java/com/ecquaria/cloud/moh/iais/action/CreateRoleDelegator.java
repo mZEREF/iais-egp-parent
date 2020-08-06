@@ -4,11 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.service.CreateRoleService;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 /**
@@ -18,8 +16,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 @Delegator(value = "createRoleDelegator")
 @Slf4j
 public class CreateRoleDelegator {
-    @Autowired
-    private CreateRoleService createRoleService;
 
     public void prepareData(BaseProcessClass bpc){
         log.info(" the  ****   role   ***   ");

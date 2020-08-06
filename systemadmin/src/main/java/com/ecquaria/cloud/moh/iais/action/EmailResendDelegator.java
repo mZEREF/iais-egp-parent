@@ -17,11 +17,9 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
-import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.text.ParseException;
@@ -43,14 +41,8 @@ import java.util.Map;
 @Slf4j
 public class EmailResendDelegator {
 
-    @Value("${iais.email.sender}")
-    private String mailSender;
-
     @Autowired
     BlastManagementListService blastManagementListService;
-
-    @Autowired
-    DistributionListService distributionListService;
 
     public void start(BaseProcessClass bpc){
         ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",null);

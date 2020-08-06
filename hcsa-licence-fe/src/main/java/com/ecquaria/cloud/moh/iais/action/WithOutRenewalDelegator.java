@@ -87,7 +87,7 @@ import java.util.Set;
  */
 
 @Delegator("withOutRenewalDelegator")
-@Slf4j
+@Slf4j //NOSONAR
 public class WithOutRenewalDelegator {
     private static final String PAGE1 = "instructions";
     private static final String PAGE2 = "licenceReview";

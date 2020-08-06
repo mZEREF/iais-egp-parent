@@ -13,7 +13,7 @@ public class GatewayMd5Encrypt {
 	
 	private static byte[] getContentBytes(String content, String charset) {
         if (charset == null || "".equals(charset)) {
-            return content.getBytes();
+            charset = "UTF-8";
         }
 
         try {

@@ -114,7 +114,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 											.setPriceData(
 													SessionCreateParams.LineItem.PriceData.builder()
 															.setCurrency("eur")
-															.setUnitAmount(Long.parseLong(amo))
+															.setUnitAmount(Long.valueOf(amo))
 															.setProductData(
 																	SessionCreateParams.LineItem.PriceData.ProductData.builder()
 																			.setName("T-shirt")

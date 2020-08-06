@@ -170,7 +170,9 @@ public class StripeServiceImpl implements StripeService {
         PaymentIntent updatedPaymentIntent =
                 null;
         try {
-            updatedPaymentIntent = paymentIntent.confirm(params);
+            if(paymentIntent != null){
+                updatedPaymentIntent = paymentIntent.confirm(params);
+            }
         } catch (StripeException e) {
             log.info(e.getMessage(),e);
         }

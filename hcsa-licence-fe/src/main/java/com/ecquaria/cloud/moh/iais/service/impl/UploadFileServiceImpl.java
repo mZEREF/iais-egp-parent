@@ -54,6 +54,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -112,7 +113,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         String groupId="";
         String s = "";
         try{
-          s = FileUtil.genMd5FileChecksum(str.getBytes("UTF-8"));
+          s = FileUtil.genMd5FileChecksum(str.getBytes(StandardCharsets.UTF_8));
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
@@ -128,7 +129,7 @@ public class UploadFileServiceImpl implements UploadFileService {
                      log.info("***newFile createNewFile***");
                  }
              }
-            fileOutputStream.write(str.getBytes("UTF-8"));
+            fileOutputStream.write(str.getBytes(StandardCharsets.UTF_8));
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             return null;

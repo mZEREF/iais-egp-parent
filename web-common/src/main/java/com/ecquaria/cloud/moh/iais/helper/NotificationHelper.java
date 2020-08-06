@@ -107,7 +107,7 @@ public class NotificationHelper {
 	@Value("${iais.hmac.second.secretKey}")
 	private String secSecretKey;
 
-	private static List<String> licenceEmailString =  Arrays.asList(
+	/*private static List<String> licenceEmailString =  Arrays.asList(
 		ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,
 		ApplicationConsts.PERSONNEL_PSN_TYPE_PO,
 		ApplicationConsts.PERSONNEL_PSN_TYPE_DPO,
@@ -115,7 +115,7 @@ public class NotificationHelper {
 		ApplicationConsts.PERSONNEL_PSN_TYPE_SVC_PERSONNEL,
 		ApplicationConsts.PERSONNEL_PSN_TYPE_LICENSEE,
 		ApplicationConsts.PERSONNEL_PSN_TYPE_AP
-			);
+			);*/
 
 	@Bean(name = "emailAsyncExecutor")
 	public Executor asyncExecutor() {

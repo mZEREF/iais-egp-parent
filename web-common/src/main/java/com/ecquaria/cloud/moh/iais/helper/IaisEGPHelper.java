@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -356,14 +357,9 @@ public final class IaisEGPHelper extends EGPHelper {
     */
     public static String capitalized(String str) {
         byte[] val;
-        try {
-            val = str.getBytes(UTF_8);
+            val = str.getBytes(StandardCharsets.UTF_8);
             val[0] = (byte) ((char) val[0] - 'a' + 'A');
-        } catch (UnsupportedEncodingException e) {
-            throw new IaisRuntimeException(e);
-        }
-
-        return new String(val);
+        return new String(val,StandardCharsets.UTF_8);
     }
 
     public static Date yesterday(Date today) {

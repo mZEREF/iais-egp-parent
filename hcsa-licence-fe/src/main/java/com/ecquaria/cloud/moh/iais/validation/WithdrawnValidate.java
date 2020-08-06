@@ -30,7 +30,7 @@ public class WithdrawnValidate implements CustomizeValidator {
             }
             String fileName = commonsMultipartFile.getOriginalFilename();
             if (!StringUtil.isEmpty(fileName)){
-                String[] fileSplit = commonsMultipartFile.getOriginalFilename().split("\\.");
+                String[] fileSplit = fileName .split("\\.");
                 String fileType = fileSplit[fileSplit.length - 1];
                 if (!fileType.toLowerCase().equals("pdf")
                         && !fileType.toLowerCase().equals("jpg")
