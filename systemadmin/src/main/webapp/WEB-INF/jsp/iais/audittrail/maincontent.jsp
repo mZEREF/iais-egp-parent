@@ -14,13 +14,13 @@
   <iais:row>
     <iais:field value="Operation Type" required="true"></iais:field>
     <iais:value width="7">
-      <iais:select name="operationType" id="operationType" value="${param.operationType}" options="operationTypeSelect" firstOption="Please select" ></iais:select>
+      <iais:select name="operationType" id="operationType" value="${param.operationType}" options="operationTypeSelect" firstOption="Please Select" ></iais:select>
       <span id="error_domain" name="iaisErrorMsg" class="error-msg"></span>
     </iais:value>
 
     <iais:field value="Operation" required="false"></iais:field>
     <iais:value width="7">
-      <iais:select name="operation" id="operation" value="${param.operation}" options="operationValueTypeSelect" firstOption="Please select"></iais:select>
+      <iais:select name="operation" id="operation" value="${param.operation}" options="operationValueTypeSelect" firstOption="Please Select"></iais:select>
       <span id="error_operation" name="iaisErrorMsg" class="error-msg"></span>
     </iais:value>
 
