@@ -738,13 +738,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         //new
                         if(newTypeFlag || (rfi && clickEdit)){
                             String errMsg = MessageUtil.getMessageDesc("NEW_ACK004");
-                            if(StringUtil.isEmpty(isOtherLic) && StringUtil.isEmpty(hciNameUsed) && errorMap.size() == 0){
+                            if(AppConsts.YES.equals(isOtherLic) && StringUtil.isEmpty(hciNameUsed) && errorMap.size() == 0){
                                 String premisesHci = hciName + NewApplicationHelper.getPremKey(appGrpPremisesDto);
                                 Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci).getEntity();
                                 if(flag){
                                     errorMap.put("hciNameUsed",errMsg);
                                 }
-                            }else if(StringUtil.isEmpty(isOtherLic) && !StringUtil.isEmpty(hciNameUsed) && errorMap.size() == 1){
+                            }else if(AppConsts.YES.equals(isOtherLic) && !StringUtil.isEmpty(hciNameUsed) && errorMap.size() == 1){
                                 String premisesHci = hciName + NewApplicationHelper.getPremKey(appGrpPremisesDto);
                                 Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci).getEntity();
                                 String hciNameMsg = MessageUtil.getMessageDesc(hciNameUsed);
