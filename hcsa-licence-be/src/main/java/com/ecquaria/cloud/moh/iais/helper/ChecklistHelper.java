@@ -284,7 +284,7 @@ public final class ChecklistHelper {
         log.info(StringUtil.changeForLog("===>>>>> hciCode" + hciCode));
         log.info(StringUtil.changeForLog("===>>>>> svcName" + svcName));
 
-        Map<String, Object> map = new HashMap(1);
+        Map<String, Object> map = new HashMap(10);
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         map.put("GROUP_NAME", "-");
         map.put("INSPECTION_TASK_NUMBER", refNum);
