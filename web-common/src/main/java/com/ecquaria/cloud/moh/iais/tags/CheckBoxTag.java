@@ -148,7 +148,7 @@ public final class CheckBoxTag extends DivTagSupport {
             if (!StringUtil.isEmpty(codeCategory)) {
 
                 //not in <c:forEach> style
-                codeCategory = MasterCodeUtil.getCategoryId(codeCategory);
+               setCodeCategory(MasterCodeUtil.getCategoryId(codeCategory));
                 html.append("<label>");
                 html.append(labelName);
                 html.append("</label>");

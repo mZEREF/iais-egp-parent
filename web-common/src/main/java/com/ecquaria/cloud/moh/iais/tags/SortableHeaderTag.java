@@ -43,7 +43,7 @@ public class SortableHeaderTag extends DivTagSupport {
     @Override
     public int doStartTag() throws JspException {
         if (StringUtil.isEmpty(param)) {
-            param = "searchParam";
+            setParam( "searchParam");
         }
         StringBuilder sb = new StringBuilder();
         sb.append("<th class=\"sorting\" ");
@@ -89,7 +89,7 @@ public class SortableHeaderTag extends DivTagSupport {
 
     private void generateHtml(StringBuilder sb,String isActiveUp,String isActiveDown){
         if (StringUtil.isEmpty(jsFunc)) {
-            jsFunc = "sortRecords";
+            setJsFunc("sortRecords");
         }
         sb.append("<a class=\"sort-up" );
         sb.append(isActiveUp).append('\"').append(" href=\"");

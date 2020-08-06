@@ -121,7 +121,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
     }
 
     public String generatePaginationHtml(boolean needRowNum) {
-        this.needRowNum = needRowNum;
+        setNeedRowNum(needRowNum);
 
         return generatePaginationHtml();
     }

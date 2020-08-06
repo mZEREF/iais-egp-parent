@@ -72,10 +72,10 @@ public class SelectTag extends DivTagSupport {
     public int doStartTag(){
         try {
             if (!StringUtil.isEmpty(codeCategory)) {
-                codeCategory = MasterCodeUtil.getCategoryId(codeCategory);
+                setCodeCategory( MasterCodeUtil.getCategoryId(codeCategory));
             }
             if (StringUtil.isEmpty(cssClass) && StringUtil.isEmpty(style)) {
-                cssClass = "input-large";
+               setCssClass("input-large");
             }
             StringBuilder html = new StringBuilder();
 
@@ -83,8 +83,8 @@ public class SelectTag extends DivTagSupport {
 
             html.append("<select name=\"").append(name).append('\"');
             if (!StringUtil.isEmpty(id)) {
-                id = StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("id",
-                        id, Object.class, this, pageContext));
+                 setId( StringUtil.nullToEmpty(ExpressionEvaluatorManager.evaluate("id",
+                         id, Object.class, this, pageContext)));
                 html.append(" id=\"").append(id).append('\"');
             } else {
                 html.append(" id=\"").append(name).append('\"');

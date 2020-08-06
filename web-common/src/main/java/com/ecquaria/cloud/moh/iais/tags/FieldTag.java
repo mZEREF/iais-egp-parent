@@ -67,11 +67,11 @@ public final class FieldTag extends DivTagSupport {
         StringBuilder script = new StringBuilder();
 
         if (withCheckbox && !isBackend) {
-            width = width - 1;
+           setWidth( width - 1);
             generateNotBEHtml(html);
         }
         if (index != null) {
-            width = width - 1;
+            setWidth( width - 1);
             if (isBackend) {
                 html.append("<label class=\"col-lg-1 col-sm-12 control-label float-left\">").append(index).append(ENDLABLE);
             } else {
