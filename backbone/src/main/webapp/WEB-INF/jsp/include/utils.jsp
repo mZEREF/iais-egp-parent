@@ -59,13 +59,11 @@
     })
 
     $("#crud_clear_button").click(function () {
-        $(".form-horizontal input").val("");
         $(".form-horizontal input[type='checkbox']").removeAttr('checked');
         $(".form-horizontal input[type='radio']").removeAttr('checked');
-        $(".form-horizontal option[text = 'Please Select']").val("selected", "selected");
-
         $(".form-horizontal .current").text("Please Select")
-        $(".form-horizontal option").val("");
+        $(".form-horizontal input").val("");
+        $(".form-horizontal option:first").prop("selected", 'selected').val(null);
     })
 
     function jumpToPagechangePage(){
