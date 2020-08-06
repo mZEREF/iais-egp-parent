@@ -2,19 +2,25 @@ package com.ecquaria.cloud.moh.iais.action;
 
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaPrimiseWorkloadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -62,10 +68,21 @@ public class HcsaPremiseWorkload {
      */
     public void premiseWorkload(BaseProcessClass bpc){
         String type = ParamUtil.getRequestString(bpc.request,"stageSelect");
-        List<HcsaPrimiseWorkloadDto> hcsaPrimiseWorkloadDtos = hcsaConfigClient.getHcsaPremisesWorkload(type).getEntity();
-        ParamUtil.setSessionAttr(bpc.request,"hcsaPrimiseWorkloadDtos",(Serializable) hcsaPrimiseWorkloadDtos);
-    }
+        if(StringUtil.isEmpty(type)){
+            Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+            errMap.put("stageSelect","The field is mandatory.");
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
+        }else{
+            List<HcsaPrimiseWorkloadDto> hcsaPrimiseWorkloadDtos = hcsaConfigClient.getHcsaPremisesWorkload(type).getEntity();
+            ParamUtil.setSessionAttr(bpc.request,"hcsaPrimiseWorkloadDtos",(Serializable) hcsaPrimiseWorkloadDtos);
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
+        }
+        }
 
+    public void goToPremise(BaseProcessClass bpc){
+
+    }
 
     /**
      * AutoStep: save
@@ -76,12 +93,14 @@ public class HcsaPremiseWorkload {
     public void save(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         List<HcsaPrimiseWorkloadDto> saveDtos = IaisCommonUtils.genNewArrayList();
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         List<HcsaPrimiseWorkloadDto> hcsaPrimiseWorkloadDtos = (List<HcsaPrimiseWorkloadDto>)ParamUtil.getSessionAttr(bpc.request,"hcsaPrimiseWorkloadDtos");
         for (HcsaPrimiseWorkloadDto item:hcsaPrimiseWorkloadDtos) {
             HcsaPrimiseWorkloadDto hcsaPrimiseWorkloadDto = new HcsaPrimiseWorkloadDto();
             String name = item.getStageId();
             String manhour = ParamUtil.getString(request, name);
-            if(manhour != null && !manhour.equals(Integer.toString(item.getManhourCount()))){
+            if(!StringUtil.isEmpty(manhour) && StringUtils.isNumeric(manhour)){
+                item.setManhourCount(Integer.parseInt(manhour));
                 hcsaPrimiseWorkloadDto.setId(item.getId());
                 hcsaPrimiseWorkloadDto.setStageDesc(item.getStageDesc());
                 hcsaPrimiseWorkloadDto.setManhourCount(Integer.parseInt(manhour));
@@ -90,8 +109,25 @@ public class HcsaPremiseWorkload {
                 hcsaPrimiseWorkloadDto.setStageId(item.getStageId());
                 hcsaPrimiseWorkloadDto.setStatus(item.getStatus());
                 saveDtos.add(hcsaPrimiseWorkloadDto);
+            }else{
+                item.setManhourCount(0);
+                if(StringUtil.isEmpty(manhour)){
+                    errMap.put(name,"The field is mandatory.");
+                }else if(!StringUtils.isNumeric(manhour)){
+                    errMap.put(name,"Please only key in numbers.");
+                }else{
+                    errMap.put(name,"The field is mandatory.");
+                }
             }
         }
-        hcsaConfigClient.savePremiseWorkload(saveDtos);
+        if(errMap.isEmpty()){
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
+            hcsaConfigClient.savePremiseWorkload(saveDtos);
+        }else{
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setSessionAttr(bpc.request,"hcsaPrimiseWorkloadDtos",(Serializable) hcsaPrimiseWorkloadDtos);
+            ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
+        }
+
     }
 }

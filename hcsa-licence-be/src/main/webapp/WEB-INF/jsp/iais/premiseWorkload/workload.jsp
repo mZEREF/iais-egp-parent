@@ -47,7 +47,10 @@
                                             ${item.stageDesc}
                                     </td>
                                     <td>
-                                        <input name="${item.stageId}" value="${item.manhourCount}">
+                                        <input name="${item.stageId}" value="${item.manhourCount}" maxlength="2">
+                                        <br>
+                                        <span class="error-msg" name="errorMsg" id="error_${item.stageId}"></span>
+
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -67,7 +70,7 @@
         </div>
     </form>
 </div>
-
+<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <script>
     function doSubmit() {
         SOP.Crud.cfxSubmit("mainForm1", "save");

@@ -28,8 +28,8 @@
                     </h2>
                     <div class="form-group" id="serviceDivByrole" style="margin-top: 50px;">
                         <div class="col-xs-3 col-sm-3 col-md-3"></div>
-                        <div class="col-xs-6 col-sm-6 col-md-6">
-                            <iais:select name="stageSelect" options="primiseType" id="stageSelect"
+                        <div class="col-xs-6 col-sm-6 col-md-6" style="text-align: left">
+                            <iais:select name="stageSelect" options="primiseType"
                                          firstOption="Please Select"></iais:select>
                         </div>
                     </div>
@@ -43,6 +43,7 @@
         </div>
     </form>
 </div>
+<%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <script type="text/javascript">
     function doNext() {
         SOP.Crud.cfxSubmit("mainForm", "serviceInStage");

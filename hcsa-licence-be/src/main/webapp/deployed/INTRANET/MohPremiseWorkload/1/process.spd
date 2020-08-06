@@ -30,6 +30,13 @@
     <JavaCode defClass="" executor="" methodName="save_OnStepProcess_0" name="save_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step1" x="640" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="choosePremiseType" stageIndicator="" x="340" y="100">
@@ -59,14 +66,8 @@
   <SynchronousLink destinationName="/Pages/WebPage/choosePremiseType" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PreLoad" style="rectanular">
    <position>{(240,120)(360,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/PremiseWorkload" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/choosePremiseType" style="rectanular">
-   <position>{(360,120)(540,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/workload" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PremiseWorkload" style="rectanular">
    <position>{(540,120)(560,270)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/success" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Save" style="rectanular">
-   <position>{(410,360)(250,360)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreLoad" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/success" style="rectanular">
    <position>{(250,360)(240,120)}</position>
@@ -80,8 +81,39 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/PreLoad" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
    <position>{(570,360)(240,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PreLoad" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(660,120)(241,20)(240,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/PremiseWorkload" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/choosePremiseType" style="rectanular">
+   <position>{(360,120)(540,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/PremiseWorkload" style="rectanular">
+   <position>{(540,120)(660,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond1" style="rectanular">
+   <position>{(660,120)(660,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/workload" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step1" style="rectanular">
+   <position>{(660,270)(560,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Save" style="rectanular">
+   <position>{(410,360)(330,360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step1" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(330,360)(660,270)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/success" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond2" style="rectanular">
+   <position>{(330,360)(250,360)}</position>
+  </SynchronousLink>
  </Links>
- <Conditions/>
+ <Conditions>
+  <Condition componentIfFalse="/Steps/AutomaticStep/PreLoad" componentIfTrue="/Steps/AutomaticStep/Step1" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;true&quot;" x="640" y="100">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/Step1" componentIfTrue="/Pages/WebPage/success" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;true&quot;" x="310" y="340">
+   <Description/>
+  </Condition>
+ </Conditions>
  <Switches>
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="550" y="340">
    <Description/>

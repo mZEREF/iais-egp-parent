@@ -38,4 +38,9 @@ public class INTRANET___MohPremiseWorkload___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "save", this); 
 	}
 
+	public void step1_OnStepProcess_0() throws Exception {
+	// 		Step1->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "goToPremise", this); 
+	}
+
 }
