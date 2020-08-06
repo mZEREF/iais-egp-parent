@@ -16,28 +16,28 @@
     <JavaCode defClass="" executor="" methodName="init_OnStepProcess_0" name="init_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doReschedule" x="550" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="doReschedule" x="580" y="230">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doReschedule_OnStepProcess_0" name="doReschedule_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="preCommPool" x="850" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="preCommPool" x="830" y="220">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="preCommPool_OnStepProcess_0" name="preCommPool_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doPage" x="640" y="0">
+  <AutomaticStep defClass="" executor="" icon="" name="doPage" x="420" y="-10">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doPage_OnStepProcess_0" name="doPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doSort" x="790" y="200">
+  <AutomaticStep defClass="" executor="" icon="" name="doSort" x="420" y="230">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -52,7 +52,13 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="cpMessagePage" stageIndicator="" x="960" y="100">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="cpMessagePage" stageIndicator="" x="890" y="360">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="reasonRequestPage" stageIndicator="" x="700" y="100">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -67,48 +73,51 @@
   <SynchronousLink destinationName="/Pages/WebPage/viewApptPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/init" style="oblique">
    <position>{(270,120)(420,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doReschedule" linkstyle="Direct" name="" sourceName="/Pages/WebPage/viewApptPage" style="oblique">
-   <position>{(420,120)(570,120)}</position>
+  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Pages/WebPage/viewApptPage" style="oblique">
+   <position>{(420,120)(560,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doReschedule" style="oblique">
-   <position>{(570,120)(720,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preCommPool" linkstyle="Direct" name="" sourceName="/Pages/WebPage/reasonRequestPage" style="oblique">
+   <position>{(745,150)(850,240)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preCommPool" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(870,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doReschedule" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
+   <position>{(560,120)(600,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/cpMessagePage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(925,340)(980,120)}</position>
+   <position>{(740,380)(910,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPage" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(660,20)}</position>
+   <position>{(560,120)(440,10)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doSort" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(810,220)}</position>
+   <position>{(560,120)(440,250)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doSort" style="oblique">
-   <position>{(810,220)(270,120)}</position>
+   <position>{(440,250)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doPage" style="oblique">
-   <position>{(660,20)(270,120)}</position>
+   <position>{(440,10)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preCommPool" style="oblique">
-   <position>{(870,120)(925,340)}</position>
+   <position>{(850,240)(740,380)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/init" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
-   <position>{(925,340)(270,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doReschedule" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond1" style="oblique">
+   <position>{(740,380)(600,250)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/reasonRequestPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doReschedule" style="oblique">
+   <position>{(600,250)(745,150)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/init" componentIfTrue="/Pages/WebPage/cpMessagePage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="880" y="290">
+  <Condition componentIfFalse="/Steps/AutomaticStep/doReschedule" componentIfTrue="/Pages/WebPage/cpMessagePage" defClass="" executor="" icon="" leftOperand="isValid" name="Cond1" operator="=" rightOperand="&quot;Y&quot;" x="720" y="360">
    <Description/>
   </Condition>
  </Conditions>
  <Switches>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doPage" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="700" y="100">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/doPage" executor="" icon="" leftOperand="crud_action_type" name="Switch1" x="540" y="100">
    <Description/>
-   <SwitchCase component="/Steps/AutomaticStep/preCommPool" value="&quot;comm&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doPage" value="&quot;page&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doSort" value="&quot;sort&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/doReschedule" value="&quot;request&quot;"/>
   </Switch>
  </Switches>
  <Branches/>

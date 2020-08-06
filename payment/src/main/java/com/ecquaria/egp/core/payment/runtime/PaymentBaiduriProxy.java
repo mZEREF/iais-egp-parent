@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
@@ -92,6 +93,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		String returnUrl=this.getPaymentData().getContinueUrl();
 		try {
 			RequestOptions requestOptions=PaymentBaiduriProxyUtil.getStripeService().authentication();
+			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
 //			Map<String, Object> params = new HashMap<>();
 //			params.put("amount", Double.parseDouble(amo)/100);
 //			params.put("currency", "eur");
@@ -106,8 +108,8 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
 							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.IDEAL)
 							.setMode(SessionCreateParams.Mode.PAYMENT)
-							.setSuccessUrl(AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+returnUrl)
-							.setCancelUrl(AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+returnUrl)
+							.setSuccessUrl(AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"./return.jsp")
+							.setCancelUrl(AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"./return.jsp")
 							.addLineItem(
 									SessionCreateParams.LineItem.builder()
 											.setQuantity(1L)
@@ -124,10 +126,12 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 							.build();
 			Session session= PaymentBaiduriProxyUtil.getStripeService().createSession(createParams);
 			srcSystemConfDto.setClientKey(session.getId());
+			ParamUtil.setSessionAttr(bpc.request,"CHECKOUT_SESSION_ID",session.getId());
 //			PaymentIntent paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(session.getPaymentIntent());
 //			System.out.println(paymentIntent.getCharges());
 		} catch (StripeException e) {
 			log.info(e.getMessage(),e);
+			logger.info(e.getMessage(),e);
 			srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
 		}
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
@@ -188,25 +192,9 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		try{
 
 			PaymentBaiduriProxyUtil.getStripeService().authentication();
+			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
 			Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
-//			Map<String, Object> card = new HashMap<>();
-//			if(StringUtil.isEmpty(fields.get("vpc_CardNum"))){
-//				card.put("number", "4242424242424242");
-//			}else {
-//				card.put("number", fields.get("vpc_CardNum"));
-//			}
-//			card.put("exp_month", 7);
-//			card.put("exp_year", 2021);
-//			card.put("cvc", "314");
-//			Map<String, Object> params = new HashMap<>();
-//			params.put("type", "card");
-//			params.put("card", card);
-//			PaymentMethod paymentMethod= PaymentBaiduriProxyUtil.getStripeService().createPaymentMethod(params);
-			//paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(checkoutSession.getPaymentIntent());
-			//PaymentMethod paymentMethod=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentMethod(paymentIntent.getPaymentMethod());
-			//Map<String, Object> paramsPaymentMethod = new HashMap<>();
-			//paramsPaymentMethod.put("payment_method",paymentMethod);
-			//paymentIntent= PaymentBaiduriProxyUtil.getStripeService().confirmPaymentIntent(checkoutSession.getPaymentIntent(),paramsPaymentMethod);
+			paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(checkoutSession.getPaymentIntent());
 		}catch (Exception e){
 			log.info(e.getMessage(),e);
 		}
@@ -463,7 +451,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 	
 	public static void main(String[] args) throws Exception {
 		log.info(String.valueOf(mul(4.10, 100)));
-		//logger.debug(String.valueOf(mul(4.10, 100)));
+		logger.debug(String.valueOf(mul(4.10, 100)));
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
 		byte[] ba = md.digest(SMCStringHelperUtil.getStringBytes("123"));
 		log.info(hex(ba));

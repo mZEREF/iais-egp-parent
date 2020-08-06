@@ -16,4 +16,4 @@
   fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, description);
   fieldMap.put(GatewayConstants.SVCREF_NO, svc_refno);
 %>
-<%=GatewayAPI.create_partner_trade_by_buyer(fieldMap)%>
+<%=GatewayAPI.create_partner_trade_by_buyer(fieldMap,request)%>

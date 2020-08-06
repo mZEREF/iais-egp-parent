@@ -122,6 +122,9 @@
     fieldValus.put("vpc_Amount", amount);
     fieldValus.put("vpc_Currency", currency);
     fieldValus.put("vpc_CardNum", cardno);
+    fieldValus.put("vpc_Cardexpirymonth", cardexpirymonth);
+    fieldValus.put("vpc_Cardexpiryyear", cardexpiryyear);
+    fieldValus.put("vpc_Cardsecurecode", cardsecurecode);
     fieldValus.put("vpc_AcqResponseCode", "0");
     fieldValus.put("vpc_TxnResponseCode", "0");
     fieldValus.put("vpc_ReceiptNo", "1234567");

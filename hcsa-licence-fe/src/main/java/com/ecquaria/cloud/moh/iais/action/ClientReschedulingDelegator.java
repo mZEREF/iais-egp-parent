@@ -122,7 +122,7 @@ public class ClientReschedulingDelegator {
 
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        String [] keyIds=ParamUtil.getStrings(bpc.request,"appIds");
+        String [] keyIds= (String[]) ParamUtil.getSessionAttr(bpc.request,"appIds");
         Set<String> keys=IaisCommonUtils.genNewHashSet() ;
         if(keyIds!=null){
             keys.addAll(Arrays.asList(keyIds));
@@ -190,17 +190,36 @@ public class ClientReschedulingDelegator {
     public void doPage(BaseProcessClass bpc)  {SearchResultHelper.doPage(bpc.request,rescheduleParameter);
     }
 
-    public void doReschedule(BaseProcessClass bpc)  {}
+    public void doReschedule(BaseProcessClass bpc)  {
+        String [] keyIds=ParamUtil.getStrings(bpc.request,"appIds");
+        if(keyIds==null){
+            keyIds= (String[]) ParamUtil.getSessionAttr(bpc.request,"appIds");
+        }
+        Set<String> keys=IaisCommonUtils.genNewHashSet() ;
+        if(keyIds!=null){
+            keys.addAll(Arrays.asList(keyIds));
+        }
+        Map<String ,ApptViewDto> apptViewDtos= (Map<String, ApptViewDto>) ParamUtil.getSessionAttr(bpc.request,"apptViewDtosMap");
+
+        List<ApptViewDto> apptViewDtos1=IaisCommonUtils.genNewArrayList();
+        for (Map.Entry<String,ApptViewDto> entry:apptViewDtos.entrySet()
+        ) {
+            if(keys.contains(entry.getKey())){
+                apptViewDtos1.add(entry.getValue());
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request, "apptViewDtos", apptViewDtos1);
+        ParamUtil.setSessionAttr(bpc.request,"appIds",keyIds);
+    }
 
     public void preCommPool(BaseProcessClass bpc)  {
-        String [] keyIds=ParamUtil.getStrings(bpc.request,"appIds");
+        String [] keyIds= (String[]) ParamUtil.getSessionAttr(bpc.request,"appIds");
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         errorMap=validate(bpc.request,keyIds);
         if (!errorMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "N");
-            ParamUtil.setRequestAttr(bpc.request,"appIds",keyIds);
             //
             return;
         }
@@ -270,11 +289,14 @@ public class ClientReschedulingDelegator {
 
     public Map<String, String> validate(HttpServletRequest httpServletRequest , String[] apptIds) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        Map<String ,ApptViewDto> apptViewDtos= (Map<String, ApptViewDto>) ParamUtil.getSessionAttr(httpServletRequest,"apptViewDtosMap");
+
         for (String id:apptIds
              ) {
             String reason=ParamUtil.getString(httpServletRequest,"reason"+id);
             if("".equals(reason)||reason==null){
-                errMap.put("reason","ERR0009");
+                String appId=apptViewDtos.get(id).getAppId();
+                errMap.put("reason"+appId,"ERR0009");
             }
         }
 

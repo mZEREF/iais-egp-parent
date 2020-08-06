@@ -38,7 +38,6 @@
                                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Premises"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="false" field="" value="Service(s)"></iais:sortableHeader>
                                 <iais:sortableHeader needSort="true"  field="RECOM_IN_DATE" value="Date and Time of Inspection"></iais:sortableHeader>
-                                <th class="sorting">Reason for Request<strong style="color:#ff0000;">*</strong></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -68,16 +67,13 @@
                                                     </c:forEach>
                                                 </td>
                                                 <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
-                                                <td class="col-sm-7 col-md-3 col-xs-10">
-                                                    <input type="text" name="reason${pool.viewCorrId}">
-                                                </td>
+
                                             </tr>
                                         </c:forEach>
                                     </c:otherwise>
                                 </c:choose>
                             </tbody>
                         </table>
-                        <span style="float:right;"  id="error_reason" name="iaisErrorMsg" class="error-msg"></span>
 
                         <iais:row>
                             <iais:action style="text-align:left;">
@@ -85,7 +81,7 @@
                             </iais:action>
                             <br>
                             <iais:action style="text-align:right;"  >
-                                <button class="btn btn-primary RescheduleButton" type="button" disabled onclick="doReschedule()">Reschedule</button>
+                                <button class="btn btn-primary RescheduleButton" type="button" disabled onclick="doRequest()">Reason for Request</button>
                             </iais:action>
                         </iais:row>
 
@@ -136,9 +132,9 @@
         }
     }
 
-    function doReschedule(){
+    function doRequest(){
         showWaiting();
-        SOP.Crud.cfxSubmit("mainForm", "comm")
+        SOP.Crud.cfxSubmit("mainForm", "request")
 
     }
     function sortRecords(sortFieldName, sortType) {
