@@ -156,7 +156,7 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
         templateContent.put("date", strDate);
         templateContent.put("ncDtos", inspEmailFieldDtos);
         notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION, templateContent, appNo, appNo,
-                NotificationHelper.RECEIPT_TYPE_LICENCE_ID, appNo);
+                NotificationHelper.RECEIPT_TYPE_APP, appNo);
     }
 
     private List<InspEmailFieldDto> getEmailFieldByAppId(String appId) {
