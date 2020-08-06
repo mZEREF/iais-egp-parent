@@ -7,6 +7,7 @@ import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -120,7 +121,8 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
             JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
             if(days == nowDays){
                 Map<String, Object> templateMap = getEmailField(applicationDto, appPremisesCorrelationDto);
-                //todo send email
+                notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION, templateMap, appNo, appNo,
+                        NotificationHelper.RECEIPT_TYPE_APP, appNo);
             }
         }
     }
