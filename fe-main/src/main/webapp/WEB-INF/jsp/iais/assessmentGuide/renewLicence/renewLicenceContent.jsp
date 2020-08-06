@@ -47,6 +47,5 @@
             </tbody>
         </table>
     </div>
-
     <a class="btn btn-primary"  onclick="guideSubmit('renew2','second')">NEXT</a>
 </div>

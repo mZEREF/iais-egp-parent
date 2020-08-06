@@ -24,6 +24,27 @@
         ]]>
     </sql>
 
+    <sql key = "assessmentWithdrawAppQuery" remarks = "Query Inter-Application Data by condition">
+        <![CDATA[
+            SELECT
+                app.id,
+                app.application_no,
+                app.app_grp_id,
+                (select LICENSEE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
+                app.app_type,
+                app.status,
+                app.service_id,
+                app.created_dt,
+                app.version
+            FROM APPLICATION AS app
+            WHERE 1=1
+            <#if appType??> AND B.app_type in (:appType)</#if>
+            <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
+            <#if appStatus??> AND B.status = :appStatus</#if>
+            <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
+        ]]>
+    </sql>
+
     <sql key = "applicationQuery" remarks = "Query Inter-Application Data by condition">
         <![CDATA[
          SELECT *

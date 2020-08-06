@@ -9,6 +9,25 @@
 </div>
 </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="isRenewedModal" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:60%; overflow: visible;bottom: inherit;right: inherit;">
+    <div class="modal-dialog" role="document" style="width: 760px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" style="text-align: center">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">${LAEM}</span></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-md" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Modal End-->
 </form>
 </div>
 
@@ -17,6 +36,10 @@
         $('.self-assessment-gp .self-assessment-item .table-gp .table input[type="radio"]').on('change', function() {
             $('.self-assessment-gp .self-assessment-item .table-gp .table tr.selectedRow').removeClass('selectedRow');
         });
+
+        if ('${licIsRenewed}' || '${licIsAppealed}' || '${licIsAmend}') {
+            $('#isRenewedModal').modal('show');
+        }
     });
 
     function guideSubmit(guideAction,toWhere){

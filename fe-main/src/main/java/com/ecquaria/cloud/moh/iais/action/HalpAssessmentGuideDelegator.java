@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -1356,8 +1357,13 @@ public class HalpAssessmentGuideDelegator {
     public void withdrawApp(BaseProcessClass bpc) {
         SearchParam withdrawAppParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
         withdrawAppParam.addFilter("licenseeId", licenseeId, true);
-
-        QueryHelp.setMainSql("interInboxQuery", "applicationQuery", withdrawAppParam);
+        String[] appTypes = {
+                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
+                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
+        };
+        withdrawAppParam.addFilter("appType",appTypes, true);
+        withdrawAppParam.addFilter("appStatus",ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, true);
+        QueryHelp.setMainSql("interInboxQuery", "assessmentWithdrawAppQuery", withdrawAppParam);
         SearchResult<InboxAppQueryDto> withdrawAppResult = inboxService.appDoQuery(withdrawAppParam);
 
         if (withdrawAppResult != null) {
