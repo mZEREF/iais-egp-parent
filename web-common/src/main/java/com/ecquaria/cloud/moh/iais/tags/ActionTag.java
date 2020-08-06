@@ -25,7 +25,7 @@ public final class ActionTag extends DivTagSupport {
     @Override
     protected void init() {
         super.init();
-        this.validator = null;
+        setValidator(null);
     }
     @Override
     public void release() {

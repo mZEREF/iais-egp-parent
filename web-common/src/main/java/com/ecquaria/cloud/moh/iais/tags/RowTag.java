@@ -26,7 +26,7 @@ public final class RowTag extends DivTagSupport {
     @Override
     protected void init() {
         super.init();
-        inline = false;
+        setInline(false);
     }
     @Override
     public void release() {

@@ -43,7 +43,7 @@ public class SelectTag extends DivTagSupport {
     @Override
     protected void init() {
         setId(null);
-        name = null;
+        name = null; //NOSONAR
         setCodeCategory("");
         setFilterCode("");
         setFilterValue("");

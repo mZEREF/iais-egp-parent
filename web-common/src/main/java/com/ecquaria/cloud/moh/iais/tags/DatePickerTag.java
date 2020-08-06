@@ -54,7 +54,11 @@ public final class DatePickerTag extends DivTagSupport {
         setTitle(null);
         setStartDate(null);
         setEndDate(null);
-        this.needErrorSpan = true;
+        setNeedErrorSpan(true);
+    }
+
+    public void setNeedErrorSpan(boolean needErrorSpan) {
+        this.needErrorSpan = needErrorSpan;
     }
 
     // Releases any resources we may have (or inherit)

@@ -33,11 +33,19 @@ public class ProcessUrlTag extends TagSupport {
 
     // resets local state
     private void init() {
-        value = "";
-        project = "";
-        processName = "";
-        pathParams = "";
-        hideUrl = true;
+        value = "";//NOSONAR
+        setProject("");
+        setProcessName("");
+        setPathParams("");
+        setHideUrl(true);
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
+    }
+
+    public void setPathParams(String pathParams) {
+        this.pathParams = pathParams;
     }
 
     // Releases any resources we may have (or inherit)

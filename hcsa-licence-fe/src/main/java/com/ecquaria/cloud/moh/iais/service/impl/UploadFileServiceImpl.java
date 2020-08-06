@@ -117,7 +117,7 @@ public class UploadFileServiceImpl implements UploadFileService {
              groupId = applicationGroup.get(0).getId();
         }
         File file = MiscUtil.generateFile(sharedPath+ AppServicesConsts.FILE_NAME+File.separator+groupId, s+AppServicesConsts.FILE_FORMAT);
-        try (FileOutputStream fileOutputStream  = new FileOutputStream(file);) {
+        try (OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());) {
              if(!file.exists()){
                  boolean newFile = file.createNewFile();
                  if(newFile){
@@ -217,7 +217,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             }
         } else {
             try (
-                BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
+                BufferedInputStream bis = new BufferedInputStream( Files.newInputStream(file.toPath()))) {
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(AppServicesConsts.FILE_NAME))));
                 int count ;
                 byte [] b =new byte[1024];
@@ -617,7 +617,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         byte[] entity = fileRepositoryClient.getFileFormDataBase(id).getEntity();
         File file=MiscUtil.generateFile(sharedPath+AppServicesConsts.FILE_NAME+File.separator+groupId+ File.separator + AppServicesConsts.FILES,
                 id + "@" + docName);
-        try (FileOutputStream outputStream=new FileOutputStream(file)) {
+        try (OutputStream outputStream=Files.newOutputStream(file.toPath())) {
             if(entity!=null){
                 outputStream.write(entity);
             }

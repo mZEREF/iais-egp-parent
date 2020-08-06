@@ -26,7 +26,7 @@ public final class SuccessTag extends DivTagSupport {
     // resets local state
     @Override
     protected void init() {
-        canClose = false;
+        setCanClose(false);
         super.init();
     }
     @Override
