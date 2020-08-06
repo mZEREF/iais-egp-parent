@@ -211,10 +211,11 @@ public class NotificationHelper {
 				}
 			}
 			String mesContext;
+			String emailTemplate = msgTemplateDto.getMessageContent();
 			if (templateContent != null && !templateContent.isEmpty()) {
-				mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
+				mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 			} else {
-				mesContext = msgTemplateDto.getMessageContent();
+				mesContext = emailTemplate;
 			}
 			emailDto.setContent(mesContext);
 			if(StringUtil.isEmpty(subject)){
@@ -268,10 +269,10 @@ public class NotificationHelper {
 					officerEmails.add(officerEmail);
 					if (templateContent != null && !templateContent.isEmpty()) {
 						templateContent.put("officer_name", orgName);
-						mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), templateContent);
+						mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 					} else {
 						templateContent.put("officer_name", orgName);
-						mesContext = msgTemplateDto.getMessageContent();
+						mesContext = emailTemplate;
 					}
 					emailDto.setContent(mesContext);
 					emailDto.setReceipts(officerEmails);
