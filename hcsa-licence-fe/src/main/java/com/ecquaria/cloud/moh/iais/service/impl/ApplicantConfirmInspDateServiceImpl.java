@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -801,9 +802,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             map.put("applicationNo", appNo);
             map.put("dateStrList", dateStrList);
             map.put("fe_date", dateStr);
-            //TODO
-            /*notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION, map, appNo, appNo,
-                    NotificationHelper.RECEIPT_TYPE_LICENCE_ID, licenseeId);*/
+            notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_REJECT_APPT_REQUEST_A_DATE, map, appNo, appNo,
+                    NotificationHelper.RECEIPT_TYPE_APP, appNo);
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
