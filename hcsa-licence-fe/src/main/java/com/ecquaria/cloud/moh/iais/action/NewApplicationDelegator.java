@@ -348,6 +348,21 @@ public class NewApplicationDelegator {
             log.info(StringUtil.changeForLog("svcId not null"));
             Set<String> premisesType  = IaisCommonUtils.genNewHashSet();
             premisesType = serviceConfigService.getAppGrpPremisesTypeBySvcId(svcIds);
+            boolean readOnlyPrem = false;
+            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo()) || !StringUtil.isEmpty(appSvcRelatedInfoDto.getAlignLicenceNo())){
+                        readOnlyPrem = true;
+                        break;
+                    }
+                }
+                if(readOnlyPrem){
+                    premisesType = IaisCommonUtils.genNewHashSet();
+                    premisesType.add(ApplicationConsts.PREMISES_TYPE_ON_SITE);
+                }
+            }
+
             ParamUtil.setSessionAttr(bpc.request, PREMISESTYPE, (Serializable) premisesType);
         }else{
             log.error(StringUtil.changeForLog("do not have select the services"));
@@ -5117,6 +5132,7 @@ public class NewApplicationDelegator {
 
             //set licseeId and psn drop down
             setLicseeAndPsnDropDown(appSubmissionDto,bpc);
+
             Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
@@ -5301,7 +5317,7 @@ public class NewApplicationDelegator {
                 }
             }
             if(!flag){
-                errorMap.put(keyName,"Wrong file type");
+                errorMap.put(keyName,MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType,"fileType"));
             }
             String errMsg = errorMap.get(keyName);
             if(StringUtil.isEmpty(errMsg)){
@@ -5332,13 +5348,14 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,APPSUBMISSIONDTO);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,ServiceMenuDelegator.APP_SVC_RELATED_INFO_LIST);
         AppSelectSvcDto appSelectSvcDto = (AppSelectSvcDto) ParamUtil.getSessionAttr(bpc.request,ServiceMenuDelegator.APP_SELECT_SERVICE);
-        if(appSvcRelatedInfoDtos != null && appSubmissionDto == null && appSelectSvcDto != null){
+        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && appSubmissionDto == null && appSelectSvcDto != null){
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            List<HcsaServiceDto> hcsaServiceDtos = appSelectSvcDto.getBaseSvcDtoList();
-            //add other service
-            appSvcRelatedInfoDtos = NewApplicationHelper.addOtherSvcInfo(appSvcRelatedInfoDtos,hcsaServiceDtos,true);
-            log.info(StringUtil.changeForLog("appSvcRelatedInfoDto size:"+appSvcRelatedInfoDtos.size()));
+            //change place to serviceMenueDelegator
+//            List<HcsaServiceDto> hcsaServiceDtos = appSelectSvcDto.getBaseSvcDtoList();
+//            //add other service
+//            appSvcRelatedInfoDtos = NewApplicationHelper.addOtherSvcInfo(appSvcRelatedInfoDtos,hcsaServiceDtos,true);
+//            log.info(StringUtil.changeForLog("appSvcRelatedInfoDto size:"+appSvcRelatedInfoDtos.size()));
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
 
             String premisesId = "";
@@ -5397,16 +5414,21 @@ public class NewApplicationDelegator {
             List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
             licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(licPersonList);
             ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
-            Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, PERSONSELECTMAP);
-//            if(personMap != null){
-//                licPersonMap.forEach((k,v)->{
-//                    personMap.put(k,v);
-//                });
-//                ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) personMap);
-//            }else{
-//                ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) licPersonMap);
-//            }
-            ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) licPersonMap);
+            //set data into psnMap
+            Map<String,AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
+            personMap.putAll(licPersonMap);
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    String svcCode = appSvcRelatedInfoDto.getServiceCode();
+                    List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                    List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
+                    personMap = NewApplicationHelper.setPsnIntoSelMap(personMap, appSvcCgoDtos, svcCode);
+                    personMap = NewApplicationHelper.setPsnIntoSelMap(personMap, appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), svcCode);
+                    personMap = NewApplicationHelper.setPsnIntoSelMap(personMap, appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);
+                }
+            }
+            ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) personMap);
         }else{
             appSubmissionDto.setLicenseeId("");
             ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
