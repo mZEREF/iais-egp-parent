@@ -34,10 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.FileUtils;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AppealService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -61,10 +58,7 @@ import sop.servlet.webflow.HttpHandler;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Wenkang
@@ -472,23 +466,26 @@ public class AppealServiceImpl implements AppealService {
         AppPremisesSpecialDocDto appPremisesSpecialDocDto = (AppPremisesSpecialDocDto) req.getSession().getAttribute("appPremisesSpecialDocDto");
         CommonsMultipartFile file = (CommonsMultipartFile) request.getFile("selectedFile");
         if (file != null && file.getSize() > 0) {
-            AppPremisesSpecialDocDto specialDocDto=new AppPremisesSpecialDocDto();
-
-            long size = file.getSize() / 1024;
-
-            if (size > 5 * 1024) {
-                map.put("file", "UC_GENERAL_ERR0015");
+            int configFileSize = systemParamConfig.getUploadFileLimit();
+            String configFileType = FileUtils.getStringFromSystemConfigString(systemParamConfig.getUploadFileType());
+            List<String> fileTypes = Arrays.asList(configFileType.split(","));
+            Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,(configFileSize * 1024 *1024L));
+            Boolean fileSize = booleanMap.get("fileSize");
+            Boolean fileType = booleanMap.get("fileType");
+            //size
+            if(!fileSize){
+                map.put("file", MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(configFileSize),"sizeMax"));
             }
+            //type
+            if(!fileType){
+                map.put("file",MessageUtil.replaceMessage("GENERAL_ERR0018", configFileType,"fileType"));
+            }
+            AppPremisesSpecialDocDto specialDocDto=new AppPremisesSpecialDocDto();
+            long size = file.getSize() / 1024;
             String filename = file.getOriginalFilename();
-            String fileType = filename.substring(filename.lastIndexOf('.') + 1);
             specialDocDto.setDocName(filename);
             specialDocDto.setDocSize(Integer.valueOf(size+""));
             req.getSession().setAttribute("appPremisesSpecialDocDto", specialDocDto);
-            //todo change
-            if (!"PDF".equalsIgnoreCase(fileType) && !"PNG".equalsIgnoreCase(fileType) &&
-                    !"JPG".equalsIgnoreCase(fileType) && !"DOC".equalsIgnoreCase(fileType) && !"DOCX".equalsIgnoreCase(fileType)) {
-                map.put("file", "Wrong file type");
-            }
 
         } else if (appPremisesSpecialDocDto != null && appPremisesSpecialDocDto.getDocSize() > 0) {
             if (Y.equals(isDelete)) {

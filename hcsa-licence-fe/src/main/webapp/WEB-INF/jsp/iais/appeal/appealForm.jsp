@@ -16,6 +16,7 @@
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
+    <input type="hidden" id="configFileSize" value="${configFileSize}"/>
 
   <div class="form-group">
     <div class="col-xs-12 col-md-10" style="margin-left: 2%">
@@ -122,6 +123,7 @@
 
             </div>
             <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
+            <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
             <div class="col-xs-12 col-md-4" >
               <span  name="fileName" style="font-size: 25px;color: #2199E8;text-align: center">${filename}</span>
               <input type="text" value="Y" style="display: none" name="isDelete" id="isDelete">
@@ -206,18 +208,44 @@
 
 $('#submit').click(function () {
 
+  if(uploadFileValidate()){
     SOP.Crud.cfxSubmit("mainForm", "submit","submit","");
+  }
 
 });
+
+function uploadFileValidate(){
+  var configFileSize = $("#configFileSize").val();
+  var error  = validateUploadSizeMaxOrEmpty(configFileSize,'selectedFile');
+  var flag = true;
+  if( error =="Y"){
+    $('#delete').attr("style","display: inline-block;margin-left: 20px");
+    $('#isDelete').val('Y');
+    $('#error_litterFile_Show').html("");
+    $('#error_file').html("");
+  }else if(error == "E"){
+    deleteFileFunction();
+    $('#error_litterFile_Show').html("");
+    $('#error_file').html("");
+  } else if(error =="N"){
+    deleteFileFunction();
+    flag = false;
+    $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
+    $('#error_file').html("");
+  }
+  return flag;
+}
 
 $('#delete').click(function () {
+  deleteFileFunction();
+});
+
+function deleteFileFunction(){
   $('.selectedFile').val('');
-  $(this).attr("style","display: none");
+  $('#delete').attr("style","display: none");
   $("span[name='fileName']").html('');
   $('#isDelete').val('N');
-
-
-});
+}
 
 $('#save').click(function () {
     SOP.Crud.cfxSubmit("mainForm", "save","save","");
@@ -272,6 +300,8 @@ $('.selectedFile').change(function () {
     if(file!=''){
         $('#delete').attr("style","display: inline-block;margin-left: 20px");
         $('#isDelete').val('Y');
+        $('#error_litterFile_Show').html("");
+        $('#error_file').html("");
     }
 
  /*   $fileUploadContentEle = $(this).closest('div.file-upload-gp');

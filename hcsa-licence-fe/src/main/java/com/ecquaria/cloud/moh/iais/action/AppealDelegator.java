@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -39,6 +41,8 @@ import java.util.Map;
 public class AppealDelegator {
     @Autowired
     private AppealService appealService;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     public void preparetionData(BaseProcessClass bpc){
         log.info("start**************preparetionData************");
@@ -118,6 +122,9 @@ public class AppealDelegator {
         bpc.getSession().removeAttribute("IdTypeSelect");
         bpc.getSession().removeAttribute("rfiApplication");
         bpc.getSession().removeAttribute("rfi");
+
+        //set upload file config
+        setFileConfig(bpc.request);
         log.info("end**************start************");
     }
 
@@ -303,5 +310,11 @@ public class AppealDelegator {
                 .append("</ul>")
                 .append("</div>");
         return sBuffer.toString();
+    }
+
+    private void setFileConfig(HttpServletRequest request){
+        int configFileSize = systemParamConfig.getUploadFileLimit();
+
+        ParamUtil.setSessionAttr(request,"configFileSize",configFileSize);
     }
 }
