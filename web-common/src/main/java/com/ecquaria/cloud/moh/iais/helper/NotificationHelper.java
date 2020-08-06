@@ -212,6 +212,8 @@ public class NotificationHelper {
 			}
 			String mesContext;
 			String emailTemplate = msgTemplateDto.getMessageContent();
+			//replace num
+			emailTemplate = replaceNum(emailTemplate);
 			if (templateContent != null && !templateContent.isEmpty()) {
 				mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 			} else {
@@ -305,6 +307,16 @@ public class NotificationHelper {
 		}
 		log.info(StringUtil.changeForLog("sendemail end... queryCode is"+queryCode + "templateId is "
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
+	}
+
+	private String replaceNum(String emailTemplate) {
+		int index = 1;
+		String replaceStr = "[num]";
+		while(emailTemplate.contains(replaceStr)){
+			emailTemplate.replaceFirst(replaceStr, index + ".");
+			index++;
+		}
+		return emailTemplate;
 	}
 
 	public InspectionEmailTemplateDto getRecript(List<String> role, String refType, String refId, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto) {
