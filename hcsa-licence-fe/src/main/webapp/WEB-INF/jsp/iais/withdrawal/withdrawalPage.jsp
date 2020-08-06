@@ -104,7 +104,7 @@
                                 <div class="document-upload-list">
                                     <h3>File upload for Withdrawal Reasons</h3>
                                     <div class="file-upload-gp">
-                                        <input id="withdrawFile" type="file" style="display: none;"
+                                        <input id="withdrawFile" type="file" style="display: none;" name = "selectedFile"
                                                aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
                                                                              href="#">Upload</a>
                                         <div id="delFile" style="margin-top: 13px;color: #1F92FF;"
