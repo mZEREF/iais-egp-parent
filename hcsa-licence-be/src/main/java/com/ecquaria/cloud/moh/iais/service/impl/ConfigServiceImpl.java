@@ -607,16 +607,13 @@ public class ConfigServiceImpl implements ConfigService {
             List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos1 = hcsaSvcSpeRoutingSchemeDtoMap.get(type);
             for(HcsaSvcSpeRoutingSchemeDto hcsaSvcSpeRoutingSchemeDto:hcsaSvcSpeRoutingSchemeDtos1){
                 String stageWrkGrpID = hcsaSvcSpeRoutingSchemeDto.getStageWrkGrpID();
-
                 for(HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto:hcsaSvcStageWorkingGroupDtos1){
-
                     String schemeType = hcsaSvcSpeRoutingSchemeDto.getSchemeType();
                         for(HcsaConfigPageDto hcsaConfigPageDto:hcsaConfigPageDtos){
                             String workingGroupId = hcsaConfigPageDto.getWorkingGroupId();
                             if(hcsaSvcStageWorkingGroupDto.getStageWorkGroupId().equals(workingGroupId)&&stageWrkGrpID.equals(hcsaSvcStageWorkingGroupDto.getId())){
                                 hcsaConfigPageDto.setRoutingSchemeName(schemeType);
                             }
-
                         }
                 }
 
@@ -624,6 +621,11 @@ public class ConfigServiceImpl implements ConfigService {
             }
             for (HcsaConfigPageDto hcsaConfigPageDto:hcsaConfigPageDtos){
                 sendHcsaConfigPageDtoTypeName(hcsaConfigPageDto,type);
+                if(hcsaConfigPageDto.getRoutingSchemeName()!=null){
+                    hcsaConfigPageDto.setIsMandatory("true");
+                }else if(hcsaConfigPageDto.getRoutingSchemeName()==null){
+                    hcsaConfigPageDto.setIsMandatory("false");
+                }
             }
 
             hcsaConfigPageDtoMap.put(type,hcsaConfigPageDtos);
@@ -869,10 +871,12 @@ public class ConfigServiceImpl implements ConfigService {
                 String stage = hcsaConfigPageDtos1.get(i).getStage();
                 String workingGroupId = hcsaConfigPageDtos1.get(i).getWorkingGroupId();
                 String routingSchemeName = hcsaConfigPageDtos1.get(i).getRoutingSchemeName();
+                String isMandatory = hcsaConfigPageDtos1.get(i).getIsMandatory();
                 hcsaConfigPageDtos.get(i).setManhours(manhours);
                 hcsaConfigPageDtos.get(i).setStage(stage);
                 hcsaConfigPageDtos.get(i).setWorkingGroupId(workingGroupId);
                 hcsaConfigPageDtos.get(i).setRoutingSchemeName(routingSchemeName);
+                hcsaConfigPageDtos.get(i).setIsMandatory(isMandatory);
             }
         }
     }

@@ -562,7 +562,7 @@ public class ConfigServiceDelegator {
                     /*  hcsaSvcSpecificStageWorkloadDto.setId(workloadId);*/
                 }
                 if ("optional".equals(isMandatory)) {
-                    hcsaConfigPageDto.setIsMandatory(isMandatory);
+                    hcsaConfigPageDto.setIsMandatory("false");
 
                 }else if("mandatory".equals(isMandatory)){
                     hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
@@ -599,10 +599,12 @@ public class ConfigServiceDelegator {
                         hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto1);
                         hcsaSvcSpeRoutingSchemeDtoList.add(hcsaSvcSpeRoutingSchemeDto2);
                     }
+                    hcsaConfigPageDto.setIsMandatory("true");
                 }
                 hcsaConfigPageDto.setWorkStageId(workstageId);
                 hcsaConfigPageDto.setRoutingSchemeName(routingScheme);
                 hcsaConfigPageDto.setAppType(every);
+
                 hcsaConfigPageDtos.add(hcsaConfigPageDto);
             }
         }

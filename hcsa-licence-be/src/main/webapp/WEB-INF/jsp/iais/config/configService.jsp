@@ -461,8 +461,8 @@
           <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
             <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
               <option value="">Please Select</option>
-              <option value="mandatory" >Mandatory</option>
-              <option value="optional">Optional</option>
+              <option value="mandatory" <c:if test="${routingStage.isMandatory=='true'}">selected="selected"</c:if>>Mandatory</option>
+              <option value="optional" <c:if test="${routingStage.isMandatory=='false'}">selected="selected"</c:if>>Optional</option>
             </select>
           </div>
 

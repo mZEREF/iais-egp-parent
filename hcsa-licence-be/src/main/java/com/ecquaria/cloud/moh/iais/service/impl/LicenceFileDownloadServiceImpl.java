@@ -888,6 +888,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         if(updateTaskList==null){
             return;
         }
+        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(updateTaskList)+"updateTaskList"));
         for(ApplicationDto applicationDto : updateTaskList){
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
             log.info(StringUtil.changeForLog(JsonUtil.parseToJson(appPremisesCorrelationDtos)+"appPremisesCorrelationDtos"));

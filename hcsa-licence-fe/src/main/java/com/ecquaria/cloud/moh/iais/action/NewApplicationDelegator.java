@@ -1156,13 +1156,14 @@ public class NewApplicationDelegator {
 
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
-        //update message status
+        //update message statusdo
         String msgId = (String) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         appSubmissionService.updateMsgStatus(msgId,MessageConstants.MESSAGE_STATUS_RESPONSE);
        /* applicationClient.saveReqeustInformationSubmision(appSubmissionRequestInformationDto);*/
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
             List<AppSubmissionDto> appSubmissionDtos=new ArrayList<>(1);
+            appSubmissionDto.setAmountStr("NA");
             appSubmissionDtos.add(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos);
         }
@@ -1534,6 +1535,13 @@ public class NewApplicationDelegator {
             }
             autoSaveAppsubmission.addAll(personAppSubmissionList);
 
+        }
+        Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP);
+        for(AppSubmissionDto appSubmissionDto1 : autoSaveAppsubmission){
+            NewApplicationHelper.syncPsnData(appSubmissionDto1, personMap);
+        }
+        for(AppSubmissionDto appSubmissionDto1 : notAutoSaveAppsubmission){
+            NewApplicationHelper.syncPsnData(appSubmissionDto1, personMap);
         }
         String auto = generateIdClient.getSeqId().getEntity();
         String notAuto = generateIdClient.getSeqId().getEntity();

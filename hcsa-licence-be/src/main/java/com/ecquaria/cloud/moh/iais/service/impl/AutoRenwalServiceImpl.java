@@ -82,13 +82,13 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     public void startRenwal(HttpServletRequest request) {
         List<Integer> dayList= IaisCommonUtils.genNewArrayList();
         dayList.add(-1);
-        dayList.add(systemParamConfig.getLicenceIsEligible());
-        dayList.add(systemParamConfig.getSecondLicenceReminder());
-        dayList.add(systemParamConfig.getThirdLicenceReminder());
-        dayList.add(systemParamConfig.getFourthLicenceReminder());
-        dayList.add(systemParamConfig.getFifthLicenceReminder());
-        dayList.add(systemParamConfig.getSixthLicenceReminder());
         dayList.add(systemParamConfig.getSeventhLicenceReminder());
+        dayList.add(systemParamConfig.getSixthLicenceReminder());
+        dayList.add(systemParamConfig.getFifthLicenceReminder());
+        dayList.add(systemParamConfig.getFourthLicenceReminder());
+        dayList.add(systemParamConfig.getThirdLicenceReminder());
+        dayList.add(systemParamConfig.getSecondLicenceReminder());
+        dayList.add(systemParamConfig.getLicenceIsEligible());
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(dayList)+"dayList"));
         Map<String, List<LicenceDto>> entity = hcsaLicenClient.licenceRenwal(dayList).getEntity();
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity+"------entity")));
