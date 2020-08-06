@@ -1044,7 +1044,7 @@ public class MohIntranetUserDelegator {
     }
 
     private static File inputStreamToFile(InputStream ins, File file) {
-        try (OutputStream os = Files.newOutputStream(file.toPath()) {
+        try (OutputStream os = Files.newOutputStream(file.toPath())) {
             int bytesRead;
             byte[] buffer = new byte[1024];
             while ((bytesRead = ins.read(buffer)) != -1) {
