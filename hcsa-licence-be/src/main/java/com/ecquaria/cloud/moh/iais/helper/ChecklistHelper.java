@@ -41,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -263,30 +264,10 @@ public final class ChecklistHelper {
             return;
         }
 
-        List<String> receiveEmail = IaisCommonUtils.genNewArrayList();
-        for(OrgUserDto orgUserDto : orgUserDtos){
-            if(!StringUtil.isEmpty(orgUserDto.getEmail())){
-                receiveEmail.add(orgUserDto.getEmail());
-            }
-        }
-
-        if (IaisCommonUtils.isEmpty(receiveEmail)){
-            return;
-        }
-
-        log.info(StringUtil.changeForLog("=====address====>>>"+ receiveEmail));
-        log.info(StringUtil.changeForLog("===>>>>> appPremisesCorrelationId" + appPremisesCorrelationId));
-        log.info(StringUtil.changeForLog("===>>>>> svcId" + svcId));
-        log.info(StringUtil.changeForLog("===>>>>> appType" + appType));
-        log.info(StringUtil.changeForLog("===>>>>> refNum" + refNum));
-        log.info(StringUtil.changeForLog("===>>>>> address" + address));
-        log.info(StringUtil.changeForLog("===>>>>> hciName" + hciName));
-        log.info(StringUtil.changeForLog("===>>>>> hciCode" + hciCode));
-        log.info(StringUtil.changeForLog("===>>>>> svcName" + svcName));
-
-        Map<String, Object> map = new HashMap(10);
+        Map<String, Object> map = new HashMap(11);
+        map.put("OFFICER_NAME", AppConsts.MOH_AGENCY_NAME);
         map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-        map.put("GROUP_NAME", "-");
+        map.put("GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
         map.put("INSPECTION_TASK_NUMBER", refNum);
         map.put("HCI_NAME", hciName);
         map.put("HCI_ADDRESS", address);
@@ -296,24 +277,41 @@ public final class ChecklistHelper {
         map.put("APPLICATION_TYPE", MasterCodeUtil.getCodeDesc(appType));
         map.put("APPLICATION_DATE", svcName);
 
-        log.info("do send email");
-        try {
-            MsgTemplateDto msgTemplate = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
-            String subject = msgTemplate.getTemplateName();
-            String messageContent = msgTemplate.getMessageContent();
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+        log.info(StringUtil.changeForLog("===>>>>> appPremisesCorrelationId" + appPremisesCorrelationId));
+        log.info(StringUtil.changeForLog("===>>>>> svcId" + svcId));
+        log.info(StringUtil.changeForLog("===>>>>> appType" + appType));
+        log.info(StringUtil.changeForLog("===>>>>> refNum" + refNum));
+        log.info(StringUtil.changeForLog("===>>>>> address" + address));
+        log.info(StringUtil.changeForLog("===>>>>> hciName" + hciName));
+        log.info(StringUtil.changeForLog("===>>>>> hciCode" + hciCode));
+        log.info(StringUtil.changeForLog("===>>>>> svcName" + svcName));
 
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent(templateMessageByContent);
-            emailDto.setSubject(subject);
-            emailDto.setSender(mailSender);
-            emailDto.setReceipts(receiveEmail);
-            emailDto.setClientQueryCode(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
-            emailClient.sendNotification(emailDto).getEntity();
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        } catch (TemplateException e) {
-            log.error(e.getMessage(), e);
+        for(OrgUserDto orgUserDto : orgUserDtos){
+            String emailAddress = orgUserDto.getEmail();
+            String userName = orgUserDto.getDisplayName();
+            map.put("OFFICER_NAME", userName);
+            List<String> eList = Collections.singletonList(emailAddress);
+
+            log.info("do send email");
+            try {
+                MsgTemplateDto msgTemplate = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
+                String subject = msgTemplate.getTemplateName();
+                subject = subject.replace("%s", refNum);
+                String messageContent = msgTemplate.getMessageContent();
+                String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+
+                EmailDto emailDto = new EmailDto();
+                emailDto.setContent(templateMessageByContent);
+                emailDto.setSubject(subject);
+                emailDto.setSender(mailSender);
+                emailDto.setReceipts(eList);
+                emailDto.setClientQueryCode(MsgTemplateConstants.MSG_TEMPLATE_INSPECTOR_MODIFIED_CHECKLIST);
+                emailClient.sendNotification(emailDto).getEntity();
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            } catch (TemplateException e) {
+                log.error(e.getMessage(), e);
+            }
         }
     }
 }
