@@ -415,6 +415,13 @@ public class MassEmailDelegator {
             ) {
                 selectOptions.add(new SelectOption(item.getPsnType(),roleName(item.getPsnType())));
             }
+        }else{
+            selectOptions.add(new SelectOption("Licensee","Licensee"));
+            selectOptions.add(new SelectOption("Authorised Person","Authorised Person"));
+            selectOptions.add(new SelectOption("Principal Officer","Principal Officer"));
+            selectOptions.add(new SelectOption("Deputy Principal Officer","Deputy Principal Officer"));
+            selectOptions.add(new SelectOption("CGO","CGO"));
+            selectOptions.add(new SelectOption("MedAlert","MedAlert"));
         }
         ParamUtil.setRequestAttr(bpc.request, "roleSelection",  (Serializable) selectOptions);
     }
