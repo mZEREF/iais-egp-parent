@@ -6,8 +6,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.ProfessionalInformationQueryDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -27,7 +27,6 @@ import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.HcsaChklService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -179,11 +178,13 @@ public class ProfessionalInformationDelegator {
 	public void preLoadProfessionalDetails(BaseProcessClass bpc){
 		HttpServletRequest request = bpc.request;
 
-		String keyPersonnelId = ParamUtil.getMaskedString(request, "prRegNo");
-		if (!StringUtils.isEmpty(keyPersonnelId)){
-			PersonnelsDto personnelsDto = onlineEnquiriesService.getProfessionalInformationByKeyPersonnelId(keyPersonnelId);
-			ParamUtil.setSessionAttr(request, PROFESSIONAL_INFORMATION_DETAIL, personnelsDto);
-		}
+		//TODO wait interface call
+		ProfessionalDetailsDto detailsDto = new ProfessionalDetailsDto();
+		detailsDto.setDpRecords("-");
+		detailsDto.setRegDit("-");
+		detailsDto.setRegExpDate("-");
+
+		ParamUtil.setSessionAttr(request, PROFESSIONAL_INFORMATION_DETAIL, detailsDto);
 	}
 
 	private List<HcsaServiceDto> receiveHcsaService(){
