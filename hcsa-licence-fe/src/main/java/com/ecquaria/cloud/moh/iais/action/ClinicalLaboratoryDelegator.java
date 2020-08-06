@@ -2171,8 +2171,9 @@ public class ClinicalLaboratoryDelegator {
                             Integer docSize = appSvcDocDtoLit.get(i).getDocSize();
                             String docName = appSvcDocDtoLit.get(i).getDocName();
                             String id = appSvcDocDtoLit.get(i).getSvcDocId();
-                            if (docSize > 4 * 1024) {
-                                errorMap.put(id + "selectedFile", "UC_CHKLMD001_ERR007");
+                            int uploadFileLimit = systemParamConfig.getUploadFileLimit();
+                            if (docSize > uploadFileLimit) {
+                                errorMap.put(id + "selectedFile", MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(uploadFileLimit),"sizeMax"));
                             }
                             Boolean flag = Boolean.FALSE;
                             String substring = docName.substring(docName.lastIndexOf('.') + 1);

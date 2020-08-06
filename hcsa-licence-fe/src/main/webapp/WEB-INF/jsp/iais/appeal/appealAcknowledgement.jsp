@@ -15,13 +15,13 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
-    <div>
+    <div class="row" style="margin-left:5px">
       <div style="margin-top: 15px">
         <h1>Acknowledgement</h1>
         <br><br>
       </div>
       <div class="form-group">
-        <div class="col-xs-12 col-md-10">
+        <div class="col-xs-12 col-md-10" style="margin-left: -15px">
           Your appeal application has been successfully submitted, the application number is
           <strong style="text-decoration: underline">${newApplicationNo}</strong>
           <br><br><br>

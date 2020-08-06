@@ -644,7 +644,7 @@ public class NewApplicationDelegator {
             String crud_action_type_continue = bpc.request.getParameter("crud_action_type_continue");
             String crud_action_type = bpc.request.getParameter("crud_action_type");
             bpc.request.setAttribute("continueStep",crud_action_type);
-            bpc.request.setAttribute("crudActionTypeContinue",crud_action_type_continue);
+            bpc.request.setAttribute("crudActionTypeContinue",crud_action_additional);
             if("continue".equals(crud_action_type_continue)){
                 errorMap.remove("hciNameUsed");
             }
@@ -1613,6 +1613,8 @@ public class NewApplicationDelegator {
                 }
             }
             appSubmissionDtos1.get(0).setAmount(t);
+            String amountStr = Formatter.formatterMoney(appSubmissionDtos1.get(0).getAmount());
+            appSubmissionDtos1.get(0).setAmountStr(amountStr);
             appSubmissionDtoList.add( appSubmissionDtos1.get(0));
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
@@ -5302,8 +5304,9 @@ public class NewApplicationDelegator {
                 keyName = "prem"+appGrpPrimaryDocDto.getSvcComDocId()+appGrpPrimaryDocDto.getPremisessName();
             }
             long length = appGrpPrimaryDocDto.getRealDocSize();
-            if(length>4*1024*1024){
-                errorMap.put(keyName,"UC_CHKLMD001_ERR007");
+            int uploadFileLimit = systemParamConfig.getUploadFileLimit();
+            if(length/1024 >uploadFileLimit){
+                errorMap.put(keyName,MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(uploadFileLimit),"sizeMax"));
                 continue;
             }
             Boolean flag=Boolean.FALSE;

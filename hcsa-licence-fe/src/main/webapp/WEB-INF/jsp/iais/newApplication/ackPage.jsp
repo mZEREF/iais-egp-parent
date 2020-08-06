@@ -74,7 +74,7 @@
                                                     <td><c:out value="${txnDt}"/></td>
                                                     <td><c:if test="${appSub.amount==null}">N/A</c:if>
                                                         <c:if test="${appSub.amount!=null}">
-                                                            <c:out value="${appSub.amount}"/>
+                                                            <c:out value="${appSub.amountStr}"/>
                                                         </c:if>
                                                     </td>
                                                     <td>
