@@ -1115,7 +1115,7 @@ public class NewApplicationHelper {
                 //dto psn
                 String licPsn = String.valueOf(psnDto.isLicPerson());
                 if(!licPerson.equals(licPsn)){
-                    log.info(StringUtil.changeForLog(""));
+                    log.info(StringUtil.changeForLog("personMapKey:"+personMapKey+",dropdown psn:"+licPerson+",,,dto psn:"+licPsn));
                     continue;
                 }
                 //set different page column
@@ -1173,6 +1173,7 @@ public class NewApplicationHelper {
                 AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(person,AppSvcPersonDto.class);
                 AppSvcPersonExtDto appSvcPersonExtDto = MiscUtil.transferEntityDto(person,AppSvcPersonExtDto.class);
                 appSvcPersonExtDto.setServiceCode(svcCode);
+                appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
                 appSvcPersonExtDtos.add(appSvcPersonExtDto);
                 newPersonAndExtDto.setPersonDto(appSvcPersonDto);
                 newPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
@@ -1758,7 +1759,6 @@ public class NewApplicationHelper {
             Field[] fs = psnClsa.getDeclaredFields();
             for(Field f:fs){
                 ReflectionUtils.makeAccessible(f);
-                //f.setAccessible(true);
                 Object value = IaisCommonUtils.getFieldValue(personFieldDto, f);
                 if(!StringUtil.isEmpty(value)){
                     result = false;
@@ -1783,7 +1783,6 @@ public class NewApplicationHelper {
                     continue;
                 }
                 ReflectionUtils.makeAccessible(f);
-//                f.setAccessible(true);
                 Object value = IaisCommonUtils.getFieldValue(personFieldDto, f);
                 if(StringUtil.isEmpty(value)){
                     String fieldName = f.getName();
@@ -1791,7 +1790,6 @@ public class NewApplicationHelper {
                     try {
                         field = appPsnEditDto.getClass().getDeclaredField(fieldName);
                         ReflectionUtils.makeAccessible(field);
-//                        field.setAccessible(true);
                         field.setBoolean(appPsnEditDto,true);
                     } catch (NoSuchFieldException e) {
                         log.debug(StringUtil.changeForLog("not found this field:"+fieldName));
@@ -1817,7 +1815,6 @@ public class NewApplicationHelper {
         }
         if(field != null){
             ReflectionUtils.makeAccessible(field);
-//            field.setAccessible(true);
             try {
                 field.set(person,value);
             } catch (IllegalAccessException e) {

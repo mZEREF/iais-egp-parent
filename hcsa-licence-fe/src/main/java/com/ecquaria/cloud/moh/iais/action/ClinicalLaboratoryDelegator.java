@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.base.FileType;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -2185,7 +2184,7 @@ public class ClinicalLaboratoryDelegator {
                                 }
                             }
                             if (!flag) {
-                                errorMap.put(id + "selectedFile", "Wrong file type");
+                                errorMap.put(id + "selectedFile", MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType,"fileType"));
                             }
                             String errMsg = errorMap.get(id + "selectedFile");
                             if(StringUtil.isEmpty(errMsg)){
