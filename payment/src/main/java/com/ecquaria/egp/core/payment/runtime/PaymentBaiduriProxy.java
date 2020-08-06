@@ -131,7 +131,6 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 //			System.out.println(paymentIntent.getCharges());
 		} catch (StripeException e) {
 			log.info(e.getMessage(),e);
-			logger.info(e.getMessage(),e);
 			srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
 		}
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
@@ -450,8 +449,9 @@ public class PaymentBaiduriProxy extends PaymentProxy {
     }
 	
 	public static void main(String[] args) throws Exception {
-		log.info(String.valueOf(mul(4.10, 100)));
-		logger.debug(String.valueOf(mul(4.10, 100)));
+		String logInf = String.valueOf(mul(4.10, 100));
+		log.info(logInf);
+		logger.debug(logInf);
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
 		byte[] ba = md.digest(SMCStringHelperUtil.getStringBytes("123"));
 		log.info(hex(ba));
