@@ -724,8 +724,12 @@ public class BackendInboxDelegator {
             log.info(StringUtil.changeForLog("**** saveRejectReturnFee applicationDto ***** " + applicationDto.getStatus()));
             if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus())){
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                Double returnFee = applicationDto.getReturnFee();
+                if(returnFee==null || returnFee == 0d){
+                    continue;
+                }
+                appReturnFeeDto.setReturnAmount(returnFee);
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
-                appReturnFeeDto.setReturnAmount(applicationDto.getReturnFee());
                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_REJECT);
                 saveReturnFeeDtos.add(appReturnFeeDto);
                 log.info(StringUtil.changeForLog("**** saveRejectReturnFee applicationDto ReturnFee***** " +applicationDto.getApplicationNo() + " and " + applicationDto.getReturnFee()));

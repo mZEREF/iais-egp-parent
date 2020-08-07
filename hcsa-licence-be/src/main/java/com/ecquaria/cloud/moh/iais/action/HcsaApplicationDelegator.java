@@ -1792,7 +1792,7 @@ public class HcsaApplicationDelegator {
             if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus()) && !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(applicationDto.getStatus())){
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
-                if(returnFee==null){
+                if(returnFee==null || returnFee == 0d){
                    continue;
                 }
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
