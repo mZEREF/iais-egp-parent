@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionRes
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
+import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
@@ -929,7 +930,7 @@ public class RequestForChangeMenuDelegator {
             if (StringUtil.isEmpty(email)) {
                 errMap.put("emailAddr", "UC_CHKLMD001_ERR001");
             } else if (!StringUtil.isEmpty(email)) {
-                if (!email.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                if (!ValidationUtils.isEmail(email)) {
                     errMap.put("emailAddr", "CHKLMD001_ERR006");
                 }
             }
@@ -1100,7 +1101,7 @@ public class RequestForChangeMenuDelegator {
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                    appGrpPremisesDto.setNeedNewLicNo(false);
+                    appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
                 }
             }
             //judge is the preInspection
