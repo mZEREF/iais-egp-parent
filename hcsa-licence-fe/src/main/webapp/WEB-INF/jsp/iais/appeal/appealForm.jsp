@@ -125,7 +125,7 @@
             <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
             <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
             <div class="col-xs-12 col-md-4" >
-              <span  name="fileName" style="font-size: 25px;color: #2199E8;text-align: center">${filename}</span>
+              <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">${filename}</span>
               <input type="text" value="Y" style="display: none" name="isDelete" id="isDelete">
               <input type="text" value="${filename}" style="display: none" id="isFile">
 
