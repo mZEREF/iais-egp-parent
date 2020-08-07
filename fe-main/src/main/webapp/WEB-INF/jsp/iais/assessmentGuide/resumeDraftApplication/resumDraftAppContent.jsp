@@ -30,7 +30,8 @@
                                 <label class="form-check-label" for="draftApp"><span
                                         class="check-circle"></span></label>
                             </div>
-                            <input type="hidden" name="draftAppNo" value="<iais:mask name= "draftAppNo" value="${pool.applicationNo}"/>"/>
+                            <input type="hidden" name="draftAppNo" value="${pool.applicationNo}"/>
+                            <input type="hidden" name="draftAppType" value="${pool.applicationType}"/>
                         </td>
                         <td>${pool.applicationNo}</td>
                         <td><iais:code code="${pool.applicationType}"/></td>
@@ -43,5 +44,4 @@
         </tbody>
     </table>
 </div>
-<a class="btn btn-primary " onclick="Utils.submit('mainForm','resume')"
-   style="background: #1F92FF; color: white">NEXT</a>
+<a class="btn btn-primary " onclick="guideSubmit('resumDraft','second')">NEXT</a>

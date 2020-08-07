@@ -1392,6 +1392,47 @@ public class HalpAssessmentGuideDelegator {
         }
     }
 
+    public void resumeDraftAppStep(BaseProcessClass bpc) throws IOException {
+        log.debug("The prepareEdit start ...");
+        HttpServletRequest request = bpc.request;
+        String appNo = ParamUtil.getString(request, "draftAppNo");
+        String appType = MasterCodeUtil.getCodeDesc(ParamUtil.getString(request, "draftAppType")).trim();
+        if(InboxConst.APP_DO_DRAFT_TYPE_RFC.equals(appType)){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange/prepareDraft")
+                    .append("?DraftNumber=")
+                    .append(MaskUtil.maskValue("DraftNumber",appNo));
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }else if(InboxConst.APP_DO_DRAFT_TYPE_RENEW.equals(appType)){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohWithOutRenewal")
+                    .append("?DraftNumber=")
+                    .append(MaskUtil.maskValue("DraftNumber",appNo));
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }else if(InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(appType)){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication")
+                    .append("?DraftNumber=")
+                    .append(MaskUtil.maskValue("DraftNumber",appNo));
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }
+        else {
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication")
+                    .append("?DraftNumber=")
+                    .append(MaskUtil.maskValue("DraftNumber",appNo));
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }
+    }
+
     public void subDateMoh(BaseProcessClass bpc) {
 
     }
