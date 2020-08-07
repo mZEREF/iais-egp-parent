@@ -217,7 +217,11 @@ public class FeAdminManageDelegate {
                 organizationDto.setId(organizationById.getId());
                 String json = JsonUtil.parseToJson(organizationDto);
                 orgUserManageService.updateUserBe(organizationDto);
-                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE, "success");
+                if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "success");
+                }else{
+                    ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, "inbox");
+                }
             }
         }
     }
