@@ -459,7 +459,7 @@ public class InspecReassignTaskDelegator {
         ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
         //send email
         try{
-            sendEmail(bpc.request);
+//            sendEmail(bpc.request);
         }catch (Exception e){
             log.error(StringUtil.changeForLog("reassign email error"));
         }
