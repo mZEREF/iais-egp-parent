@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
@@ -390,8 +391,13 @@ public class HcsaApplicationDelegator {
                     if((isAppealType && isChangePeriodAppealType) || !isAppealType){
                         String number = ParamUtil.getString(bpc.request,"number");
                         if(!StringUtil.isEmpty(number)){
-                            appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
                             String chrono = ParamUtil.getString(bpc.request,"chrono");
+                            if(AppointmentConstants.RECURRENCE_YEAR.equals(chrono)){
+                                chrono = AppointmentConstants.RECURRENCE_MONTH;
+                                appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number) * 12);
+                            }else{
+                                appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
+                            }
                             appPremisesRecommendationDto.setChronoUnit(chrono);
                         }
                     }
@@ -2504,9 +2510,7 @@ public class HcsaApplicationDelegator {
                         String returnFee = appPremisesRecommendationDto.getRemarks();
                         ParamUtil.setSessionAttr(request,"returnFeeOnlyShow",returnFee);
                     }else if(isChangePeriodAppealType && isAppealApprove){
-                        String codeDesc = "";
-                        codeDesc = MasterCodeUtil.getCodeDesc(chronoUnit);
-                        String appealRecommendationOtherOnlyShow = recomInNumber + " " + codeDesc;
+                        String appealRecommendationOtherOnlyShow =  getRecommendationOnlyShowStr(recomInNumber);
                         ParamUtil.setSessionAttr(request,"appealRecommendationOtherOnlyShow",appealRecommendationOtherOnlyShow);
                     }
                 }
