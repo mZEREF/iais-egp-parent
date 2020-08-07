@@ -30,12 +30,12 @@
                                                             <td>${answerForDifDto.submitName}</td>
                                                             <td>${answerForDifDto.answer}</td>
                                                             <td>${answerForDifDto.remark}</td>
-                                                            <td>
+                                                            <td class="text-center">
                                                                 <c:if test="${'No'== answerForDifDto.answer}">
                                                                 <input  disabled type="checkbox" ${answerForDifDto.isRec == '1' ? 'checked' : null} />
                                                                 </c:if>
                                                             </td>
-                                                            <td>
+                                                            <td class="text-center">
                                                                 <c:if test="${!item.incqDto.sameAnswer}">
                                                                 <input name="${ckkId}Deconflict" id="<${ckkId}Deconflict${answerForDifDtoStatus.index}" type="radio" <c:if test="${item.incqDto.deconflict == answerForDifDto.submitId}">checked</c:if> value="${answerForDifDto.submitId}"
                                                                        onclick="javascript: doChangeDeconflict(1,'${ckkId}','${inspectorsParticipant.size()}')"/>
