@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -1061,7 +1062,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             templateMessageByContent = MsgUtil.getTemplateMessageByContent(mtd.getMessageContent(), map);
         }catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
-            templateMessageByContent = mtd.getMessageContent();
+            throw new IaisRuntimeException(e);
         }
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
