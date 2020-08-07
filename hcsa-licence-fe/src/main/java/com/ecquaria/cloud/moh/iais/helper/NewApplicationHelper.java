@@ -2107,19 +2107,32 @@ public class NewApplicationHelper {
                 appSvcCgoDto.setIdType(selPerson.getIdType());
                 appSvcCgoDto.setIdNo(selPerson.getIdNo());
                 appSvcCgoDto.setDesignation(selPerson.getDesignation());
-                appSvcCgoDto.setProfessionType(selPerson.getProfessionType());
-                appSvcCgoDto.setProfRegNo(selPerson.getProfRegNo());
-                appSvcCgoDto.setSpeciality(selPerson.getSpeciality());
-                appSvcCgoDto.setSpecialityOther(selPerson.getSpecialityOther());
-                appSvcCgoDto.setSubSpeciality(selPerson.getSubSpeciality());
+                String professionType = selPerson.getProfessionType();
+                if(!StringUtil.isEmpty(professionType)){
+                    appSvcCgoDto.setProfessionType(professionType);
+                }
+                String profRegNo = selPerson.getProfRegNo();
+                if(!StringUtil.isEmpty(profRegNo)){
+                    appSvcCgoDto.setProfRegNo(profRegNo);
+                }
+                String speciality = selPerson.getSpeciality();
+                if(!StringUtil.isEmpty(speciality)){
+                    appSvcCgoDto.setSpeciality(speciality);
+                }
+                String specialityOther = selPerson.getSpecialityOther();
+                if(!StringUtil.isEmpty(specialityOther)){
+                    appSvcCgoDto.setSpecialityOther(specialityOther);
+                }
+                String subSpeciality = selPerson.getSubSpeciality();
+                if(!StringUtil.isEmpty(subSpeciality)){
+                    appSvcCgoDto.setSubSpeciality(subSpeciality);
+                }
                 appSvcCgoDto.setMobileNo(selPerson.getMobileNo());
                 appSvcCgoDto.setEmailAddr(selPerson.getEmailAddr());
                 //sync other field
                 String officeTelNo = selPerson.getOfficeTelNo();
+                appSvcCgoDto.setOfficeTelNo(officeTelNo);
                 String preferredMode = selPerson.getPreferredMode();
-                if(!StringUtil.isEmpty(officeTelNo)){
-                    appSvcCgoDto.setOfficeTelNo(officeTelNo);
-                }
                 if(!StringUtil.isEmpty(preferredMode)){
                     appSvcCgoDto.setPreferredMode(preferredMode);
                 }
