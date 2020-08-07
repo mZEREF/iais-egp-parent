@@ -58,7 +58,6 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     private String sharedPath;
 
 
-    private Boolean flag=Boolean.TRUE;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -183,7 +182,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                 zipFile(zos,f);
             }
         } else {
-            try  ( BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));){
+            try  ( BufferedInputStream bis = new BufferedInputStream( Files.newInputStream(file.toPath()));){
                 zos.putNextEntry(new ZipEntry(file.getPath().substring(file.getPath().indexOf(RequestForInformationConstants.FILE_NAME_RFI))));
                 int count ;
                 byte [] b =new byte[1024];
@@ -201,7 +200,6 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
     }
 
     private void rename(String fileNamesss, String rfiId)  {
-        flag = Boolean.TRUE;
         File zipFile =new File(sharedPath + RequestForInformationConstants.BACKUPS_REC);
         MiscUtil.checkDirs(zipFile);
         if(zipFile.isDirectory()){
@@ -233,7 +231,6 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
                     String s1 = saveFileName(s+RequestForInformationConstants.ZIP_NAME,RequestForInformationConstants.BACKUPS_REC + File.separator+s+RequestForInformationConstants.ZIP_NAME,rfiId);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
-                        flag=Boolean.FALSE;
                         break;
                     }
                 } catch (IOException e) {

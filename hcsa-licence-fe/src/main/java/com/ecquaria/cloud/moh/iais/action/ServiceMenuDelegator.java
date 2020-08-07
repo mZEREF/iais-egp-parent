@@ -919,11 +919,11 @@ public class ServiceMenuDelegator {
             return;
         }
 
-        if(AppConsts.YES.equals(isAlign)){
+      /*  if(AppConsts.YES.equals(isAlign)){
             //todo
         }else{
             //to next
-        }
+        }*/
         //todo only base
         if(appSelectSvcDto.isBasePage()){
 

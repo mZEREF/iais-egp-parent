@@ -107,6 +107,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
         AppSvcPrincipalOfficersDto oldPoE = new AppSvcPrincipalOfficersDto();
         AppSvcPrincipalOfficersDto newMatE = new AppSvcPrincipalOfficersDto();
         AppSvcPrincipalOfficersDto oldMatE = new AppSvcPrincipalOfficersDto();
+        AppSvcPrincipalOfficersDto newDpoE = new AppSvcPrincipalOfficersDto();
+        AppSvcPrincipalOfficersDto oldDpoE = new AppSvcPrincipalOfficersDto();
         for (int i = 0; i < newAppSvcRelatedInfoDtoList.size(); i++) {
             List<AppSvcCgoDto> newCgoList = newAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
             List<AppSvcCgoDto> oldCgoList = oldAppSvcRelatedInfoDtoList.get(i).getAppSvcCgoDtoList();
@@ -167,8 +169,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                         }
                     }
                     if (ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnTypeNew) && ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnTypeOld)) {
-                        AppSvcPrincipalOfficersDto newDpoE = new AppSvcPrincipalOfficersDto();
-                        AppSvcPrincipalOfficersDto oldDpoE = new AppSvcPrincipalOfficersDto();
+                        clearAppSvcPrincipalOfficersDto(newPoE);
+                        clearAppSvcPrincipalOfficersDto(oldDpoE);
                         newDpoE.setName(newPoDto.getName());
                         newDpoE.setDesignation(newPoDto.getDesignation());
                         newDpoE.setMobileNo(newPoDto.getMobileNo());

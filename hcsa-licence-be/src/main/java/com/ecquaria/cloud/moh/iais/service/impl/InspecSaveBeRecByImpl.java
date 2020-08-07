@@ -1,6 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
+
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
@@ -29,10 +29,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -83,6 +83,13 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
     @Autowired
     private GenerateIdClient generateIdClient;
 
+   @PostConstruct
+    private void init() {
+        compressPath = sharedPath + "recUnZipFile";
+        download = compressPath + File.separator + "backupsRec";
+        zipFile = sharedPath + "backupsRec";
+    }
+
     @Override
     public List<ProcessFileTrackDto> getFileTypeAndStatus(String applicationStatusFeToBeRectification, String commonStatusActive) {
         List<ProcessFileTrackDto> processFileTrackDtos = systemBeLicClient.getFileTypeAndStatus(ApplicationConsts.APPLICATION_STATUS_FE_TO_BE_RECTIFICATION,
@@ -92,9 +99,6 @@ public class InspecSaveBeRecByImpl implements InspecSaveBeRecByService {
 
     @Override
     public void deleteUnZipFile() {
-        compressPath = sharedPath + "recUnZipFile";
-        download = compressPath + File.separator + "backupsRec";
-        zipFile = sharedPath + "backupsRec";
         File downloadFile = new File(download);
         File zipFiles = new File(zipFile);
         File compressPathFile = new File(compressPath);

@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.List;
@@ -52,7 +53,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     private String fileFormat = ".text";
     private String backups;
 
-    private Boolean flag = Boolean.TRUE;
     @Value("${iais.hmac.keyId}")
     private String keyId;
     @Value("${iais.hmac.second.keyId}")
@@ -78,27 +78,11 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     @Autowired
     private AppEicClient appEicClient;
 
-
-    public FeToBeRecFileImpl() {
-     setFileName("userRecFile");
-     setDownload(sharedPath,getFileName());
-     setBackups(sharedPath,"backupsRec");
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setDownload(String sharedPath,String fileName) {
+    @PostConstruct
+   private void init() {
+        this.fileName ="userRecFile";
         this.download = sharedPath + fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public void setBackups(String sharedPath,String backupsRec) {
-        this.backups = sharedPath+ backupsRec;
+        this.backups = sharedPath+"backupsRec";
     }
 
     @Override
@@ -245,7 +229,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
     }
 
     private void rename(String fileNamesss, String appId)  {
-        flag = Boolean.TRUE;
         File zipFile = new File(backups);
         if(zipFile.isDirectory()){
             File[] files = zipFile.listFiles((dir, name) -> {
@@ -280,7 +263,6 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
                             if(!fileDelStatus){
                                 log.debug(StringUtil.changeForLog(file.getName() + "delete false"));
                             }
-                            flag = Boolean.FALSE;
                             break;
                         }
                     } else {

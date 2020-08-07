@@ -828,6 +828,7 @@ public class AppealServiceImpl implements AppealService {
             s = rfiApplication.getApplicationNo();
             rfiApplication.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
             applicationClient.updateApplication(rfiApplication);
+            ParamUtil.setSessionAttr(request,"rfiApplication",rfiApplication);
         }
 
         if (appSvcCgoDtos != null && !appSvcCgoDtos.isEmpty()) {
