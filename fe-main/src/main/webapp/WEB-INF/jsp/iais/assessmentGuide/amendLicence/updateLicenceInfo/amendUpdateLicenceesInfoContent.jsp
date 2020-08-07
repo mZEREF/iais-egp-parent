@@ -29,12 +29,12 @@
                         <tr>
                             <td>
                                 <div class="form-check">
-                                    <input class="form-check-input licenceCheck" id="amendLicId" type="radio"
-                                           name="amendLicId" value="amendLicId${status.index}" aria-invalid="false"/>
-                                    <label class="form-check-label" for="amendLicId"><span
+                                    <input class="form-check-input licenceCheck" id="amendLicenseId" type="radio"
+                                           name="amendLicenseId" value="amendLicenseId${status.index}" aria-invalid="false"/>
+                                    <label class="form-check-label" for="amendLicenseId"><span
                                             class="check-circle"></span>
                                     </label>
-                                    <input type="hidden" name="amendLicId${status.index}" value="<iais:mask name= "amendLicId${status.index}" value="${pool.licenceId}"/>"/>
+                                    <input type="hidden" name="amendLicenseId${status.index}" value="<iais:mask name= "amendLicenseId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>
                             </td>
                             <td>${pool.hciName}</td>
