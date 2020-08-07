@@ -5162,15 +5162,15 @@ public class NewApplicationDelegator {
                         //gen dropdown map
                         String svcCode = appSvcRelatedInfoDto.getServiceCode();
                         List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcRelatedInfoDto.getAppSvcCgoDtoList());
-                        NewApplicationHelper.setPsnIntoSelMap(personMap,appSvcCgoDtos,svcCode);
+                        NewApplicationHelper.initSetPsnIntoSelMap(personMap,appSvcCgoDtos,svcCode);
                         //reset dto
                         List<AppSvcCgoDto> newCgoDtoList = IaisCommonUtils.genNewArrayList();
                         for(AppSvcPrincipalOfficersDto item:appSvcCgoDtos){
                             newCgoDtoList.add(MiscUtil.transferEntityDto(item,AppSvcCgoDto.class));
                         }
                         appSvcRelatedInfoDto.setAppSvcCgoDtoList(newCgoDtoList);
-                        NewApplicationHelper.setPsnIntoSelMap(personMap,appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(),svcCode);
-                        NewApplicationHelper.setPsnIntoSelMap(personMap,appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(),svcCode);
+                        NewApplicationHelper.initSetPsnIntoSelMap(personMap,appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(),svcCode);
+                        NewApplicationHelper.initSetPsnIntoSelMap(personMap,appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(),svcCode);
                     }
                     //set dpo select flag
                     List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
@@ -5417,18 +5417,21 @@ public class NewApplicationDelegator {
             List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
             licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(licPersonList);
             ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
+            Object draft = ParamUtil.getSessionAttr(bpc.request,DRAFTCONFIG);
             //set data into psnMap
             Map<String,AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
             personMap.putAll(licPersonMap);
-            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                    String svcCode = appSvcRelatedInfoDto.getServiceCode();
-                    List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
-                    List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
-                    personMap = NewApplicationHelper.setPsnIntoSelMap(personMap, appSvcCgoDtos, svcCode);
-                    personMap = NewApplicationHelper.setPsnIntoSelMap(personMap, appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), svcCode);
-                    personMap = NewApplicationHelper.setPsnIntoSelMap(personMap, appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);
+            if(draft != null){
+                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                    for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                        String svcCode = appSvcRelatedInfoDto.getServiceCode();
+                        List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+                        List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcCgoDtoList);
+                        personMap = NewApplicationHelper.initSetPsnIntoSelMap(personMap, appSvcCgoDtos, svcCode);
+                        personMap = NewApplicationHelper.initSetPsnIntoSelMap(personMap, appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList(), svcCode);
+                        personMap = NewApplicationHelper.initSetPsnIntoSelMap(personMap, appSvcRelatedInfoDto.getAppSvcMedAlertPersonList(), svcCode);
+                    }
                 }
             }
             ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) personMap);

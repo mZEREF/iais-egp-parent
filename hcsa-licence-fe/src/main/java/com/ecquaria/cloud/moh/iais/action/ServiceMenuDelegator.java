@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -648,6 +649,7 @@ public class ServiceMenuDelegator {
 
         //control switch
         if(!currentPage.equals(nextstep)){
+            //note: As long as you select the specified service, you don't go and select align
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
             boolean newLicensee  = true;
             String licenseeId = "";
@@ -736,6 +738,7 @@ public class ServiceMenuDelegator {
         Map<String,AppSvcRelatedInfoDto>  baseReloadDtoMap = IaisCommonUtils.genNewHashMap();
         boolean chooseExist = false;
         boolean chooseDiff = false;
+        Set<String> baseSvcCodes = IaisCommonUtils.genNewHashSet();
         if(!IaisCommonUtils.isEmpty(speSvcDtoList)){
             Map<String,List<AppAlignLicQueryDto>> baseLicMap = (Map<String, List<AppAlignLicQueryDto>>) ParamUtil.getSessionAttr(bpc.request,BASE_LIC_PREMISES_MAP);
             //reload
@@ -751,12 +754,15 @@ public class ServiceMenuDelegator {
                     if(baseSvcMaskCode.contains("-new")){
                         //new base+spec
                         chooseDiff = true;
-                        appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
-                        appSvcRelatedInfoDto.setServiceId(baseServiceDto.getId());
-                        appSvcRelatedInfoDto.setServiceName(baseServiceDto.getSvcName());
-                        appSvcRelatedInfoDto.setServiceCode(baseServiceDto.getSvcCode());
-                        appSvcRelatedInfoDto.setBaseServiceId(baseServiceDto.getId());
-                        appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                        if(!baseSvcCodes.contains(baseServiceDto.getSvcCode())){
+                            appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
+                            appSvcRelatedInfoDto.setServiceId(baseServiceDto.getId());
+                            appSvcRelatedInfoDto.setServiceName(baseServiceDto.getSvcName());
+                            appSvcRelatedInfoDto.setServiceCode(baseServiceDto.getSvcCode());
+                            appSvcRelatedInfoDto.setBaseServiceId(baseServiceDto.getId());
+                            appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                            baseSvcCodes.add(baseServiceDto.getSvcCode());
+                        }
                         appSvcRelatedInfoDto = new AppSvcRelatedInfoDto();
                         appSvcRelatedInfoDto.setServiceId(speServiceDto.getId());
                         appSvcRelatedInfoDto.setServiceName(speServiceDto.getSvcName());
@@ -858,16 +864,15 @@ public class ServiceMenuDelegator {
                 }
             }else{
                 boolean newLicensee = appSelectSvcDto.isNewLicensee();
-                List<HcsaServiceDto> baseServiceList = appSelectSvcDto.getBaseSvcDtoList();
                 if(newLicensee){
-                    //at least 2 base svc
-                    if(!IaisCommonUtils.isEmpty(baseServiceList) && baseServiceList.size()>1){
+                    //Scenario 8:at least 2 base svc
+                    if(baseSvcCodes.size()>1){
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
                     }else{
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }
                 }else{
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
+                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                 }
             }
 
