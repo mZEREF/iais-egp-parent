@@ -85,8 +85,8 @@ import java.util.Set;
 @Delegator(value = "onlineEnquiriesDelegator")
 @Slf4j
 public class OfficerOnlineEnquiriesDelegator {
-    private static final Set<String> COUNTS = ImmutableSet.of("1", "2", "5");
-    private static final Set<String> COUNTS1 = ImmutableSet.of("3", "4");
+    private static final Set<String> COUNTS = ImmutableSet.of( "2", "5");
+    private static final Set<String> COUNTS1 = ImmutableSet.of("1","3", "4");
     @Autowired
     RequestForInformationService requestForInformationService;
     @Autowired
