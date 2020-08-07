@@ -308,10 +308,9 @@ public class NotificationHelper {
 
 	private String replaceNum(String emailTemplate) {
 		int index = 1;
-		String replaceStr = "[num]";
+		String replaceStr = "num_rep";
 		while(emailTemplate.contains(replaceStr)){
-			emailTemplate = emailTemplate.replaceFirst(replaceStr, index + ".");
-			index++;
+			emailTemplate = emailTemplate.replaceFirst(replaceStr, index++ + ".");
 		}
 		return emailTemplate;
 	}
@@ -458,10 +457,15 @@ public class NotificationHelper {
 				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD));
 			}
 		}
-		List<OrgUserDto> userList;
+
+		if (IaisCommonUtils.isEmpty(userIds)) {
+			return inspectionEmailTemplateDto;
+		}
+
+		List<OrgUserDto> userList = null;
 		if (!AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
 			//todo eic
-			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
+			//userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
 		} else {
 			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
 		}
