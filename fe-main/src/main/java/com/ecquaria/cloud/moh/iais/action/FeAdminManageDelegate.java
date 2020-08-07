@@ -175,16 +175,23 @@ public class FeAdminManageDelegate {
             feUserDto.setEmail(email);
             feUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
             feUserDto.setAvailable(Boolean.TRUE);
-            if("active".equals(active)){
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
+                if("active".equals(active)){
+                    feUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                }else{
+                    feUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                }
+                if("admin".equals(role)){
+                    feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
+                }else{
+                    feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
+                }
+            }else{
                 feUserDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            }else{
-                feUserDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-            }
-            if("admin".equals(role)){
-                feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_ADMIN);
-            }else{
                 feUserDto.setUserRole(RoleConsts.USER_ROLE_ORG_USER);
             }
+
             ParamUtil.setSessionAttr(bpc.request, "inter_user_attr", feUserDto);
             ValidationResult validationResult = WebValidationHelper.validateProperty(feUserDto, "edit");
 
