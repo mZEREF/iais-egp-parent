@@ -649,6 +649,7 @@ public class ServiceMenuDelegator {
 
         //control switch
         if(!currentPage.equals(nextstep)){
+            SearchParam searchParam;
             //note: As long as you select the specified service, you don't go and select align
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
             boolean newLicensee  = true;
@@ -689,7 +690,7 @@ public class ServiceMenuDelegator {
                     }
                     allBaseId.removeAll(chkBase);
                     //init search param
-                    SearchParam searchParam = initSearParam();
+                    searchParam = initSearParam();
                     if(!IaisCommonUtils.isEmpty(allBaseId)){
                         StringBuilder placeholder = new StringBuilder("(");
                         int i =0;
@@ -718,7 +719,7 @@ public class ServiceMenuDelegator {
                     }
                 }
                 //init search param
-                SearchParam searchParam = initSearParam();
+                searchParam = initSearParam();
                 ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM,searchParam);
             }
         }
