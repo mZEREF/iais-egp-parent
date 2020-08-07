@@ -104,12 +104,11 @@ public class AuditFunctionAspect {
         dto.setOperation(AuditTrailConsts.OPERATION_VIEW_RECORD);
 
         if (args != null && args.length > 0) {
-
+            ObjectMapper mapper = new ObjectMapper();
             for (Object obj : args) {
                 if (obj instanceof SearchParam) {
                     SearchParam param = (SearchParam) obj;
                     Map<String, Object> filters = param.getFilters();
-                    ObjectMapper mapper = new ObjectMapper();
                     json.put("current_page", param.getPageNo());
                     for (Map.Entry<String, Object> ent : filters.entrySet()) {
                         json.put(ent.getKey(), ent.getValue());

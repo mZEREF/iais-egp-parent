@@ -45,7 +45,7 @@ public class EspecialExcelWriterUtil {
 
         XSSFWorkbook workbook = null;
         File out = new File(FileUtils.generationFileName("temp"+ System.currentTimeMillis(), EXCEL_TYPE_XSSF));
-        try (InputStream fileInputStream = Files.newInputStream(Paths.get(file.getPath())); OutputStream outputStream =  Files.newOutputStream(out.toPath())) {
+        try (InputStream fileInputStream = Files.newInputStream(Paths.get(file.getPath())); OutputStream outputStream =  Files.newOutputStream(Paths.get(out.getPath()))) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
             Sheet sheet = workbook.getSheetAt(sheetAt);

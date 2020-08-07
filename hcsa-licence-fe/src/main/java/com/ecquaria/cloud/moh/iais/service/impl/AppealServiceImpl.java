@@ -816,7 +816,7 @@ public class AppealServiceImpl implements AppealService {
         appealDto.setAppealType(ApplicationConsts.APPEAL_TYPE_APPLICAITON);
         //if infomation
         if ("rfi".equals(rfi)) {
-            ApplicationDto rfiApplication = (ApplicationDto) request.getSession().getAttribute("rfiApplication");
+            ApplicationDto rfiApplication = (ApplicationDto) ParamUtil.getSessionAttr(request,"rfiApplication");
             applicationDto1.setVersion(rfiApplication.getVersion() + 1);
             //if need new group
             applicationGroupDto.setId(rfiApplication.getAppGrpId());

@@ -114,7 +114,7 @@ public class BlackedOutDateDelegator {
         }
 
         List<WorkingGroupQueryDto> workingGroupQueryList = searchResult.getRows();
-        String defaultName = workingGroupQueryList.stream().findFirst().orElse(new WorkingGroupQueryDto()).getGroupName();
+        String defaultName = workingGroupQueryList.stream().findFirst().orElseGet(() ->new WorkingGroupQueryDto()).getGroupName();
         List<SelectOption> wrlGrpNameOpt = IaisCommonUtils.genNewArrayList();
         workingGroupQueryList.forEach(wkr -> {
             //String groupId = wkr.getId();

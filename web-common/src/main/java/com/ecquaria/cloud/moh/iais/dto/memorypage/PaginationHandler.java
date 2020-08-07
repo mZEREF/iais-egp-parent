@@ -381,7 +381,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         return list;
     }
 
-    public String checkAllHtml() {
+    public final String checkAllHtml() {
         StringBuilder sb = new StringBuilder();
         if (checkType == PaginationHandler.CHECK_TYPE_CHECKBOX) {
             sb.append("<input type=\"checkbox\" id=\"").append(paginationDiv).append("CheckAll");
