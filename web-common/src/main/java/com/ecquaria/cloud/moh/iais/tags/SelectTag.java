@@ -113,7 +113,7 @@ public class SelectTag extends DivTagSupport {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (Exception ex) {
             log.error("", ex);
-            throw new IaisRuntimeException("SelectTag: " + ex.getMessage());
+            throw new IaisRuntimeException("SelectTag: " + ex.getMessage(),ex);
         }
         release();
 

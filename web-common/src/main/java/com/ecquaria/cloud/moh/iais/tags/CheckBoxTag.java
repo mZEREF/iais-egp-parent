@@ -218,7 +218,7 @@ public final class CheckBoxTag extends DivTagSupport {
             pageContext.getOut().print(StringUtil.escapeSecurityScript(html.toString()));
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            throw new IaisRuntimeException("CheckBoxTag: " + e.getMessage());
+            throw new IaisRuntimeException("CheckBoxTag: " + e.getMessage(),e);
         }
 
         release();

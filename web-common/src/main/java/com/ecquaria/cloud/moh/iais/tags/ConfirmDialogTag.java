@@ -136,7 +136,7 @@ public class ConfirmDialogTag extends TagSupport {
             pageContext.getOut().print(html.toString());
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
-            throw new IaisRuntimeException("LangSelectTag: " + ex.getMessage());
+            throw new IaisRuntimeException("LangSelectTag: " + ex.getMessage(),ex);
         }
         release();
 

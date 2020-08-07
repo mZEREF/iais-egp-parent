@@ -55,7 +55,7 @@ public class MaskTag extends DivTagSupport {
             pageContext.getOut().print(MaskUtil.maskValue(name, value));
         } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
-            throw new IaisRuntimeException("Mask Tag: " + ex.getMessage());
+            throw new IaisRuntimeException("Mask Tag: " + ex.getMessage(),ex);
         }
         release();
 
