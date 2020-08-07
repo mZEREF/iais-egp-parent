@@ -943,6 +943,9 @@ public class NewApplicationDelegator {
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
                     errorMsg = errorMsg.replace("<date>",configDate.format(dtf));
                     errorMap.put("rfcEffectiveDate",errorMsg);
+                }else if(today.isEqual(effectiveDate)){
+                    String errorMsg = MessageUtil.getMessageDesc("RFC_ERR012");
+                    errorMap.put("rfcEffectiveDate",errorMsg);
                 }
                 String rfcEffectiveDateErr = errorMap.get("rfcEffectiveDate");
                 if(StringUtil.isEmpty(rfcEffectiveDateErr)){
