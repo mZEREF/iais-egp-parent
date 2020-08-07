@@ -50,6 +50,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -192,8 +193,8 @@ public class UploadFileServiceImpl implements UploadFileService {
     private String compress(String groupId){
         log.info("------------ start compress() -----------------------");
         long l =   System.currentTimeMillis();
-        try (OutputStream outputStream = new FileOutputStream(sharedPath + AppServicesConsts.BACKUPS + File.separator + l + AppServicesConsts.ZIP_NAME);
-               CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
+        try (OutputStream outputStream = Files.newOutputStream(Paths.get(sharedPath + AppServicesConsts.BACKUPS + File.separator + l + AppServicesConsts.ZIP_NAME));
+                CheckedOutputStream cos=new CheckedOutputStream(outputStream,new CRC32());
                ZipOutputStream zos=new ZipOutputStream(cos)) {
 
             log.info(StringUtil.changeForLog("------------zip file name is"+sharedPath+AppServicesConsts.BACKUPS+File.separator+ l+".zip"+"--------------------"));

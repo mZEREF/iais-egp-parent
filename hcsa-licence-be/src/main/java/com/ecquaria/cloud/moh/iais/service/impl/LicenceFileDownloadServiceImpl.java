@@ -328,7 +328,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(!file.exists()){
                         file.mkdirs();
                     }
-                    os=new FileOutputStream(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName());
+                    os=Files.newOutputStream(Paths.get(sharedPath+File.separator+AppServicesConsts.COMPRESS+File.separator+fileName+File.separator+groupPath+File.separator+zipEntry.getName()));
                     bos=new BufferedOutputStream(os);
                     InputStream is=zipFile.getInputStream(zipEntry);
                     bis=new BufferedInputStream(is);

@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -181,9 +182,9 @@ public class FeToBeRecFileImpl implements FeToBeRecFileService {
 
     private String compress(String fileId){
         long l = System.currentTimeMillis();
-        try (OutputStream is = new FileOutputStream(backups + File.separator + l + ".zip");
+        try (OutputStream is =  Files.newOutputStream(Paths.get(backups + File.separator + l + ".zip"));
              CheckedOutputStream cos = new CheckedOutputStream(is, new CRC32());
-             OutputStream is2 = new FileOutputStream(download + File.separator + l + ".zip");
+             OutputStream is2 =  Files.newOutputStream(Paths.get(download + File.separator + l + ".zip"));
              CheckedOutputStream cos2 = new CheckedOutputStream(is2, new CRC32());
              ZipOutputStream zos = new ZipOutputStream(cos);
              ZipOutputStream zos2 = new ZipOutputStream(cos2)){

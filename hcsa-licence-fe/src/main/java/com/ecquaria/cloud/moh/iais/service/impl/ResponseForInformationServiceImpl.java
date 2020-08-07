@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -102,7 +103,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!groupPath.exists()){
             groupPath.mkdirs();
         }
-        try (FileOutputStream fileInputStream = new FileOutputStream(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+file.getName());
+        try (OutputStream fileInputStream = Files.newOutputStream(Paths.get(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+file.getName()));
              OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -157,7 +158,7 @@ public class ResponseForInformationServiceImpl implements ResponseForInformation
         if(!c.exists()){
             c.mkdirs();
         }
-        try (OutputStream is=new FileOutputStream(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+ l+RequestForInformationConstants.ZIP_NAME);
+        try (OutputStream is=Files.newOutputStream(Paths.get(sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+ l+RequestForInformationConstants.ZIP_NAME));
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
             log.info(StringUtil.changeForLog("------------zip file name is"+sharedPath + RequestForInformationConstants.BACKUPS_REC+File.separator+ l+RequestForInformationConstants.ZIP_NAME+"--------------------"));

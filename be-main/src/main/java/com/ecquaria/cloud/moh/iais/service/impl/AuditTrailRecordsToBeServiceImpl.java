@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.zip.CRC32;
@@ -151,7 +152,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os = new FileOutputStream(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+zipEntry.getName());
+                os = Files.newOutputStream(Paths.get(sharedPath + File.separator + RequestForInformationConstants.COMPRESS + File.separator + fileName + File.separator + zipEntry.getName()));
                 bos = new BufferedOutputStream(os);
                 InputStream is = zipFile.getInputStream(zipEntry);
                 bis = new BufferedInputStream(is);

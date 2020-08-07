@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -97,7 +98,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         MiscUtil.checkDirs(groupPath);
         File backupFile = MiscUtil.generateFile(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT, file.getName());
 
-        try (FileOutputStream fileInputStream = new FileOutputStream(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+file.getName());
+        try (OutputStream fileInputStream = Files.newOutputStream(Paths.get(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+file.getName()) );
              OutputStream fileOutputStream = Files.newOutputStream(file.toPath()); ){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
@@ -124,7 +125,7 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         long l=   System.currentTimeMillis();
         File c= new File(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator);
         MiscUtil.checkDirs(c);
-        try (OutputStream is=new FileOutputStream(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+ l+ AppServicesConsts.ZIP_NAME);
+        try (OutputStream is=Files.newOutputStream(Paths.get(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+ l+ AppServicesConsts.ZIP_NAME));
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){
 

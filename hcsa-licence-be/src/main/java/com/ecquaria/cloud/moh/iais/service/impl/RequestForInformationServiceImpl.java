@@ -57,6 +57,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -379,7 +380,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os=new FileOutputStream(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+zipEntry.getName());
+                os= Files.newOutputStream(Paths.get(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+zipEntry.getName()));
                 bos=new BufferedOutputStream(os);
                 InputStream is=zipFile.getInputStream(zipEntry);
                 bis=new BufferedInputStream(is);
