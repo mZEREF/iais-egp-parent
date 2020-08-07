@@ -7,6 +7,7 @@
     if(StringUtil.isEmpty(action)){
         action = (String)ParamUtil.getRequestAttr(request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
     }
+    String flag = ParamUtil.getRequestString(request,"flag");
 %>
 
 <input type="hidden" name="crud_action_type" value="">
@@ -18,26 +19,32 @@
 <input type="hidden" value="${coMap.document}" id="coMapdocument" name="coMapdocument">
 <input type="hidden" value="${coMap.information}" id="coMapinformation" name="coMapinformation">
 <input type="hidden" value="${coMap.previewli}" id="coMappreviewli" name="coMappreviewli">
-<c:if test="${'transfer' != flag}">
-    <ul id = "nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
-        <li id ="premisesli"  role="presentation"><a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Premises</a></li>
-        <li id = "documentsli"  role="presentation"><a id = "documents" aria-controls="documentsTab" role="tab" data-toggle="tab">Primary <br> Documents</a></li>
-        <li id = "serviceFormsli"  role="presentation"><a id = "serviceForms" aria-controls="serviceInformationTab" role="tab" data-toggle="tab">Service-Related <br> Information</a></li>
-        <li id = "previewli"  role="presentation"><a id = "preview" aria-controls="previewTab" role="tab" data-toggle="tab">Preview & Submit</a></li>
-        <li id = "paymentli" class="disabled" role="presentation"><a id = "payment" aria-controls="paymentTab" role="tab" data-toggle="tab">Payment</a></li>
-    </ul>
-    <div class="tab-nav-mobile visible-xs visible-sm">
-        <div class="swiper-wrapper" role="tablist">
-            <div class="swiper-slide " ><a href="#premisesTab" aria-controls="tabInbox"  role="tab" data-toggle="tab">Premises</a></div>
-            <div class="swiper-slide"><a href="#documentsTab" aria-controls="tabApplication" role="tab" data-toggle="tab">Primary Documents</a></div>
-            <div class="swiper-slide"><a href="#serviceInformationTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Service-Related Information</a></div>
-            <div class="swiper-slide"><a href="#previewTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Preview & Submit</a></div>
-            <div class="swiper-slide"><a href="#paymentTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Payment</a></div>
-        </div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
+
+    <%if(!StringUtil.isEmpty(flag)&&"transfer".equals(flag)){
+
+    }else{
+        %>
+<ul id = "nav-tabs-ul" class="nav nav-tabs hidden-xs hidden-sm" role="tablist">
+    <li id ="premisesli"  role="presentation"><a id="premises" aria-controls="premisesTab" role="tab" data-toggle="tab">Premises</a></li>
+    <li id = "documentsli"  role="presentation"><a id = "documents" aria-controls="documentsTab" role="tab" data-toggle="tab">Primary <br> Documents</a></li>
+    <li id = "serviceFormsli"  role="presentation"><a id = "serviceForms" aria-controls="serviceInformationTab" role="tab" data-toggle="tab">Service-Related <br> Information</a></li>
+    <li id = "previewli"  role="presentation"><a id = "preview" aria-controls="previewTab" role="tab" data-toggle="tab">Preview & Submit</a></li>
+    <li id = "paymentli" class="disabled" role="presentation"><a id = "payment" aria-controls="paymentTab" role="tab" data-toggle="tab">Payment</a></li>
+</ul>
+<div class="tab-nav-mobile visible-xs visible-sm">
+    <div class="swiper-wrapper" role="tablist">
+        <div class="swiper-slide " ><a href="#premisesTab" aria-controls="tabInbox"  role="tab" data-toggle="tab">Premises</a></div>
+        <div class="swiper-slide"><a href="#documentsTab" aria-controls="tabApplication" role="tab" data-toggle="tab">Primary Documents</a></div>
+        <div class="swiper-slide"><a href="#serviceInformationTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Service-Related Information</a></div>
+        <div class="swiper-slide"><a href="#previewTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Preview & Submit</a></div>
+        <div class="swiper-slide"><a href="#paymentTab" aria-controls="tabLicence" role="tab" data-toggle="tab">Payment</a></div>
     </div>
-</c:if>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+</div>
+<%}%>
+
+
 <script type="text/javascript">
 
     $(document).ready(function() {
