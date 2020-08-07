@@ -446,7 +446,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
-                errorMap.put("premisesType"+i, "UC_CHKLMD001_ERR001");
+                errorMap.put("premisesType"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","What is your premises type","field"));
             }else {
                 String premisesSelect = appGrpPremisesDtoList.get(i).getPremisesSelect();
                 String appType = appSubmissionDto.getAppType();
@@ -460,7 +460,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 }
                 AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
                 if (StringUtil.isEmpty(premisesSelect) || "-1".equals(premisesSelect)) {
-                    errorMap.put("premisesSelect"+i, "UC_CHKLMD001_ERR001");
+                    errorMap.put("premisesSelect"+i,  MessageUtil.replaceMessage("GENERAL_ERR0006","Add or select a premises from the list","field"));
                 } else if ( needValidate||!StringUtil.isEmpty(premisesSelect)||"newPremise".equals(premisesSelect) ) {
                     StringBuilder stringBuilder=new StringBuilder();
                     if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premiseType)) {
@@ -469,7 +469,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         int startDate=0;
                         int endDate=0;
                         if(StringUtil.isEmpty(onsiteStartHH)||StringUtil.isEmpty(onsiteStartMM)){
-                            errorMap.put("onsiteStartMM"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("onsiteStartMM"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Operating Hours (Start)","field"));
                         }else {
                             startDate = validateTime(errorMap, onsiteStartHH, onsiteStartMM, startDate, "onsiteStartMM", i);
                         }
@@ -477,7 +477,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String onsiteEndHH = appGrpPremisesDtoList.get(i).getOnsiteEndHH();
                         String onsiteEndMM = appGrpPremisesDtoList.get(i).getOnsiteEndMM();
                         if(StringUtil.isEmpty(onsiteEndHH)||StringUtil.isEmpty(onsiteEndMM)){
-                            errorMap.put("onsiteEndMM"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("onsiteEndMM"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Operating Hours (End)","field"));
                         }else {
                             endDate = validateTime(errorMap, onsiteEndHH, onsiteEndMM, endDate, "onsiteEndMM", i);
                         }
@@ -491,7 +491,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                         String locateWithOthers = appGrpPremisesDtoList.get(i).getLocateWithOthers();
                         if(StringUtil.isEmpty(locateWithOthers)){
-                            errorMap.put("isOtherLic"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("isOtherLic"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Are you co-locating with another licensee","field"));
                         }
 
                         //set  time
@@ -514,13 +514,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 Date phDate = appPremPhOpenPeriodDto.getPhDate();
                                 if(!StringUtil.isEmpty(phDate)){
                                     if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)){
-                                        errorMap.put("onsiteStartToMM"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("onsiteStartToMM"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (Start)","field"));
                                     }
                                     if(StringUtil.isEmpty(onsiteEndToHH)||StringUtil.isEmpty(onsiteEndToMM)){
-                                        errorMap.put("onsiteEndToMM"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("onsiteEndToMM"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (End)","field"));
                                     }
                                 }else if(StringUtil.isEmpty(phDate)){
-                                    errorMap.put("onsitephDate"+i+j,"UC_CHKLMD001_ERR001");
+                                    errorMap.put("onsitephDate"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Select Public Holiday","field"));
                                 }
                                 if(!StringUtil.isEmpty(convStartFromHH)&&!StringUtil.isEmpty(convStartFromMM)&&!StringUtil.isEmpty(onsiteEndToHH)
                                         &&!StringUtil.isEmpty(onsiteEndToMM)||StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)
@@ -568,7 +568,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                                 }else {
                                     if(StringUtil.isEmpty(convStartFromHH)&&StringUtil.isEmpty(convStartFromMM)||StringUtil.isEmpty(convStartFromMM)||StringUtil.isEmpty(convStartFromHH)){
-                                        errorMap.put("onsiteStartToMM"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("onsiteStartToMM"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (Start) ","field"));
                                     }else {
                                         try {
                                             int i1 = Integer.parseInt(convStartFromHH);
@@ -585,7 +585,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         }
                                     }
                                     if(StringUtil.isEmpty(onsiteEndToHH)&&StringUtil.isEmpty(onsiteEndToMM)||StringUtil.isEmpty(onsiteEndToHH)||StringUtil.isEmpty(onsiteEndToMM)){
-                                        errorMap.put("onsiteEndToMM"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("onsiteEndToMM"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (End)","field"));
                                     }else {
                                         try {
                                             int i3 = Integer.parseInt(onsiteEndToHH);
@@ -614,7 +614,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
                         String hciName = appGrpPremisesDtoList.get(i).getHciName();
                         if(StringUtil.isEmpty(hciName)){
-                            errorMap.put("hciName"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("hciName"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name of HCI","field"));
                         } else {
 
                             if(masterCodeDto!=null){
@@ -636,7 +636,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
                         String offTelNo = appGrpPremisesDtoList.get(i).getOffTelNo();
                         if(StringUtil.isEmpty(offTelNo)){
-                            errorMap.put("offTelNo"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("offTelNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Office Telephone No.","field"));
                         }else {
                             boolean matches = offTelNo.matches("^[6][0-9]{7}$");
                             if(!matches) {
@@ -646,13 +646,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                         String streetName = appGrpPremisesDtoList.get(i).getStreetName();
                         if(StringUtil.isEmpty(streetName)){
-                            errorMap.put("streetName"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("streetName"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Street Name","field"));
                         }
 
                         String addrType = appGrpPremisesDtoList.get(i).getAddrType();
 
                         if(StringUtil.isEmpty(addrType)){
-                            errorMap.put("addrType"+i, "UC_CHKLMD001_ERR001");
+                            errorMap.put("addrType"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Address Type","field"));
                         }else {
                             boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getFloorNo());
                             boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getBlkNo());
@@ -660,13 +660,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(addrType)) {
 
                                 if (empty) {
-                                    errorMap.put("floorNo"+i, "UC_CHKLMD001_ERR001");
+                                    errorMap.put("floorNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Floor No.","field"));
                                 }
                                 if (empty1) {
-                                    errorMap.put("blkNo"+i, "UC_CHKLMD001_ERR001");
+                                    errorMap.put("blkNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Block / House No.","field"));
                                 }
                                 if (empty2) {
-                                    errorMap.put("unitNo"+i, "UC_CHKLMD001_ERR001");
+                                    errorMap.put("unitNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Unit No.","field"));
                                 }
                             }
                             String floorNoErr = errorMap.get("floorNo"+i);
@@ -707,7 +707,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 }
                             }
                         }else {
-                            errorMap.put("postalCode"+i, "UC_CHKLMD001_ERR001");
+                            errorMap.put("postalCode"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Postal Code ","field"));
                         }
                         //0062204
                         String currentHci = hciName + IaisCommonUtils.genPremisesKey(postalCode,appGrpPremisesDto.getBlkNo(),appGrpPremisesDto.getFloorNo(),appGrpPremisesDto.getUnitNo());
@@ -761,14 +761,14 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         int conEndDate=0;
 
                         if(StringUtil.isEmpty(conStartHH)||StringUtil.isEmpty(conStartMM)){
-                            errorMap.put("conStartMM"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("conStartMM"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Operating Hours (Start)","field"));
                         }else {
                             conStartDate = validateTime(errorMap, conStartHH, conStartMM, conStartDate, "conStartMM", i);
                         }
                         String conEndHH = appGrpPremisesDtoList.get(i).getConEndHH();
                         String conEndMM = appGrpPremisesDtoList.get(i).getConEndMM();
                         if(StringUtil.isEmpty(conEndHH)||StringUtil.isEmpty(conEndMM)){
-                            errorMap.put("conEndMM"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("conEndMM"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Operating Hours (End)","field"));
                         }else {
                             conEndDate = validateTime(errorMap, conEndHH, conEndMM, conEndDate, "conEndMM", i);
                         }
@@ -803,10 +803,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 Date phDate = appPremPhOpenPeriodDto.getPhDate();
                                 if(!StringUtil.isEmpty(phDate)){
                                     if(StringUtil.isEmpty(convEndToHH)||StringUtil.isEmpty(convEndToMM)){
-                                        errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("convEndToHH"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (End) ","field"));
                                     }
                                     if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)){
-                                        errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("convStartToHH"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (Start) ","field"));
                                     }
                                 }else if(StringUtil.isEmpty(phDate)){
                                     errorMap.put("convphDate"+i+j,"UC_CHKLMD001_ERR001");
@@ -856,7 +856,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     }
                                 }else {
                                     if(StringUtil.isEmpty(convStartFromHH)||StringUtil.isEmpty(convStartFromMM)||StringUtil.isEmpty(convStartFromMM)&&StringUtil.isEmpty(convStartFromHH)){
-                                        errorMap.put("convStartToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("convStartToHH"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (Start) ","field"));
                                     }else {
                                         try {
                                             int i1 = Integer.parseInt(convStartFromHH);
@@ -872,7 +872,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         }
                                     }
                                     if(StringUtil.isEmpty(convEndToHH)||StringUtil.isEmpty(convEndToMM)||StringUtil.isEmpty(convEndToHH)&&StringUtil.isEmpty(convEndToMM)){
-                                        errorMap.put("convEndToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("convEndToHH"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (End) ","field"));
                                     }else {
                                         try {
                                             int i3 = Integer.parseInt(convEndToHH);
@@ -905,11 +905,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                         String cStreetName = appGrpPremisesDtoList.get(i).getConveyanceStreetName();
                         if(StringUtil.isEmpty(cStreetName)){
-                            errorMap.put("conveyanceStreetName"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("conveyanceStreetName"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Street Name ","field"));
                         }
                         String conveyanceAddressType = appGrpPremisesDtoList.get(i).getConveyanceAddressType();
                         if(StringUtil.isEmpty(conveyanceAddressType)){
-                            errorMap.put("conveyanceAddressType"+i, "UC_CHKLMD001_ERR001");
+                            errorMap.put("conveyanceAddressType"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Address Type ","field"));
                         }else {
                             boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceFloorNo());
                             boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getConveyanceBlockNo());
@@ -917,13 +917,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(conveyanceAddressType)) {
 
                                 if (empty) {
-                                    errorMap.put("conveyanceFloorNo"+i, "UC_CHKLMD001_ERR001");
+                                    errorMap.put("conveyanceFloorNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Floor No.","field"));
                                 }
                                 if (empty1) {
-                                    errorMap.put("conveyanceBlockNos"+i, "UC_CHKLMD001_ERR001");
+                                    errorMap.put("conveyanceBlockNos"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Block / House No.","field"));
                                 }
                                 if (empty2) {
-                                    errorMap.put("conveyanceUnitNo"+i, "UC_CHKLMD001_ERR001");
+                                    errorMap.put("conveyanceUnitNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Unit No.","field"));
                                 }
 
                             }
@@ -949,7 +949,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         }
                         String conveyancePostalCode = appGrpPremisesDtoList.get(i).getConveyancePostalCode();
                         if(StringUtil.isEmpty(conveyancePostalCode)){
-                            errorMap.put("conveyancePostalCode"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("conveyancePostalCode"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Postal Code","field"));
                         }else {
                             if(conveyancePostalCode.length()<6){
                                 errorMap.put("conveyancePostalCode"+i, "NEW_ERR0004");
@@ -995,13 +995,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
                         String offSiteStreetName = appGrpPremisesDtoList.get(i).getOffSiteStreetName();
                         if(StringUtil.isEmpty(offSiteStreetName)){
-                            errorMap.put("offSiteStreetName"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("offSiteStreetName"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Street Name","field"));
                         }
 
                         String offSiteAddressType = appGrpPremisesDtoList.get(i).getOffSiteAddressType();
 
                         if(StringUtil.isEmpty(offSiteAddressType)){
-                            errorMap.put("offSiteAddressType"+i, "UC_CHKLMD001_ERR001");
+                            errorMap.put("offSiteAddressType"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Street Name","field"));
                         }else {
                             boolean empty = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getOffSiteFloorNo());
                             boolean empty1 = StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getOffSiteBlockNo());
@@ -1009,13 +1009,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             if (ApplicationConsts.ADDRESS_TYPE_APT_BLK.equals(offSiteAddressType)) {
 
                                 if (empty) {
-                                    errorMap.put("offSiteFloorNo"+i, "UC_CHKLMD001_ERR001");
+                                    errorMap.put("offSiteFloorNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Floor No.","field"));
                                 }
                                 if (empty1) {
-                                    errorMap.put("offSiteBlockNo"+i, "UC_CHKLMD001_ERR001");
+                                    errorMap.put("offSiteBlockNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Block / House No.","field"));
                                 }
                                 if (empty2) {
-                                    errorMap.put("offSiteUnitNo"+i, "UC_CHKLMD001_ERR001");
+                                    errorMap.put("offSiteUnitNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Unit No.","field"));
                                 }
                             }
                             String floorNoErr = errorMap.get("offSiteFloorNo"+i);
@@ -1056,14 +1056,14 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 }
                             }
                         }else {
-                            errorMap.put("offSitePostalCode"+i, "UC_CHKLMD001_ERR001");
+                            errorMap.put("offSitePostalCode"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Postal Code ","field"));
                         }
                         String offSiteStartHH = appGrpPremisesDtoList.get(i).getOffSiteStartHH();
                         String offSiteStartMM = appGrpPremisesDtoList.get(i).getOffSiteStartMM();
                         int startDate=0;
                         int endDate=0;
                         if(StringUtil.isEmpty(offSiteStartHH)||StringUtil.isEmpty(offSiteStartMM)){
-                            errorMap.put("offSiteStartMM"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("offSiteStartMM"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Operating Hours (Start)","field"));
                         }else {
                             startDate = validateTime(errorMap, offSiteStartHH, offSiteStartMM, startDate, "offSiteStartMM", i);
                         }
@@ -1071,7 +1071,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         String offSiteEndHH = appGrpPremisesDtoList.get(i).getOffSiteEndHH();
                         String offSiteEndMM = appGrpPremisesDtoList.get(i).getOffSiteEndMM();
                         if(StringUtil.isEmpty(offSiteEndHH)||StringUtil.isEmpty(offSiteEndMM)){
-                            errorMap.put("offSiteEndMM"+i,"UC_CHKLMD001_ERR001");
+                            errorMap.put("offSiteEndMM"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Operating Hours (End) ","field"));
                         }else {
                             endDate = validateTime(errorMap, offSiteEndHH, offSiteEndMM, endDate, "offSiteEndMM", i);
                         }
@@ -1105,13 +1105,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 Date phDate = appPremPhOpenPeriodDto.getPhDate();
                                 if(!StringUtil.isEmpty(phDate)){
                                     if(StringUtil.isEmpty(offSiteEndToHH)||StringUtil.isEmpty(offSiteEndToMM)){
-                                        errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("offSiteEndToHH"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (End) ","field"));
                                     }
                                     if(StringUtil.isEmpty(offSiteStartFromHH)||StringUtil.isEmpty(offSiteStartFromMM)){
-                                        errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("offSiteStartToHH"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (Start) ","field"));
                                     }
                                 }else if(StringUtil.isEmpty(phDate)){
-                                    errorMap.put("offSitephDate"+i+j,"UC_CHKLMD001_ERR001");
+                                    errorMap.put("offSitephDate"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Select Public Holiday","field"));
                                 }
 
                                 if(StringUtil.isEmpty(offSiteEndToHH)&&StringUtil.isEmpty(offSiteEndToMM)&StringUtil.isEmpty(offSiteStartFromHH)
@@ -1159,7 +1159,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     }
                                 }else {
                                     if(StringUtil.isEmpty(offSiteStartFromHH)||StringUtil.isEmpty(offSiteStartFromMM)||StringUtil.isEmpty(offSiteStartFromHH)&&StringUtil.isEmpty(offSiteStartFromMM)){
-                                        errorMap.put("offSiteStartToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("offSiteStartToHH"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (Start) ","field"));
                                     }else {
                                         try {
                                             int i1 = Integer.parseInt(offSiteStartFromHH);
@@ -1175,7 +1175,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                         }
                                     }
                                     if(StringUtil.isEmpty(offSiteEndToHH)||StringUtil.isEmpty(offSiteEndToMM)||StringUtil.isEmpty(offSiteEndToHH)&&StringUtil.isEmpty(offSiteEndToMM)){
-                                        errorMap.put("offSiteEndToHH"+i+j,"UC_CHKLMD001_ERR001");
+                                        errorMap.put("offSiteEndToHH"+i+j,MessageUtil.replaceMessage("GENERAL_ERR0006","Public Holidays Operating Hours (End) ","field"));
                                     }else {
 
                                         try {
@@ -1370,7 +1370,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
 
     private  void validateVehicleNo(Map<String, String> errorMap, Set<String> distinctVehicleNo, int numberCount, String conveyanceVehicleNo){
         if(StringUtil.isEmpty(conveyanceVehicleNo)){
-            errorMap.put("conveyanceVehicleNo"+numberCount,"UC_CHKLMD001_ERR001");
+            errorMap.put("conveyanceVehicleNo"+numberCount,MessageUtil.replaceMessage("GENERAL_ERR0006","Vehicle No.","field"));
         }else {
             boolean b = VehNoValidator.validateNumber(conveyanceVehicleNo);
             if(!b){

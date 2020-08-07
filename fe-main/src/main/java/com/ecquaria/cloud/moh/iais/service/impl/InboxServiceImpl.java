@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -432,4 +433,17 @@ public class InboxServiceImpl implements InboxService {
         }
         return errorMap;
     }
+
+    @Override
+    public List<ApplicationSubDraftDto> getDraftByLicAppId(String licAppId) {
+
+        return appInboxClient.getDraftByLicAppId(licAppId).getEntity();
+    }
+
+    @Override
+    public void deleteDraftByNo(String draftNo) {
+        appInboxClient.deleteDraftByNo(draftNo);
+    }
+
+
 }

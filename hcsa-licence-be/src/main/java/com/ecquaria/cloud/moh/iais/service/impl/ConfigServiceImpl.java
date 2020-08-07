@@ -31,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.HcsaConfigPageDto;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.ConfigService;
@@ -386,7 +387,7 @@ public class ConfigServiceImpl implements ConfigService {
         for (int i = 0; i < hcsaSvcStageWorkingGroupDtos.size(); i++) {
             String stageWorkGroupId = hcsaSvcStageWorkingGroupDtos.get(i).getStageWorkGroupId();
             if (StringUtil.isEmpty(stageWorkGroupId)) {
-                errorMap.put("stageWorkGroupId" + i, "UC_CHKLMD001_ERR001");
+                errorMap.put("stageWorkGroupId" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Working Group","field"));
             }
         }
         List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = hcsaServiceConfigDto.getHcsaSvcSubtypeOrSubsumedDtos();
@@ -439,7 +440,7 @@ public class ConfigServiceImpl implements ConfigService {
         String effectiveDate = hcsaServiceDto.getEffectiveDate();
         Date endDate = hcsaServiceDto.getEndDate();
         if (StringUtil.isEmpty(effectiveDate)) {
-            errorMap.put("effectiveDate", "UC_CHKLMD001_ERR001");
+            errorMap.put("effectiveDate", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
         }
         if(!StringUtil.isEmpty(endDate)){
             Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
@@ -448,33 +449,33 @@ public class ConfigServiceImpl implements ConfigService {
             }
         }
         if (StringUtil.isEmpty(svcCode)) {
-            errorMap.put("svcCode", "UC_CHKLMD001_ERR001");
+            errorMap.put("svcCode", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Code","field"));
         }
         if (StringUtil.isEmpty(svcName)) {
-            errorMap.put("svcName", "UC_CHKLMD001_ERR001");
+            errorMap.put("svcName", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Name","field"));
         }
         if (StringUtil.isEmpty(svcDisplayDesc)) {
-            errorMap.put("svcDisplayDesc", "UC_CHKLMD001_ERR001");
+            errorMap.put("svcDisplayDesc", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Display Description","field"));
         }
         if (StringUtil.isEmpty(svcDesc)) {
-            errorMap.put("svcDesc", "UC_CHKLMD001_ERR001");
+            errorMap.put("svcDesc", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Description","field"));
         }
         if (StringUtil.isEmpty(svcType)) {
-            errorMap.put("svcType", "UC_CHKLMD001_ERR001");
+            errorMap.put("svcType", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Type","field"));
         }else if("SVTP002".equals(svcType)){
             List<HcsaServiceSubTypeDto> serviceSubTypeDtos = hcsaServiceDto.getServiceSubTypeDtos();
             if(serviceSubTypeDtos.isEmpty()){
-                errorMap.put("Subsumption","UC_CHKLMD001_ERR001");
+                errorMap.put("Subsumption",MessageUtil.replaceMessage("GENERAL_ERR0006","Base Service Subsumed Under","field"));
             }
         }else if("SVTP003".equals(svcType)){
             List<HcsaServiceSubTypeDto> serviceSubTypeDtos = hcsaServiceDto.getServiceSubTypeDtos();
             if(serviceSubTypeDtos.isEmpty()){
-                errorMap.put("Prerequisite","UC_CHKLMD001_ERR001");
+                errorMap.put("Prerequisite",MessageUtil.replaceMessage("GENERAL_ERR0006","Pre-requisite Base Service","field"));
             }
         }
         List<HcsaSvcSpePremisesTypeDto> hcsaSvcSpePremisesTypeDtos = hcsaServiceConfigDto.getHcsaSvcSpePremisesTypeDtos();
         if (hcsaSvcSpePremisesTypeDtos.isEmpty()) {
-            errorMap.put("premieseType", "UC_CHKLMD001_ERR001");
+            errorMap.put("premieseType", MessageUtil.replaceMessage("GENERAL_ERR0006","Premises Type","field"));
         }
         List<HcsaSvcPersonnelDto> hcsaSvcPersonnelDtos = hcsaServiceConfigDto.getHcsaSvcPersonnelDtos();
 
@@ -521,14 +522,14 @@ public class ConfigServiceImpl implements ConfigService {
         for (int i = 0; i < hcsaSvcSpeRoutingSchemeDtos.size(); i++) {
             String schemeType = hcsaSvcSpeRoutingSchemeDtos.get(i).getSchemeType();
             if (StringUtil.isEmpty(schemeType)) {
-                errorMap.put("schemeType" + i, "UC_CHKLMD001_ERR001");
+                errorMap.put("schemeType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
             }
         }
         List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtos = hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtos();
         for(int i=0 ;i< hcsaSvcSpecificStageWorkloadDtos.size();i++){
             Integer manhourCount = hcsaSvcSpecificStageWorkloadDtos.get(i).getManhourCount();
             if(StringUtil.isEmpty(manhourCount)){
-               errorMap.put("manhourCount"+i,"UC_CHKLMD001_ERR001");
+               errorMap.put("manhourCount"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Service Workload Manhours","field"));
             }
         }
         String numberDocument = hcsaServiceConfigDto.getComDocSize();

@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
@@ -156,6 +157,22 @@ public class AppInboxFallback implements AppInboxClient {
 
     @Override
     public FeignResponseEntity<Boolean> isLiscenceAppealOrCessation(String licenceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppId(String licAppId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity deleteDraftByNo(String draftNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

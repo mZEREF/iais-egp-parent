@@ -869,7 +869,7 @@ public class NewApplicationDelegator {
 
             Boolean isMandatory = comm.getIsMandatory();
             if(isMandatory&&appGrpPrimaryDocDtoList==null||isMandatory&&appGrpPrimaryDocDtoList.isEmpty()){
-                errorMap.put(name, "UC_CHKLMD001_ERR001");
+                errorMap.put(name, MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
             }else if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
                 Boolean flag=Boolean.FALSE;
                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
@@ -880,7 +880,7 @@ public class NewApplicationDelegator {
                     }
                 }
                 if(!flag){
-                    errorMap.put(name, "UC_CHKLMD001_ERR001");
+                    errorMap.put(name, MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
                 }
             }
         }
@@ -3315,7 +3315,7 @@ public class NewApplicationDelegator {
 
             Boolean isMandatory = comm.getIsMandatory();
             if(isMandatory&&appGrpPrimaryDocDtoList==null||isMandatory&&appGrpPrimaryDocDtoList.isEmpty()){
-                documentMap.put(name, "UC_CHKLMD001_ERR001");
+                documentMap.put(name, MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
             }else if(isMandatory&&!appGrpPrimaryDocDtoList.isEmpty()){
                 Boolean flag=Boolean.FALSE;
                 for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
@@ -3326,7 +3326,7 @@ public class NewApplicationDelegator {
                     }
                 }
                 if(!flag){
-                    documentMap.put(name, "UC_CHKLMD001_ERR001");
+                    documentMap.put(name, MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
                 }
             }
 
@@ -5308,7 +5308,7 @@ public class NewApplicationDelegator {
             }
             long length = appGrpPrimaryDocDto.getRealDocSize();
             int uploadFileLimit = systemParamConfig.getUploadFileLimit();
-            if(length/1024 >uploadFileLimit){
+            if(length/1024/1024 >uploadFileLimit){
                 errorMap.put(keyName,MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(uploadFileLimit),"sizeMax"));
                 continue;
             }

@@ -2118,7 +2118,7 @@ public class ClinicalLaboratoryDelegator {
         for (int i = 0; i < daList.size(); i++) {
             String idNo = daList.get(i).getIdNo();
             if (StringUtil.isEmpty(idNo)) {
-                map.put("disciplineAllocation" + i, "UC_CHKLMD001_ERR001");
+                map.put("disciplineAllocation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Clinical Governance Officers","field"));
             } else {
                 cgoMap.put(idNo, idNo);
             }
@@ -2172,7 +2172,7 @@ public class ClinicalLaboratoryDelegator {
                             String docName = appSvcDocDtoLit.get(i).getDocName();
                             String id = appSvcDocDtoLit.get(i).getSvcDocId();
                             int uploadFileLimit = systemParamConfig.getUploadFileLimit();
-                            if (docSize > uploadFileLimit) {
+                            if (docSize/1024 > uploadFileLimit) {
                                 errorMap.put(id + "selectedFile", MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(uploadFileLimit),"sizeMax"));
                             }
                             Boolean flag = Boolean.FALSE;

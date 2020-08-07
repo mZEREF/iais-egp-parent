@@ -3,9 +3,11 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.*;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -40,4 +42,6 @@ public interface InboxService {
     public Map<String,String> checkRfcStatus(String licenceId);
     Map<String,Boolean> listResultCeased(List<String> licIds);
     Map<String,String> appealIsApprove(String appIdOrLicenceId,String type);
+    List<ApplicationSubDraftDto> getDraftByLicAppId(String licAppId);
+    void  deleteDraftByNo(String draftNo);
 }

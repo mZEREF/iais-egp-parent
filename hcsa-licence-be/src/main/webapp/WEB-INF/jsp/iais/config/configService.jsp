@@ -49,7 +49,7 @@
           <div class="col-xs-12 col-md-4">
             <input id="serviceName" type="text" name="serviceName" maxlength="100" value="${hcsaServiceDto.svcName}">
             <span name="iaisErrorMsg" class="error-msg" id="error_svcName"></span>
-            <span name="iaisErrorMsg" class="error-msg" id="error_Name"></span>
+
           </div>
         </div>
       </div>

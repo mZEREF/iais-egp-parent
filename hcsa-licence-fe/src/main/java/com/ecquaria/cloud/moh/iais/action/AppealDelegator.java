@@ -131,9 +131,9 @@ public class AppealDelegator {
     public void save(BaseProcessClass bpc){
         log.info("start**************save************");
         Object errorMsg = bpc.request.getAttribute("errorMsg");
-        if(errorMsg == null){
+
             appealService.saveData(bpc.request);
-        }
+
         log.info("end**************save************");
     }
 

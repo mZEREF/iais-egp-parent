@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrel
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -75,4 +76,8 @@ public interface AppInboxClient {
     FeignResponseEntity<String> selectDarft(@RequestBody Map<String,Object> serviceCodes);
     @GetMapping(value = "/appeal/licence-appeal-or-cessation-by-licence-id")
     FeignResponseEntity<Boolean> isLiscenceAppealOrCessation(@RequestParam("licenceId") String licenceId);
+    @GetMapping(value = "/iais-submission/get-draft-by-lic-app-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppId(@RequestParam("licAppId")String licAppId);
+    @PutMapping(value = "/iais-submission/delete-draft-by-no")
+    FeignResponseEntity  deleteDraftByNo(@RequestParam("draftNo") String draftNo);
 }

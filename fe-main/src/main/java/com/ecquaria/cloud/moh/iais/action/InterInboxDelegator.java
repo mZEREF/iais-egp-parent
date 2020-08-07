@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.MasterCodePair;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
@@ -429,6 +430,27 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String licMaskId = ParamUtil.getString(bpc.request, "licenceNo");
         String licId = ParamUtil.getMaskedString(bpc.request,licMaskId);
+        List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licId);
+        if(!draftByLicAppId.isEmpty()){
+            String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+            StringBuilder stringBuilder=new StringBuilder(' ');
+            for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
+            }
+            if("delete".equals(isNeedDelete)){
+                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                    inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                }
+            }else {
+                bpc.request.setAttribute("draftByLicAppId","This licence has a draft"+stringBuilder.toString());
+                bpc.request.setAttribute("isAppealShow","1");
+                List<String> licIdValues = IaisCommonUtils.genNewArrayList();
+                licIdValues.add(licId);
+                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
+                return;
+            }
+
+        }
         Boolean result = inboxService.checkEligibility(licId);
         Map<String, String> map = inboxService.appealIsApprove(licId, "licence");
         if (result&&map.isEmpty()){
@@ -472,6 +494,26 @@ public class InterInboxDelegator {
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
         if(licIdValue != null){
             Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
+            List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
+            if(!draftByLicAppId.isEmpty()){
+                String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+                StringBuilder stringBuilder=new StringBuilder(' ');
+                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                    stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
+                }
+                if("delete".equals(isNeedDelete)){
+                    for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                        inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                    }
+                }else {
+                    bpc.request.setAttribute("draftByLicAppId","This licence has a draft"+stringBuilder.toString());
+                    bpc.request.setAttribute("isShow","1");
+                    List<String> licIdValues = IaisCommonUtils.genNewArrayList();
+                    licIdValues.add(licIdValue);
+                    ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
+                    return;
+                }
+            }
             if(errorMap.isEmpty()){
                 StringBuilder url = new StringBuilder();
                 url.append(InboxConst.URL_HTTPS)
@@ -503,6 +545,25 @@ public class InterInboxDelegator {
             List<String> licIdValue = IaisCommonUtils.genNewArrayList();
             for(String item:licIds){
                 licIdValue.add(ParamUtil.getMaskedString(bpc.request,item));
+            }
+            if(licIdValue.size()==1){
+                List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue.get(0));
+                String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+                if(!draftByLicAppId.isEmpty()){
+                    StringBuilder stringBuilder=new StringBuilder(' ');
+                    for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                        stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
+                    }
+                    if("delete".equals(isNeedDelete)){
+                        for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                            inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                        }
+                    }else {
+                        bpc.request.setAttribute("draftByLicAppId","This licence has a draft"+stringBuilder.toString());
+                        bpc.request.setAttribute("isRenewShow","1");
+                        return;
+                    }
+                }
             }
             ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
             for (String licId:licIdValue
@@ -716,7 +777,30 @@ public class InterInboxDelegator {
 
     public void appDoAppeal(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
-        String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
+        String appId =null;
+        String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+        if("delete".equals(isNeedDelete)){
+            appId=bpc.request.getParameter("action_id_value");
+        }else {
+            appId= ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
+        }
+        List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(appId);
+        if(!draftByLicAppId.isEmpty()){
+            StringBuilder stringBuilder=new StringBuilder(' ');
+            for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
+            }
+            if("delete".equals(isNeedDelete)){
+                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                    inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                }
+            }else {
+                bpc.request.setAttribute("draftByLicAppId","This licence has a draft"+stringBuilder.toString());
+                bpc.request.setAttribute("isAppealApplicationShow","1");
+                bpc.request.setAttribute("appealApplication",appId);
+                return;
+            }
+        }
         Boolean result = inboxService.checkEligibility(appId);
         Map<String, String> map = inboxService.appealIsApprove(appId, "application");
         if (result&&map.isEmpty()){

@@ -54,7 +54,7 @@
           <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="serviceName" name="serviceName" maxlength="100" readonly type="text" value="${hcsaServiceDto.svcName}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_svcDesc"></span>
+
           </div>
         </div>
       </div>
@@ -63,7 +63,8 @@
           <label class="col-xs-12 col-md-8 control-label" for="description">Service Description<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="description" name="description" maxlength="255" type="text" value="${hcsaServiceDto.svcDesc}">
-            <span class="error-msg" name="iaisErrorMsg" id="error_svcDisplayDesc"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_svcDesc"></span>
+            <span name="iaisErrorMsg" class="error-msg" id="error_svcName"></span>
           </div>
         </div>
       </div>
@@ -72,6 +73,7 @@
           <label class="col-xs-12 col-md-8 control-label" for="displayDescription">Service Display Description<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="displayDescription" name="displayDescription" maxlength="255" type="text" value="${hcsaServiceDto.svcDisplayDesc}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_svcDisplayDesc"></span>
           </div>
         </div>
       </div>
@@ -105,6 +107,7 @@
         <div class="col-xs-12 col-md-10">
           <label class="col-xs-12 col-md-10 control-label" >Premises Type<span class="mandatory">*</span></label>
         </div>
+        <span class="error-msg" name="iaisErrorMsg" id="error_premieseType"></span>
       </div>
       <br>
 
@@ -131,7 +134,7 @@
               </div>
             </div>
           </div>
-          <span class="error-msg" name="iaisErrorMsg" id="error_premieseType"></span>
+
         </div>
       </div>
       <br>

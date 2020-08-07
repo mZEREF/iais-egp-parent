@@ -9,6 +9,7 @@
         <input type="hidden" name="action_grp_value" value="">
         <input type="hidden" name="action_id_value" value="">
         <input type="hidden" name="action_type_value" value="">
+        <input type="hidden" value="" id="isNeedDelete" name="isNeedDelete">
         <div id="clearBody">
             <div class="row">
                 <div class="col-md-6">
@@ -269,8 +270,11 @@
                     </div>
                 </div>
             </div>
+
             <iais:confirm msg="${delDraftConfMsg}" needFungDuoJi="false" popupOrder="deleteDraftModal" callBack="delDraftCancelBtn()" title=" " cancelFunc="delDraftYesBtn()" cancelBtnDesc="OK" yesBtnDesc="Cancel" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary"  />
             <iais:confirm msg="${delDraftAckMsg}" needFungDuoJi="false" popupOrder="deleteDraftMessage"  title=" " callBack="delDraftMsgYesBtn()"  needCancel="false" />
+            <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftAppealAppealByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteAppealAppealDraft()"></iais:confirm>
+           <input type="hidden" name="appealApplication" id="appealApplication" value="${appealApplication}">
         </div>
     </div>
 </div>
@@ -282,12 +286,22 @@
         if('1' == '${needDelDraftMsg}'){
             $('#deleteDraftMessage').modal('show');
         }
+        $('#draftAppealAppealByLicAppId').modal('hide');
+        if('1' == '${isAppealApplicationShow}'){
+            $('#draftAppealAppealByLicAppId').modal('show');
+        }
     });
 
     function delDraftYesBtn() {
         $('#deleteDraftModal').modal('hide');
         submit('appDoDelete');
         showWaiting();
+    }
+    function deleteAppealAppealDraft() {
+        $('#isNeedDelete').val('delete');
+        showWaiting();
+        $("[name='action_id_value']").val($('#appealApplication').val());
+        submit("appDoAppeal");
     }
 
     function delDraftCancelBtn() {

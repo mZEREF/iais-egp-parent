@@ -132,7 +132,7 @@ public class NewApplicationHelper {
             StringBuilder stringBuilder1=new StringBuilder();
             String assignSelect = appSvcCgoList.get(i).getAssignSelect();
             if("-1".equals(assignSelect)){
-                errMap.put("assignSelect"+i, "UC_CHKLMD001_ERR001");
+                errMap.put("assignSelect"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Add/Assign a Clinical Governance Officer","field"));
             }else {
                 String idTyp = appSvcCgoList.get(i).getIdType();
                 String idNo = appSvcCgoList.get(i).getIdNo();
@@ -145,42 +145,42 @@ public class NewApplicationHelper {
                 }
 
                 if("-1".equals(idTyp)||StringUtil.isEmpty(idTyp)){
-                    errMap.put("idTyp"+i, "UC_CHKLMD001_ERR001");
+                    errMap.put("idTyp"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
                 }
                 String salutation = appSvcCgoList.get(i).getSalutation();
                 if(StringUtil.isEmpty(salutation)){
-                    errMap.put("salutation"+i,"UC_CHKLMD001_ERR001");
+                    errMap.put("salutation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name Type","field"));
                 }
                 String speciality = appSvcCgoList.get(i).getSpeciality();
                 if("-1".equals(speciality)){
-                    errMap.put("speciality"+i,"UC_CHKLMD001_ERR001");
+                    errMap.put("speciality"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Specialty","field"));
                 }else {
                     if("other".equals(speciality)){
                         String specialityOther = appSvcCgoList.get(i).getSpecialityOther();
                         if(StringUtil.isEmpty(specialityOther)){
-                            errMap.put("other"+i,"UC_CHKLMD001_ERR001");
+                            errMap.put("other"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Other","field"));
                         }
                     }
                 }
                 String professionType = appSvcCgoList.get(i).getProfessionType();
                 if(StringUtil.isEmpty(professionType)){
-                    errMap.put("professionType"+i,"UC_CHKLMD001_ERR001");
+                    errMap.put("professionType"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Type ","field"));
                 }
                 String designation = appSvcCgoList.get(i).getDesignation();
                 if(StringUtil.isEmpty(designation)){
-                    errMap.put("designation"+i,"UC_CHKLMD001_ERR001");
+                    errMap.put("designation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));
                 }
                 String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                 if(StringUtil.isEmpty(professionRegoNo)){
-                    errMap.put("professionRegoNo"+i,"UC_CHKLMD001_ERR001");
+                    errMap.put("professionRegoNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn No.","field"));
                     String qualification = appSvcCgoList.get(i).getSubSpeciality();
                     if(StringUtil.isEmpty(qualification)){
-                        errMap.put("qualification"+i,"UC_CHKLMD001_ERR001");
+                        errMap.put("qualification"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Subspecialty or relevant qualification ","field"));
                     }
                 }
                 //to do
                 if(StringUtil.isEmpty(idNo)){
-                    errMap.put("idNo"+i,"UC_CHKLMD001_ERR001");
+                    errMap.put("idNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
                 }else {
                     if("FIN".equals(idTyp)){
                         boolean b = SgNoValidator.validateFin(idNo);
@@ -219,7 +219,7 @@ public class NewApplicationHelper {
 
                 String name = appSvcCgoList.get(i).getName();
                 if(StringUtil.isEmpty(name)){
-                    errMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                    errMap.put("name"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
                 }else {
                     if(name.length()>66){
                         errMap.put("name"+i,"Length is too long");
@@ -228,7 +228,7 @@ public class NewApplicationHelper {
 
                 String mobileNo = appSvcCgoList.get(i).getMobileNo();
                 if(StringUtil.isEmpty(mobileNo)){
-                    errMap.put("mobileNo"+i, "UC_CHKLMD001_ERR001");
+                    errMap.put("mobileNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No. ","field"));
                 }else if (!StringUtil.isEmpty(mobileNo)) {
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                         errMap.put("mobileNo"+i, "CHKLMD001_ERR004");
@@ -237,7 +237,7 @@ public class NewApplicationHelper {
                 String emailAddr = appSvcCgoList.get(i).getEmailAddr();
 
                 if(StringUtil.isEmpty(emailAddr)){
-                    errMap.put("emailAddr"+i, "UC_CHKLMD001_ERR001");
+                    errMap.put("emailAddr"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address","field"));
                 }else if (!StringUtil.isEmpty(emailAddr)) {
                     if (! ValidationUtils.isEmail(emailAddr)) {
                         errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
@@ -351,7 +351,7 @@ public class NewApplicationHelper {
 
                 String assignSelect = poDto.get(i).getAssignSelect();
                 if ("-1".equals(assignSelect)) {
-                    oneErrorMap.put("assignSelect"+i, "UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("assignSelect"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Assign a Principal Officer","field"));
                 } else {
                     String mobileNo = poDto.get(i).getMobileNo();
                     String officeTelNo = poDto.get(i).getOfficeTelNo();
@@ -369,18 +369,18 @@ public class NewApplicationHelper {
                         continue;
                     }
                     if("-1".equals(idType)||StringUtil.isEmpty(idType)){
-                        oneErrorMap.put("idType"+poIndex,"UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("idType"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
                     }
                     if(StringUtil.isEmpty(name)){
-                        oneErrorMap.put("name"+poIndex,"UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("name"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
                     }else if (name.length()>66){
 
                     }
                     if(StringUtil.isEmpty(salutation)){
-                        oneErrorMap.put("salutation"+poIndex,"UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("salutation"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
                     }
                     if(StringUtil.isEmpty(designation)){
-                        oneErrorMap.put("designation"+poIndex,"UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("designation"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));
                     }
                     if(!StringUtil.isEmpty(idNo)){
                         if("FIN".equals(idType)){
@@ -408,7 +408,7 @@ public class NewApplicationHelper {
                             }
                         }
                     }else {
-                        oneErrorMap.put("poNRICFIN"+poIndex,"UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("poNRICFIN"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. ","field"));
                     }
                     if(!StringUtil.isEmpty(mobileNo)){
 
@@ -416,7 +416,7 @@ public class NewApplicationHelper {
                             oneErrorMap.put("mobileNo"+poIndex, "CHKLMD001_ERR004");
                         }
                     }else {
-                        oneErrorMap.put("mobileNo"+poIndex, "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("mobileNo"+poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No. ","field"));
                     }
                     if(!StringUtil.isEmpty(emailAddr)) {
                         if (!  ValidationUtils.isEmail(emailAddr)) {
@@ -425,14 +425,14 @@ public class NewApplicationHelper {
 
                         }
                     }else {
-                        oneErrorMap.put("emailAddr"+poIndex, "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("emailAddr"+poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
                     }
                     if(!StringUtil.isEmpty(officeTelNo)) {
                         if (!officeTelNo.matches("^[6][0-9]{7}$")) {
                             oneErrorMap.put("officeTelNo"+poIndex, "GENERAL_ERR0015");
                         }
                     }else {
-                        oneErrorMap.put("officeTelNo"+poIndex, "UC_CHKLMD001_ERR001");
+                        oneErrorMap.put("officeTelNo"+poIndex, MessageUtil.replaceMessage("GENERAL_ERR0006","Office Telephone No.","field"));
                     }
                 }
                 poIndex++;
@@ -469,32 +469,32 @@ public class NewApplicationHelper {
                 }
                 String assignSelect = poDto.get(i).getAssignSelect();
                 if(StringUtil.isEmpty(assignSelect)||"-1".equals(assignSelect)){
-                    oneErrorMap.put("deputyAssignSelect"+dpoIndex,"UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyAssignSelect"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Assign a Deputy Principal Officer ","field"));
                 }
                 if(StringUtil.isEmpty(designation)||"-1".equals(designation)){
-                    oneErrorMap.put("deputyDesignation"+dpoIndex,"UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyDesignation"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));
                 }
                 if(StringUtil.isEmpty(salutation)||"-1".equals(salutation)){
-                    oneErrorMap.put("deputySalutation"+dpoIndex,"UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputySalutation"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Name Type","field"));
                 }
 
                 if(StringUtil.isEmpty(idType)||"-1".equals(idType)){
-                    oneErrorMap.put("deputyIdType"+dpoIndex,"UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyIdType"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
                 }
                 if(StringUtil.isEmpty(name)){
-                    oneErrorMap.put("deputyName"+dpoIndex,"UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyName"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
                 }else if(name.length()>66){
 
                 }
                 if(StringUtil.isEmpty(officeTelNo)){
-                    oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyofficeTelNo"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Office Telephone No.","field"));
                 }else {
                     if(!officeTelNo.matches("^[6][0-9]{7}$")){
                         oneErrorMap.put("deputyofficeTelNo"+dpoIndex,"GENERAL_ERR0015");
                     }
                 }
                 if(StringUtil.isEmpty(idNo)){
-                    oneErrorMap.put("deputyIdNo"+dpoIndex,"UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyIdNo"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
                 }
                 if("FIN".equals(idType)){
                     boolean b = SgNoValidator.validateFin(idNo);
@@ -522,7 +522,7 @@ public class NewApplicationHelper {
                 }
 
                 if(StringUtil.isEmpty(mobileNo)){
-                    oneErrorMap.put("deputyMobileNo"+dpoIndex,"UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyMobileNo"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No.","field"));
                 }
                 else {
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
@@ -530,7 +530,7 @@ public class NewApplicationHelper {
                     }
                 }
                 if(StringUtil.isEmpty(emailAddr)){
-                    oneErrorMap.put("deputyEmailAddr"+dpoIndex,"UC_CHKLMD001_ERR001");
+                    oneErrorMap.put("deputyEmailAddr"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
                 }else {
                     if (!ValidationUtils.isEmail(emailAddr)) {
                         oneErrorMap.put("deputyEmailAddr"+dpoIndex, "CHKLMD001_ERR006");
@@ -967,7 +967,7 @@ public class NewApplicationHelper {
         for(int i=0;i<medAlertPsnDtos.size();i++ ){
             String assignSelect = medAlertPsnDtos.get(i).getAssignSelect();
             if("-1".equals(assignSelect)||StringUtil.isEmpty(assignSelect)){
-                errMap.put("assignSelect"+i, "UC_CHKLMD001_ERR001");
+                errMap.put("assignSelect"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Assign a MedAlert Person","field"));
             }else {
                 String idTyp = medAlertPsnDtos.get(i).getIdType();
                 String idNo = medAlertPsnDtos.get(i).getIdNo();
@@ -980,15 +980,15 @@ public class NewApplicationHelper {
                 }
                 StringBuilder stringBuilder1=new StringBuilder();
                 if("-1".equals(idTyp)||StringUtil.isEmpty(idTyp)){
-                    errMap.put("idTyp"+i, "UC_CHKLMD001_ERR001");
+                    errMap.put("idTyp"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID Type","field"));
                 }
                 String salutation = medAlertPsnDtos.get(i).getSalutation();
                 if(StringUtil.isEmpty(salutation)){
-                    errMap.put("salutation"+i,"UC_CHKLMD001_ERR001");
+                    errMap.put("salutation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name Type","field"));
                 }
                 //to do
                 if(StringUtil.isEmpty(idNo)){
-                    errMap.put("idNo"+i,"UC_CHKLMD001_ERR001");
+                    errMap.put("idNo"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
                 }else {
                     if("FIN".equals(idTyp)){
                         boolean b = SgNoValidator.validateFin(idNo);
@@ -1018,7 +1018,7 @@ public class NewApplicationHelper {
 
                 String name = medAlertPsnDtos.get(i).getName();
                 if(StringUtil.isEmpty(name)){
-                    errMap.put("name"+i,"UC_CHKLMD001_ERR001");
+                    errMap.put("name"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
                 }else {
                     if(name.length()>66){
 
@@ -1027,7 +1027,7 @@ public class NewApplicationHelper {
 
                 String mobileNo = medAlertPsnDtos.get(i).getMobileNo();
                 if(StringUtil.isEmpty(mobileNo)){
-                    errMap.put("mobileNo"+i, "UC_CHKLMD001_ERR001");
+                    errMap.put("mobileNo"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No. ","field"));
                 }else if (!StringUtil.isEmpty(mobileNo)) {
                     if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                         errMap.put("mobileNo"+i, "CHKLMD001_ERR004");
@@ -1036,7 +1036,7 @@ public class NewApplicationHelper {
                 String emailAddr = medAlertPsnDtos.get(i).getEmailAddr();
 
                 if(StringUtil.isEmpty(emailAddr)){
-                    errMap.put("emailAddr"+i, "UC_CHKLMD001_ERR001");
+                    errMap.put("emailAddr"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address","field"));
                 }else if (!StringUtil.isEmpty(emailAddr)) {
                     if (! ValidationUtils.isEmail(emailAddr)) {
                         errMap.put("emailAddr"+i, "CHKLMD001_ERR006");
@@ -1053,7 +1053,7 @@ public class NewApplicationHelper {
 
                 String preferredMode = medAlertPsnDtos.get(i).getPreferredMode();
                 if(StringUtil.isEmpty(preferredMode)){
-                    errMap.put("preferredModeVal"+i,"UC_CHKLMD001_ERR001");
+                    errMap.put("preferredModeVal"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Preferred Mode of Receiving MedAlert ","field"));
                 }
 
             }

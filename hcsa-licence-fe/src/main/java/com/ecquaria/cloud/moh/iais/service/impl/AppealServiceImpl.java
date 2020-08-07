@@ -199,10 +199,13 @@ public class AppealServiceImpl implements AppealService {
                 }
                 entity.setLicenseeId(licenseeId);
                 Object errorMsg = req.getAttribute("errorMsg");
+                entity.setLicenceId(appealPageDto.getAppealFor());
                 if(errorMsg==null){
                     req.setAttribute("saveDraftSuccess", "success");
+                    applicationClient.saveDraft(entity).getEntity();
                 }
-                applicationClient.saveDraft(entity).getEntity();
+
+
             }
             appPremiseMiscDto.setRemarks(remarks);
             appPremiseMiscDto.setReason(reasonSelect);
@@ -235,19 +238,24 @@ public class AppealServiceImpl implements AppealService {
         appSvcRelatedInfoDtoList.add(appSvcRelatedInfoDto);
         appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtoList);
         appSubmissionDto.setServiceName(serviceName);
-        AppSubmissionDto entity = applicationClient.saveDraft(appSubmissionDto).getEntity();
-        String draftNo = entity.getDraftNo();
+        appSubmissionDto.setLicenceId(appealPageDto.getAppealFor());
+        Object errorMsg = req.getAttribute("errorMsg");
+        if(errorMsg==null){
+            req.setAttribute("saveDraftSuccess", "success");
+            AppSubmissionDto entity = applicationClient.saveDraft(appSubmissionDto).getEntity();
+            String draftNo = entity.getDraftNo();
+            req.getSession().setAttribute("saveDraftNo", draftNo);
+        }
+
         appPremiseMiscDto.setRemarks(remarks);
         appPremiseMiscDto.setOtherReason(othersReason);
         appPremiseMiscDto.setReason(reasonSelect);
         appPremiseMiscDto.setNewHciName(proposedHciName);
         req.setAttribute("appPremiseMiscDto", appPremiseMiscDto);
         req.setAttribute(APPEALING_FOR, appealingFor);
-        req.getSession().setAttribute("saveDraftNo", draftNo);
-        Object errorMsg = req.getAttribute("errorMsg");
-        if(errorMsg==null){
-            req.setAttribute("saveDraftSuccess", "success");
-        }
+
+
+
         return null;
     }
 
@@ -496,6 +504,7 @@ public class AppealServiceImpl implements AppealService {
                 String filename = appPremisesSpecialDocDto.getDocName();
                 String fileType = filename.substring(filename.lastIndexOf('.') + 1);
                 String sysFileType = systemParamConfig.getUploadFileType();
+                String configFileType = FileUtils.getStringFromSystemConfigString(sysFileType);
                 String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
                 Boolean flag=Boolean.FALSE;
                 for(String f:sysFileTypeArr){
@@ -504,7 +513,7 @@ public class AppealServiceImpl implements AppealService {
                     }
                 }
                 if (!flag) {
-                    map.put("file", "Wrong file type");
+                    map.put("file",MessageUtil.replaceMessage("GENERAL_ERR0018", configFileType,"fileType"));
                 }
             }
 
@@ -514,12 +523,12 @@ public class AppealServiceImpl implements AppealService {
         AppealPageDto appealPageDto = reAppealPage(request);
         String remarks = appealPageDto.getRemarks();
         if (StringUtil.isEmpty(remarks)) {
-            map.put("remarks", "UC_CHKLMD001_ERR001");
+            map.put("remarks", MessageUtil.replaceMessage("GENERAL_ERR0006","Any supporting remarks","field"));
         }
         String appealReason = appealPageDto.getAppealReason();
 
         if (StringUtil.isEmpty(appealReason)) {
-            map.put("reason", "UC_CHKLMD001_ERR001");
+            map.put("reason", MessageUtil.replaceMessage("GENERAL_ERR0006","Reason For Appeal","field"));
         } else {
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)) {
                 List<AppSvcCgoDto> appSvcCgoList = appealPageDto.getAppSvcCgoDto();
@@ -531,36 +540,36 @@ public class AppealServiceImpl implements AppealService {
                     StringBuilder stringBuilder1 = new StringBuilder();
                     String assignSelect = appSvcCgoList.get(i).getAssignSelect();
                     if ("-1".equals(assignSelect)) {
-                        map.put("assignSelect" + i, "UC_CHKLMD001_ERR001");
+                        map.put("assignSelect" + i,  MessageUtil.replaceMessage("GENERAL_ERR0006","Add/Assign a Clinical Governance Officer","field"));
                     } else {
                         String idTyp = appSvcCgoList.get(i).getIdType();
                         if ("-1".equals(idTyp)) {
-                            map.put("idTyp" + i, "UC_CHKLMD001_ERR001");
+                            map.put("idTyp" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.","field"));
                         }
                         String salutation = appSvcCgoList.get(i).getSalutation();
                         if (StringUtil.isEmpty(salutation)) {
-                            map.put("salutation" + i, "UC_CHKLMD001_ERR001");
+                            map.put("salutation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
                         }
                         String speciality = appSvcCgoList.get(i).getSpeciality();
                         if ("-1".equals(speciality)) {
-                            map.put("speciality" + i, "UC_CHKLMD001_ERR001");
+                            map.put("speciality" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Specialty","field"));
                         }
                         String professionType = appSvcCgoList.get(i).getProfessionType();
                         if (StringUtil.isEmpty(professionType)) {
-                            map.put("professionType" + i, "UC_CHKLMD001_ERR001");
+                            map.put("professionType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Type ","field"));
                         }
                         String designation = appSvcCgoList.get(i).getDesignation();
                         if (StringUtil.isEmpty(designation)) {
-                            map.put("designation" + i, "UC_CHKLMD001_ERR001");
+                            map.put("designation" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Designation ","field"));
                         }
                         String professionRegoNo = appSvcCgoList.get(i).getProfRegNo();
                         if (StringUtil.isEmpty(professionRegoNo)) {
-                            map.put("professionRegoNo" + i, "UC_CHKLMD001_ERR001");
+                            map.put("professionRegoNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn No.  ","field"));
                         }
                         String idNo = appSvcCgoList.get(i).getIdNo();
                         //to do
                         if (StringUtil.isEmpty(idNo)) {
-                            map.put("idNo" + i, "UC_CHKLMD001_ERR001");
+                            map.put("idNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No.  ","field"));
                         } else {
                             if ("FIN".equals(idTyp)) {
                                 boolean b = SgNoValidator.validateFin(idNo);
@@ -583,21 +592,17 @@ public class AppealServiceImpl implements AppealService {
 
                         String Specialty = appSvcCgoList.get(i).getSpeciality();
                         if (StringUtil.isEmpty(Specialty)) {
-                            map.put("speciality" + i, "UC_CHKLMD001_ERR001");
+                            map.put("speciality" + i,  MessageUtil.replaceMessage("GENERAL_ERR0006","Specialty","field"));
                         }
 
-                        String specialty = appSvcCgoList.get(i).getSpeciality();
-                        if (StringUtil.isEmpty(specialty)) {
-                            map.put("specialty" + i, "UC_CHKLMD001_ERR001");
-                        }
                         String name = appSvcCgoList.get(i).getName();
                         if (StringUtil.isEmpty(name)) {
-                            map.put("name" + i, "UC_CHKLMD001_ERR001");
+                            map.put("name" + i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
                         }
 
                         String mobileNo = appSvcCgoList.get(i).getMobileNo();
                         if (StringUtil.isEmpty(mobileNo)) {
-                            map.put("mobileNo" + i, "UC_CHKLMD001_ERR001");
+                            map.put("mobileNo" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Mobile No. ","field"));
                         } else if (!StringUtil.isEmpty(mobileNo)) {
                             if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                                 map.put("mobileNo" + i, "CHKLMD001_ERR004");
@@ -605,7 +610,7 @@ public class AppealServiceImpl implements AppealService {
                         }
                         String emailAddr = appSvcCgoList.get(i).getEmailAddr();
                         if (StringUtil.isEmpty(emailAddr)) {
-                            map.put("emailAddr" + i, "UC_CHKLMD001_ERR001");
+                            map.put("emailAddr" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Email Address ","field"));
                         } else if (!StringUtil.isEmpty(emailAddr)) {
                             if (!ValidationUtils.isEmail(emailAddr)) {
                                 map.put("emailAddr" + i, "CHKLMD001_ERR006");
