@@ -55,7 +55,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
@@ -74,7 +73,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -130,8 +128,6 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     InspEmailService inspEmailService;
     @Autowired
     ApplicationViewService applicationViewService;
-    @Autowired
-    private AppPremisesRoutingHistoryService appPremisesRoutingHistoryService;
     @Autowired
     private LicenceViewService licenceViewService;
 
@@ -276,12 +272,10 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
             try {
                 complianceHistoryDto.setInspectionDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), AppConsts.DEFAULT_DATE_FORMAT));
+                complianceHistoryDtos.add(complianceHistoryDto);
             }catch (Exception e){
                 log.error(e.getMessage(), e);
                 complianceHistoryDto.setInspectionDate("-");
-            }
-            if ((appPremisesRecommendationDto != null) && ImmutableSet.of(InspectionReportConstants.APPROVED).contains(appPremisesRecommendationDto.getRecomDecision())) {
-                complianceHistoryDtos.add(complianceHistoryDto);
             }
         }
         return complianceHistoryDtos;
