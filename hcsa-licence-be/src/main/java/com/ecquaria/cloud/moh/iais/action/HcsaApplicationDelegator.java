@@ -394,7 +394,7 @@ public class HcsaApplicationDelegator {
                             String chrono = ParamUtil.getString(bpc.request,"chrono");
                             if(AppointmentConstants.RECURRENCE_YEAR.equals(chrono)){
                                 chrono = AppointmentConstants.RECURRENCE_MONTH;
-                                appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number) * 12);
+                                appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(Integer.parseInt(number)*12));
                             }else{
                                 appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
                             }
