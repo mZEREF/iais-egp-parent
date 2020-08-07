@@ -24,7 +24,7 @@ public class MaskTag extends DivTagSupport {
 
     public MaskTag() {
         super();
-        init();
+        init();//NOSONAR
     }
 
     @Override

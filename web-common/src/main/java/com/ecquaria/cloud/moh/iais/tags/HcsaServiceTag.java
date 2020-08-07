@@ -30,7 +30,7 @@ public class HcsaServiceTag extends DivTagSupport{
 
 	public HcsaServiceTag() {
 		super();
-		init();
+		init();//NOSONAR
 	}
 
 	@Override

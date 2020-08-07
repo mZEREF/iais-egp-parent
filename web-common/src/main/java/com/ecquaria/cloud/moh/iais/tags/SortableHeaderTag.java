@@ -21,7 +21,7 @@ public class SortableHeaderTag extends DivTagSupport {
 
     public SortableHeaderTag() {
         super();
-        init();
+        init();//NOSONAR
     }
 
     // resets local state

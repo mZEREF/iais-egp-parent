@@ -22,7 +22,7 @@ public class MultipleSelectTag extends DivTagSupport {
     private boolean needErrorSpan;
     public MultipleSelectTag() {
         super();
-        init();
+        init();//NOSONAR
     }
 
     // resets local state

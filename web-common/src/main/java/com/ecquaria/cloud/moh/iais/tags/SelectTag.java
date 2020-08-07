@@ -66,7 +66,7 @@ public class SelectTag extends DivTagSupport {
     @Override
     public void release() {
         super.release();
-        init();
+        init();//NOSONAR
     }
     @Override
     public int doStartTag(){
