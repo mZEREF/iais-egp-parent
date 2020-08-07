@@ -85,8 +85,8 @@ import java.util.Set;
 @Delegator(value = "onlineEnquiriesDelegator")
 @Slf4j
 public class OfficerOnlineEnquiriesDelegator {
-    private static final Set<String> COUNTS = ImmutableSet.of( "2", "5");
-    private static final Set<String> COUNTS1 = ImmutableSet.of("1","3", "4");
+    private static final Set<String> COUNTS = ImmutableSet.of( "1","2", "5");
+    private static final Set<String> COUNTS1 = ImmutableSet.of("3", "4");
     @Autowired
     RequestForInformationService requestForInformationService;
     @Autowired
@@ -515,32 +515,29 @@ public class OfficerOnlineEnquiriesDelegator {
                     filters.put("toDate",appSubToDate);
                 }
                 if(!StringUtil.isEmpty(licStaDate)){
-                    filters.put("start_date", licStaDate);count="3";
+                    filters.put("start_date", licStaDate);
                 }
                 if(!StringUtil.isEmpty(licStaToDate)){
-                    filters.put("start_to_date",licStaToDate);count="3";
+                    filters.put("start_to_date",licStaToDate);
                 }
                 if(!StringUtil.isEmpty(licExpDate)){
-                    filters.put("expiry_start_date", licExpDate);count="3";
+                    filters.put("expiry_start_date", licExpDate);
                 }
                 if(!StringUtil.isEmpty(licExpToDate)){
-                    filters.put("expiry_date",licExpToDate);count="3";
+                    filters.put("expiry_date",licExpToDate);
                 }
                 if(!StringUtil.isEmpty(licenceNo)){
-                    filters.put("licence_no", licenceNo);count="3";
+                    filters.put("licence_no", licenceNo);
                 }
                 if(!StringUtil.isEmpty(licenceStatus)){
-                    filters.put("licence_status", licenceStatus);count="3";
+                    filters.put("licence_status", licenceStatus);
                 }
                 if(!StringUtil.isEmpty(serviceLicenceType)){
-                    filters.put("svc_name", serviceLicenceType);count="3";
+                    filters.put("svc_name", serviceLicenceType);
                 }
                 if(!StringUtil.isEmpty(svcSubType)){
-                    filters.put("serviceSubTypeName", svcSubType);count="3";
+                    filters.put("serviceSubTypeName", svcSubType);
 
-                }
-                if(!StringUtil.isEmpty(uenNo)){
-                    count="3";
                 }
                 break;
             case "1":
@@ -649,6 +646,7 @@ public class OfficerOnlineEnquiriesDelegator {
         if(count==null){
             count= (String) ParamUtil.getSessionAttr(request,"count");
         }
+        ParamUtil.setSessionAttr(request,"count",count);
         switch (count) {
             case "2":
                 if(!StringUtil.isEmpty(applicationNo)){
@@ -717,10 +715,11 @@ public class OfficerOnlineEnquiriesDelegator {
                         }
                     }
                 }
+                ParamUtil.setSessionAttr(request,"count",count);
                 break;
             case "1":
                 if(!StringUtil.isEmpty(hciCode)){
-                    filters.put("hciCode", hciCode);
+                    filters.put("hciCode", hciCode);count="3";
                 }
                 if(!StringUtil.isEmpty(hciName)){
                     filters.put("hciName", hciName);
@@ -774,7 +773,6 @@ public class OfficerOnlineEnquiriesDelegator {
                 break;
         }
 
-        ParamUtil.setSessionAttr(request,"count",count);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         errorMap=validateDate(request);
         if (!errorMap.isEmpty()) {
@@ -1283,7 +1281,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 break;
             case "1":
                 if(!StringUtil.isEmpty(parm.getFilters().get("hciCode"))){
-                    filters.put("hciCode", parm.getFilters().get("hciCode"));
+                    filters.put("hciCode", parm.getFilters().get("hciCode"));count="3";
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("hciName"))){
                     filters.put("hciName", parm.getFilters().get("hciName"));
