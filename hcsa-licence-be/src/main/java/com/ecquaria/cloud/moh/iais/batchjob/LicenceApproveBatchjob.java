@@ -1460,10 +1460,19 @@ public class LicenceApproveBatchjob {
         if (!StringUtil.isEmpty(svcType)) {
             licenceDto.setSvcType(svcType);
         }
+        String licenseeId = "";
         if(applicationGroupDto != null){
             Date effectiveDate = applicationGroupDto.getEffectDate();
             licenceDto.setEffectiveDate(effectiveDate);
+            licenseeId = applicationGroupDto.getLicenseeId();
+            log.info(StringUtil.changeForLog("The  getLicenceDto  licenseeId is " + licenseeId));
+            if(!StringUtil.isEmpty(applicationGroupDto.getNewLicenseeId())){
+                licenseeId =  applicationGroupDto.getNewLicenseeId();
+                log.info(StringUtil.changeForLog("The  getLicenceDto  newlicenseeId is " + licenseeId));
+            }
         }
+
+
         if (applicationDto != null && originLicenceDto != null && ((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equalsIgnoreCase(applicationDto.getApplicationType())) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType()))) {
             log.info(StringUtil.changeForLog("The  getLicenceDto APPType is RFC ..."));
             licenceDto.setStartDate(originLicenceDto.getStartDate());
@@ -1478,9 +1487,7 @@ public class LicenceApproveBatchjob {
                 licenceDto.setVersion(1);
             }
             licenceDto.setFeeRetroNeeded(originLicenceDto.isFeeRetroNeeded());
-            if (applicationGroupDto != null) {
-                licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
-            }
+            licenceDto.setLicenseeId(licenseeId);
             //ceased    weilu
             if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equalsIgnoreCase(applicationDto.getApplicationType())){
                 try {
@@ -1584,7 +1591,7 @@ public class LicenceApproveBatchjob {
                 licenceDto.setExpiryDate(expiryDate);
                 //licenceDto.setEndDate(licenceDto.getExpiryDate());
                 licenceDto.setGrpLic(isGrpLic);
-                licenceDto.setLicenseeId(applicationGroupDto.getLicenseeId());
+                licenceDto.setLicenseeId(licenseeId);
             }
             int version = 1;
             if (originLicenceDto != null) {

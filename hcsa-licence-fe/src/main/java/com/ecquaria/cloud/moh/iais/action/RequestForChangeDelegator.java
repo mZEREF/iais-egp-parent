@@ -397,7 +397,7 @@ public class RequestForChangeDelegator {
                 log.info(StringUtil.changeForLog("The newLicenseeId is -->:"+newLicenseeId));
                 appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(licenceId);
                 appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                appSubmissionDto.setLicenseeId(newLicenseeId);
+                appSubmissionDto.setNewLicenseeId(newLicenseeId);
                 appSubmissionDto.setAutoRfc(false);
                 FeeDto feeDto = getTransferFee();
                 if(feeDto != null){
