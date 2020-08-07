@@ -1414,7 +1414,24 @@ public class HalpAssessmentGuideDelegator {
             }else{
                 if ("amendLic2".equals(action)){
                     ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend2");
+                }else if("amendLic1".equals(action)){
+                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend1_2");
+                }else if("amendLic4".equals(action)){
+                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend1_1");
                 }
+                else if("amendLic3".equals(action)){
+                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend3_1");
+                }
+                else if("amendLic5".equals(action)){
+                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend4_1");
+                }
+                else if("amendLic6".equals(action)){
+                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend3_2");
+                }
+                else if("amendLic7".equals(action)){
+                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend4_2");
+                }
+
                 ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
             }

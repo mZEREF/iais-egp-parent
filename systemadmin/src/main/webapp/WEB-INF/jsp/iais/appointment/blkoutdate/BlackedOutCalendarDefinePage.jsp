@@ -86,7 +86,7 @@
             <iais:field value="Blacked Out Date Description:" required="true"></iais:field>
 
             <div class="col-md-5">
-              <input type="text" max="255" name="desc"
+              <input type="text" maxlength="255" name="desc"
                      value="${desc}">
               <span id="error_desc" name="iaisErrorMsg" class="error-msg"></span>
             </div>

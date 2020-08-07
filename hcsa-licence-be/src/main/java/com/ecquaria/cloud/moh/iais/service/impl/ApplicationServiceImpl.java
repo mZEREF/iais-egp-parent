@@ -237,11 +237,12 @@ public class ApplicationServiceImpl implements ApplicationService {
     public void alertSelfDeclNotification() {
         log.info("===>>>>alertSelfDeclNotification start");
         List<SelfAssMtEmailDto> allAssLt = applicationClient.getPendingSubmitSelfAss().getEntity();
-        final String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT;
-        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
 
-        templateContent.put("newSystem", "<a href=\"/main-web\">HALP</a>");
-        templateContent.put("moh_email", "test");
+        String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT;
+        String msgTmgId2 = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR;
+        String msgTmgId3 = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC;
+
+        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
 
         for (SelfAssMtEmailDto i : allAssLt) {
             String reqRefNum;
@@ -252,13 +253,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 
             LicenseeDto licenseeDto= inspEmailService.getLicenseeDtoById(i.getLicenseeId());
             if (licenseeDto != null){
+                log.info(StringUtil.changeForLog("do send email licensee name" + licenseeDto.getName()));
                 //pending submit self ass mt
                 if (msgTrackRefNumType == 1) {
                     refType = NotificationHelper.RECEIPT_TYPE_APP_GRP;
                     reqRefNum = i.getGroupId();
                     appList = i.getAppList();
                     boolean flag = false;
-                    StringBuilder svcNameStr = new StringBuilder();
+                    List<String> svcNames = IaisCommonUtils.genNewArrayList();
                     if (!IaisCommonUtils.isEmpty(appList)) {
                         for (ApplicationDto app : appList) {
                             if (!flag) {
@@ -267,9 +269,9 @@ public class ApplicationServiceImpl implements ApplicationService {
                                 String appType = MasterCodeUtil.getCodeDesc(app.getApplicationType());
                                 Date appSubmitDate = app.getStartDate();
 
-                                templateContent.put("appNumber", StringUtil.viewHtml(split[0]));
-                                templateContent.put("appType", StringUtil.viewHtml(appType));
-                                templateContent.put("appSubmitDate", StringUtil.viewHtml(Formatter.formatDate(appSubmitDate)));
+                                templateContent.put("applicationNumber", StringUtil.viewHtml(split[0]));
+                                templateContent.put("applicationType", StringUtil.viewHtml(appType));
+                                templateContent.put("applicationDate", StringUtil.viewHtml(Formatter.formatDate(appSubmitDate)));
                                 flag = true;
                             }
 
@@ -277,11 +279,11 @@ public class ApplicationServiceImpl implements ApplicationService {
                             HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
                             if (serviceDto != null) {
                                 String svcName = serviceDto.getSvcName();
-                                svcNameStr.append("<li>").append(svcName).append("</li>");
+                                svcNames.add(svcName);
                             }
                         }
 
-                        templateContent.put("svcNameList", svcNameStr.toString());
+                        templateContent.put("serviceNames", svcNames);
                     }
                 } else {
                     // uncompleted self ass mt
@@ -290,27 +292,40 @@ public class ApplicationServiceImpl implements ApplicationService {
                     //never null
                     ApplicationDto app = appList.get(0);
                     reqRefNum = app.getApplicationNo();
-                    templateContent.put("appNumber", reqRefNum);
-                    templateContent.put("appType", app.getApplicationType());
-                    templateContent.put("appSubmitDate", Formatter.formatDate(app.getStartDate()));
+                    templateContent.put("applicationNumber", reqRefNum);
+                    templateContent.put("applicationType", MasterCodeUtil.getCodeDesc(app.getApplicationType()));
+                    templateContent.put("applicationDate", Formatter.formatDate(app.getStartDate()));
 
-                    StringBuilder svcNameStr = new StringBuilder();
+                    List<String> svcNames = IaisCommonUtils.genNewArrayList();
                     HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(app.getServiceId());
                     if (serviceDto != null) {
                         String svcName = serviceDto.getSvcName();
-                        svcNameStr.append("<li>").append(svcName).append("</li>");
+                        svcNames.add(svcName);
                     }
-                    templateContent.put("svcNameList", svcNameStr.toString());
+                    templateContent.put("serviceNames", svcNames);
                 }
 
+                String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                //EN-NAP-008
                 String applicantName = licenseeDto.getName();
-                templateContent.put("APPLICANT_NAME", StringUtil.viewHtml(applicantName));
+                templateContent.put("ApplicantName", StringUtil.viewHtml(applicantName));
+                templateContent.put("MOH_AGENCY_NAME", "-");
+                templateContent.put("emailAddress", "-");
+                templateContent.put("tatTime", Formatter.formatDate(new Date()));
+                templateContent.put("systemLink", loginUrl);
                 JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
                 jobRemindMsgTrackingDto.setMsgKey(i.getMsgTrackKey());
                 jobRemindMsgTrackingDto.setRefNo(reqRefNum);
                 jobRemindMsgTrackingDto.setCreateTime(new Date());
                 jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+
                 notificationHelper.sendNotification(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
+
+                //EN-CHM-001
+                notificationHelper.sendNotification(msgTmgId2, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR, randomStr, refType , reqRefNum);
+
+                //EN-CHM-002
+                notificationHelper.sendNotification(msgTmgId3, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, randomStr, refType , reqRefNum);
             }
 
             log.info("===>>>>alertSelfDeclNotification end");

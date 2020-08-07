@@ -255,7 +255,7 @@ public class InsReportDelegator {
                 Integer num = Integer.valueOf(number);
                 if(AppointmentConstants.RECURRENCE_YEAR.equals(chrono)){
                     chrono = AppointmentConstants.RECURRENCE_MONTH ;
-                    num *=12;
+                    num = Integer.valueOf(Integer.parseInt(number) * 12);
                 }
                 appPremisesRecommendationDto.setChronoUnit(chrono);
                 appPremisesRecommendationDto.setRecomInNumber(num);
