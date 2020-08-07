@@ -36,7 +36,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -561,10 +560,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         //send email
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-        inspectionDateSendEmail(loginUrl, licenseeId, applicationViewDto, hcsaServiceDto, urlId);
+        Map<String, Object> map = inspectionDateSendEmail(loginUrl, licenseeId, applicationViewDto, urlId);
         //get service code to send message
         String serviceCode = hcsaServiceDto.getSvcCode();
-        createMessage(url, serviceCode, submitDt, licenseeId, maskParams);
+        createMessage(url, serviceCode, licenseeId, maskParams, map);
         //update app Info and insp Info
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
     }
@@ -633,14 +632,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
         maskParams.put("applicationNo", applicationNo);
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
-        Date submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         //send email
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-        inspectionDateSendEmail(loginUrl, licenseeId, applicationViewDto, hcsaServiceDto, urlId);
+        Map<String, Object> map = inspectionDateSendEmail(loginUrl, licenseeId, applicationViewDto, urlId);
         //get service code to send message
         String serviceCode = hcsaServiceDto.getSvcCode();
-        createMessage(url, serviceCode, submitDt, licenseeId, maskParams);
+        createMessage(url, serviceCode, licenseeId, maskParams, map);
         //save data to app table
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
     }
@@ -1006,66 +1004,64 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
 
-    private void inspectionDateSendEmail(String url, String licenseeId, ApplicationViewDto applicationViewDto, HcsaServiceDto hcsaServiceDto, String appPremCorrId) {
+    private Map<String, Object> inspectionDateSendEmail(String url, String licenseeId, ApplicationViewDto applicationViewDto, String appPremCorrId) {
+        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+        String licName = licenseeDto.getName();
+        ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String appNo = applicationDto.getApplicationNo();
+        String appType = applicationDto.getApplicationType();
+        Date submitDt = applicationGroupDto.getSubmitDt();
+        if(submitDt == null){
+            submitDt = new Date();
+        }
+        Date today = new Date();
+        String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy HH:mm:ss");
+        String todayDate = Formatter.formatDateTime(today, "dd/MM/yyyy");
+        String todayTime = Formatter.formatDateTime(today, "HH:mm:ss");
+        AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremCorrId);
+        String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
+        String hciName = appGrpPremisesDto.getHciName();
+        String hciCode = appGrpPremisesDto.getHciCode();
+        if(StringUtil.isEmpty(hciName)){
+            hciName = "-";
+        }
+        //todo
+        String address1 = "";
+        String address2 = "";
+        String phoneNo = "";
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        map.put("applicant", licName);
+        map.put("applicationType", appType);
+        map.put("applicationNo", appNo);
+        map.put("submitDate", strSubmitDt);
+        map.put("hciName", hciName);
+        map.put("hciCode", hciCode);
+        map.put("hciAddress", address);
+        map.put("today", todayDate);
+        map.put("time", todayTime);
+        map.put("systemLink", url);
+        map.put("emailAddressOne", address1);
+        map.put("emailAddressTwo", address2);
+        map.put("phoneNo", phoneNo);
         try{
-            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-            String licName = licenseeDto.getName();
-            ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-            String appNo = applicationDto.getApplicationNo();
-            String appType = applicationDto.getApplicationType();
-            Date submitDt = applicationGroupDto.getSubmitDt();
-            if(submitDt == null){
-                submitDt = new Date();
-            }
-            Date today = new Date();
-            String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy HH:mm:ss");
-            String todayDate = Formatter.formatDateTime(today, "dd/MM/yyyy");
-            String todayTime = Formatter.formatDateTime(today, "HH:mm:ss");
-            AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremCorrId);
-            String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
-            String hciName = appGrpPremisesDto.getHciName();
-            String hciCode = appGrpPremisesDto.getHciCode();
-            if(StringUtil.isEmpty(hciName)){
-                hciName = "-";
-            }
-            //todo
-            String address1 = "";
-            String address2 = "";
-            String phoneNo = "";
-            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-            map.put("applicant", licName);
-            map.put("applicationType", appType);
-            map.put("applicationNo", appNo);
-            map.put("submitDate", strSubmitDt);
-            map.put("hciName", hciName);
-            map.put("hciCode", hciCode);
-            map.put("hciAddress", address);
-            map.put("today", todayDate);
-            map.put("time", todayTime);
-            map.put("systemLink", url);
-            map.put("emailAddressOne", address1);
-            map.put("emailAddressTwo", address2);
-            map.put("phoneNo", phoneNo);
             notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST, map, appNo, appNo,
                     NotificationHelper.RECEIPT_TYPE_APP, appNo);
         } catch (Exception e){
             log.error(e.getMessage(), e);
         }
+        return map;
     }
 
-    private void createMessage(String url, String serviceCode, Date submitDt, String licenseeId, HashMap<String, String> maskParams) {
+    private void createMessage(String url, String serviceCode, String licenseeId, HashMap<String, String> maskParams, Map<String, Object> map) {
         MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST).getEntity();
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
-        map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
-        map.put("process_url", StringUtil.viewHtml(url));
+        map.put("systemLink", url);
         String templateMessageByContent;
         try {
             templateMessageByContent = MsgUtil.getTemplateMessageByContent(mtd.getMessageContent(), map);
         }catch (IOException | TemplateException e) {
             log.error(e.getMessage(), e);
-            throw new IaisRuntimeException(e);
+            templateMessageByContent = mtd.getMessageContent();
         }
         InterMessageDto interMessageDto = new InterMessageDto();
         interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
