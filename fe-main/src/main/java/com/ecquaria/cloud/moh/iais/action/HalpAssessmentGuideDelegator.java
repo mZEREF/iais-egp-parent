@@ -84,10 +84,6 @@ public class HalpAssessmentGuideDelegator {
     private static final String LIC_ALIGN_SEARCH_PARAM = "licAlignSearchParam";
     private static final String LIC_ALIGN_SEARCH_RESULT= "licAlignSearchResult";
 
-    List<HcsaServiceDto> allbaseService;
-
-    List<HcsaServiceDto> allspecifiedService;
-
     @Autowired
     private InboxService inboxService;
 
@@ -1285,24 +1281,6 @@ public class HalpAssessmentGuideDelegator {
 
     public void prepareSwitch(BaseProcessClass bpc) throws IOException {
         log.info("****start ******");
-//        String licId = ParamUtil.getString(bpc.request, "amendLicId");
-//        String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
-//        if(licIdValue != null){
-//            Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
-//            if(errorMap.isEmpty()){
-//                StringBuilder url = new StringBuilder();
-//                url.append(InboxConst.URL_HTTPS)
-//                        .append(bpc.request.getServerName())
-//                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
-//                        .append("?licenceId=")
-//                        .append(MaskUtil.maskValue("licenceId",licIdValue));
-//                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-//                bpc.response.sendRedirect(tokenUrl);
-//            }else{
-//                ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
-//                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
-//            }
-//        }
     }
 
     public void ceaseLic(BaseProcessClass bpc) {
@@ -1357,11 +1335,13 @@ public class HalpAssessmentGuideDelegator {
     public void withdrawApp(BaseProcessClass bpc) {
         SearchParam withdrawAppParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
         withdrawAppParam.addFilter("licenseeId", licenseeId, true);
-        String[] appTypes = {
-                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
-                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
-        };
-        withdrawAppParam.addFilter("appType",appTypes, true);
+//        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
+        String moduleStr = SqlHelper.constructInCondition("appType", 2);
+        withdrawAppParam.addParam("appTypes", moduleStr);
+
+        withdrawAppParam.addFilter("appType"+0, ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+        withdrawAppParam.addFilter("appType"+1, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+
         withdrawAppParam.addFilter("appStatus",ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, true);
         QueryHelp.setMainSql("interInboxQuery", "assessmentWithdrawAppQuery", withdrawAppParam);
         SearchResult<InboxAppQueryDto> withdrawAppResult = inboxService.appDoQuery(withdrawAppParam);
@@ -1414,6 +1394,31 @@ public class HalpAssessmentGuideDelegator {
 
     public void subDateMoh(BaseProcessClass bpc) {
 
+    }
+
+    public void doAmenfLicStep(BaseProcessClass bpc) throws IOException {
+        String action = ParamUtil.getString(bpc.request, "guide_action_type");
+        String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
+        String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
+        if(licIdValue != null){
+            Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
+            if(errorMap.isEmpty()){
+                StringBuilder url = new StringBuilder();
+                url.append(InboxConst.URL_HTTPS)
+                        .append(bpc.request.getServerName())
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                        .append("?licenceId=")
+                        .append(MaskUtil.maskValue("licenceId",licIdValue));
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+            }else{
+                if ("amendLic2".equals(action)){
+                    ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend2");
+                }
+                ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
+            }
+        }
     }
 
     public void updateAdminPers(BaseProcessClass bpc) throws IOException {

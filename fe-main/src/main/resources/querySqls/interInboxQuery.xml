@@ -38,10 +38,10 @@
                 app.version
             FROM APPLICATION AS app
             WHERE 1=1
-            <#if appType??> AND B.app_type in (:appType)</#if>
-            <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
-            <#if appStatus??> AND B.status = :appStatus</#if>
-            <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
+            <#if appTypes??> AND {appTypes} </#if>
+            <#if licenseeId??> AND app.licensee_id = :licenseeId</#if>
+            <#if appStatus??> AND app.status = :appStatus</#if>
+            <#if createDtStart??> AND app.created_dt > :createDtStart</#if>
         ]]>
     </sql>
 
