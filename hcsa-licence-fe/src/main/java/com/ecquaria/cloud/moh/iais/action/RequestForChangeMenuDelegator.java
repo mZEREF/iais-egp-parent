@@ -1070,7 +1070,6 @@ public class RequestForChangeMenuDelegator {
             return;
         }
         List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds);
-        List<AppSvcRelatedInfoDto> oldSvcDto = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenseeId = loginContext.getLicenseeId();
@@ -1100,9 +1099,8 @@ public class RequestForChangeMenuDelegator {
             }
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
             if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                boolean needNewLicNo = false;
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                    appGrpPremisesDto.setNeedNewLicNo(needNewLicNo);
+                    appGrpPremisesDto.setNeedNewLicNo(false);
                 }
             }
             //judge is the preInspection
@@ -1134,10 +1132,8 @@ public class RequestForChangeMenuDelegator {
             }
 
         }
-        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDtos1.get(0).getAppSvcRelatedInfoDtoList();
-        if (appSvcRelatedInfoDtoList.equals(oldSvcDto)) {
-            requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
-        }
+        //save
+        requestForChangeService.saveAppsBySubmissionDtos(appSubmissionDtos1);
         ParamUtil.setRequestAttr(bpc.request, "action_type", "bank");
         appSubmissionDtos1.get(0).setLicenceNo(null);
         ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
@@ -1147,10 +1143,10 @@ public class RequestForChangeMenuDelegator {
 
     public void preparePersonnelBank(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prePayment start ...."));
-        ParamUtil.setSessionAttr(bpc.request,"pmtRefNo", "N/A");
-        ParamUtil.setSessionAttr(bpc.request,"createDate", new Date());
-        ParamUtil.setSessionAttr(bpc.request,"dAmount", "$0");
-        ParamUtil.setSessionAttr(bpc.request,"payMethod", "N/A");
+        ParamUtil.setSessionAttr(bpc.request, "pmtRefNo", "N/A");
+        ParamUtil.setSessionAttr(bpc.request, "createDate", new Date());
+        ParamUtil.setSessionAttr(bpc.request, "dAmount", "$0");
+        ParamUtil.setSessionAttr(bpc.request, "payMethod", "N/A");
         ParamUtil.setSessionAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
@@ -1701,35 +1697,40 @@ public class RequestForChangeMenuDelegator {
             List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcCgoDtos)) {
                 for (AppSvcCgoDto appSvcCgoDto : appSvcCgoDtos) {
-                    if (personnelListDto.getIdNo().equals(appSvcCgoDto.getIdNo())) {
-                        appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
-                        appSvcCgoDto.setMobileNo(personnelListDto.getMobileNo());
-                        appSvcCgoDto.setDesignation(personnelListDto.getDesignation());
-                        appSvcCgoDto.setProfRegNo(personnelListDto.getProfessionRegnNo());
-                        appSvcCgoDto.setProfessionType(personnelListDto.getProfessionType());
-                        appSvcCgoDto.setSpeciality(personnelListDto.getSpeciality());
-                        appSvcCgoDto.setSubSpeciality(personnelListDto.getSubSpeciality());
-                    }
+                    appSvcCgoDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
+                    appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
+                    appSvcCgoDto.setMobileNo(personnelListDto.getMobileNo());
+                    appSvcCgoDto.setDesignation(personnelListDto.getDesignation());
+                    appSvcCgoDto.setProfRegNo(personnelListDto.getProfessionRegnNo());
+                    appSvcCgoDto.setProfessionType(personnelListDto.getProfessionType());
+                    appSvcCgoDto.setSpeciality(personnelListDto.getSpeciality());
+                    appSvcCgoDto.setSubSpeciality(personnelListDto.getSubSpeciality());
                 }
             }
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
             if (!IaisCommonUtils.isEmpty(appSvcPrincipalOfficersDtos)) {
                 for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtos) {
-                    if (personnelListDto.getIdNo().equals(appSvcPrincipalOfficersDto.getIdNo())) {
-                        appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
-                        appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
-                        appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
-                        appSvcPrincipalOfficersDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
-                    }
+                    appSvcPrincipalOfficersDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
+                    appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
+                    appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
+                    appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
+                    appSvcPrincipalOfficersDto.setProfRegNo(personnelListDto.getProfessionRegnNo());
+                    appSvcPrincipalOfficersDto.setProfessionType(personnelListDto.getProfessionType());
+                    appSvcPrincipalOfficersDto.setSpeciality(personnelListDto.getSpeciality());
+                    appSvcPrincipalOfficersDto.setSubSpeciality(personnelListDto.getSubSpeciality());
                 }
             }
             List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
             if (appSvcMedAlertPersonList != null) {
                 for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList) {
-                    if (personnelListDto.getIdNo().equals(appSvcPrincipalOfficersDto.getIdNo())) {
-                        appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
-                        appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
-                    }
+                    appSvcPrincipalOfficersDto.setOfficeTelNo(personnelListDto.getOfficeTelNo());
+                    appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
+                    appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
+                    appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
+                    appSvcPrincipalOfficersDto.setProfRegNo(personnelListDto.getProfessionRegnNo());
+                    appSvcPrincipalOfficersDto.setProfessionType(personnelListDto.getProfessionType());
+                    appSvcPrincipalOfficersDto.setSpeciality(personnelListDto.getSpeciality());
+                    appSvcPrincipalOfficersDto.setSubSpeciality(personnelListDto.getSubSpeciality());
                 }
             }
         }

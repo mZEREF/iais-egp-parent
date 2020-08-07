@@ -968,10 +968,10 @@ public class WithOutRenewalDelegator {
         String renewEffectiveDate = ParamUtil.getDate(bpc.request, "renewEffectiveDate");
         if (!StringUtil.isEmpty(renewEffectiveDate)) {
             Date date = Formatter.parseDate(renewEffectiveDate);
-            if (date.before(new Date())) {
+            if (date.before(new Date())||date.equals(new Date())) {
                 ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                 Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-                errorMap.put("rfcEffectiveDate", "Please indicate a future date.");
+                errorMap.put("rfcEffectiveDate", "RFC_ERR012");
                 ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 renewDto.getAppSubmissionDtos().get(0).setEffectiveDate(date);
                 renewDto.getAppSubmissionDtos().get(0).setEffectiveDateStr(renewEffectiveDate);

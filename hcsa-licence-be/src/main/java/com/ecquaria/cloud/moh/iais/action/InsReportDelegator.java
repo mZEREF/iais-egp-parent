@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
@@ -32,6 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.ecquaria.sz.commons.util.Calculator;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -241,7 +243,7 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setRecomInDate(licDate);
             appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
             appPremisesRecommendationDto.setRecomInNumber(6);
-            appPremisesRecommendationDto.setPeriod("DTPE002");
+            appPremisesRecommendationDto.setPeriod(AppointmentConstants.RECURRENCE_MONTH);
             appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
         } else {
             appPremisesRecommendationDto.setRemarks(remarks);
@@ -250,8 +252,13 @@ public class InsReportDelegator {
             appPremisesRecommendationDto.setRecomInDate(licDate);
             if (OTHERS.equals(periods) && !StringUtil.isEmpty(chrono) && !StringUtil.isEmpty(number)) {
                 appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+                Integer num = Integer.valueOf(number);
+                if(AppointmentConstants.RECURRENCE_YEAR.equals(chrono)){
+                    chrono = AppointmentConstants.RECURRENCE_MONTH ;
+                    num *=12;
+                }
                 appPremisesRecommendationDto.setChronoUnit(chrono);
-                appPremisesRecommendationDto.setRecomInNumber(Integer.valueOf(number));
+                appPremisesRecommendationDto.setRecomInNumber(num);
             } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods) && InspectionReportConstants.APPROVEDLTC.equals(recommendation) || InspectionReportConstants.APPROVED.equals(recommendation)) {
                 String[] splitPeriods = periods.split("\\s+");
                 String count = splitPeriods[0];
