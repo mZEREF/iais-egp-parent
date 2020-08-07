@@ -1793,7 +1793,7 @@ public class HcsaApplicationDelegator {
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
                 if(returnFee==null){
-                    returnFee=0.0;
+                   continue;
                 }
                 appReturnFeeDto.setApplicationNo(applicationDto.getApplicationNo());
                 appReturnFeeDto.setReturnAmount(returnFee);
