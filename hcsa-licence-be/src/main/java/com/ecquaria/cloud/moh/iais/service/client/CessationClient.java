@@ -51,6 +51,9 @@ import java.util.Map;
     @GetMapping(value = "/iais-cessation/appId-misc-cessation",produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppPremiseMiscDto> getAppPremiseMiscDtoByAppId(@RequestParam("appId") String appId);
 
+    @GetMapping(value = "/iais-cessation/appId-misc-list-cessation",produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoListByAppId(@RequestParam("appId") String appId);
+
     @GetMapping(value = "/iais-cessation/appId-premise-cessation",produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppGrpPremisesDto> getAppGrpPremisesDtoByAppId(@RequestParam("appId") String appId);
 
