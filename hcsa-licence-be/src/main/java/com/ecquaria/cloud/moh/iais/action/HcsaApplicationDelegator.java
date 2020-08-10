@@ -2401,8 +2401,10 @@ public class HcsaApplicationDelegator {
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)) {
             //get appeal type
             String appId = applicationDto.getId();
-            AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
-            if(premiseMiscDto != null){
+//            AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
+            List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
+            if(premiseMiscDtoList != null){
+                AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
                 String appealNo = "";
                 String reason = premiseMiscDto.getReason();
                 isOtherAppealType = true;
