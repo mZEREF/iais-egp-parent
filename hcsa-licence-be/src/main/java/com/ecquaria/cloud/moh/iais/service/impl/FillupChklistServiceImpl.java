@@ -1865,7 +1865,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
                             if("No".equalsIgnoreCase(premCheckItem.getAnswer())){
                                 itemDto.setNcSelfAnswer(true);
                             }
-                            itemDto.setChkanswer(premCheckItem.getAnswer());
+                            itemDto.setSelfAnswer(premCheckItem.getAnswer());
                         }
                     }
             }
