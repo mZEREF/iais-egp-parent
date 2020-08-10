@@ -301,7 +301,7 @@ public interface ApplicationClient  {
     @PostMapping(value = "/iais-application/application-by-types-and-status",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<WithdrawApplicationDto>> getApplicationByAppTypesAndStatus(@RequestBody List<String[]> appTandS);
     @GetMapping(value = "/iais-submission/get-draft-by-lic-app-id",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppId(@RequestParam("licAppId")String licAppId);
+    FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppId(@RequestParam(value = "licAppId",required = false)String licAppId);
     @PutMapping(value = "/iais-submission/delete-draft-by-no")
     FeignResponseEntity  deleteDraftByNo(@RequestParam("draftNo") String draftNo);
 }

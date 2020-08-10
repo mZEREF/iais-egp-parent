@@ -25,9 +25,9 @@
                     <c:otherwise>
                         <label style="font-size: 20px">Submission successful</label>
                         <c:forEach items="${appSubmissionDtos}" var="appSubmissionDto">
-                            <p>-<c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></p>
+                            <p>-<strong><c:out value="${appSubmissionDto.appSvcRelatedInfoDtoList[0].serviceName}"></c:out></strong></p>
                         </c:forEach>
-                        <p>A confirmation email will be sent to XXXXX.</p>
+                        <p>A confirmation email will be sent to ${emailAddress}.</p>
                         <p><iais:message key="NEW_ACK005" escape="false"></iais:message></p>
                         <c:if test="${dAmount!='$0.0'}">
                             <p>Transactional details:</p>

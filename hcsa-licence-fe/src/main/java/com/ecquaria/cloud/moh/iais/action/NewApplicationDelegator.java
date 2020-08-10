@@ -1580,12 +1580,14 @@ public class NewApplicationDelegator {
             eventBusHelper.submitAsyncRequest(notAutoAppSubmissionListDto,notAuto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                     EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT,notAutoTime.toString(),bpc.process);
             appSubmissionDtos1.get(0).getAppSvcRelatedInfoDtoList().get(0).setGroupNo(appSubmissionDtos1.get(0).getAppGrpNo());
-            double t=0.0;
+
             for(AppSubmissionDto appSubmissionDto1 : notAutoSaveAppsubmission){
-                t+=appSubmissionDto1.getAmount();
+                Double amount1 = appSubmissionDto1.getAmount();
+                String s = Formatter.formatterMoney(amount1);
+                appSubmissionDto1.setAmountStr(s);
             }
-            appSubmissionDtos1.get(0).setAmount(t);
-            appSubmissionDtoList.add(appSubmissionDtos1.get(0));
+
+            appSubmissionDtoList.addAll(appSubmissionDtos1);
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
         if(!autoSaveAppsubmission.isEmpty()){
@@ -1615,15 +1617,15 @@ public class NewApplicationDelegator {
                     appSubmissionService.saveAppGrpMisc(appGroupMiscDto);
                 }
             }
-            appSubmissionDtos1.get(0).setAmount(t);
-            String amountStr = Formatter.formatterMoney(appSubmissionDtos1.get(0).getAmount());
-            appSubmissionDtos1.get(0).setAmountStr(amountStr);
-            appSubmissionDtoList.add( appSubmissionDtos1.get(0));
+            for(AppSubmissionDto appSubmissionDto1 :autoSaveAppsubmission){
+                String s = Formatter.formatterMoney(appSubmissionDto1.getAmount());
+                appSubmissionDto1.setAmountStr(s);
+            }
+            appSubmissionDtoList.addAll( appSubmissionDtos1);
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
         }
 
         bpc.request.getSession().setAttribute("appSubmissionDtos",appSubmissionDtoList);
-        appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
     }
 

@@ -338,8 +338,7 @@ public class LicenceViewServiceDelegator {
                 appGrpPremisesDto.setApplicationViewAddress(applicationViewHciNameDtos);
             }
         }
-        premise(appSubmissionDto);
-        premise(appSubmissionDto.getOldAppSubmissionDto());
+        premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
     }
@@ -1173,12 +1172,16 @@ public class LicenceViewServiceDelegator {
 
     }
 
-    private void premise(AppSubmissionDto appSubmissionDto){
-        if(appSubmissionDto==null){
+    private void premise(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
+        if(appSubmissionDto==null||oldAppSubmissionDto==null){
             return;
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         if(appGrpPremisesDtoList==null || appGrpPremisesDtoList.isEmpty()){
+            return;
+        }
+        List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        if(oldAppSubmissionDtoAppGrpPremisesDtoList==null || oldAppSubmissionDtoAppGrpPremisesDtoList.isEmpty()){
             return;
         }
         for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){

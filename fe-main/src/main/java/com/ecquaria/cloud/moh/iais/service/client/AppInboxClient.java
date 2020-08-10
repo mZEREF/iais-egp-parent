@@ -77,7 +77,7 @@ public interface AppInboxClient {
     @GetMapping(value = "/appeal/licence-appeal-or-cessation-by-licence-id")
     FeignResponseEntity<Boolean> isLiscenceAppealOrCessation(@RequestParam("licenceId") String licenceId);
     @GetMapping(value = "/iais-submission/get-draft-by-lic-app-id",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppId(@RequestParam("licAppId")String licAppId);
+    FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppId(@RequestParam(value = "licAppId",required = false)String licAppId);
     @PutMapping(value = "/iais-submission/delete-draft-by-no")
     FeignResponseEntity  deleteDraftByNo(@RequestParam("draftNo") String draftNo);
 }
