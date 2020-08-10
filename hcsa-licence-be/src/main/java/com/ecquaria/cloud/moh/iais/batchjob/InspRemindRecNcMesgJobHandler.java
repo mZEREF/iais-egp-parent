@@ -100,29 +100,35 @@ public class InspRemindRecNcMesgJobHandler extends IJobHandler {
             JobLogger.log(StringUtil.changeForLog("System days = " + days));
             AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
             for(ApplicationDto applicationDto : applicationDtos){
-                ApplicationGroupDto applicationGroupDto = inspectionTaskClient.getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId()).getEntity();
-                String licenseeId = applicationGroupDto.getLicenseeId();
-                JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(applicationDto.getApplicationNo(), MessageConstants.JOB_REMIND_MSG_KEY_REMIND_RECTIFICATION_EMAIL).getEntity();
-                if(jobRemindMsgTrackingDto2 == null) {
-                    log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 null"));
-                    JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 null"));
-                    inspectionDateSendEmail(licenseeId, applicationDto.getId(), applicationDto.getApplicationNo());
-                    createJobRemindMsgTrackingDto(intranet, applicationDto.getApplicationNo());
-                } else {
-                    Date createDate = jobRemindMsgTrackingDto2.getCreateTime();
-                    log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, CreateDate = " + createDate));
-                    JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, CreateDate = " + createDate));
-                    List<Date> dayList = MiscUtil.getDateInPeriodByRecurrence(createDate, new Date());
-                    int nowDays = dayList.size();
-                    log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
-                    JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
-                    if(nowDays > days){
+                try {
+                    ApplicationGroupDto applicationGroupDto = inspectionTaskClient.getApplicationGroupDtoByAppGroId(applicationDto.getAppGrpId()).getEntity();
+                    String licenseeId = applicationGroupDto.getLicenseeId();
+                    JobRemindMsgTrackingDto jobRemindMsgTrackingDto2 = systemBeLicClient.getJobRemindMsgTrackingDto(applicationDto.getApplicationNo(), MessageConstants.JOB_REMIND_MSG_KEY_REMIND_RECTIFICATION_EMAIL).getEntity();
+                    if (jobRemindMsgTrackingDto2 == null) {
+                        log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 null"));
+                        JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 null"));
                         inspectionDateSendEmail(licenseeId, applicationDto.getId(), applicationDto.getApplicationNo());
-                        jobRemindMsgTrackingDto2.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                        jobRemindMsgTrackingDto2.setAuditTrailDto(intranet);
-                        systemBeLicClient.updateJobRemindMsgTrackingDto(jobRemindMsgTrackingDto2);
                         createJobRemindMsgTrackingDto(intranet, applicationDto.getApplicationNo());
+                    } else {
+                        Date createDate = jobRemindMsgTrackingDto2.getCreateTime();
+                        log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, CreateDate = " + createDate));
+                        JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, CreateDate = " + createDate));
+                        List<Date> dayList = MiscUtil.getDateInPeriodByRecurrence(createDate, new Date());
+                        int nowDays = dayList.size();
+                        log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
+                        JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
+                        if (nowDays > days) {
+                            inspectionDateSendEmail(licenseeId, applicationDto.getId(), applicationDto.getApplicationNo());
+                            jobRemindMsgTrackingDto2.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                            jobRemindMsgTrackingDto2.setAuditTrailDto(intranet);
+                            systemBeLicClient.updateJobRemindMsgTrackingDto(jobRemindMsgTrackingDto2);
+                            createJobRemindMsgTrackingDto(intranet, applicationDto.getApplicationNo());
+                        }
                     }
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e);
+                    JobLogger.log(e);
+                    continue;
                 }
             }
             return ReturnT.SUCCESS;
