@@ -635,6 +635,8 @@
             showPopupWindow('/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService?rfi=rfi');
             $('#appealRecommendationTrue').addClass('hidden');
             $('#appealRecommendationFalse').removeClass('hidden');
+            $('#recommendationFieldTrue').addClass('hidden');
+            $('#recommendationFieldFalse').removeClass('hidden');
         } else {
             $('#comments').addClass('hidden');
             $('#rollBackDropdown').addClass('hidden');
