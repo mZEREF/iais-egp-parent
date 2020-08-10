@@ -211,101 +211,62 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
         }
         return false;
     }
-   private void clearAppSvcPrincipalOfficersDto( AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto){
-       appSvcPrincipalOfficersDto.setName(null);
-       appSvcPrincipalOfficersDto.setDesignation(null);
-       appSvcPrincipalOfficersDto.setMobileNo(null);
-       appSvcPrincipalOfficersDto.setOfficeTelNo(null);
-       appSvcPrincipalOfficersDto.setEmailAddr(null);
-   }
+
+    private void clearAppSvcPrincipalOfficersDto(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto) {
+        appSvcPrincipalOfficersDto.setName(null);
+        appSvcPrincipalOfficersDto.setDesignation(null);
+        appSvcPrincipalOfficersDto.setMobileNo(null);
+        appSvcPrincipalOfficersDto.setOfficeTelNo(null);
+        appSvcPrincipalOfficersDto.setEmailAddr(null);
+    }
+
     @Override
     public boolean isEditDoc(AppSubmissionDto newAppSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
-
         List<String> newFileReportIds = IaisCommonUtils.genNewArrayList();
         List<String> oldFileReportIds = IaisCommonUtils.genNewArrayList();
+
         List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtos = newAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppSvcDocDto> NewAppSvcDocDtoLit = newAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
 
         List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppSvcDocDto> oldAppSvcDocDtoLit = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
-        if(!IaisCommonUtils.isEmpty(newAppGrpPrimaryDocDtos)){
-            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto :newAppGrpPrimaryDocDtos){
-                String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
-                newFileReportIds.add(fileRepoId);
-            }
-        }
-        if(!IaisCommonUtils.isEmpty(oldAppGrpPrimaryDocDtos)){
-            for(AppGrpPrimaryDocDto appGrpPrimaryDocDto :oldAppGrpPrimaryDocDtos){
-                String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
-                oldFileReportIds.add(fileRepoId);
-            }
-        }
-        if(!IaisCommonUtils.isEmpty(NewAppSvcDocDtoLit)){
-            for(AppSvcDocDto appSvcDocDto :NewAppSvcDocDtoLit){
-                String fileRepoId = appSvcDocDto.getFileRepoId();
-                newFileReportIds.add(fileRepoId);
-            }
-        }
-        if(!IaisCommonUtils.isEmpty(oldAppSvcDocDtoLit)){
-            for(AppSvcDocDto appSvcDocDto :oldAppSvcDocDtoLit){
-                String fileRepoId = appSvcDocDto.getFileRepoId();
-                oldFileReportIds.add(fileRepoId);
-            }
-        }
 
-        if (!IaisCommonUtils.isEmpty(newAppGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(oldAppGrpPrimaryDocDtos)) {
-            if (newAppGrpPrimaryDocDtos.size() == oldAppGrpPrimaryDocDtos.size()) {
-                List<String> newFileIds = IaisCommonUtils.genNewArrayList();
-                List<String> oldFileIds = IaisCommonUtils.genNewArrayList();
-                for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : newAppGrpPrimaryDocDtos) {
-                    String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
-                    newFileIds.add(fileRepoId);
-                }
-                for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : oldAppGrpPrimaryDocDtos) {
-                    String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
-                    oldFileIds.add(fileRepoId);
-                }
-                newFileIds.retainAll(oldFileIds);
-                if (newFileIds.size() != oldFileIds.size()) {
-                    return true;
-                }
-            } else {
-                return true;
-            }
-        }else {
-            if (IaisCommonUtils.isEmpty(newAppGrpPrimaryDocDtos) && !IaisCommonUtils.isEmpty(oldAppGrpPrimaryDocDtos)){
-                return true;
-            }else if(!IaisCommonUtils.isEmpty(newAppGrpPrimaryDocDtos) && IaisCommonUtils.isEmpty(oldAppGrpPrimaryDocDtos)) {
-                return true;
+        if (!IaisCommonUtils.isEmpty(newAppGrpPrimaryDocDtos)) {
+            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : newAppGrpPrimaryDocDtos) {
+                String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
+                newFileReportIds.add(fileRepoId);
             }
         }
-        if (!IaisCommonUtils.isEmpty(NewAppSvcDocDtoLit) && !IaisCommonUtils.isEmpty(oldAppSvcDocDtoLit)) {
-            if (NewAppSvcDocDtoLit.size() == oldAppSvcDocDtoLit.size()) {
-                List<String> newFileIds = IaisCommonUtils.genNewArrayList();
-                List<String> oldFileIds = IaisCommonUtils.genNewArrayList();
-                for (AppSvcDocDto appSvcDocDto : NewAppSvcDocDtoLit) {
-                    String fileRepoId = appSvcDocDto.getFileRepoId();
-                    newFileIds.add(fileRepoId);
-                }
-                for (AppSvcDocDto appSvcDocDto : oldAppSvcDocDtoLit) {
-                    String fileRepoId = appSvcDocDto.getFileRepoId();
-                    oldFileIds.add(fileRepoId);
-                }
-                newFileIds.retainAll(oldFileIds);
-                if (newFileIds.size() != oldFileIds.size()) {
-                    return true;
-                }
-            } else {
-                return true;
-            }
-        }else {
-            if (IaisCommonUtils.isEmpty(NewAppSvcDocDtoLit) && !IaisCommonUtils.isEmpty(oldAppSvcDocDtoLit)){
-                return true;
-            }else if(!IaisCommonUtils.isEmpty(NewAppSvcDocDtoLit) && IaisCommonUtils.isEmpty(oldAppSvcDocDtoLit)) {
-                return true;
+        if (!IaisCommonUtils.isEmpty(oldAppGrpPrimaryDocDtos)) {
+            for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : oldAppGrpPrimaryDocDtos) {
+                String fileRepoId = appGrpPrimaryDocDto.getFileRepoId();
+                oldFileReportIds.add(fileRepoId);
             }
         }
-        return false;
+        if (!IaisCommonUtils.isEmpty(NewAppSvcDocDtoLit)) {
+            for (AppSvcDocDto appSvcDocDto : NewAppSvcDocDtoLit) {
+                String fileRepoId = appSvcDocDto.getFileRepoId();
+                newFileReportIds.add(fileRepoId);
+            }
+        }
+        if (!IaisCommonUtils.isEmpty(oldAppSvcDocDtoLit)) {
+            for (AppSvcDocDto appSvcDocDto : oldAppSvcDocDtoLit) {
+                String fileRepoId = appSvcDocDto.getFileRepoId();
+                oldFileReportIds.add(fileRepoId);
+            }
+        }
+        if (newFileReportIds.size()==oldFileReportIds.size()) {
+            //qu bing ji
+            newFileReportIds.removeAll(oldFileReportIds);
+            newFileReportIds.addAll(oldFileReportIds);
+            if(newFileReportIds.size()!=oldFileReportIds.size()){
+                return true;
+            }else {
+                return false;
+            }
+        }else {
+            return true;
+        }
     }
 
     @Override

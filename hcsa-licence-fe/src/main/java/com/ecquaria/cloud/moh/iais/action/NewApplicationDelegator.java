@@ -1493,7 +1493,7 @@ public class NewApplicationDelegator {
         }else {
             appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
         }
-        appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
+        appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
    /*     appSubmissionDto = appSubmissionService.submitRequestChange(appSubmissionDto, bpc.process);*/
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         String isrfiSuccess = "N";

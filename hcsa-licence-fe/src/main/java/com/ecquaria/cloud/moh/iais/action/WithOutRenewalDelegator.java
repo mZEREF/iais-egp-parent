@@ -508,7 +508,6 @@ public class WithOutRenewalDelegator {
             appEditSelectDto.setDocEdit(false);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-            String appType = appSubmissionDto.getAppType();
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             if (appGrpPremisesDtoList != null) {
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
@@ -645,7 +644,7 @@ public class WithOutRenewalDelegator {
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
         }
         HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(laterFeeDetails);
-        ParamUtil.setRequestAttr(bpc.request,"laterFeeDetailsMap",(Serializable)laterFeeDetailsMap);
+        ParamUtil.setRequestAttr(bpc.request,"laterFeeDetailsMap",laterFeeDetailsMap);
         requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();

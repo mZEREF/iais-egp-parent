@@ -164,52 +164,6 @@
                                             </iais:value>
                                         </iais:row>
                                     </c:if>
-                                    <c:if test="${psnTypes.contains('CGO')}">
-                                        <iais:row>
-                                            <iais:field value="Professional Type " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                                <iais:select cssClass="professionTypeSel" name="professionTypeShow"
-                                                             codeCategory="CATE_ID_PROFESSIONAL_TYPE"
-                                                             value="${personnelEditDto.professionType}"
-                                                             firstOption="Please Select" disabled="true"></iais:select>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:input cssClass="needDisableI" maxLength="20" type="text"
-                                                            name="professionRegnNoShow"
-                                                            value="${personnelEditDto.professionRegnNo}"
-                                                            needDisabled="true"></iais:input>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Specialty " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:select cssClass="specialty" name="specialtyShow"
-                                                             firstOption="Please Select" options="SpecialtySelectList"
-                                                             value="${personnelEditDto.speciality}"
-                                                             disabled="true" id="showSpecialtyId"></iais:select>
-                                                <div hidden id="specialityShowOtherId">
-                                                    <iais:input cssClass="needDisableI" maxLength="20" type="text"
-                                                                name="specialityOtherShow"
-                                                                value="${personnelEditDto.specialityOther}"
-                                                                needDisabled="true"></iais:input>
-                                                </div>
-                                            </iais:value>
-
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Subspecialty or relevant qualification " width="12"
-                                                        mandatory="false"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:input cssClass="needDisableI" maxLength="100" type="text"
-                                                            name="subspecialityShow"
-                                                            value="${personnelEditDto.subSpeciality}"
-                                                            needDisabled="true"></iais:input>
-                                            </iais:value>
-                                        </iais:row>
-                                    </c:if>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -279,49 +233,6 @@
                                                              firstOption="Please Select"></iais:select>
                                             </iais:value>
                                             <span class="error-msg" name="iaisErrorMsg" id="error_designation"></span>
-                                        </iais:row>
-                                    </c:if>
-                                    <c:if test="${psnTypes.contains('CGO')}">
-                                        <iais:row>
-                                            <iais:field value="Professional Type " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                                <iais:select cssClass="professionTypeSel" name="professionType"
-                                                             codeCategory="CATE_ID_PROFESSIONAL_TYPE"
-                                                             value="${personnelEditDto.professionType}"
-                                                             firstOption="Please Select"></iais:select>
-                                            </iais:value>
-                                            <span class="error-msg" name="iaisErrorMsg"
-                                                  id="error_professionType"></span>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:input maxLength="20" type="text" name="professionRegnNo"
-                                                            value="${personnelEditDto.professionRegnNo}"></iais:input>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Specialty " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:select cssClass="specialty" name="specialty"
-                                                             firstOption="Please Select" options="SpecialtySelectList"
-                                                             value="${personnelEditDto.speciality}"
-                                                             onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
-                                                <div hidden id="specialityOtherShowId">
-                                                    <input maxlength="20" type="text" name="specialityOther"
-                                                           value="${personnelEditDto.specialityOther}">
-                                                    <span id="error_specialityOther" name="iaisErrorMsg"
-                                                          class="error-msg"></span>
-                                                </div>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Subspecialty or relevant qualification " width="12"
-                                                        mandatory="false"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:input maxLength="100" type="text" name="subspeciality"
-                                                            value="${personnelEditDto.subSpeciality}"></iais:input>
-                                            </iais:value>
                                         </iais:row>
                                     </c:if>
                                     <iais:row>
@@ -398,47 +309,6 @@
                                             </iais:value>
                                         </iais:row>
                                     </c:if>
-                                    <c:if test="${psnTypes.contains('CGO')}">
-                                        <iais:row>
-                                            <iais:field value="Professional Type " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                                <iais:select cssClass="professionTypeSel" name="professionType1"
-                                                             codeCategory="CATE_ID_PROFESSIONAL_TYPE"
-                                                             value="${newPerson.professionType}"
-                                                             firstOption="Please Select"></iais:select>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:input maxLength="20" type="text" name="professionRegnNo1"
-                                                            value="${newPerson.professionRegnNo}"></iais:input>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Specialty " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:select cssClass="specialty" name="specialty1"
-                                                             firstOption="Please Select" options="SpecialtySelectList"
-                                                             value="${newPerson.speciality}"
-                                                             onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
-                                                <div hidden id="specialityOtherNewId">
-                                                    <input maxlength="20" type="text" name="specialityOther1"
-                                                           value="${newPerson.specialityOther}">
-                                                    <span id="error_specialityOther1" name="iaisErrorMsg"
-                                                          class="error-msg"></span>
-                                                </div>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Subspecialty or relevant qualification " width="12"
-                                                        mandatory="false"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:input maxLength="100" type="text" name="qualification1"
-                                                            value="${newPerson.subSpeciality}"></iais:input>
-                                            </iais:value>
-                                        </iais:row>
-                                    </c:if>
                                     <iais:row>
                                         <iais:field value="Mobile No. " width="12" mandatory="true"/>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
@@ -499,50 +369,6 @@
                                                              codeCategory="CATE_ID_DESIGNATION"
                                                              value="${newPerson.designation}"
                                                              firstOption="Please Select"></iais:select>
-                                            </iais:value>
-                                        </iais:row>
-                                    </c:if>
-                                    <c:if test="${psnTypes.contains('CGO')}">
-                                        <iais:row>
-                                            <iais:field value="Professional Type " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8 input-with-label">
-                                                <iais:select disabled="true" cssClass="professionTypeSel"
-                                                             name="professionType2"
-                                                             codeCategory="CATE_ID_PROFESSIONAL_TYPE"
-                                                             value="${newPerson.professionType}"
-                                                             firstOption="Please Select"></iais:select>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Professional Regn No. " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:input cssClass="needDisableI" maxLength="20" type="text"
-                                                            name="professionRegnNo2"
-                                                            value="${newPerson.professionRegnNo}"></iais:input>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Specialty " width="12" mandatory="true"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:select disabled="true" cssClass="specialty" name="specialty2"
-                                                             firstOption="Please Select" options="SpecialtySelectList"
-                                                             value="${newPerson.speciality}"
-                                                             onchange="javascirpt:specialtyOthers(this.value);"></iais:select>
-                                                <div hidden id="specialityOtherExistId">
-                                                    <input type="text" name="specialityOther2"
-                                                           value="${newPerson.specialityOther}">
-                                                    <span id="error_specialityOther2" name="iaisErrorMsg"
-                                                          class="error-msg"></span>
-                                                </div>
-                                            </iais:value>
-                                        </iais:row>
-                                        <iais:row>
-                                            <iais:field value="Subspecialty or relevant qualification " width="12"
-                                                        mandatory="false"/>
-                                            <iais:value cssClass="col-xs-12 col-sm-7 col-md-8">
-                                                <iais:input cssClass="needDisableI" maxLength="100" type="text"
-                                                            name="qualification2"
-                                                            value="${newPerson.subSpeciality}"></iais:input>
                                             </iais:value>
                                         </iais:row>
                                     </c:if>
@@ -677,24 +503,24 @@
             $('#edit').hide();
             $('#newPersonExist').hide();
         }
-        var val1 = $('#specialty').val();
-        if (val1 == 'other') {
-            $('#specialityOtherId').show();
-        } else {
-            $('#specialityOtherId').hide();
-        }
-        var val2 = $('#specialty1').val();
-        if (val2 == 'other') {
-            $('#specialityOtherNewId').show();
-        } else {
-            $('#specialityOtherNewId').hide();
-        }
-        var val3 = $('#showSpecialtyId').val();
-        if (val3 == 'other') {
-            $('#specialityShowOtherId').show();
-        } else {
-            $('#specialityShowOtherId').hide();
-        }
+        // var val1 = $('#specialty').val();
+        // if (val1 == 'other') {
+        //     $('#specialityOtherId').show();
+        // } else {
+        //     $('#specialityOtherId').hide();
+        // }
+        // var val2 = $('#specialty1').val();
+        // if (val2 == 'other') {
+        //     $('#specialityOtherNewId').show();
+        // } else {
+        //     $('#specialityOtherNewId').hide();
+        // }
+        // var val3 = $('#showSpecialtyId').val();
+        // if (val3 == 'other') {
+        //     $('#specialityShowOtherId').show();
+        // } else {
+        //     $('#specialityShowOtherId').hide();
+        // }
 
 
         const personSelect = $('#replaceOptionsId').val();
@@ -708,18 +534,18 @@
             $('#newPerson').hide();
         }
 
-        var val1 = $('#specialty').val();
-        if (val1 == 'other') {
-            $('#specialityOtherId').show();
-        } else {
-            $('#specialityOtherId').hide();
-        }
-        var val2 = $('#specialty1').val();
-        if (val2 == 'other') {
-            $('#specialityOtherNewId').show();
-        } else {
-            $('#specialityOtherNewId').hide();
-        }
+        // var val1 = $('#specialty').val();
+        // if (val1 == 'other') {
+        //     $('#specialityOtherId').show();
+        // } else {
+        //     $('#specialityOtherId').hide();
+        // }
+        // var val2 = $('#specialty1').val();
+        // if (val2 == 'other') {
+        //     $('#specialityOtherNewId').show();
+        // } else {
+        //     $('#specialityOtherNewId').hide();
+        // }
 
         if (personSelect != '' && personSelect != 'new') {
             $('#newPersonExist').show();
@@ -757,20 +583,20 @@
         }
     }
 
-    function specialtyOthers() {
-        var val1 = $('#specialty').val();
-        if (val1 == 'other') {
-            $('#specialityOtherId').show();
-        } else {
-            $('#specialityOtherId').hide();
-        }
-        var val2 = $('#specialty1').val();
-        if (val2 == 'other') {
-            $('#specialityOtherNewId').show();
-        } else {
-            $('#specialityOtherNewId').hide();
-        }
-    }
+    // function specialtyOthers() {
+    //     var val1 = $('#specialty').val();
+    //     if (val1 == 'other') {
+    //         $('#specialityOtherId').show();
+    //     } else {
+    //         $('#specialityOtherId').hide();
+    //     }
+    //     var val2 = $('#specialty1').val();
+    //     if (val2 == 'other') {
+    //         $('#specialityOtherNewId').show();
+    //     } else {
+    //         $('#specialityOtherNewId').hide();
+    //     }
+    // }
 
 
     var fillPersonForm = function ($CurrentPsnEle, data) {
@@ -829,51 +655,51 @@
             $CurrentPsnEle.find('input[name="professionRegnNo2"]').val('');
         }
         <!-- speciality-->
-        var speciality = data.speciality;
-        if (speciality == null || speciality == 'undefined' || speciality == '') {
-            speciality = '-1';
-        }
-        var specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
-        if (specialityVal == 'undefined') {
-            speciality = '';
-            specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
-        }
-        $CurrentPsnEle.find('select[name="specialty2"]').val(speciality);
-        $CurrentPsnEle.find('select[name="specialty2"]').next().find('.current').html(specialityVal);
+        // var speciality = data.speciality;
+        // if (speciality == null || speciality == 'undefined' || speciality == '') {
+        //     speciality = '-1';
+        // }
+        // var specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
+        // if (specialityVal == 'undefined') {
+        //     speciality = '';
+        //     specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
+        // }
+        // $CurrentPsnEle.find('select[name="specialty2"]').val(speciality);
+        // $CurrentPsnEle.find('select[name="specialty2"]').next().find('.current').html(specialityVal);
 
-        if ('other' == speciality) {
-            $CurrentPsnEle.find('input[name="specialtyOther"]').removeClass('hidden');
-            var specialityOther = data.specialityOther;
-            if (specialityOther != null && specialityOther != '') {
-                $CurrentPsnEle.find('input[name="specialtyOther2"]').val(specialityOther);
-            } else {
-                $CurrentPsnEle.find('input[name="specialtyOther2"]').val('');
-            }
-        } else {
-            $CurrentPsnEle.find('input[name="specialtyOther2"]').addClass('hidden');
-        }
+        // if ('other' == speciality) {
+        //     $CurrentPsnEle.find('input[name="specialtyOther"]').removeClass('hidden');
+        //     var specialityOther = data.specialityOther;
+        //     if (specialityOther != null && specialityOther != '') {
+        //         $CurrentPsnEle.find('input[name="specialtyOther2"]').val(specialityOther);
+        //     } else {
+        //         $CurrentPsnEle.find('input[name="specialtyOther2"]').val('');
+        //     }
+        // } else {
+        //     $CurrentPsnEle.find('input[name="specialtyOther2"]').addClass('hidden');
+        // }
         <!--Subspeciality or relevant qualification -->
-        var qualification = data.subSpeciality;
-        if (qualification != null && qualification != '') {
-            $CurrentPsnEle.find('input[name="qualification2"]').val(qualification);
-        } else {
-            $CurrentPsnEle.find('input[name="qualification2"]').val('');
-        }
+        // var qualification = data.subSpeciality;
+        // if (qualification != null && qualification != '') {
+        //     $CurrentPsnEle.find('input[name="qualification2"]').val(qualification);
+        // } else {
+        //     $CurrentPsnEle.find('input[name="qualification2"]').val('');
+        // }
         <!--preferredMode -->
-        var preferredMode = data.preferredMode;
-        if (preferredMode != null && preferredMode != 'undefined' && preferredMode != '') {
-            if ('3' == preferredMode) {
-                $CurrentPsnEle.find('input.preferredMode').prop('checked', true);
-            } else {
-                $CurrentPsnEle.find('input.preferredMode').each(function () {
-                    if (preferredMode == $(this).val()) {
-                        $(this).prop('checked', true);
-                    }
-                });
-            }
-        } else {
-            $CurrentPsnEle.find('input.preferredMode').prop('checked', false);
-        }
+        // var preferredMode = data.preferredMode;
+        // if (preferredMode != null && preferredMode != 'undefined' && preferredMode != '') {
+        //     if ('3' == preferredMode) {
+        //         $CurrentPsnEle.find('input.preferredMode').prop('checked', true);
+        //     } else {
+        //         $CurrentPsnEle.find('input.preferredMode').each(function () {
+        //             if (preferredMode == $(this).val()) {
+        //                 $(this).prop('checked', true);
+        //             }
+        //         });
+        //     }
+        // } else {
+        //     $CurrentPsnEle.find('input.preferredMode').prop('checked', false);
+        // }
     }
     <!--cgo,medAlert -->
     var loadSelectPerson = function ($CurrentPsnEle, idType, idNo, psnType) {

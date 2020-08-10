@@ -794,276 +794,9 @@ public class RequestForChangeMenuDelegator {
             return;
         }
         PersonnelListDto personnelEditDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "personnelEditDto");
-        //update
-        //String salutation = ParamUtil.getString(bpc.request, "salutation");
-        String email = ParamUtil.getString(bpc.request, "emailAddr");
-        String mobile = ParamUtil.getString(bpc.request, "mobileNo");
-        String designation = ParamUtil.getString(bpc.request, "designation");
-        String professionType = ParamUtil.getString(bpc.request, "professionType");
-        String professionRegnNo = ParamUtil.getString(bpc.request, "professionRegnNo");
-        String specialty = ParamUtil.getString(bpc.request, "specialty");
-        String specialityOther = ParamUtil.getString(bpc.request, "specialityOther");
-        String officeTelNo = ParamUtil.getString(bpc.request, "officeTelNo");
-        String subspecialize = ParamUtil.getString(bpc.request, "subspecialize");
-        //new
-        String salutation1 = ParamUtil.getString(bpc.request, "salutation1");
-        String psnName1 = ParamUtil.getString(bpc.request, "psnName1");
-        String idType1 = ParamUtil.getString(bpc.request, "idType1");
-        String idNo1 = ParamUtil.getString(bpc.request, "idNo1");
-        String email1 = ParamUtil.getString(bpc.request, "emailAddr1");
-        String mobile1 = ParamUtil.getString(bpc.request, "mobileNo1");
-        String designation1 = ParamUtil.getString(bpc.request, "designation1");
-        String professionType1 = ParamUtil.getString(bpc.request, "professionType1");
-        String professionRegnNo1 = ParamUtil.getString(bpc.request, "professionRegnNo1");
-        String specialty1 = ParamUtil.getString(bpc.request, "specialty1");
-        String specialityOther1 = ParamUtil.getString(bpc.request, "specialityOther1");
-        String officeTelNo1 = ParamUtil.getString(bpc.request, "officeTelNo1");
-        String subspecialize1 = ParamUtil.getString(bpc.request, "subspecialize1");
-        String replaceName = ParamUtil.getString(bpc.request, "replaceName");
-        String editSelect = ParamUtil.getString(bpc.request, "editSelect");
-        ParamUtil.setRequestAttr(bpc.request, "editSelectResult", editSelect);
-        Map<String, LicPsnTypeDto> licPsnTypeDtoMaps = personnelEditDto.getLicPsnTypeDtoMaps();
-        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-        for (LicPsnTypeDto dto : licPsnTypeDtoMaps.values()) {
-            psnTypes.addAll(dto.getPsnTypes());
-        }
-        personnelEditDto.setEmailAddr(email);
-        personnelEditDto.setMobileNo(mobile);
-        if (psnTypes.contains("CGO")) {
-            personnelEditDto.setSpeciality(specialty);
-            personnelEditDto.setSpecialityOther(specialityOther);
-            personnelEditDto.setSubSpeciality(subspecialize);
-            personnelEditDto.setProfessionType(professionType);
-            personnelEditDto.setProfessionRegnNo(professionRegnNo);
-            personnelEditDto.setDesignation(designation);
-        }
-        if (psnTypes.contains("PO")) {
-            personnelEditDto.setDesignation(designation);
-            personnelEditDto.setOfficeTelNo(officeTelNo);
-        }
         PersonnelListDto newPerson = new PersonnelListDto();
-        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-        if ("replace".equals(editSelect) && "new".equals(replaceName)) {
-            newPerson.setIdNo(idNo1);
-            newPerson.setIdType(idType1);
-            newPerson.setPsnName(psnName1);
-            newPerson.setSalutation(salutation1);
-            newPerson.setSpeciality(specialty1);
-            newPerson.setSpecialityOther(specialityOther1);
-            newPerson.setSubSpeciality(subspecialize1);
-            newPerson.setProfessionType(professionType1);
-            newPerson.setProfessionRegnNo(professionRegnNo1);
-            newPerson.setDesignation(designation1);
-            newPerson.setEmailAddr(email1);
-            newPerson.setMobileNo(mobile1);
-            newPerson.setOfficeTelNo(officeTelNo1);
-            if (StringUtil.isEmpty(email1)) {
-                errMap.put("emailAddr1", "UC_CHKLMD001_ERR001");
-            } else if (!StringUtil.isEmpty(email1)) {
-                if (!email1.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                    errMap.put("emailAddr1", "CHKLMD001_ERR006");
-                }
-            }
-            if (StringUtil.isEmpty(mobile1)) {
-                errMap.put("mobileNo1", "UC_CHKLMD001_ERR001");
-            } else if (!StringUtil.isEmpty(mobile1)) {
-                if (!mobile1.matches("^[8|9][0-9]{7}$")) {
-                    errMap.put("mobileNo1", "CHKLMD001_ERR004");
-                }
-            }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(professionType1)) {
-                errMap.put("professionType1", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(salutation1)) {
-                errMap.put("salutation1", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("PO") && StringUtil.isEmpty(salutation1)) {
-                errMap.put("salutation1", "UC_CHKLMD001_ERR001");
-            }
-            if (StringUtil.isEmpty(psnName1)) {
-                errMap.put("psnName1", "UC_CHKLMD001_ERR001");
-            }
-            if (StringUtil.isEmpty(idType1)) {
-                errMap.put("idType1", "UC_CHKLMD001_ERR001");
-            }
-            if (StringUtil.isEmpty(idNo1)) {
-                errMap.put("idNo1", "UC_CHKLMD001_ERR001");
-            } else {
-                if ("FIN".equals(idType1)) {
-                    boolean b = SgNoValidator.validateFin(idNo1);
-                    if (!b) {
-                        errMap.put("idNo1", "CHKLMD001_ERR005");
-                    }
-                }
-                if ("NRIC".equals(idType1)) {
-                    boolean b1 = SgNoValidator.validateNric(idNo1);
-                    if (!b1) {
-                        errMap.put("idNo1", "CHKLMD001_ERR005");
-                    }
-                }
-            }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation1)) {
-                errMap.put("designation1", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("PO") && StringUtil.isEmpty(designation1)) {
-                errMap.put("designation1", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(professionRegnNo1)) {
-                errMap.put("professionRegnNo1", "UC_CHKLMD001_ERR001");
-            }
-            if (StringUtil.isEmpty(editSelect)) {
-                errMap.put("editSelect1", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo1)) {
-                errMap.put("officeTelNo1", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo1) && !officeTelNo1.matches("^[6][0-9]{7}$")) {
-                errMap.put("officeTelNo1", "GENERAL_ERR0015");
-            }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(specialty1)) {
-                errMap.put("specialty1", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("CGO") && "other".equals(specialty1) && StringUtil.isEmpty(specialityOther1)) {
-                errMap.put("specialityOther1", "UC_CHKLMD001_ERR001");
-            }
-        }
-        if ("update".equals(editSelect)) {
-            if (StringUtil.isEmpty(email)) {
-                errMap.put("emailAddr", "UC_CHKLMD001_ERR001");
-            } else if (!StringUtil.isEmpty(email)) {
-                if (!ValidationUtils.isEmail(email)) {
-                    errMap.put("emailAddr", "CHKLMD001_ERR006");
-                }
-            }
-            if (StringUtil.isEmpty(mobile)) {
-                errMap.put("mobileNo", "UC_CHKLMD001_ERR001");
-            } else if (!StringUtil.isEmpty(mobile)) {
-                if (!mobile.matches("^[8|9][0-9]{7}$")) {
-                    errMap.put("mobileNo", "CHKLMD001_ERR004");
-                }
-            }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(professionType)) {
-                errMap.put("professionType", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation)) {
-                errMap.put("designation", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("PO") && StringUtil.isEmpty(designation)) {
-                errMap.put("designation", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(professionRegnNo)) {
-                errMap.put("professionRegnNo", "UC_CHKLMD001_ERR001");
-            }
-            if (StringUtil.isEmpty(editSelect)) {
-                errMap.put("editSelect", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo)) {
-                errMap.put("officeTelNo", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo) && !officeTelNo.matches("^[6][0-9]{7}$")) {
-                errMap.put("officeTelNo", "GENERAL_ERR0015");
-            }
-            if (psnTypes.contains("CGO") && StringUtil.isEmpty(specialty)) {
-                errMap.put("specialty", "UC_CHKLMD001_ERR001");
-            }
-            if (psnTypes.contains("CGO") && "other".equals(specialty) && StringUtil.isEmpty(specialityOther)) {
-                errMap.put("specialityOther", "UC_CHKLMD001_ERR001");
-            }
-        }
-        if ("replace".equals(editSelect) && !"new".equals(replaceName)) {
-            if (StringUtil.isEmpty(replaceName)) {
-                errMap.put("replaceName", "UC_CHKLMD001_ERR001");
-            } else {
-                String[] split = replaceName.split(",");
-                String idType = split[0];
-                String idNo = split[1];
-                String psnKey = idType + "," + idNo;
-                Map<String, AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
-                AppSvcPrincipalOfficersDto psn = psnMap.get(psnKey);
-
-                newPerson.setIdNo(psn.getIdNo());
-                newPerson.setIdType(psn.getIdType());
-                newPerson.setPsnName(psn.getName());
-                newPerson.setSalutation(psn.getSalutation());
-                newPerson.setSpeciality(psn.getSpeciality());
-                newPerson.setSubSpeciality(psn.getSubSpeciality());
-                newPerson.setProfessionType(psn.getProfessionType());
-                newPerson.setProfessionRegnNo(psn.getProfRegNo());
-                newPerson.setDesignation(psn.getDesignation());
-                newPerson.setEmailAddr(psn.getEmailAddr());
-                newPerson.setMobileNo(psn.getMobileNo());
-                newPerson.setOfficeTelNo(psn.getOfficeTelNo());
-
-                if (StringUtil.isEmpty(newPerson.getEmailAddr())) {
-                    errMap.put("emailAddr2", "UC_CHKLMD001_ERR001");
-                } else if (!StringUtil.isEmpty(newPerson.getEmailAddr())) {
-                    if (!newPerson.getEmailAddr().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
-                        errMap.put("emailAddr2", "CHKLMD001_ERR006");
-                    }
-                }
-                if (StringUtil.isEmpty(newPerson.getMobileNo())) {
-                    errMap.put("mobileNo2", "UC_CHKLMD001_ERR001");
-                } else if (!StringUtil.isEmpty(newPerson.getMobileNo())) {
-                    if (!newPerson.getMobileNo().matches("^[8|9][0-9]{7}$")) {
-                        errMap.put("mobileNo2", "CHKLMD001_ERR004");
-                    }
-                }
-                if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getProfessionType())) {
-                    errMap.put("professionType2", "UC_CHKLMD001_ERR001");
-                }
-                if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSalutation())) {
-                    errMap.put("salutation2", "UC_CHKLMD001_ERR001");
-                }
-                if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getSalutation())) {
-                    errMap.put("salutation2", "UC_CHKLMD001_ERR001");
-                }
-                if (StringUtil.isEmpty(newPerson.getPsnName())) {
-                    errMap.put("psnName2", "UC_CHKLMD001_ERR001");
-                }
-                if (StringUtil.isEmpty(newPerson.getIdType())) {
-                    errMap.put("idType2", "UC_CHKLMD001_ERR001");
-                }
-                if (StringUtil.isEmpty(newPerson.getIdNo())) {
-                    errMap.put("idNo2", "UC_CHKLMD001_ERR001");
-                }
-                if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getDesignation())) {
-                    errMap.put("designation2", "UC_CHKLMD001_ERR001");
-                }
-                if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getDesignation())) {
-                    errMap.put("designation2", "UC_CHKLMD001_ERR001");
-                }
-                if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getProfessionRegnNo())) {
-                    errMap.put("professionRegnNo2", "UC_CHKLMD001_ERR001");
-                }
-                if (StringUtil.isEmpty(editSelect)) {
-                    errMap.put("editSelect2", "UC_CHKLMD001_ERR001");
-                }
-                if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
-                    errMap.put("officeTelNo2", "UC_CHKLMD001_ERR001");
-                }
-                if (psnTypes.contains("PO") && !StringUtil.isEmpty(newPerson.getOfficeTelNo()) && !newPerson.getOfficeTelNo().matches("^[6][0-9]{7}$")) {
-                    errMap.put("officeTelNo", "GENERAL_ERR0015");
-                }
-                if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSpeciality())) {
-                    errMap.put("specialty2", "UC_CHKLMD001_ERR001");
-                }
-                if (psnTypes.contains("CGO") && "other".equals(newPerson.getSpeciality()) && StringUtil.isEmpty(newPerson.getSpecialityOther())) {
-                    errMap.put("specialityOther2", "UC_CHKLMD001_ERR001");
-                }
-            }
-        }
-        if (StringUtil.isEmpty(editSelect)) {
-            errMap.put("editSelect", "UC_CHKLMD001_ERR001");
-        }
+        Map<String, String> errMap = valiant(bpc, personnelEditDto,newPerson);
         if (!errMap.isEmpty()) {
-            ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
-            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
-            ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
-            ParamUtil.setSessionAttr(bpc.request, "newPerson", newPerson);
-            if (StringUtil.isEmpty(replaceName)) {
-                ParamUtil.setSessionAttr(bpc.request, "replaceName", null);
-            }
-            ParamUtil.setRequestAttr(bpc.request, "replaceName", replaceName);
             return;
         }
         List<String> licenceIds = personnelEditDto.getLicenceIds();
@@ -1117,6 +850,8 @@ public class RequestForChangeMenuDelegator {
             //set Risk Score
             appSubmissionService.setRiskToDto(appSubmissionDto);
             appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+
+            String editSelect = ParamUtil.getString(bpc.request, "editSelect");
             if ("replace".equals(editSelect)) {
                 AppSubmissionDto appSubmissionDto2 = replacePersonnelDate(appSubmissionDto, newPerson);
                 appSubmissionDto.setAutoRfc(false);
@@ -1141,6 +876,219 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, "AppSubmissionDto", appSubmissionDtos1.get(0));
         bpc.request.getSession().setAttribute("appSubmissionDtos", appSubmissionDtos1);
         log.debug(StringUtil.changeForLog("the do doPersonnelEdit end ...."));
+    }
+
+    private Map<String,String> valiant(BaseProcessClass bpc,PersonnelListDto personnelEditDto,PersonnelListDto newPerson){
+        //update
+        String email = ParamUtil.getString(bpc.request, "emailAddr");
+        String mobile = ParamUtil.getString(bpc.request, "mobileNo");
+        String officeTelNo = ParamUtil.getString(bpc.request, "officeTelNo");
+        String designation = ParamUtil.getString(bpc.request, "designation");
+        //new
+        String salutation1 = ParamUtil.getString(bpc.request, "salutation1");
+        String psnName1 = ParamUtil.getString(bpc.request, "psnName1");
+        String idType1 = ParamUtil.getString(bpc.request, "idType1");
+        String idNo1 = ParamUtil.getString(bpc.request, "idNo1");
+        String email1 = ParamUtil.getString(bpc.request, "emailAddr1");
+        String mobile1 = ParamUtil.getString(bpc.request, "mobileNo1");
+        String designation1 = ParamUtil.getString(bpc.request, "designation1");
+        String officeTelNo1 = ParamUtil.getString(bpc.request, "officeTelNo1");
+        String replaceName = ParamUtil.getString(bpc.request, "replaceName");
+        String editSelect = ParamUtil.getString(bpc.request, "editSelect");
+        ParamUtil.setRequestAttr(bpc.request, "editSelectResult", editSelect);
+        Map<String, LicPsnTypeDto> licPsnTypeDtoMaps = personnelEditDto.getLicPsnTypeDtoMaps();
+        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
+        for (LicPsnTypeDto dto : licPsnTypeDtoMaps.values()) {
+            psnTypes.addAll(dto.getPsnTypes());
+        }
+        personnelEditDto.setEmailAddr(email);
+        personnelEditDto.setMobileNo(mobile);
+        if (psnTypes.contains("CGO")) {
+            personnelEditDto.setDesignation(designation);
+        }
+        if (psnTypes.contains("PO")) {
+            personnelEditDto.setDesignation(designation);
+            personnelEditDto.setOfficeTelNo(officeTelNo);
+        }
+        Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
+        if ("replace".equals(editSelect) && "new".equals(replaceName)) {
+            newPerson.setIdNo(idNo1);
+            newPerson.setIdType(idType1);
+            newPerson.setPsnName(psnName1);
+            newPerson.setSalutation(salutation1);
+            newPerson.setDesignation(designation1);
+            newPerson.setEmailAddr(email1);
+            newPerson.setMobileNo(mobile1);
+            newPerson.setOfficeTelNo(officeTelNo1);
+            if (StringUtil.isEmpty(email1)) {
+                errMap.put("emailAddr1", "UC_CHKLMD001_ERR001");
+            } else if (!StringUtil.isEmpty(email1)) {
+                if (!email1.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                    errMap.put("emailAddr1", "CHKLMD001_ERR006");
+                }
+            }
+            if (StringUtil.isEmpty(mobile1)) {
+                errMap.put("mobileNo1", "UC_CHKLMD001_ERR001");
+            } else if (!StringUtil.isEmpty(mobile1)) {
+                if (!mobile1.matches("^[8|9][0-9]{7}$")) {
+                    errMap.put("mobileNo1", "CHKLMD001_ERR004");
+                }
+            }
+            if (psnTypes.contains("CGO") && StringUtil.isEmpty(salutation1)) {
+                errMap.put("salutation1", "UC_CHKLMD001_ERR001");
+            }
+            if (psnTypes.contains("PO") && StringUtil.isEmpty(salutation1)) {
+                errMap.put("salutation1", "UC_CHKLMD001_ERR001");
+            }
+            if (StringUtil.isEmpty(psnName1)) {
+                errMap.put("psnName1", "UC_CHKLMD001_ERR001");
+            }
+            if (StringUtil.isEmpty(idType1)) {
+                errMap.put("idType1", "UC_CHKLMD001_ERR001");
+            }
+            if (StringUtil.isEmpty(idNo1)) {
+                errMap.put("idNo1", "UC_CHKLMD001_ERR001");
+            } else {
+                if ("FIN".equals(idType1)) {
+                    boolean b = SgNoValidator.validateFin(idNo1);
+                    if (!b) {
+                        errMap.put("idNo1", "CHKLMD001_ERR005");
+                    }
+                }
+                if ("NRIC".equals(idType1)) {
+                    boolean b1 = SgNoValidator.validateNric(idNo1);
+                    if (!b1) {
+                        errMap.put("idNo1", "CHKLMD001_ERR005");
+                    }
+                }
+            }
+            if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation1)) {
+                errMap.put("designation1", "UC_CHKLMD001_ERR001");
+            }
+            if (psnTypes.contains("PO") && StringUtil.isEmpty(designation1)) {
+                errMap.put("designation1", "UC_CHKLMD001_ERR001");
+            }
+            if (StringUtil.isEmpty(editSelect)) {
+                errMap.put("editSelect1", "UC_CHKLMD001_ERR001");
+            }
+            if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo1)) {
+                errMap.put("officeTelNo1", "UC_CHKLMD001_ERR001");
+            }
+            if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo1) && !officeTelNo1.matches("^[6][0-9]{7}$")) {
+                errMap.put("officeTelNo1", "GENERAL_ERR0015");
+            }
+        }
+        if ("update".equals(editSelect)) {
+            if (StringUtil.isEmpty(email)) {
+                errMap.put("emailAddr", "UC_CHKLMD001_ERR001");
+            } else if (!StringUtil.isEmpty(email)) {
+                if (!ValidationUtils.isEmail(email)) {
+                    errMap.put("emailAddr", "CHKLMD001_ERR006");
+                }
+            }
+            if (StringUtil.isEmpty(mobile)) {
+                errMap.put("mobileNo", "UC_CHKLMD001_ERR001");
+            } else if (!StringUtil.isEmpty(mobile)) {
+                if (!mobile.matches("^[8|9][0-9]{7}$")) {
+                    errMap.put("mobileNo", "CHKLMD001_ERR004");
+                }
+            }
+            if (psnTypes.contains("CGO") && StringUtil.isEmpty(designation)) {
+                errMap.put("designation", "UC_CHKLMD001_ERR001");
+            }
+            if (psnTypes.contains("PO") && StringUtil.isEmpty(designation)) {
+                errMap.put("designation", "UC_CHKLMD001_ERR001");
+            }
+            if (StringUtil.isEmpty(editSelect)) {
+                errMap.put("editSelect", "UC_CHKLMD001_ERR001");
+            }
+            if (psnTypes.contains("PO") && StringUtil.isEmpty(officeTelNo)) {
+                errMap.put("officeTelNo", "UC_CHKLMD001_ERR001");
+            }
+            if (psnTypes.contains("PO") && !StringUtil.isEmpty(officeTelNo) && !officeTelNo.matches("^[6][0-9]{7}$")) {
+                errMap.put("officeTelNo", "GENERAL_ERR0015");
+            }
+        }
+        if ("replace".equals(editSelect) && !"new".equals(replaceName)) {
+            if (StringUtil.isEmpty(replaceName)) {
+                errMap.put("replaceName", "UC_CHKLMD001_ERR001");
+            } else {
+                String[] split = replaceName.split(",");
+                String idType = split[0];
+                String idNo = split[1];
+                String psnKey = idType + "," + idNo;
+                Map<String, AppSvcPrincipalOfficersDto> psnMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
+                AppSvcPrincipalOfficersDto psn = psnMap.get(psnKey);
+
+                newPerson.setIdNo(psn.getIdNo());
+                newPerson.setIdType(psn.getIdType());
+                newPerson.setPsnName(psn.getName());
+                newPerson.setSalutation(psn.getSalutation());
+                newPerson.setDesignation(psn.getDesignation());
+                newPerson.setEmailAddr(psn.getEmailAddr());
+                newPerson.setMobileNo(psn.getMobileNo());
+                newPerson.setOfficeTelNo(psn.getOfficeTelNo());
+
+                if (StringUtil.isEmpty(newPerson.getEmailAddr())) {
+                    errMap.put("emailAddr2", "UC_CHKLMD001_ERR001");
+                } else if (!StringUtil.isEmpty(newPerson.getEmailAddr())) {
+                    if (!newPerson.getEmailAddr().matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+                        errMap.put("emailAddr2", "CHKLMD001_ERR006");
+                    }
+                }
+                if (StringUtil.isEmpty(newPerson.getMobileNo())) {
+                    errMap.put("mobileNo2", "UC_CHKLMD001_ERR001");
+                } else if (!StringUtil.isEmpty(newPerson.getMobileNo())) {
+                    if (!newPerson.getMobileNo().matches("^[8|9][0-9]{7}$")) {
+                        errMap.put("mobileNo2", "CHKLMD001_ERR004");
+                    }
+                }
+                if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getSalutation())) {
+                    errMap.put("salutation2", "UC_CHKLMD001_ERR001");
+                }
+                if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getSalutation())) {
+                    errMap.put("salutation2", "UC_CHKLMD001_ERR001");
+                }
+                if (StringUtil.isEmpty(newPerson.getPsnName())) {
+                    errMap.put("psnName2", "UC_CHKLMD001_ERR001");
+                }
+                if (StringUtil.isEmpty(newPerson.getIdType())) {
+                    errMap.put("idType2", "UC_CHKLMD001_ERR001");
+                }
+                if (StringUtil.isEmpty(newPerson.getIdNo())) {
+                    errMap.put("idNo2", "UC_CHKLMD001_ERR001");
+                }
+                if (psnTypes.contains("CGO") && StringUtil.isEmpty(newPerson.getDesignation())) {
+                    errMap.put("designation2", "UC_CHKLMD001_ERR001");
+                }
+                if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getDesignation())) {
+                    errMap.put("designation2", "UC_CHKLMD001_ERR001");
+                }
+                if (StringUtil.isEmpty(editSelect)) {
+                    errMap.put("editSelect2", "UC_CHKLMD001_ERR001");
+                }
+                if (psnTypes.contains("PO") && StringUtil.isEmpty(newPerson.getOfficeTelNo())) {
+                    errMap.put("officeTelNo2", "UC_CHKLMD001_ERR001");
+                }
+                if (psnTypes.contains("PO") && !StringUtil.isEmpty(newPerson.getOfficeTelNo()) && !newPerson.getOfficeTelNo().matches("^[6][0-9]{7}$")) {
+                    errMap.put("officeTelNo", "GENERAL_ERR0015");
+                }
+            }
+        }
+        if (StringUtil.isEmpty(editSelect)) {
+            errMap.put("editSelect", "UC_CHKLMD001_ERR001");
+        }
+        if (!errMap.isEmpty()) {
+            ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+            ParamUtil.setSessionAttr(bpc.request, "personnelEditDto", personnelEditDto);
+            ParamUtil.setSessionAttr(bpc.request, "newPerson", newPerson);
+            if (StringUtil.isEmpty(replaceName)) {
+                ParamUtil.setSessionAttr(bpc.request, "replaceName", null);
+            }
+            ParamUtil.setRequestAttr(bpc.request, "replaceName", replaceName);
+        }
+        return errMap;
     }
 
     public void preparePersonnelBank(BaseProcessClass bpc) {
