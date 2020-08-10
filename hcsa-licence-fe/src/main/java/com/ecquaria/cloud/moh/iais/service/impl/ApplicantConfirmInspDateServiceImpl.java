@@ -802,6 +802,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             map.put("applicationNo", appNo);
             map.put("dateStrList", dateStrList);
             map.put("fe_date", dateStr);
+            map.put("officer_name", "officer_name");
             notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_REJECT_APPT_REQUEST_A_DATE, map, appNo, appNo,
                     NotificationHelper.RECEIPT_TYPE_APP, appNo);
         }catch (Exception e){

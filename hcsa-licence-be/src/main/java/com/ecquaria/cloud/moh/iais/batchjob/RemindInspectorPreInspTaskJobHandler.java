@@ -158,6 +158,7 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
         templateMap.put("applicationNo", appNo);
         templateMap.put("appType", appType);
         templateMap.put("appDate", appDateStr);
+        templateMap.put("officer_name", "officer_name");
         return templateMap;
     }
 
