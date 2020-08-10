@@ -54,6 +54,7 @@
             /*remove hidden*/
             $premContent.find('a.retrieveAddr').removeClass('hidden');
             $premContent.find('button.addPubHolDay').removeClass('hidden');
+            $premContent.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
             <!--regen ph form  -->
             var premDivName = "";
             if("onSiteSel" == thisId){
@@ -301,6 +302,7 @@
             replaceFireIssueDateHtml(premContent,fireIssueDate);
             <!--remove ph hidden-->
             premContent.find('.addPubHolDay').removeClass('hidden');
+            premContent.find('div.other-lic-content span.check-circle').removeClass('radio-disabled');
             <!--remove placeHolder disabled style -->
             premContent.find('input[name="onSiteFireSafetyCertIssuedDate"]').removeClass('disabled-placeHolder');
         });
@@ -466,6 +468,7 @@
             $premSelect.find('input.other-lic').each(function () {
                 if($(this).val() == data.locateWithOthers){
                     $(this).prop("checked",true);
+                    $(this).closest('div').find('.check-circle').addClass('radio-disabled');
                 }
             });
 

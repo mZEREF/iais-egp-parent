@@ -183,10 +183,16 @@
 <%--<c:if test="${AppSubmissionDto.needEditController || AppSubmissionDto.onlySpecifiedSvc}">--%>
         <c:if test="${!AppSubmissionDto.needEditController && readOnly}">
         readonlyPartPage($('div.premises-content'));
+        $('div.premises-content').each(function () {
+          $(this).find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
+          $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
+        });
         </c:if>
 
         <c:if test="${AppSubmissionDto.needEditController}">
         readonlyPartPage($('div.premises-content'));
+        $(this).find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
+        $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
         </c:if>
         if($("#errorMapIs").val()=='error'){
             var premContent =$('#mainPrem');

@@ -75,7 +75,7 @@
                                             </div>
                                         </div>
                                         <div class="existing-base-content">
-                                            <c:forEach var="baseLic" items="${retainLicPremisesList}" varStatus="sts">
+                                            <c:forEach var="baseLic" items="${baseSvcPremisesMap.get(baseSvc.svcName)}" varStatus="sts">
                                                 <!--spe svc code + base svc code + -->
                                                 <c:set var="premIndexNo" value="${specSvc.svcCode}${baseSvc.svcCode}${sts.index}"/>
                                                 <div class="row">

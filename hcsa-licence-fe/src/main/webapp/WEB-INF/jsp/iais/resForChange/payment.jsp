@@ -26,9 +26,9 @@
                             <div class="tab-pane active" id="paymentTab" role="tabpanel">
                                 <br/>
                                 <h2>Payment Summary</h2>
-                                <p >
-                                    Total amount due: ${dAmount}
-                                </p>
+                                <%--<p >--%>
+                                    <%--Total amount due: ${dAmount}--%>
+                                <%--</p>--%>
                                 <table class="table">
                                     <thead>
                                     <tr>
@@ -55,7 +55,12 @@
                                                 </td>
                                             </tr>
                                     </c:forEach>
-
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td><p>Total amount due:</p></td>
+                                        <td><p><strong> <c:out value="${dAmount}"></c:out></strong></p></td>
+                                    </tr>
                                     </tbody>
                                 </table>
                                 <%@include file="../newApplication/paymentMethod.jsp"%>

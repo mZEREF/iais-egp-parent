@@ -311,11 +311,24 @@ public class NewApplicationDelegator {
         Map<String,AppGrpPremisesDto> licAppGrpPremisesDtoMap = null;
         if(!StringUtil.isEmpty(licenseeId)){
             licAppGrpPremisesDtoMap = serviceConfigService.getAppGrpPremisesDtoByLoginId(licenseeId);
-            if(licAppGrpPremisesDtoMap != null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
-                Map<String,AppGrpPremisesDto> newLicAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
+            String appType = appSubmissionDto.getAppType();
+            if(licAppGrpPremisesDtoMap != null){
                 //remove premise info when pending premises hci same
                 List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST);
                 List<String> pendAndLicPremHci = appSubmissionService.getHciFromPendAppAndLic(licenseeId,hcsaServiceDtos);
+                if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+
+                } else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
+                    List<String> currPremHci = IaisCommonUtils.genNewArrayList();
+                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                    if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                            currPremHci.add(NewApplicationHelper.genPremHci(appGrpPremisesDto));
+                        }
+                    }
+                    pendAndLicPremHci.removeAll(currPremHci);
+                }
+                Map<String,AppGrpPremisesDto> newLicAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
                 licAppGrpPremisesDtoMap.forEach((k,v)->{
                     String premisesKey = NewApplicationHelper.getPremKey(v);
                     String premisesHci = "";
@@ -958,6 +971,7 @@ public class NewApplicationDelegator {
         if(!errorMap.isEmpty()){
             ParamUtil.setRequestAttr(bpc.request,"errorMsg",WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE,"preview");
+            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,"test");
             return;
         }
         log.info(StringUtil.changeForLog("the do doPreview end ...."));
@@ -2254,9 +2268,12 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do controlSwitch start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String switch2 = "loading";
-        String crudActionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-        if (StringUtil.isEmpty(crudActionValue)) {
-            crudActionValue = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+        String  crudActionValue = (String) ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.ISVALID);
+        if(StringUtil.isEmpty(crudActionValue)){
+            crudActionValue = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+            if (StringUtil.isEmpty(crudActionValue)) {
+                crudActionValue = (String) ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+            }
         }
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request,REQUESTINFORMATIONCONFIG);
         if((ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
@@ -5362,6 +5379,7 @@ public class NewApplicationDelegator {
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && appSubmissionDto == null && appSelectSvcDto != null){
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+            appSubmissionDto.setNoExistLicAlign(appSelectSvcDto.isAlign());
             //change place to serviceMenueDelegator
 //            List<HcsaServiceDto> hcsaServiceDtos = appSelectSvcDto.getBaseSvcDtoList();
 //            //add other service
@@ -5370,15 +5388,11 @@ public class NewApplicationDelegator {
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
 
             String premisesId = "";
-            if(appSelectSvcDto.isBasePage() && !appSelectSvcDto.isAlignPage()){
-                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                    if(!appSvcRelatedInfoDto.getBaseServiceId().equals(appSvcRelatedInfoDto.getServiceId())){
-                        premisesId = appSvcRelatedInfoDto.getLicPremisesId();
-                        break;
-                    }
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                premisesId = appSvcRelatedInfoDto.getLicPremisesId();
+                if(!StringUtil.isEmpty(premisesId)){
+                    break;
                 }
-            }else{
-                premisesId = appSvcRelatedInfoDtos.get(0).getLicPremisesId();
             }
             if(!StringUtil.isEmpty(premisesId)){
                 List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionService.getLicPremisesInfo(premisesId);

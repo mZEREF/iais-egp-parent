@@ -14,6 +14,13 @@
     input.disabled-placeHolder::-ms-input-placeholder { /* Microsoft Edge */
         color:#999999!important;
     }
+    .radio-disabled::before{
+        background-color: #999999 !important;
+        /*border: 1px solid #999999 !important;*/
+    }
+    .radio-disabled{
+        border-color: #999999 !important;
+    }
 </style>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:forEach var="appGrpPremisesDto" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="status">

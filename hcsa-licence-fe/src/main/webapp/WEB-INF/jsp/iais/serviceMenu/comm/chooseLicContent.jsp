@@ -60,9 +60,9 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="alignLic" value="${status.index}" aria-invalid="false"
                                     <c:choose>
-                                        <c:when test="${chooseFirst && status.first}">
-                                               checked="checked"
-                                        </c:when>
+                                        <%--<c:when test="${chooseFirst && status.first}">--%>
+                                               <%--checked="checked"--%>
+                                        <%--</c:when>--%>
                                         <c:when test="${!chooseFirst && appSelectSvc.alignLicPremId == lic.premisesId}">
                                                checked="checked"
                                         </c:when>

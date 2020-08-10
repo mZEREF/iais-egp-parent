@@ -35,7 +35,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
@@ -1161,7 +1165,7 @@ public class RequestForChangeMenuDelegator {
                 every.setAmountStr(amountStr);
             }
         }
-        bpc.request.getSession().setAttribute("dAmount", "$" + dAmount);
+        bpc.request.getSession().setAttribute("dAmount", Formatter.formatterMoney(dAmount));
         log.debug(StringUtil.changeForLog("the do prePayment end ...."));
     }
 
