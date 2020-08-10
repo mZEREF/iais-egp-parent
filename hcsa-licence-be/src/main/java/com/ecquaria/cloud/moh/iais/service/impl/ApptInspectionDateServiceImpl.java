@@ -508,15 +508,12 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String urlId = apptInspectionDateDto.getTaskDto().getRefNo();
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         String serviceId;
-        Date submitDt;
         if(apptInspectionDateDto.getAppointmentDto() != null){
             serviceId = apptInspectionDateDto.getAppointmentDto().getServiceId();
-            submitDt = apptInspectionDateDto.getAppointmentDto().getSubmitDt();
         } else {
             ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
             serviceId = applicationDto.getServiceId();
-            submitDt = applicationGroupDto.getSubmitDt();
         }
         //end hour - 1, because the function save all start hour
         AppointmentDto appointmentDtoSave = officersReSchedulingService.subtractEndHourByApptDto(apptInspectionDateDto.getSpecificApptDto());
