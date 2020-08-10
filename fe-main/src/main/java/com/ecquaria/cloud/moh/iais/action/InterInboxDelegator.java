@@ -433,7 +433,7 @@ public class InterInboxDelegator {
         List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licId);
         if(!draftByLicAppId.isEmpty()){
             String isNeedDelete = bpc.request.getParameter("isNeedDelete");
-            StringBuilder stringBuilder=new StringBuilder(' ');
+            StringBuilder stringBuilder=new StringBuilder();
             for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                 stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
             }
@@ -497,7 +497,7 @@ public class InterInboxDelegator {
             List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
             if(!draftByLicAppId.isEmpty()){
                 String isNeedDelete = bpc.request.getParameter("isNeedDelete");
-                StringBuilder stringBuilder=new StringBuilder(' ');
+                StringBuilder stringBuilder=new StringBuilder();
                 for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                     stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
                 }
@@ -550,7 +550,7 @@ public class InterInboxDelegator {
                 List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue.get(0));
                 String isNeedDelete = bpc.request.getParameter("isNeedDelete");
                 if(!draftByLicAppId.isEmpty()){
-                    StringBuilder stringBuilder=new StringBuilder(' ');
+                    StringBuilder stringBuilder=new StringBuilder();
                     for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                         stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
                     }
@@ -786,7 +786,7 @@ public class InterInboxDelegator {
         }
         List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(appId);
         if(!draftByLicAppId.isEmpty()){
-            StringBuilder stringBuilder=new StringBuilder(' ');
+            StringBuilder stringBuilder=new StringBuilder();
             for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
                 stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
             }
