@@ -51,7 +51,7 @@
                                 <div class="row base-svc-content">
                                     <div class="col-xs-12 col-md-1">
                                     </div>
-                                    <div class="col-xs-12 col-md-11">
+                                    <div class="col-xs-12 col-md-11 exist-base-lic-content">
                                         <div class="form-check">
                                             <input type="hidden" name="${indexNo}-new" value="${baseSvc.svcCode}" />
                                             <input class="form-check-input firstStep" type="radio" name="${specSvc.svcCode}-base" value="${indexNo}-new" aria-invalid="false" <c:if test="${newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >

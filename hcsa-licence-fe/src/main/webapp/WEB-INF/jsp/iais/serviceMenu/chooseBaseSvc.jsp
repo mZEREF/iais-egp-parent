@@ -86,43 +86,52 @@
             $('.form-check-input:checked').trigger('click');
         });
 
-        // $('.form-check-input').click(function () {
-        //     var $currSpecContent = $(this).closest('div.speSvcContent');
-        //     var $baseLicContent = $(this).closest('div.exist-base-lic-content');
-        //
-        //     //the first select
-        //     if($(this).hasClass('firstStep')){
-        //         // if($(this).hasClass('firstStep')){
-        //         //     //disabled the second
-        //         //     $('div.existing-base-content input[type="radio"]').prop('disabled',true);
-        //         // }
-        //         //control curr
-        //         $baseLicContent.find('input[type="radio"]').prop('disabled',false);
-        //         $baseLicContent.find('.existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
-        //         if(init ==0){
-        //             $currSpecContent.removeClass('disable-point');
-        //         }
-        //         //control other spec
-        //         //the first step
-        //         if($(this).hasClass('existing-base')){
-        //             $('.disable-point .exist-base-lic-content .firstStep').prop('disabled',false);
-        //             $('.disable-point .new-base .firstStep').prop('disabled',true);
-        //             $('.disable-point .new-base .firstStep').prop('checked',false);
-        //
-        //         }else if($(this).hasClass('diff-base')){
-        //             $('.disable-point .exist-base-lic-content .firstStep').prop('disabled',true);
-        //             $('.disable-point .new-base .firstStep').prop('disabled',false);
-        //             $('.disable-point .exist-base-lic-content .firstStep').prop('checked',false);
-        //             //unChecked the second step
-        //             $('div.existing-base-content').find('input[type="radio"]').prop('disabled',true);
-        //             $('div.existing-base-content').find('input[type="radio"]').prop('checked',false);
-        //
-        //         }
-        //         init = 1;
-        //     }else{
-        //         $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
-        //     }
-        // });
+        $('.form-check-input').click(function () {
+            var $currSpecContent = $(this).closest('div.speSvcContent');
+            var $baseLicContent = $(this).closest('div.exist-base-lic-content');
+            if($(this).hasClass('firstStep')){
+                console.log('first step');
+                $currSpecContent.find('div.exist-base-lic-content input').prop('checked',false);
+            }
+
+        });
+        /*$('.form-check-input').click(function () {
+            var $currSpecContent = $(this).closest('div.speSvcContent');
+            var $baseLicContent = $(this).closest('div.exist-base-lic-content');
+
+            //the first select
+            if($(this).hasClass('firstStep')){
+                // if($(this).hasClass('firstStep')){
+                //     //disabled the second
+                //     $('div.existing-base-content input[type="radio"]').prop('disabled',true);
+                // }
+                //control curr
+                $baseLicContent.find('input[type="radio"]').prop('disabled',false);
+                $baseLicContent.find('.existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
+                if(init ==0){
+                    $currSpecContent.removeClass('disable-point');
+                }
+                //control other spec
+                //the first step
+                if($(this).hasClass('existing-base')){
+                    $('.disable-point .exist-base-lic-content .firstStep').prop('disabled',false);
+                    $('.disable-point .new-base .firstStep').prop('disabled',true);
+                    $('.disable-point .new-base .firstStep').prop('checked',false);
+
+                }else if($(this).hasClass('diff-base')){
+                    $('.disable-point .exist-base-lic-content .firstStep').prop('disabled',true);
+                    $('.disable-point .new-base .firstStep').prop('disabled',false);
+                    $('.disable-point .exist-base-lic-content .firstStep').prop('checked',false);
+                    //unChecked the second step
+                    $('div.existing-base-content').find('input[type="radio"]').prop('disabled',true);
+                    $('div.existing-base-content').find('input[type="radio"]').prop('checked',false);
+
+                }
+                init = 1;
+            }else{
+                $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
+            }
+        });*/
 
         //reload
        /* var defaultVal = '${appSvcRelatedInfoList == null || appSvcRelatedInfoList.size() == 0}';
