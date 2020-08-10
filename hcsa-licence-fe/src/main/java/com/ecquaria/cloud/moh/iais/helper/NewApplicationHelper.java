@@ -1070,6 +1070,7 @@ public class NewApplicationHelper {
         }
         for(AppSvcCgoDto appSvcCgoDto:appSvcCgoDtos){
             AppSvcPrincipalOfficersDto psnDto = MiscUtil.transferEntityDto(appSvcCgoDto,AppSvcPrincipalOfficersDto.class);
+            psnDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_CGO);
             psnDtos.add(psnDto);
         }
         return psnDtos;
@@ -1157,9 +1158,11 @@ public class NewApplicationHelper {
                     psnDto.setNeedSpcOptList(true);
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnDto.getPsnType())){
+                    person.setDesignation(psnDto.getDesignation());
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(psnDto.getPsnType())){
+                    person.setDesignation(psnDto.getDesignation());
                     person.setOfficeTelNo(psnDto.getOfficeTelNo());
                 }
                 if(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP.equals(psnDto.getPsnType())){
@@ -1731,6 +1734,20 @@ public class NewApplicationHelper {
 
         }
         return premKey;
+    }
+
+    public static String genPremHci(AppGrpPremisesDto appGrpPremisesDto){
+        String premHci = "";
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+            premHci = appGrpPremisesDto.getHciName()+ IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getPostalCode(),appGrpPremisesDto.getBlkNo(),appGrpPremisesDto.getFloorNo(),appGrpPremisesDto.getUnitNo());
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            premHci = appGrpPremisesDto.getConveyanceVehicleNo() + IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getConveyancePostalCode(),appGrpPremisesDto.getConveyanceBlockNo(),appGrpPremisesDto.getConveyanceFloorNo(),appGrpPremisesDto.getConveyanceUnitNo());
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
+            premHci = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getOffSitePostalCode(),appGrpPremisesDto.getOffSiteBlockNo(),appGrpPremisesDto.getOffSiteFloorNo(),appGrpPremisesDto.getOffSiteUnitNo());
+
+        }
+        return premHci;
+
     }
 
     public static List<String> setPremiseHciList(AppGrpPremisesEntityDto premisesDto,List<String> premisesHci){
