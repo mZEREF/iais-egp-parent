@@ -355,16 +355,6 @@ public class InspectionServiceImpl implements InspectionService {
         return inspectionTaskPoolListDto;
     }
 
-    @Override
-    public List<String> getWrkIdsByLogin(LoginContext loginContext) {
-        List<String> workGroupIdList = IaisCommonUtils.genNewArrayList();
-        List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
-        for(UserGroupCorrelationDto ugcDto:userGroupCorrelationDtos){
-                workGroupIdList.add(ugcDto.getGroupId());
-        }
-        return workGroupIdList;
-    }
-
     private String getMemberNameByUserId(String userId) {
         String memberName = HcsaConsts.HCSA_PREMISES_HCI_NULL;
         if(!StringUtil.isEmpty(userId)) {

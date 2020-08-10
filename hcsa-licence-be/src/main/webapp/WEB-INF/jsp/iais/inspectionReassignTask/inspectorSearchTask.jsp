@@ -31,6 +31,23 @@
               </div>
               <iais:body >
                 <iais:section title="" id = "supPoolList">
+                  <div class="form-horizontal">
+                    <div class="form-group">
+                      <label class="col-xs-12 col-md-4 control-label">Role</label>
+                      <div class="col-xs-8 col-sm-6 col-md-5">
+                        <iais:select name="supervisorRoleId" cssClass="roleIds" options="superPoolRoleIds" id="supervisorPoolRole" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-10 col-md-12">
+                      <div class="components">
+                        <a name="filterBtn" class="btn btn-secondary" data-toggle="collapse"
+                           data-target="#superPoolSearch">Filter</a>
+                      </div>
+                    </div>
+                  </div>
+                  <p></p>
                   <div id = "superPoolSearch">
                     <iais:row>
                       <iais:field value="Application No."/>
