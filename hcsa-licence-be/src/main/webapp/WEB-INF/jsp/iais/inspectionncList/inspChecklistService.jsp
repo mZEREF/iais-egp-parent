@@ -11,7 +11,7 @@
                 <tr>
                     <th>No.</th>
                     <th>Regulation Clause Number</th>
-                    <th>Item</th>
+                    <th  width="30%">Item</th>
                     <th>Yes</th>
                     <th>No</th>
                     <th>N/A</th>
@@ -76,7 +76,7 @@
             <thead>
             <tr>
                 <th>No.</th>
-                <th>Item</th>
+                <th  width="35%">Item</th>
                 <th>Yes</th>
                 <th>No</th>
                 <th>N/A</th>
