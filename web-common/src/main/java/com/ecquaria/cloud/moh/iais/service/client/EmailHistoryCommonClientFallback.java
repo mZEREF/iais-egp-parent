@@ -1,22 +1,28 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
+/*
+ *author: guyin
+ *date time:2/6/2019 10:09 PM
+ *description:
+ */
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailAttachMentDto;
+import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.EmailAuditTrailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.ResendListDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
+import java.util.Map;
 
-public class HcsaLicenceClientFallback implements HcsaLicenceClient {
+public class EmailHistoryCommonClientFallback implements EmailHistoryCommonClient{
+
 
     @Override
-    public FeignResponseEntity<List<PersonnelsDto>> getPersonnelDtoByLicId(String licId) {
+    public FeignResponseEntity<SearchResult<EmailAuditTrailDto>> getAuditList(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -24,7 +30,7 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<List<String>> getMobileByRole(String role) {
+    public FeignResponseEntity<SearchResult<ResendListDto>> getResendList(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -32,7 +38,7 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<List<KeyPersonnelDto>> getKeyPersonnelByRole(List<String> roles) {
+    public FeignResponseEntity<Map<String, String>> sendSMS(List<String> recipts, SmsDto sms, String reqRefNum) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -40,7 +46,7 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<List<AppAlignLicQueryDto>> getAppAlignLicQueryDto(String licenseeId, String svcNameStr) {
+    public FeignResponseEntity<EmailAttachMentDto> getEmailById(String id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -48,18 +54,11 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
     }
 
     @Override
-    public FeignResponseEntity<SearchResult<MenuLicenceDto>> getMenuLicence(SearchParam searchParam) {
+    public FeignResponseEntity<Void> setEmailResend(String id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
         return entity;
     }
 
-    @Override
-    public FeignResponseEntity<LicenceDto> getLicDtoById(String licenceId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
-    }
 }
