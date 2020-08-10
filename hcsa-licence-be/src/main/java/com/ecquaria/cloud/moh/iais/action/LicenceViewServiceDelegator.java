@@ -110,12 +110,12 @@ public class LicenceViewServiceDelegator {
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
             return;
         }
-        ApplicationDto applicationViewDtoapplicationDto = applicationViewDto.getApplicationDto();
         AppEditSelectDto appEditSelectDto;
         appEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
         if(appEditSelectDto==null){
             appEditSelectDto = applicationViewDto.getAppEditSelectDto();
         }
+        log.info(StringUtil.changeForLog(appEditSelectDto+"appEditSelectDto"));
         bpc.request.getSession().setAttribute("appEditSelectDto",appEditSelectDto);
         AppSubmissionDto appSubmissionDto;
         String newCorrelationId = "";
@@ -338,7 +338,10 @@ public class LicenceViewServiceDelegator {
                 appGrpPremisesDto.setApplicationViewAddress(applicationViewHciNameDtos);
             }
         }
-        premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
+        if(appSubmissionDto.getOldAppSubmissionDto()!=null){
+            premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
+            premise(appSubmissionDto.getOldAppSubmissionDto(),appSubmissionDto);
+        }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
     }
@@ -1184,24 +1187,24 @@ public class LicenceViewServiceDelegator {
         if(oldAppSubmissionDtoAppGrpPremisesDtoList==null || oldAppSubmissionDtoAppGrpPremisesDtoList.isEmpty()){
             return;
         }
-        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-            if(StringUtil.isEmpty(appGrpPremisesDto.getStreetName())){
-                appGrpPremisesDto.setStreetName("-");
+        for(int i=0;i<appGrpPremisesDtoList.size();i++){
+            if(StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getStreetName())){
+                appGrpPremisesDtoList.get(i).setStreetName("-");
             }
-            if(StringUtil.isEmpty(appGrpPremisesDto.getPostalCode())){
-                appGrpPremisesDto.setPostalCode("-");
+            if(StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getPostalCode())){
+                appGrpPremisesDtoList.get(i).setPostalCode("-");
             }
-            if(StringUtil.isEmpty(appGrpPremisesDto.getBuildingName())){
-                appGrpPremisesDto.setBuildingName("-");
+            if(StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getBuildingName())){
+                appGrpPremisesDtoList.get(i).setBuildingName("-");
             }
-            if(StringUtil.isEmpty(appGrpPremisesDto.getFloorNo())){
-                appGrpPremisesDto.setFloorNo("-");
+            if(StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getFloorNo())){
+                appGrpPremisesDtoList.get(i).setFloorNo("-");
             }
-            if(StringUtil.isEmpty(appGrpPremisesDto.getUnitNo())){
-                appGrpPremisesDto.setUnitNo("-");
+            if(StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getUnitNo())){
+                appGrpPremisesDtoList.get(i).setUnitNo("-");
             }
-            if(StringUtil.isEmpty(appGrpPremisesDto.getAddrType())){
-                appGrpPremisesDto.setAddrType("-");
+            if(StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getAddrType())){
+                appGrpPremisesDtoList.get(i).setAddrType("-");
             }
         }
     }

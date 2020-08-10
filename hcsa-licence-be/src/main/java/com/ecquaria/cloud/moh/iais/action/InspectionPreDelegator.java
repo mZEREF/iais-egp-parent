@@ -155,7 +155,6 @@ public class InspectionPreDelegator {
         setPreInspSelfChecklistInfo(selfAssessments, bpc);
         //Inspection history
         List<InspectionHistoryShowDto> inspectionHistoryShowDtos = inspectionPreTaskService.getInspectionHistory(applicationDto.getOriginLicenceId());
-
         ParamUtil.setSessionAttr(bpc.request, "inspectionHistoryShowDtos", (Serializable) inspectionHistoryShowDtos);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_CHECKLIST_LIST_ATTR, (Serializable) inspectionChecklist);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);

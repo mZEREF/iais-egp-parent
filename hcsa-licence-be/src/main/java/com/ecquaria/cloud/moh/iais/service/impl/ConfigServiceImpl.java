@@ -132,6 +132,9 @@ public class ConfigServiceImpl implements ConfigService {
         }else if(crud_action_value != null && !"".equals(crud_action_value) && "edit".equals(crud_action_type)){
             String crud_action_value1 = ParamUtil.getMaskedString(request, "crud_action_value");
             view(request, crud_action_value1);
+        }else if("back".equals(crud_action_value)){
+            String crud_action_additional = request.getParameter("crud_action_additional");
+            view(request, crud_action_additional);
         }
 
 
@@ -533,11 +536,15 @@ public class ConfigServiceImpl implements ConfigService {
             }
         }
         String numberDocument = hcsaServiceConfigDto.getComDocSize();
-        if(!numberDocument.matches("^[0-9]+$")){
+        if(StringUtil.isEmpty(numberDocument)){
+            errorMap.put("NumberDocument",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related Document to be uploaded","field"));
+        }else if(!numberDocument.matches("^[0-9]+$")){
             errorMap.put("NumberDocument","NEW_ERR0003");
         }
         String numberfields = hcsaServiceConfigDto.getServiceDocSize();
-        if(!numberfields.matches("^[0-9]+$")){
+        if(StringUtil.isEmpty(numberfields)){
+            errorMap.put("Numberfields",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related General Info fields to be captured","field"));
+        }else if(!numberfields.matches("^[0-9]+$")){
             errorMap.put("Numberfields","NEW_ERR0003");
         }
 

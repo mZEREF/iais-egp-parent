@@ -1620,6 +1620,7 @@ public class NewApplicationDelegator {
             for(AppSubmissionDto appSubmissionDto1 :autoSaveAppsubmission){
                 String s = Formatter.formatterMoney(appSubmissionDto1.getAmount());
                 appSubmissionDto1.setAmountStr(s);
+                appSubmissionDto1.setAppGrpNo(autoSaveAppsubmission.get(0).getAppGrpNo());
             }
             appSubmissionDtoList.addAll( appSubmissionDtos1);
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
@@ -2389,9 +2390,11 @@ public class NewApplicationDelegator {
         String txnRefNo=(String)bpc.request.getSession().getAttribute("txnDt");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         String licenceId = appSubmissionDto.getLicenceId();
-        List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(licenceId).getEntity();
-        for(ApplicationSubDraftDto applicationSubDraftDto : entity){
-            applicationClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+        if(!StringUtil.isEmpty(licenceId)){
+            List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(licenceId).getEntity();
+            for(ApplicationSubDraftDto applicationSubDraftDto : entity){
+                applicationClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+            }
         }
         if(StringUtil.isEmpty(txnRefNo)){
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");

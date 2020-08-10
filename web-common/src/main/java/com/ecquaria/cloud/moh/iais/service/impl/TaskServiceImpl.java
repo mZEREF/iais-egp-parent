@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.SendTaskTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskEmailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
@@ -151,7 +152,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskHistoryDto getRoutingTaskOneUserForSubmisison(List<ApplicationDto> applicationDtos, String stageId,String roleId, AuditTrailDto auditTrailDto) throws FeignException {
         log.debug(StringUtil.changeForLog("the do getRoutingTaskOneUserForSubmisison start ...."));
-        log.info(StringUtil.changeForLog("---------------"+applicationDtos+"--------"+stageId));
+        log.info(StringUtil.changeForLog("---------------"+ JsonUtil.parseToJson(applicationDtos) +"--------"+stageId));
         TaskHistoryDto result = new TaskHistoryDto();
         if(applicationDtos != null && applicationDtos.size() > 0){
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,stageId);

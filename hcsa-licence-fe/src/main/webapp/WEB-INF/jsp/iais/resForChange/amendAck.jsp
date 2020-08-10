@@ -45,7 +45,11 @@
                                     <th>${pmtRefNo}</th>
                                     <th><fmt:formatDate value="${createDate}" pattern="dd/MM/yyyy"></fmt:formatDate></th>
                                     <th>${dAmount}</th>
-                                    <th>${payMethod}</th>
+                                    <th>
+                                        <c:choose>
+                                            <c:when test="${payMethod=='Credit'}"> Credit Card</c:when>
+                                            <c:otherwise> ${payMethod}</c:otherwise>
+                                        </c:choose>
                                 </tr>
                                 </tbody>
                             </table>

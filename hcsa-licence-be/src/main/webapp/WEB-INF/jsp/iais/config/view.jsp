@@ -643,7 +643,9 @@
 
 
     });
-
+    function displays() {
+        $('#cancel').modal('hide');
+    }
     function cancel() {
         SOP.Crud.cfxSubmit("mainForm","back","back","");
     }

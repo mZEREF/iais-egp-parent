@@ -612,7 +612,16 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             appEditSelectDto.setApplicationId(applicationDto.getId());
             applicationViewDto.setAppEditSelectDto(appEditSelectDto);
         } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)) {
-            appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RENEW);
+            AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
+            appEditSelectDto.setEditType(ApplicationConsts.APPLICATION_EDIT_TYPE_RFI);
+            appEditSelectDto.setServiceEdit(true);
+            appEditSelectDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appEditSelectDto.setPoEdit(true);
+            appEditSelectDto.setDocEdit(true);
+            appEditSelectDto.setMedAlertEdit(true);
+            appEditSelectDto.setPremisesListEdit(true);
+            appEditSelectDto.setApplicationId(applicationDto.getId());
+            applicationViewDto.setAppEditSelectDto(appEditSelectDto);
         } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
             appEditSelectDtos = applicationService.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFC);
         }

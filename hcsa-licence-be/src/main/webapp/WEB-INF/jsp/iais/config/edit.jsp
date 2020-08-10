@@ -46,7 +46,7 @@
       <div class="form-group">
         <div class="col-xs-12 col-md-10">
           <h2 class="component-title">Edit HCSA Service</h2>
-          <input type="text" style="display: none" name="serviceId" value="${hcsaServiceDto.id}">
+          <input type="text" style="display: none" name="serviceId" id="serviceId" value="${hcsaServiceDto.id}">
         </div>
       </div>
       <div class="form-group">
@@ -104,10 +104,11 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-10">
-          <label class="col-xs-12 col-md-10 control-label" >Premises Type<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-12">
+          <label class="col-xs-12 col-md-12 control-label" >Premises Type<span class="mandatory">*</span></label>
+          <span class="error-msg" style="margin-left: 1%" name="iaisErrorMsg" id="error_premieseType"></span>
         </div>
-        <span class="error-msg" name="iaisErrorMsg" id="error_premieseType"></span>
+
       </div>
       <br>
 
@@ -256,8 +257,8 @@
           <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be uploaded<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument" type="text" value="${serviceDocSize}" maxlength="2" name="NumberDocument" maxlength="2">
+            <span class="error-msg" name="iaisErrorMsg" id="error_NumberDocument"></span>
           </div>
-          <span class="error-msg" name="iaisErrorMsg" id="error_NumberDocument"></span>
         </div>
       </div>
 
@@ -285,8 +286,8 @@
           <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to be captured<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="Numberfields" type="text" name="Numberfields" maxlength="2" value="${comDocSize}">
+            <span class="error-msg" name="iaisErrorMsg" id="error_Numberfields"></span>
           </div>
-          <span class="error-msg" name="iaisErrorMsg" id="error_Numberfields"></span>
         </div>
       </div>
 
@@ -587,8 +588,8 @@
           <label class="col-xs-12 col-md-8 control-label">Effective Start Date<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
             <input type="text" disabled value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDate"></span>
           </div>
-          <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDate"></span>
           <div class="clear"></div></div>
       </div>
 
@@ -597,8 +598,8 @@
           <label class="col-xs-12 col-md-8 control-label">Effective End Date</label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
             <input type="text" autocomplete="off" value="<fmt:formatDate value="${hcsaServiceDto.endDate}" pattern="dd/MM/yyyy"/>"  class="date_picker form-control form_datetime" name="EndDate" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_EndDate" name="iaisErrorMsg" class="error-msg"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_effectiveEndDate"></span>
           </div>
-          <span class="error-msg" name="iaisErrorMsg" id="error_effectiveEndDate"></span>
           <div class="clear"></div></div>
       </div>
 
@@ -663,7 +664,9 @@
         location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
 
     }
-
+    function displays() {
+      $('#cancel').modal('hide');
+    }
 
     function  checklists(){
         location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohChecklistConfiguration",request)%>';
@@ -699,7 +702,7 @@
     });
 
     function cancel() {
-        SOP.Crud.cfxSubmit("mainForm", "back","back","");
+        SOP.Crud.cfxSubmit("mainForm", "back","back",$('#serviceId').val());
     }
 
     function save() {

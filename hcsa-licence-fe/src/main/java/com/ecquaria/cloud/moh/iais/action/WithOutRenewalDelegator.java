@@ -936,9 +936,11 @@ public class WithOutRenewalDelegator {
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         List<AppSubmissionDto> appSubmissionDtos = renewDto.getAppSubmissionDtos();
         for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
-            List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
-            for(ApplicationSubDraftDto applicationSubDraftDto : entity){
-                applicationClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+            if(!StringUtil.isEmpty(appSubmissionDto.getLicenceId())){
+                List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
+                for(ApplicationSubDraftDto applicationSubDraftDto : entity){
+                    applicationClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                }
             }
         }
         String licenseeId = null;
