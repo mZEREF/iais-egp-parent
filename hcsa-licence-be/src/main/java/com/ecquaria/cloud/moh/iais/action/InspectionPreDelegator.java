@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AdhocChecklistService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -351,6 +352,9 @@ public class InspectionPreDelegator {
             ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, ApplicationConsts.SESSION_PARAM_APPLICATIONVIEWDTO);
             fillupChklistService.sendModifiedChecklistEmailToAOStage(applicationViewDto);
         }
+        String successInfo = MessageUtil.dateIntoMessage("ACKRFI001");
+        ParamUtil.setRequestAttr(bpc.request, "successPage", "requestForInfo");
+        ParamUtil.setRequestAttr(bpc.request, "successInfo", successInfo);
         inspectionPreTaskService.routingBack(taskDto, inspectionPreTaskDto, loginContext, premCheckItems);
         ParamUtil.setSessionAttr(bpc.request, "inspectionPreTaskDto", inspectionPreTaskDto);
         ParamUtil.setSessionAttr(bpc.request, AdhocChecklistConstants.INSPECTION_ADHOC_CHECKLIST_LIST_ATTR, adhocCheckListConifgDto);
