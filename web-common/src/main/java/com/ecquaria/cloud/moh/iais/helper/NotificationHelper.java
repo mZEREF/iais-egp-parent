@@ -19,7 +19,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.service.client.EicFeCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
@@ -28,6 +27,13 @@ import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,14 +44,6 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executor;
 
 /**
  * @author: yichen
@@ -93,9 +91,6 @@ public class NotificationHelper {
 
 	@Autowired
 	private IaisSystemClient iaisSystemClient;
-
-	@Autowired
-	private EicFeCommonClient eicFeCommonClient;
 
 	@Autowired
 	private LicenseeClient licenseeClient;
@@ -487,9 +482,10 @@ public class NotificationHelper {
 		Map<String, Object> params = IaisCommonUtils.genNewHashMap();
 		params.put("processUrl", processUrl);
 		params.put("taskStatus", taskStatus);
-
-		List<OrgUserDto> orgUserList = eicFeCommonClient.getCurrentTaskAssignedInspectorInfo(params, signature.date(), signature.authorization(),
-				signature2.date(), signature2.authorization()).getEntity();
+		String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+		List<OrgUserDto> orgUserList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/new-inbox-msg-no", HttpMethod.POST, params,
+				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+				signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
 
 		if (IaisCommonUtils.isEmpty(orgUserList)) {
 			return inspectionEmailTemplateDto;
