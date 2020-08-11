@@ -1,9 +1,13 @@
 package com.ecquaria.cloud.moh.iais.validation;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -17,7 +21,12 @@ import java.util.Map;
  * @Program: iais-egp
  * @Create: 2020-02-17 15:27
  **/
+@Component
 public class WithdrawnValidate implements CustomizeValidator {
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+
     @Override
     public Map<String, String> validate(HttpServletRequest httpServletRequest) {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -30,12 +39,17 @@ public class WithdrawnValidate implements CustomizeValidator {
             }
             String fileName = commonsMultipartFile.getOriginalFilename();
             if (!StringUtil.isEmpty(fileName)){
+                boolean result = false;
+                String fileTypeStr = systemParamConfig.getUploadFileType();
+                String[] fileArray = FileUtils.fileTypeToArray(fileTypeStr);
                 String[] fileSplit = fileName .split("\\.");
-                String fileType = fileSplit[fileSplit.length - 1];
-                if (!fileType.toLowerCase().equals("pdf")
-                        && !fileType.toLowerCase().equals("jpg")
-                        && !fileType.toLowerCase().equals("jpeg")
-                        && !fileType.toLowerCase().equals("png")) {
+                String fileType = fileSplit[fileSplit.length - 1].toLowerCase();
+                for (int i=0;i<fileArray.length;i++){
+                    if (fileType.equals(fileArray[i])){
+                        result = true;
+                    }
+                }
+                if (!result){
                     errorMap.put("withdrawalFile", "The file type is incorrect.");
                 }
             }
