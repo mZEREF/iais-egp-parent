@@ -5389,8 +5389,9 @@ public class NewApplicationDelegator {
 
             String premisesId = "";
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                premisesId = appSvcRelatedInfoDto.getLicPremisesId();
-                if(!StringUtil.isEmpty(premisesId)){
+                String premId = appSvcRelatedInfoDto.getLicPremisesId();
+                if(!StringUtil.isEmpty(premId) && !"-1".equals(premId)){
+                    premisesId = premId;
                     break;
                 }
             }
