@@ -37,7 +37,7 @@
 
                         <div class="form-group">
                             <iais:field value="Content" required="true"/>
-                            <div class="col-xs-8 col-sm-6 col-md-5">
+                            <div class="col-xs-8 col-sm-8 col-md-8">
                                 <textarea maxlength="4000" rows="30" name="messageContent" class="textarea" id="htmlEditroAreaWriteMessage" title="content">${edit.getMsgContent()}</textarea>
                                 <span id="error_content" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
