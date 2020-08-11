@@ -43,7 +43,7 @@
                                         <c:when test="${chooseFirst && status.first}">
                                            checked="checked"
                                         </c:when>
-                                        <c:when test="${!chooseFirst && appSelectSvc.alignLicPremId == lic.premisesId}">
+                                        <c:when test="${!chooseFirst && appSelectSvc.alignLicPremId == '-1'}">
                                            checked="checked"
                                         </c:when>
                                     </c:choose> >
