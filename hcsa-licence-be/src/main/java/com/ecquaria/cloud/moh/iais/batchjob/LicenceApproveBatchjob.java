@@ -302,12 +302,16 @@ public class LicenceApproveBatchjob {
             return result;
         }
         for (ApplicationDto applicationDto : applicationDtos) {
+            String applicationType = applicationDto.getApplicationType();
+            String status = applicationDto.getStatus();
             if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(applicationDto.getStatus())){
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN_GENERATED);
             }else{
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
             }
-
+            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
+                applicationDto.setStatus(status);
+            }
             result.add(applicationDto);
         }
         return result;
