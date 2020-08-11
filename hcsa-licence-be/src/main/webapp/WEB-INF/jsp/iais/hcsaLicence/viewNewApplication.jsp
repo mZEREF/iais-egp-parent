@@ -24,7 +24,7 @@
 
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST001')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">SERVICE SUBCATEGORIES</label>
+      <label style="font-size: 2.2rem">${stepNameMap['SVST001']}</label>
       <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
           <p><span class="preview-title col-xs-2 col-md-2" style="padding-right: 0%">Premises ${status.index+1}</span>
@@ -66,7 +66,7 @@
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST002')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">CLINICAL GOVERNANCE OFFICER</label>
+      <label style="font-size: 2.2rem">${stepNameMap['SVST002']}</label>
       <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
         <p><strong class="col-xs-6">Clinical Governance Officer ${status.index+1}</strong><span class="col-xs-4 col-md-4"></span>
@@ -278,7 +278,7 @@
 
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList,'SVST003')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">DISCIPLINE ALLOCATION</label>
+      <label style="font-size: 2.2rem">${stepNameMap['SVST003']}</label>
       <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">
@@ -288,7 +288,7 @@
                 <thead >
                 <tr >
                   <th  style="text-align: center">Premises</th>
-                  <th  style="text-align: center">Radiological Modalities</th>
+                  <th  style="text-align: center">${stepNameMap['SVST001']}</th>
                   <th  style="text-align: center">Clinical Governance Officers</th>
                 </tr>
                 </thead>
@@ -352,7 +352,7 @@
 
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST006')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">SERVICE PERSONNEL</label>
+      <label style="font-size: 2.2rem">${stepNameMap['SVST006']}</label>
       <div class="amend-preview-info">
         <div class="form-check-gp">
           <div class="row">
@@ -712,7 +712,7 @@
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST004')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">PRINCIPAL OFFICERS</label>
+      <label style="font-size: 2.2rem">${stepNameMap['SVST004']}</label>
       <div class="amend-preview-info">
         <div class="form-check-gp">
           <div class="row">
@@ -863,7 +863,7 @@
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST007')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">MEDALERT PERSON</label>
+      <label style="font-size: 2.2rem">${stepNameMap['SVST007']}</label>
       <div class="amend-preview-info">
         <div class="form-check-gp">
           <div class="row">
@@ -1024,7 +1024,7 @@
   </c:if>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST005')}">
     <div class="amended-service-info-gp">
-      <label style="font-size: 2.2rem">SERVICE-RELATED DOCUMENTS</label>
+      <label style="font-size: 2.2rem">${stepNameMap['SVST005']}</label>
       <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">

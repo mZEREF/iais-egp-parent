@@ -238,7 +238,7 @@ public class HcsaApplicationDelegator {
                         applicationViewDto.setAppEditSelectDto(appEditSelectDto);
                     }
                 }
-
+               
             } else{
                 AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
                 appEditSelectDto.setPremisesEdit(true);

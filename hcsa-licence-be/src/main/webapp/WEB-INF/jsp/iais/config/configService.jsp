@@ -488,14 +488,14 @@
 
               >Round Robin</option>
            </select>
-            <span name="iaisErrorMsg" class="error-msg" id="error_schemeType${sta.index*6+status.index}"></span>
+            <span name="iaisErrorMsg" class="error-msg" id="error_schemeType${routingStages.key}${status.index}"></span>
           </div>
 
         </td>
         <td>
           <div class="col-xs-12 col-md-12">
             <input style="margin: 8px 0px 8px" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
-            <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${status.index}"></span>
+            <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${routingStages.key}${status.index}"></span>
           </div>
 
         </td>
@@ -507,7 +507,7 @@
               <option <c:if test="${routingStage.workingGroupId==workingGroup.id}">selected="selected"</c:if>value="${workingGroup.id}">${workingGroup.groupName}</option>
             </c:forEach>
             </select>
-            <span name="iaisErrorMsg" class="error-msg" id="error_stageWorkGroupId${sta.index*6+status.index}"></span>
+            <span name="iaisErrorMsg" class="error-msg" id="error_stageWorkGroupId${routingStages.key}${status.index}"></span>
           </div>
         </td>
 
@@ -527,7 +527,10 @@
           <div class="col-xs-12 col-md-7">
             <label>Page Name</label>
           </div >
-          <div  class="col-xs-12 col-md-5"><input  type="text" maxlength="100" value="" ></div>
+          <div  class="col-xs-12 col-md-5">
+            <input  type="text" maxlength="100" value="" name="pageName">
+            <span name="iaisErrorMsg" class="error-msg" id="error_pageName"></span>
+          </div>
           <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed"></span>
           <div class="form-group"  id="add">
             <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">

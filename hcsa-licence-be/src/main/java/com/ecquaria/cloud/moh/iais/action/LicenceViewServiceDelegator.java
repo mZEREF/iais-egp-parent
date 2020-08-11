@@ -270,9 +270,12 @@ public class LicenceViewServiceDelegator {
         list.add(serviceId);
         List<HcsaServiceStepSchemeDto> entity = hcsaConfigClient.getServiceStepsByServiceIds(list).getEntity();
         List<String> stringList = IaisCommonUtils.genNewArrayList();
+        Map<String,String> stepNameMap=new HashMap<>(entity.size());
         for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : entity) {
             stringList.add(hcsaServiceStepSchemeDto.getStepCode());
+            stepNameMap.put(hcsaServiceStepSchemeDto.getStepCode(),hcsaServiceStepSchemeDto.getStepName());
         }
+        bpc.request.getSession().setAttribute("stepNameMap", stepNameMap);
         bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList", stringList);
 
         boolean canEidtPremise  = canEidtPremise(applicationViewDto.getApplicationGroupDto().getId());

@@ -21,13 +21,12 @@ public class HcsaConfigPageDto implements Serializable {
     private String stage;
     private String workingGroupId;
     private String workingGroupName;
-    private Integer manhours;
+    private String manhours;
     private List<WorkingGroupDto>  workingGroup;
     private String stageCode;
     private String workStageId;
     private String stageName;
     private String stageId;
     private String appTypeName;
-
     private String isMandatory;
 }

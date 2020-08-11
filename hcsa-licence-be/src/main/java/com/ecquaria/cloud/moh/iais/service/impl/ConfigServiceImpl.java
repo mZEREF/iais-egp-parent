@@ -386,14 +386,18 @@ public class ConfigServiceImpl implements ConfigService {
 
     private void doValidate(HcsaServiceConfigDto hcsaServiceConfigDto, Map<String, String> errorMap,HttpServletRequest request) throws Exception {
         HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = hcsaServiceConfigDto.getHcsaSvcStageWorkingGroupDtos();
-        for (int i = 0; i < hcsaSvcStageWorkingGroupDtos.size(); i++) {
-            String stageWorkGroupId = hcsaSvcStageWorkingGroupDtos.get(i).getStageWorkGroupId();
-            if (StringUtil.isEmpty(stageWorkGroupId)) {
-                errorMap.put("stageWorkGroupId" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Working Group","field"));
+        Map<String,List<HcsaSvcStageWorkingGroupDto>> hcsaSvcStageWorkingGroupDtoMap=( Map<String,List<HcsaSvcStageWorkingGroupDto>>)request.getAttribute("hcsaSvcStageWorkingGroupDtoMap");
+        hcsaSvcStageWorkingGroupDtoMap.forEach((k,v)->{
+            for(int i=0;i<v.size();i++){
+                String stageWorkGroupId = v.get(i).getStageWorkGroupId();
+                if (StringUtil.isEmpty(stageWorkGroupId)) {
+                    errorMap.put("stageWorkGroupId"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Working Group","field"));
+                }
             }
-        }
+        });
+
         List<HcsaSvcSubtypeOrSubsumedDto> hcsaSvcSubtypeOrSubsumedDtos = hcsaServiceConfigDto.getHcsaSvcSubtypeOrSubsumedDtos();
+        String pageName = request.getParameter("pageName");
         List<String> subtypeName=IaisCommonUtils.genNewArrayList();
         if(hcsaSvcSubtypeOrSubsumedDtos!=null&&!hcsaSvcSubtypeOrSubsumedDtos.isEmpty()){
             for(HcsaSvcSubtypeOrSubsumedDto hcsaSvcSubtypeOrSubsumedDto :hcsaSvcSubtypeOrSubsumedDtos){
@@ -429,7 +433,9 @@ public class ConfigServiceImpl implements ConfigService {
 
                 }
             }
-
+            if(StringUtil.isEmpty(pageName)){
+                errorMap.put("pageName",MessageUtil.replaceMessage("GENERAL_ERR0006","Page Name","field"));
+            }
         }
         List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaServiceConfigDto.getHcsaSvcDocConfigDtos();
         if(hcsaSvcDocConfigDtos.isEmpty()){
@@ -521,20 +527,26 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
         }
-        List<HcsaSvcSpeRoutingSchemeDto> hcsaSvcSpeRoutingSchemeDtos = hcsaServiceConfigDto.getHcsaSvcSpeRoutingSchemeDtos();
-        for (int i = 0; i < hcsaSvcSpeRoutingSchemeDtos.size(); i++) {
-            String schemeType = hcsaSvcSpeRoutingSchemeDtos.get(i).getSchemeType();
-            if (StringUtil.isEmpty(schemeType)) {
-                errorMap.put("schemeType" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
+        Map<String, List<HcsaSvcSpeRoutingSchemeDto>> hcsaSvcSpeRoutingSchemeDtoMap =( Map<String, List<HcsaSvcSpeRoutingSchemeDto>>)request.getAttribute("hcsaSvcSpeRoutingSchemeDtoMap");
+        hcsaSvcSpeRoutingSchemeDtoMap.forEach((k,v)->{
+            for(int i=0;i<v.size();i++){
+                String schemeType = v.get(i).getSchemeType();
+                if (StringUtil.isEmpty(schemeType)) {
+                    errorMap.put("schemeType"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
+                }
             }
-        }
-        List<HcsaSvcSpecificStageWorkloadDto> hcsaSvcSpecificStageWorkloadDtos = hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtos();
-        for(int i=0 ;i< hcsaSvcSpecificStageWorkloadDtos.size();i++){
-            Integer manhourCount = hcsaSvcSpecificStageWorkloadDtos.get(i).getManhourCount();
-            if(StringUtil.isEmpty(manhourCount)){
-               errorMap.put("manhourCount"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Service Workload Manhours","field"));
+        });
+        Map<String,List<HcsaSvcSpecificStageWorkloadDto>>map=( Map<String,List<HcsaSvcSpecificStageWorkloadDto>>) request.getAttribute("map");
+        map.forEach((k,v)->{
+            for(int i=0;i<v.size();i++){
+                String stringManhourCount = v.get(i).getStringManhourCount();
+                if(StringUtil.isEmpty(stringManhourCount)){
+                    errorMap.put("manhourCount"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Service Workload Manhours","field"));
+                }else if(!stringManhourCount.matches("^[0-9]+$")){
+                    errorMap.put("manhourCount"+k+i,"NEW_ERR0003");
+                }
             }
-        }
+        });
         String numberDocument = hcsaServiceConfigDto.getComDocSize();
         if(StringUtil.isEmpty(numberDocument)){
             errorMap.put("NumberDocument",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related Document to be uploaded","field"));
@@ -659,7 +671,7 @@ public class ConfigServiceImpl implements ConfigService {
                 if (type.equals(appType)) {
                     String id1 = hcsaSvcRoutingStageDto.getId();
                     if (id1.equals(stageId)) {
-                        hcsaConfigPageDto.setManhours(manhourCount);
+                        hcsaConfigPageDto.setManhours(manhourCount+"");
                         sendHcsaConfigPageDtoTypeName(hcsaConfigPageDto,type);
                         hcsaConfigPageDto.setWorkloadId(hcsaSvcStageWorkloadDtos.get(i).getId());
                         hcsaConfigPageDto.setRoutingSchemeId(hcsaSvcStageWorkloadDtos.get(i).getId());
@@ -760,7 +772,7 @@ public class ConfigServiceImpl implements ConfigService {
                     hcsaConfigPageDtos.get(i).setIsMandatory("false");
                     continue;
                 }
-                Integer manhours = hcsaConfigPageDtos1.get(i).getManhours();
+                String manhours = hcsaConfigPageDtos1.get(i).getManhours();
                 String workingGroupId = hcsaConfigPageDtos1.get(i).getWorkingGroupId();
                 String workloadId = hcsaConfigPageDtos1.get(i).getWorkloadId();
                 String routingSchemeId = hcsaConfigPageDtos1.get(i).getRoutingSchemeId();
@@ -875,7 +887,7 @@ public class ConfigServiceImpl implements ConfigService {
     private void setValueOfhcsaConfigPageDtos( List<HcsaConfigPageDto> hcsaConfigPageDtos1  ,List<HcsaConfigPageDto> hcsaConfigPageDtos){
         if (hcsaConfigPageDtos1 != null) {
             for (int i = 0; i < hcsaConfigPageDtos.size(); i++) {
-                Integer manhours = hcsaConfigPageDtos1.get(i).getManhours();
+                String manhours = hcsaConfigPageDtos1.get(i).getManhours();
                 String stage = hcsaConfigPageDtos1.get(i).getStage();
                 String workingGroupId = hcsaConfigPageDtos1.get(i).getWorkingGroupId();
                 String routingSchemeName = hcsaConfigPageDtos1.get(i).getRoutingSchemeName();
