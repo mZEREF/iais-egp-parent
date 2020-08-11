@@ -36,22 +36,6 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.egp.api.EGPHelper;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpEntity;
@@ -67,8 +51,21 @@ import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.servlet.webflow.HttpHandler;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
-import static org.eclipse.jdt.internal.compiler.util.Util.UTF_8;
 
 @Slf4j //NOSONAR
 public final class IaisEGPHelper extends EGPHelper {
@@ -712,5 +709,10 @@ public final class IaisEGPHelper extends EGPHelper {
             }
         }
         return order;
+    }
+
+    public static String getAddress(String blkNo, String streetName, String builderName, String floorNo, String unitNo, String postalCode){
+        return  MiscUtil.getAddress(blkNo, streetName, builderName,
+                floorNo, unitNo, postalCode);
     }
 }

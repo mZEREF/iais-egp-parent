@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDa
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -68,6 +70,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Autowired
     private NotificationHelper notificationHelper;
+
+    @Autowired
+    private AppSubmissionService appSubmissionService;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -227,13 +232,24 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 String randomStr = IaisEGPHelper.generateRandomString(26);
 
                 String appNo = applicationDto.getApplicationNo();
+
+                List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionService.getAppGrpPremisesDto(appNo);
+
+                if (!IaisCommonUtils.isEmpty(appGrpPremisesList)){
+                    AppGrpPremisesDto appGrpPremises = appGrpPremisesList.get(0);
+                    if (appGrpPremises != null){
+                        String address = IaisEGPHelper.getAddress(appGrpPremises.getBlkNo(), appGrpPremises.getStreetName(), appGrpPremises.getBuildingName(),
+                                appGrpPremises.getFloorNo(), appGrpPremises.getUnitNo(), appGrpPremises.getPostalCode());
+                        templateContent.put("hciName", appGrpPremises.getHciName());
+                        templateContent.put("hciCode", appGrpPremises.getHciCode());
+                        templateContent.put("hciAddress", address);
+                    }
+                }
+
                 String svcId = applicationDto.getServiceId();
                 String appType = applicationDto.getApplicationType();
                 Date appDate = applicationDto.getStartDate();
 
-                templateContent.put("hciName", "-");
-                templateContent.put("hciCode", "-");
-                templateContent.put("hciAddress", "-");
                 templateContent.put("applicationNo", appNo);
                 templateContent.put("applicationType", MasterCodeUtil.getCodeDesc(appType));
                 templateContent.put("applicationDate", Formatter.formatDateTime(appDate));
