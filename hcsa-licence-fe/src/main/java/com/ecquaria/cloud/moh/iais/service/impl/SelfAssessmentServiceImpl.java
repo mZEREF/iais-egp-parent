@@ -3,16 +3,13 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessment;
 import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
@@ -21,7 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -31,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.SelfAssessmentService;
@@ -38,19 +36,13 @@ import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -221,35 +213,43 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         return viewData;
     }
 
-   private void sendNotificationToInspector(List<String> correlationId) throws IOException, TemplateException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("corrData", correlationId);
-        jsonObject.put("status", Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ, TaskConsts.TASK_STATUS_COMPLETED));
-        jsonObject.put("roleId", RoleConsts.USER_ROLE_INSPECTIOR);
 
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        List<String> emailAddress = gatewayClient.getEmailByCorrelationIdAndStatusAndRole(jsonObject.toString(), signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+    /**
+     * EN-INS-004
+     * @param correlationIds
+     */
+    private void sendEmailToInspector(List<String> correlationIds){
+        String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_EMAIL_INSPECTOR;
+        for (String s : correlationIds){
+            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(s).getEntity();
+            if (applicationDto != null && ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(applicationDto.getStatus())){
+                Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
+                String randomStr = IaisEGPHelper.generateRandomString(26);
 
-        Map<String,Object> map = new HashMap(1);
-        map.put("APPLICANT_NAME", StringUtil.viewHtml("Yi chen"));
-        map.put("DETAILS", StringUtil.viewHtml("test"));
-        map.put("A_HREF", StringUtil.viewHtml(""));
-        map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
-        MsgTemplateDto entity = notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_SELF_DECL_ID);
-        String messageContent = entity.getMessageContent();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
+                String appNo = applicationDto.getApplicationNo();
+                String svcId = applicationDto.getServiceId();
+                String appType = applicationDto.getApplicationType();
+                Date appDate = applicationDto.getStartDate();
+
+                templateContent.put("hciName", "-");
+                templateContent.put("hciCode", "-");
+                templateContent.put("hciAddress", "-");
+                templateContent.put("applicationNo", appNo);
+                templateContent.put("applicationType", MasterCodeUtil.getCodeDesc(appType));
+                templateContent.put("applicationDate", Formatter.formatDateTime(appDate));
+                HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
+
+                if (serviceDto != null) {
+                    String svcName = serviceDto.getSvcName();
+                    templateContent.put("serviceName", svcName);
+                }
+
+                notificationHelper.sendNotificationWithJobTrack(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR, randomStr, NotificationHelper.RECEIPT_TYPE_APP , appNo,
+                        null, null,  NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK, false);
+            }
+        }
 
 
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject("Self-Assessment submission for Application Number");
-        emailDto.setSender(mailSender);
-        emailDto.setReceipts(emailAddress);
-
-        gatewayClient.feSendEmail(emailDto, signature.date(), signature.authorization(),
-               signature2.date(), signature2.authorization());
     }
 
 
@@ -279,8 +279,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
            try {
-               List<String> sendEmailAddress = selfAssessmentList.stream().map(SelfAssessment::getCorrId).collect(Collectors.toList());
-                sendNotificationToInspector(sendEmailAddress);
+               List<String> correlationIds = selfAssessmentList.stream().map(SelfAssessment::getCorrId).collect(Collectors.toList());
+               sendEmailToInspector(correlationIds);
             }catch (Exception e){
                 log.error(StringUtil.changeForLog("encounter failure when self decl send notification"), e);
             }

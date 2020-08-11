@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -18,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.service.client.EicFeCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
@@ -38,6 +40,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -83,11 +86,17 @@ public class NotificationHelper {
 	 * Get different Officer according to different types
 	 */
 	public static final String OFFICER_MODULE_TYPE_SCHEDULING                   = "Appt-Scheduling";
+	public static final String OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK                   = "inspector-current-task";
 
 	@Autowired
 	private Environment env;
+
 	@Autowired
 	private IaisSystemClient iaisSystemClient;
+
+	@Autowired
+	private EicFeCommonClient eicFeCommonClient;
+
 	@Autowired
 	private LicenseeClient licenseeClient;
 	@Value("${iais.email.sender}")
@@ -456,10 +465,58 @@ public class NotificationHelper {
 	}
 
 	private InspectionEmailTemplateDto getAssignedOfficer(List<String> roles, String appNo, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto) {
-		if(StringUtil.isEmpty(moduleType)) {
+		if (OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK.equals(moduleType)){
+			inspectionEmailTemplateDto = getCurrentTaskAssignedInspector(inspectionEmailTemplateDto, appNo);
+		}else {
 			//The default function
 			inspectionEmailTemplateDto = getDefaultAssignedOfficer(roles, inspectionEmailTemplateDto, appNo);
 		}
+		return inspectionEmailTemplateDto;
+	}
+
+	private InspectionEmailTemplateDto getCurrentTaskAssignedInspector(InspectionEmailTemplateDto inspectionEmailTemplateDto, String appNo) {
+		if (StringUtil.isEmpty(appNo) || inspectionEmailTemplateDto == null) {
+			return inspectionEmailTemplateDto;
+		}
+
+		String processUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
+		List<String> taskStatus = new ArrayList<>(Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ));
+		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+
+		Map<String, Object> params = IaisCommonUtils.genNewHashMap();
+		params.put("processUrl", processUrl);
+		params.put("taskStatus", taskStatus);
+
+		List<OrgUserDto> orgUserList = eicFeCommonClient.getCurrentTaskAssignedInspectorInfo(params, signature.date(), signature.authorization(),
+				signature2.date(), signature2.authorization()).getEntity();
+
+		if (IaisCommonUtils.isEmpty(orgUserList)) {
+			return inspectionEmailTemplateDto;
+		}
+
+		Map<String, String> officerNameMap = inspectionEmailTemplateDto.getOfficerNameMap();
+		Map<String, String> emailAddressMap = inspectionEmailTemplateDto.getEmailAddressMap();
+
+		if (officerNameMap == null) {
+			officerNameMap = IaisCommonUtils.genNewHashMap();
+		}
+
+		if (emailAddressMap == null) {
+			emailAddressMap = IaisCommonUtils.genNewHashMap();
+		}
+
+		int index = officerNameMap.size();
+		for (OrgUserDto u : orgUserList) {
+			if (!StringUtil.isEmpty(u.getEmail())) {
+				officerNameMap.put(String.valueOf(index), u.getDisplayName());
+				emailAddressMap.put(String.valueOf(index), u.getEmail());
+				index++;
+			}
+		}
+
+		inspectionEmailTemplateDto.setOfficerNameMap(officerNameMap);
+		inspectionEmailTemplateDto.setEmailAddressMap(emailAddressMap);
 		return inspectionEmailTemplateDto;
 	}
 
