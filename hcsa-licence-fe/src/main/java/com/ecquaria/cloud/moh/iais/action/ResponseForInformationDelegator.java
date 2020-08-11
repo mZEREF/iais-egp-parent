@@ -33,6 +33,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -206,7 +207,9 @@ public class ResponseForInformationDelegator {
                     if(doc.getDocSize()==null){
                         errMap.put("UploadFile"+doc.getId(),"The file cannot be empty.");
                     }else{
-                        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file);
+                        List<String> fileTypes = Arrays.asList(systemParamConfig.getUploadFileType().split(","));
+                        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,(systemParamConfig.getUploadFileLimit() * 1024 *1024L));
+                        //Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file);
                         Boolean fileSize = booleanMap.get("fileSize");
                         Boolean fileType = booleanMap.get("fileType");
                         //size
