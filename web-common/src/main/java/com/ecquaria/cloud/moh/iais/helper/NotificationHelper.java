@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -112,6 +113,9 @@ public class NotificationHelper {
 	@Value("${iais.hmac.second.secretKey}")
 	private String secSecretKey;
 
+	@Autowired
+	private SystemParamConfig systemParamConfig;
+
 	/*private static List<String> licenceEmailString =  Arrays.asList(
 		ApplicationConsts.PERSONNEL_PSN_TYPE_CGO,
 		ApplicationConsts.PERSONNEL_PSN_TYPE_PO,
@@ -202,8 +206,16 @@ public class NotificationHelper {
 				mesContext = emailTemplate;
 			}
 			if(RECEIPT_TYPE_SMS.equals(refIdType)) {
+				int smsFlag = systemParamConfig.getEgpSmsNotifications();
+				if(0 == smsFlag){
+					return;
+				}
 				sendSms(templateId, mesContext, refId, smsOnlyOfficerHour);
 			} else {
+				int emailFlag = systemParamConfig.getEgpEmailNotifications();
+				if(0 == emailFlag){
+					return;
+				}
 				EmailDto emailDto = new EmailDto();
 				//get assign officer address and other address
 				InspectionEmailTemplateDto inspectionEmailTemplateDto = new InspectionEmailTemplateDto();
