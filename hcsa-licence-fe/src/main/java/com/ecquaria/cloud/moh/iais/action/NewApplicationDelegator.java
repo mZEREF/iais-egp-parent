@@ -1117,7 +1117,7 @@ public class NewApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void preInvoke(BaseProcessClass bpc){
+    public void preInvoke(BaseProcessClass bpc) throws IOException {
         log.info(StringUtil.changeForLog("the do preInvoke start ...."));
         String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
@@ -1125,6 +1125,16 @@ public class NewApplicationDelegator {
             if("MohAppPremSelfDecl".equals(action)){
 //                ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID, appSubmissionDto.getAppGrpId());
 //                ParamUtil.setSessionAttr(bpc.request,NewApplicationConstant.SESSION_SELF_DECL_ACTION,"new");
+            }else if("DashBoard".equals(action)){
+                StringBuilder url = new StringBuilder();
+                url.append("https://").append(bpc.request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+            }else if("ChooseSvc".equals(action)){
+                StringBuilder url = new StringBuilder();
+                url.append("https://").append(bpc.request.getServerName()).append("/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
             }
             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,action);
         }

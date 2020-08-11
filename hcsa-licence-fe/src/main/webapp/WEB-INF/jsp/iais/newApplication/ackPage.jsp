@@ -141,15 +141,15 @@
                 <div class="col-xs-11 col-md-11">
                     <c:choose>
                     <c:when test="${requestInformationConfig == null && 'error' != AckStatus}">
-                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to <br>Dashboard</a>
-                        <a class="btn btn-secondary aMarginleft col-md-3 pull-right" href="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu">Apply for <br>Another Licence</a>
+                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard"  >Go to <br>Dashboard</a>
+                        <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="toChooseSvc" >Apply for <br>Another Licence</a>
                         <c:if test="${AppSubmissionDto.appType!='APTY005'}">
                             <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment">Submit <br>Self-Assessment</a>
                             <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate">Indicate preferred<br>Inspection Date</a>
                         </c:if>
                     </c:when>
                     <c:otherwise>
-                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" href="/main-web/eservice/INTERNET/MohInternetInbox" >Go to <br>Dashboard</a>
+                        <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard" >Go to <br>Dashboard</a>
                     </c:otherwise>
                     </c:choose>
                 </div>
@@ -174,6 +174,18 @@
 
     $('#doPrefInsDate').click(function () {
         $("[name='crud_action_type']").val('MohSubmitInspectionDate');
+        var mainForm = document.getElementById("mainForm");
+        mainForm.submit();
+    });
+
+    $('#toDashBoard').click(function () {
+        $("[name='crud_action_type']").val('DashBoard');
+        var mainForm = document.getElementById("mainForm");
+        mainForm.submit();
+    });
+
+    $('#toChooseSvc').click(function () {
+        $("[name='crud_action_type']").val('ChooseSvc');
         var mainForm = document.getElementById("mainForm");
         mainForm.submit();
     });
