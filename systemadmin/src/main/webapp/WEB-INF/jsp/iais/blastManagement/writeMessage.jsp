@@ -37,14 +37,14 @@
 
                         <div class="form-group">
                             <iais:field value="Content" required="true"/>
-                            <div class="col-xs-7 col-sm-7 col-md-7">
+                            <div class="col-xs-8 col-sm-6 col-md-5">
                                 <textarea maxlength="4000" rows="30" name="messageContent" class="textarea" id="htmlEditroAreaWriteMessage" title="content">${edit.getMsgContent()}</textarea>
                                 <span id="error_content" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="col-xs-4 col-md-4 control-label">Attachments</label>
+                            <iais:field value="Attachments" required="false"/>
                             <div class="document-upload-gp col-xs-8 col-md-8">
                                 <div class="document-upload-list">
                                     <div class="file-upload-gp">
