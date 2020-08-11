@@ -154,6 +154,7 @@
 
     $(".licToView").click(function () {
         var licId = $(this).closest("tr").find(".licId").html();
+        alert(licId);
         showWaiting();
         $("[name='action_id_value']").val(licId);
         submit('licToView');

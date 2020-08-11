@@ -703,7 +703,7 @@ public class MasterCodeDelegator {
         masterCodeDto.setCodeDescription(ParamUtil.getString(request, "codeCategoryDescription"));
         masterCodeDto.setStatus(ParamUtil.getString(request, "codeCategoryStatus"));
         masterCodeDto.setRemarks(ParamUtil.getString(request, "codeCategoryRemarks"));
-        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, "codeCategorySequence")) ? 100 : ParamUtil.getInt(request, "codeCategorySequence"));
+        masterCodeDto.setSequence(StringUtil.isEmpty(ParamUtil.getString(request, "codeCategorySequence")) ? null : ParamUtil.getInt(request, "codeCategorySequence"));
         masterCodeDto.setEffectiveFrom(Formatter.parseDate(ParamUtil.getString(request, "categoryEsd")));
         masterCodeDto.setEffectiveTo(Formatter.parseDate(ParamUtil.getString(request, "categoryEed")));
         masterCodeDto.setIsEditable(0);
