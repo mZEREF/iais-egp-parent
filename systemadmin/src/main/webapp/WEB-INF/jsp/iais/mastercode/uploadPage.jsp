@@ -50,6 +50,7 @@
         </div>
         <div class="row">
             <div class="col-xs-6 col-md-4" style="padding-top: 4%">
+                <div><a href="/system-admin-web/eservice/INTRANET/MohMasterCode"><em class="fa fa-angle-left"></em> Back</a></div>
             </div>
             <div class="col-xs-5 col-md-8 text-right">
                 <div class="nav">

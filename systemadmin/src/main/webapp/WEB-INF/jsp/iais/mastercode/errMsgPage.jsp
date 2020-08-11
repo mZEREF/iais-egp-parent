@@ -60,7 +60,7 @@
                 <div class="nav">
                     <br><br><br>
                     <div class="text-center-mobile">
-                        <div class="button-group"><a href="#" id="doBackUpload"><em class="fa fa-angle-left"></em> Back</a></div>
+                        <div><a href="#" id="doBackUpload"><em class="fa fa-angle-left"></em> Back</a></div>
                     </div>
                 </div>
             </div>
