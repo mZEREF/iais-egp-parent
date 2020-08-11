@@ -1,7 +1,7 @@
 <div class="main-content">
     <div class="container">
         <div class="row">
-            <form class="" method="post" id="msgContentForm" action=<%=process.runtime.continueURL()%>>
+            <form class="" method="post" id="msgContentForm" style="word-wrap:break-word;" action=<%=process.runtime.continueURL()%>>
                 <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
                 <input type="hidden" name="msg_view_type" value="">
                 <div class="tab-gp">

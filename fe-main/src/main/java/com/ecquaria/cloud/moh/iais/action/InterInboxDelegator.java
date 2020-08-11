@@ -228,7 +228,7 @@ public class InterInboxDelegator {
             if (inboxService.equals(InboxConst.SEARCH_ALL)){
                 inboxMsgParam.removeFilter("interService");
             }else{
-                inboxMsgParam.addFilter("interService",inboxService,true);
+                inboxMsgParam.addFilter("interService","%" + inboxService + "%",true);
             }
         }
         if(msgSubject != null){
@@ -938,11 +938,11 @@ public class InterInboxDelegator {
     private void prepareMsgSelectOption(HttpServletRequest request){
         List<SelectOption> inboxServiceSelectList = IaisCommonUtils.genNewArrayList();
         inboxServiceSelectList.add(new SelectOption("All", "All"));
-        inboxServiceSelectList.add(new SelectOption("34F99D15-820B-EA11-BE7D-000C29F371DC", "Blood Banking"));
-        inboxServiceSelectList.add(new SelectOption("7B450178-C70C-EA11-BE7D-000C29F371DC", "Tissue Banking"));
-        inboxServiceSelectList.add(new SelectOption("35F99D15-820B-EA11-BE7D-000C29F371DC", "Clinical Laboratory"));
-        inboxServiceSelectList.add(new SelectOption("A21ADD49-820B-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Assay)"));
-        inboxServiceSelectList.add(new SelectOption("F27DD5E2-C90C-EA11-BE7D-000C29F371DC", "Nuclear Medicine (Imaging)"));
+        inboxServiceSelectList.add(new SelectOption("BLB@", "Blood Banking"));
+        inboxServiceSelectList.add(new SelectOption("TCB@", "Tissue Banking"));
+        inboxServiceSelectList.add(new SelectOption("CLB@", "Clinical Laboratory"));
+        inboxServiceSelectList.add(new SelectOption("NMA@", "Nuclear Medicine (Assay)"));
+        inboxServiceSelectList.add(new SelectOption("NMI@", "Nuclear Medicine (Imaging)"));
         ParamUtil.setRequestAttr(request, "inboxServiceSelect", inboxServiceSelectList);
 
         List<SelectOption> inboxTypSelectList = IaisCommonUtils.genNewArrayList();
