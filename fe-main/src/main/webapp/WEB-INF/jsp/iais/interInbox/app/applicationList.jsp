@@ -290,6 +290,8 @@
         if('1' == '${isAppealApplicationShow}'){
             $('#draftAppealAppealByLicAppId').modal('show');
         }
+
+        $('#deleteDraftMessage').find('span').closest('div').css('width','70%');
     });
 
     function delDraftYesBtn() {
