@@ -1030,7 +1030,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String phoneNo = "";
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("applicant", licName);
-        map.put("applicationType", appType);
+        String appTypeShow = MasterCodeUtil.getCodeDesc(appType);
+        map.put("applicationType", appTypeShow);
         map.put("applicationNo", appNo);
         map.put("submitDate", strSubmitDt);
         map.put("hciName", hciName);

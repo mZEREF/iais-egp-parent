@@ -36,6 +36,7 @@ import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
@@ -795,7 +796,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             Map<String, Object> map = IaisCommonUtils.genNewHashMap();
             map.put("hciName", hciName);
             map.put("hciCode", hciCode);
-            map.put("appType", appType);
+            String appTypeShow = MasterCodeUtil.getCodeDesc(appType);
+            map.put("appType", appTypeShow);
             map.put("appDate", submitDtStr);
             map.put("serviceName", serviceName);
             map.put("licence_due_date", licenceDueDateStr);
