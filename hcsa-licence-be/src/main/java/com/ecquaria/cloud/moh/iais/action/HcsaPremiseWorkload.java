@@ -100,22 +100,24 @@ public class HcsaPremiseWorkload {
             String name = item.getStageId();
             String manhour = ParamUtil.getString(request, name);
             if(!StringUtil.isEmpty(manhour) && StringUtils.isNumeric(manhour)){
-                item.setManhourCount(Integer.parseInt(manhour));
+                item.setManhourCount(manhour);
                 hcsaPrimiseWorkloadDto.setId(item.getId());
                 hcsaPrimiseWorkloadDto.setStageDesc(item.getStageDesc());
-                hcsaPrimiseWorkloadDto.setManhourCount(Integer.parseInt(manhour));
+                hcsaPrimiseWorkloadDto.setManhourCount(manhour);
                 hcsaPrimiseWorkloadDto.setPremisesType(item.getPremisesType());
                 hcsaPrimiseWorkloadDto.setStageDesc(item.getStageDesc());
                 hcsaPrimiseWorkloadDto.setStageId(item.getStageId());
                 hcsaPrimiseWorkloadDto.setStatus(item.getStatus());
                 saveDtos.add(hcsaPrimiseWorkloadDto);
             }else{
-                item.setManhourCount(0);
                 if(StringUtil.isEmpty(manhour)){
+                    item.setManhourCount(null);
                     errMap.put(name,"The field is mandatory.");
                 }else if(!StringUtils.isNumeric(manhour)){
+                    item.setManhourCount(manhour);
                     errMap.put(name,"Please only key in numbers.");
                 }else{
+                    item.setManhourCount(manhour);
                     errMap.put(name,"The field is mandatory.");
                 }
             }
