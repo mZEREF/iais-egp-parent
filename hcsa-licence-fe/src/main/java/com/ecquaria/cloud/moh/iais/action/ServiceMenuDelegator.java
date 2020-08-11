@@ -746,6 +746,8 @@ public class ServiceMenuDelegator {
                 }
                 //init search param
                 searchParam = initSearParam();
+                appSelectSvcDto.setAlignLicenceNo("");
+                appSelectSvcDto.setAlignLicPremId("");
                 ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM,searchParam);
             }
         }
