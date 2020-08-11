@@ -148,6 +148,7 @@
             </div>
         </div>
         <input hidden id="editDistribution" name="editDistribution" value="">
+        <iais:confirm msg="The distribution list cannot be amended as it is still in used by other mass email or sms blast."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -158,6 +159,12 @@ function addList() {
 }
 function deleteList() {
     checkUse();
+}
+function cancel() {
+    $('#support').modal('hide');
+}
+function tagConfirmCallbacksupport() {
+    $('#support').modal('hide');
 }
 function checkUse() {
     var deleteDis=new Array();
@@ -177,22 +184,43 @@ function checkUse() {
         },
         success:function(data){
             if(data.res == 'true'){
-                alert('The distribution list cannot be deleted as it is still in used by other mass email or sms blast.')
+                $('#support').find("span").eq(1).html("The distribution list cannot be deleted as it is still in used by other mass email or sms blast.")
+                $('#support').modal('show');
             }else{
                 if ($("input:checkbox:checked").length > 0) {
                     if(confirm('Are you sure you want to delete this item?')){
                         SOP.Crud.cfxSubmit("mainForm", "delete")
                     }
                 } else {
-                    alert('Please select record for deletion.');
+                    $('#support').find("span").eq(1).html("Please select record for deletion.");
+                    $('#support').modal('show');
                 }
             }
         }
     });
 }
 function edit(id) {
-    $("#editDistribution").val(id);
-    SOP.Crud.cfxSubmit("mainForm","edit");
+    $.ajax({
+        data:{
+            editDistribution:id
+        },
+        type:"POST",
+        dataType: 'json',
+        url:'/system-admin-web/emailAjax/distributionEditCheck.do',
+        error:function(data){
+
+        },
+        success:function(data){
+            if(data.canEdit == 1){
+                $("#editDistribution").val(id);
+                SOP.Crud.cfxSubmit("mainForm","edit");
+            }else{
+                $('#support').find("span").eq(1).html("The distribution list cannot be amended as it is still in used by other mass email or sms blast.");
+                $('#support').modal('show');
+            }
+        }
+    });
+
 }
 function jumpToPagechangePage() {
     SOP.Crud.cfxSubmit("mainForm","search");

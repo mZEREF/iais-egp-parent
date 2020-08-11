@@ -43,6 +43,14 @@ public class BlastManagementListClientFallback implements BlastManagementListCli
     }
 
     @Override
+    public FeignResponseEntity<String> blastEditCheck(String id) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<BlastManagementDto> getBlastById(String id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

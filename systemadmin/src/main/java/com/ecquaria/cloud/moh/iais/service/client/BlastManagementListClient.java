@@ -35,6 +35,9 @@ public interface BlastManagementListClient {
     @DeleteMapping(value = "/iais-emails/blastList", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Void> deleteBlastList(@RequestBody List<String> list);
 
+    @GetMapping(value = "/iais-emails/blastEditCheck/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<String> blastEditCheck(@PathVariable("id") String id);
+
     @GetMapping(value = "/iais-emails/blastList/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<BlastManagementDto> getBlastById(@PathVariable("id") String id);
 

@@ -104,6 +104,16 @@ public class EmailAjaxController {
         result.put("distributionSelect",distributionSelect);
         return result;
     }
+    @RequestMapping(value = "distributionEditCheck.do", method = RequestMethod.POST)
+    public @ResponseBody
+    Map<String, String> distributionEditCheck(HttpServletRequest request, HttpServletResponse response) {
+        String id =  ParamUtil.getMaskedString(request, "editDistribution");
+        Map<String, String> result = new HashMap<>();
+        String editCheck = blastManagementListService.blastEditCheck(id);
+        result.put("canEdit",editCheck);
+        return result;
+    }
+
 
     @RequestMapping(value = "checkUse.do", method = RequestMethod.POST)
     public @ResponseBody

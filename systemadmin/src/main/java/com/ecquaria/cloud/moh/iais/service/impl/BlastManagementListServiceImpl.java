@@ -73,6 +73,11 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     public void deleteBlastList(List<String> list){
         blastManagementListClient.deleteBlastList(list);
     }
+
+    @Override
+    public String blastEditCheck(String disId){
+        return blastManagementListClient.blastEditCheck(disId).getEntity();
+    }
     @Override
     public BlastManagementDto getBlastById(String id){
         return blastManagementListClient.getBlastById(id).getEntity();

@@ -25,6 +25,7 @@ public interface BlastManagementListService {
     BlastManagementDto saveBlast(BlastManagementDto blastManagementDto);
     void setSchedule(BlastManagementDto blastManagementDto);
     void deleteBlastList(List<String> list);
+    String blastEditCheck(String disId);
     BlastManagementDto getBlastById(String id);
     BlastManagementDto getBlastByMsgId(String id);
     List<BlastManagementDto> getBlastBySendTime(String date);
