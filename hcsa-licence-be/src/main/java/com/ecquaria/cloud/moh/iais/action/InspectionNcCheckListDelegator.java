@@ -143,6 +143,7 @@ public class InspectionNcCheckListDelegator {
         ParamUtil.setSessionAttr(request,COMMONDTO,commonDto);
         List<InspectionFillCheckListDto> inspectionFillCheckListDtos = new ArrayList<>(2);
         if(commonDto != null){
+            commonDto.setCommonConfig(true);
             inspectionFillCheckListDtos.add(commonDto);
         }
         //  change service checklist data

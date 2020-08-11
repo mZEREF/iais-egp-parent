@@ -1789,7 +1789,7 @@ public class FillupChklistServiceImpl implements FillupChklistService {
             for(InspectionFillCheckListDto inspectionFillCheckListDto : inspectionFillCheckListDtos){
                 for(SelfAssessmentConfig selfAssessmentConfig : selfAssessmentConfigs){
                     if(selfAssessmentConfig != null){
-                        if(inspectionFillCheckListDto.getConfigId().equalsIgnoreCase(selfAssessmentConfig.getConfigId())){
+                        if(inspectionFillCheckListDto.isCommonConfig() == selfAssessmentConfig.isCommon()){
                             List<PremCheckItem> question =  selfAssessmentConfig.getQuestion();
                             if(!IaisCommonUtils.isEmpty(question)){
                                 List<PremCheckItem> ncQs = getAllSelfQs(question);

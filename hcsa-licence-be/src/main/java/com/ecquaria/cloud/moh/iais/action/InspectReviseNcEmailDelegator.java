@@ -129,6 +129,7 @@ public class InspectReviseNcEmailDelegator {
         List<InspectionFillCheckListDto> inspectionFillCheckListDtos = new ArrayList<>(2);
         if(commonList!=null && !commonList.isEmpty()){
             commonDto = commonList.get(0);
+            commonDto.setCommonConfig(true);
             inspectionFillCheckListDtos.add(commonDto);
         }
         InspectionFDtosDto serListDto =  fillupChklistService.getInspectionFDtosDto(appPremCorrId,taskDto,cDtoList);
