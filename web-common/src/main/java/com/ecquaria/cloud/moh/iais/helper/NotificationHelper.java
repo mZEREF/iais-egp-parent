@@ -483,7 +483,7 @@ public class NotificationHelper {
 		params.put("processUrl", processUrl);
 		params.put("taskStatus", taskStatus);
 		String gatewayUrl = env.getProperty("iais.inter.gateway.url");
-		List<OrgUserDto> orgUserList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/new-inbox-msg-no", HttpMethod.POST, params,
+		List<OrgUserDto> orgUserList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/inspector-by-task", HttpMethod.POST, params,
 				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 				signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
 
