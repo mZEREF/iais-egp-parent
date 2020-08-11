@@ -1,10 +1,12 @@
 <script>
     var premType = function () {
-        $('.premTypeRadio').click(function () {
+        $('.premTypeRadio').change(function () {
             var checkedType = $(this).val();
             var $premSelect = $(this).closest('div.premContent');
             var $premSelctDivEle = $(this).closest('div.premisesTypeDiv');
             if('ONSITE'==checkedType){
+                //reset indexNo for clear
+                $premSelect.find('.premisesIndexNo').val('');
                 $premSelect.find('.onSiteSelect').removeClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
                 $premSelect.find('.offSiteSelect').addClass('hidden');
@@ -16,6 +18,8 @@
                 var length =  $premSelect.find('.new-premise-form-on-site div.pubHolidayContent').length;
                 $premSelect.find('.phLength').val(length);
             }else if('CONVEYANCE' == checkedType){
+                //reset indexNo for clear
+                $premSelect.find('.premisesIndexNo').val('');
                 $premSelect.find('.conveyanceSelect').removeClass('hidden');
                 $premSelect.find('.onSiteSelect').addClass('hidden');
                 $premSelect.find('.offSiteSelect').addClass('hidden');
@@ -27,6 +31,8 @@
                 var length =  $premSelect.find('.new-premise-form-conv div.pubHolidayContent').length;
                 $premSelect.find('.phLength').val(length);
             }else if('OFFSITE' == checkedType){
+                //reset indexNo for clear
+                $premSelect.find('.premisesIndexNo').val('');
                 $premSelect.find('.onSiteSelect').addClass('hidden');
                 $premSelect.find('.conveyanceSelect').addClass('hidden');
                 $premSelect.find('.offSiteSelect').removeClass('hidden');
@@ -55,6 +61,7 @@
             $premContent.find('a.retrieveAddr').removeClass('hidden');
             $premContent.find('button.addPubHolDay').removeClass('hidden');
             $premContent.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
+            $premContent.find('.removePhBtn').removeClass('hidden');
             <!--regen ph form  -->
             var premDivName = "";
             if("onSiteSel" == thisId){
@@ -161,6 +168,7 @@
                             <!--hidden btn -->
                             $premContent.find('a.retrieveAddr').addClass('hidden');
                             $premContent.find('button.addPubHolDay').addClass('hidden');
+                            $premContent.find('.removePhBtn').addClass('hidden');
                             //
                             $premContent.find('input[name="chooseExistData"]').val('1');
                         }
@@ -635,7 +643,7 @@
     var reloadPage = function () {
         <!--for reload -->
         $('.premTypeValue').each(function (k,v) {
-            checkedType = $(this).val();
+            var checkedType = $(this).val();
             var $premCountEle = $(this).closest('div.premContent');
             if('ONSITE'==checkedType){
                 $premCountEle.find('.onSiteSelect').removeClass('hidden');
@@ -656,6 +664,9 @@
                     <!--hidden btn -->
                     $premCountEle.find('a.retrieveAddr').addClass('hidden');
                     $premCountEle.find('button.addPubHolDay').addClass('hidden');
+                    $premCountEle.find('div.other-lic-content .other-lic:checked').closest('div').find('span.check-circle').addClass('radio-disabled');;
+                    $premCountEle.find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
+                    $premCountEle.find('.removePhBtn').addClass('hidden');
                 }
             }else if('CONVEYANCE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').removeClass('hidden');
@@ -676,6 +687,7 @@
                     <!--hidden btn -->
                     $premCountEle.find('a.retrieveAddr').addClass('hidden');
                     $premCountEle.find('button.addPubHolDay').addClass('hidden');
+                    $premCountEle.find('.removePhBtn').addClass('hidden');
                 }
             }else if('OFFSITE' == checkedType){
                 $premCountEle.find('.conveyanceSelect').addClass('hidden');
@@ -696,6 +708,7 @@
                     <!--hidden btn -->
                     $premCountEle.find('a.retrieveAddr').addClass('hidden');
                     $premCountEle.find('button.addPubHolDay').addClass('hidden');
+                    $premCountEle.find('.removePhBtn').addClass('hidden');
                 }
 
             }

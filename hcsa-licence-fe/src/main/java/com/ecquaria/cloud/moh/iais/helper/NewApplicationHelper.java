@@ -1852,13 +1852,14 @@ public class NewApplicationHelper {
                 }
             }
             if(needSort){
-                sortAppSvcRelatDto(appSvcRelatedInfoDtos);
+                appSvcRelatedInfoDtos = sortAppSvcRelatDto(appSvcRelatedInfoDtos);
             }
         }
         return appSvcRelatedInfoDtos;
     }
 
-    public static void sortAppSvcRelatDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
+    public static List<AppSvcRelatedInfoDto> sortAppSvcRelatDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
+        List<AppSvcRelatedInfoDto> newAppSvcDto = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             List<AppSvcRelatedInfoDto> baseDtos = IaisCommonUtils.genNewArrayList();
             List<AppSvcRelatedInfoDto> specDtos = IaisCommonUtils.genNewArrayList();
@@ -1877,7 +1878,7 @@ public class NewApplicationHelper {
                     specDtos.add(appSvcRelatedInfoDto);
                 }
             }
-            List<AppSvcRelatedInfoDto> newAppSvcDto = IaisCommonUtils.genNewArrayList();
+
             if(!IaisCommonUtils.isEmpty(baseDtos)){
                 baseDtos.sort((h1,h2)->h1.getServiceName().compareTo(h2.getServiceName()));
                 newAppSvcDto.addAll(baseDtos);
@@ -1888,6 +1889,7 @@ public class NewApplicationHelper {
             }
             appSvcRelatedInfoDtos = newAppSvcDto;
         }
+        return newAppSvcDto;
     }
 
     public static String getPremisesHci(AppAlignLicQueryDto item){

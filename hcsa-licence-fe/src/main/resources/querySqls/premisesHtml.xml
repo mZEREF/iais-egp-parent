@@ -140,11 +140,11 @@
                 <div class=" col-xs-7 col-sm-4 col-md-6" style="margin-left:-2%;">
                   <input type="hidden" name="onSiteIsOtherLic" value=""/>
                   <div class="form-check col-sm-3">
-                    <input class="form-check-input other-lic"  type="radio" name="otherLicence(0)" value = "0" aria-invalid="false">
+                    <input class="form-check-input other-lic"  type="radio" name="otherLicence(0)" value = "1" aria-invalid="false">
                     <label class="form-check-label" ><span class="check-circle"></span>Yes</label>
                   </div>
                   <div class="form-check col-sm-3">
-                    <input class="form-check-input other-lic"  type="radio" name="otherLicence(0)" value = "1" aria-invalid="false">
+                    <input class="form-check-input other-lic"  type="radio" name="otherLicence(0)" value = "0" aria-invalid="false">
                     <label class="form-check-label" ><span class="check-circle"></span>No</label>
                   </div>
                 </div>

@@ -628,6 +628,43 @@ public class NewApplicationDelegator {
                 appEditSelectDto.setPremisesEdit(true);
                 appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             }
+            //65718
+            //remove
+            List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    //laboratoryDisciplinesDto
+                    List<AppSvcLaboratoryDisciplinesDto> laboratoryDisciplinesDtos = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+                    if(!IaisCommonUtils.isEmpty(laboratoryDisciplinesDtos)){
+                        List<AppSvcLaboratoryDisciplinesDto> newLaboratoryDisciplinesDtos = IaisCommonUtils.genNewArrayList();
+                        for(AppSvcLaboratoryDisciplinesDto laboratoryDisciplinesDto:laboratoryDisciplinesDtos){
+                            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
+                                if(laboratoryDisciplinesDto.getPremiseVal().equals(appGrpPremisesDto.getPremisesIndexNo())){
+                                    newLaboratoryDisciplinesDtos.add(laboratoryDisciplinesDto);
+                                    break;
+                                }
+                            }
+                        }
+                        appSvcRelatedInfoDto.setAppSvcLaboratoryDisciplinesDtoList(newLaboratoryDisciplinesDtos);
+                    }
+                    //disciplineAllocation
+                    List<AppSvcDisciplineAllocationDto> disciplineAllocationDtos = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+                    if(!IaisCommonUtils.isEmpty(disciplineAllocationDtos)){
+                        List<AppSvcDisciplineAllocationDto> newDisciplineAllocations = IaisCommonUtils.genNewArrayList();
+                        for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto:disciplineAllocationDtos){
+                            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
+                                if(appSvcDisciplineAllocationDto.getPremiseVal().equals(appGrpPremisesDto.getPremisesIndexNo())){
+                                    newDisciplineAllocations.add(appSvcDisciplineAllocationDto);
+                                    break;
+                                }
+                            }
+                        }
+                        appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(newDisciplineAllocations);
+                    }
+                }
+            }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
         String crud_action_value = ParamUtil.getString(bpc.request, "crud_action_value");
@@ -782,9 +819,9 @@ public class NewApplicationDelegator {
                         appGrpPrimaryDocDtoList.add(beforeDto);
                     }
                 } else{
-                    if(comm.getIsMandatory()){
-                        errorMap.put(name, "UC_CHKLMD001_ERR001");
-                    }
+//                    if(comm.getIsMandatory()){
+//                        errorMap.put(name, "UC_CHKLMD001_ERR001");
+//                    }
                 }
             }
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesList){
@@ -823,9 +860,9 @@ public class NewApplicationDelegator {
                             appGrpPrimaryDocDtoList.add(beforeDto);
                         }
                     } else{
-                        if(prem.getIsMandatory()) {
-                            errorMap.put(name, "UC_CHKLMD001_ERR001");
-                        }
+//                        if(prem.getIsMandatory()) {
+//                            errorMap.put(name, "UC_CHKLMD001_ERR001");
+//                        }
                     }
                 }
             }
@@ -898,8 +935,33 @@ public class NewApplicationDelegator {
             }
         }
 
-
-
+        List<HcsaSvcDocConfigDto> premHcasDocConfigs = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(request,PREMHCSASVCDOCCONFIGDTO);
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+        if(!IaisCommonUtils.isEmpty(premHcasDocConfigs) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                for(HcsaSvcDocConfigDto premHcasDocConfig:premHcasDocConfigs){
+                    String errName = "prem"+premHcasDocConfig.getId()+premIndexNo;
+                    Boolean isMandatory = premHcasDocConfig.getIsMandatory();
+                    if(isMandatory && IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList)){
+                        errorMap.put(errName, MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
+                    }else if(isMandatory && !IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList)){
+                        boolean isEmpty = false;
+                        for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
+                            String configId = premHcasDocConfig.getId();
+                            String docConfigId = appGrpPrimaryDocDto.getSvcComDocId();
+                            if(configId.equals(docConfigId)){
+                                isEmpty = true;
+                                break;
+                            }
+                        }
+                        if(!isEmpty){
+                            errorMap.put(errName, MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
+                        }
+                    }
+                }
+            }
+        }
 
     }
 

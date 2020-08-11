@@ -841,7 +841,7 @@ public class ServiceMenuDelegator {
 
 
             //sort
-            NewApplicationHelper.sortAppSvcRelatDto(appSvcRelatedInfoDtos);
+            appSvcRelatedInfoDtos = NewApplicationHelper.sortAppSvcRelatDto(appSvcRelatedInfoDtos);
             ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
             ParamUtil.setSessionAttr(bpc.request,RELOAD_BASE_SVC_SELECTED, (Serializable) baseReloadDtoMap);
         }
@@ -1205,7 +1205,8 @@ public class ServiceMenuDelegator {
                 appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
             }
             //add other service
-            appSvcRelatedInfoDtos = NewApplicationHelper.addOtherSvcInfo(appSvcRelatedInfoDtos,hcsaServiceDtos,true);
+            appSvcRelatedInfoDtos = NewApplicationHelper.addOtherSvcInfo(appSvcRelatedInfoDtos,hcsaServiceDtos,false);
+            appSvcRelatedInfoDtos = NewApplicationHelper.sortAppSvcRelatDto(appSvcRelatedInfoDtos);
             List<String> baseSvcIds = IaisCommonUtils.genNewArrayList();
             List<String> speSvcIds = IaisCommonUtils.genNewArrayList();
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){

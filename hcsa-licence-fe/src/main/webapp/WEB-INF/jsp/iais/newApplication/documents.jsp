@@ -113,15 +113,8 @@
                     </c:forEach>
                     <!--prem -->
                     <c:forEach var="prem" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="premStatus">
+                      <c:set value="${prem.premisesIndexNo}" var="premIndexNo"/>
                       <c:forEach var="premDoc" items="${premHcsaSvcDocConfigDto}">
-                        <c:choose>
-                          <c:when test="${prem.hciName != null && prem.hciName != ''}">
-                            <c:set value="${prem.hciName}" var="premIndexNo"/>
-                          </c:when>
-                          <c:when test="${prem.conveyanceVehicleNo != null && prem.conveyanceVehicleNo != ''}">
-                            <c:set value="${prem.conveyanceVehicleNo}" var="premIndexNo"/>
-                          </c:when>
-                        </c:choose>
                         <c:set var="premKey" value="prem${premDoc.id}${premIndexNo}" />
                         <c:set var="primaryDoc" value="${docMap.get(premKey)}"/>
                         <c:set var="premDelFlag" value="prem${premDoc.id}${premIndexNo}flag"/>
