@@ -40,6 +40,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -365,6 +366,7 @@ public class MasterCodeDelegator {
         }
         File toFile = FileUtils.multipartFileToFile(file);
         try{
+            List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
             List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
             boolean result = false;
             List<Map<String,List<String>>> errResult = IaisCommonUtils.genNewArrayList();
@@ -401,14 +403,36 @@ public class MasterCodeDelegator {
                     String errMsg = "Effective Start Date is a mandatory field.";
                     errItems.add(errMsg);
                     result = true;
+                }else{
+                    try{
+                        Formatter.parseDate(masterCodeToExcelDto.getEffectiveFrom());
+                    }catch (Exception e){
+                        String errMsg = "Effective Start Date is Illegal date format.";
+                        errItems.add(errMsg);
+                        result = true;
+                    }
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveTo())){
                     String errMsg = "Effective End Date is a mandatory field.";
                     errItems.add(errMsg);
                     result = true;
+                }else{
+                    try{
+                        Formatter.parseDate(masterCodeToExcelDto.getEffectiveTo());
+                    }catch (Exception e){
+                        String errMsg = "Effective End Date is Illegal date format.";
+                        errItems.add(errMsg);
+                        result = true;
+                    }
+                }
+                Date codeEffFrom = Formatter.parseDate(masterCodeToExcelDto.getEffectiveFrom());
+                Date codeEffTo = Formatter.parseDate(masterCodeToExcelDto.getEffectiveTo());
+                if (codeEffFrom.compareTo(codeEffTo) > 0) {
+                    String errMsg = "Effective Start Date cannot be later than Effective End Date.";
+                    errItems.add(errMsg);
+                    result = true;
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
-                    List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
                     List<String> codeValueList = IaisCommonUtils.genNewArrayList();
                     masterCodeToExcelDtos.forEach(h -> {
                         codeValueList.add(h.getCodeValue());
@@ -433,6 +457,23 @@ public class MasterCodeDelegator {
                         String errMsg = "The Status can only be Active/Deleted/Inactive";
                         errItems.add(errMsg);
                         result = true;
+                    }
+                }
+                if (!StringUtil.isEmpty(masterCodeToExcelDto.getVersion())){
+                    Optional<MasterCodeToExcelDto> cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue()) && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
+                    if (cartOptional.isPresent()) {
+                        MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
+                        String version = masterCodeToExcelDto1.getVersion();
+                        String uploadVersion = masterCodeToExcelDto.getVersion();
+                        double versionDou = Double.valueOf(version);
+                        int versionInt = (int) versionDou;
+                        if (!StringUtil.isEmpty(version)){
+                            if (versionInt > Integer.parseInt(uploadVersion)){
+                                String errMsg = "The version number cannot be less than or equal to current version.";
+                                errItems.add(errMsg);
+                                result = true;
+                            }
+                        }
                     }
                 }
                 if (errItems.size()>0){
