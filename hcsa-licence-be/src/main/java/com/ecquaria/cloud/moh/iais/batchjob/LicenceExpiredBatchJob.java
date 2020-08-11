@@ -1,15 +1,20 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.submission.client.App;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +49,10 @@ public class LicenceExpiredBatchJob {
 
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
-
+    @Autowired
+    InspEmailService inspEmailService;
+    @Autowired
+    private NotificationHelper notificationHelper;
     private final String LICENCEENDDATE = "52AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
     public void start(BaseProcessClass bpc) {
@@ -105,7 +113,18 @@ public class LicenceExpiredBatchJob {
             licenceDto.setEndDate(date);
             updateLicenceDtos.add(licenceDto);
             try {
-                cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, licId, licenseeId, licenceNo);
+                Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+                String applicantName=licenseeDto.getName();
+                emailMap.put("ApplicantName", applicantName);
+                emailMap.put("ServiceLicenceName", svcName);
+                emailMap.put("LicenceNumber", licenceNo);
+                emailMap.put("CessationDate", Formatter.formatDateTime(date, AppConsts.DEFAULT_DATE_FORMAT));
+                emailMap.put("email", "");
+                emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE, emailMap, licenceNo, licenceNo,
+                        NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                //cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, licId, licenseeId, licenceNo);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -138,7 +157,18 @@ public class LicenceExpiredBatchJob {
             String licenceNo = licenceDto.getLicenceNo();
             String licenseeId = licenceDto.getLicenseeId();
             try {
-                cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, licenceDtoId, licenseeId, licenceNo);
+                Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+                String applicantName=licenseeDto.getName();
+                emailMap.put("ApplicantName", applicantName);
+                emailMap.put("ServiceLicenceName", svcName);
+                emailMap.put("LicenceNumber", licenceNo);
+                emailMap.put("CessationDate", Formatter.formatDateTime(date, AppConsts.DEFAULT_DATE_FORMAT));
+                emailMap.put("email", "");
+                emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE, emailMap, licenceNo, licenceNo,
+                        NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                //cessationBeService.sendEmail(LICENCEENDDATE, date, svcName, licenceDtoId, licenseeId, licenceNo);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }

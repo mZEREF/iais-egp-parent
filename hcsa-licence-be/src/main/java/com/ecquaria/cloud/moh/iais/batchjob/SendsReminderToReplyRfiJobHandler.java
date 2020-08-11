@@ -4,9 +4,11 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.reqForInfo.RequestForInformationConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -18,7 +20,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplate
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicInspNcEmailService;
@@ -61,7 +66,10 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
     HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     EmailClient emailClient;
-
+    @Autowired
+    private NotificationHelper notificationHelper;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
     @Autowired
     private InboxMsgService inboxMsgService;
     @Autowired
@@ -106,6 +114,9 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
     }
 
     private void reminder(LicPremisesReqForInfoDto licPremisesReqForInfoDto) throws IOException, TemplateException {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_MONTH, 1);
         String templateId="BEFC2AF0-250C-EA11-BE78-000C29D29DB0";
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
         LicenceViewDto licenceViewDto=licInspNcEmailService.getLicenceDtoByLicPremCorrId(licPremisesReqForInfoDto.getLicPremId());
@@ -142,8 +153,20 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
             emailDto.setSender(mailSender);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(licPremisesReqForInfoDto.getLicPremId());
-            emailClient.sendNotification(emailDto).getEntity();
+            //emailClient.sendNotification(emailDto).getEntity();
 
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+            emailMap.put("ApplicantName", applicantName);
+            emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
+            emailMap.put("ApplicationNumber", licPremisesReqForInfoDto.getLicenceNo());
+            emailMap.put("ApplicationDate", new Date());
+            emailMap.put("email", "");
+            emailMap.put("TATtime", cal.getTime());
+            emailMap.put("systemLink", loginUrl);
+            emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+            notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER, emailMap, licPremisesReqForInfoDto.getLicenceNo(), licPremisesReqForInfoDto.getLicenceNo(),
+                    NotificationHelper.RECEIPT_TYPE_LICENCE_ID, licenseeId);
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
@@ -164,9 +187,6 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
         //inboxMsgService.saveInterMessage(interMessageDto);
 
         licPremisesReqForInfoDto.setReminder(licPremisesReqForInfoDto.getReminder()+1);
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.DAY_OF_MONTH, 1);
         licPremisesReqForInfoDto.setStatus(RequestForInformationConstants.RFI_RETRIGGER);
         licPremisesReqForInfoDto.setDueDateSubmission(cal.getTime());
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.updateLicPremisesReqForInfo(licPremisesReqForInfoDto);

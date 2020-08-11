@@ -1,16 +1,25 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
+import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
@@ -23,6 +32,7 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -45,7 +55,10 @@ public class CessationEffectiveDateBatchjob {
     private LicenceApproveBatchjob licenceApproveBatchjob;
     @Autowired
     private LicenceService licenceService;
-
+    @Autowired
+    InspEmailService inspEmailService;
+    @Autowired
+    private NotificationHelper notificationHelper;
     @Autowired
     private BeEicGatewayClient gatewayClient;
     @Value("${iais.hmac.keyId}")
@@ -216,7 +229,19 @@ public class CessationEffectiveDateBatchjob {
             String licenceNo = licenceDto.getLicenceNo();
             String id = licenceDto.getId();
             try {
-                cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
+                Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+                String applicantName=licenseeDto.getName();
+                emailMap.put("ApplicantName", applicantName);
+                emailMap.put("ApplicationType", "");
+                emailMap.put("ServiceLicenceName", svcName);
+                emailMap.put("ApplicationNumber", licenceNo);
+                emailMap.put("ApplicationDate", Formatter.formatDateTime(date, AppConsts.DEFAULT_DATE_FORMAT));
+                emailMap.put("email", "");
+                emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE, emailMap, licenceNo, licenceNo,
+                        NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                //cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
@@ -248,7 +273,19 @@ public class CessationEffectiveDateBatchjob {
         try {
             gatewayClient.updateFeLicDto(licenceDtos, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization());
-            cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
+            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+            LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
+            String applicantName=licenseeDto.getName();
+            emailMap.put("ApplicantName", applicantName);
+            emailMap.put("ApplicationType", "");
+            emailMap.put("ServiceLicenceName", svcName);
+            emailMap.put("ApplicationNumber", licenceNo);
+            emailMap.put("ApplicationDate", Formatter.formatDateTime(date, AppConsts.DEFAULT_DATE_FORMAT));
+            emailMap.put("email", "");
+            emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+            notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE, emailMap, licenceNo, licenceNo,
+                    NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+            //cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
