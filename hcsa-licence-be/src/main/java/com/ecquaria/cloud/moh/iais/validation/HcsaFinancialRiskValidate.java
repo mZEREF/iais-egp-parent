@@ -423,7 +423,7 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
 
     public boolean doUsualDateVad(Date effDate,Date endDate,String serviceCode,Map<String, String> errMap,boolean isIn,int inEdit,int prEdit,HcsaRiskFinanceMatrixDto fdto){
         boolean flag = true;
-        String mesStartMes = MessageUtil.replaceMessage("ERR0012","Effective Start Date","Effective Date");
+        String mesStartMes = MessageUtil.replaceMessage("RSM_ERR012","Effective Start Date","Effective Date");
         if (effDate.getTime() < System.currentTimeMillis()) {
             flag = false;
             if(isIn){

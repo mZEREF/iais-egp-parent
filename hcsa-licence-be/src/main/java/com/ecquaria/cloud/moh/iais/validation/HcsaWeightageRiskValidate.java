@@ -95,7 +95,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
         if (effDate.getTime() < System.currentTimeMillis()) {
             flag = false;
             if (inEdit == 1) {
-                errMap.put(serviceCode + "inEffDate", MessageUtil.replaceMessage("ERR0012","Effective Start Date","Effective Date"));
+                errMap.put(serviceCode + "inEffDate", MessageUtil.replaceMessage("RSM_ERR012","Effective Start Date","Effective Date"));
             }
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;

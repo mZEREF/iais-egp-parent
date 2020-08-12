@@ -402,7 +402,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
     }
 
     public boolean doUsualDateVad(Date effDate,Date endDate,String serviceCode,Map<String, String> errMap,boolean isIn,int inEdit,int prEdit,HcsaRiskLeadershipMatrixDto fdto){
-        String err0012 = MessageUtil.replaceMessage("ERR0012","Effective Start Date","Effective Date");
+        String err0012 = MessageUtil.replaceMessage("RSM_ERR012","Effective Start Date","Effective Date");
         boolean flag = true;
         if (effDate.getTime() < System.currentTimeMillis()) {
             flag = false;

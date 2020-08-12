@@ -154,31 +154,32 @@ public class HcsaInspectionValidate implements CustomizeValidator {
 
     public boolean doUsualDateVad(Date effDate,Date endDate,String serviceCode,Map<String, String> errMap,String level,int caEditNumFlag,int miEditNumFlag,int mjEditNumFlag,HcsaRiskInspectionMatrixDto fdto){
         boolean flag = true;
+        String RSM_ERR012Message = MessageUtil.replaceMessage("RSM_ERR012","Effective Start Date","Effective Date");
         if (effDate.getTime() < System.currentTimeMillis()) {
             flag = false;
             if("C".equals(level)){
                 if(caEditNumFlag == 1){
-                    errMap.put(serviceCode + "caEffDate", "ERR0012");
+                    errMap.put(serviceCode + "caEffDate", RSM_ERR012Message);
                 }
             }else if("I".equals(level)){
                 if(miEditNumFlag == 1){
-                    errMap.put(serviceCode + "miEffDate", "ERR0012");
+                    errMap.put(serviceCode + "miEffDate", RSM_ERR012Message);
                 }
             }else if(mjEditNumFlag == 1 && "A".equals(level)){
-                errMap.put(serviceCode + "mjEffDate", "ERR0012");
+                errMap.put(serviceCode + "mjEffDate",RSM_ERR012Message);
             }
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;
             if("C".equals(level)){
                 if(caEditNumFlag == 1){
-                    errMap.put(serviceCode + "caEndDate", "ERR0016");
+                    errMap.put(serviceCode + "caEndDate", "RSM_ERR017");
                 }
             }else if("I".equals(level)){
                 if(miEditNumFlag == 1){
-                    errMap.put(serviceCode + "miEndDate", "ERR0016");
+                    errMap.put(serviceCode + "miEndDate", "RSM_ERR017");
                 }
             }else if(mjEditNumFlag == 1&&"A".equals(level)){
-                errMap.put(serviceCode + "mjEndDate", "ERR0012");
+                errMap.put(serviceCode + "mjEndDate", "RSM_ERR017");
             }
         }
         return flag;
