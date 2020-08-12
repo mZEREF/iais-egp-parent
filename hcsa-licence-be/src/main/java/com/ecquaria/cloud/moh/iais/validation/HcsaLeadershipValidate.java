@@ -273,10 +273,10 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 inLeftModNum = Integer.valueOf(inLeftMod);
                 if(inLeftModNum -1 != inRightLowNum && !inLeftModNum.equals(inRightLowNum)){
                     if(isIn){
-                        errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0015");
+                        errMap.put(serviceCode + "inRightLowCaseCounth", "RSM_ERR015");
                         fdto.setAdRightLowCaseCountherr(true);
                     }else{
-                        errMap.put(serviceCode + "prRightLowCaseCounth", "ERR0015");
+                        errMap.put(serviceCode + "prRightLowCaseCounth", "RSM_ERR015");
                         fdto.setDpRightLowCaseCountherr(true);
                     }
                 }

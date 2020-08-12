@@ -363,16 +363,16 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 if( inLeftModNum != (inRightLowNum)  && inLeftModNum -1 != inRightLowNum ){
                     if("C".equals(level)){
                         if(caRightLowNumFlag){
-                            errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0015");
+                            errMap.put(serviceCode + "caRightLowCaseCounth", "RSM_ERR015");
                             fdto.setDoCaRightLowCountherr(true);
                         }
                     }else if("I".equals(level)){
                         if(miRightLowNumFlag){
-                            errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0015");
+                            errMap.put(serviceCode + "miRightLowCaseCounth", "RSM_ERR015");
                             fdto.setDoMiRightLowCountherr(true);
                         }
                     }else if(mjRightLowNumFlag&&"A".equals(level)){
-                        errMap.put(serviceCode + "mjRightLowCaseCounth", "ERR0015");
+                        errMap.put(serviceCode + "mjRightLowCaseCounth", "RSM_ERR015");
                         fdto.setDoMjRightLowCountherr(true);
                     }
                 }

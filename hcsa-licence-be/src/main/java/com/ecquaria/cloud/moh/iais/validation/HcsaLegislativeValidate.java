@@ -239,7 +239,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             if(!StringUtil.isEmpty(inLeftMod)&&inrightflag){
                 inLeftModNum = Integer.valueOf(inLeftMod);
                 if(inLeftModNum -1 != inRightLowNum && !inLeftModNum.equals(inRightLowNum)){
-                    errMap.put(serviceCode + "inRightLowCaseCounth", "ERR0015");
+                    errMap.put(serviceCode + "inRightLowCaseCounth", "RSM_ERR015");
                 }
             }
         } catch (Exception e) {
