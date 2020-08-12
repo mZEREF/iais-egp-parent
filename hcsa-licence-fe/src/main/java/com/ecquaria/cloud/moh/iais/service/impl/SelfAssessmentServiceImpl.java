@@ -227,7 +227,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_EMAIL_INSPECTOR;
         for (String s : correlationIds){
             ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(s).getEntity();
-            if (applicationDto != null && ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(applicationDto.getStatus())){
+            if (applicationDto != null){
                 Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
                 String randomStr = IaisEGPHelper.generateRandomString(26);
 
