@@ -174,10 +174,10 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
     }
     public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,boolean isIn,HcsaRiskLeadershipMatrixDto fdto){
         if(lm>rm&&isIn){
-            errMap.put(serviceCode+"inRightModCaseCounth","ERR0011");
+            errMap.put(serviceCode+"inRightModCaseCounth","RSM_ERR011");
             fdto.setAdRightModCaseCountherr(true);
         }else if(lm>rm&&!isIn){
-            errMap.put(serviceCode+"prRightModCaseCounth","ERR0011");
+            errMap.put(serviceCode+"prRightModCaseCounth","RSM_ERR011");
             fdto.setDpRightModCaseCountherr(true);
         }
     }

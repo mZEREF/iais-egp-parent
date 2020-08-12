@@ -455,15 +455,15 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     }
     public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,String level,HcsaRiskInspectionMatrixDto fdto){
         if(lm>rm&&"C".equals(level)){
-            errMap.put(serviceCode+"caRightModCaseCounth","ERR0011");
+            errMap.put(serviceCode+"caRightModCaseCounth","RSM_ERR011");
             fdto.setDoCaRightModCountherr(true);
             fdto.setDoCaLeftModCountherr(true);
         }else if(lm>rm&&"I".equals(level)){
-            errMap.put(serviceCode+"miRightModCaseCounth","ERR0011");
+            errMap.put(serviceCode+"miRightModCaseCounth","RSM_ERR011");
             fdto.setDoMiRightModCountherr(true);
             fdto.setDoMiLeftModCountherr(true);
         }else if(lm>rm&&"A".equals(level)){
-            errMap.put(serviceCode+"mjRightModCaseCounth","ERR0011");
+            errMap.put(serviceCode+"mjRightModCaseCounth","RSM_ERR011");
             fdto.setDoMjRightModCountherr(true);
             fdto.setDoMjLeftModCountherr(true);
         }

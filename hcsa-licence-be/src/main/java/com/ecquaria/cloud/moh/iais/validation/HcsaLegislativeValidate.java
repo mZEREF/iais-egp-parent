@@ -288,7 +288,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
     }
     public void numberOrderVad(Map<String, String> errMap,Integer lm,Integer rm,String serviceCode,HcsaRiskLegislativeMatrixDto fdto){
         if(lm>rm){
-            errMap.put(serviceCode+"inRightModCaseCounth","ERR0011");
+            errMap.put(serviceCode+"inRightModCaseCounth","RSM_ERR011");
             fdto.setDoLeftModCaseCountherr(true);
             fdto.setDoRightModCaseCountherr(true);
         }
