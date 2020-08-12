@@ -28,6 +28,7 @@
                                 <td class="sorting"><strong>Premises</strong></td>
                                 <td class="sorting"><strong>Service(s)</strong></td>
                                 <td class="sorting"><strong>Date and Time of Inspection</strong></td>
+                                <td class="sorting"><strong>Reason for Request </strong><strong style="color:#ff0000;">*</strong></td>
                             </tr>
                             <tbody>
                             <c:choose>
@@ -49,25 +50,19 @@
                                                 </c:forEach>
                                             </td>
                                             <td><fmt:formatDate value="${pool.inspStartDate}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}" /></td>
-                                        </tr>
-                                        <tr align="center">
-                                            <td>
-                                                <iais:field value="Reason for Request" mandatory="true"/>
+                                            <td style="float:left;">
+                                                <textarea  name="reason${pool.viewCorrId}" maxlength="500" rows="10" style=" font-weight:normal;"
+                                                          cols="50" ></textarea><br>
+                                                <span style="float:left;" id="error_reason${pool.appId}" name="iaisErrorMsg" class="error-msg"></span>
                                             </td>
-                                            <td>
-                                                <textarea name="reason${pool.viewCorrId}" maxlength="500" rows="8" style=" font-weight:normal;"
-                                                          cols="70" ></textarea>
-                                                <span style="float:right;"  id="error_reason${pool.appId}" name="iaisErrorMsg" class="error-msg"></span>
-                                            </td>
-                                            <td></td><td></td>
                                         </tr>
+
                                         <br>
                                     </c:forEach>
                                 </c:otherwise>
                             </c:choose>
                             </tbody>
                         </table>
-                        <span style="float:right;"  id="error_reason" name="iaisErrorMsg" class="error-msg"></span>
 
                         <iais:row>
                             <iais:action style="text-align:left;">

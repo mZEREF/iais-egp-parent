@@ -54,7 +54,7 @@
                                             <tr>
                                                 <td class="form-check" >
                                                     <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
-                                                           name="appIds" value="${pool.viewCorrId}" onclick="javascript:controlCease()" <c:if test="${pool.checked}">checked</c:if> >
+                                                           name="appIds" value="${pool.viewCorrId}" onclick="javascript:controlCease()"  >
                                                     <label class="form-check-label" for="licence${status.index + 1}"><span
                                                             class="check-square"></span>
                                                     </label>

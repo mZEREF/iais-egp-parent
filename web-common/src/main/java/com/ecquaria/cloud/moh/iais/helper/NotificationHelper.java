@@ -27,13 +27,6 @@ import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +37,14 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executor;
 
 /**
  * @author: yichen
@@ -246,6 +247,7 @@ public class NotificationHelper {
 				}
 				emailDto.setContent(mesContext);
 				if (StringUtil.isEmpty(subject)) {
+					msgTemplateDto.setTemplateName(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), templateContent));
 					emailDto.setSubject(msgTemplateDto.getTemplateName());
 				} else {
 					emailDto.setSubject(subject);
