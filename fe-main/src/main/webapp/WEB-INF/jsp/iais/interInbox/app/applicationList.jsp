@@ -155,6 +155,9 @@
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                         <option value="Appeal">Appeal</option>
+                                                        <c:if test="${app.selfAssmtFlag == 0}">
+                                                            <option value="Assessment">Assessment</option>
+                                                        </c:if>
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST008'}">
@@ -170,6 +173,9 @@
                                                     <option value="Withdraw">Withdraw</option>
                                                     <c:if test="${app.canRecall}">
                                                         <option value="Recall">Recall</option>
+                                                    </c:if>
+                                                    <c:if test="${app.selfAssmtFlag == 0}">
+                                                        <option value="Assessment">Assessment</option>
                                                     </c:if>
                                                 </select>
                                             </c:if>
@@ -189,12 +195,18 @@
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <option value="Withdraw">Withdraw</option>
+                                                    <c:if test="${app.selfAssmtFlag == 0}">
+                                                        <option value="Assessment">Assessment</option>
+                                                    </c:if>
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST060'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <option value="Continue">Continue</option>
+                                                    <c:if test="${app.selfAssmtFlag == 0}">
+                                                        <option value="Assessment">Assessment</option>
+                                                    </c:if>
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST045'}">

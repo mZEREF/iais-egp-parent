@@ -56,6 +56,7 @@
                 app.app_type,
                 app.status,
                 app.service_id,
+                app.self_assmt_flag,
                 app.created_dt,
                 app.version
             FROM APPLICATION AS app
@@ -63,7 +64,7 @@
             on app.APPLICATION_NO = app2.application_no and app.version = app2.version
             union
             select
-                A.ID,A.DRAFT_NO AS application_no,A.app_grp_id,A.licensee_id,A.app_type,'APST008' as status,NULL as service_id, A.CREATED_DT,1
+                A.ID,A.DRAFT_NO AS application_no,A.app_grp_id,A.licensee_id,A.app_type,'APST008' as status,NULL as service_id,null,A.CREATED_DT,1
             from
                 app_grp_submission_draft AS A
             where  A.status = 'CMSTAT001') AS B
