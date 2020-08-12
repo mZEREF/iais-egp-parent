@@ -16,6 +16,9 @@
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
 <%@include file="../common/dashboard.jsp"%>
+
+
+<br><br>
         <div class="main-content">
             <div class = "container">
                 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
@@ -28,8 +31,7 @@
                             <span id="hasSubmitted" name="hasSubmitted" class="error-msg"><c:out value="${hasSubmittedMsg}"></c:out></span>
                         </c:if>
 
-                        <div class="table-gp">
-                            <table class="table">
+                            <table class="table" border="1">
                                 <thead>
                                 <tr>
                                     <th>No</th>
@@ -59,34 +61,29 @@
                                                 </c:otherwise>
                                             </c:choose>
                                     </tr>
-                                    
+
 
 
 
                                 </c:forEach>
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="application-tab-footer">
-                            <iais:action style="text-align:left;">
+
+                        <iais:action >
+                            <p class="print">
                                 <c:choose>
                                     <c:when test="${selfDeclAction eq 'new'}">
-                                        <a  id="backLastPageId" ><em class="fa fa-angle-left"> </em> Back</a>
+                                        <a class="back" id="backLastPageId" style="text-decoration:none" ><em class="fa fa-angle-left"> </em> Back</a>
                                     </c:when>
                                     <c:otherwise>
-                                        <a  id="backLink"  href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initMsgView"><em class="fa fa-angle-left"> </em> Back</a>
+                                        <a  class="back" id="backLink" style="text-decoration:none" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initMsgView"><em class="fa fa-angle-left"> </em> Back</a>
                                     </c:otherwise>
                                 </c:choose>
-                            </iais:action>
+                                <a class="btn btn-primary next <c:if test="${fn:length(selfAssessmentQueryAttr) == 0 || hasSubmitted eq 'Y'}"> disabled</c:if>" id="submitAllDataButtonId" style="float:right" href="#">Submit</a>
 
-
-                            <td>
-                                <div class="text-right text-center-mobile">
-                                    <a class="btn btn-primary next <c:if test="${fn:length(selfAssessmentQueryAttr) == 0 || hasSubmitted eq 'Y'}"> disabled</c:if>" id="submitAllDataButtonId" href="#">Submit</a>
-                                </div>
-                            </td>
-                            <br>
-                        </div>
+                            </p>
+                        </iais:action>
+                            <br><br>
                     </div>
 
                 </form>
@@ -113,6 +110,3 @@
 
 
         </script>
-
-
-
