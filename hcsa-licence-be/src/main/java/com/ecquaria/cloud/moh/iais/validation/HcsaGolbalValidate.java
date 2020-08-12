@@ -106,7 +106,7 @@ public class HcsaGolbalValidate implements CustomizeValidator {
         boolean vadFlag = true;
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
-            errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
+            errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
         }else{
             try {
                 Formatter.parseDate(strEffDate);
@@ -117,7 +117,7 @@ public class HcsaGolbalValidate implements CustomizeValidator {
         }
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
-            errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
+            errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field"));
         }else{
             try {
                 Formatter.parseDate(strEndDate);
@@ -132,29 +132,29 @@ public class HcsaGolbalValidate implements CustomizeValidator {
     private void doComVad(GobalRiskTotalDto temp, Map<String, String> errMap) {
         String serviceCode = temp.getSvcCode();
         if(StringUtil.isEmpty(temp.getDoMaxLic())){
-            errMap.put(serviceCode+"maxl",MessageUtil.replaceMessage("ERR0009","Maximum Licence Tenure","The field"));
+            errMap.put(serviceCode+"maxl",MessageUtil.replaceMessage("GENERAL_ERR0006","Maximum Licence Tenure","field"));
         }else{
             numberVad(temp.getDoMaxLic(),errMap,serviceCode,"maxl");
         }
         if(StringUtil.isEmpty(temp.getDoLastInspection())){
-            errMap.put(serviceCode+"last",MessageUtil.replaceMessage("ERR0009","Last Inspection was more than","The field"));
+            errMap.put(serviceCode+"last",MessageUtil.replaceMessage("GENERAL_ERR0006","Last Inspection was more than","field"));
         }else{
             numberVad(temp.getDoLastInspection(),errMap,serviceCode,"last");
         }
         if(StringUtil.isEmpty(temp.getDoAutoRenew())){
-            errMap.put(serviceCode+"auto",MessageUtil.replaceMessage("ERR0009","Eligible for auto renewal","The field"));
+            errMap.put(serviceCode+"auto",MessageUtil.replaceMessage("GENERAL_ERR0006","Eligible for auto renewal","field"));
         }
         if(StringUtil.isEmpty(temp.getDonewInspectType())){
-            errMap.put(serviceCode+"newit",MessageUtil.replaceMessage("ERR0009","Type of Inspection Required for New Application","The field"));
+            errMap.put(serviceCode+"newit",MessageUtil.replaceMessage("GENERAL_ERR0006","Type of Inspection Required for New Application","field"));
         }
         if(StringUtil.isEmpty(temp.getDonewIsPreInspect())){
-            errMap.put(serviceCode+"newpp",MessageUtil.replaceMessage("ERR0009","Pre/Post Licensing Inspection for New Application","The field"));
+            errMap.put(serviceCode+"newpp",MessageUtil.replaceMessage("GENERAL_ERR0006","Pre/Post Licensing Inspection for New Application","field"));
         }
         if(StringUtil.isEmpty(temp.getDorenewInspectType())){
-            errMap.put(serviceCode+"renewit",MessageUtil.replaceMessage("ERR0009","Type of Inspection Required for Renewal","The field"));
+            errMap.put(serviceCode+"renewit",MessageUtil.replaceMessage("GENERAL_ERR0006","Type of Inspection Required for Renewal","field"));
         }
         if(StringUtil.isEmpty(temp.getDorenewIsPreInspect())){
-            errMap.put(serviceCode+"renewpp",MessageUtil.replaceMessage("ERR0009","Pre/Post Licensing Inspection for Renewal","The field"));
+            errMap.put(serviceCode+"renewpp",MessageUtil.replaceMessage("GENERAL_ERR0006","Pre/Post Licensing Inspection for Renewal","field"));
         }
     }
 

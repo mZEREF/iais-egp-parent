@@ -131,7 +131,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         boolean vadFlag = true;
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
-            errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
+            errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
         }else{
             try {
                 Formatter.parseDate(strEffDate);
@@ -142,7 +142,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         }
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
-            errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
+            errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field"));
         }else{
             try {
                 Formatter.parseDate(strEndDate);
@@ -157,7 +157,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
     public void therholdVad(Map<String, String> errMap,HcsaRiskLegislativeMatrixDto fdto){
         String serviceCode = fdto.getSvcCode();
         if(StringUtil.isEmpty(fdto.getDoThershold())){
-            errMap.put(serviceCode+"inThershold",MessageUtil.replaceMessage("ERR0009","Thershold","The field"));
+            errMap.put(serviceCode+"inThershold",MessageUtil.replaceMessage("GENERAL_ERR0006","Thershold","field"));
         }else{
             try {
                 Integer thold = Integer.valueOf(fdto.getDoThershold());
@@ -295,23 +295,23 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
     }
     public void mandatoryCaseCounthVad(Map<String, String> errMap,HcsaRiskLegislativeMatrixDto fdto){
         String serviceCode = fdto.getSvcCode();
-        String ERR0009MaxCase = MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field");
-        String ERR0009MinCase = MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field");
+        String GENERAL_ERR0006MaxCase = MessageUtil.replaceMessage("GENERAL_ERR0006",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"field");
+        String GENERAL_ERR0006MinCase = MessageUtil.replaceMessage("GENERAL_ERR0006",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"field");
         //in
         if(StringUtil.isEmpty(fdto.getDoLeftModCaseCounth())){
-            errMap.put(serviceCode+"inLeftModCaseCounth",ERR0009MinCase);
+            errMap.put(serviceCode+"inLeftModCaseCounth",GENERAL_ERR0006MinCase);
             fdto.setDoLeftModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getDoRightModCaseCounth())){
-            errMap.put(serviceCode+"inRightModCaseCounth",ERR0009MaxCase);
+            errMap.put(serviceCode+"inRightModCaseCounth",GENERAL_ERR0006MaxCase);
             fdto.setDoRightModCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getDoRightLowCaseCounth())){
-            errMap.put(serviceCode+"inRightLowCaseCounth",ERR0009MaxCase);
+            errMap.put(serviceCode+"inRightLowCaseCounth",GENERAL_ERR0006MaxCase);
             fdto.setDoRightLowCaseCountherr(true);
         }
         if(StringUtil.isEmpty(fdto.getDoLeftHighCaseCounth())){
-            errMap.put(serviceCode+"inLeftHighCaseCounth",ERR0009MinCase);
+            errMap.put(serviceCode+"inLeftHighCaseCounth",GENERAL_ERR0006MinCase);
             fdto.setDoLeftModCaseCountherr(true);
         }
     }

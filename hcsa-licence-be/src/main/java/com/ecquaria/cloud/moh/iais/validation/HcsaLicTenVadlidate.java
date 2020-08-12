@@ -179,7 +179,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
         //mandatory
         boolean numfalg = true;
             if(StringUtil.isEmpty(temp.getColumRight())){
-                errMap.put(svcCode+"righterr",MessageUtil.replaceMessage("ERR0009","Maximum Risk Score","The field"));
+                errMap.put(svcCode+"righterr",MessageUtil.replaceMessage("GENERAL_ERR0006","Maximum Risk Score","field"));
                 numfalg = false;
             }else{
                 if(!StringUtil.stringIsFewDecimal(temp.getColumRight(),2)){
@@ -189,11 +189,11 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
             }
 
             if(StringUtil.isEmpty(temp.getColumLeft())){
-                errMap.put(svcCode+"lefterr",MessageUtil.replaceMessage("ERR0009","Minimum Risk Score","The field"));
+                errMap.put(svcCode+"lefterr",MessageUtil.replaceMessage("GENERAL_ERR0006","Minimum Risk Score","field"));
                 numfalg = false;
             }else{
                 if(!StringUtil.stringIsFewDecimal(temp.getColumLeft(),2)){
-                    errMap.put(svcCode+"lefterr",MessageUtil.replaceMessage("ERR0013","Minimum Risk Score" ,"The field"));
+                    errMap.put(svcCode+"lefterr",MessageUtil.replaceMessage("ERR0013","Minimum Risk Score" ,"field"));
                     numfalg = false;
                 }
             }
@@ -216,7 +216,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
         Integer numMonth =0;
         try {
             if(StringUtil.isEmpty(temp.getYearNum())){
-                errMap.put(svcCode+"lterr",MessageUtil.replaceMessage("ERR0009","Licence Tenure Year(s)","The field"));
+                errMap.put(svcCode+"lterr",MessageUtil.replaceMessage("GENERAL_ERR0006","Licence Tenure Year(s)","field"));
                 flag = false;
             }
             else{
@@ -227,7 +227,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                     }
                   }
             if(StringUtil.isEmpty(temp.getMonthNum())){
-                errMap.put(svcCode+"timeerr",MessageUtil.replaceMessage("ERR0009","Licence Tenure Month(s)","The field"));
+                errMap.put(svcCode+"timeerr",MessageUtil.replaceMessage("GENERAL_ERR0006","Licence Tenure Month(s)","field"));
                 flag = false;
             }
             else {
@@ -261,7 +261,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
         boolean vadFlag = true;
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
-            errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field"));
+            errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
         }else{
             try {
                 Formatter.parseDate(strEffDate);
@@ -272,7 +272,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
         }
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
-            errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0009","Effective End Date","The field"));
+            errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field"));
         }else{
             try {
                 Formatter.parseDate(strEndDate);

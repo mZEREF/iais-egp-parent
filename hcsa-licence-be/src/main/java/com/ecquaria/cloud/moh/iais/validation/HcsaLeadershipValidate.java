@@ -67,9 +67,9 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
 
     public void therholdVad(Map<String, String> errMap,HcsaRiskLeadershipMatrixDto fdto){
         String serviceCode = fdto.getSvcCode();
-        String ERR0009Threshold = MessageUtil.replaceMessage("ERR0009","Threshold","The field");
+        String GENERAL_ERR0006Threshold = MessageUtil.replaceMessage("GENERAL_ERR0006","Threshold","field");
         if(StringUtil.isEmpty(fdto.getAdThershold())){
-            errMap.put(serviceCode+"inThershold",ERR0009Threshold);
+            errMap.put(serviceCode+"inThershold",GENERAL_ERR0006Threshold);
             fdto.setAdThersholderr(true);
         }else{
             try {
@@ -84,7 +84,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             }
         }
         if(StringUtil.isEmpty(fdto.getDpThershold())){
-            errMap.put(serviceCode+"prThershold",ERR0009Threshold);
+            errMap.put(serviceCode+"prThershold",GENERAL_ERR0006Threshold);
             fdto.setDpThersholderr(true);
         }else{
             try {
@@ -289,8 +289,8 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
 
     public void mandatoryCaseCounthVad(Map<String, String> errMap,HcsaRiskLeadershipMatrixDto fdto){
         String serviceCode = fdto.getSvcCode();
-        String minNCNoEmpty = MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"The field");
-        String maxNCNoEmpty = MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"The field");
+        String minNCNoEmpty = MessageUtil.replaceMessage("GENERAL_ERR0006",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES_NO_SPACE,"field");
+        String maxNCNoEmpty = MessageUtil.replaceMessage("GENERAL_ERR0006",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES_NO_SPACE,"field");
         //in
         if(StringUtil.isEmpty(fdto.getAdLeftModCaseCounth())){
             errMap.put(serviceCode+"inLeftModCaseCounth",minNCNoEmpty);
@@ -434,9 +434,9 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         return flag;
     }
     public boolean doDateFormatVad(Map<String, String> errMap,String strEffDate,String strEndDate,String serviceCode,boolean isIn,HcsaRiskLeadershipMatrixDto fdto){
-        String mesStartEmpty  = MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field");
+        String mesStartEmpty  = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field");
         String mesStartRepalce  = MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea");
-        String mesEndEmpty  = MessageUtil.replaceMessage("ERR0009","Effective End Date","The field");
+        String mesEndEmpty  = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field");
         String mesEndRepalce  = MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea");
         boolean vadFlag = true;
         if(StringUtil.isEmpty(strEffDate)){

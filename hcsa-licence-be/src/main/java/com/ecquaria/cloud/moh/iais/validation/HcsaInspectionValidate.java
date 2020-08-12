@@ -186,16 +186,16 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     }
     public boolean doDateFormatVad(Map<String, String> errMap,String strEffDate,String strEndDate,String serviceCode,String level,HcsaRiskInspectionMatrixDto fdto){
         boolean vadFlag = true;
-        String ERR0009Message = MessageUtil.replaceMessage("ERR0009","Effective Start Date","The field");
+        String GENERAL_ERR0006Message = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field");
         String ERR0017Message = MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea");
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
             if("C".equals(level)){
-                errMap.put(serviceCode+"caEffDate",ERR0009Message);
+                errMap.put(serviceCode+"caEffDate",GENERAL_ERR0006Message);
             }else if("I".equals(level)){
-                errMap.put(serviceCode+"miEffDate",ERR0009Message);
+                errMap.put(serviceCode+"miEffDate",GENERAL_ERR0006Message);
             }else if("A".equals(level)){
-                errMap.put(serviceCode+"mjEffDate",ERR0009Message);
+                errMap.put(serviceCode+"mjEffDate",GENERAL_ERR0006Message);
             }
         }else{
             try {
@@ -211,16 +211,16 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 vadFlag = false;
             }
         }
-        String ERR0009EMessage = MessageUtil.replaceMessage("ERR0009","Effective End Date","The field");
+        String GENERAL_ERR0006EMessage = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field");
         String ERR0017EMessage = MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea");
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
             if("C".equals(level)){
-                errMap.put(serviceCode+"caEndDate",ERR0009EMessage);
+                errMap.put(serviceCode+"caEndDate",GENERAL_ERR0006EMessage);
             }else if("I".equals(level)){
-                errMap.put(serviceCode+"miEndDate",ERR0009EMessage);
+                errMap.put(serviceCode+"miEndDate",GENERAL_ERR0006EMessage);
             }else if("A".equals(level)){
-                errMap.put(serviceCode+"mjEndDate",ERR0009EMessage);
+                errMap.put(serviceCode+"mjEndDate",GENERAL_ERR0006EMessage);
             }
         }else{
             try {
@@ -470,8 +470,8 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     }
     public void mandatoryCaseCounthVad(Map<String, String> errMap, HcsaRiskInspectionMatrixDto fdto){
         //ca
-        String ncMinNoMes = MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC_NO_SPACE,"The field");
-        String ncMaxNoMes =  MessageUtil.replaceMessage("ERR0009",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC_NO_SPACE,"The field");
+        String ncMinNoMes = MessageUtil.replaceMessage("GENERAL_ERR0006",HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC_NO_SPACE,"field");
+        String ncMaxNoMes =  MessageUtil.replaceMessage("GENERAL_ERR0006",HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC_NO_SPACE,"field");
         if(StringUtil.isEmpty(fdto.getDoCaLeftModCounth())){
             errMap.put(fdto.getSvcCode()+"caLeftModCaseCounth",ncMinNoMes);
             fdto.setDoCaLeftModCountherr(true);
