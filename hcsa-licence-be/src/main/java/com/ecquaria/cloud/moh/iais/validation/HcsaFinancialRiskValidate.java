@@ -409,11 +409,11 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
             Date basePrEffDate = Formatter.parseDate(fdto.getBasePrEffectiveStartDate());
           //  Date basePrEndDate = Formatter.parseDate(fdto.getBasePrEffectiveEndDate());
             if(inEffDate.getTime()<baseInEffDate.getTime()&&isIn){
-                errMap.put(serviceCode + "inEffDate", "Effective Date should later than Previous version");
+                errMap.put(serviceCode + "inEffDate", "RSM_ERR018");
                 fdto.setInEffectiveStartDateerr(true);
             }
             if(prEffDate.getTime()<basePrEffDate.getTime()&&!isIn){
-                errMap.put(serviceCode + "prEffDate", "Effective Date should later than Previous version");
+                errMap.put(serviceCode + "prEffDate", "RSM_ERR018");
                 fdto.setPrEffectiveStartDateerr(true);
             }
         }catch (Exception e){
