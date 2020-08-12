@@ -29,7 +29,7 @@ import java.util.Map;
  */
 @Slf4j
 public class InspectionCheckListValidation implements CustomizeValidator {
-    private static final String ERR0010 = "ERR0010";
+    private static final String ERR0010 = "GENERAL_ERR0006";
     @Override
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
@@ -80,7 +80,7 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                     if(StringUtil.isEmpty(licPremisesAuditDto.getLgrRemarks())){
                         errMap.put("frameworkRemarks","UC_CHKLMD001_ERR001");
                     }else if(licPremisesAuditDto.getIncludeRiskType().length() > 2000){
-                        errMap.put("frameworkRemarks","The field should not be more than 2000 characters.");
+                        errMap.put("frameworkRemarks",MessageUtil.replaceMessage("UC_INSP_ERR0002","2000","4000"));
                     }
                 }
             }
@@ -102,11 +102,11 @@ public class InspectionCheckListValidation implements CustomizeValidator {
                 boolean isError = true;
                 for(AdhocNcCheckItemDto temp:itemDtoList){
                     if(StringUtil.isEmpty(temp.getAdAnswer())){
-                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","The field"));
+                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
                         if(isError)
                             isError = false;
                     } else if(!"Yes".equalsIgnoreCase(temp.getAdAnswer()) && StringUtil.isEmpty(temp.getRemark())){
-                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Remark","The field"));
+                        errMap.put(temp.getId()+"adhoc",MessageUtil.replaceMessage(ERR0010,"Remark","field"));
                         if(isError)
                             isError = false;
                     }
@@ -141,11 +141,11 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             if(cqDtoList!=null && !cqDtoList.isEmpty()){
                 for(InspectionCheckQuestionDto temp:cqDtoList){
                     if(StringUtil.isEmpty(temp.getChkanswer())){
-                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","The field"));
+                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
                         if(isError)
                             isError = false;
                     }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
-                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Remark","The field"));
+                        errMap.put(temp.getSectionNameShow()+temp.getItemId()+"com",MessageUtil.replaceMessage(ERR0010,"Remark","field"));
                         if(isError)
                             isError = false;
                     }
@@ -162,11 +162,11 @@ public class InspectionCheckListValidation implements CustomizeValidator {
             boolean isError = true;
             for(InspectionCheckQuestionDto temp:cqDtoList){
                 if(StringUtil.isEmpty(temp.getChkanswer())){
-                    errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Yes No N/A","The field"));
+                    errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Yes No N/A","field"));
                     if(isError)
                         isError = false;
                 }else if(!"Yes".equalsIgnoreCase(temp.getChkanswer()) && StringUtil.isEmpty(temp.getRemark())){
-                    errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Remark","The field"));
+                    errMap.put(fDto.getSubName()+temp.getSectionNameShow()+temp.getItemId(),MessageUtil.replaceMessage(ERR0010,"Remark","field"));
                     if(isError)
                         isError = false;
                 }

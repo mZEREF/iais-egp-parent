@@ -12,7 +12,7 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="bg-title">
-                        <h2>The application has been submitted.</h2>
+                        <h2> <iais:message key="LOLEV_ACK034" escape="true"/></h2>
                     </div>
                 </div>
                 <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>
