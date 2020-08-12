@@ -133,11 +133,11 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
     }
     private void doWeightageVad(HcsaRiskWeightageDto temp, Map<String, String> errMap) {
         boolean isnullFlag = notEmptyVad(temp,errMap);
-        boolean lasInpNumFlag = formatVad(temp,errMap,temp.getDoLastInp(),"lastInp",MessageUtil.getMessageDesc("ERR0013") + "for Last Inspection");
-        boolean lasSecInpNumFlag = formatVad(temp,errMap,temp.getDoSecLastInp(),"secLastInp",MessageUtil.getMessageDesc("ERR0013") + "for Second Last Inspection");
-        boolean lasFinNumFlag = formatVad(temp,errMap,temp.getDoFinancial(),"fin",MessageUtil.getMessageDesc("ERR0013") + "for Financial Scheme Audit");
-        boolean lasLeaNumFlag = formatVad(temp,errMap,temp.getDoLeadship(),"lea",MessageUtil.getMessageDesc("ERR0013") + "for Leadership And Governance");
-        boolean lasLegNumFlag = formatVad(temp,errMap,temp.getDoLegislative(),"leg",MessageUtil.getMessageDesc("ERR0013") + "for Legislative Breaches");
+        boolean lasInpNumFlag = formatVad(temp,errMap,temp.getDoLastInp(),"lastInp",MessageUtil.getMessageDesc("GENERAL_ERR0027") + "for Last Inspection");
+        boolean lasSecInpNumFlag = formatVad(temp,errMap,temp.getDoSecLastInp(),"secLastInp",MessageUtil.getMessageDesc("GENERAL_ERR0027") + "for Second Last Inspection");
+        boolean lasFinNumFlag = formatVad(temp,errMap,temp.getDoFinancial(),"fin",MessageUtil.getMessageDesc("GENERAL_ERR0027") + "for Financial Scheme Audit");
+        boolean lasLeaNumFlag = formatVad(temp,errMap,temp.getDoLeadship(),"lea",MessageUtil.getMessageDesc("GENERAL_ERR0027") + "for Leadership And Governance");
+        boolean lasLegNumFlag = formatVad(temp,errMap,temp.getDoLegislative(),"leg",MessageUtil.getMessageDesc("GENERAL_ERR0027") + "for Legislative Breaches");
         if(isnullFlag&&lasInpNumFlag&&lasSecInpNumFlag&&lasFinNumFlag&&lasLeaNumFlag&&lasLegNumFlag){
             calwWeightageVad(temp,errMap);
         }

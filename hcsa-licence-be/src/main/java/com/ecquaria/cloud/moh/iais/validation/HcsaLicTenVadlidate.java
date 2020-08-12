@@ -183,7 +183,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 numfalg = false;
             }else{
                 if(!StringUtil.stringIsFewDecimal(temp.getColumRight(),2)){
-                    errMap.put(svcCode+"righterr",MessageUtil.getMessageDesc("ERR0013") + "for Maximum Risk Score");
+                    errMap.put(svcCode+"righterr",MessageUtil.getMessageDesc("GENERAL_ERR0027") + "for Maximum Risk Score");
                     numfalg = false;
                 }
             }
@@ -193,7 +193,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 numfalg = false;
             }else{
                 if(!StringUtil.stringIsFewDecimal(temp.getColumLeft(),2)){
-                    errMap.put(svcCode+"lefterr",MessageUtil.replaceMessage("ERR0013","Minimum Risk Score" ,"field"));
+                    errMap.put(svcCode+"lefterr",MessageUtil.replaceMessage("GENERAL_ERR0027","Minimum Risk Score" ,"field"));
                     numfalg = false;
                 }
             }
@@ -241,7 +241,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                 temp.setLicenceTenure(String.valueOf(numyear*12+numMonth));
             }
         }catch (Exception e){
-            errMap.put(svcCode+"lterr","ERR0013");
+            errMap.put(svcCode+"lterr","GENERAL_ERR0027");
             flag = false;
             log.error(e.getMessage(), e);
         }

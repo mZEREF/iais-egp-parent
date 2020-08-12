@@ -162,10 +162,10 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             try {
                 Integer thold = Integer.valueOf(fdto.getDoThershold());
                 if(thold<0 || thold>999){
-                    errMap.put(serviceCode+"inThershold","ERR0013");
+                    errMap.put(serviceCode+"inThershold","GENERAL_ERR0027");
                 }
             }catch (Exception e){
-                errMap.put(serviceCode+"inThershold","ERR0013");
+                errMap.put(serviceCode+"inThershold","GENERAL_ERR0027");
             }
         }
     }
@@ -182,7 +182,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
 
     }
     public void inLeftHighVad(Map<String, String> errMap,String inLeftHigh,String inRightMod, String serviceCode,HcsaRiskLegislativeMatrixDto fdto){
-        String ERR0013Min = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
+        String GENERAL_ERR0027Min = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
         Integer inLeftHighNum = 0;
         boolean inLeftHighNumFlag = true;
         Integer inRightModNum = 0;
@@ -191,13 +191,13 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 inLeftHighNum = Integer.valueOf(inLeftHigh);
                 if (inLeftHighNum > 999 || inLeftHighNum < 0) {
                     inLeftHighNumFlag = false;
-                    errMap.put(serviceCode + "inLeftHighCaseCounth", ERR0013Min);
+                    errMap.put(serviceCode + "inLeftHighCaseCounth", GENERAL_ERR0027Min);
                     fdto.setDoLeftHighCaseCountherr(true);
                 }
             }
         } catch (Exception e) {
             inLeftHighNumFlag = false;
-            errMap.put(serviceCode + "inLeftHighCaseCounth", ERR0013Min);
+            errMap.put(serviceCode + "inLeftHighCaseCounth", GENERAL_ERR0027Min);
             fdto.setDoLeftHighCaseCountherr(true);
             log.error(e.getMessage(), e);
         }
@@ -215,7 +215,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
 
     }
     public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode,HcsaRiskLegislativeMatrixDto fdto){
-        String ERR0013Max = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
+        String GENERAL_ERR0027Max = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
         Integer inRightLowNum = 0;
         boolean inrightflag = true;
         Integer inLeftModNum = 0;
@@ -224,14 +224,14 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 inRightLowNum = Integer.valueOf(inRightLow);
                 if (inRightLowNum > 999 || inRightLowNum < 0) {
                     inrightflag = false;
-                    errMap.put(serviceCode + "inRightLowCaseCounth", ERR0013Max);
+                    errMap.put(serviceCode + "inRightLowCaseCounth", GENERAL_ERR0027Max);
                     fdto.setDoRightModCaseCountherr(true);
                 }
             }
         } catch (Exception e) {
             // TODO: handle exception
                 inrightflag = false;
-                errMap.put(serviceCode + "inRightLowCaseCounth", ERR0013Max);
+                errMap.put(serviceCode + "inRightLowCaseCounth", GENERAL_ERR0027Max);
                 fdto.setDoRightLowCaseCountherr(true);
             log.error(e.getMessage(), e);
         }
@@ -249,8 +249,8 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
     }
 
     public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,HcsaRiskLegislativeMatrixDto fdto){
-        String ERR0013Max = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
-        String ERR0013Min = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
+        String GENERAL_ERR0027Max = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
+        String GENERAL_ERR0027Min = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
         Integer inLeftModNum = 0;
         Integer inRightModNum = 0;
         int numberFlag = 0;
@@ -258,12 +258,12 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             try {
                 inLeftModNum = Integer.valueOf(inLeftMod);
                 if(inLeftModNum<= 0||inLeftModNum>999){
-                        errMap.put(serviceCode+"inLeftModCaseCounth",ERR0013Min);
+                        errMap.put(serviceCode+"inLeftModCaseCounth",GENERAL_ERR0027Min);
                         fdto.setDoLeftModCaseCountherr(true);
                 }
                 numberFlag++;
             }catch (Exception e){
-                    errMap.put(serviceCode+"inLeftModCaseCounth",ERR0013Min);
+                    errMap.put(serviceCode+"inLeftModCaseCounth",GENERAL_ERR0027Min);
                     fdto.setDoLeftModCaseCountherr(true);
                 log.error(e.getMessage(), e);
             }
@@ -272,12 +272,12 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             try {
                 inRightModNum = Integer.valueOf(inRightMod);
                 if(inRightModNum<=0 || inRightModNum >999){
-                    errMap.put(serviceCode+"inRightModCaseCounth",ERR0013Max);
+                    errMap.put(serviceCode+"inRightModCaseCounth",GENERAL_ERR0027Max);
                     fdto.setDoRightModCaseCountherr(true);
                 }
                 numberFlag++;
             }catch (Exception e){
-                errMap.put(serviceCode+"inRightModCaseCounth",ERR0013Max);
+                errMap.put(serviceCode+"inRightModCaseCounth",GENERAL_ERR0027Max);
                 fdto.setDoRightModCaseCountherr(true);
                 log.error(e.getMessage(), e);
             }

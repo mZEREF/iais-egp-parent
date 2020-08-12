@@ -254,7 +254,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         inLeftHighVad(errMap,fdto.getDoMjLeftHighCounth(),fdto.getDoMjRightModCounth(),fdto.getSvcCode(),"A",fdto);
     }
     public void inLeftHighVad(Map<String, String> errMap,String inLeftHigh,String inRightMod, String serviceCode,String level,HcsaRiskInspectionMatrixDto fdto){
-        String maxMesMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC;
+        String maxMesMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC;
         Integer inLeftHighNum = 0;
         boolean caLeftHighNumFlag = true;
         boolean miLeftHighNumFlag = true;
@@ -316,7 +316,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
         }
     }
     public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode,String level,HcsaRiskInspectionMatrixDto fdto){
-        String maxMesMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC;
+        String maxMesMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC;
         Integer inRightLowNum = 0;
         boolean caRightLowNumFlag = true;
         boolean miRightLowNumFlag = true;
@@ -384,8 +384,8 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     }
 
     public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,String level,HcsaRiskInspectionMatrixDto fdto){
-        String maxMesMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC;
-        String minMesMes =  MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC;
+        String maxMesMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC;
+        String minMesMes =  MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC;
         Integer inLeftModNum = 0;
         Integer inRightModNum = 0;
         int numberFlag = 0;

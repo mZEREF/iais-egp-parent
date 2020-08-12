@@ -75,11 +75,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             try {
                 Integer thold = Integer.valueOf(fdto.getAdThershold());
                 if(thold<0 || thold>999){
-                    errMap.put(serviceCode+"inThershold","ERR0013");
+                    errMap.put(serviceCode+"inThershold","GENERAL_ERR0027");
                     fdto.setAdThersholderr(true);
                 }
             }catch (Exception e){
-                errMap.put(serviceCode+"inThershold","ERR0013");
+                errMap.put(serviceCode+"inThershold","GENERAL_ERR0027");
                 fdto.setAdThersholderr(true);
             }
         }
@@ -90,11 +90,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             try {
                 Integer thold = Integer.valueOf(fdto.getDpThershold());
                 if(thold<0 || thold>999){
-                    errMap.put(serviceCode+"prThershold","ERR0013");
+                    errMap.put(serviceCode+"prThershold","GENERAL_ERR0027");
                     fdto.setDpThersholderr(true);
                 }
             }catch (Exception e){
-                errMap.put(serviceCode+"prThershold","ERR0013");
+                errMap.put(serviceCode+"prThershold","GENERAL_ERR0027");
                 fdto.setDpThersholderr(true);
             }
         }
@@ -115,8 +115,8 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
 
     }
     public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,boolean isIn,HcsaRiskLeadershipMatrixDto fdto){
-        String maxCaseMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
-        String minCaseMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
+        String maxCaseMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
+        String minCaseMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
         Integer inLeftModNum = 0;
         Integer inRightModNum = 0;
         int numberFlag = 0;
@@ -182,7 +182,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         }
     }
     public void inLeftHighVad(Map<String, String> errMap,String inLeftHigh,String inRightMod, String serviceCode,boolean isIn,HcsaRiskLeadershipMatrixDto fdto){
-        String minCaseMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
+        String minCaseMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
         Integer inLeftHighNum = 0;
         boolean inLeftHighNumFlag = true;
         boolean prLeftHighNumFlag = true;
@@ -232,7 +232,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
         }
     }
     public void inRightLowVad(Map<String, String> errMap,String inRightLow,String inLeftMod,String serviceCode,boolean isIn,HcsaRiskLeadershipMatrixDto fdto){
-        String maxCaseMes = MessageUtil.getMessageDesc("ERR0013") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
+        String maxCaseMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
         Integer inRightLowNum = 0;
         Integer inLeftModNum = 0;
         boolean inRightLowNumFlag = true;
