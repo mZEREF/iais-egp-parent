@@ -373,6 +373,8 @@ public class MasterCodeDelegator {
             for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
                 Map<String,List<String>> errMap = IaisCommonUtils.genNewHashMap();
                 List<String> errItems = IaisCommonUtils.genNewArrayList();
+                Date codeEffFrom = null;
+                Date codeEffTo = null;
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory()))
                 {
                     String errMsg = "Code Category is a mandatory field.";
@@ -405,7 +407,7 @@ public class MasterCodeDelegator {
                     result = true;
                 }else{
                     try{
-                        Formatter.parseDate(masterCodeToExcelDto.getEffectiveFrom());
+                        codeEffFrom = Formatter.parseDate(masterCodeToExcelDto.getEffectiveFrom());
                     }catch (Exception e){
                         String errMsg = "Effective Start Date is Illegal date format.";
                         errItems.add(errMsg);
@@ -418,19 +420,19 @@ public class MasterCodeDelegator {
                     result = true;
                 }else{
                     try{
-                        Formatter.parseDate(masterCodeToExcelDto.getEffectiveTo());
+                        codeEffTo = Formatter.parseDate(masterCodeToExcelDto.getEffectiveTo());
                     }catch (Exception e){
                         String errMsg = "Effective End Date is Illegal date format.";
                         errItems.add(errMsg);
                         result = true;
                     }
                 }
-                Date codeEffFrom = Formatter.parseDate(masterCodeToExcelDto.getEffectiveFrom());
-                Date codeEffTo = Formatter.parseDate(masterCodeToExcelDto.getEffectiveTo());
-                if (codeEffFrom.compareTo(codeEffTo) > 0) {
-                    String errMsg = "Effective Start Date cannot be later than Effective End Date.";
-                    errItems.add(errMsg);
-                    result = true;
+                if (codeEffFrom != null && codeEffTo != null){
+                    if (codeEffFrom.compareTo(codeEffTo) > 0) {
+                        String errMsg = "Effective Start Date cannot be later than Effective End Date.";
+                        errItems.add(errMsg);
+                        result = true;
+                    }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
                     List<String> codeValueList = IaisCommonUtils.genNewArrayList();
@@ -465,9 +467,9 @@ public class MasterCodeDelegator {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                         String version = masterCodeToExcelDto1.getVersion();
                         String uploadVersion = masterCodeToExcelDto.getVersion();
-                        double versionDou = Double.valueOf(version);
-                        int versionInt = (int) versionDou;
                         if (!StringUtil.isEmpty(version)){
+                            double versionDou = Double.valueOf(version);
+                            int versionInt = (int) versionDou;
                             if (versionInt > Integer.parseInt(uploadVersion)){
                                 String errMsg = "The version number cannot be less than or equal to current version.";
                                 errItems.add(errMsg);
