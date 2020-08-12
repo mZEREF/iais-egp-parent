@@ -46,7 +46,7 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
                 }
             }
         }else{
-            errMap.put("All","RSM_ERR003");
+            errMap.put("All","RSM_ERR001");
         }
         mergeList(editList,financeList);
         WebValidationHelper.saveAuditTrailForNoUseResult(errMap);

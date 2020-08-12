@@ -41,7 +41,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
                 dateVad(errMap, fdto);
             }
         }else{
-            errMap.put("All","RSM_ERR003");
+            errMap.put("All","RSM_ERR001");
         }
         mergeList(editList,financeList);
         WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
