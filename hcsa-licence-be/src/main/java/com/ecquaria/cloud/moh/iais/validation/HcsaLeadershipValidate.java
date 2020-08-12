@@ -389,11 +389,11 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             Date basePrEffDate = Formatter.parseDate(fdto.getBaseDpEffectiveStartDate());
           //  Date basePrEndDate = Formatter.parseDate(fdto.getBaseDpEffectiveEndDate());
             if(inEffDate.getTime()<baseInEffDate.getTime()&&isIn){
-                errMap.put(serviceCode + "inEffDate", "Effective Date should later than Previous version");
+                errMap.put(serviceCode + "inEffDate", "RSM_ERR018");
                 fdto.setAdEffectiveStartDateerr(true);
             }
             if(prEffDate.getTime()<basePrEffDate.getTime()&&!isIn){
-                errMap.put(serviceCode + "prEffDate", "Effective Date should later than Previous version");
+                errMap.put(serviceCode + "prEffDate", "RSM_ERR018");
                 fdto.setDpEffectiveStartDateerr(true);
             }
         }catch (Exception e){

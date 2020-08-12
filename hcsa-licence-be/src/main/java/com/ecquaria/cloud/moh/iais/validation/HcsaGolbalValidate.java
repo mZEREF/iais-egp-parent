@@ -81,7 +81,7 @@ public class HcsaGolbalValidate implements CustomizeValidator {
             Date inEffDate = Formatter.parseDate(fdto.getDoEffectiveDate());
             Date baseInEffDate = Formatter.parseDate(fdto.getBaseEffectiveDate());
             if(inEffDate.getTime()<baseInEffDate.getTime()){
-                errMap.put(fdto.getServiceCode() + "inEffDate", "Effective Date should later than Previous version");
+                errMap.put(fdto.getServiceCode() + "inEffDate", "RSM_ERR018");
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);

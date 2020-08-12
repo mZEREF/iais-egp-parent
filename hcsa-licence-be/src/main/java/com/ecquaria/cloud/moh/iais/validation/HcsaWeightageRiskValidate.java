@@ -84,7 +84,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
             Date baseInEffDate = Formatter.parseDate(fdto.getBaseEffectiveDate());
             Date baseInEndDate = Formatter.parseDate(fdto.getBaseEndDate());
             if(inEffDate.getTime()<baseInEffDate.getTime()){
-                errMap.put(fdto.getServiceCode() + "inEffDate", "Effective Date should later than Previous version");
+                errMap.put(fdto.getServiceCode() + "inEffDate", "RSM_ERR018");
             }
         }catch (Exception e){
             log.error(e.getMessage(), e);

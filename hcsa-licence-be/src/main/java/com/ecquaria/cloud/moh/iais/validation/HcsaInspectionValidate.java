@@ -137,13 +137,13 @@ public class HcsaInspectionValidate implements CustomizeValidator {
             Date basemjEffDate = Formatter.parseDate(fdto.getBaseMjEffectiveDate());
          //   Date basemjEndDate = Formatter.parseDate(fdto.getBaseMjEndDate());
             if(caEffDate.getTime()<basecaEffDate.getTime()&&"C".equals(level)){
-                errMap.put(fdto.getSvcCode() + "caEffDate", "Effective Date should later than Previous version");
+                errMap.put(fdto.getSvcCode() + "caEffDate", "RSM_ERR018");
             }
             if(miEffDate.getTime()<basemiEffDate.getTime()&&"I".equals(level)){
-                errMap.put(fdto.getSvcCode() + "miEffDate", "Effective Date should later than Previous version");
+                errMap.put(fdto.getSvcCode() + "miEffDate", "RSM_ERR018");
             }
             if(mjEffDate.getTime()<basemjEffDate.getTime()&&"A".equals(level)){
-                errMap.put(fdto.getSvcCode() + "mjEffDate", "Effective Date should later than Previous version");
+                errMap.put(fdto.getSvcCode() + "mjEffDate", "RSM_ERR018");
             }
 
         }catch (Exception e){
