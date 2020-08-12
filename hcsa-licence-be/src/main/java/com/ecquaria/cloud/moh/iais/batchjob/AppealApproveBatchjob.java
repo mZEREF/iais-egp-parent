@@ -119,7 +119,7 @@ public class AppealApproveBatchjob {
 //                            break;
                               default:break;
                           }
-                          appealOther(appealApplicaiton,rollBackApplication,applicationDto);
+                        /*  appealOther(appealApplicaiton,rollBackApplication,applicationDto);*/
                       }
                   }
                   rollBackApplicationGroupDtos.add(applicationGroupDto);
