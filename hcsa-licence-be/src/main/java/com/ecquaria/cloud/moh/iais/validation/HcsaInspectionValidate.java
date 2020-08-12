@@ -187,7 +187,7 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     public boolean doDateFormatVad(Map<String, String> errMap,String strEffDate,String strEndDate,String serviceCode,String level,HcsaRiskInspectionMatrixDto fdto){
         boolean vadFlag = true;
         String GENERAL_ERR0006Message = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field");
-        String ERR0017Message = MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea");
+        String RSM_ERR016Message = MessageUtil.replaceMessage("RSM_ERR016","Effective Start Date","replaceArea");
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;
             if("C".equals(level)){
@@ -202,17 +202,17 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 Formatter.parseDate(strEffDate);
             }catch (Exception e){
                 if("C".equals(level)){
-                    errMap.put(serviceCode+"caEffDate", ERR0017Message);
+                    errMap.put(serviceCode+"caEffDate", RSM_ERR016Message);
                 }else if("I".equals(level)){
-                    errMap.put(serviceCode+"miEffDate", ERR0017Message);
+                    errMap.put(serviceCode+"miEffDate", RSM_ERR016Message);
                 }else if("A".equals(level)){
-                    errMap.put(serviceCode+"mjEffDate", ERR0017Message);
+                    errMap.put(serviceCode+"mjEffDate", RSM_ERR016Message);
                 }
                 vadFlag = false;
             }
         }
         String GENERAL_ERR0006EMessage = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field");
-        String ERR0017EMessage = MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea");
+        String RSM_ERR016EMessage = MessageUtil.replaceMessage("RSM_ERR016","Effective End Date","replaceArea");
         if(StringUtil.isEmpty(strEndDate)){
             vadFlag = false;
             if("C".equals(level)){
@@ -227,11 +227,11 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 Formatter.parseDate(strEndDate);
             }catch (Exception e){
                 if("C".equals(level)){
-                    errMap.put(serviceCode+"caEndDate",ERR0017EMessage);
+                    errMap.put(serviceCode+"caEndDate",RSM_ERR016EMessage);
                 }else if("I".equals(level)){
-                    errMap.put(serviceCode+"miEndDate",ERR0017EMessage);
+                    errMap.put(serviceCode+"miEndDate",RSM_ERR016EMessage);
                 }else if("A".equals(level)){
-                    errMap.put(serviceCode+"mjEndDate",ERR0017EMessage);
+                    errMap.put(serviceCode+"mjEndDate",RSM_ERR016EMessage);
                 }
                 return false;
             }

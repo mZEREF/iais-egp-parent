@@ -435,9 +435,9 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
     }
     public boolean doDateFormatVad(Map<String, String> errMap,String strEffDate,String strEndDate,String serviceCode,boolean isIn,HcsaRiskLeadershipMatrixDto fdto){
         String mesStartEmpty  = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field");
-        String mesStartRepalce  = MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea");
+        String mesStartRepalce  = MessageUtil.replaceMessage("RSM_ERR016","Effective Start Date","replaceArea");
         String mesEndEmpty  = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field");
-        String mesEndRepalce  = MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea");
+        String mesEndRepalce  = MessageUtil.replaceMessage("RSM_ERR016","Effective End Date","replaceArea");
         boolean vadFlag = true;
         if(StringUtil.isEmpty(strEffDate)){
             vadFlag = false;

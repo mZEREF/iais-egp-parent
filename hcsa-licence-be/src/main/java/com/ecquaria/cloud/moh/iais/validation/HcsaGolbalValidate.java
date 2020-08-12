@@ -111,7 +111,7 @@ public class HcsaGolbalValidate implements CustomizeValidator {
             try {
                 Formatter.parseDate(strEffDate);
             }catch (Exception e){
-                errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("ERR0017","Effective Start Date","replaceArea"));
+                errMap.put(serviceCode+"inEffDate",MessageUtil.replaceMessage("RSM_ERR016","Effective Start Date","replaceArea"));
                 vadFlag = false;
             }
         }
@@ -122,7 +122,7 @@ public class HcsaGolbalValidate implements CustomizeValidator {
             try {
                 Formatter.parseDate(strEndDate);
             }catch (Exception e){
-                errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("ERR0017","Effective End Date","replaceArea"));
+                errMap.put(serviceCode+"inEndDate",MessageUtil.replaceMessage("RSM_ERR016","Effective End Date","replaceArea"));
                 return false;
             }
         }
