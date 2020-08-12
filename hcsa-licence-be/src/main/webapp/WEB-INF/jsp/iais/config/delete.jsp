@@ -505,7 +505,7 @@
             </c:forEach>
           </c:forEach>
           <div class="col-xs-12 col-md-6">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" > + </a><label for="addAsItem"> Add as Item</label>
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" > + </a><label for="addAsItem"> Add Item</label>
           </div>
         </div>
 

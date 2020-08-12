@@ -386,9 +386,13 @@ public class ConfigServiceImpl implements ConfigService {
 
     private void doValidate(HcsaServiceConfigDto hcsaServiceConfigDto, Map<String, String> errorMap,HttpServletRequest request) throws Exception {
         HcsaServiceDto hcsaServiceDto = hcsaServiceConfigDto.getHcsaServiceDto();
-        Map<String,List<HcsaSvcStageWorkingGroupDto>> hcsaSvcStageWorkingGroupDtoMap=( Map<String,List<HcsaSvcStageWorkingGroupDto>>)request.getAttribute("hcsaSvcStageWorkingGroupDtoMap");
+        Map<String,List<HcsaSvcStageWorkingGroupDto>> hcsaSvcStageWorkingGroupDtoMap=hcsaServiceConfigDto.getHcsaSvcStageWorkingGroupDtoMap();
         hcsaSvcStageWorkingGroupDtoMap.forEach((k,v)->{
             for(int i=0;i<v.size();i++){
+                String isMandatory = v.get(i).getIsMandatory();
+                if("false".equals(isMandatory)){
+                    continue;
+                }
                 String stageWorkGroupId = v.get(i).getStageWorkGroupId();
                 if (StringUtil.isEmpty(stageWorkGroupId)) {
                     errorMap.put("stageWorkGroupId"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Working Group","field"));
@@ -437,10 +441,6 @@ public class ConfigServiceImpl implements ConfigService {
                 errorMap.put("pageName",MessageUtil.replaceMessage("GENERAL_ERR0006","Page Name","field"));
             }
         }
-        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = hcsaServiceConfigDto.getHcsaSvcDocConfigDtos();
-        if(hcsaSvcDocConfigDtos.isEmpty()){
-
-        }
         String svcCode = hcsaServiceDto.getSvcCode();
         String svcName = hcsaServiceDto.getSvcName();
         String svcDesc = hcsaServiceDto.getSvcDesc();
@@ -448,8 +448,14 @@ public class ConfigServiceImpl implements ConfigService {
         String svcType = hcsaServiceDto.getSvcType();
         String effectiveDate = hcsaServiceDto.getEffectiveDate();
         Date endDate = hcsaServiceDto.getEndDate();
+        boolean serviceIsUsed = hcsaServiceDto.isServiceIsUsed();
         if (StringUtil.isEmpty(effectiveDate)) {
             errorMap.put("effectiveDate", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
+        }else if(!serviceIsUsed){
+            Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
+            if(parse.before(new Date())){
+                errorMap.put("effectiveDate","Effective Date should be future date");
+            }
         }
         if(!StringUtil.isEmpty(endDate)){
             Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
@@ -457,6 +463,7 @@ public class ConfigServiceImpl implements ConfigService {
                 errorMap.put("effectiveEndDate", "CHKL_ERR002");
             }
         }
+
         if (StringUtil.isEmpty(svcCode)) {
             errorMap.put("svcCode", MessageUtil.replaceMessage("GENERAL_ERR0006","Service Code","field"));
         }
@@ -527,18 +534,28 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
         }
-        Map<String, List<HcsaSvcSpeRoutingSchemeDto>> hcsaSvcSpeRoutingSchemeDtoMap =( Map<String, List<HcsaSvcSpeRoutingSchemeDto>>)request.getAttribute("hcsaSvcSpeRoutingSchemeDtoMap");
+        Map<String, List<HcsaSvcSpeRoutingSchemeDto>> hcsaSvcSpeRoutingSchemeDtoMap =hcsaServiceConfigDto.getHcsaSvcSpeRoutingSchemeDtoMap();
         hcsaSvcSpeRoutingSchemeDtoMap.forEach((k,v)->{
             for(int i=0;i<v.size();i++){
+                String isMandatory = v.get(i).getIsMandatory();
+                if("false".equals(isMandatory)){
+                    continue;
+                }
                 String schemeType = v.get(i).getSchemeType();
                 if (StringUtil.isEmpty(schemeType)) {
                     errorMap.put("schemeType"+k+ i, MessageUtil.replaceMessage("GENERAL_ERR0006","Service Routing Scheme","field"));
                 }
             }
         });
-        Map<String,List<HcsaSvcSpecificStageWorkloadDto>>map=( Map<String,List<HcsaSvcSpecificStageWorkloadDto>>) request.getAttribute("map");
+        Map<String,List<HcsaSvcSpecificStageWorkloadDto>>map=hcsaServiceConfigDto.getHcsaSvcSpecificStageWorkloadDtoMap();
         map.forEach((k,v)->{
             for(int i=0;i<v.size();i++){
+                String isMandatory = v.get(i).getIsMandatory();
+                if("false".equals(isMandatory)){
+                    continue;
+                }else if("".equals(isMandatory)){
+                    errorMap.put("isMandatory"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","This","field"));
+                }
                 String stringManhourCount = v.get(i).getStringManhourCount();
                 if(StringUtil.isEmpty(stringManhourCount)){
                     errorMap.put("manhourCount"+k+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Service Workload Manhours","field"));
@@ -558,6 +575,24 @@ public class ConfigServiceImpl implements ConfigService {
             errorMap.put("Numberfields",MessageUtil.replaceMessage("GENERAL_ERR0006","Number of Service-Related General Info fields to be captured","field"));
         }else if(!numberfields.matches("^[0-9]+$")){
             errorMap.put("Numberfields","NEW_ERR0003");
+        }
+        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtos = (List<HcsaSvcDocConfigDto>)request.getAttribute("serviceDoc");
+        List<HcsaSvcDocConfigDto> hcsaSvcDocConfigDtoList = ( List<HcsaSvcDocConfigDto>)request.getAttribute("comDoc");
+        if(hcsaSvcDocConfigDtos!=null){
+            for(int i = 0; i < hcsaSvcDocConfigDtos.size(); i++){
+                String docTitle = hcsaSvcDocConfigDtos.get(i).getDocTitle();
+                if(StringUtil.isEmpty(docTitle)){
+                    errorMap.put("serviceDoc"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name of Info Field","field"));
+                }
+            }
+        }
+        if(hcsaSvcDocConfigDtoList!=null){
+            for(int i = 0;i<hcsaSvcDocConfigDtoList.size();i++){
+                String docTitle = hcsaSvcDocConfigDtoList.get(i).getDocTitle();
+                if(StringUtil.isEmpty(docTitle)){
+                    errorMap.put("commonDoc"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name of Info Field","field"));
+                }
+            }
         }
 
     }
@@ -798,7 +833,13 @@ public class ConfigServiceImpl implements ConfigService {
 
     private void view(HttpServletRequest request, String crud_action_value) {
         HcsaServiceDto hcsaServiceDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(crud_action_value).getEntity();
-
+        Boolean flag = hcsaConfigClient.serviceIdIsUsed(crud_action_value).getEntity();
+        List<LicenceDto> entity = hcsaLicenceClient.getLicenceDtosBySvcName(hcsaServiceDto.getSvcName()).getEntity();
+        if(flag || !entity.isEmpty()){
+            hcsaServiceDto.setServiceIsUsed(true);
+        }else {
+            hcsaServiceDto.setServiceIsUsed(false);
+        }
         setAttribute(request,hcsaServiceDto);
     }
 

@@ -47,13 +47,14 @@
         <div class="col-xs-12 col-md-10">
           <h2 class="component-title">Edit HCSA Service</h2>
           <input type="text" style="display: none" name="serviceId" id="serviceId" value="${hcsaServiceDto.id}">
+          <input type="text" style="display: none" name="serviceIsUse" value="${hcsaServiceDto.serviceIsUsed}">
         </div>
       </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceName" name="serviceName" maxlength="100" readonly type="text" value="${hcsaServiceDto.svcName}">
+            <input id="serviceName" name="serviceName" maxlength="100" <c:if test="${hcsaServiceDto.serviceIsUsed}">readonly</c:if> type="text" value="${hcsaServiceDto.svcName}">
 
           </div>
         </div>
@@ -82,7 +83,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceCode">Service Code<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <input id="serviceCode" name="serviceCode" maxlength="3" readonly type="text"  value="${hcsaServiceDto.svcCode}">
+            <input id="serviceCode" name="serviceCode" maxlength="3" <c:if test="${hcsaServiceDto.serviceIsUsed}">readonly</c:if> type="text"  value="${hcsaServiceDto.svcCode}">
           </div>
         </div>
       </div>
@@ -91,7 +92,7 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="ServiceType">Service Type<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
-            <select id="ServiceType" disabled="disabled" name="ServiceType">
+            <select id="ServiceType" <c:if test="${hcsaServiceDto.serviceIsUsed}">disabled="disabled"</c:if> name="ServiceType">
 
               <option>Select one</option>
               <option <c:if test="${hcsaServiceDto.svcType=='SVTP001'}">selected="selected"</c:if> value="SVTP001">Base</option>
@@ -292,7 +293,7 @@
       </div>
 
       <div class="Numberfields">
-        <c:forEach items="${comDoc}" var="doc">
+        <c:forEach items="${comDoc}" var="doc" varStatus="sta">
           <div class="form-group">
             <div class="col-xs-12 col-md-8">
               <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
@@ -305,6 +306,11 @@
                 <input class="form-check-input" <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocMandatory">
                 <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
               </div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+            </div>
+            <div class="col-xs-12 col-md-4">
+              <span class="error-msg" name="iaisErrorMsg" id="error_commonDoc${sta.index}"></span>
             </div>
           </div>
         </c:forEach>
@@ -581,7 +587,7 @@
           </c:forEach>
       </c:forEach>
           <div class="col-xs-12 col-md-6">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add as Item</label>
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add Item</label>
           </div>
         </div>
       </div>
@@ -590,7 +596,7 @@
         <div class="form-group">
           <label class="col-xs-12 col-md-8 control-label">Effective Start Date<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
-            <input type="text" disabled value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
+            <input type="text" <c:if test="${hcsaServiceDto.serviceIsUsed}">disabled</c:if> value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
             <span class="error-msg" name="iaisErrorMsg" id="error_effectiveDate"></span>
           </div>
           <div class="clear"></div></div>

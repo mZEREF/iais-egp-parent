@@ -41,6 +41,18 @@
       <div class="form-group">
         <div class="col-xs-12 col-md-10">
           <h2 class="component-title">Add HCSA Service</h2>
+          <input type="text" style="display: none" name="serviceIsUse" value="false">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-12 col-md-8">
+          <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Category<span class="mandatory" >*</span></label>
+          <div class="col-xs-12 col-md-4">
+            <select>
+              <option>Please Select</option>
+            </select>
+            <span name="iaisErrorMsg" class="error-msg" id="error_serviceCategory"></span>
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -49,7 +61,6 @@
           <div class="col-xs-12 col-md-4">
             <input id="serviceName" type="text" name="serviceName" maxlength="100" value="${hcsaServiceDto.svcName}">
             <span name="iaisErrorMsg" class="error-msg" id="error_svcName"></span>
-
           </div>
         </div>
       </div>
@@ -89,13 +100,10 @@
           <div class="col-xs-12 col-md-4">
 
             <select id="ServiceType" name="ServiceType">
-              <option value="">Select one</option>
+              <option value="">Please Select</option>
               <option value="SVTP001"
                       <c:choose>
                         <c:when test="${hcsaServiceDto.svcType=='SVTP001'}"> selected="selected"</c:when>
-                        <c:otherwise>
-                          selected="selected"
-                        </c:otherwise>
                       </c:choose>
                      >Base</option>
               <option <c:if test="${hcsaServiceDto.svcType=='SVTP002'}">selected="selected"</c:if> value="SVTP002">Subsumed</option>
@@ -259,7 +267,7 @@
       </div>
 
       <div class="serviceNumberfields">
-        <c:forEach items="${serviceDoc}" var="doc">
+        <c:forEach items="${serviceDoc}" var="doc" varStatus="sta">
           <div class="form-group">
             <div class="col-xs-12 col-md-8">
               <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
@@ -271,6 +279,11 @@
                 <input type="hidden" name="serviceDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
                 <input class="form-check-input" <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="serviceCheckboxOnclick(this)" name="descriptionServiceDocMandatory">
                 <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+              </div>
+              <div class="col-xs-12 col-md-6">
+              </div>
+              <div class="col-xs-12 col-md-4">
+                <span class="error-msg" name="iaisErrorMsg" id="error_serviceDoc${sta.index}"></span>
               </div>
             </div>
           </div>
@@ -288,7 +301,7 @@
       </div>
 
       <div class="Numberfields">
-        <c:forEach items="${comDoc}" var="doc">
+        <c:forEach items="${comDoc}" var="doc" varStatus="sta">
           <div class="form-group">
             <div class="col-xs-12 col-md-8">
               <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
@@ -300,6 +313,11 @@
                 <input type="hidden" name="commDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
                 <input class="form-check-input" <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocMandatory">
                 <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
+              </div>
+              <div class="col-xs-12 col-md-6">
+              </div>
+              <div class="col-xs-12 col-md-4">
+                <span class="error-msg" name="iaisErrorMsg" id="error_commonDoc${sta.index}"></span>
               </div>
             </div>
           </div>
@@ -464,6 +482,7 @@
               <option value="mandatory" <c:if test="${routingStage.isMandatory=='true'}">selected="selected"</c:if>>Mandatory</option>
               <option value="optional" <c:if test="${routingStage.isMandatory=='false'}">selected="selected"</c:if>>Optional</option>
             </select>
+            <span name="iaisErrorMsg" class="error-msg" id="error_isMandatory${routingStages.key}${status.index}"></span>
           </div>
 
           <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
@@ -591,7 +610,7 @@
           </c:forEach>
 
           <div class="col-xs-12 col-md-6">
-            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add as Item</label>
+            <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add Item</label>
           </div>
         </div>
 
