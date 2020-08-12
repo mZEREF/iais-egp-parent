@@ -761,6 +761,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 ncAnswerDto = new NcAnswerDto();
                 ncAnswerDto.setItemId(temp.getItemId());
                 ncAnswerDto.setRemark(temp.getRemark());
+                ncAnswerDto.setRef("1".equalsIgnoreCase(temp.getIsRec()) ? "1" :"0");
+                ncAnswerDto.setType(temp.getSectionName());
                 ncAnswerDtoList.add(ncAnswerDto);
             }
         }
@@ -813,6 +815,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                 ncAnswerDto = new NcAnswerDto();
                 ncAnswerDto.setItemId(temp.getItemId());
                 ncAnswerDto.setRemark(temp.getRemark());
+                ncAnswerDto.setRef("1".equalsIgnoreCase(temp.getIsRec()) ? "1" :"0");
+                ncAnswerDto.setType(temp.getSectionName());
                 ncAnswerDtoList.add(ncAnswerDto);
             }
         }
@@ -833,6 +837,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                     ncDto = new NcAnswerDto();
                     ncDto.setItemQuestion(temp.getQuestion());
                     ncDto.setRemark(temp.getRemark());
+                    ncDto.setRef((temp.getRectified()!= null && temp.getRectified())? "1" : "0");
+                    ncDto.setType("Adhoc");
                     ncAnswerDtoList.add(ncDto);
                 }
             }
@@ -905,6 +911,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
                         if(answerDto != null){
                             temp.setAdAnswer(answerDto.getAnswer());
                             temp.setRemark(answerDto.getRemark());
+                            temp.setRectified("1".equalsIgnoreCase(answerDto.getIsRec()));
                         }
                     }
 
