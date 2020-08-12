@@ -300,13 +300,13 @@ public class HcsaInspectionValidate implements CustomizeValidator {
                 inRightModNum = Integer.valueOf(inRightMod);
                 if(inRightModNum +1 != inLeftHighNum){
                     if(caLeftHighNumFlag&&"C".equals(level)){
-                        errMap.put(serviceCode + "caRightLowCaseCounth", "ERR0014");
+                        errMap.put(serviceCode + "caRightLowCaseCounth", "RSM_ERR014");
                         fdto.setDoCaLeftHighCountherr(true);
                     }else if(miLeftHighNumFlag&&"I".equals(level)){
-                        errMap.put(serviceCode + "miRightLowCaseCounth", "ERR0014");
+                        errMap.put(serviceCode + "miRightLowCaseCounth", "RSM_ERR014");
                         fdto.setDoMiLeftHighCountherr(true);
                     }else if(mjLeftHighNumFlag&&"A".equals(level)){
-                        errMap.put(serviceCode + "mjRightLowCaseCounth", "ERR0014");
+                        errMap.put(serviceCode + "mjRightLowCaseCounth", "RSM_ERR014");
                         fdto.setDoMjLeftHighCountherr(true);
                     }
                 }

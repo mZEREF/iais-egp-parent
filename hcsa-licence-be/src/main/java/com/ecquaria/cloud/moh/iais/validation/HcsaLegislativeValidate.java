@@ -205,7 +205,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
             if(!StringUtil.isEmpty(inRightMod)){
                 inRightModNum = Integer.valueOf(inRightMod);
                 if((inRightModNum +1 != inLeftHighNum)&&inLeftHighNumFlag){
-                    errMap.put(serviceCode + "inLeftHighCaseCounth", "ERR0014");
+                    errMap.put(serviceCode + "inLeftHighCaseCounth", "RSM_ERR014");
                     fdto.setDoLeftHighCaseCountherr(true);
                 }
             }
