@@ -373,6 +373,7 @@ public class MasterCodeDelegator {
             for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
                 Map<String,List<String>> errMap = IaisCommonUtils.genNewHashMap();
                 List<String> errItems = IaisCommonUtils.genNewArrayList();
+                Optional<MasterCodeToExcelDto> cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue()) && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 Date codeEffFrom = null;
                 Date codeEffTo = null;
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory()))
@@ -435,14 +436,23 @@ public class MasterCodeDelegator {
                     }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
-                    List<String> codeValueList = IaisCommonUtils.genNewArrayList();
-                    masterCodeToExcelDtos.forEach(h -> {
-                        codeValueList.add(h.getCodeValue());
-                    });
-                    if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
-                        String errMsg = "Filter Value must be an existing Code Value";
-                        errItems.add(errMsg);
-                        result = true;
+                    if (cartOptional.isPresent()) {
+                        MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
+                        if(StringUtil.isEmpty(masterCodeToExcelDto1.getFilterValue())){
+                            String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0007");
+                            errItems.add(errMsg);
+                            result = true;
+                        }else{
+                            List<String> codeValueList = IaisCommonUtils.genNewArrayList();
+                            masterCodeToExcelDtos.forEach(h -> {
+                                codeValueList.add(h.getCodeValue());
+                            });
+                            if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
+                                String errMsg = "Filter Value must be an existing Code Value";
+                                errItems.add(errMsg);
+                                result = true;
+                            }
+                        }
                     }
                 }
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
@@ -462,7 +472,6 @@ public class MasterCodeDelegator {
                     }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getVersion())){
-                    Optional<MasterCodeToExcelDto> cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue()) && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                     if (cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                         String version = masterCodeToExcelDto1.getVersion();
@@ -471,7 +480,7 @@ public class MasterCodeDelegator {
                             double versionDou = Double.valueOf(version);
                             int versionInt = (int) versionDou;
                             if (versionInt > Integer.parseInt(uploadVersion)){
-                                String errMsg = "The version number cannot be less than or equal to current version.";
+                                String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0006");
                                 errItems.add(errMsg);
                                 result = true;
                             }
