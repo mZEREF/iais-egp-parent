@@ -373,7 +373,6 @@ public class MasterCodeDelegator {
             for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
                 Map<String,List<String>> errMap = IaisCommonUtils.genNewHashMap();
                 List<String> errItems = IaisCommonUtils.genNewArrayList();
-                Optional<MasterCodeToExcelDto> cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue()) && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 Date codeEffFrom = null;
                 Date codeEffTo = null;
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory()))
@@ -435,6 +434,10 @@ public class MasterCodeDelegator {
                         result = true;
                     }
                 }
+                if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
+                    masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
+                }
+                Optional<MasterCodeToExcelDto> cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue()) && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
                     if (cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
@@ -454,9 +457,6 @@ public class MasterCodeDelegator {
                             }
                         }
                     }
-                }
-                if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
-                    masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
                     if ("Active".equals(masterCodeToExcelDto.getStatus())){
