@@ -30,7 +30,6 @@
             <#if subDate??> AND T4.submit_dt >= convert(datetime,:subDate)</#if>
             <#if toDate??> AND T4.submit_dt <= convert(datetime,:toDate)</#if>
             <#if licenseeId??>AND T4.licensee_id = :licenseeId</#if>
-            <#if hciCode??> AND  charindex(:hciCode, T3.HCI_CODE )>0</#if>
             <#if hciName??> AND charindex(:hciName, T3.HCI_NAME )>0</#if>
             <#if hciStreetName??> AND charindex(:hciStreetName, T3.STREET_NAME )>0</#if>
             <#if hciPostalCode??> AND charindex(:hciPostalCode, T3.POSTAL_CODE )>0</#if>
@@ -39,6 +38,7 @@
             <#if personnelRegnNo??> AND charindex( :personnelRegnNo, appSvcPer.PROF_REG_NO )>0</#if>
             <#if personnelRole??> AND  appKeyPsn.PSN_TYPE = :personnelRole</#if>
 
+            <#if hciCode??> AND  :hciCode = :hciCode</#if>
             <#if licence_status??>AND :licence_status = :licence_status</#if>
             <#if start_date??>AND :start_date = :start_date</#if>
             <#if start_to_date??>AND :start_to_date = :start_to_date</#if>
