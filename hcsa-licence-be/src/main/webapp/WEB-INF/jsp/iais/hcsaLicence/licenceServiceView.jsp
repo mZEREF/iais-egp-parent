@@ -42,8 +42,13 @@
     $(document).ready(function () {
         //Binding method
         $('#previewNext').click(function () {
-            var mainForm = document.getElementById("mainForm");
-            mainForm.submit();
+          if(validateCheckBox()){
+            // var mainForm = document.getElementById("mainForm");
+            // mainForm.submit();
+            callAjaxSubmit();
+          }else{
+            $('#errorMessage').removeClass("hidden");
+          }
         });
 
         $('.svc-pannel-collapse').click(function () {
@@ -52,6 +57,35 @@
 
         });
     });
+
+    function callAjaxSubmit(){
+      $('#errorMessage').addClass("hidden");
+      var form = $('#mainForm').serialize();
+      console.log('111');
+      $.ajax({
+        type: "post",
+        url:  "${pageContext.request.contextPath}/callRfiSubmit",
+        data: form,
+        dataType: "text",
+        success: function (data) {
+          $('#selectDetail',window.opener.document).html(data);
+          $('#rfiSelect',window.opener.document).show();
+          window.close();
+        },
+        error: function (msg) {
+          alert("error");
+        }
+      });
+    }
+
+    function validateCheckBox(){
+      //editCheckbox
+      var flag = false;
+      if($("input:checkbox[name='editCheckbox']:checked").length > 0){
+        flag = true;
+      }
+      return flag;
+    }
 
 
     hightLightChangeVal('newVal', 'oldVal');

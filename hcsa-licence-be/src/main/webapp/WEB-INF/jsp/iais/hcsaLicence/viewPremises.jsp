@@ -24,13 +24,13 @@
                     <%--   <p class="print"><a href="#"> <em class="fa fa-print"></em>Print</a></p>--%>
                   </div>
                 </div>
-                <c:if test="${not empty errorMsg}">
+                <div class="hidden" id="errorMessage">
                   <iais:error>
                     <div class="error">
-                        ${errorMsg}
+                      <h2><iais:message key="PRF_ERR002" escape="true"></iais:message></h2>
                     </div>
                   </iais:error>
-                </c:if>
+                </div>
                 <div class="row">
                   <div class="col-xs-12">
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
