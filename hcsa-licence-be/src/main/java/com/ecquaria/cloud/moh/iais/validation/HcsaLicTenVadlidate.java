@@ -47,7 +47,7 @@ public class HcsaLicTenVadlidate implements CustomizeValidator {
                     subVad(errMap, fdto);
                 }
             }else{
-                errMap.put("All","please do some change");
+                errMap.put("All","RSM_ERR003");
             }
         }
         WebValidationHelper.saveAuditTrailForNoUseResult(errMap);

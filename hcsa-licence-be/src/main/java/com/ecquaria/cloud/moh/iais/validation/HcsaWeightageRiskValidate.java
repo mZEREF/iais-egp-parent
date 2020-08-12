@@ -40,7 +40,7 @@ public class HcsaWeightageRiskValidate implements CustomizeValidator {
                 dateVad(errMap, temp);
             }
         }else {
-            errMap.put("All","Please do some change");
+            errMap.put("All","RSM_ERR003");
         }
         WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;
