@@ -37,7 +37,7 @@ public class AduitSystemGenerateValidate implements CustomizeValidator {
                IaisEGPHelper.parseToDate(inspectionStartDate);
                isDateS = true;
            }catch (Exception e){
-               errMap.put("inspectionStartDate","ERR0020");
+               errMap.put("inspectionStartDate","GENERAL_ERR0033");
                isDateS = false;
            }
 
@@ -45,12 +45,12 @@ public class AduitSystemGenerateValidate implements CustomizeValidator {
                IaisEGPHelper.parseToDate(inspectionEndDate);
                isDateE = true;
            }catch (Exception e){
-               errMap.put("inspectionEndDate","ERR0020");
+               errMap.put("inspectionEndDate","GENERAL_ERR0033");
                isDateE = false;
            }
 
            if(isDateS && isDateE && !IaisEGPHelper.isAfterDateSecondByStringDate(inspectionStartDate,inspectionEndDate,Boolean.TRUE)){
-               errMap.put("inspectionStartDate","Last Inspection done before(Start) cannot be later than Last Inspection done before(End)");
+               errMap.put("inspectionStartDate","AUDIT_ERR002");
            }
         }
         WebValidationHelper.saveAuditTrailForNoUseResult(errMap);

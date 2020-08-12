@@ -17,10 +17,6 @@ public class HcsaLicenceBeConstant {
     public static final String RISK_TYPE_LEADERSHIP = "ledership";
     public static final String RISK_TYPE_LEGISLATIVE_BREACHES = "leg";
     public static final String RISK_TYPE_OVERALL= "overall";
-    public static final String AUDIT_INSPECTION_CONFIRM_SUCCESS_MESSAGE = "Audit list is created successfully";
-    public static final String AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE = "Your cancellation request is routed to AO1 for approval.";
-    public static final String AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE_CONFIRM = "The record has been submitted successfully.";
-    public static final String AUDIT_INSPECTION_CANCEL_TASKS_SUCCESS_MESSAGE_REJECT = "Audit task(s) have rejected to inspector(s).";
     public static final String INCLUDE_RISK_TYPE_LEADERSHIP_KEY_TEXT = "Leadership and Governance Risk";
     public static final String INCLUDE_RISK_TYPE_INSPECTION_KEY_TEXT = "Compliance Risk";
     public static final String ERROR_MESSAGE_MIN_NC = " for Minimum Number of NCs";

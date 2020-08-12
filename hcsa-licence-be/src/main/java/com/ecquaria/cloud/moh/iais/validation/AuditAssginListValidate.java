@@ -29,20 +29,20 @@ public class AuditAssginListValidate implements CustomizeValidator {
                 if(auditTaskDataDtos.get(i).isSelectedForAudit()){
                     selectedFlagNum++;
                     if(StringUtil.isEmpty(auditTaskDataDtos.get(i).getInspector())){
-                        errMap.put(i+"insp","AUDIT_UC_ERR0001");
+                        errMap.put(i+"insp","AUDIT_ERR003");
                     }
                     if( !auditTaskDataDtos.get(i).isAudited() &&"confirm".equalsIgnoreCase(actionTodo) && StringUtil.isEmpty(auditTaskDataDtos.get(i).getAuditType())){
-                        errMap.put(i+"adtype","AUDIT_UC_ERR0003");
+                        errMap.put(i+"adtype","AUDIT_ERR005");
                     }
                     if(auditTaskDataDtos.get(i).isAudited() && "confirm".equalsIgnoreCase(actionTodo))
-                        errMap.put(i+"select","AUDIT_UC_ERR0004");
+                        errMap.put(i+"select","AUDIT_ERR006");
                     else if(!auditTaskDataDtos.get(i).isAudited() && "cancel".equalsIgnoreCase(actionTodo))
-                        errMap.put(i+"select","AUDIT_UC_ERR0005");
+                        errMap.put(i+"select","AUDIT_ERR007");
                 }
             }
         }
         if(selectedFlagNum==0){
-            errMap.put("selectedOne","AUDIT_UC_ERR0002");
+            errMap.put("selectedOne","AUDIT_ERR004");
         }
         WebValidationHelper.saveAuditTrailForNoUseResult(errMap);
         return errMap;

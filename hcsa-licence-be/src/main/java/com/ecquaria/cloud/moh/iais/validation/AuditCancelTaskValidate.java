@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +29,7 @@ public class AuditCancelTaskValidate implements CustomizeValidator {
                     String requestSelectForAd = "selectForAd" + String.valueOf(index);
                     String selectForAd = ParamUtil.getString(request, requestSelectForAd);
                     if (StringUtil.isEmpty(selectForAd)) {
-                        errMap.put(requestSelectForAd,"ERR0009");
+                        errMap.put(requestSelectForAd,MessageUtil.replaceMessage("GENERAL_ERR0006","Select for Cancellation","field"));
                     }else {
                         auditTaskDataFillterDto.setSelected(true);
                     }

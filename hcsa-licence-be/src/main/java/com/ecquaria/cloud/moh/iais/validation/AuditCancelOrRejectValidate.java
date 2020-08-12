@@ -27,7 +27,7 @@ public class AuditCancelOrRejectValidate implements CustomizeValidator {
             }
         }
         if(selectedFlagNum==0){
-            errMap.put("selectedOne","AUDIT_UC_ERR0002");
+            errMap.put("selectedOne","AUDIT_ERR004");
         }
         return errMap;
     }
