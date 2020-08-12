@@ -434,10 +434,12 @@ public class MasterCodeDelegator {
                         result = true;
                     }
                 }
+                Optional<MasterCodeToExcelDto> cartOptional = null;
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
                     masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
                 }
-                Optional<MasterCodeToExcelDto> cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue()) && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
+                if (!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory()) && !StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue()))
+                    cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue()) && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
                     if (cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
