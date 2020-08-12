@@ -121,7 +121,7 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
         } else if (endDate.getTime() < effDate.getTime()) {
             flag = false;
             if (inEdit == 1) {
-                errMap.put(serviceCode + "inEndDate", "ERR0016");
+                errMap.put(serviceCode + "inEndDate", "RSM_ERR017");
             }
         }
         return flag;

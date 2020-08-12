@@ -421,12 +421,12 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
             flag = false;
             if(isIn){
                 if(inEdit == 1){
-                    errMap.put(serviceCode + "inEndDate", "ERR0016");
+                    errMap.put(serviceCode + "inEndDate", "RSM_ERR017");
                     fdto.setAdEffectiveEndDateerr(true);
                 }
             }else{
                 if(prEdit == 1){
-                    errMap.put(serviceCode + "prEndDate", "ERR0016");
+                    errMap.put(serviceCode + "prEndDate", "RSM_ERR017");
                     fdto.setDpEffectiveEndDateerr(true);
                 }
             }
