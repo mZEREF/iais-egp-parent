@@ -229,11 +229,43 @@ public class LicenceApproveBatchjob {
                                 }
                             }
                         }
+                        String alignFlag = licenceDto.getAlignFlag();
+                        log.info(StringUtil.changeForLog("The updateExpiryDateByBaseApplicationNo alignFlag is -->:"+alignFlag));
+                        if(!StringUtil.isEmpty(alignFlag)){
+                           Date expiryDate = getEarliestExpiryDate(superLicDtos,alignFlag);
+                           if(expiryDate!=null){
+                               licenceDto.setExpiryDate(expiryDate);
+                           }
+                        }
                     }
                 }
             }
         }
         log.info(StringUtil.changeForLog("The updateExpiryDateByBaseApplicationNo is end ..."));
+    }
+
+    private Date getEarliestExpiryDate(List<SuperLicDto> superLicDtos,String alignFlag){
+        log.info(StringUtil.changeForLog("The getEarliestExpiryDate  start ..."));
+        Date result = null;
+        if(!StringUtil.isEmpty(alignFlag) && !IaisCommonUtils.isEmpty(superLicDtos)){
+            for (SuperLicDto superLicDto : superLicDtos){
+                LicenceDto licenceDto = superLicDto.getLicenceDto();
+                String alignFlagEvery = licenceDto.getAlignFlag();
+                Date  expiryDate = licenceDto.getExpiryDate();
+                log.info(StringUtil.changeForLog("The getEarliestExpiryDate  alignFlagEvery is -->:"+alignFlagEvery));
+                log.info(StringUtil.changeForLog("The getEarliestExpiryDate  expiryDate is -->:"+expiryDate));
+                if(!StringUtil.isEmpty(alignFlagEvery) && alignFlag.equals(alignFlagEvery)){
+                    if(result == null){
+                        result =  expiryDate;
+                    }else if(expiryDate.before(result)){
+                        result =  expiryDate;
+                    }
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The getEarliestExpiryDate  result is -->:"+result));
+        log.info(StringUtil.changeForLog("The getEarliestExpiryDate  end ..."));
+        return result;
     }
 
     private LicenceDto getBaseIdForApplicationNo(List<SuperLicDto> superLicDtos,String baseApplicationNo){
