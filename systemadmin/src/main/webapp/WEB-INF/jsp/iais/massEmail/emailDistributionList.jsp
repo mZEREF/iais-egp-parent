@@ -83,16 +83,15 @@
                                 <th>Mode of Delivery</th>
                                 <th>Created Date</th>
                                 <th>Created By</th>
-                                <th>Edit</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
                                 <c:choose>
                                     <c:when test="${empty distributionSearchResult.rows}">
                                         <tr>
-                                            <td  colspan="9" >
-                                                <iais:message key="No Result!" escape="true"></iais:message>
-                                                <!--No Record!!-->
+                                            <td colspan="9">
+                                                <iais:message key="ACK018" escape="true"></iais:message>
                                             </td>
                                         </tr>
                                     </c:when>
