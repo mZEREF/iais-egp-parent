@@ -3,7 +3,7 @@
     <p class="form-check-title">Choose the personnel who's information you wish to amend</p>
 
     <iais:row>
-        <iais:select name="personnel"/>
+        <iais:select name="personnelOptions" options="personnelOptions"/>
     </iais:row>
 
     <p class="form-check-title">The following licences will be affected by the change of personal Info</p>

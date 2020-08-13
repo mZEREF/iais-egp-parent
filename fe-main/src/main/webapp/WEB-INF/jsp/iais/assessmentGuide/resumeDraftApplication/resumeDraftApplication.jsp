@@ -10,9 +10,9 @@
 </div>
 <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2.jsp" %>
 <%@include file="../assessmentGuideMenuFoot.jsp" %>
-<script>
+<script type="application/javascript">
     $(function () {
-        $(".assessment-level-2").attr("hidden","true")
+        $(".assessment-level-2").attr("hidden","true");
     });
 
     $("#ceaseLicence").click(function(){
@@ -29,5 +29,14 @@
 
     $("#resumeDraftApplication").attr('checked', 'true');
 
+    function jumpToPagechangePage() {
+        guideSubmit("resumePage","second");
+    }
+
+    function sortRecords(sortFieldName, sortType) {
+        $("[name='crud_action_value']").val(sortFieldName);
+        $("[name='crud_action_additional']").val(sortType);
+        guideSubmit("resumeSort","second");
+    }
 </script>
 

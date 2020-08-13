@@ -43,9 +43,7 @@
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <input type="hidden" name="guide_action_type" id="guide_action_type"/>
-        <input type="hidden" name="guide_action_type" id="guide_action_value"/>
-        <input type="hidden" name="crud_action_type"/>
-        <input type="hidden" name="crud_action_additional"/>
+        <input type="hidden" name="guide_action_value" id="guide_action_value"/>
         <input type="hidden" name="crud_action_type_form"/>
         <div class="main-content">
             <div class="row">

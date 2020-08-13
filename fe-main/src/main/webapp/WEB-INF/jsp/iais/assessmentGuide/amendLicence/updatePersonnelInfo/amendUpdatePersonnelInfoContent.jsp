@@ -1,6 +1,6 @@
 <div class="form-check-gp">
 
-    <p class="form-check-title">You may select one HCI to amend at a time:</p>
+    <p class="form-check-title">You select one licence to amend at a time:</p>
 
     <iais:pagination  param="amendUpdatePersonnelSearchParam" result="amendUpdatePersonnelSearchResult"/>
     <div class="table-gp">

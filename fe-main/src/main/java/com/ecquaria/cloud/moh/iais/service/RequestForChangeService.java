@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import sop.webflow.rt.api.Process;
 
@@ -24,4 +25,6 @@ public interface RequestForChangeService {
     String getApplicationGroupNumber(String appType);
 
     SearchResult<PremisesListQueryDto> searchPreInfo(SearchParam searchParam);
+
+    List<PersonnelListQueryDto> getLicencePersonnelListQueryDto(String licenseeId);
 }

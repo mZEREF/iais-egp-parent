@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -62,6 +63,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public SearchResult<PremisesListQueryDto> searchPreInfo(SearchParam searchParam) {
         return licenceClient.searchResultPremises(searchParam).getEntity();
+    }
+
+    @Override
+    public List<PersonnelListQueryDto> getLicencePersonnelListQueryDto(String licenseeId) {
+        return licenceClient.getPersonnel(licenseeId).getEntity();
     }
 
 }
