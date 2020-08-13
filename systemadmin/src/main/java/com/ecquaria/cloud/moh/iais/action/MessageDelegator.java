@@ -57,11 +57,23 @@ public class MessageDelegator {
      */
     private void preSelectOption(HttpServletRequest request){
         List<SelectOption> moduleList =  IaisCommonUtils.genNewArrayList();
+        moduleList.add(new SelectOption("Common", "Common"));
         moduleList.add(new SelectOption("New", "New"));
         moduleList.add(new SelectOption("Renewal", "Renewal"));
         moduleList.add(new SelectOption("Request For Change", "Request For Change"));
         moduleList.add(new SelectOption("Withdrawal", "Withdrawal"));
         moduleList.add(new SelectOption("Cessation", "Cessation"));
+        moduleList.add(new SelectOption("Inspection", "Inspection"));
+        moduleList.add(new SelectOption("Checklist Management", "Checklist Management"));
+        moduleList.add(new SelectOption("Performance Management", "Performance Management"));
+        moduleList.add(new SelectOption("Email SMS Blast", "Email SMS Blast"));
+        moduleList.add(new SelectOption("User Management", "User Management"));
+        moduleList.add(new SelectOption("Online Appointment", "Online Appointment "));
+        moduleList.add(new SelectOption("Audit", "Audit"));
+        moduleList.add(new SelectOption("Service Configurator", "Service Configurator"));
+        moduleList.add(new SelectOption("Load Levelling and Routing Management", "Load Levelling and Routing Management"));
+        moduleList.add(new SelectOption("System Parameter Management", "System Parameter Management"));
+        moduleList.add(new SelectOption("Alerts, Notifications and Letter Templates Mgt", "Alerts, Notifications and Letter Templates Mgt"));
         moduleList.add(new SelectOption("Suspension", "Suspension"));
         moduleList.add(new SelectOption("Revocation", "Revocation"));
         moduleList.add(new SelectOption("Reinstatement", "Reinstatement"));
