@@ -739,7 +739,7 @@ public class AppealServiceImpl implements AppealService {
 
         }
         appealDto.setAppGrpPremisesDtos(premisesDtos);
-        applicationClient.submitAppeal(appealDto);
+        appealDto = applicationClient.submitAppeal(appealDto).getEntity();
         ApplicationGroupDto applicationGroupDto1 = appealDto.getApplicationGroupDto();
         String groupId = applicationGroupDto1.getId();
         request.setAttribute("groupId", groupId);
