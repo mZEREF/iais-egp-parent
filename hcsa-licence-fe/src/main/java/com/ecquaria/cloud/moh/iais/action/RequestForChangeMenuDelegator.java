@@ -25,13 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPsnTypeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
@@ -522,122 +516,23 @@ public class RequestForChangeMenuDelegator {
         searchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("applicationPersonnelQuery", "appPersonnelQuery", searchParam);
         SearchResult searchResult = requestForChangeService.psnDoQuery(searchParam);
-        PaginationHandler<PersonnelListDto> handler = new PaginationHandler<>("personPagDiv", "personBodyDiv");
+
         if (!StringUtil.isEmpty(searchResult)) {
             ParamUtil.setSessionAttr(bpc.request, "PersonnelSearchParam", searchParam);
             ParamUtil.setRequestAttr(bpc.request, "PersonnelSearchResult", searchResult);
         }
         List<PersonnelQueryDto> personnelQueryDtos = searchResult.getRows();
-        List<PersonnelListDto> personnelListDtos = IaisCommonUtils.genNewArrayList();
-        if (!StringUtil.isEmpty(psnTypeSearch)) {
-            for (PersonnelQueryDto dto : personnelQueryDtos) {
-                String idNo = dto.getIdNo();
-                List<String> personIds = requestForChangeService.getPersonnelIdsByIdNo(idNo);
-                PersonnelListDto personnelListDto = MiscUtil.transferEntityDto(dto, PersonnelListDto.class);
-                Map<String, LicPsnTypeDto> map = IaisCommonUtils.genNewHashMap();
-                List<LicKeyPersonnelDto> KeyPersonnelDtos = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
-                List<String> licIds = IaisCommonUtils.genNewArrayList();
-                for (LicKeyPersonnelDto dto1 : KeyPersonnelDtos) {
-                    String licSvcName = dto1.getLicSvcName();
-                    String psnType = dto1.getPsnType();
-                    String licenceId = dto1.getLicenceId();
-                    String licNo = dto1.getLicNo();
-                    String professionRegnNo = dto1.getProfessionRegnNo();
-                    String professionType = dto1.getProfessionType();
-                    String speciality = dto1.getSpeciality();
-                    String specialityOther = dto1.getSpecialityOther();
-                    String subSpeciality = dto1.getSubSpeciality();
-                    if (psnTypeSearch.equals(psnType)) {
-                        if (!StringUtil.isEmpty(professionRegnNo) && !StringUtil.isEmpty(professionType)) {
-                            personnelListDto.setProfessionRegnNo(professionRegnNo);
-                            personnelListDto.setProfessionType(professionType);
-                        }
-                        if (!StringUtil.isEmpty(speciality)) {
-                            personnelListDto.setSpeciality(speciality);
-                            personnelListDto.setSubSpeciality(subSpeciality);
-                            personnelListDto.setSpecialityOther(specialityOther);
-                        }
-                        LicPsnTypeDto licPsnTypeDto = map.get(licNo);
-                        if (!licIds.contains(licenceId)) {
-                            licIds.add(licenceId);
-                        }
-                        if (licPsnTypeDto == null) {
-                            licPsnTypeDto = new LicPsnTypeDto();
-                            licPsnTypeDto.setLicSvcName(licSvcName);
-                            List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                            psnTypes.add(psnType);
-                            licPsnTypeDto.setPsnTypes(psnTypes);
-                            map.put(licNo, licPsnTypeDto);
-                            personnelListDto.setLicenceNo(licNo);
-                        } else {
-                            List<String> psnTypes = licPsnTypeDto.getPsnTypes();
-                            if (!psnTypes.contains(psnType)) {
-                                psnTypes.add(psnType);
-                            }
-                        }
-                    }
-                }
-                personnelListDto.setLicenceIds(licIds);
-                personnelListDto.setLicPsnTypeDtoMaps(map);
-                if (!IaisCommonUtils.isEmpty(licIds)) {
-                    personnelListDtos.add(personnelListDto);
-                }
-            }
-        } else {
-            for (PersonnelQueryDto dto : personnelQueryDtos) {
-                String idNo = dto.getIdNo();
-                List<String> personIds = requestForChangeService.getPersonnelIdsByIdNo(idNo);
-                PersonnelListDto personnelListDto = MiscUtil.transferEntityDto(dto, PersonnelListDto.class);
-                Map<String, LicPsnTypeDto> map = IaisCommonUtils.genNewHashMap();
-                List<LicKeyPersonnelDto> licByPerId = requestForChangeService.getLicKeyPersonnelDtoByPerId(personIds);
-                List<String> licIds = IaisCommonUtils.genNewArrayList();
-                for (LicKeyPersonnelDto dto1 : licByPerId) {
-                    String licSvcName = dto1.getLicSvcName();
-                    String psnType = dto1.getPsnType();
-                    String licenceId = dto1.getLicenceId();
-                    String licNo = dto1.getLicNo();
-                    String professionRegnNo = dto1.getProfessionRegnNo();
-                    String professionType = dto1.getProfessionType();
-                    String speciality = dto1.getSpeciality();
-                    String specialityOther = dto1.getSpecialityOther();
-                    String subSpeciality = dto1.getSubSpeciality();
-                    if (!StringUtil.isEmpty(professionRegnNo) && !StringUtil.isEmpty(professionType)) {
-                        personnelListDto.setProfessionRegnNo(professionRegnNo);
-                        personnelListDto.setProfessionType(professionType);
-                    }
-                    if (!StringUtil.isEmpty(speciality)) {
-                        personnelListDto.setSpeciality(speciality);
-                        personnelListDto.setSubSpeciality(subSpeciality);
-                        personnelListDto.setSpecialityOther(specialityOther);
-                    }
-                    LicPsnTypeDto licPsnTypeDto = map.get(licNo);
-                    if (!licIds.contains(licenceId)) {
-                        licIds.add(licenceId);
-                    }
-                    if (licPsnTypeDto == null) {
-                        licPsnTypeDto = new LicPsnTypeDto();
-                        licPsnTypeDto.setLicSvcName(licSvcName);
-                        List<String> psnTypes = IaisCommonUtils.genNewArrayList();
-                        psnTypes.add(psnType);
-                        licPsnTypeDto.setPsnTypes(psnTypes);
-                        map.put(licNo, licPsnTypeDto);
-                        personnelListDto.setLicenceNo(licNo);
-                    } else {
-                        List<String> psnTypes = licPsnTypeDto.getPsnTypes();
-                        if (!psnTypes.contains(psnType)) {
-                            psnTypes.add(psnType);
-                        }
-                    }
-                }
-                personnelListDto.setLicenceIds(licIds);
-                personnelListDto.setLicPsnTypeDtoMaps(map);
-                if (!IaisCommonUtils.isEmpty(licIds)) {
-                    personnelListDtos.add(personnelListDto);
-                }
-            }
+        PersonnelTypeDto personnelTypeDto = new PersonnelTypeDto ();
+        personnelTypeDto.setPersonnelQueryDtoList(personnelQueryDtos);
+        personnelTypeDto.setPsnType(psnTypeSearch);
+        List<PersonnelListDto> personnelListDtos = requestForChangeService.getPersonnelListDto(personnelTypeDto);
+        if(!IaisCommonUtils.isEmpty(personnelListDtos)){
+            PaginationHandler<PersonnelListDto> handler = new PaginationHandler<>("personPagDiv", "personBodyDiv");
+            handler.setAllData(personnelListDtos);
+            handler.preLoadingPage();
+        }else {
+            ParamUtil.setRequestAttr(bpc.request, "noRecord", "Y");
         }
-        handler.setAllData(personnelListDtos);
-        handler.preLoadingPage();
         List<SelectOption> personelRoles = getPsnType();
         ParamUtil.setRequestAttr(bpc.request, "PersonnelRoleList", personelRoles);
         ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtos);
