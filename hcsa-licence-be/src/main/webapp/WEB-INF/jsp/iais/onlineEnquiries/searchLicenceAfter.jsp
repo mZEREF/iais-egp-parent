@@ -488,11 +488,11 @@
         </div>
     </iais:body>
     <div class="row" height="1" style="display: none" id="selectDecisionMsg">
-        <div class="col-sm-9">
-            <p style="color:#ff0000;">
-                There is a pending application for this licence, please withdraw the application before proceeding with cessation
-            </p>
-        </div>
+        <iais:error>
+            <div class="error">
+                <h2><iais:message key="CESS_ERR002" escape="true"></iais:message></h2>
+            </div>
+        </iais:error>
     </div>
     <iais:action style="text-align:right;">
         <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>

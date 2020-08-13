@@ -4,6 +4,7 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.common.utils.MaskUtil" %>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -368,27 +369,37 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <c:forEach var="compliance" items="${complianceHistoryDtos}" varStatus="status">
-                                                        <tr>
-                                                            <td class="row_no">&nbsp;<c:out value="${status.index + 1}"/></td>
-                                                            <td>
-                                                                <a onclick="doReportSearch('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,compliance.appPremCorrId)}')">Inspection Report</a>
-                                                            </td>
-                                                            <td>
-                                                                <p>${compliance.riskTag}</p>
-                                                            </td>
-                                                            <td>
-                                                                <p>${compliance.complianceTag} Compliance</p>
-                                                            </td>
-                                                            <td>
-                                                                <p>${compliance.inspectionTypeName}</p>
-                                                            </td>
-                                                            <td>
-                                                                <p>${compliance.inspectionDate}<c:if test="${empty compliance.inspectionDate}">-</c:if></p>
-                                                            </td>
-                                                        </tr>
-                                                    </c:forEach>
-
+                                                    <c:choose>
+                                                        <c:when test="${empty complianceHistoryDtos}">
+                                                            <tr>
+                                                                <td colspan="12">
+                                                                    <iais:message key="ACK018" escape="true"/>
+                                                                </td>
+                                                            </tr>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <c:forEach var="compliance" items="${complianceHistoryDtos}" varStatus="status">
+                                                                <tr>
+                                                                    <td class="row_no">&nbsp;<c:out value="${status.index + 1}"/></td>
+                                                                    <td>
+                                                                        <a onclick="doReportSearch('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,compliance.appPremCorrId)}')">Inspection Report</a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p>${compliance.riskTag}</p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p>${compliance.complianceTag} Compliance</p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p>${compliance.inspectionTypeName}</p>
+                                                                    </td>
+                                                                    <td>
+                                                                        <p>${compliance.inspectionDate}<c:if test="${empty compliance.inspectionDate}">-</c:if></p>
+                                                                    </td>
+                                                                </tr>
+                                                            </c:forEach>
+                                                        </c:otherwise>
+                                                    </c:choose>
 
                                                     </tbody>
                                                 </table>

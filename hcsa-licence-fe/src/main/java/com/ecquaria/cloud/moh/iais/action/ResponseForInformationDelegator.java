@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
@@ -201,24 +202,24 @@ public class ResponseForInformationDelegator {
             for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
                 CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
                 if(!(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename()))){
-                    errMap.put("UploadFile"+doc.getId(),"The file cannot be empty.");
+                    errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
                 }
                 if(licPremisesReqForInfoDto.isNeedDocument()){
                     if(doc.getDocSize()==null){
-                        errMap.put("UploadFile"+doc.getId(),"The file cannot be empty.");
+                        errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
                     }else{
                         List<String> fileTypes = Arrays.asList(systemParamConfig.getUploadFileType().split(","));
-                        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,(systemParamConfig.getUploadFileLimit() * 1024 *1024L));
+                        Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,(systemParamConfig.getUploadFileLimit() * 1024 *1024l));
                         //Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file);
                         Boolean fileSize = booleanMap.get("fileSize");
                         Boolean fileType = booleanMap.get("fileType");
                         //size
                         if(!fileSize){
-                            errMap.put("UploadFile"+doc.getId(),"The file size must less than " + 4 + "M.");
+                            errMap.put("selectedFile", MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
                         }
                         //type
                         if(!fileType){
-                            errMap.put("UploadFile"+doc.getId(),"The file type is invalid.");
+                            errMap.put("selectedFile",MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
                         }
                     }
                 }

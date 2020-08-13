@@ -121,7 +121,7 @@
                                                     <iais:row >
                                                         <iais:field value=""/>
                                                         <iais:value width="7">
-                                                            This field is mandatory.
+                                                            Processing Decision is mandatory.
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>

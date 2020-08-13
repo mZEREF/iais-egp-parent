@@ -469,7 +469,7 @@ public class RequestForInformationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         if(date==null){
-            errorMap.put("Due_date","ERR0010");
+            errorMap.put("Due_date",MessageUtil.replaceMessage("GENERAL_ERR0006","Due Date","field"));
         }else {
             String newDate= ParamUtil.getString(request, "Due_date");
             dueDate=Formatter.parseDate(newDate);
@@ -480,7 +480,7 @@ public class RequestForInformationDelegator {
             Date tomorrow= calendar.getTime();
             String now=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(tomorrow);
             if(newDate.compareTo(now) <0 ){
-                errorMap.put("Due_date","Due Date should be a future Date.");
+                errorMap.put("Due_date","PRF_ERR007");
             }
         }
         if (!errorMap.isEmpty()) {
@@ -608,7 +608,7 @@ public class RequestForInformationDelegator {
         String infoChk=ParamUtil.getString(request, "info");
         String docChk=ParamUtil.getString(request, "doc");
         if(infoChk==null && docChk==null){
-            errMap.put("rfiSelect","Please select Type of Required Information.");
+            errMap.put("rfiSelect","PRF_ERR008");
 
         }
         if(docChk!=null){
@@ -616,7 +616,7 @@ public class RequestForInformationDelegator {
             ) {
                 String s=ParamUtil.getString(request,"docTitle"+len);
                 if(StringUtil.isEmpty(s)){
-                    errMap.put("docTitle"+len,"ERR0010");
+                    errMap.put("docTitle"+len,MessageUtil.replaceMessage("GENERAL_ERR0006","Title","field"));
                 }
             }
         }
@@ -625,41 +625,41 @@ public class RequestForInformationDelegator {
             ) {
                 String s=ParamUtil.getString(request,"infoTitle"+len);
                 if(StringUtil.isEmpty(s)){
-                    errMap.put("infoTitle"+len,"ERR0010");
+                    errMap.put("infoTitle"+len,MessageUtil.replaceMessage("GENERAL_ERR0006","Title","field"));
                 }
             }
         }
         String date=ParamUtil.getDate(request, "Due_date");
 
         if(date==null){
-            errMap.put("Due_date","ERR0010");
+            errMap.put("Due_date",MessageUtil.replaceMessage("GENERAL_ERR0006","Due Date","field"));
         }else {
             date= ParamUtil.getString(request, "Due_date");
             Date dueDate=Formatter.parseDate(date);
             date=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(dueDate);
             String now=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(new Date());
             if(date.compareTo(now) <=0 ){
-                errMap.put("Due_date","Due Date should be a future Date.");
+                errMap.put("Due_date","PRF_ERR007");
             }
         }
         String rfiTitle=ParamUtil.getString(request, "rfiTitle");
         if(rfiTitle==null){
-            errMap.put("rfiTitle","ERR0010");
+            errMap.put("rfiTitle",MessageUtil.replaceMessage("GENERAL_ERR0006","Title","field"));
         }
         String licenceNo=ParamUtil.getString(request, "licenceNo");
         Map<String, String> lice= (Map<String, String>) ParamUtil.getSessionAttr(request, "licLicPremMap");
         String licCorrId=lice.get(licenceNo);
         if(licenceNo==null){
-            errMap.put("licenceNo","ERR0010");
+            errMap.put("licenceNo",MessageUtil.replaceMessage("GENERAL_ERR0006","Licence No","field"));
         }else if(licCorrId==null){
-            errMap.put("licenceNo","Please provide the correct licence no");
+            errMap.put("licenceNo","PRF_ERR006");
             }else {
             List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtoList= requestForInformationService.searchLicPremisesReqForInfo(licCorrId);
             if(!licPremisesReqForInfoDtoList.isEmpty()) {
                 for (LicPremisesReqForInfoDto licPreRfi:licPremisesReqForInfoDtoList
                 ) {
                     if(licPreRfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||licPreRfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER)){
-                        errMap.put("LicencePending","Licence is still pending for Applicant's input. Please do not submit any new Request For Information.");
+                        errMap.put("LicencePending","PRF_ERR009");
                     }
                 }
             }

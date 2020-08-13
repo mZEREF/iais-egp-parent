@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.risk.RiskConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -17,7 +16,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -25,7 +23,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -46,13 +54,36 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.*;
-import com.ecquaria.cloud.moh.iais.service.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.BroadcastService;
+import com.ecquaria.cloud.moh.iais.service.CessationBeService;
+import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.InsRepService;
+import com.ecquaria.cloud.moh.iais.service.LicenceService;
+import com.ecquaria.cloud.moh.iais.service.LicenseeService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
@@ -163,6 +194,8 @@ public class HcsaApplicationDelegator {
 
     @Value("${iais.email.sender}")
     private String mailSender;
+    @Autowired
+    private NotificationHelper notificationHelper;
 
     /**
      * StartStep: doStart
@@ -1050,6 +1083,21 @@ public class HcsaApplicationDelegator {
             if(result != null){
                 sendSMS(msgId,result.getLicenseeId(),notifyMap);
             }else {
+                log.info("-----RFC Application - Send SMS to transferor when licence transfer application is rejected. licenseeId is null---------");
+            }
+            try{
+                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                String applicationName = licenseeDto.getName();
+                Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                emailMap.put("ApplicantName", applicationName);
+                emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
+                emailMap.put("ApplicationNumber", applicationNo);
+                emailMap.put("ApplicationDate", new Date());
+                emailMap.put("email_address", "");
+                emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED, emailMap, applicationNo, applicationNo,
+                        NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+            }catch (Exception e){
                 log.info("-----RFC Application - Send SMS to transferor when licence transfer application is rejected. licenseeId is null---------");
             }
 
@@ -1996,6 +2044,23 @@ public class HcsaApplicationDelegator {
 
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        try {
+            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+            String applicationName = licenseeDto.getName();
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+            emailMap.put("officer_name", "officer_name");
+            emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
+            emailMap.put("ApplicationNumber", applicationViewDto.getApplicationDto().getApplicationNo());
+            emailMap.put("TAT_time", new Date());
+            emailMap.put("details", "HCI Name :"+applicationViewDto.getHciName()+"<br>"+"HCI Address :"+applicationViewDto.getHciAddress()+"<br>"+"Licensee :"+applicationName+"<br>"+"Comment :"+internalRemarks+"<br>");
+            emailMap.put("systemLink", loginUrl);
+            emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+            notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION, emailMap, applicationViewDto.getApplicationDto().getApplicationNo(), applicationViewDto.getApplicationDto().getApplicationNo(),
+                    NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("send email error!-The following email will be triggered when Approval Officer routes an application back for Internal Clarification"));
+        }
     }
 
     private void updateInspectionStatus(String appPremisesCorrelationId, String status) {
