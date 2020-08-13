@@ -207,6 +207,9 @@ public class NotificationHelper {
 			emailTemplate = replaceNum(emailTemplate);
 			if (templateContent != null && !templateContent.isEmpty()) {
 				mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
+				if(templateContent.get("msgContent")!= null ){
+					mesContext= (String) templateContent.get("msgContent");
+				}
 			} else {
 				mesContext = emailTemplate;
 			}
