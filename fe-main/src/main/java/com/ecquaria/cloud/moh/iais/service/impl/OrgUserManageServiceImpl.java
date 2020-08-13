@@ -214,7 +214,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public FeUserDto getFeUserAccountByNricAndType(String nric, String idType) {
-        return feUserClient.getInternetUserByNric(nric, idType).getEntity();
+        return feUserClient.getInternetUserByNricAndIdType(nric, idType).getEntity();
     }
 
 

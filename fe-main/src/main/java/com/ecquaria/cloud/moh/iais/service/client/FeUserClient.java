@@ -39,7 +39,7 @@ public interface FeUserClient {
     FeignResponseEntity<List<String>> getUenListByIdAndType(@PathVariable("nric") String nric, @PathVariable("idType") String idType);
 
     @GetMapping(value = "/iais-internet-user/user-account/{nric}/{idType}")
-    FeignResponseEntity<FeUserDto> getInternetUserByNric(@PathVariable("nric") String nric, @PathVariable("idType") String idType);
+    FeignResponseEntity<FeUserDto> getInternetUserByNricAndIdType(@PathVariable("nric") String nric, @PathVariable("idType") String idType);
 
     @RequestMapping(path = "/iais-internet-user/edit-user-account",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeUserDto> editUserAccount(@RequestBody FeUserDto feUserDto);

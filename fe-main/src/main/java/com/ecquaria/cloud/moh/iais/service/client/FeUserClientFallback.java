@@ -47,7 +47,7 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
-    public FeignResponseEntity<FeUserDto> getInternetUserByNric(String nric, String idType) {
+    public FeignResponseEntity<FeUserDto> getInternetUserByNricAndIdType(String nric, String idType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
