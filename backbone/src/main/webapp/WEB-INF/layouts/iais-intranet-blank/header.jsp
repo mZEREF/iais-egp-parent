@@ -1,10 +1,14 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.UrlConfig" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
     String intranetWebSite = UrlConfig.getInstance().getIntranetWebSite();
     String intranetInbox = UrlConfig.getInstance().getIntranetInbox();
+    if(!IaisEGPHelper.isLogin()){
+        intranetInbox= intranetWebSite;
+    }
 %>
 <header>
 

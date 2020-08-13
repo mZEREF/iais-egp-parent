@@ -216,6 +216,25 @@ public final class IaisEGPHelper extends EGPHelper {
         dto.setUserAgent(request.getHeader("User-Agent"));
     }
 
+    public static boolean isLogin(){
+        log.info(StringUtil.changeForLog("Judge the if login start ..."));
+        boolean result = false;
+        HttpServletRequest request = MiscUtil.getCurrentRequest();
+        if (request != null) {
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+            if (loginContext != null) {
+                result = true;
+            }else{
+                log.info(StringUtil.changeForLog("isLogin do not have the loginContext..."));
+            }
+        }else{
+            log.error(StringUtil.changeForLog("isLogin do not have the request..."));
+        }
+        log.info(StringUtil.changeForLog("isLogin the  result is -->:"+result));
+        log.info(StringUtil.changeForLog("Judge the if login end ..."));
+        return result;
+    }
+
     public static String getRootPath() {
         String urlStr = IaisEGPHelper.class.getResource("").toString();
         String serverPath = urlStr.substring(urlStr.lastIndexOf("file:/") + 6).replaceAll("%20", " "); //NOSONAR

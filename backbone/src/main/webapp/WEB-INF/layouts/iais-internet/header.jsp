@@ -1,9 +1,13 @@
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %>
 <%@ page import="com.ecquaria.cloud.moh.iais.constant.UrlConfig" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper" %>
 <%
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
     String internetWebSite = UrlConfig.getInstance().getInternetWebSite();
     String internetInbox = UrlConfig.getInstance().getInternetInbox();
+    if(!IaisEGPHelper.isLogin()){
+        internetInbox= internetWebSite;
+    }
 %>
 <header>
 
