@@ -102,4 +102,7 @@
     $("#amendLicence4_2").click(function(){
         guideSubmit("amend4_2","main");
     });
+    $("#updateAdminPersonnel").click(function(){
+        guideSubmit("upAdmin","main");
+    });
 </script>
