@@ -83,4 +83,8 @@ public interface RequestForChangeService {
      Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, String  masterCodeDto ,boolean isRfi);
      void svcDocToPresmise(AppSubmissionDto appSubmissionDto);
     void premisesDocToSvcDoc( AppSubmissionDto appSubmissionDtoByLicenceId);
+    void sendRfcSubmittedEmail(AppSubmissionDto appSubmissionDto, String pmtMethod);
+    void sendRfcLicenseeEmail(AppSubmissionDto appSubmissionDto);
+    void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto);
+    void sendRfcPaymentOnlineOrGIROSuccesedEmail(AppSubmissionDto appSubmissionDto);
     }

@@ -1,12 +1,14 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
@@ -17,26 +19,30 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessatonConfirmDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppSpecifiedLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
@@ -73,6 +79,12 @@ public class CessationFeServiceImpl implements CessationFeService {
     private String mailSender;
     @Autowired
     private AppConfigClient appConfigClient;
+    @Autowired
+    private NotificationHelper notificationHelper;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
+    @Autowired
+    private OrganizationLienceseeClient organizationLienceseeClient;
     @Autowired
     AppSubmissionService appSubmissionService;
     private final static String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
@@ -286,9 +298,35 @@ public class CessationFeServiceImpl implements CessationFeService {
             Date effectiveDate = appCessationDto.getEffectiveDate();
             try {
                 if (effectiveDate.after(new Date())) {
-                    sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+                    String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                    Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                    LicenseeDto licenseeDto= organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
+                    String applicantName=licenseeDto.getName();
+                    emailMap.put("ApplicantName", applicantName);
+                    emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+                    emailMap.put("ApplicationNumber", applicationNo);
+                    emailMap.put("ServiceLicenceName", svcName);
+                    emailMap.put("CessationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+                    emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));                    emailMap.put("email", "");
+                    emailMap.put("systemLink", loginUrl);
+                    emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                    notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE, emailMap, applicationNo, applicationNo,
+                            NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                    //sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 } else {
-                    sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
+                    Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                    LicenseeDto licenseeDto=organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
+                    String applicantName=licenseeDto.getName();
+                    emailMap.put("ApplicantName", applicantName);
+                    emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+                    emailMap.put("ServiceLicenceName", svcName);
+                    emailMap.put("ApplicationNumber", applicationNo);
+                    emailMap.put("CessationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+                    emailMap.put("email", "");
+                    emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                    notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE, emailMap, applicationNo, applicationNo,
+                            NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                    //sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 }
             } catch (Exception e) {
                 log.info(StringUtil.changeForLog("==================== email error ===============>>>>>>>" + e.getMessage()));

@@ -1,8 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -17,14 +20,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -85,7 +92,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     private String secSecretKey;
     @Value("${iais.email.sender}")
     private String mailSender;
-
+    @Autowired
+    private NotificationHelper notificationHelper;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Override
     public List<PremisesListQueryDto> getPremisesList(String licenseeId) {
@@ -1363,6 +1373,93 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             appSvcDocDtoList.addAll(appSvcDocDtoLit);
         }
         appSubmissionDtoByLicenceId.getAppSvcRelatedInfoDtoList().get(0).setAppSvcDocDtoLit(appSvcDocDtoList);
+    }
+
+    @Override
+    public void sendRfcPaymentOnlineOrGIROSuccesedEmail(AppSubmissionDto appSubmissionDto) {
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        LicenseeDto licenseeDto= organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
+        String applicantName=licenseeDto.getName();
+        if(appSubmissionDto.getAppEditSelectDto()!=null){
+            emailMap.put("change","true");
+        }else {
+            emailMap.put("no_change","true");
+        }
+        emailMap.put("ApplicantName", applicantName);
+        emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
+        emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
+        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+        emailMap.put("systemLink", loginUrl);
+        emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT, emailMap, appSubmissionDto.getAppGrpNo(), appSubmissionDto.getAppGrpNo(),
+                NotificationHelper.RECEIPT_TYPE_APP, appSubmissionDto.getLicenseeId());
+    }
+
+    @Override
+    public void sendRfcSubmittedEmail(AppSubmissionDto appSubmissionDto, String pmtMethod) {
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        LicenseeDto licenseeDto= organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
+        String applicantName=licenseeDto.getName();
+        if(pmtMethod.equals(ApplicationConsts.PAYMENT_METHOD_NAME_GIRO)){
+            emailMap.put("GIRO_PAY","true");
+            emailMap.put("GIRO_account_number","");
+            emailMap.put("usual_text_for_GIRO_deduction",appSubmissionDto.getLateFeeStr());
+        }else {
+            emailMap.put("Online_PAY","true");
+        }
+        emailMap.put("Payment_Amount", appSubmissionDto.getAmountStr());
+        emailMap.put("ApplicantName", applicantName);
+        emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
+        emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
+        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+        emailMap.put("systemLink", loginUrl);
+        emailMap.put("email_address", "");
+        emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT, emailMap, appSubmissionDto.getAppGrpNo(), appSubmissionDto.getAppGrpNo(),
+                NotificationHelper.RECEIPT_TYPE_APP, appSubmissionDto.getLicenseeId());
+    }
+
+    @Override
+    public void sendRfcLicenseeEmail(AppSubmissionDto appSubmissionDto) {
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        LicenseeDto licenseeDto= organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
+        String applicantName=licenseeDto.getName();
+        emailMap.put("name_transferee", "name_transferee");
+        emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
+        emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
+        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+        emailMap.put("ExistingLicensee", applicantName);
+        emailMap.put("transferee_licensee", applicantName);
+        emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
+        emailMap.put("Hypelink", loginUrl);
+        emailMap.put("HCSA_Regulations", "");
+        emailMap.put("ApplicantName", applicantName);
+        emailMap.put("systemLink", loginUrl);
+        emailMap.put("email", "");
+        emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED, emailMap, appSubmissionDto.getAppGrpNo(), appSubmissionDto.getAppGrpNo(),
+                NotificationHelper.RECEIPT_TYPE_APP, appSubmissionDto.getLicenseeId());
+    }
+
+    @Override
+    public void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto) {
+        Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+        LicenseeDto licenseeDto= organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
+        String applicantName=licenseeDto.getName();
+        emailMap.put("officer_name", "officer_name");
+        emailMap.put("ServiceLicenceName", appSubmissionDto.getServiceName());
+        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+        emailMap.put("Licensee", applicantName);
+        emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
+        emailMap.put("ReductionResidentialBeds", "");
+        emailMap.put("RemoveSubsumedService", "");
+        emailMap.put("ChangeManagementLicensee", "");
+        emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+        notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER, emailMap, appSubmissionDto.getAppGrpNo(), appSubmissionDto.getAppGrpNo(),
+                NotificationHelper.RECEIPT_TYPE_APP, appSubmissionDto.getLicenseeId());
     }
 
 
