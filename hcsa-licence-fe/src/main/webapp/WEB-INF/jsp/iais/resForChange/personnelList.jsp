@@ -30,7 +30,7 @@
                     <div class="search-wrap">
                         <div class="input-group">
                             <input class="form-control" placeholder="Search Your Keywords" value="${personName}" type="text" name="personName">
-                            <span class="input-group-btn"><button class="btn btn-default buttonsearch"><i class="fa fa-search"></i></button></span> <%--NOSONAR--%>
+                            <span class="input-group-btn"><button class="btn btn-default buttonsearch"><i class="fa fa-search"></i></button></span>
                         </div>
                     </div>
                 </div>
@@ -47,7 +47,18 @@
                         <th>Roles</th>
                     </tr>
                     </thead>
-                    <tbody id="personBodyDiv"></tbody>
+                    <c:choose>
+                        <c:when test="${noRecord == 'Y'}">
+                            <tbody>
+                            <tr>
+                                <td>No record found.</td>
+                            </tr>
+                            </tbody>
+                        </c:when>
+                        <c:otherwise>
+                            <tbody id="personBodyDiv"></tbody>
+                        </c:otherwise>
+                    </c:choose>
                 </table>
                 <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"></em> Back</a>
             </div>

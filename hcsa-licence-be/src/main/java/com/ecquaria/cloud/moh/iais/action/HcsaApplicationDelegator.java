@@ -1021,8 +1021,6 @@ public class HcsaApplicationDelegator {
             Date date = new Date();
             String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
             String appType = MasterCodeUtil.getCodeDesc(applicationType);
-
-
             //send sms
             sendSMS(msgId,licenseeId,msgInfoMap);
             //send message

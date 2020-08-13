@@ -5,6 +5,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
  * @date 2020/2/7 13:24
  */
 
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
@@ -47,4 +48,7 @@ public interface CessationClient {
 
     @PostMapping(value = "/appeal/is-all-ceased", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> isAllCeased(@RequestBody List<String> licIds);
+
+    @GetMapping(value = "/appeal/appId-misc-list-cessation",produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremiseMiscDto>> getAppPremiseMiscDtoListByAppId(@RequestParam("appId") String appId);
 }

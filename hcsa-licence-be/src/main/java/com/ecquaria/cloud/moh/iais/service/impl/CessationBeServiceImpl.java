@@ -260,11 +260,10 @@ public class CessationBeServiceImpl implements CessationBeService {
             String appId = appIds.get(i);
             ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
             String applicationNo = applicationDto.getApplicationNo();
-            String id = applicationDto.getId();
             applicationDtos.add(applicationDto);
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
-            AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
+            AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(appId).getEntity();
             String hciCode = appGrpPremisesDto.getHciCode();
             String hciName = null;
             String hciAddress = null;
@@ -298,7 +297,6 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                     notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE, emailMap, applicationNo, applicationNo,
                             NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
-                    //sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 } else {
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                     LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
@@ -312,7 +310,6 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                     notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE, emailMap, applicationNo, applicationNo,
                             NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
-                    //sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 }
             } catch (Exception e) {
                 e.getMessage();

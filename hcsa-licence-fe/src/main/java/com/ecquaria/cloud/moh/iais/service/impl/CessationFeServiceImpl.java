@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -46,6 +47,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -248,10 +250,10 @@ public class CessationFeServiceImpl implements CessationFeService {
     }
 
     @Override
-    public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, List<String> appIds, LoginContext loginContext) throws Exception {
+    public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, List<String> appIds, LoginContext loginContext) throws ParseException {
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
-        List<String> listAppIds = IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appCessationDtos.size(); i++) {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
             String licId = appCessationDto.getLicId();
@@ -260,16 +262,14 @@ public class CessationFeServiceImpl implements CessationFeService {
             licIds.clear();
             licIds.add(licId);
             String appId = appIds.get(i);
-            listAppIds.clear();
-            listAppIds.add(appId);
             ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
+            applicationDtos.add(applicationDto);
             String applicationNo = applicationDto.getApplicationNo();
-            String id = applicationDto.getId();
             List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
             AppCessLicDto appCessLicDto = appCessDtosByLicIds.get(0);
             String licenceNo = appCessLicDto.getLicenceNo();
             String svcName = appCessLicDto.getSvcName();
-            AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(id).getEntity();
+            AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(appId).getEntity();
             String hciCode = appGrpPremisesDto.getHciCode();
             String hciName = null;
             String hciAddress = null;
@@ -302,6 +302,23 @@ public class CessationFeServiceImpl implements CessationFeService {
             appCessatonConfirmDto.setHciName(hciName);
             appCessationDtosConfirms.add(appCessatonConfirmDto);
         }
+        //update apps
+        Date today = new Date();
+        String todayStr = DateUtil.formatDate(today);
+        Date date2 = DateUtil.parseDate(todayStr);
+        for(ApplicationDto applicationDto : applicationDtos){
+            String appId = applicationDto.getId();
+            List<AppPremiseMiscDto> appPremiseMiscDtos = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
+            if(!IaisCommonUtils.isEmpty(appPremiseMiscDtos)){
+                Date effectiveDate = appPremiseMiscDtos.get(0).getEffectiveDate();
+                String effectiveDateStr = DateUtil.formatDate(effectiveDate);
+                Date date1 = DateUtil.parseDate(effectiveDateStr);
+                if(date1.after(date2)){
+                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
+                }
+            }
+        }
+        applicationClient.updateApplicationList(applicationDtos);
         List<String> licNos = IaisCommonUtils.genNewArrayList();
         for (AppCessatonConfirmDto appCessatonConfirmDto : appCessationDtosConfirms) {
             String licenceNo = appCessatonConfirmDto.getLicenceNo();
@@ -316,7 +333,6 @@ public class CessationFeServiceImpl implements CessationFeService {
             } catch (Exception e) {
                 log.info(StringUtil.changeForLog("====================eic error================="));
             }
-
         }
         return appCessationDtosConfirms;
     }
