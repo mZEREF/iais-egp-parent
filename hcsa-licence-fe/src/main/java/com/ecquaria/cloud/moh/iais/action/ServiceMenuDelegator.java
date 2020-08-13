@@ -1180,12 +1180,12 @@ public class ServiceMenuDelegator {
                 if(hcsaServiceDto != null){
                     if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(hcsaServiceDto.getSvcType())){
                         baseSvcIds.add(hcsaServiceDto.getId());
+                        if(appSelectSvcDto.isAlign()){
+                            appSvcRelatedInfoDto.setAlignFlag(alignFlag);
+                        }
                     }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(hcsaServiceDto.getSvcType())){
                         speSvcIds.add(hcsaServiceDto.getId());
                     }
-                }
-                if(appSelectSvcDto.isAlign()){
-                    appSvcRelatedInfoDto.setAlignFlag(alignFlag);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request, "baseSvcIdList", (Serializable) baseSvcIds);

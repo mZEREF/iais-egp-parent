@@ -489,6 +489,27 @@ public class NewApplicationDelegator {
         }
         int sysFileSize = systemParamConfig.getUploadFileLimit();
         ParamUtil.setRequestAttr(bpc.request,"sysFileSize",sysFileSize);
+        String sysFileType = systemParamConfig.getUploadFileType();
+        String[] sysFileTypeArr = FileUtils.fileTypeToArray(sysFileType);
+        StringBuffer fileTypeStr = new StringBuffer();
+        if(sysFileTypeArr != null){
+            int i = 0;
+            int fileTypeLength = sysFileTypeArr.length;
+            for(String fileType:sysFileTypeArr){
+                fileTypeStr.append(" ").append(fileType);
+                if(fileTypeLength > 1 && i < fileTypeLength-2){
+                    fileTypeStr.append(",");
+                }
+                if(fileTypeLength > 1 && i == sysFileTypeArr.length-2){
+                    fileTypeStr.append(" and");
+                }
+                if(i == fileTypeLength-1){
+                    fileTypeStr.append(".");
+                }
+                i++;
+            }
+        }
+        ParamUtil.setRequestAttr(bpc.request,"sysFileType",fileTypeStr.toString());
         log.info(StringUtil.changeForLog("the do prepareDocuments end ...."));
     }
 

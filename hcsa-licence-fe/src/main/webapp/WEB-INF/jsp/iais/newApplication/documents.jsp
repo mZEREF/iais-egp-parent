@@ -28,10 +28,10 @@
                   <div class="document-info-list">
                     <ul>
                       <li>
-                        <p>The maximum file size for each upload is 4MB. </p>
+                        <p>The maximum file size for each upload is <c:out value="${sysFileSize}"/>MB. </p>
                       </li>
                       <li>
-                        <p>Acceptable file formats are PDF, JPG and PNG. </p>
+                        <p>Acceptable file formats are<c:out value="${sysFileType}"/> </p>
                       </li>
                     </ul>
                   </div>
