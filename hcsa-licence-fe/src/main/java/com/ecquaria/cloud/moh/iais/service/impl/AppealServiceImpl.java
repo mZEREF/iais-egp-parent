@@ -532,8 +532,9 @@ public class AppealServiceImpl implements AppealService {
         } else {
             if (ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO.equals(appealReason)) {
                 List<AppSvcCgoDto> appSvcCgoList = appealPageDto.getAppSvcCgoDto();
-                if(StringUtil.isEmpty(appSvcCgoList)){
+                if(IaisCommonUtils.isEmpty(appSvcCgoList)){
                     //todo
+                    map.put("addCgo", MessageUtil.getMessageDesc("UC_CHKLMD001_ERR001"));
                 }
                 StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 0; i < appSvcCgoList.size(); i++) {

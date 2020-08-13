@@ -360,6 +360,7 @@
           <tr id="addInfo" <c:if test="${CgoMandatoryCount >0}">hidden </c:if>>
             <td>
               <span class="addListBtn" style="color:deepskyblue;cursor:pointer;">+ Add Another Clinical Governance Officer</span>
+              <div> <span class="error-msg" id="error_addCgo" name="iaisErrorMsg"></span></div>
             </td>
           </tr>
         </tbody>
@@ -367,7 +368,6 @@
     </div>
   </div>
 </div>
-
 <script>
     $(document).ready(function () {
         $('.hideen-div').addClass('hidden');
