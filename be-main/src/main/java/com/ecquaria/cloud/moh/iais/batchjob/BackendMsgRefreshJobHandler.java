@@ -34,12 +34,14 @@ public class BackendMsgRefreshJobHandler extends IJobHandler {
             logInfo("<====== Start to refresh error msg ======>");
             List<MessageDto> list = systemBeLicClient.getMessagesToRefresh().getEntity();
             Map<String, String> map = IaisCommonUtils.genNewHashMap();
-            for (MessageDto mc : list) {
-                map.put(mc.getCodeKey(), mc.getMessage());
-                mc.setNeedFlush(false);
+            if (!IaisCommonUtils.isEmpty(list)) {
+                for (MessageDto mc : list) {
+                    map.put(mc.getCodeKey(), mc.getMessage());
+                    mc.setNeedFlush(false);
+                }
+                MessageUtil.loadMessages(map);
+                systemBeLicClient.saveMessages(list);
             }
-            MessageUtil.loadMessages(map);
-            systemBeLicClient.saveMessages(list);
             logInfo("<====== End to refresh error msg ======>");
         }catch (Exception e){
             log.error(e.getMessage(), e);
