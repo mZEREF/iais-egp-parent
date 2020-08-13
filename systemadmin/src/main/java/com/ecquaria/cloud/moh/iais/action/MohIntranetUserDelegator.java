@@ -880,7 +880,7 @@ public class MohIntranetUserDelegator {
                     orgUserDto.setStartDateStr(startDateStr);
                 }
                 if(!StringUtil.isEmpty(endDateStr)){
-                    orgUserDto.setStartDateStr(endDateStr);
+                    orgUserDto.setEndDateStr(endDateStr);
                 }
                 orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
                 orgUserDto.setOrgId(IntranetUserConstant.ORGANIZATION);
@@ -922,7 +922,7 @@ public class MohIntranetUserDelegator {
             errors.add(error);
         }
         if (!StringUtil.isEmpty(startDateStr)&&accountActivateDatetime==null) {
-            String error = "Please key in a valid account activation start date.";
+            String error = "Please key in a valid Account Activation Start date.";
             errors.add(error);
         }
         Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
@@ -931,8 +931,8 @@ public class MohIntranetUserDelegator {
             String error = "Account Activation End is a mandatory field.";
             errors.add(error);
         }
-        if (!StringUtil.isEmpty(startDateStr)&&accountDeactivateDatetime == null) {
-            String error = "Please key in a valid account activation end date.";
+        if (!StringUtil.isEmpty(endDateStr)&&accountDeactivateDatetime == null) {
+            String error = "Please key in a valid Account Activation End date.";
             errors.add(error);
         }
         if (accountDeactivateDatetime != null && accountActivateDatetime != null) {

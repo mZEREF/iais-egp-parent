@@ -70,8 +70,6 @@
         $("#accountStatus option[text = 'Please Select']").val("selected", "selected");
         $("#accountStatus").val("");
         $(".form-horizontal .current").text("Please Select");
-
-
     });
 
     function doEdit(Id) {

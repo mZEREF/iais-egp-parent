@@ -240,13 +240,6 @@ public class CommonPoolAjaxController {
             if(!StringUtil.isEmpty(userId)){
                 searchParam.addFilter("userId", userId,true);
             }
-            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            List<UserGroupCorrelationDto> userGroupCorrelationDtos = organizationClient.getUserGroupCorreByUserId(loginContext.getUserId()).getEntity();
-            Integer isLeadForGroup = userGroupCorrelationDtos.get(0).getIsLeadForGroup();
-            if(1!=isLeadForGroup){
-                userId = loginContext.getUserId();
-                searchParam.addFilter("userId", userId,true);
-            }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "supervisorPoolDropdown", searchParam);
             SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);
