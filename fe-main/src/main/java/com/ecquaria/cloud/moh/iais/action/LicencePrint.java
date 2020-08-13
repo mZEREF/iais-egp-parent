@@ -48,7 +48,7 @@ public class LicencePrint {
                         "          <h3>Licence detail</h3>\n" +
                         "          <!--startpoint-->\n" +
                         "          <div id = \"printDev\">\n" +
-                        "            <p>This is a dummy licence with Licence Number")
+                        "            <p>This is a dummy licence with Licence Number ")
                         .append(licenceViewDto.getLicenceDto().getLicenceNo())
                         .append("</p>\n" +
                                 "            <ul class=\"info-content\">\n" +
