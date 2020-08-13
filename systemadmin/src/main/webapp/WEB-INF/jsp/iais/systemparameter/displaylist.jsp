@@ -70,7 +70,7 @@
                 <div class="row">
                     <div class="col-xs-12 col-md-11">
                         <div class="text-right">
-                            <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
+                            <a class="btn btn-secondary" onclick="clearStatus()"  href="#">Clear</a>
                             <a class="btn btn-primary" id="crud_search_button" value="doQuery" href="#">Search</a>
                         </div>
                     </div>
@@ -170,6 +170,16 @@
 <script type="text/javascript">
     function prepareEdit(id){
         SOP.Crud.cfxSubmit("mainForm", "prepareEdit", id);
+    }
+
+    function clearStatus() {
+        $('#domainType').val("");
+        $('#module').val("");
+        $('#description').val("");
+        $('#status').val("");
+        $(".form-horizontal option[text = 'Please Select']").val("selected", "selected");
+        $(".form-horizontal").val("");
+        $(".form-horizontal .current").text("Please Select");
     }
 
     function disable(id){
