@@ -593,6 +593,7 @@ public class InterInboxDelegator {
                 if(StringUtil.isEmpty(errorMessage.toString())){
                     String errorMessage2 = errorMap.get("errorMessage2");
                     if(StringUtil.isEmpty(errorMessage2)){
+                        //RFC_ERR011
                         errorMessage.append("There is already a pending application for the selected licence");
                     }else{
                         errorMessage.append(errorMessage2);

@@ -305,6 +305,12 @@ public class InboxServiceImpl implements InboxService {
     public Map<String,String> checkRenewalStatus(String licenceId) {
         LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
+        if(licenceDto != null){
+            String licenceStatus = licenceDto.getStatus();
+            if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
+                errorMap.put("errorMessage2","The selected licence(s) is/are not Active and hence ineligible for amendment/renewal/appeal/cessation");
+            }
+        }
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         if(!IaisCommonUtils.isEmpty(apps)){
             for(ApplicationDto app : apps){
