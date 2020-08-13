@@ -380,7 +380,7 @@ public class ServiceMenuDelegator {
                 }
             }
         }
-        ParamUtil.setRequestAttr(bpc.request,"multiSameSvc",multiSameSvc);
+        ParamUtil.setSessionAttr(bpc.request,"multiSameSvc",multiSameSvc);
         ParamUtil.setSessionAttr(bpc.request,BASE_SVC_PREMISES_MAP, (Serializable) svcPremises);
         ParamUtil.setSessionAttr(bpc.request,BASE_LIC_PREMISES_MAP, (Serializable) baseLicMap);
         ParamUtil.setSessionAttr(bpc.request,NO_EXIST_BASE_LIC,noExistBaseLic);
@@ -726,11 +726,12 @@ public class ServiceMenuDelegator {
             }
         }
         log.info(StringUtil.changeForLog("do choose svc next step:"+nextstep));
-        ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, nextstep);
         //reset
         ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST,null);
         ParamUtil.setSessionAttr(bpc.request,RELOAD_BASE_SVC_SELECTED, null);
+        appSelectSvcDto.setAlign(false);
+        ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
         //test
         //ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
         log.info(StringUtil.changeForLog("do choose svc end ..."));
@@ -951,7 +952,8 @@ public class ServiceMenuDelegator {
                         QueryHelp.setMainSql("applicationQuery", "getLicenceBySerName",searchParam);
                         SearchResult<MenuLicenceDto> searchResult = licenceViewService.getMenuLicence(searchParam);
                         if(searchResult.getRowCount() <= 1){
-                            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
+//                            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
+                            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
                         }else{
                             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_LICENCE);
                         }
@@ -1172,6 +1174,7 @@ public class ServiceMenuDelegator {
             appSvcRelatedInfoDtos = NewApplicationHelper.sortAppSvcRelatDto(appSvcRelatedInfoDtos);
             List<String> baseSvcIds = IaisCommonUtils.genNewArrayList();
             List<String> speSvcIds = IaisCommonUtils.genNewArrayList();
+            String alignFlag = String.valueOf(System.currentTimeMillis());
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
                 if(hcsaServiceDto != null){
@@ -1180,6 +1183,9 @@ public class ServiceMenuDelegator {
                     }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(hcsaServiceDto.getSvcType())){
                         speSvcIds.add(hcsaServiceDto.getId());
                     }
+                }
+                if(appSelectSvcDto.isAlign()){
+                    appSvcRelatedInfoDto.setAlignFlag(alignFlag);
                 }
             }
             ParamUtil.setSessionAttr(bpc.request, "baseSvcIdList", (Serializable) baseSvcIds);

@@ -5450,14 +5450,7 @@ public class NewApplicationDelegator {
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && appSubmissionDto == null && appSelectSvcDto != null){
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-//            appSubmissionDto.setNoExistLicAlign(appSelectSvcDto.isAlign());
-            //change place to serviceMenueDelegator
-//            List<HcsaServiceDto> hcsaServiceDtos = appSelectSvcDto.getBaseSvcDtoList();
-//            //add other service
-//            appSvcRelatedInfoDtos = NewApplicationHelper.addOtherSvcInfo(appSvcRelatedInfoDtos,hcsaServiceDtos,true);
-//            log.info(StringUtil.changeForLog("appSvcRelatedInfoDto size:"+appSvcRelatedInfoDtos.size()));
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
-
             String premisesId = "";
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 String premId = appSvcRelatedInfoDto.getLicPremisesId();
