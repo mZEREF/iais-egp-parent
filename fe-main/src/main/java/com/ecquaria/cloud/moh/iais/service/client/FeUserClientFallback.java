@@ -39,7 +39,7 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
-    public FeignResponseEntity<List<String>> getUenListByNric(String nric) {
+    public FeignResponseEntity<List<String>> getUenListByIdAndType(String nric, String idType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
@@ -47,7 +47,7 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
-    public FeignResponseEntity<FeUserDto> getInternetUserByNric(String nric) {
+    public FeignResponseEntity<FeUserDto> getInternetUserByNric(String nric, String idType) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

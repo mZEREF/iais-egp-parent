@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -57,7 +58,8 @@ public class UserValidator implements CustomizeValidator {
 
             if (IaisEGPConstant.YES.equals(isNeedValidateField)){
                 if(dto.getId() == null && dto.getIdentityNo() != null){
-                    FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNric(dto.getIdentityNo());
+                    String idType = IaisEGPHelper.checkIdentityNoType(dto.getIdentityNo());
+                    FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(dto.getIdentityNo(), idType);
                     if(feUserDto != null){
                         map.put("identityNo", "A user account has already been created for this ID");
                     }

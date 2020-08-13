@@ -122,8 +122,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public List<String> getUenListByNric(String nric) {
-        return feUserClient.getUenListByNric(nric).getEntity();
+    public List<String> getUenListByIdAndType(String nric, String idType) {
+        return feUserClient.getUenListByIdAndType(nric, idType).getEntity();
     }
 
     @Override
@@ -213,8 +213,8 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
-    public FeUserDto getFeUserAccountByNric(String nric) {
-        return feUserClient.getInternetUserByNric(nric).getEntity();
+    public FeUserDto getFeUserAccountByNricAndType(String nric, String idType) {
+        return feUserClient.getInternetUserByNric(nric, idType).getEntity();
     }
 
 

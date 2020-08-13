@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ProcessFileTrackConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -31,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
@@ -714,5 +716,19 @@ public final class IaisEGPHelper extends EGPHelper {
     public static String getAddress(String blkNo, String streetName, String builderName, String floorNo, String unitNo, String postalCode){
         return  MiscUtil.getAddress(blkNo, streetName, builderName,
                 floorNo, unitNo, postalCode);
+    }
+
+    public static String checkIdentityNoType(String identityNo){
+        boolean b = SgNoValidator.validateNric(identityNo);
+        boolean b1 = SgNoValidator.validateFin(identityNo);
+        if (b){
+            return OrganizationConstants.ID_TYPE_NRIC;
+        }
+
+        if (b1){
+            return OrganizationConstants.ID_TYPE_FIN;
+        }
+
+        return null;
     }
 }

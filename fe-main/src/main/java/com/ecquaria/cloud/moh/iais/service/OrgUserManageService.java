@@ -25,7 +25,7 @@ public interface OrgUserManageService {
 
     Boolean isKeyappointment(String uen, String nricNumber);
 
-    List<String> getUenListByNric(String nric);
+    List<String> getUenListByIdAndType(String nric, String idType);
 
     OrganizationDto createSingpassAccount(OrganizationDto organizationDto);
 
@@ -33,7 +33,7 @@ public interface OrgUserManageService {
 
     FeUserDto getUserByNricAndUen(String uen, String nric);
 
-    FeUserDto getFeUserAccountByNric(String nric);
+    FeUserDto getFeUserAccountByNricAndType(String nric, String idType);
 
     void createClientUser(FeUserDto userDto);
     void updateEgpUser(FeUserDto feUserDto);

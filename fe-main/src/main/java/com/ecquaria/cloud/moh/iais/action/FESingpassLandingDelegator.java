@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -87,11 +86,12 @@ public class FESingpassLandingDelegator {
             return;
         }
 
-        String nric = oLoginInfo.getLoginID();
+        String identityNo = oLoginInfo.getLoginID();
+        String idType = IaisEGPHelper.checkIdentityNoType(identityNo);
 
-        log.info(StringUtil.changeForLog("singpassCallBack nric " + nric));
+        log.info(StringUtil.changeForLog("singpassCallBack nric " + identityNo));
 
-        List<String> mohIssueUenList = orgUserManageService.getUenListByNric(nric);
+        List<String> mohIssueUenList = orgUserManageService.getUenListByIdAndType(identityNo, idType);
         if (!IaisCommonUtils.isEmpty(mohIssueUenList)){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0013"));
             ParamUtil.setRequestAttr(request, "hasMohIssueUen", "Y");
@@ -99,7 +99,7 @@ public class FESingpassLandingDelegator {
             ParamUtil.setRequestAttr(request, "hasMohIssueUen", IaisEGPConstant.NO);
         }
 
-        ParamUtil.setRequestAttr(request, UserConstants.ENTITY_ID, nric);
+        ParamUtil.setRequestAttr(request, UserConstants.ENTITY_ID, identityNo);
         log.info("singpassCallBack===========>>>End");
     }
 
@@ -111,18 +111,20 @@ public class FESingpassLandingDelegator {
      */
     public void receiveUserInfo(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
-        String nric = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
+        String identityNo = ParamUtil.getRequestString(request, UserConstants.ENTITY_ID);
         log.info("receiveUserInfo===========>>>Start");
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
 
-        FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNric(nric);
+        String idType = IaisEGPHelper.checkIdentityNoType(identityNo);
+
+        FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(identityNo, idType);
 
         if (feUserDto != null){
             ParamUtil.setRequestAttr(request, "isFirstLogin", IaisEGPConstant.NO);
         }else {
             feUserDto = new FeUserDto();
-            feUserDto.setIdentityNo(nric);
-            feUserDto.setIdType(OrganizationConstants.ID_TYPE_NRIC);
+            feUserDto.setIdentityNo(identityNo);
+            feUserDto.setIdType(idType);
             ParamUtil.setSessionAttr(request, UserConstants.SESSION_CAN_EDIT_USERINFO, IaisEGPConstant.NO);
             ParamUtil.setRequestAttr(request, "isFirstLogin", IaisEGPConstant.YES);
         }
@@ -171,8 +173,7 @@ public class FESingpassLandingDelegator {
                 organizationDto.setOrgType(UserConstants.ORG_TYPE);
                 organizationDto.setUenNo(feUserDto.getUenNo());
                 organizationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-
-                feUserDto.setIdType(idType);
+                feUserDto.setIdType(IaisEGPHelper.checkIdentityNoType(feUserDto.getIdentityNo()));
                 organizationDto.setFeUserDto(feUserDto);
 
                 OrganizationDto postCreateOrg = orgUserManageService.createSingpassAccount(organizationDto);

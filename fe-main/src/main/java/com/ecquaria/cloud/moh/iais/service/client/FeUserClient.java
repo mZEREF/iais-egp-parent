@@ -35,11 +35,11 @@ public interface FeUserClient {
     @GetMapping(value = "/iais-internet-user/user-account-userid",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeUserDto> getUserAccount(@RequestParam("id") String id);
 
-    @GetMapping(value = "/iais-internet-user/{nric}/uen-list/")
-    FeignResponseEntity<List<String>> getUenListByNric(@PathVariable("nric") String nric);
+    @GetMapping(value = "/iais-internet-user/{nric}/{idType}/uen-list/")
+    FeignResponseEntity<List<String>> getUenListByIdAndType(@PathVariable("nric") String nric, @PathVariable("idType") String idType);
 
-    @GetMapping(value = "/iais-internet-user/user-account/{nric}")
-    FeignResponseEntity<FeUserDto> getInternetUserByNric(@PathVariable("nric") String nric);
+    @GetMapping(value = "/iais-internet-user/user-account/{nric}/{idType}")
+    FeignResponseEntity<FeUserDto> getInternetUserByNric(@PathVariable("nric") String nric, @PathVariable("idType") String idType);
 
     @RequestMapping(path = "/iais-internet-user/edit-user-account",method = RequestMethod.POST,consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<FeUserDto> editUserAccount(@RequestBody FeUserDto feUserDto);
