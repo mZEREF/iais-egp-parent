@@ -66,6 +66,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
@@ -104,6 +105,8 @@ public class LicenceApproveBatchjob {
     private LicenceService licenceService;
     @Autowired
     private InboxMsgService inboxMsgService;
+    @Autowired
+    private ApplicationClient applicationClient;
 
     @Autowired
     private ApplicationGroupService applicationGroupService;
@@ -301,6 +304,7 @@ public class LicenceApproveBatchjob {
         if (IaisCommonUtils.isEmpty(applicationDtos)) {
             return result;
         }
+        boolean lastToCreatLicence = isLastToCreatLicence(applicationDtos.get(0));
         for (ApplicationDto applicationDto : applicationDtos) {
             String applicationType = applicationDto.getApplicationType();
             String status = applicationDto.getStatus();
@@ -310,11 +314,31 @@ public class LicenceApproveBatchjob {
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
             }
             if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
-                applicationDto.setStatus(status);
+                if(lastToCreatLicence){
+                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+                }else {
+                    applicationDto.setStatus(status);
+                }
             }
             result.add(applicationDto);
         }
         return result;
+    }
+
+    private boolean isLastToCreatLicence(ApplicationDto applicationDto){
+        int count = 0 ;
+        String appGrpId = applicationDto.getAppGrpId();
+        List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
+        for (ApplicationDto app : applicationDtos) {
+            String status = app.getStatus();
+            if(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE.equals(status)){
+                count ++;
+            }
+        }
+        if(count==0){
+            return true;
+        }
+        return false;
     }
 
     private void deleteRejectApplication(List<ApplicationListDto> applicationListDtoList) {
