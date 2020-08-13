@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -445,5 +447,21 @@ public class InboxServiceImpl implements InboxService {
         appInboxClient.deleteDraftByNo(draftNo);
     }
 
+    @Override
+    public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId) {
+        LicenceViewDto licenceViewDto =  licenceInboxClient.getLicenceViewByLicenceId(licenceId).getEntity();
+        if(licenceViewDto!=null){
+            LicenceDto licenceDto = licenceViewDto.getLicenceDto();
+            String licenseeId = licenceDto.getLicenseeId();
+            LicenseeDto licenseeDto = this.getLicenseeDtoBylicenseeId(licenseeId);
+            licenceViewDto.setLicenseeDto(licenseeDto);
+        }
+        return licenceViewDto;
+    }
+
+    @Override
+    public LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId) {
+        return feUserClient.getLicenseeById(licenseeId).getEntity();
+    }
 
 }

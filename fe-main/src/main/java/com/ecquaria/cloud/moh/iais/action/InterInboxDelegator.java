@@ -636,10 +636,8 @@ public class InterInboxDelegator {
             licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
         }
         if(!IaisCommonUtils.isEmpty(licIdValue)) {
-            ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
-            return;
+            ParamUtil.setSessionAttr(bpc.request, "lic-print-Ids", (Serializable) licIdValue);
         }
-        return;
     }
 
     /**
