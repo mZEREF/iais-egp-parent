@@ -26,22 +26,23 @@
 
     <sql key = "assessmentWithdrawAppQuery" remarks = "Query Inter-Application Data by condition">
         <![CDATA[
-            SELECT
-                app.id,
-                app.application_no,
-                app.app_grp_id,
+            SELECT * FROM (SELECT
+                id,
+                application_no,
+                app_grp_id,
                 (select LICENSEE_ID from application_group as ag where ag.ID =  app.APP_GRP_ID) as licensee_id,
-                app.app_type,
-                app.status,
-                app.service_id,
-                app.created_dt,
-                app.version
-            FROM APPLICATION AS app
+                app_type,
+                status,
+                service_id,
+                self_assmt_flag,
+                created_dt,
+                version
+            FROM APPLICATION AS app ) AS wapp
             WHERE 1=1
-            <#if appTypes??> AND {appTypes} </#if>
-            <#if licenseeId??> AND app.licensee_id = :licenseeId</#if>
-            <#if appStatus??> AND app.status = :appStatus</#if>
-            <#if createDtStart??> AND app.created_dt > :createDtStart</#if>
+            <#if appTypes??> AND ${appTypes} </#if>
+            <#if licenseeId??> AND wapp.licensee_id = :licenseeId</#if>
+            <#if appStatus??> AND wapp.status = :appStatus</#if>
+            <#if createDtStart??> AND wapp.created_dt > :createDtStart</#if>
         ]]>
     </sql>
 

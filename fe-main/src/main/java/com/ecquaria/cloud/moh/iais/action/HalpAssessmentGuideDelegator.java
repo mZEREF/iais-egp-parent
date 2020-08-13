@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AdhocChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
@@ -1352,18 +1353,17 @@ public class HalpAssessmentGuideDelegator {
 
     public void withdrawApp(BaseProcessClass bpc) {
         SearchParam withdrawAppParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
-        withdrawAppParam.addFilter("licenseeId", licenseeId, true);
-//        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
-        String moduleStr = SqlHelper.constructInCondition("appType", 2);
-        withdrawAppParam.addParam("appTypes", moduleStr);
 
-        withdrawAppParam.addFilter("appType"+0, ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-        withdrawAppParam.addFilter("appType"+1, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+//        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
+        List<String> inParams = new ArrayList<>(Arrays.asList(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE));
+
+        SqlHelper.builderInSql(withdrawAppParam, "app_type", "appTypes",
+                inParams);
 
         withdrawAppParam.addFilter("appStatus",ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, true);
+        withdrawAppParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "assessmentWithdrawAppQuery", withdrawAppParam);
         SearchResult<InboxAppQueryDto> withdrawAppResult = inboxService.appDoQuery(withdrawAppParam);
-
         if (withdrawAppResult != null) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM, withdrawAppParam);
             ParamUtil.setRequestAttr(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_RESULT, withdrawAppResult);
