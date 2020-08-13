@@ -755,4 +755,12 @@ public class ApplicationClientFallback implements ApplicationClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDtos(String appId, String changeType) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

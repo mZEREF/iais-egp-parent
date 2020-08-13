@@ -52,6 +52,12 @@
                           <div class="col-xs-6 col-md-6">
                             <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}"  style="display: none"><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}"/></span>
                           </div>
+                           <div class="col-xs-6 col-md-3">
+                           <span class="newVal " style="margin-left: 3%" attr="${checkList.otherScopeName}" ><c:out value="${checkList.otherScopeName}"/></span>
+                          </div>
+                          <div class="col-xs-6 col-md-3">
+                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].otherScopeName}"  style="display: none"><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].otherScopeName}"/></span>
+                          </div>
                          </span>
                     </p>
                   </div>

@@ -600,7 +600,12 @@ public class LicenceViewServiceDelegator {
                                     appSvcChckListDto.setChkName(hcsaSvcSubtypeOrSubsumedDto.getName());
                                 }
                                 if (chkLstId.equals(appSvcChckListDto.getChkLstConfId())) {
-                                    appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
+                                    if("Please indicate".equals(appSvcChckListDto.getChkName())){
+                                        appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getOtherScopeName());
+                                    }else {
+                                        appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
+                                    }
+
                                 }
                             }
                         }
@@ -708,7 +713,12 @@ public class LicenceViewServiceDelegator {
                                         appSvcChckListDto.setChkName(hcsaSvcSubtypeOrSubsumedDto.getName());
                                     }
                                     if (chkLstId.equals(appSvcChckListDto.getChkLstConfId())) {
-                                        appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
+                                        if("Please indicate".equals(appSvcChckListDto.getChkName())){
+                                            appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getOtherScopeName());
+                                        }else {
+                                            appSvcDisciplineAllocationDto.setChkLstName(appSvcChckListDto.getChkName());
+                                        }
+
                                     }
                                 }
                             }

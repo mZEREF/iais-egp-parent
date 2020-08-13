@@ -561,6 +561,7 @@ public class InterInboxDelegator {
                     }else {
                         bpc.request.setAttribute("draftByLicAppId","There is already an existing draft  for this licence "+stringBuilder.toString());
                         bpc.request.setAttribute("isRenewShow","1");
+                        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                         return;
                     }
                 }

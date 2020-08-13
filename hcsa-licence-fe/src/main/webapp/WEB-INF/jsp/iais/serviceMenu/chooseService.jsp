@@ -19,6 +19,8 @@
     <input type="hidden" name="crud_action_type"/>
     <input type="hidden" name="crud_action_additional"/>
     <input type="hidden" name="crud_action_type_form"/>
+    <input type="hidden" name="crud_action_value">
+    <input type="hidden" name="draftNo"/>
     <div class="container">
         <div class="component-gp">
             <br>
@@ -43,6 +45,10 @@
 
         </div>
     </div>
+    <input type="text" style="display: none" id="draftsave" name="draftsave" value="${selectDraftNo}">
+    <c:if test="${ not empty selectDraftNo }">
+        <iais:confirm msg="There is an existing draft for the chosen service, if you choose to continue, the draft application will be discarded." callBack="cancelSaveDraft()" popupOrder="saveDraft"  yesBtnDesc="Resume from draft" cancelBtnDesc="Continue" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="saveDraft()"></iais:confirm>
+    </c:if>
 </form>
 <script type="text/javascript">
 
@@ -58,5 +64,17 @@
             submit('chooseSvc',null,'next');
         });
     });
+    function saveDraft() {
+        let val = $('#draftsave').val();
+        $("[name='draftNo']").val(val);
+        $("[name='crud_action_value']").val('continue');
+        $('#mainForm').submit();
+    }
 
+    function cancelSaveDraft() {
+        let val = $('#draftsave').val();
+        $("[name='draftNo']").val(val);
+        $("[name='crud_action_value']").val('resume');
+        $('#mainForm').submit();
+    }
 </script>

@@ -186,7 +186,7 @@ public class AppealApproveBatchjob {
                     applicationLateRenewFee();
                     break;
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO :
-                    applicationAddCGO(appealPersonnel,rollBackPersonnel,appealApproveDto);
+                    applicationAddCGO(appealApplicaiton,appealPersonnel,rollBackPersonnel,appealApproveDto,appealApplicationGroupDtos);
                     break;
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_CHANGE_HCI_NAME :
                     applicationChangeHciName(appealAppGrpPremisesDto,rollBackAppGrpPremisesDto,appealApproveDto);
@@ -244,9 +244,9 @@ public class AppealApproveBatchjob {
     private void applicationLateRenewFee(){
      // do not need to do.
     }
-    private void applicationAddCGO(List<AppSvcKeyPersonnelDto> appealPersonnel,
+    private void applicationAddCGO(List<ApplicationDto> appealApplicaiton,List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
-                                   AppealApproveDto appealApproveDto) throws Exception {
+                                   AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationAddCGO is start ..."));
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         ApplicationDto appealApplication = appealApproveDto.getAppealApplicationDto();
@@ -261,6 +261,14 @@ public class AppealApproveBatchjob {
                     appealPersonnel.add(appealAppSvcKeyPersonnelDto);
                 }
             }
+
+            ApplicationDto o = (ApplicationDto)CopyUtil.copyMutableObject(appealApplication);
+            o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+            appealApplicaiton.add(o);
+            ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
+            ApplicationGroupDto a=(ApplicationGroupDto)CopyUtil.copyMutableObject(applicationGroupDto);
+            a.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+            appealApplicationGroupDtos.add(a);
         }
 
         if(appealDto != null){

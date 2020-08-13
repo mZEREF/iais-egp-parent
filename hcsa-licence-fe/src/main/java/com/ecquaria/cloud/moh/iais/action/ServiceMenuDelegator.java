@@ -733,7 +733,27 @@ public class ServiceMenuDelegator {
         appSelectSvcDto.setAlign(false);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
         //test
-        //ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
+        String value = ParamUtil.getRequestString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE);
+        if(NEXT.equals(value)){
+            getDraft(bpc);
+            String crud_action_value=bpc.request.getParameter("crud_action_value");
+            String attribute =(String)bpc.request.getAttribute(NewApplicationDelegator.SELECT_DRAFT_NO);
+            String draftNo  =bpc.request.getParameter("draftNo");
+            if("continue".equals(crud_action_value)){
+                List<String> list=new ArrayList<>(1);
+                list.add(draftNo);
+                applicationClient.deleteDraftNUmber(list);
+                bpc.request.getSession().setAttribute("DraftNumber", null);
+            }else if("resume".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute("DraftNumber", attribute);
+            }else if(attribute!=null){
+                ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, "chooseSvc");
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"loading");
+                return;
+            }
+        }
+
         log.info(StringUtil.changeForLog("do choose svc end ..."));
     }
 

@@ -59,6 +59,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.VehNoValidator;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.NewApplicationConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
@@ -84,6 +85,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -1216,11 +1218,26 @@ public class NewApplicationDelegator {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
         response.sendRedirect(tokenUrl);
     }
-
-    public void inboxToPreview(BaseProcessClass bpc) {
+    private void sendURL(HttpServletRequest request,HttpServletResponse response,String url){
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url,request);
+        try {
+            response.sendRedirect(tokenUrl);
+            request.getSession().removeAttribute("orgUserDto");
+        } catch (IOException e) {
+            log.error(e.getMessage(),e);
+        }
+    }
+    public void inboxToPreview(BaseProcessClass bpc) throws Exception{
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,null);
         String appNo = ParamUtil.getMaskedString(bpc.request,"appNo");
         if(!StringUtil.isEmpty(appNo)) {
+            ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(appNo).getEntity();
+            if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())){
+                List<AppEditSelectDto> entity = applicationClient.getAppEditSelectDtos(applicationDto.getApplicationNo(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
+                String url= HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
+                sendURL(bpc.request,bpc.response,url);
+                return;
+            }
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
             if(appSubmissionDto != null && !IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())){
                 for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){

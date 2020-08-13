@@ -304,4 +304,6 @@ public interface ApplicationClient  {
     FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppId(@RequestParam(value = "licAppId",required = false)String licAppId);
     @PutMapping(value = "/iais-submission/delete-draft-by-no")
     FeignResponseEntity  deleteDraftByNo(@RequestParam("draftNo") String draftNo);
+    @GetMapping(value = "/iais-application/app-edit-select-by-type",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDtos(@RequestParam(name="appId")String appId, @RequestParam(name = "changeType")String changeType);
 }
