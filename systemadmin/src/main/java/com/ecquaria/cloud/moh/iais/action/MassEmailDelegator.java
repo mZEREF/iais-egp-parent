@@ -38,9 +38,10 @@ import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -363,7 +364,7 @@ public class MassEmailDelegator {
     @SuppressWarnings("resource")
     private static Sheet parseFile(final File file, int sheetAt) throws Exception {
         Workbook workBook = null;
-        try (FileInputStream in = new FileInputStream(file)){
+        try (InputStream in = Files.newInputStream(file.toPath())){
             char indexChar = ".".charAt(0);
             String suffix = file.getName().substring(file.getName().indexOf(indexChar) + 1);
             workBook = suffix.equals(FileUtils.EXCEL_TYPE_XSSF) ? new XSSFWorkbook(in) : new HSSFWorkbook(in);
