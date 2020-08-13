@@ -312,6 +312,7 @@ public class InboxServiceImpl implements InboxService {
             }
         }else{
             errorMap.put("errorMessage2","The selected licence(s) is/are not Active and hence ineligible for amendment/renewal/appeal/cessation");
+            return errorMap;
         }
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
         if(!IaisCommonUtils.isEmpty(apps)){
