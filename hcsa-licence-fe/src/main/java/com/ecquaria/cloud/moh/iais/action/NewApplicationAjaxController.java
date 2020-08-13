@@ -3,7 +3,6 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
-import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
@@ -475,13 +474,15 @@ public class NewApplicationAjaxController {
             return;
         }
         byte[] fileData =serviceConfigService.downloadFile(fileRepoId);
-        response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
-        response.addHeader("Content-Length", "" + fileData.length);
-        response.setContentType("application/x-octet-stream");
-        OutputStream ops = new BufferedOutputStream(response.getOutputStream());
-        ops.write(fileData);
-        ops.close();
-        ops.flush();
+        if(fileData != null){
+            response.addHeader("Content-Disposition", "attachment;filename=" + fileRepoName);
+            response.addHeader("Content-Length", "" + fileData.length);
+            response.setContentType("application/x-octet-stream");
+            OutputStream ops = new BufferedOutputStream(response.getOutputStream());
+            ops.write(fileData);
+            ops.close();
+            ops.flush();
+        }
         log.debug(StringUtil.changeForLog("file-repo end ...."));
     }
 
