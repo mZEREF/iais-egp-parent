@@ -451,6 +451,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                 oldPremiseHci = premiseKey;
             }
         }
+        boolean needAppendMsg = false;
+        String licenseeId = appSubmissionDto.getLicenseeId();
         for(int i=0;i<appGrpPremisesDtoList.size();i++){
             String premiseType = appGrpPremisesDtoList.get(i).getPremisesType();
             if (StringUtil.isEmpty(premiseType)) {
@@ -633,7 +635,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                     }
                                 }
                             }
-                            String licenseeId = appSubmissionDto.getLicenseeId();
                             if(StringUtil.isEmpty(licenseeId)){
                                 licenseeId="9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
                             }
@@ -740,28 +741,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             }
                         }
                         //0065116
-                        String hciNameUsed = errorMap.get("hciNameUsed");
-                        String isOtherLic = errorMap.get("isOtherLic"+i);
-                        String licenseeId = appSubmissionDto.getLicenseeId();
+                        String isOtherLic = appGrpPremisesDto.getLocateWithOthers();
                         //new
                         if(newTypeFlag || (rfi && clickEdit)){
-                            String errMsg = MessageUtil.getMessageDesc("NEW_ACK004");
-                            if(AppConsts.YES.equals(isOtherLic) && StringUtil.isEmpty(hciNameUsed) && errorMap.size() == 0){
+                            if(hciFlag && AppConsts.YES.equals(isOtherLic)){
                                 String premisesHci = hciName + NewApplicationHelper.getPremKey(appGrpPremisesDto);
-                                Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci).getEntity();
+                                Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci,ApplicationConsts.PREMISES_TYPE_ON_SITE).getEntity();
                                 if(flag){
-                                    errorMap.put("hciNameUsed",errMsg);
-                                }
-                            }else if(AppConsts.YES.equals(isOtherLic) && !StringUtil.isEmpty(hciNameUsed) && errorMap.size() == 1){
-                                String premisesHci = hciName + NewApplicationHelper.getPremKey(appGrpPremisesDto);
-                                Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci).getEntity();
-                                String hciNameMsg = MessageUtil.getMessageDesc(hciNameUsed);
-                                if(flag){
-                                    errorMap.put("hciNameUsed",hciNameMsg+"<br/>"+errMsg);
+                                    needAppendMsg = true;
                                 }
                             }
                         }
-
                     } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(premiseType)) {
                         String conStartHH = appGrpPremisesDtoList.get(i).getConStartHH();
                         String conStartMM = appGrpPremisesDtoList.get(i).getConStartMM();
@@ -995,6 +985,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                             //new rfi
                             if(!IaisCommonUtils.isEmpty(premisesHciList) && !oldPremiseHci.equals(currentHci) && premisesHciList.contains(currentHci)){
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
+                            }
+                        }
+                        //65116
+                        if(newTypeFlag || (rfi && clickEdit)){
+                            if(hciFlag){
+                                String premisesHci = appGrpPremisesDto.getConveyanceVehicleNo() + NewApplicationHelper.getPremKey(appGrpPremisesDto);
+                                Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci,ApplicationConsts.PREMISES_TYPE_CONVEYANCE).getEntity();
+                                if(flag){
+                                    needAppendMsg = true;
+                                }
                             }
                         }
                     }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(premiseType)){
@@ -1234,7 +1234,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                                 errorMap.put("premisesHci"+i,"NEW_ERR0005");
                             }
                         }
-
+                        //65116
+                        if(newTypeFlag || (rfi && clickEdit)){
+                            if(hciFlag){
+                                String premisesHci = NewApplicationHelper.getPremKey(appGrpPremisesDto);
+                                Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci,ApplicationConsts.PREMISES_TYPE_CONVEYANCE).getEntity();
+                                if(flag){
+                                    needAppendMsg = true;
+                                }
+                            }
+                        }
                     }
 
 
@@ -1247,6 +1256,17 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     }
 
                 }
+            }
+        }
+        //65116
+        String hciNameUsed = errorMap.get("hciNameUsed");
+        String errMsg = MessageUtil.getMessageDesc("NEW_ACK004");
+        if(needAppendMsg){
+            if(StringUtil.isEmpty(hciNameUsed)){
+                errorMap.put("hciNameUsed",errMsg);
+            }else{
+                String hciNameMsg = MessageUtil.getMessageDesc(hciNameUsed);
+                errorMap.put("hciNameUsed",hciNameMsg+"<br/>"+errMsg);
             }
         }
         log.info(StringUtil.changeForLog("the do doValidatePremiss end ...."));

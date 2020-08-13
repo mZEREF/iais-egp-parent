@@ -31,7 +31,7 @@
                 <c:if test="${''==baseSvcSel.licPremisesId}">
                     <c:set var="newLic" value="true"/>
                 </c:if>
-                <div class="speSvcContent disable-point">
+                <div class="speSvcContent remark-point">
                     <p class="assessment-title">Base Services for ${specSvc.svcName}</p>
                     <c:if test="${noExistBaseLic}">
                         <div class="row">
@@ -49,6 +49,7 @@
                         <c:choose>
                             <c:when test="${noExistBaseLic}">
                                 <div class="row base-svc-content">
+                                    <input type="hidden" name="svcName" value="${baseSvc.svcName}"/>
                                     <div class="col-xs-12 col-md-1">
                                     </div>
                                     <div class="col-xs-12 col-md-11 exist-base-lic-content">
@@ -62,6 +63,7 @@
                             </c:when>
                             <c:otherwise>
                                 <div class="base-svc-content">
+                                    <input type="hidden" name="svcName" value="${baseSvc.svcName}"/>
                                     <div class="exist-base-lic-content">
                                         <div class="row">
                                             <div class="col-xs-12 col-md-1">
@@ -83,8 +85,9 @@
                                                     </div>
                                                     <div class="col-xs-12 col-md-10">
                                                         <div class="form-check">
+                                                            <input type="hidden" name="premHci" value="${baseLic.premisesHci}"/>
                                                             <input type="hidden" name="${premIndexNo}-hciCode" value="<iais:mask name="${premIndexNo}-hciCode" value="${baseLic.hciCode}"/>"/>
-                                                            <input class="form-check-input" type="radio" name="${specSvc.svcCode}" value="${premIndexNo}" aria-invalid="false" <c:if test="${!newLic && baseSvcSel.serviceCode == baseSvc.svcCode && baseLic.hciCode == baseSvcSel.hciCode}">checked="checked"</c:if> >
+                                                            <input class="form-check-input secondStep" type="radio" name="${specSvc.svcCode}" value="${premIndexNo}" aria-invalid="false" <c:if test="${!newLic && baseSvcSel.serviceCode == baseSvc.svcCode && baseLic.hciCode == baseSvcSel.hciCode}">checked="checked"</c:if> >
                                                             <label class="form-check-label"><span class="check-circle"></span>${baseLic.address}</label>
                                                         </div>
                                                     </div>
@@ -110,6 +113,15 @@
                     </c:forEach>
                 </div>
             </c:forEach>
+            <c:if test="${multiSameSvc}">
+                <div class="row">
+                    <%--<div class="col-xs-12 col-md-1">--%>
+                    <%--</div>--%>
+                    <div class="col-xs-12 col-md-12">
+                        Note: In the absence of a pre-existing base service, you may only apply for 1 premises at a time. <a href="<iais:code code="URL001"/> ">Learn more</a>
+                    </div>
+                </div>
+            </c:if>
         </div>
     </div>
 </div>

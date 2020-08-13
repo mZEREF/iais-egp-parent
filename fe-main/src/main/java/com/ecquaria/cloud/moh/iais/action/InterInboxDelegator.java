@@ -879,7 +879,7 @@ public class InterInboxDelegator {
         String draft = ParamUtil.getString(bpc.request,InboxConst.ACTION_NO_VALUE);
         if(!StringUtil.isEmpty(draft)){
             log.debug(StringUtil.changeForLog("draft no. is not null"));
-            inboxService.updateDraftStatus(draft,AppConsts.COMMON_STATUS_DELETED);
+            inboxService.deleteDraftByNo(draft);
             String delDraftAckMsg = MessageUtil.getMessageDesc("NEW_ACK003");
             ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
             ParamUtil.setRequestAttr(bpc.request,"delDraftAckMsg",delDraftAckMsg);

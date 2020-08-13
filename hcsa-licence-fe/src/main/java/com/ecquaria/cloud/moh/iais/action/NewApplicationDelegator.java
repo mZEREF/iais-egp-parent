@@ -1012,15 +1012,14 @@ public class NewApplicationDelegator {
                 LocalDate today = LocalDate.now();
                 LocalDate configDate = LocalDate.now().plusDays(Integer.parseInt(configDateSize));
                 if(effectiveDate.isBefore(today)){
-                    errorMap.put("rfcEffectiveDate","RFC_ERR009");
+                    errorMap.put("rfcEffectiveDate","RFC_ERR012");
                 }else if(effectiveDate.isAfter(configDate)){
                     String errorMsg = MessageUtil.getMessageDesc("RFC_ERR008");
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern(Formatter.DATE);
                     errorMsg = errorMsg.replace("<date>",configDate.format(dtf));
                     errorMap.put("rfcEffectiveDate",errorMsg);
                 }else if(today.isEqual(effectiveDate)){
-                    String errorMsg = MessageUtil.getMessageDesc("RFC_ERR012");
-                    errorMap.put("rfcEffectiveDate",errorMsg);
+                    errorMap.put("rfcEffectiveDate","RFC_ERR012");
                 }
                 String rfcEffectiveDateErr = errorMap.get("rfcEffectiveDate");
                 if(StringUtil.isEmpty(rfcEffectiveDateErr)){
@@ -5451,7 +5450,7 @@ public class NewApplicationDelegator {
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && appSubmissionDto == null && appSelectSvcDto != null){
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-            appSubmissionDto.setNoExistLicAlign(appSelectSvcDto.isAlign());
+//            appSubmissionDto.setNoExistLicAlign(appSelectSvcDto.isAlign());
             //change place to serviceMenueDelegator
 //            List<HcsaServiceDto> hcsaServiceDtos = appSelectSvcDto.getBaseSvcDtoList();
 //            //add other service

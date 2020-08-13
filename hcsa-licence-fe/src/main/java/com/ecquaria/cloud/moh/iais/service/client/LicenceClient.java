@@ -120,7 +120,7 @@ public interface LicenceClient {
     FeignResponseEntity<List<AppGrpPremisesDto>> getLicPremisesById(@RequestParam("id") String id);
 
     @GetMapping(value = "/hcsa-licence/other-licensee-premises")
-    FeignResponseEntity<Boolean> getOtherLicseePremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("premisesHci")String premisesHci);
+    FeignResponseEntity<Boolean> getOtherLicseePremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("premisesHci")String premisesHci,@RequestParam("premisesType") String premisesType);
 
     @GetMapping(value = "/hcsa-licence//check-new-licensee")
     FeignResponseEntity<Boolean> checkIsNewLicsee(@RequestParam("licenseeId") String licenseeId);
