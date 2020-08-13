@@ -134,13 +134,11 @@
                                     <td>
                                         <p class="visible-xs visible-sm table-row-title">Licence No.</p>
                                         <div class="form-check">
-                                            <c:if test="${licenceQuery.status == 'LICEST001'}">
-                                                <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
-                                                       name="licenceNo" value="licenId${status.index}" aria-invalid="false" <c:if test="${fn:contains(licence_err_list, licenceQuery.id)}">checked</c:if> onclick="licClick()">
-                                                <label class="form-check-label" for="licence1"><span
-                                                        class="check-square"></span>
-                                                </label>
-                                            </c:if>
+                                            <input class="form-check-input licenceCheck" id="licence1" type="checkbox"
+                                                   name="licenceNo" value="licenId${status.index}" aria-invalid="false" <c:if test="${fn:contains(licence_err_list, licenceQuery.id)}">checked</c:if> onclick="licClick()">
+                                            <label class="form-check-label" for="licence1"><span
+                                                    class="check-square"></span>
+                                            </label>
                                         </div>
                                     </td>
                                     <td hidden>
