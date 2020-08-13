@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -21,9 +22,9 @@ public class TemplateValidate implements CustomizeValidator {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         MsgTemplateDto msgTemplateDto = (MsgTemplateDto) ParamUtil.getSessionAttr(request, MsgTemplateConstants.MSG_TEMPLATE_DTO);
 
-//        if(msgTemplateDto.getRecipient() == null){
-//            errMap.put("toRecipientsErr", MessageUtil.replaceMessage("GENERAL_ERR0006","To Recipients","field"));
-//        }
+        if(msgTemplateDto.getRecipient() == null){
+            errMap.put("toRecipients", MessageUtil.replaceMessage("GENERAL_ERR0006","To Recipients","field"));
+        }
         return errMap;
     }
 }

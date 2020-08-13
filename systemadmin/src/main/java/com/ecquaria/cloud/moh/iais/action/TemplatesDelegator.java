@@ -1,7 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -17,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -119,13 +119,23 @@ public class TemplatesDelegator {
 
         List<SelectOption> msgProcessList = IaisCommonUtils.genNewArrayList();
         msgProcessList.add(new SelectOption("", "Please Select"));
-        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, "New"));
-        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_APPEAL, "Renewal"));
-        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, "Request For Change"));
-        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL, "Withdrawal"));
-        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_CESSATION, "Cessation"));
-        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_APPEAL, "Appeal"));
-        msgProcessList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_POST_INSPECTION, "Inspection"));
+        msgProcessList.add(new SelectOption("APP", "Appeal"));
+        msgProcessList.add(new SelectOption("AUD", "Audit"));
+        msgProcessList.add(new SelectOption("CES", "Cessation"));
+        msgProcessList.add(new SelectOption("CHM", "Checklist Management"));
+        msgProcessList.add(new SelectOption("FEP", "Fees and Payments"));
+        msgProcessList.add(new SelectOption("INS", "Inspection"));
+        msgProcessList.add(new SelectOption("NAP", "New Application"));
+        msgProcessList.add(new SelectOption("ONA", "Online Appointment"));
+        msgProcessList.add(new SelectOption("REN", "Renewal"));
+        msgProcessList.add(new SelectOption("RFC", "Request For Change"));
+        msgProcessList.add(new SelectOption("RFI", "Request for Information"));
+        msgProcessList.add(new SelectOption("RSM", "Risk Score Management"));
+        msgProcessList.add(new SelectOption("SM",  "Scheduled Maintenance"));
+        msgProcessList.add(new SelectOption("UEN", "UEN Management"));
+        msgProcessList.add(new SelectOption("UC1", "User Creation 1"));
+        msgProcessList.add(new SelectOption("UC2", "User Creation 2"));
+        msgProcessList.add(new SelectOption("WIT", "Withdrawal"));
         ParamUtil.setRequestAttr(bpc.request, "tepProcess", msgProcessList);
     }
 
@@ -215,14 +225,14 @@ public class TemplatesDelegator {
             if (msgTemplateDto.getEffectiveFrom() != null && msgTemplateDto.getEffectiveTo() !=null){
                 if(!msgTemplateDto.getEffectiveFrom().before(msgTemplateDto.getEffectiveTo())){
                     validationResult.setHasErrors(true);
-                    errorMap.put("effectiveTo","Effective Start Date cannot be later than Effective End Date");
+                    errorMap.put("effectiveTo",MessageUtil.getMessageDesc("EMM_ERR004"));
                 }
             }
-            if (contentSize>8000) {
-                errorMap.put("messageContent","The content should not exceed 8000 words");
+            if (contentSize > 8000) {
+                errorMap.put("messageContent",MessageUtil.replaceMessage("EMM_ERR005","8000","num"));
             }
             if (contentSize < 2) {
-                errorMap.put("messageContent","The content should not be empty");
+                errorMap.put("messageContent", MessageUtil.replaceMessage("GENERAL_ERR0006","Message Content","field"));
             }
             String recipientString = "";
             String ccrecipientString = "";
