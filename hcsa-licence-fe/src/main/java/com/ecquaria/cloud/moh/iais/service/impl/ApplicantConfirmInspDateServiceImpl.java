@@ -805,7 +805,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             map.put("dateStrList", dateStrList);
             map.put("fe_date", dateStr);
             map.put("officer_name", "officer_name");
-            StringBuilder sb = new StringBuilder("MOH HALP–[Internal] Licensee Request to Reschedule Inspection Appointment Date for ");
+            StringBuilder sb = new StringBuilder("MOH HALP - [Internal] Licensee Request to Reschedule Inspection Appointment Date for ");
             sb.append(appNo);
             notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_REJECT_APPT_REQUEST_A_DATE, map, appNo, appNo,
                     NotificationHelper.RECEIPT_TYPE_APP, appNo, sb.toString());
