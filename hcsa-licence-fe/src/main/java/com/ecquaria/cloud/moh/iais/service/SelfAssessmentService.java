@@ -18,7 +18,7 @@ public interface SelfAssessmentService {
 
     List<SelfAssessment> receiveSelfAssessmentRfiByCorrId(String corrId);
 
-    void saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList, String applicationNumber);
+    void saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList);
 
     Boolean hasSubmittedSelfAssMtByGroupId(String groupId);
 

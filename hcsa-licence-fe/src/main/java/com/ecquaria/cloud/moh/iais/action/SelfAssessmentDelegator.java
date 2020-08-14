@@ -246,9 +246,9 @@ public class SelfAssessmentDelegator {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             } else {
-                String applicationNumber = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
+                //String applicationNumber = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationConstant.SESSION_SELF_DECL_APPLICATION_NUMBER);
 
-                selfAssessmentService.saveAllSelfAssessment(selfAssessmentList, applicationNumber);
+                selfAssessmentService.saveAllSelfAssessment(selfAssessmentList);
                     /*if (StringUtils.isEmpty(applicationNumber)){
                         String groupId = (String) ParamUtil.getScopeAttr(bpc.request, NewApplicationConstant.SESSION_PARAM_APPLICATION_GROUP_ID);
                         selfAssessmentService.changePendingSelfAssMtStatus(groupId, Boolean.TRUE);

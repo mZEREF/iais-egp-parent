@@ -116,6 +116,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         for(ApplicationDto app : appList){
             String appId = app.getId();
             String svcId = app.getServiceId();
+            String appNo = app.getApplicationNo();
             HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
             String svcCode = hcsaServiceDto.getSvcCode();
             String svcName = hcsaServiceDto.getSvcName();
@@ -140,6 +141,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 SelfAssessment selfAssessment = new SelfAssessment();
                 selfAssessment.setSvcId(svcId);
                 selfAssessment.setCorrId(corrId);
+                selfAssessment.setApplicationNumber(appNo);
                 selfAssessment.setCanEdit(true);
                 selfAssessment.setSvcName(svcName);
                 selfAssessment.setPremises(address);
@@ -291,7 +293,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
     }
 
     @Override
-    public void saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList, String applicationNumber) {
+    public void saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList) {
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
            try {
@@ -301,20 +303,21 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 log.error(StringUtil.changeForLog("encounter failure when self decl send notification"), e);
             }
 
-            FeSelfAssessmentSyncDataDto include = new FeSelfAssessmentSyncDataDto();
-            include.setApplicationNumber(applicationNumber);
-            include.setFeSyncData(result.getEntity());
+            FeSelfAssessmentSyncDataDto syncDataDto = new FeSelfAssessmentSyncDataDto();
+            syncDataDto.setAppNoList(selfAssessmentList.stream().map(SelfAssessment::getApplicationNumber).collect(Collectors.toList()));
+            //include.setApplicationNumber(applicationNumber);
+            syncDataDto.setFeSyncData(result.getEntity());
             EicRequestTrackingDto postSaveTrack = eicRequestTrackingHelper.clientSaveEicRequestTracking(EicClientConstant.APPLICATION_CLIENT,
                     SelfAssessmentServiceImpl.class.getName(),
                     "callFeEicAppPremisesSelfDeclChkl", currentApp + "-" + currentDomain,
-                    FeSelfAssessmentSyncDataDto.class.getName(), JsonUtil.parseToJson(include));
+                    FeSelfAssessmentSyncDataDto.class.getName(), JsonUtil.parseToJson(syncDataDto));
 
             try {
                 FeignResponseEntity<EicRequestTrackingDto> fetchResult =  eicRequestTrackingHelper.getAppEicClient().getPendingRecordByReferenceNumber(postSaveTrack.getRefNo());
                 if (HttpStatus.SC_OK == fetchResult.getStatusCode()){
                     EicRequestTrackingDto preEicRequest = fetchResult.getEntity();
                     if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(preEicRequest.getStatus())){
-                        boolean success = callFeEicAppPremisesSelfDeclChkl(include);
+                        boolean success = callFeEicAppPremisesSelfDeclChkl(syncDataDto);
                         if (success){
                             preEicRequest.setProcessNum(1);
                             Date now = new Date();
