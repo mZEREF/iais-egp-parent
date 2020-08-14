@@ -987,6 +987,19 @@ public class NewApplicationAjaxController {
                     }
                 }
             }
+            String speciality = person.getSpeciality();
+            if(!StringUtil.isEmpty(speciality)){
+                int i = 0;
+                for(SelectOption sp:selectOptionList){
+                    if(sp.getValue().equals(speciality)){
+                        break;
+                    }
+                    if(i == selectOptionList.size()-1){
+                        specialityOpts.add(NewApplicationHelper.getSpecialtyByValue(speciality));
+                    }
+                    i++;
+                }
+            }
             //set other
             specialityOpts.add(new SelectOption("other", "Others"));
             person.setSpcOptList(specialityOpts);
@@ -994,7 +1007,7 @@ public class NewApplicationAjaxController {
             specialtyAttr.put("name", "specialty");
             specialtyAttr.put("class", "specialty");
             specialtyAttr.put("style", "display: none;");
-            String specialityHtml = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
+            String specialityHtml = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, speciality);
             person.setSpecialityHtml(specialityHtml);
         }
         log.debug(StringUtil.changeForLog("the getNewPsnInfo end ...."));

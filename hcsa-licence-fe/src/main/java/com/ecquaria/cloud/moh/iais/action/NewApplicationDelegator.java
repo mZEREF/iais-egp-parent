@@ -85,7 +85,6 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -611,6 +610,18 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request,APPSUBMISSIONDTO,appSubmissionDto);
         if(appSubmissionDtos!=null){
             bpc.request.getSession().setAttribute("appSubmissionDtos",appSubmissionDtos);
+        }
+        if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+            Set<String> premTypes = IaisCommonUtils.genNewHashSet();
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                    premTypes.add(appGrpPremisesDto.getPremisesType());
+                }
+                if(premTypes.size() == 1 && premTypes.contains(ApplicationConsts.PREMISES_TYPE_OFF_SITE)){
+                    ParamUtil.setRequestAttr(bpc.request,"onlyOffsite",true);
+                }
+            }
         }
 
         log.info(StringUtil.changeForLog("the do preparePayment end ...."));

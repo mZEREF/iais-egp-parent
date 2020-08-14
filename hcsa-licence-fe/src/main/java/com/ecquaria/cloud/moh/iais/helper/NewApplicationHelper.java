@@ -1553,6 +1553,20 @@ public class NewApplicationHelper {
         return specialtySelectList;
     }
 
+    public static SelectOption getSpecialtyByValue(String specialtyVal){
+        SelectOption result = new SelectOption(specialtyVal,specialtyVal);
+        if(!StringUtil.isEmpty(specialtyVal)){
+            List<SelectOption> allSpecialty = getAllSpecialtySelList();
+            for(SelectOption sp:allSpecialty){
+                if(specialtyVal.equals(sp.getValue())){
+                    result = sp;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
     public static AppSubmissionDto syncPsnData(AppSubmissionDto appSubmissionDto, Map<String,AppSvcPersonAndExtDto> personMap ){
         if(appSubmissionDto == null || personMap == null){
            return appSubmissionDto;

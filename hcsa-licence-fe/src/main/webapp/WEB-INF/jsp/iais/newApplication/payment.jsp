@@ -160,7 +160,7 @@
                                                         <td>
                                                             <p>
                                                                 <c:choose>
-                                                                    <c:when test="${'OFFSITE' == premises.premisesType}">
+                                                                    <c:when test="${'OFFSITE' == premises.premisesType && !onlyOffsite}">
                                                                         <c:out value="$0"></c:out>
                                                                     </c:when>
                                                                     <c:otherwise>
