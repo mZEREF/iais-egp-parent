@@ -185,11 +185,10 @@ public class LicenceViewServiceDelegator {
             appSubmissionDto = licenceViewService.getAppSubmissionByAppId(appId);
         }
         if (appSubmissionDto != null) {
-            String status = appSubmissionDto.getStatus();
-            if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(status)) {
                 //new
-                if (appPremisesCorrelationDto != null) {
-                    ApplicationDto entity = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
+            if (appPremisesCorrelationDto != null) {
+                ApplicationDto entity = applicationClient.getApplicationById(appPremisesCorrelationDto.getApplicationId()).getEntity();
+                if(entity.getVersion()>1){
                     String newGrpId = entity.getAppGrpId();
                     ApplicationGroupDto newApplicationGroupDto = applicationClient.getAppById(newGrpId).getEntity();
                     String newApplicationGroupDtoLicenseeId = newApplicationGroupDto.getLicenseeId();
@@ -209,42 +208,32 @@ public class LicenceViewServiceDelegator {
                             appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId);
                         }
                     }
-                }
-
-            } else if (!StringUtil.isEmpty(newCorrelationId) && !StringUtil.isEmpty(oldCorrelationId) && !newCorrelationId.equals(oldCorrelationId)) {
-                AppPremisesCorrelationDto lastAppPremisesCorrelationDtoById =
-                        applicationViewService.getLastAppPremisesCorrelationDtoById(newCorrelationId);
-
-                String applicationId = lastAppPremisesCorrelationDtoById.getApplicationId();
-
-                //new
-                ApplicationDto entity = applicationClient.getApplicationById(applicationId).getEntity();
-                String newGrpId = entity.getAppGrpId();
-                ApplicationGroupDto newApplicationGroupDto = applicationClient.getAppById(newGrpId).getEntity();
-                String newApplicationGroupDtoLicenseeId = newApplicationGroupDto.getLicenseeId();
-                LicenseeDto newLicenceDto = organizationClient.getLicenseeDtoById(newApplicationGroupDtoLicenseeId).getEntity();
-                bpc.request.setAttribute("newLicenceDto", newLicenceDto);
-
-
-                //last
-                ApplicationDto applicationDto = applicationClient.getLastApplicationByAppNo(entity).getEntity();
-                if (applicationDto != null) {
-                    String oldGrpId = applicationDto.getAppGrpId();
-                    ApplicationGroupDto oldApplicationGroupDto = applicationClient.getAppById(oldGrpId).getEntity();
-                    String licenseeId = oldApplicationGroupDto.getLicenseeId();
-                    LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-                    bpc.request.setAttribute("oldLicenceDto", oldLicenceDto);
-
-
-                    AppSubmissionDto appSubmissionByAppId1 = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
-                    if (appSubmissionDto != null) {
-
-                        appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId1);
-
+                }else if (!StringUtil.isEmpty(newCorrelationId) && !StringUtil.isEmpty(oldCorrelationId) && !newCorrelationId.equals(oldCorrelationId)) {
+                    AppPremisesCorrelationDto lastAppPremisesCorrelationDtoById =
+                            applicationViewService.getLastAppPremisesCorrelationDtoById(newCorrelationId);
+                    String applicationId = lastAppPremisesCorrelationDtoById.getApplicationId();
+                    //new
+                    String newGrpId = entity.getAppGrpId();
+                    ApplicationGroupDto newApplicationGroupDto = applicationClient.getAppById(newGrpId).getEntity();
+                    String newApplicationGroupDtoLicenseeId = newApplicationGroupDto.getLicenseeId();
+                    LicenseeDto newLicenceDto = organizationClient.getLicenseeDtoById(newApplicationGroupDtoLicenseeId).getEntity();
+                    bpc.request.setAttribute("newLicenceDto", newLicenceDto);
+                    //last
+                    ApplicationDto applicationDto = applicationClient.getLastApplicationByAppNo(entity).getEntity();
+                    if (applicationDto != null) {
+                        String oldGrpId = applicationDto.getAppGrpId();
+                        ApplicationGroupDto oldApplicationGroupDto = applicationClient.getAppById(oldGrpId).getEntity();
+                        String licenseeId = oldApplicationGroupDto.getLicenseeId();
+                        LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                        bpc.request.setAttribute("oldLicenceDto", oldLicenceDto);
+                        AppSubmissionDto appSubmissionByAppId1 = licenceViewService.getAppSubmissionByAppId(applicationDto.getId());
+                        if (appSubmissionDto != null) {
+                            appSubmissionDto.setOldAppSubmissionDto(appSubmissionByAppId1);
+                        }
                     }
+                } else {
+                    ParamUtil.setSessionAttr(bpc.request, NOT_VIEW, NOT_VIEW);
                 }
-            } else {
-                ParamUtil.setSessionAttr(bpc.request, NOT_VIEW, NOT_VIEW);
 
             }
         }

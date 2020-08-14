@@ -23,4 +23,6 @@ public interface FeMessageClient {
 
     @GetMapping(value = "/iais-inter-inbox/inbox/{msgId}")
     FeignResponseEntity<InterMessageDto> getInterMessageById(@PathVariable(value = "msgId") String msgId);
+    @GetMapping(value = "/iais-inter-inbox/inter-message-subject-like",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<InterMessageDto> getInterMessageBySubjectLike(@RequestParam("subject") String subject,@RequestParam("status") String status);
 }

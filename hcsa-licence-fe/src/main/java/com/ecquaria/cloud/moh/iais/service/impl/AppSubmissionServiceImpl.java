@@ -622,6 +622,12 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return licenceClient.checkIsNewLicsee(licenseeId).getEntity();
     }
 
+    @Override
+    public InterMessageDto getInterMessageBySubjectLike(String subject, String status) {
+        return feMessageClient.getInterMessageBySubjectLike(subject,status).getEntity();
+
+    }
+
     private AppSvcRelatedInfoDto getAppSvcRelatedInfoDto(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos){
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             return appSvcRelatedInfoDtos.get(0);

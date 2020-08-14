@@ -28,4 +28,12 @@ public class FeMessageClientFallback implements FeMessageClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<InterMessageDto> getInterMessageBySubjectLike(String subject, String status) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

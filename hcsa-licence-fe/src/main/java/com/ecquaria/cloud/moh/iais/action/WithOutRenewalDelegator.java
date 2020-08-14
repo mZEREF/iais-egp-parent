@@ -503,7 +503,7 @@ public class WithOutRenewalDelegator {
         List<String> renewLicIds = IaisCommonUtils.genNewArrayList();
         List<FeeExtDto> laterFeeDetails = IaisCommonUtils.genNewArrayList();
         for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
-            appEditSelectDto.setPremisesEdit(true);
+            appEditSelectDto.setPremisesEdit(false);
             appEditSelectDto.setServiceEdit(false);
             appEditSelectDto.setDocEdit(false);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
@@ -521,7 +521,7 @@ public class WithOutRenewalDelegator {
                 }
             }
             boolean eqGrpPremisesResult = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
-            if (eqGrpPremisesResult) {
+            if (eqGrpPremisesResult&&appSubmissionDtos.size()==1) {
                 if (appGrpPremisesDtoList != null) {
                     for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                         List<LicenceDto> attribute = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);

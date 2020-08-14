@@ -680,7 +680,7 @@ public class ConfigServiceDelegator {
         } else {
             hcsaServiceDto.setVersion(version);
         }
-        hcsaServiceDto.setServiceIsUsed(Boolean.valueOf(serviceIsUse));
+        hcsaServiceDto.setServiceIsUsed("true".equals(serviceIsUse));
         hcsaServiceConfigDto.setHcsaSvcSubtypeOrSubsumedDtos(hcsaSvcSubtypeOrSubsumedDtos);
         hcsaServiceConfigDto.setHcsaSvcSpePremisesTypeDtos(hcsaSvcSpePremisesTypeDtos);
         hcsaServiceConfigDto.setHcsaSvcDocConfigDtos(hcsaSvcDocConfig);

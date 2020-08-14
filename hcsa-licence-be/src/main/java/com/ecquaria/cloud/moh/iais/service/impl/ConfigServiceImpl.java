@@ -229,7 +229,7 @@ public class ConfigServiceImpl implements ConfigService {
         for(HcsaServiceDto hcsaServiceDto : baseHcsaServiceDto){
             SelectOption selectOption=new SelectOption();
             selectOption.setValue(hcsaServiceDto.getId());
-            selectOption.setText(hcsaServiceDto.getSvcCode());
+            selectOption.setText(hcsaServiceDto.getSvcName());
             selectOptionList.add(selectOption);
         }
         request.getSession().setAttribute("selsectBaseHcsaServiceDto",selectOptionList);
@@ -274,7 +274,7 @@ public class ConfigServiceImpl implements ConfigService {
                  List<SelectOption> selectOptionList=new ArrayList<>(baseHcsaServiceDtos.size());
                  for(HcsaServiceDto baseHcsaService : baseHcsaServiceDtos){
                      SelectOption selectOption =new SelectOption();
-                     selectOption.setText(baseHcsaService.getSvcCode());
+                     selectOption.setText(baseHcsaService.getSvcName());
                      selectOption.setValue(baseHcsaService.getId());
                      selectOptionList.add(selectOption);
                  }
@@ -502,10 +502,10 @@ public class ConfigServiceImpl implements ConfigService {
             String pageMandatoryCount = hcsaSvcPersonnelDtos.get(i).getPageMandatoryCount();
             String pageMaximumCount = hcsaSvcPersonnelDtos.get(i).getPageMaximumCount();
             if (StringUtil.isEmpty(psnType)) {
-                errorMap.put("psnType" + i, "UC_CHKLMD001_ERR001");
-            }
+                errorMap.put("psnType" + i, "CHKLMD001_ERR001");
+        }
             if (StringUtil.isEmpty(pageMandatoryCount)) {
-                errorMap.put("mandatoryCount" + i, "UC_CHKLMD001_ERR001");
+                errorMap.put("mandatoryCount" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Minimum Count","field"));
             }else  {
                 if(pageMandatoryCount.matches("^[0-9]+$")){
                     int i1 = Integer.parseInt(pageMandatoryCount);
@@ -517,7 +517,7 @@ public class ConfigServiceImpl implements ConfigService {
                 }
             }
             if (StringUtil.isEmpty(pageMaximumCount)) {
-                errorMap.put("maximumCount" + i, "UC_CHKLMD001_ERR001");
+                errorMap.put("maximumCount" + i, MessageUtil.replaceMessage("GENERAL_ERR0006","Maximum Count","field"));
             }else {
                 if(pageMaximumCount.matches("^[0-9]+$")){
                     int i1 = Integer.parseInt(pageMandatoryCount);
@@ -1029,7 +1029,7 @@ public class ConfigServiceImpl implements ConfigService {
         List<SelectOption> selectOptionList=new ArrayList<>(baseHcsaServiceDtos.size());
         for(HcsaServiceDto baseHcsaService : baseHcsaServiceDtos){
             SelectOption selectOption =new SelectOption();
-            selectOption.setText(baseHcsaService.getSvcCode());
+            selectOption.setText(baseHcsaService.getSvcName());
             selectOption.setValue(baseHcsaService.getId());
             selectOptionList.add(selectOption);
         }

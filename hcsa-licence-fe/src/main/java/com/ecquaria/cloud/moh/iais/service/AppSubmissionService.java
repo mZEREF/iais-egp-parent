@@ -62,4 +62,5 @@ public interface AppSubmissionService {
     List<AppAlignLicQueryDto> getAppAlignLicQueryDto(String licenseeId,List<String> svcNames);
     List<AppGrpPremisesDto> getLicPremisesInfo(String id);
     Boolean isNewLicensee(String licenseeId);
+    InterMessageDto getInterMessageBySubjectLike(String subject,String status);
 }

@@ -53,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -1241,7 +1242,6 @@ public class NewApplicationDelegator {
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url,request);
         try {
             response.sendRedirect(tokenUrl);
-            request.getSession().removeAttribute("orgUserDto");
         } catch (IOException e) {
             log.error(e.getMessage(),e);
         }
@@ -1252,9 +1252,24 @@ public class NewApplicationDelegator {
         if(!StringUtil.isEmpty(appNo)) {
             ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(appNo).getEntity();
             if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())){
-                List<AppEditSelectDto> entity = applicationClient.getAppEditSelectDtos(applicationDto.getApplicationNo(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
-                String url= HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+applicationDto.getApplicationNo();
+                InterMessageDto interMessageBySubjectLike = appSubmissionService.getInterMessageBySubjectLike(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + applicationDto.getApplicationNo(), MessageConstants.MESSAGE_STATUS_UNRESPONSE);
+                List<AppEditSelectDto> entity = applicationClient.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
+                String url="";
+                String s = MaskUtil.maskValue("appNo", applicationDto.getApplicationNo());
+                if(!entity.isEmpty()){
+                    boolean rfcFlag = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType());
+                    boolean premisesListEdit = entity.get(0).isPremisesListEdit();
+                    if(rfcFlag&&premisesListEdit){
+                        url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST+s;
+                        sendURL(bpc.request,bpc.response,url);
+                        ParamUtil.setSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,interMessageBySubjectLike.getId());
+                        return;
+                    }
+                }
+
+                url= HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION+s;
                 sendURL(bpc.request,bpc.response,url);
+                ParamUtil.setSessionAttr(bpc.request,AppConsts.SESSION_INTER_INBOX_MESSAGE_ID,interMessageBySubjectLike.getId());
                 return;
             }
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
@@ -1323,7 +1338,7 @@ public class NewApplicationDelegator {
         appSubmissionDto = appSubmissionService.submitRequestInformation(appSubmissionRequestInformationDto, bpc.process);
         if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
             List<AppSubmissionDto> appSubmissionDtos=new ArrayList<>(1);
-            appSubmissionDto.setAmountStr("NA");
+            appSubmissionDto.setAmountStr("N/A");
             appSubmissionDtos.add(appSubmissionDto);
             ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos);
         }
@@ -1497,7 +1512,6 @@ public class NewApplicationDelegator {
         appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         List<AppSubmissionDto> appSubmissionDtos=IaisCommonUtils.genNewArrayList();
-        List<AppSubmissionDto> personAppSubmissionDtos=IaisCommonUtils.genNewArrayList();
         AmendmentFeeDto amendmentFeeDto = getAmendmentFeeDto(appSubmissionDto, oldAppSubmissionDto);
         if(!amendmentFeeDto.getChangeInHCIName() && !amendmentFeeDto.getChangeInLocation()){
             List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
@@ -1672,7 +1686,6 @@ public class NewApplicationDelegator {
             AppSubmissionDto personAppsubmit = getPersonAppsubmit(oldAppSubmissionDto, appSubmissionDto, bpc);
             personAppsubmit.setPartPremise(personAppsubmit.isGroupLic());
             requestForChangeService.premisesDocToSvcDoc(personAppsubmit);
-            personAppSubmissionDtos.add(personAppsubmit);
             // true is auto
             boolean autoRfc = personAppsubmit.isAutoRfc();
             if(!autoRfc){
@@ -1762,7 +1775,7 @@ public class NewApplicationDelegator {
             for(AppSubmissionDto appSubmissionDto1 :autoSaveAppsubmission){
                 String s = Formatter.formatterMoney(appSubmissionDto1.getAmount());
                 appSubmissionDto1.setAmountStr(s);
-                appSubmissionDto1.setAppGrpNo(autoSaveAppsubmission.get(0).getAppGrpNo());
+                appSubmissionDto1.setAppGrpNo(appSubmissionDtos1.get(0).getAppGrpNo());
             }
             appSubmissionDtoList.addAll( appSubmissionDtos1);
             appSubmissionDto.setAppGrpId(appSubmissionDtos1.get(0).getAppGrpId());
@@ -1963,6 +1976,7 @@ public class NewApplicationDelegator {
             }
         }
         licenceIdList.addAll(licenceId);
+        licenceIdList.remove(appSubmissionDto.getLicenceId());
         List<AppSubmissionDto> appSubmissionDtoList=IaisCommonUtils.genNewArrayList();
         for(String string : licenceIdList){
             AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string);
@@ -1991,7 +2005,6 @@ public class NewApplicationDelegator {
             appSubmissionService.transform(appSubmissionDtoByLicenceId,appSubmissionDto.getLicenseeId());
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
             appSubmissionDtoByLicenceId.setAutoRfc(true);
-            appSubmissionDto.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }

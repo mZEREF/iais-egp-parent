@@ -44,7 +44,7 @@
           <input type="text" style="display: none" name="serviceIsUse" value="false">
         </div>
       </div>
-      <div class="form-group">
+     <%-- <div class="form-group">
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Category<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
@@ -54,7 +54,7 @@
             <span name="iaisErrorMsg" class="error-msg" id="error_serviceCategory"></span>
           </div>
         </div>
-      </div>
+      </div>--%>
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
