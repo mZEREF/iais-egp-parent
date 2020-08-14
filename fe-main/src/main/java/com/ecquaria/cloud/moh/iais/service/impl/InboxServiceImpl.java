@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -397,19 +398,25 @@ public class InboxServiceImpl implements InboxService {
     @Override
     public Map<String, String> checkRfcStatus(String licenceId) {
         Map<String,String> errorMap = IaisCommonUtils.genNewHashMap();
-        List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
-        List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
-        if(!IaisCommonUtils.isEmpty(apps)){
-            for(ApplicationDto applicationDto:apps){
-                if(!finalStatusList.contains(applicationDto.getStatus())){
-                    errorMap.put("errorMessage","There is already a pending application for this licence");
-                    break;
+        LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licenceId).getEntity();
+        boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
+        if(isActive){
+            List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
+            List<String> finalStatusList = IaisCommonUtils.getAppFinalStatus();
+            if(!IaisCommonUtils.isEmpty(apps)){
+                for(ApplicationDto applicationDto:apps){
+                    if(!finalStatusList.contains(applicationDto.getStatus())){
+                        errorMap.put("errorMessage","There is already a pending application for this licence");
+                        break;
+                    }
                 }
             }
-        }
-        Boolean entity = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
-        if(!entity){
-            errorMap.put("errorMessage","There is already a pending application for this licence");
+            Boolean entity = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
+            if(!entity){
+                errorMap.put("errorMessage","There is already a pending application for this licence");
+            }
+        }else{
+            errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK011"));
         }
         return errorMap;
     }
