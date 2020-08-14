@@ -306,8 +306,9 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ApplicationNumber", applicationNo);
                     emailMap.put("ServiceLicenceName", svcName);
-                    emailMap.put("CessationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
-                    emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));                    emailMap.put("email", "");
+                    emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
+                    emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+                    emailMap.put("email", "");
                     emailMap.put("systemLink", loginUrl);
                     emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                     notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE, emailMap, applicationNo, applicationNo,
@@ -321,7 +322,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ServiceLicenceName", svcName);
                     emailMap.put("ApplicationNumber", applicationNo);
-                    emailMap.put("CessationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+                    emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
                     emailMap.put("email", "");
                     emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                     notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE, emailMap, applicationNo, applicationNo,

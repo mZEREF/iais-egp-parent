@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.CessationBeService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
@@ -233,10 +234,10 @@ public class CessationEffectiveDateBatchjob {
                 LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
                 String applicantName=licenseeDto.getName();
                 emailMap.put("ApplicantName", applicantName);
-                emailMap.put("ApplicationType", "");
+                emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
                 emailMap.put("ServiceLicenceName", svcName);
                 emailMap.put("ApplicationNumber", licenceNo);
-                emailMap.put("ApplicationDate", Formatter.formatDateTime(date, AppConsts.DEFAULT_DATE_FORMAT));
+                emailMap.put("ApplicationDate", Formatter.formatDateTime(date));
                 emailMap.put("email", "");
                 emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                 notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE, emailMap, licenceNo, licenceNo,
@@ -277,10 +278,10 @@ public class CessationEffectiveDateBatchjob {
             LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
             String applicantName=licenseeDto.getName();
             emailMap.put("ApplicantName", applicantName);
-            emailMap.put("ApplicationType", "");
+            emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
             emailMap.put("ServiceLicenceName", svcName);
             emailMap.put("ApplicationNumber", licenceNo);
-            emailMap.put("ApplicationDate", Formatter.formatDateTime(date, AppConsts.DEFAULT_DATE_FORMAT));
+            emailMap.put("ApplicationDate", Formatter.formatDateTime(date));
             emailMap.put("email", "");
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
             notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE, emailMap, licenceNo, licenceNo,

@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserCons
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
@@ -33,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
@@ -95,13 +97,15 @@ public class InspectionMergeSendNcEmailDelegator {
     FillupChklistService fillupChklistService;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
+    @Autowired
+    NotificationHelper notificationHelper;
     private static final String INS_EMAIL_DTO="insEmailDto";
     private static final String TASK_DTO="taskDto";
     private static final String SUBJECT="subject";
     private static final String MSG_CON="messageContent";
     private static final String APP_VIEW_DTO="applicationViewDto";
     private static final String BELOW_REVIEW="Below are the review outcome";
-    private static final String THANKS="<p>Thank you</p>";
+    private static final String THANKS="<p>Thank you.</p>";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -179,10 +183,55 @@ public class InspectionMergeSendNcEmailDelegator {
                 log.error(e.getMessage(), e);
             }
         }
+        {
+            mesContext=new StringBuilder();
+            oneEmail="";
+            for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
+            ) {
+                try{
+                    oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
+                    if(oneEmail.contains("//")){
+                        mesContext.append(oneEmail.substring(0,oneEmail.indexOf("//")));
+                        break;
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }
+            }
+
+
+
+            for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
+            ) {
+                try{
+                    String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
+                    if(oneEmail.contains("//") && oneEmail.contains(THANKS)){
+                        mesContext.append(ncEmail.substring(ncEmail.indexOf("//"),ncEmail.indexOf(THANKS)));
+                    }
+                    else {
+                        mesContext.append(ncEmail);
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }
+            }
+            for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
+            ) {
+                try{
+                    oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
+                    if(oneEmail.contains(THANKS)){
+                        mesContext.append(oneEmail.substring(oneEmail.indexOf(THANKS)));
+                        break;
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
         InspectionEmailTemplateDto inspectionEmailTemplateDto= new InspectionEmailTemplateDto();
         inspectionEmailTemplateDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
         inspectionEmailTemplateDto.setMessageContent(mesContext.toString());
-        inspectionEmailTemplateDto.setSubject("MOH IAIS - Review Outcome of Non-Compliance / Best Practices");
+        inspectionEmailTemplateDto.setSubject("Inspection – Summary of Inspection Outcome");
 
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
 
@@ -449,7 +498,11 @@ public class InspectionMergeSendNcEmailDelegator {
                 emailDto.setSender(mailSender);
                 emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
                 emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
-                String requestRefNum = emailClient.sendNotification(emailDto).getEntity();
+                Map<String,Object> mapTemplate=IaisCommonUtils.genNewHashMap();
+                mapTemplate.put("msgContent",inspectionEmailTemplateDto.getMessageContent());
+                notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL,mapTemplate,applicationViewDto.getApplicationDto().getApplicationNo(),applicationViewDto.getApplicationDto().getApplicationNo(),
+                    NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                //emailClient.sendNotification(emailDto).getEntity();
             }catch (Exception e){
                 log.error(e.getMessage(), e);
             }

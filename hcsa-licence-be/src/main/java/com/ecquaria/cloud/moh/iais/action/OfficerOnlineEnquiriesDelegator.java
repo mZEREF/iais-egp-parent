@@ -1000,12 +1000,14 @@ public class OfficerOnlineEnquiriesDelegator {
             hcsaRiskScoreDto.setLicId(licenceId);
             List<ApplicationDto> applicationDtos = new ArrayList<>(1);
             ApplicationDto applicationDto =applicationClient.getApplicationById(rfiApplicationQueryDto.getId()).getEntity();
-            applicationDtos.add(applicationDto);
-            hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
-            hcsaRiskScoreDto.setServiceId(rfiApplicationQueryDto.getSvcId());
-            HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
-            String riskLevel = entity.getRiskLevel();
-            reqForInfoSearchListDto.setCurrentRiskTagging(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
+            if(applicationDto!=null){
+                applicationDtos.add(applicationDto);
+                hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+                hcsaRiskScoreDto.setServiceId(rfiApplicationQueryDto.getSvcId());
+                HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+                String riskLevel = entity.getRiskLevel();
+                reqForInfoSearchListDto.setCurrentRiskTagging(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
+            }
         }catch (Exception e){
             reqForInfoSearchListDto.setCurrentRiskTagging("-");
             log.info(e.getMessage(),e);

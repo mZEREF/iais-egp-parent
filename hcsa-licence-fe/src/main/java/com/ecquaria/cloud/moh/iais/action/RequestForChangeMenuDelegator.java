@@ -1077,6 +1077,11 @@ public class RequestForChangeMenuDelegator {
             return;
         }
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
+        try {
+            requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos.get(0),payMethod);
+        }catch (Exception e){
+            log.info(e.getMessage(), e);
+        }
         bpc.request.getSession().setAttribute("payMethod", payMethod);
         if (0.0 == appSubmissionDtos.get(0).getAmount()) {
             ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
@@ -1158,6 +1163,8 @@ public class RequestForChangeMenuDelegator {
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 bpc.request.setAttribute("createDate", new Date());
+                requestForChangeService.sendRfcEmailToOfficer(appSubmissionDtos.get(0));
+                requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDtos.get(0));
             }
 
             bpc.request.setAttribute("pmtRefNo", pmtRefNo);

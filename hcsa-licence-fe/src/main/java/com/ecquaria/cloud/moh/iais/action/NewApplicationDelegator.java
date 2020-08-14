@@ -1084,9 +1084,9 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request,"txnDt",txnDt);
         }
         String result = ParamUtil.getMaskedString(bpc.request,"result");
+        String pmtRefNo = ParamUtil.getMaskedString(bpc.request,"reqRefNo");
         if (!StringUtil.isEmpty(result)) {
             log.info(StringUtil.changeForLog("payment result:" + result));
-            String pmtRefNo = ParamUtil.getMaskedString(bpc.request,"reqRefNo");
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.info("credit card payment success");
                 if(appSubmissionDtos!=null){
@@ -1126,13 +1126,21 @@ public class NewApplicationDelegator {
         }
 
         if("ack".equals(switch2)){
+            //send email
+            try{
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())){
+                    requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDto);
+                }
+
+            }catch(Exception e){
+                log.error(StringUtil.changeForLog("send email error ...."));
+            }
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "payment success !!!");
         }
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE, switch2);
         log.info(StringUtil.changeForLog("the do doPayment end ...."));
     }
-
     /**
      * StartStep: preInvoke
      *

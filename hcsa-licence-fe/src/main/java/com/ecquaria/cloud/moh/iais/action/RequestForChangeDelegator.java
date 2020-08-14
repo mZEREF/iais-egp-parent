@@ -34,18 +34,18 @@ import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +55,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /****
  *
@@ -725,10 +732,11 @@ public class RequestForChangeDelegator {
             // Send notification to transferee when licence transfer application is submitted.
             sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfee,notifyMap,templateDto.getTemplateName());
             //RFC Application - Send notification to admin officers when amendment application is submitted.
-
             String orgId = loginContext.getOrgId();
             List<String> adminEmailList = requestForChangeService.getAdminEmail(orgId);
             sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),adminEmailList,notifyMap,templateDto.getTemplateName());
+            requestForChangeService.sendRfcEmailToOfficer(tranferSub);
+            requestForChangeService.sendRfcLicenseeEmail(tranferSub);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

@@ -1409,7 +1409,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("ApplicantName", applicantName);
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
         emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         emailMap.put("systemLink", loginUrl);
         emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
         notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT, emailMap, appSubmissionDto.getAppGrpNo(), appSubmissionDto.getAppGrpNo(),
@@ -1433,7 +1433,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("ApplicantName", applicantName);
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
         emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         emailMap.put("systemLink", loginUrl);
         emailMap.put("email_address", "");
         emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
@@ -1450,7 +1450,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("name_transferee", "name_transferee");
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
         emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
-        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         emailMap.put("ExistingLicensee", applicantName);
         emailMap.put("transferee_licensee", applicantName);
         emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
@@ -1471,7 +1471,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         String applicantName=licenseeDto.getName();
         emailMap.put("officer_name", "officer_name");
         emailMap.put("ServiceLicenceName", appSubmissionDto.getServiceName());
-        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date(), AppConsts.DEFAULT_DATE_FORMAT));
+        emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         emailMap.put("Licensee", applicantName);
         emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
         emailMap.put("ReductionResidentialBeds", "");

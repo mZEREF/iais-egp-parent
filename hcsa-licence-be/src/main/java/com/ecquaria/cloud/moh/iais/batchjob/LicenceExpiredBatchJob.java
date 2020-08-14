@@ -119,7 +119,7 @@ public class LicenceExpiredBatchJob {
                 emailMap.put("ApplicantName", applicantName);
                 emailMap.put("ServiceLicenceName", svcName);
                 emailMap.put("LicenceNumber", licenceNo);
-                emailMap.put("CessationDate", Formatter.formatDateTime(date, AppConsts.DEFAULT_DATE_FORMAT));
+                emailMap.put("CessationDate", Formatter.formatDateTime(date));
                 emailMap.put("email", "");
                 emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                 notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE, emailMap, licenceNo, licenceNo,
@@ -163,7 +163,7 @@ public class LicenceExpiredBatchJob {
                 emailMap.put("ApplicantName", applicantName);
                 emailMap.put("ServiceLicenceName", svcName);
                 emailMap.put("LicenceNumber", licenceNo);
-                emailMap.put("CessationDate", Formatter.formatDateTime(date, AppConsts.DEFAULT_DATE_FORMAT));
+                emailMap.put("CessationDate", Formatter.formatDateTime(date));
                 emailMap.put("email", "");
                 emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                 notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE, emailMap, licenceNo, licenceNo,
