@@ -22,7 +22,7 @@
                     <br><br><br><br>
                     <div class="bg-title">
                         <h2>
-                            Your appointment is being re-assigned. You will be alerted to select a date soon.
+                            <iais:message key="OAPPT_ACK006" escape="true"></iais:message>
                         </h2>
                     </div>
                     <iais:section title="" id = "supPoolList">

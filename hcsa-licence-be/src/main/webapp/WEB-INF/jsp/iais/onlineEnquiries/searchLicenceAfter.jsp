@@ -487,13 +487,10 @@
             </div>
         </div>
     </iais:body>
-    <div class="row" height="1" style="display: none" id="selectDecisionMsg">
-        <iais:error>
-            <div class="error">
-                <h2><iais:message key="CESS_ERR002" escape="true"></iais:message></h2>
-            </div>
-        </iais:error>
+    <div class="row" height="1" style="display: none ;color:#ff0000;" id="selectDecisionMsg">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<iais:message key="CESS_ERR002" escape="true"></iais:message>
     </div>
+    <br>
     <iais:action style="text-align:right;">
         <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
         <c:if test="${cease==1}">
