@@ -12,7 +12,7 @@
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."/>
                 <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises type"/>
-                <iais:sortableHeader needSort="false"  field="ADDRESS" value="Address"/>
+                <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address"/>
             </tr>
             </thead>
             <tbody>
@@ -37,8 +37,8 @@
                                     <input type="hidden" name="amendLicenseId${status.index}" value="<iais:mask name= "amendLicenseId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>
                             </td>
-                            <td>${pool.hciName}</td>
-                            <td>${pool.addrType}</td>
+                            <td><iais:code code="${pool.hciName}"/></td>
+                            <td><iais:code code="${pool.addrType}"/></td>
                             <td>${pool.licenceNo}</td>
                             <td>${pool.premisesType}</td>
                             <td>${pool.address}</td>

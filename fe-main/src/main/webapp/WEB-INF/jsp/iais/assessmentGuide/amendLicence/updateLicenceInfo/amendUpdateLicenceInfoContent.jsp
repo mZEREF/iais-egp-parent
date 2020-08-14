@@ -38,7 +38,7 @@
                                     <input type="hidden" name="amendLicenseId${status.index}" value="<iais:mask name= "amendLicenseId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>
                             </td>
-                            <td>${pool.addrType}</td>
+                            <td><iais:code code="${pool.addrType}"/></td>
                             <td>${pool.licenceNo}</td>
                             <td>${pool.premisesType}</td>
                             <td>${pool.address}</td>
