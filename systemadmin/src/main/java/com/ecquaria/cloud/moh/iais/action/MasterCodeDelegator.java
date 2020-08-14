@@ -37,10 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -369,10 +366,10 @@ public class MasterCodeDelegator {
             List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
             List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
             boolean result = false;
-            List<Map<String,List<String>>> errResult = IaisCommonUtils.genNewArrayList();
+            List<Map<String,Set<String>>> errResult = IaisCommonUtils.genNewArrayList();
             for (MasterCodeToExcelDto masterCodeToExcelDto : masterCodeToExcelDtoList) {
-                Map<String,List<String>> errMap = IaisCommonUtils.genNewHashMap();
-                List<String> errItems = IaisCommonUtils.genNewArrayList();
+                Map<String,Set<String>> errMap = IaisCommonUtils.genNewHashMap();
+                Set<String> errItems = IaisCommonUtils.genNewHashSet();
                 Date codeEffFrom = null;
                 Date codeEffTo = null;
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory()))
@@ -409,7 +406,7 @@ public class MasterCodeDelegator {
                     try{
                         codeEffFrom = Formatter.parseDate(masterCodeToExcelDto.getEffectiveFrom());
                     }catch (Exception e){
-                        String errMsg = "Effective Start Date is Illegal date format.";
+                        String errMsg = "Invalid date format for effective dates.";
                         errItems.add(errMsg);
                         result = true;
                     }
@@ -422,7 +419,7 @@ public class MasterCodeDelegator {
                     try{
                         codeEffTo = Formatter.parseDate(masterCodeToExcelDto.getEffectiveTo());
                     }catch (Exception e){
-                        String errMsg = "Effective End Date is Illegal date format.";
+                        String errMsg = "Invalid date format for effective dates.";
                         errItems.add(errMsg);
                         result = true;
                     }
