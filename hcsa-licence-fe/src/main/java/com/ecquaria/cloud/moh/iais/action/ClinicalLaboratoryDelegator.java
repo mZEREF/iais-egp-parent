@@ -1795,7 +1795,7 @@ public class ClinicalLaboratoryDelegator {
                 if(appPsnEditDto.isProfRegNo()){
                     professionRegoNo = NewApplicationHelper.setPsnValue(professionRegoNo,i,appSvcPrincipalOfficersDto,"profRegNo");
                 }
-                if(appPsnEditDto.isSpecialityOther() && "other".equals(appSvcPrincipalOfficersDto.getSpecialityOther())){
+                if(appPsnEditDto.isSpecialityOther() && "other".equals(appSvcPrincipalOfficersDto.getSpeciality())){
                     specialtyOther = NewApplicationHelper.setPsnValue(specialtyOther,i,appSvcPrincipalOfficersDto,"specialityOther");
                 }
                 if(appPsnEditDto.isSubSpeciality()){
