@@ -45,6 +45,28 @@ import java.util.Map;
 @Delegator(value = "templatesDelegator")
 public class TemplatesDelegator {
 
+    private static final Map<String, String> processMap;
+    static
+    {
+        processMap = IaisCommonUtils.genNewHashMap();
+        processMap.put("APP", "Appeal");
+        processMap.put("AUD", "Audit");
+        processMap.put("CES", "Cessation");
+        processMap.put("CHM", "Checklist Management");
+        processMap.put("FEP", "Fees and Payments");
+        processMap.put("INS", "Inspection");
+        processMap.put("NAP", "New Application");
+        processMap.put("ONA", "Online Appointment");
+        processMap.put("REN", "Renewal");
+        processMap.put("RFC", "Request For Change");
+        processMap.put("RFI", "Request for Information");
+        processMap.put("RSM", "Risk Score Management");
+        processMap.put("SM", "Scheduled Maintenance");
+        processMap.put("UEN", "UEN Management");
+        processMap.put("UC1", "User Creation 1");
+        processMap.put("UC2", "User Creation 2");
+        processMap.put("WIT", "Withdrawal");
+    }
     private final FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(MsgTemplateQueryDto.class)
             .searchAttr(MsgTemplateConstants.MSG_SEARCH_PARAM)
@@ -71,7 +93,7 @@ public class TemplatesDelegator {
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter,true);
         QueryHelp.setMainSql(MsgTemplateConstants.MSG_TEMPLATE_FILE, MsgTemplateConstants.MSG_TEMPLATE_SQL,searchParam);
-        SearchResult searchResult = templatesService.getTemplateResults(searchParam);
+        SearchResult<MsgTemplateQueryDto> searchResult = templatesService.getTemplateResults(searchParam);
         List<MsgTemplateQueryDto> msgTemplateQueryDtoList = searchResult.getRows();
         for (MsgTemplateQueryDto msgDto:msgTemplateQueryDtoList
              ) {
@@ -99,6 +121,10 @@ public class TemplatesDelegator {
 
         if(!StringUtil.isEmpty(searchResult)){
             ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_SEARCH_PARAM, searchParam);
+            for (MsgTemplateQueryDto item:searchResult.getRows()
+                 ) {
+                item.setProcess(processMap.get(item.getProcess()));
+            }
             ParamUtil.setRequestAttr(request,MsgTemplateConstants.MSG_SEARCH_RESULT, searchResult);
         }
         List<SelectOption> messageTypeSelectList = IaisCommonUtils.genNewArrayList();
@@ -119,23 +145,10 @@ public class TemplatesDelegator {
 
         List<SelectOption> msgProcessList = IaisCommonUtils.genNewArrayList();
         msgProcessList.add(new SelectOption("", "Please Select"));
-        msgProcessList.add(new SelectOption("APP", "Appeal"));
-        msgProcessList.add(new SelectOption("AUD", "Audit"));
-        msgProcessList.add(new SelectOption("CES", "Cessation"));
-        msgProcessList.add(new SelectOption("CHM", "Checklist Management"));
-        msgProcessList.add(new SelectOption("FEP", "Fees and Payments"));
-        msgProcessList.add(new SelectOption("INS", "Inspection"));
-        msgProcessList.add(new SelectOption("NAP", "New Application"));
-        msgProcessList.add(new SelectOption("ONA", "Online Appointment"));
-        msgProcessList.add(new SelectOption("REN", "Renewal"));
-        msgProcessList.add(new SelectOption("RFC", "Request For Change"));
-        msgProcessList.add(new SelectOption("RFI", "Request for Information"));
-        msgProcessList.add(new SelectOption("RSM", "Risk Score Management"));
-        msgProcessList.add(new SelectOption("SM",  "Scheduled Maintenance"));
-        msgProcessList.add(new SelectOption("UEN", "UEN Management"));
-        msgProcessList.add(new SelectOption("UC1", "User Creation 1"));
-        msgProcessList.add(new SelectOption("UC2", "User Creation 2"));
-        msgProcessList.add(new SelectOption("WIT", "Withdrawal"));
+        for (Map.Entry<String, String> entry:processMap.entrySet()
+             ) {
+            msgProcessList.add(new SelectOption(entry.getKey(),entry.getValue()));
+        }
         ParamUtil.setRequestAttr(bpc.request, "tepProcess", msgProcessList);
     }
 
