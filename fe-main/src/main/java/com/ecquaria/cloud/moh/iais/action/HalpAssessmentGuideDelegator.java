@@ -1382,8 +1382,9 @@ public class HalpAssessmentGuideDelegator {
 
     public void doWithdrawalStep(BaseProcessClass bpc) throws IOException {
         HttpServletRequest request = bpc.request;
-        String appId = ParamUtil.getMaskedString(request, "withdrawAppId");
-        String appNo = ParamUtil.getMaskedString(request, "withdrawAppNo");
+        String radioAppId = ParamUtil.getString(request, "withdrawApp");
+        String appId = ParamUtil.getMaskedString(request, radioAppId+"Id");
+        String appNo = ParamUtil.getMaskedString(request, radioAppId+"No");
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                 .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohWithdrawalApplication")

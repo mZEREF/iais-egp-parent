@@ -30,10 +30,10 @@
                                 <label class="form-check-label" for="withdrawApp"><span
                                         class="check-circle"></span></label>
                             </div>
-                            <input type="hidden" name="withdrawAppId" value="<iais:mask name= "withdrawAppId" value="${pool.id}"/>"/>
+                            <input type="hidden" name="withdrawApp${status.index}Id" value="<iais:mask name= "withdrawApp${status.index}Id" value="${pool.id}"/>"/>
                         </td>
                         <td>${pool.applicationNo}
-                            <input type="hidden" name="withdrawAppNo" value="<iais:mask name= "withdrawAppNo" value="${pool.applicationNo}"/>"/>
+                            <input type="hidden" name="withdrawApp${status.index}No" value="<iais:mask name= "withdrawApp${status.index}No" value="${pool.applicationNo}"/>"/>
                         </td>
                         <td><iais:code code="${pool.applicationType}"/>
                         </td>
