@@ -10,6 +10,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * HcsaAppClient
@@ -26,8 +27,8 @@ public interface HcsaAppClient {
     @GetMapping(value = "/hcsa-app-common/app-grp-appNo/{appNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto> getAppGrpByAppNo(@PathVariable("appNo") String appNo);
 
-    @GetMapping(value = "/iais-application-history/appPremisesRoutingHistorys/{appNo}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistorysByAppNo(@PathVariable("appNo") String appNo);
+    @GetMapping(value = "/iais-application-history/appPremisesRoutingHistorys",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppPremisesRoutingHistoryDto>> getAppPremisesRoutingHistorysByAppNo(@RequestParam("appNo") String appNo);
 
     @GetMapping(value = "/hcsa-app-common/apps-by-grp/{appGrpId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> getAppsByGrpId(@PathVariable("appGrpId") String appGrpId);

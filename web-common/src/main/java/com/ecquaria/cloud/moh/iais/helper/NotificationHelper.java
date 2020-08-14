@@ -27,6 +27,13 @@ import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,14 +44,6 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executor;
 
 /**
  * @author: yichen
@@ -525,11 +524,17 @@ public class NotificationHelper {
 	private InspectionEmailTemplateDto getDefaultAssignedOfficer(List<String> roles, InspectionEmailTemplateDto inspectionEmailTemplateDto, String appNo) {
 		Set<String> userIds = IaisCommonUtils.genNewHashSet();
 		List<AppPremisesRoutingHistoryDto> hisList;
-		if (!AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
-			//todo eic
+		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+		if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
 			hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
 		} else {
-			hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
+			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
+			params.put("appNo", appNo);
+			hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
+					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+					signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
 		}
 		if (IaisCommonUtils.isEmpty(hisList)) {
 			return inspectionEmailTemplateDto;
@@ -564,11 +569,13 @@ public class NotificationHelper {
 		}
 
 		List<OrgUserDto> userList = null;
-		if (!AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
-			//todo eic
-			//userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
-		} else {
+		if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
 			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
+		} else {
+			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			userList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/moh-officer-info", HttpMethod.POST, userIds,
+					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+					signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
 		}
 		if (!IaisCommonUtils.isEmpty(userList)) {
 			Map<String, String> officerNameMap = inspectionEmailTemplateDto.getOfficerNameMap();
@@ -616,11 +623,8 @@ public class NotificationHelper {
 		}
 
 		if (!IaisCommonUtils.isEmpty(passRoles)){
-			List<OrgUserDto> userList;
-			if (!AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
-				//todo eic
-				userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
-			} else {
+			List<OrgUserDto> userList = null;
+			if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
 				userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
 			}
 			if (!IaisCommonUtils.isEmpty(userList)) {
