@@ -5,9 +5,9 @@
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.FE_CSS_ROOT;
     String internetWebSite = UrlConfig.getInstance().getInternetWebSite();
     String internetInbox = UrlConfig.getInstance().getInternetInbox();
-    if(!IaisEGPHelper.isLogin()){
-        internetInbox= internetWebSite;
-    }
+//    if(!IaisEGPHelper.isLogin()){
+//        internetInbox= internetWebSite;
+//    }
 %>
 <header>
 

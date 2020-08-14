@@ -6,9 +6,9 @@
     String webrooth=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
     String intranetWebSite = UrlConfig.getInstance().getIntranetWebSite();
     String intranetInbox = UrlConfig.getInstance().getIntranetInbox();
-    if(!IaisEGPHelper.isLogin()){
-        intranetInbox= intranetWebSite;
-    }
+//    if(!IaisEGPHelper.isLogin()){
+//        intranetInbox= intranetWebSite;
+//    }
 %>
 <header>
 
