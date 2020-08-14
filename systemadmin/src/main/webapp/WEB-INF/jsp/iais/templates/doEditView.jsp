@@ -127,7 +127,7 @@
                 </div>
             </div>
         </div>
-<iais:confirm msg="content cannot be exceeded 8000 characters"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+<iais:confirm msg="Content cannot be exceeded 8000 characters"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
     </form>
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </div>
@@ -146,7 +146,7 @@
     }
 
     function doEdit(mcId) {
-        var length = tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText.length;
+        var length = tinymce_getContentLength();
         if(length > 8000){
             $('#support').modal('show');
         }else {
@@ -179,10 +179,10 @@
             max_chars: 8000,
             setup: function (ed) {
                 var content;
-                var allowedKeys = [8, 37, 38, 39, 40, 46]; // backspace, delete and cursor keys
+                var allowedKeys = [8, 46]; // backspace, delete and cursor keys
                 ed.on('keydown', function (e) {
                     if (allowedKeys.indexOf(e.keyCode) != -1) return true;
-                    if (tinymce_getContentLength() + 1 > this.settings.max_chars) {
+                    if (tinymce_getContentLength() + 1 >= this.settings.max_chars) {
                         e.preventDefault();
                         e.stopPropagation();
                         return false;
@@ -201,7 +201,8 @@
                 var editor = tinymce.get(tinymce.activeEditor.id);
                 var len = editor.contentDocument.body.innerText.length;
                 var text = $(args.content).text();
-                if (len + text.length > editor.settings.max_chars) {
+
+                if (tinymce_getContentLength() > editor.settings.max_chars) {
                     $('#support').modal('show');
                     args.content = '';
                 } else {
@@ -221,14 +222,14 @@
 
     function removeHTMLTag(str) {
         str = str.replace(/<\/?[^>]*>/g, '');
-        str = str.replace(/[ | ]*\n/g, '\n');
-        //str = str.replace(/\n[\s| | ]*\r/g,'\n');
-        str = str.replace(/ /ig, '');
+        str = str.replace(/[\r\n]/g,"");
         return str;
     }
 
 
     function tinymce_getContentLength() {
-        return removeHTMLTag(tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText).length;
+        var count = removeHTMLTag(tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText).length;
+        console.log(count)
+        return count;
     }
 </script>
