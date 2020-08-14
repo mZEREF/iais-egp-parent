@@ -84,7 +84,7 @@
 
 <script type="text/javascript">
     $('#saveDis').click(function(){
-        var length = tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText.length;
+        var length = tinymce_getContentLength();
         console.log(length)
         if(length > 4000){
             $('#support').modal('show');
@@ -138,7 +138,7 @@
         console.log('init1')
         $("#htmlEditroAreaWriteMessage").show();
         tinymce.init({
-            selector: "#htmlEditroAreaWriteMessage",  // change this value according to your HTML
+            selector: "#htmlEditor",  // change this value according to your HTML
             menubar: 'file edit view insert format tools',
             plugins: ['print preview fullpage',
                 'advlist autolink lists link image charmap print preview anchor',
@@ -153,10 +153,10 @@
             max_chars: 4000,
             setup: function (ed) {
                 var content;
-                var allowedKeys = [8, 37, 38, 39, 40, 46]; // backspace, delete and cursor keys
+                var allowedKeys = [8, 46]; // backspace, delete and cursor keys
                 ed.on('keydown', function (e) {
                     if (allowedKeys.indexOf(e.keyCode) != -1) return true;
-                    if (tinymce_getContentLength() + 1 > this.settings.max_chars) {
+                    if (tinymce_getContentLength() + 1 >= this.settings.max_chars) {
                         e.preventDefault();
                         e.stopPropagation();
                         return false;
@@ -175,7 +175,8 @@
                 var editor = tinymce.get(tinymce.activeEditor.id);
                 var len = editor.contentDocument.body.innerText.length;
                 var text = $(args.content).text();
-                if (len + text.length > editor.settings.max_chars) {
+
+                if (tinymce_getContentLength() > editor.settings.max_chars) {
                     $('#support').modal('show');
                     args.content = '';
                 } else {
@@ -189,8 +190,16 @@
     function tinymce_updateCharCounter(el, len) {
         $('#' + el.id).prev().find('.char_count').text(len + '/' + el.settings.max_chars);
     }
+    function removeHTMLTag(str) {
+        str = str.replace(/<\/?[^>]*>/g, '');
+        str = str.replace(/[\r\n]/g,"");
+        return str;
+    }
 
     function tinymce_getContentLength() {
-        return tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText.length;
+        var count = removeHTMLTag(tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText).length;
+        console.log(count)
+        return count;
     }
+
 </script>
