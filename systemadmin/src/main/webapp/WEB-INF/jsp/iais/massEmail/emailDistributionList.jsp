@@ -229,10 +229,11 @@ function searchResult() {
 }
 function clearSearch(){
     $('input[name="distributionName"]').val("");
-    $("#role option:first").prop("selected", 'selected');
     $("#service option:first").prop("selected", 'selected');
     $("#modeDelivery option:first").prop("selected", 'selected');
     $("#searchCondition .current").text("Please Select");
+
+    $("input[name='role']").removeAttr("checked");
 }
 
 $("#service").change(function () {
