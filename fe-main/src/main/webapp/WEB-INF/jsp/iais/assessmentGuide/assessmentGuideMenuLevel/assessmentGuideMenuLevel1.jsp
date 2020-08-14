@@ -1,4 +1,4 @@
-<div class="self-assessment-item assessment-level-1">
+<div class="self-assessment-item assessment-level-1 hidden">
     <div class="renewLicence hidden">
         <div class="form-check-gp">
             <%@include file="/WEB-INF/jsp/iais/selfassessment/schematics/renewLicence.jsp" %>

@@ -1,19 +1,16 @@
 <%@include file="../assessmentGuideMenuHead.jsp" %>
 <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel.jsp" %>
-<div class="self-assessment-item">
+<div class="self-assessment-item assessment-level-1">
+    <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel1_1.jsp" %>
     <div class="resumeDraftApplication">
         <div class="form-check-gp">
             <%@include file="/WEB-INF/jsp/iais/assessmentGuide/resumeDraftApplication/resumDraftAppContent.jsp" %>
         </div>
     </div>
-    <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel1_1.jsp" %>
 </div>
 <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2.jsp" %>
 <%@include file="../assessmentGuideMenuFoot.jsp" %>
 <script type="application/javascript">
-    $(function () {
-        $(".assessment-level-2").attr("hidden","true");
-    });
 
     $("#ceaseLicence").click(function(){
         guideSubmit("cease","main");

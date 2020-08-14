@@ -11,11 +11,8 @@
 <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2.jsp" %>
 <%@include file="../assessmentGuideMenuFoot.jsp" %>
 <script>
-    $(function () {
-        $(".assessment-level-2").attr("hidden","true");
 
-        $("#ceaseLicence").attr('checked', 'true');
-    });
+    $("#ceaseLicence").attr('checked', 'true');
 
     function jumpToPagechangePage() {
         $("[name='guide_action_type']").val("ceaseLicPage");

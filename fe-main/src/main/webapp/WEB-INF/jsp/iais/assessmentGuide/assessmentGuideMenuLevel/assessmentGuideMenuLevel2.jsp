@@ -1,4 +1,4 @@
-<div class="self-assessment-item assessment-level-2">
+<div class="self-assessment-item assessment-level-2 hidden">
     <div class="amendLicence1 hidden">
         <div class="form-check-gp">
             <%@include

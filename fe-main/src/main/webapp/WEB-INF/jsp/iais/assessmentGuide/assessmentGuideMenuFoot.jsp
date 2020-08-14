@@ -43,6 +43,7 @@
     });
 
     function guideSubmit(guideAction,toWhere){
+        showWaiting();
         if("main" == toWhere){
             $("[name='crud_action_type']").val(guideAction);
         }else if ("second" == toWhere) {
