@@ -50,20 +50,19 @@ public class TemplatesDelegator {
     {
         processMap = IaisCommonUtils.genNewHashMap();
 
-//        processMap.put("AUD", "Audit");
-//        processMap.put("CHM", "Checklist Management");
-//        processMap.put("FEP", "Fees and Payments");
-//        processMap.put("RSM", "Risk Score Management");
-//        processMap.put("SM",  "Scheduled Maintenance");
-//        processMap.put("UEN", "UEN Management");
-//        processMap.put("UC1", "User Creation 1");
-//        processMap.put("UC2", "User Creation 2");
+        processMap.put("AUD", "Audit");
+        processMap.put("CHM", "Checklist Management");
+        processMap.put("FEP", "Fees and Payments");
+        processMap.put("RSM", "Risk Score Management");
+        processMap.put("SM",  "Scheduled Maintenance");
+        processMap.put("UEN", "UEN Management");
 
         processMap.put("APP", "Appeal");
         processMap.put("CES", "Cessation");
         processMap.put("CHM", "Checklist Management");
         processMap.put("INS", "Inspection");
         processMap.put("NAP", "New");
+        processMap.put("MISC", "MISC");
         processMap.put("ONA", "Online Appointment");
         processMap.put("REN", "Renewal");
         processMap.put("RFC", "Request For Change");
@@ -73,6 +72,22 @@ public class TemplatesDelegator {
         processMap.put("TRE", "Task Reassignment");
         processMap.put("WIT", "Withdrawal");
     }
+
+    private final static List<String> processList = Arrays.asList(
+            "APP",
+            "CES",
+            "CHM",
+            "INS",
+            "NAP",
+            "MISC",
+            "ONA",
+            "REN",
+            "RFC",
+            "RFI",
+            "REV",
+            "SUS",
+            "TRE",
+            "WIT");
     private final FilterParameter filterParameter = new FilterParameter.Builder()
             .clz(MsgTemplateQueryDto.class)
             .searchAttr(MsgTemplateConstants.MSG_SEARCH_PARAM)
@@ -100,37 +115,35 @@ public class TemplatesDelegator {
         SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter,true);
         QueryHelp.setMainSql(MsgTemplateConstants.MSG_TEMPLATE_FILE, MsgTemplateConstants.MSG_TEMPLATE_SQL,searchParam);
         SearchResult<MsgTemplateQueryDto> searchResult = templatesService.getTemplateResults(searchParam);
-        List<MsgTemplateQueryDto> msgTemplateQueryDtoList = searchResult.getRows();
-        for (MsgTemplateQueryDto msgDto:msgTemplateQueryDtoList
-             ) {
-            msgDto.setMessageType(MasterCodeUtil.getCodeDesc(msgDto.getMessageType()));
-            msgDto.setDeliveryMode(MasterCodeUtil.getCodeDesc(msgDto.getDeliveryMode()));
-            if(!StringUtil.isEmpty(msgDto.getBcc())){
-                msgDto.setBcc(changeStringFormat(msgDto.getBcc()));
-            }else{
-                msgDto.setBcc("N/A");
-            }
-            if(!StringUtil.isEmpty(msgDto.getCc())){
-                msgDto.setCc(changeStringFormat(msgDto.getCc()));
-            }else{
-                msgDto.setCc("N/A");
-            }
-            if(!StringUtil.isEmpty(msgDto.getRec())){
-                msgDto.setRec(changeStringFormat(msgDto.getRec()));
-            }else{
-                msgDto.setRec("N/A");
-            }
-            if(msgDto.getProcess() == null || msgDto.getProcess().isEmpty()){
-                msgDto.setProcess("N/A");
-            }
-        }
-
         if(!StringUtil.isEmpty(searchResult)){
-            ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_SEARCH_PARAM, searchParam);
-            for (MsgTemplateQueryDto item:searchResult.getRows()
-                 ) {
-                item.setProcess(processMap.get(item.getProcess()));
+            List<MsgTemplateQueryDto> msgTemplateQueryDtoList = searchResult.getRows();
+            for (MsgTemplateQueryDto msgDto:msgTemplateQueryDtoList
+             ) {
+                msgDto.setMessageType(MasterCodeUtil.getCodeDesc(msgDto.getMessageType()));
+                msgDto.setDeliveryMode(MasterCodeUtil.getCodeDesc(msgDto.getDeliveryMode()));
+                msgDto.setProcess(processMap.get(msgDto.getProcess()));
+
+                if(!StringUtil.isEmpty(msgDto.getBcc())){
+                    msgDto.setBcc(changeStringFormat(msgDto.getBcc()));
+                }else{
+                    msgDto.setBcc("N/A");
+                }
+                if(!StringUtil.isEmpty(msgDto.getCc())){
+                    msgDto.setCc(changeStringFormat(msgDto.getCc()));
+                }else{
+                    msgDto.setCc("N/A");
+                }
+                if(!StringUtil.isEmpty(msgDto.getRec())){
+                    msgDto.setRec(changeStringFormat(msgDto.getRec()));
+                }else{
+                    msgDto.setRec("N/A");
+                }
+                if(msgDto.getProcess() == null || msgDto.getProcess().isEmpty()){
+                    msgDto.setProcess("N/A");
+                }
             }
+
+            ParamUtil.setSessionAttr(request,MsgTemplateConstants.MSG_SEARCH_PARAM, searchParam);
             ParamUtil.setRequestAttr(request,MsgTemplateConstants.MSG_SEARCH_RESULT, searchResult);
         }
         List<SelectOption> messageTypeSelectList = IaisCommonUtils.genNewArrayList();
@@ -151,9 +164,9 @@ public class TemplatesDelegator {
 
         List<SelectOption> msgProcessList = IaisCommonUtils.genNewArrayList();
         msgProcessList.add(new SelectOption("", "Please Select"));
-        for (Map.Entry<String, String> entry:processMap.entrySet()
+        for (String item:processList
              ) {
-            msgProcessList.add(new SelectOption(entry.getKey(),entry.getValue()));
+            msgProcessList.add(new SelectOption(item,processMap.get(item)));
         }
         ParamUtil.setRequestAttr(bpc.request, "tepProcess", msgProcessList);
     }
@@ -163,11 +176,11 @@ public class TemplatesDelegator {
         String[] BccList = rec.split(", ");
         for (String item:BccList
         ) {
-            String str = "EM-" + (item);
+            String str = (item);
             String full = MasterCodeUtil.getCodeDesc(str);
-            bccDes.append(full).append("</br>");
+            bccDes.append(full).append(",</br>");
         }
-        return bccDes.toString();
+        return bccDes.toString().substring(0,bccDes.toString().length()-6);
     }
 
 
