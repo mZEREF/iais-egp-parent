@@ -718,11 +718,10 @@ public class ServiceMenuDelegator {
                         nextstep = CHOOSE_ALIGN;
                     }
                 }
-                //init search param
-                searchParam = initSearParam();
                 appSelectSvcDto.setAlignLicenceNo("");
                 appSelectSvcDto.setAlignLicPremId("");
-                ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM,searchParam);
+                //init search param
+                ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM,initSearParam());
             }
         }
         log.info(StringUtil.changeForLog("do choose svc next step:"+nextstep));
