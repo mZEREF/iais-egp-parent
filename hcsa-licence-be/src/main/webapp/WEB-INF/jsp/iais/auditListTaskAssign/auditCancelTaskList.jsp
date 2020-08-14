@@ -34,7 +34,7 @@
                                 <th>Assigned Inspector</th>
                                 <th>Cancel Reason</th>
                                 <th>Select for Audit</th>
-                                <th>Reason</th>
+                                <!--% <th>Reason</th> -->
                             </tr>
                             </thead>
                             <tbody>
@@ -70,9 +70,9 @@
                                         <span class="error-msg" id="<c:out value="${errselect}"/>"
                                               name="iaisErrorMsg"></span>
                                     </td>
-                                    <td>
+                                        <!--    <td>
                                         <textarea cols="30" rows="5" name="${id}newReason"  maxlength="2000"><c:out value="${item.reasonForAO}"></c:out></textarea>
-                                    </td>
+                                        </td> -->
                                 </tr>
                             </c:forEach>
                             </tbody>
