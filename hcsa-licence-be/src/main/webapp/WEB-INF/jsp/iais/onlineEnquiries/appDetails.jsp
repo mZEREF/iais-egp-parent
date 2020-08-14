@@ -234,21 +234,32 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                <c:forEach var="disciplineAllocation" items="${appSvcRelatedInfoDto.appSvcDisciplineAllocationDtoList}" varStatus="stat">
-                                                    <tr>
-                                                        <td style="text-align: center" >
-                                                            <p>&nbsp;${disciplineAllocation.premiseVal}<c:if test="${empty disciplineAllocation.premiseVal}">-</c:if></p>
-                                                        </td>
+                                                <c:choose>
+                                                    <c:when test="${empty appSvcRelatedInfoDto.appSvcDisciplineAllocationDtoList}">
+                                                        <tr>
+                                                            <td colspan="7">
+                                                                <iais:message key="ACK018" escape="true"></iais:message>
+                                                            </td>
+                                                        </tr>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:forEach var="disciplineAllocation" items="${appSvcRelatedInfoDto.appSvcDisciplineAllocationDtoList}" varStatus="stat">
+                                                            <tr>
+                                                                <td style="text-align: center" >
+                                                                    <p>&nbsp;${disciplineAllocation.premiseVal}<c:if test="${empty disciplineAllocation.premiseVal}">-</c:if></p>
+                                                                </td>
 
-                                                        <td style="text-align: center">
-                                                            <p>&nbsp;${disciplineAllocation.chkLstName}<c:if test="${empty disciplineAllocation.chkLstName}">-</c:if></p>
+                                                                <td style="text-align: center">
+                                                                    <p>&nbsp;${disciplineAllocation.chkLstName}<c:if test="${empty disciplineAllocation.chkLstName}">-</c:if></p>
 
-                                                        </td>
-                                                        <td style="text-align: center">
-                                                            <p>&nbsp;${disciplineAllocation.cgoSelName}<c:if test="${empty disciplineAllocation.cgoSelName}">-</c:if></p>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
+                                                                </td>
+                                                                <td style="text-align: center">
+                                                                    <p>&nbsp;${disciplineAllocation.cgoSelName}<c:if test="${empty disciplineAllocation.cgoSelName}">-</c:if></p>
+                                                                </td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                    </c:otherwise>
+                                                </c:choose>
                                                 </tbody>
                                             </table>
 
