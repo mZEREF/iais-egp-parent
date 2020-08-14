@@ -49,22 +49,28 @@ public class TemplatesDelegator {
     static
     {
         processMap = IaisCommonUtils.genNewHashMap();
+
+//        processMap.put("AUD", "Audit");
+//        processMap.put("CHM", "Checklist Management");
+//        processMap.put("FEP", "Fees and Payments");
+//        processMap.put("RSM", "Risk Score Management");
+//        processMap.put("SM",  "Scheduled Maintenance");
+//        processMap.put("UEN", "UEN Management");
+//        processMap.put("UC1", "User Creation 1");
+//        processMap.put("UC2", "User Creation 2");
+
         processMap.put("APP", "Appeal");
-        processMap.put("AUD", "Audit");
         processMap.put("CES", "Cessation");
         processMap.put("CHM", "Checklist Management");
-        processMap.put("FEP", "Fees and Payments");
         processMap.put("INS", "Inspection");
-        processMap.put("NAP", "New Application");
+        processMap.put("NAP", "New");
         processMap.put("ONA", "Online Appointment");
         processMap.put("REN", "Renewal");
         processMap.put("RFC", "Request For Change");
         processMap.put("RFI", "Request for Information");
-        processMap.put("RSM", "Risk Score Management");
-        processMap.put("SM", "Scheduled Maintenance");
-        processMap.put("UEN", "UEN Management");
-        processMap.put("UC1", "User Creation 1");
-        processMap.put("UC2", "User Creation 2");
+        processMap.put("REV", "Revocation");
+        processMap.put("SUS", "Suspension");
+        processMap.put("TRE", "Task Reassignment");
         processMap.put("WIT", "Withdrawal");
     }
     private final FilterParameter filterParameter = new FilterParameter.Builder()
@@ -138,7 +144,7 @@ public class TemplatesDelegator {
 
         List<SelectOption> deliveryModeSelectList = IaisCommonUtils.genNewArrayList();
         deliveryModeSelectList.add(new SelectOption("", "Please Select"));
-        deliveryModeSelectList.add(new SelectOption("DEMD001", "Mail"));
+        deliveryModeSelectList.add(new SelectOption("DEMD001", "Email"));
         deliveryModeSelectList.add(new SelectOption("DEMD002", "SMS"));
         deliveryModeSelectList.add(new SelectOption("DEMD003", "System Inbox"));
         ParamUtil.setRequestAttr(bpc.request, "deliveryMode", deliveryModeSelectList);
