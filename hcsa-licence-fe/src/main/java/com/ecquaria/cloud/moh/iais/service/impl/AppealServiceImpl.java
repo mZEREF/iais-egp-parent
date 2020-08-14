@@ -746,7 +746,8 @@ public class AppealServiceImpl implements AppealService {
         request.setAttribute("groupId", groupId);
         request.setAttribute("draftStatus", AppConsts.COMMON_STATUS_IACTIVE);
         saveData(request);
-        request.setAttribute("newApplicationNo", s);
+        String newApplicationNo = arrayToString(applicationDtoListlist,appNo);
+        request.setAttribute("newApplicationNo", newApplicationNo);
         //todo send email
         try {
             sendEmail(request);
@@ -754,7 +755,34 @@ public class AppealServiceImpl implements AppealService {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        return s;
+        return newApplicationNo;
+    }
+
+    public String arrayToString(List<ApplicationDto> applicationDtoListlist,String groupNo){
+        StringBuilder appNos = new StringBuilder();
+
+        if(applicationDtoListlist.size() == 1){
+            appNos.append(groupNo+"-01");
+        }else{
+            for(int i = 0;i < applicationDtoListlist.size(); i++){
+                if(i == applicationDtoListlist.size() -1){
+                    int number = i + 1;
+                    if(number <= 9){
+                        appNos.append(groupNo+"-0"+number);
+                    }else{
+                        appNos.append(groupNo+"-"+number);
+                    }
+                }else{
+                    int number = i + 1;
+                    if(number <= 9){
+                        appNos.append(groupNo + "-0" + number + ", ");
+                    }else{
+                        appNos.append(groupNo + "-" + number + ", ");
+                    }
+                }
+            }
+        }
+        return appNos.toString();
     }
 
     private ApplicationGroupDto getApplicationGroupDto(String appNo) {
