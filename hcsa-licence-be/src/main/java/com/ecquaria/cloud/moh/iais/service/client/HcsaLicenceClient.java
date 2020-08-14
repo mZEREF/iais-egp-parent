@@ -216,4 +216,6 @@ public interface HcsaLicenceClient {
     FeignResponseEntity<String> findNewestLicId(@RequestParam("licenceId") String licenceId);
     @GetMapping(value = "/hcsa-licence/find-lic-effDate",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenceDto>> getLicByEffDate();
+    @GetMapping(path= "/hcsa-licence/lice-app-correlation-by-id/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicAppCorrelationDto> getOneLicAppCorrelationByApplicationId(@PathVariable("appId") String appId);
 }
