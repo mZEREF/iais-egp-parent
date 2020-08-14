@@ -1041,14 +1041,16 @@ public class HcsaApplicationDelegator {
             //send sms
             sendSMS(msgId,licenseeId,msgInfoMap);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-//            MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT).getEntity();
-//            if(msgTemplateDto != null){
-//                Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-//                tempMap.put("APP_NO",StringUtil.viewHtml(applicationNo));
-//                String subject = " " + applicationNo + "– Rejected ";
-//                sendEmailHelper(tempMap,MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT,subject,licenseeId,appGrpId);
-//            }
             //send email
+            EmailDto emailDto = new EmailDto();
+            emailDto.setContent("Renewal Application Reject Context");
+            emailDto.setSubject(" MOH HALP - Renewal Application - " + applicationNo + " is Rejected");
+            emailDto.setSender(mailSender);
+            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+            emailDto.setClientQueryCode(licenseeId);
+            //send
+            emailClient.sendNotification(emailDto).getEntity();
+
             LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
             String applicationName = licenseeDto.getName();
             Date date = new Date();
@@ -1060,7 +1062,7 @@ public class HcsaApplicationDelegator {
             String subject = "MOH IAIS – Renew" + applicationNo + " - Rejected ";
             String mesContext = "renew reject message";
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-            sendMessage(subject,licenseeId,mesContext,maskParams,applicationViewDto.getApplicationDto().getServiceId(),null);
+            sendMessage(subject,licenseeId,mesContext,maskParams,applicationViewDto.getApplicationDto().getServiceId(),MessageConstants.MESSAGE_TYPE_NOTIFICATION);
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             //send email Appeal - Send SMS to licensee when appeal application is approved
             Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
@@ -1349,29 +1351,28 @@ public class HcsaApplicationDelegator {
 
     private void sendRejectEmail(String applicationNo,String licenseeId,String groupNo){
         //send email
-        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID).getEntity();
-        if(msgTemplateDto != null){
-            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
-            tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
-            tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
-
-            String mesContext = null;
-            try {
-                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
-            } catch (IOException | TemplateException e) {
-                log.error(e.getMessage(),e);
-            }
+//        MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID).getEntity();
+//        if(msgTemplateDto != null){
+//            Map<String ,Object> tempMap = IaisCommonUtils.genNewHashMap();
+//            tempMap.put("applicationNumber",StringUtil.viewHtml(applicationNo));
+//            tempMap.put("MOH_AGENCY_NAME",AppConsts.MOH_AGENCY_NAME);
+//
+//            String mesContext = null;
+//            try {
+//                mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), tempMap);
+//            } catch (IOException | TemplateException e) {
+//                log.error(e.getMessage(),e);
+//            }
 
             EmailDto emailDto = new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(" " + msgTemplateDto.getTemplateName() + " " + applicationNo + " is Rejected");
+            emailDto.setContent("New Application Reject Context");
+            emailDto.setSubject(" MOH HALP - New Application - " + applicationNo + " is Rejected");
             emailDto.setSender(mailSender);
             emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
             emailDto.setClientQueryCode(groupNo);
             //send
             emailClient.sendNotification(emailDto).getEntity();
         }
-    }
 
     public void sendRouteBackEmail(String licenseeId,ApplicationViewDto applicationViewDto) throws Exception{
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
