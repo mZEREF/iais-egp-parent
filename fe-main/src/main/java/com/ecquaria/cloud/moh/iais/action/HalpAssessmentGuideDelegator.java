@@ -1414,8 +1414,9 @@ public class HalpAssessmentGuideDelegator {
     public void resumeDraftAppStep(BaseProcessClass bpc) throws IOException {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
-        String appNo = ParamUtil.getString(request, "draftAppNo");
-        String appType = MasterCodeUtil.getCodeDesc(ParamUtil.getString(request, "draftAppType")).trim();
+        String radioappNo = ParamUtil.getString(request, "resumeAppNos");
+        String appNo = ParamUtil.getString(request, radioappNo+"No");
+        String appType = MasterCodeUtil.getCodeDesc(ParamUtil.getString(request, radioappNo+"Type")).trim();
         if(InboxConst.APP_DO_DRAFT_TYPE_RFC.equals(appType)){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())

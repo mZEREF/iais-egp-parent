@@ -30,8 +30,8 @@
                                 <label class="form-check-label" for="draftApp"><span
                                         class="check-circle"></span></label>
                             </div>
-                            <input type="hidden" name="draftAppNo" value="${pool.applicationNo}"/>
-                            <input type="hidden" name="draftAppType" value="${pool.applicationType}"/>
+                            <input type="hidden" name="draftApp${status.index}No" value="${pool.applicationNo}"/>
+                            <input type="hidden" name="draftApp${status.index}Type" value="${pool.applicationType}"/>
                         </td>
                         <td>${pool.applicationNo}</td>
                         <td><iais:code code="${pool.applicationType}"/></td>
