@@ -44,4 +44,9 @@
         </tbody>
     </table>
 </div>
-<a class="btn btn-primary " onclick="guideSubmit('resumDraft','second')">NEXT</a>
+<c:choose>
+    <c:when test="${!empty draftAppSearchResult.rows}">
+        <a class="btn btn-primary " onclick="guideSubmit('resumDraft','second')">NEXT</a>
+    </c:when>
+</c:choose>
+

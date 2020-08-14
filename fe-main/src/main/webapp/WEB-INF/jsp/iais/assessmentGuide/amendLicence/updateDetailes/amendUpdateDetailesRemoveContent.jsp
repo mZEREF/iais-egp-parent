@@ -50,5 +50,9 @@
             </tbody>
         </table>
     </div>
-    <a class="btn btn-primary " onclick="guideSubmit('amendLic1','second')">NEXT</a>
+    <c:choose>
+        <c:when test="${!empty amendDetailsRemoveSearchResult.rows}">
+            <a class="btn btn-primary " onclick="guideSubmit('amendLic1','second')">NEXT</a>
+        </c:when>
+    </c:choose>
 </div>

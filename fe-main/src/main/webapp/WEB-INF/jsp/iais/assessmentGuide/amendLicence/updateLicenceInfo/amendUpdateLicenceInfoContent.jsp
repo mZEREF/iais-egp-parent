@@ -49,5 +49,9 @@
             </tbody>
         </table>
     </div>
-    <a class="btn btn-primary " onclick="guideSubmit('amendLic6','second')">NEXT</a>
+    <c:choose>
+        <c:when test="${!empty amendUpdateLicenseeSearchResult.rows}">
+            <a class="btn btn-primary " onclick="guideSubmit('amendLic6','second')">NEXT</a>
+        </c:when>
+    </c:choose>
 </div>
