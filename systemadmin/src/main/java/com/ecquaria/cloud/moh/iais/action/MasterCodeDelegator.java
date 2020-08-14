@@ -446,19 +446,19 @@ public class MasterCodeDelegator {
                                 String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0007");
                                 errItems.add(errMsg);
                                 result = true;
-                            }else{
-                                List<String> codeValueList = IaisCommonUtils.genNewArrayList();
-                                masterCodeToExcelDtos.forEach(h -> {
-                                    codeValueList.add(h.getCodeValue());
-                                });
-                                if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
-                                    String errMsg = "Filter Value must be an existing Code Value";
-                                    errItems.add(errMsg);
-                                    result = true;
-                                }
+                            }
+                        }else{
+                            List<String> codeValueList = IaisCommonUtils.genNewArrayList();
+                            masterCodeToExcelDtos.forEach(h -> {
+                                codeValueList.add(h.getCodeValue());
+                            });
+                            if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
+                                String errMsg = "Filter Value must be an existing Code Value";
+                                errItems.add(errMsg);
+                                result = true;
                             }
                         }
-                    }
+                        }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
                     if ("Active".equals(masterCodeToExcelDto.getStatus())){
@@ -489,6 +489,13 @@ public class MasterCodeDelegator {
                                 }
                             }
                         }
+                    }
+                }
+                if (cartOptional != null){
+                    if (cartOptional.isPresent()) {
+                        MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
+                        masterCodeToExcelDto.setMasterCodeId(masterCodeToExcelDto1.getMasterCodeId());
+                        masterCodeToExcelDto.setMasterCodeKey(masterCodeToExcelDto1.getMasterCodeKey());
                     }
                 }
                 if (errItems.size()>0){
