@@ -349,23 +349,13 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public Boolean hasSubmittedSelfAssMtRfiByCorrId(String corrId) {
-        List<ApplicationDto> appList = applicationClient.getPremisesApplicationsByCorreId(corrId).getEntity();
-        if (IaisCommonUtils.isEmpty(appList)) {
+        ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(corrId).getEntity();
+        if (applicationDto == null){
+            log.info(StringUtil.changeForLog("applicationDto is null" + applicationDto));
             return Boolean.TRUE;
         }
 
-        boolean submitted = false;
-        List<Integer> status = appList.stream()
-                .map(ApplicationDto::getSelfAssMtFlag).collect(Collectors.toList());
-
-        for (Integer i : status){
-            if (ApplicationConsts.SUBMITTED_SELF_ASSESSMENT.equals(i)){
-                submitted = true;
-                break;
-            }
-        }
-
-        return submitted;
+        return applicationDto.getSelfAssMtFlag() == 1;
     }
 
     @Override

@@ -291,7 +291,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     appList = i.getAppList();
                     //never null
                     ApplicationDto app = appList.get(0);
-                    reqRefNum = app.getApplicationNo();
+                    reqRefNum = String.valueOf(app.getEndDate().getTime());
                     templateContent.put("applicationNumber", reqRefNum);
                     templateContent.put("applicationType", MasterCodeUtil.getCodeDesc(app.getApplicationType()));
                     templateContent.put("applicationDate", Formatter.formatDate(app.getStartDate()));
