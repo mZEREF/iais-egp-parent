@@ -221,9 +221,9 @@ public class InspecEmailDelegator {
                 mapTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
             }
             mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
-            if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRecomDecision()!=null)){
+            if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
                 String stringBuilder = "<tr><td>" + 1 +
-                        TD + StringUtil.viewHtml(appPreRecommentdationDto.getRecomDecision()) +
+                        TD + StringUtil.viewHtml(appPreRecommentdationDto.getBestPractice()) +
                         TD + StringUtil.viewHtml(appPreRecommentdationDto.getRemarks()) +
                         "</td></tr>";
                 mapTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder));

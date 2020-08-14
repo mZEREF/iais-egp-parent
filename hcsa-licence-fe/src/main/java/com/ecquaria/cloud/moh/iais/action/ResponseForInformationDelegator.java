@@ -201,12 +201,13 @@ public class ResponseForInformationDelegator {
         if(!IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto())){
             for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
                 CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
+                String errDocument=MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field");
                 if(!(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename()))){
-                    errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
+                    errMap.put("UploadFile"+doc.getId(),errDocument);
                 }
                 if(licPremisesReqForInfoDto.isNeedDocument()){
                     if(doc.getDocSize()==null){
-                        errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
+                        errMap.put("UploadFile"+doc.getId(),errDocument);
                     }else{
                         List<String> fileTypes = Arrays.asList(systemParamConfig.getUploadFileType().split(","));
                         Map<String, Boolean> booleanMap = ValidationUtils.validateFile(file,fileTypes,(systemParamConfig.getUploadFileLimit() * 1024 *1024l));

@@ -611,12 +611,13 @@ public class RequestForInformationDelegator {
             errMap.put("rfiSelect","PRF_ERR008");
 
         }
+        String errTitle=MessageUtil.replaceMessage("GENERAL_ERR0006","Title","field");
         if(docChk!=null){
             for (String len:lengths
             ) {
                 String s=ParamUtil.getString(request,"docTitle"+len);
                 if(StringUtil.isEmpty(s)){
-                    errMap.put("docTitle"+len,MessageUtil.replaceMessage("GENERAL_ERR0006","Title","field"));
+                    errMap.put("docTitle"+len,errTitle);
                 }
             }
         }
@@ -625,7 +626,7 @@ public class RequestForInformationDelegator {
             ) {
                 String s=ParamUtil.getString(request,"infoTitle"+len);
                 if(StringUtil.isEmpty(s)){
-                    errMap.put("infoTitle"+len,MessageUtil.replaceMessage("GENERAL_ERR0006","Title","field"));
+                    errMap.put("infoTitle"+len,errTitle);
                 }
             }
         }

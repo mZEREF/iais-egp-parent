@@ -505,7 +505,9 @@ public class InspectReviseNcEmailDelegator {
         inspectionEmailTemplateDto.setServiceName(hcsaServiceDto.getSvcName());
         List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(correlationId);
         AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_TCU);
-        inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
+        if(appPreRecommentdationDto!=null&&appPreRecommentdationDto.getBestPractice()!=null){
+            inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
+        }
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         InspecEmailDelegator.makeEmail(inspectionEmailTemplateDto, map);
         if(!ncAnswerDtos.isEmpty()){
@@ -573,7 +575,7 @@ public class InspectReviseNcEmailDelegator {
             mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
             if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRecomDecision()!=null)){
                 String stringBuilder = "<tr><td>" + 1 +
-                        TD + StringUtil.viewHtml(appPreRecommentdationDto.getRecomDecision()) +
+                        TD + StringUtil.viewHtml(appPreRecommentdationDto.getBestPractice()) +
                         TD + StringUtil.viewHtml(appPreRecommentdationDto.getRemarks()) +
                         "</td></tr>";
                 mapTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder));

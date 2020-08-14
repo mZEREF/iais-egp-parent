@@ -1004,6 +1004,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 applicationDtos.add(applicationDto);
                 hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
                 hcsaRiskScoreDto.setServiceId(rfiApplicationQueryDto.getSvcId());
+                log.info(StringUtil.changeForLog(" HcsaRiskScoreDto entity ->"+applicationDto.toString()));
                 HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
                 String riskLevel = entity.getRiskLevel();
                 reqForInfoSearchListDto.setCurrentRiskTagging(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
