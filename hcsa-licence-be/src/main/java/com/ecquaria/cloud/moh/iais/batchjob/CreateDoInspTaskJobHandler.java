@@ -182,8 +182,12 @@ public class CreateDoInspTaskJobHandler extends IJobHandler {
             return null;
         }
         List<TaskDto> taskDtoList = IaisCommonUtils.genNewArrayList();
+        List<String> userIds = IaisCommonUtils.genNewArrayList();
         for(TaskDto tDto:taskDtos){
-            taskDtoList.add(tDto);
+            if(!userIds.contains(tDto.getUserId())) {
+                userIds.add(tDto.getUserId());
+                taskDtoList.add(tDto);
+            }
         }
         return taskDtoList;
     }

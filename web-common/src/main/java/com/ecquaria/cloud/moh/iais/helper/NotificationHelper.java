@@ -271,6 +271,9 @@ public class NotificationHelper {
 					RECEIPT_TYPE_ANNONUCEMENT.equals(refIdType) ||
 					RECEIPT_TYPE_ACTION_REQUIRED.equals(refIdType)) {
 				// send message
+				if(StringUtil.isEmpty(subject)){
+					subject = msgTemplateDto.getTemplateName();
+				}
 				sendMessage(mesContext, refId, refIdType, subject, maskParams);
 				if (jrDto != null) {
 					List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
