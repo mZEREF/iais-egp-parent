@@ -322,10 +322,13 @@ public class NewApplicationDelegator {
 
                 } else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
                     List<String> currPremHci = IaisCommonUtils.genNewArrayList();
-                    List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
-                    if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
-                        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
-                            currPremHci.add(NewApplicationHelper.genPremHci(appGrpPremisesDto));
+                    AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request,OLDAPPSUBMISSIONDTO);
+                    if(oldAppSubmissionDto != null){
+                        List<AppGrpPremisesDto> appGrpPremisesDtos = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+                        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                                currPremHci.add(NewApplicationHelper.genPremHci(appGrpPremisesDto));
+                            }
                         }
                     }
                     pendAndLicPremHci.removeAll(currPremHci);
