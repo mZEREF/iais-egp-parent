@@ -610,7 +610,6 @@ public class ServiceMenuDelegator {
 
         //control switch
         if(!currentPage.equals(nextstep)){
-            SearchParam searchParam;
             //note: As long as you select the specified service, you don't go and select align
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
             boolean newLicensee  = true;
@@ -674,7 +673,7 @@ public class ServiceMenuDelegator {
                     }
                 }
             }else{
-                //todo logic
+                SearchParam searchParam = initSearParam();
                 if(nextstep.equals(CHOOSE_BASE_SVC)){
 
                 }else if(nextstep.equals(CHOOSE_ALIGN)){
@@ -690,7 +689,7 @@ public class ServiceMenuDelegator {
                     }
                     allBaseId.removeAll(chkBase);
                     //init search param
-                    searchParam = initSearParam();
+
                     if(!IaisCommonUtils.isEmpty(allBaseId)){
                         StringBuilder placeholder = new StringBuilder("(");
                         int i =0;
@@ -717,11 +716,13 @@ public class ServiceMenuDelegator {
                         //0066206
                         nextstep = CHOOSE_ALIGN;
                     }
+                    //reset
+                    searchParam = initSearParam();
                 }
                 appSelectSvcDto.setAlignLicenceNo("");
                 appSelectSvcDto.setAlignLicPremId("");
                 //init search param
-                ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM,initSearParam());
+                ParamUtil.setSessionAttr(bpc.request,LIC_ALIGN_SEARCH_PARAM,searchParam);
             }
         }
         log.info(StringUtil.changeForLog("do choose svc next step:"+nextstep));

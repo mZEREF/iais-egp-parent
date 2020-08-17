@@ -620,7 +620,8 @@ public class NewApplicationDelegator {
                     premTypes.add(appGrpPremisesDto.getPremisesType());
                 }
                 if(premTypes.size() == 1 && premTypes.contains(ApplicationConsts.PREMISES_TYPE_OFF_SITE)){
-                    ParamUtil.setRequestAttr(bpc.request,"onlyOffsite",true);
+                    boolean flag = true;
+                    ParamUtil.setRequestAttr(bpc.request,"onlyOffsite",flag);
                 }
             }
         }
@@ -978,10 +979,11 @@ public class NewApplicationDelegator {
                 for(HcsaSvcDocConfigDto premHcasDocConfig:premHcasDocConfigs){
                     String errName = "prem"+premHcasDocConfig.getId()+premIndexNo;
                     Boolean isMandatory = premHcasDocConfig.getIsMandatory();
+                    boolean isEmpty = false;
                     if(isMandatory && IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList)){
-                        errorMap.put(errName, MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
+                        isEmpty = true;
                     }else if(isMandatory && !IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList)){
-                        boolean isEmpty = false;
+
                         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
                             String configId = premHcasDocConfig.getId();
                             String docConfigId = appGrpPrimaryDocDto.getSvcComDocId();
@@ -990,9 +992,9 @@ public class NewApplicationDelegator {
                                 break;
                             }
                         }
-                        if(!isEmpty){
-                            errorMap.put(errName, MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
-                        }
+                    }
+                    if(!isEmpty){
+                        errorMap.put(errName, MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
                     }
                 }
             }
