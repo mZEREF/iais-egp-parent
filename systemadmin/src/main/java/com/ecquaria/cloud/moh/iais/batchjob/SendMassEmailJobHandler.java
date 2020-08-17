@@ -79,16 +79,18 @@ public class SendMassEmailJobHandler extends IJobHandler {
 
     private void sendSMS(String msgId,List<String> recipts,String content){
         try{
+            log.info(StringUtil.changeForLog("send sms content:" +  content));
             SmsDto smsDto = new SmsDto();
             smsDto.setSender(mailSender);
             smsDto.setContent(content);
             smsDto.setOnlyOfficeHour(true);
             String refNo = msgId;
             if (!IaisCommonUtils.isEmpty(recipts)) {
+                log.info(StringUtil.changeForLog("send sms recipts:" +  String.join("-",recipts)));
                 blastManagementListService.sendSMS(recipts,smsDto,refNo);
             }
         }catch (Exception e){
-            log.error(StringUtil.changeForLog("error"));
+            log.info(e.getMessage(),e);
         }
     }
 
@@ -106,6 +108,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
             log.info(StringUtil.changeForLog("No." + i ));
             log.info(StringUtil.changeForLog("mode is " + item.getMode()));
             log.info(StringUtil.changeForLog("Id is " + item.getId()));
+            log.info(StringUtil.changeForLog("RecipientsRole is " + item.getRecipientsRole()));
             if(EMAIL.equals(item.getMode()) && item.getRecipientsRole() != null){
                 EmailDto email = new EmailDto();
                 List<String> roleEmail = blastManagementListService.getEmailByRole(item.getRecipientsRole());
@@ -142,7 +145,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                         blastManagementListService.setActual(item.getId());
                     }
                 }catch (Exception e){
-                    log.info(StringUtil.changeForLog("Result is fail"));
+                    log.info(e.getMessage(),e);
                     return ReturnT.FAIL;
                 }
             }else if(item.getRecipientsRole() != null){
@@ -152,7 +155,9 @@ public class SendMassEmailJobHandler extends IJobHandler {
 
             //send inbox msg
             InterMessageDto interMessageDto = new InterMessageDto();
+            log.info(StringUtil.changeForLog("send inbox msg"));
             if(!StringUtil.isEmpty(item.getDistributionId())){
+                log.info(StringUtil.changeForLog("DistributionId:" +  item.getDistributionId()));
                 DistributionListWebDto dis = distributionListService.getDistributionListById(item.getDistributionId());
                 List<HcsaServiceDto> hcsaServiceDtoList = distributionListService.getServicesInActive();
                 String serviceName = "";
@@ -160,10 +165,11 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 for (HcsaServiceDto serviceDto:hcsaServiceDtoList) {
                     if(serviceDto.getSvcCode().equals(dis.getService())){
                         svcDto = serviceDto;
+                        serviceName = serviceDto.getSvcName();
                         break;
                     }
                 }
-
+                log.info(StringUtil.changeForLog("serviceName:" +  serviceName));
                 if( svcDto == null){
                     svcDto = new HcsaServiceDto();
                 }
@@ -181,6 +187,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 for (LicenceDto licencedto:licenceList
                      ) {
+                    log.info(StringUtil.changeForLog("licenceList:" + licencedto.getLicenceNo()));
                     interMessageDto.setUserId(licencedto.getLicenseeId());
                     sysInboxMsgService.saveInterMessage(interMessageDto);
                 }
