@@ -211,6 +211,7 @@ public class HcsaApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, "nextStages", null);
         ParamUtil.setSessionAttr(bpc.request, "nextStageReply", null);
         ParamUtil.setSessionAttr(bpc.request, "premiseMiscDto", null);
+        ParamUtil.setSessionAttr(bpc.request, "oldApplicationNo", null);
         log.debug(StringUtil.changeForLog("the do cleanSession end ...."));
 
         initData(bpc);
