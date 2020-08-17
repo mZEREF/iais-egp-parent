@@ -1090,7 +1090,7 @@ public class HalpAssessmentGuideDelegator {
     public void doRenewStep(BaseProcessClass bpc) throws IOException {
         String [] licIds = ParamUtil.getStrings(bpc.request, "renewLicenId");
         Map<String, String> renewErrorMap = IaisCommonUtils.genNewHashMap();
-        String tmp = "The selected licence(s) is/are not eligible for renewal: ";
+        String tmp = MessageUtil.getMessageDesc("INBOX_ACK013");
         StringBuilder renewErrorMessage = new StringBuilder();
         boolean result = true;
         if(licIds != null){
@@ -1125,7 +1125,7 @@ public class HalpAssessmentGuideDelegator {
                 if(StringUtil.isEmpty(renewErrorMessage.toString())){
                     String errorMessage2 = renewErrorMap.get("errorMessage2");
                     if(StringUtil.isEmpty(errorMessage2)){
-                        renewErrorMessage.append("There is already a pending application for the selected licence");
+                        renewErrorMessage.append(MessageUtil.getMessageDesc("RFC_ERR011"));
                     }else{
                         renewErrorMessage.append(errorMessage2);
                     }
