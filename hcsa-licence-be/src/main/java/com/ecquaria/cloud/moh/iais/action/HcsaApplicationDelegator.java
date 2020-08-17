@@ -1559,9 +1559,12 @@ public class HcsaApplicationDelegator {
         if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                 String returnFee = appPremisesRecommendationDto.getRemarks();
+                log.info(StringUtil.changeForLog("appeal return fee remarks in recommendation db : " + returnFee));
                 if(!StringUtil.isEmpty(returnFee)){
                     String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
+                    log.info(StringUtil.changeForLog("appeal return fee old application no : " + oldApplicationNo));
                     if(!StringUtil.isEmpty(oldApplicationNo)){
+                        log.info(StringUtil.changeForLog("save appeal return fee"));
                         AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                         appReturnFeeDto.setApplicationNo(oldApplicationNo);
                         appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
