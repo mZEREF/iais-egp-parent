@@ -230,6 +230,8 @@ public class InspecReassignTaskDelegator {
             //get task ref_no by uerId
             memberValue = inspectionService.getMemberValueByWorkGroupUserId(userId);
             ParamUtil.setSessionAttr(bpc.request, "memberId", userId);
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "memberId", null);
         }
         List<TaskDto> superPool = getSupervisorPoolByGroupWordId(workGroupIds, loginContext);
         List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(superPool);
