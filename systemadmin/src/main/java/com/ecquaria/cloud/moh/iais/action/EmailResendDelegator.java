@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.system.BlastManagementDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ResendListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -78,7 +79,7 @@ public class EmailResendDelegator {
                 i ++;
             }
         }
-
+        lastxxDays(bpc);
         QueryHelp.setMainSql("systemAdmin", "failEmail",searchParam);
         SearchResult<ResendListDto> searchResult = blastManagementListService.resendList(searchParam);
         ParamUtil.setSessionAttr(bpc.request,"resendSearchResult",searchResult);
@@ -102,12 +103,25 @@ public class EmailResendDelegator {
         searchParam.setSort("sent_time", SearchParam.ASCENDING);
         String start = ParamUtil.getRequestString(bpc.request,"start");
         String end = ParamUtil.getRequestString(bpc.request,"end");
-        if(!StringUtil.isEmpty(start)){
-            searchParam.addFilter("start", start + " 00:00:00",true);
+        String xxdays = ParamUtil.getRequestString(bpc.request,"xxdays");
+        if(xxdays != null){
+            Date enddate = new Date();
+            Formatter.formatDateTime(enddate, "dd/MM/yyyy");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.DATE, -Integer.valueOf(xxdays));
+            SimpleDateFormat sj = new SimpleDateFormat("dd/MM/yyyy");
+            searchParam.addFilter("start",  sj.format(calendar.getTime()) + " 00:00:00",true);
+            searchParam.addFilter("end",  Formatter.formatDate(enddate) + " 23:59:59",true);
+        }else{
+            if(!StringUtil.isEmpty(start)){
+                searchParam.addFilter("start", start + " 00:00:00",true);
+            }
+            if(!StringUtil.isEmpty(end)){
+                searchParam.addFilter("end",  end + " 23:59:59",true);
+            }
         }
-        if(!StringUtil.isEmpty(end)){
-            searchParam.addFilter("end",  end + " 23:59:59",true);
-        }
+
         if(!StringUtil.isEmpty(end) && !StringUtil.isEmpty(start)){
             try {
                 Date startDate = Formatter.parseDate(start);
@@ -122,9 +136,19 @@ public class EmailResendDelegator {
                 log.error(e.getMessage(), e);
             }
         }
+        lastxxDays(bpc);
         ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",searchParam);
         ParamUtil.setRequestAttr(bpc.request,"start",start);
         ParamUtil.setRequestAttr(bpc.request,"end",end);
+        ParamUtil.setRequestAttr(bpc.request,"xxdays",xxdays);
+    }
+
+    private void lastxxDays(BaseProcessClass bpc){
+        List<SelectOption> xxdays = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 60;i++){
+            xxdays.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        ParamUtil.setRequestAttr(bpc.request, "lastxxDays",  xxdays);
     }
 
     public void resend(BaseProcessClass bpc){

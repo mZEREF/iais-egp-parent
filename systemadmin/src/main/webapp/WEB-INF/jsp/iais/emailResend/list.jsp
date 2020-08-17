@@ -28,6 +28,13 @@
                     <div class="row">
                         <div class="form-horizontal">
                             <div class="form-group">
+                                <label class="col-xs-12 col-md-4 control-label">Last xx days</label>
+                                <div class="col-xs-8 col-sm-6 col-md-5">
+                                    <iais:select name="xxdays" id="xxdays" options="lastxxDays"
+                                                 firstOption="Please Select"  value="${xxdays}"></iais:select>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="col-xs-12 col-md-4 control-label">Send Date From</label>
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:datePicker id="start" name="start" value="${start}"/>
@@ -150,6 +157,8 @@
     }
 
     function clearSearch() {
+        $("#xxdays option:first").prop("selected", 'selected');
+        $(".current").text("Please Select");
         $('input[name="start"]').val("");
         $('input[name="end"]').val("");
     }
