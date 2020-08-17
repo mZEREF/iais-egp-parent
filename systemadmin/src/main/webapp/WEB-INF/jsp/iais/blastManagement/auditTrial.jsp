@@ -71,7 +71,7 @@
                                                     <p><c:out value="${item.subject}"/></p>
                                                 </td>
                                                 <td>
-                                                    <div class="panel-body"><c:out value="${item.content}"/></div>
+                                                    <div><c:out value="${item.content}"/></div>
                                                 </td>
                                                 <td>
                                                     <p><c:out value="${item.numberAttempts}"/></p>
@@ -80,7 +80,7 @@
                                                     <p><c:out value="${item.logMsg}"/></p>
                                                 </td>
                                                 <td>
-                                                    <p><fmt:formatDate value="${item.sentTime}" pattern="MM/dd/yyyy"/></p>
+                                                    <p><fmt:formatDate value="${item.sentTime}" pattern="dd/MM/yyyy HH:mm:ss"/></p>
                                                 </td>
                                             </tr>
                                         </c:forEach>
