@@ -103,7 +103,16 @@
                                     <c:forEach var="item" items="${blastSearchResult.rows}" varStatus="status">
                                         <tr style="display: table-row;">
                                             <td>
-                                                <p><input type="checkbox" name="checkboxlist" value="<iais:mask name="checkboxlist" value="${item.id}"/>"></p>
+                                                <p><input type="checkbox" name="checkboxlist" value="<iais:mask name="checkboxlist" value="${item.id}"/>"
+                                                    <c:choose>
+                                                    <c:when test="${!empty item.actual}">
+                                                        data-edit = "0"
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        data-edit = "1"
+                                                    </c:otherwise>
+                                                    </c:choose>
+                                                ></p>
                                             </td>
                                             <td>
                                                 <p><c:out
@@ -124,6 +133,14 @@
                                             </td>
                                             <td>
                                                 <p><c:out value="${item.actual}"/></p>
+                                                <c:choose>
+                                                <c:when test="${!empty item.actual}">
+                                                    <input hidden value="0" id="edit${item.id}">
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input hidden value="1" id="edit${item.id}">
+                                                </c:otherwise>
+                                                </c:choose>
                                             </td>
                                             <td>
                                                 <p><c:out value="${item.docName}"/></p>
@@ -159,6 +176,7 @@
                 </div>
             </div>
         </div>
+        <iais:confirm msg="The message cannot be amended as it has been sent out to recipients."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
         <input hidden id="editBlast" name="editBlast" value="">
         <input hidden id="mode" name="mode" value="">
     </form>
@@ -169,11 +187,29 @@
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "create");
     }
-
+    function cancel() {
+        $('#support').modal('hide');
+    }
+    function tagConfirmCallbacksupport() {
+        $('#support').modal('hide');
+    }
     function deleteList() {
         if ($("input:checkbox:checked").length > 0) {
-            if(confirm('Are you sure you want to delete this item?')){
-                SOP.Crud.cfxSubmit("mainForm", "delete")
+            var canedit = 1;
+            $("input:checkbox:checked").each(function(i){
+               var edit = $(this).data("edit");
+               if(edit == 0){
+                   canedit = 0;
+               }
+            })
+
+            if(canedit == 1 ){
+                if(confirm('Are you sure you want to delete this item?')){
+                    SOP.Crud.cfxSubmit("mainForm", "delete")
+                }
+            }else{
+                $('#support').find("span").eq(1).html("The message cannot be deleted as it has been sent out to recipients.");
+                $('#support').modal('show');
             }
         } else {
             alert('Please select record for deletion.');
@@ -181,8 +217,15 @@
     }
 
     function edit(id) {
-        $("#editBlast").val(id);
-        SOP.Crud.cfxSubmit("mainForm", "edit");
+        var edit = $("#edit"+id).val();
+        if(edit == 1){
+            $("#editBlast").val(id);
+            SOP.Crud.cfxSubmit("mainForm", "edit");
+        }else{
+            $('#support').find("span").eq(1).html("The message cannot be amended as it has been sent out to recipients.");
+            $('#support').modal('show');
+        }
+
     }
     function preview(id) {
         $("#editBlast").val(id);
