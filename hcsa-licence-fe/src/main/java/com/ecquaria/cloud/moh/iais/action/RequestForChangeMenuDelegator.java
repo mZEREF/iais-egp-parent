@@ -785,6 +785,8 @@ public class RequestForChangeMenuDelegator {
 
     private Map<String,String> valiant(BaseProcessClass bpc,PersonnelListDto personnelEditDto,PersonnelListDto newPerson){
         //update
+        String psnName = ParamUtil.getString(bpc.request, "psnName");
+        String salutation = ParamUtil.getString(bpc.request, "salutation");
         String email = ParamUtil.getString(bpc.request, "emailAddr");
         String mobile = ParamUtil.getString(bpc.request, "mobileNo");
         String officeTelNo = ParamUtil.getString(bpc.request, "officeTelNo");
@@ -808,6 +810,8 @@ public class RequestForChangeMenuDelegator {
         }
         personnelEditDto.setEmailAddr(email);
         personnelEditDto.setMobileNo(mobile);
+        personnelEditDto.setSalutation(salutation);
+        personnelEditDto.setPsnName(psnName);
         if (psnTypes.contains("CGO")) {
             personnelEditDto.setDesignation(designation);
         }
@@ -884,6 +888,12 @@ public class RequestForChangeMenuDelegator {
             }
         }
         if ("update".equals(editSelect)) {
+            if (StringUtil.isEmpty(email)) {
+                errMap.put("salutation", "UC_CHKLMD001_ERR001");
+            }
+            if (StringUtil.isEmpty(email)) {
+                errMap.put("psnName", "UC_CHKLMD001_ERR001");
+            }
             if (StringUtil.isEmpty(email)) {
                 errMap.put("emailAddr", "UC_CHKLMD001_ERR001");
             } else if (!StringUtil.isEmpty(email)) {

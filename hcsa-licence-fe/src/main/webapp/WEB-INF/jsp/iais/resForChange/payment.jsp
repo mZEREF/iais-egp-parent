@@ -11,11 +11,34 @@
 
 <webui:setLayout name="iais-internet"/>
 <br/>
+<%@include file="dashboard.jsp" %>
 <form method="post" id="menuListForm" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_type_form_value" value="">
-
-    <%@include file="dashboard.jsp" %>
+    <div class="dashboard" id="comDashboard" style="background-image:url('<%=webroot1%>img/Masthead-banner.jpg')" >
+    <div class="container">
+        <div class="navigation-gp">
+            <div class="row">
+                <c:choose>
+                    <c:when test="${DashboardTitle != null && DashboardTitle !=''}">
+                        <div class="col-xs-12"><h1>${DashboardTitle}</h1></div>
+                    </c:when>
+                    <c:otherwise>
+                        <c:choose>
+                            <c:when test="${'APTY005' == AppSubmissionDto.appType}">
+                                <%@include file="../resForChange/amendHeader.jsp"%>
+                            </c:when>
+                            <c:when test="${'APTY004' == AppSubmissionDto.appType}">
+                                <%@include file="../withoutrenewal/renewalHeader.jsp"%>
+                            </c:when>
+                        </c:choose>
+                    </c:otherwise>
+                </c:choose>
+            </div>
+        </div>
+    </div>
+    </div>
+    <br/>
     <div class="main-content">
         <div class="container">
             <div class="row">

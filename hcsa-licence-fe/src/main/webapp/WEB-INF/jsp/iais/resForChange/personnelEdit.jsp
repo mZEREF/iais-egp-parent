@@ -201,13 +201,14 @@
                                             <iais:select name="salutation"
                                                          codeCategory="CATE_ID_SALUTATION"
                                                          value="${personnelEditDto.salutation}"
-                                                         firstOption="Please Select" disabled="true"></iais:select>
+                                                         firstOption="Please Select"></iais:select>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_salutation"></span>
                                         </iais:value>
                                         <iais:value cssClass="col-xs-12 col-sm-7 col-md-5">
-                                            <iais:input cssClass="needDisableI" maxLength="66" type="text"
-                                                        needDisabled="true"
+                                            <iais:input maxLength="66" type="text"
                                                         name="psnName"
                                                         value="${personnelEditDto.psnName}"></iais:input>
+                                            <span class="error-msg" name="iaisErrorMsg" id="error_psnName"></span>
                                         </iais:value>
                                     </iais:row>
                                     <iais:row>
@@ -503,25 +504,6 @@
             $('#edit').hide();
             $('#newPersonExist').hide();
         }
-        // var val1 = $('#specialty').val();
-        // if (val1 == 'other') {
-        //     $('#specialityOtherId').show();
-        // } else {
-        //     $('#specialityOtherId').hide();
-        // }
-        // var val2 = $('#specialty1').val();
-        // if (val2 == 'other') {
-        //     $('#specialityOtherNewId').show();
-        // } else {
-        //     $('#specialityOtherNewId').hide();
-        // }
-        // var val3 = $('#showSpecialtyId').val();
-        // if (val3 == 'other') {
-        //     $('#specialityShowOtherId').show();
-        // } else {
-        //     $('#specialityShowOtherId').hide();
-        // }
-
 
         const personSelect = $('#replaceOptionsId').val();
         if (personSelect == 'new' && $("input[type='radio']:checked").val() == 'replace') {
@@ -533,19 +515,6 @@
         if (personSelect == '' && $("input[type='radio']:checked").val() == 'replace') {
             $('#newPerson').hide();
         }
-
-        // var val1 = $('#specialty').val();
-        // if (val1 == 'other') {
-        //     $('#specialityOtherId').show();
-        // } else {
-        //     $('#specialityOtherId').hide();
-        // }
-        // var val2 = $('#specialty1').val();
-        // if (val2 == 'other') {
-        //     $('#specialityOtherNewId').show();
-        // } else {
-        //     $('#specialityOtherNewId').hide();
-        // }
 
         if (personSelect != '' && personSelect != 'new') {
             $('#newPersonExist').show();
@@ -582,22 +551,6 @@
             loadSelectPerson(person, idType, idNo);
         }
     }
-
-    // function specialtyOthers() {
-    //     var val1 = $('#specialty').val();
-    //     if (val1 == 'other') {
-    //         $('#specialityOtherId').show();
-    //     } else {
-    //         $('#specialityOtherId').hide();
-    //     }
-    //     var val2 = $('#specialty1').val();
-    //     if (val2 == 'other') {
-    //         $('#specialityOtherNewId').show();
-    //     } else {
-    //         $('#specialityOtherNewId').hide();
-    //     }
-    // }
-
 
     var fillPersonForm = function ($CurrentPsnEle, data) {
         <!--salutation-->
@@ -654,52 +607,6 @@
         } else {
             $CurrentPsnEle.find('input[name="professionRegnNo2"]').val('');
         }
-        <!-- speciality-->
-        // var speciality = data.speciality;
-        // if (speciality == null || speciality == 'undefined' || speciality == '') {
-        //     speciality = '-1';
-        // }
-        // var specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
-        // if (specialityVal == 'undefined') {
-        //     speciality = '';
-        //     specialityVal = $CurrentPsnEle.find('option[value="' + speciality + '"]').html();
-        // }
-        // $CurrentPsnEle.find('select[name="specialty2"]').val(speciality);
-        // $CurrentPsnEle.find('select[name="specialty2"]').next().find('.current').html(specialityVal);
-
-        // if ('other' == speciality) {
-        //     $CurrentPsnEle.find('input[name="specialtyOther"]').removeClass('hidden');
-        //     var specialityOther = data.specialityOther;
-        //     if (specialityOther != null && specialityOther != '') {
-        //         $CurrentPsnEle.find('input[name="specialtyOther2"]').val(specialityOther);
-        //     } else {
-        //         $CurrentPsnEle.find('input[name="specialtyOther2"]').val('');
-        //     }
-        // } else {
-        //     $CurrentPsnEle.find('input[name="specialtyOther2"]').addClass('hidden');
-        // }
-        <!--Subspeciality or relevant qualification -->
-        // var qualification = data.subSpeciality;
-        // if (qualification != null && qualification != '') {
-        //     $CurrentPsnEle.find('input[name="qualification2"]').val(qualification);
-        // } else {
-        //     $CurrentPsnEle.find('input[name="qualification2"]').val('');
-        // }
-        <!--preferredMode -->
-        // var preferredMode = data.preferredMode;
-        // if (preferredMode != null && preferredMode != 'undefined' && preferredMode != '') {
-        //     if ('3' == preferredMode) {
-        //         $CurrentPsnEle.find('input.preferredMode').prop('checked', true);
-        //     } else {
-        //         $CurrentPsnEle.find('input.preferredMode').each(function () {
-        //             if (preferredMode == $(this).val()) {
-        //                 $(this).prop('checked', true);
-        //             }
-        //         });
-        //     }
-        // } else {
-        //     $CurrentPsnEle.find('input.preferredMode').prop('checked', false);
-        // }
     }
     <!--cgo,medAlert -->
     var loadSelectPerson = function ($CurrentPsnEle, idType, idNo, psnType) {

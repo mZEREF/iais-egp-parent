@@ -64,7 +64,9 @@ public class CessationApplicationFeDelegator {
     }
 
     public void init(BaseProcessClass bpc) {
-        List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
+//        List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
+        List<String> licIds = IaisCommonUtils.genNewArrayList();
+        licIds.add("86662463-47DD-EA11-BE85-000C29F371DC");
         boolean isGrpLicence = cessationFeService.isGrpLicence(licIds);
         List<AppCessLicDto> appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
         List<AppSpecifiedLicDto> specLicInfo = cessationFeService.getSpecLicInfo(licIds);

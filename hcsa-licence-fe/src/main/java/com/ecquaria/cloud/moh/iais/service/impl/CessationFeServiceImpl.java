@@ -162,8 +162,9 @@ public class CessationFeServiceImpl implements CessationFeService {
 
     @Override
     public List<String> saveCessations(List<AppCessationDto> appCessationDtos, LoginContext loginContext) {
-        String licenseeId = loginContext.getLicenseeId();
-            List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
+//        String licenseeId = loginContext.getLicenseeId();
+        String licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
+        List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         Map<String, List<String>> licPremiseIdMap = IaisCommonUtils.genNewHashMap();
         for (AppCessationDto appCessationDto : appCessationDtos) {
@@ -286,10 +287,10 @@ public class CessationFeServiceImpl implements CessationFeService {
             String hciName = null;
             String hciAddress = null;
             List<AppCessHciDto> appCessHciDtos = appCessLicDto.getAppCessHciDtos();
-            if(!IaisCommonUtils.isEmpty(appCessHciDtos)){
-                for(AppCessHciDto appCessHciDto : appCessHciDtos){
+            if (!IaisCommonUtils.isEmpty(appCessHciDtos)) {
+                for (AppCessHciDto appCessHciDto : appCessHciDtos) {
                     String hciCode1 = appCessHciDto.getHciCode();
-                    if(hciCode.equals(hciCode1)){
+                    if (hciCode.equals(hciCode1)) {
                         hciName = appCessHciDto.getHciName();
                         hciAddress = appCessHciDto.getHciAddress();
                     }
@@ -298,10 +299,10 @@ public class CessationFeServiceImpl implements CessationFeService {
             Date effectiveDate = appCessationDto.getEffectiveDate();
             try {
                 if (effectiveDate.after(new Date())) {
-                    String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                    String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                    LicenseeDto licenseeDto= organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
-                    String applicantName=licenseeDto.getName();
+                    LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
+                    String applicantName = licenseeDto.getName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ApplicationNumber", applicationNo);
@@ -316,8 +317,8 @@ public class CessationFeServiceImpl implements CessationFeService {
                     //sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 } else {
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-                    LicenseeDto licenseeDto=organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
-                    String applicantName=licenseeDto.getName();
+                    LicenseeDto licenseeDto = organizationLienceseeClient.getLicenseeById(licenseeId).getEntity();
+                    String applicantName = licenseeDto.getName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ServiceLicenceName", svcName);
@@ -342,22 +343,22 @@ public class CessationFeServiceImpl implements CessationFeService {
             appCessationDtosConfirms.add(appCessatonConfirmDto);
         }
         //update apps
-        Date today = new Date();
-        String todayStr = DateUtil.formatDate(today);
-        Date date2 = DateUtil.parseDate(todayStr);
-        for(ApplicationDto applicationDto : applicationDtos){
-            String appId = applicationDto.getId();
-            List<AppPremiseMiscDto> appPremiseMiscDtos = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
-            if(!IaisCommonUtils.isEmpty(appPremiseMiscDtos)){
-                Date effectiveDate = appPremiseMiscDtos.get(0).getEffectiveDate();
-                String effectiveDateStr = DateUtil.formatDate(effectiveDate);
-                Date date1 = DateUtil.parseDate(effectiveDateStr);
-                if(date1.after(date2)){
-                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
-                }
-            }
-        }
-        applicationClient.updateApplicationList(applicationDtos);
+//        Date today = new Date();
+//        String todayStr = DateUtil.formatDate(today);
+//        Date date2 = DateUtil.parseDate(todayStr);
+//        for(ApplicationDto applicationDto : applicationDtos){
+//            String appId = applicationDto.getId();
+//            List<AppPremiseMiscDto> appPremiseMiscDtos = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
+//            if(!IaisCommonUtils.isEmpty(appPremiseMiscDtos)){
+//                Date effectiveDate = appPremiseMiscDtos.get(0).getEffectiveDate();
+//                String effectiveDateStr = DateUtil.formatDate(effectiveDate);
+//                Date date1 = DateUtil.parseDate(effectiveDateStr);
+//                if(date1.after(date2)){
+//                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
+//                }
+//            }
+//        }
+//        applicationClient.updateApplicationList(applicationDtos);
         List<String> licNos = IaisCommonUtils.genNewArrayList();
         for (AppCessatonConfirmDto appCessatonConfirmDto : appCessationDtosConfirms) {
             String licenceNo = appCessatonConfirmDto.getLicenceNo();
