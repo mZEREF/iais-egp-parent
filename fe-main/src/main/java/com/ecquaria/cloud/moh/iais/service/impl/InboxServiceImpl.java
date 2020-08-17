@@ -423,6 +423,14 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public Map<String, Boolean> listResultCeased(List<String> licIds) {
+        Map<String, Boolean> map = IaisCommonUtils.genNewHashMap();
+        for(String licId : licIds){
+            LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+            if(licenceDto==null){
+                map.put(licId,Boolean.FALSE);
+                return map;
+            }
+        }
         return appInboxClient.listCanCeased(licIds).getEntity();
     }
 
