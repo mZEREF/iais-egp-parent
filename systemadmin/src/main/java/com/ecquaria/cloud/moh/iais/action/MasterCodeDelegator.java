@@ -472,29 +472,25 @@ public class MasterCodeDelegator {
                     }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getVersion())){
-                    if (cartOptional != null){
-                        if (cartOptional.isPresent()) {
-                            MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
-                            String version = masterCodeToExcelDto1.getVersion();
-                            String uploadVersion = masterCodeToExcelDto.getVersion();
-                            if (!StringUtil.isEmpty(version)){
-                                double versionDou = Double.valueOf(version);
-                                int versionInt = (int) versionDou;
-                                if (versionInt > Integer.parseInt(uploadVersion)){
-                                    String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0006");
-                                    errItems.add(errMsg);
-                                    result = true;
-                                }
+                    if (cartOptional.isPresent()) {
+                        MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
+                        String version = masterCodeToExcelDto1.getVersion();
+                        String uploadVersion = masterCodeToExcelDto.getVersion();
+                        if (!StringUtil.isEmpty(version)){
+                            double versionDou = Double.valueOf(version);
+                            int versionInt = (int) versionDou;
+                            if (versionInt > Integer.parseInt(uploadVersion)){
+                                String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0006");
+                                errItems.add(errMsg);
+                                result = true;
                             }
                         }
                     }
                 }
-                if (cartOptional != null){
-                    if (cartOptional.isPresent()) {
-                        MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
-                        masterCodeToExcelDto.setMasterCodeId(masterCodeToExcelDto1.getMasterCodeId());
-                        masterCodeToExcelDto.setMasterCodeKey(masterCodeToExcelDto1.getMasterCodeKey());
-                    }
+                if (cartOptional.isPresent()) {
+                    MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
+                    masterCodeToExcelDto.setMasterCodeId(masterCodeToExcelDto1.getMasterCodeId());
+                    masterCodeToExcelDto.setMasterCodeKey(masterCodeToExcelDto1.getMasterCodeKey());
                 }
                 if (errItems.size()>0){
                     errMap.put(masterCodeToExcelDto.getCodeValue(),errItems);
