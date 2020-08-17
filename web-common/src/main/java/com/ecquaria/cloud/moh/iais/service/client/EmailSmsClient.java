@@ -1,11 +1,16 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -26,6 +31,15 @@ public class EmailSmsClient {
     @Autowired
     @Qualifier(value = "iaisRestTemplate")
     private RestTemplate restTemplate;
+
+    @Value("${iais.intra.gateway.url}")
+    private String gateWayUrl;
+
+    public FeignResponseEntity<InterMessageDto> saveInboxMessage(InterMessageDto interInboxDto,
+                                                                 String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/iais-inter-inbox-message", HttpMethod.POST, interInboxDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, InterMessageDto.class);
+    }
 
     public void sendEmail(EmailDto emailDto, Map<String, byte[]> attachments) throws IOException {
         HttpHeaders headers = new HttpHeaders();

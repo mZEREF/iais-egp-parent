@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.SmsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -13,27 +14,26 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
+import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +44,16 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executor;
 
 /**
  * @author: yichen
@@ -58,6 +68,9 @@ public class NotificationHelper {
 	public static final String RECEIPT_TYPE_APP 				 	 = "APP";
 	public static final String RECEIPT_TYPE_LICENCE_ID               = "LIC";
 	public static final String RECEIPT_TYPE_SMS		                 = "SMS";
+	public static final String RECEIPT_TYPE_NOTIFICATION 			 = "MESTYPE001";
+	public static final String RECEIPT_TYPE_ANNONUCEMENT			 = "MESTYPE002";
+	public static final String RECEIPT_TYPE_ACTION_REQUIRED			 = "MESTYPE003";
 
 	public static final String RECEIPT_ROLE_LICENSEE                			= "EM-LIC";
 	public static final String RECEIPT_ROLE_AUTHORISED_PERSON       			= "EM-AP";
@@ -84,13 +97,15 @@ public class NotificationHelper {
 	 * Get different Officer according to different types
 	 */
 	public static final String OFFICER_MODULE_TYPE_SCHEDULING                   = "Appt-Scheduling";
-	public static final String OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK                   = "inspector-current-task";
+	public static final String OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK    = "inspector-current-task";
 
 	@Autowired
 	private Environment env;
 
 	@Autowired
 	private IaisSystemClient iaisSystemClient;
+	@Autowired
+	private EicClient eicClient;
 
 	@Autowired
 	private LicenseeClient licenseeClient;
@@ -103,11 +118,17 @@ public class NotificationHelper {
 	@Autowired
 	private HcsaAppClient hcsaAppClient;
 	@Autowired
+	private MasterCodeClient masterCodeClient;
+	@Autowired
+	private HcsaServiceClient hcsaServiceClient;
+	@Autowired
 	private HcsaLicenceClient hcsaLicenceClient;
 	@Autowired
 	private EmailHistoryCommonClient emailHistoryCommonClient;
 	@Value("${iais.current.domain}")
 	private String currentDomain;
+	@Value("${spring.application.name}")
+	private String currentApp;
 	@Value("${iais.hmac.keyId}")
 	private String keyId;
 	@Value("${iais.hmac.second.keyId}")
@@ -165,32 +186,50 @@ public class NotificationHelper {
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, null, null, null, null, null, true);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, null, null, null, null, null,
+				true, null);
 	}
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, null, null, true);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, null, null,
+				true, null);
 	}
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId, String subject) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, subject, null, true);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, subject, null,
+				true, null);
 	}
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto, String subject) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, subject, null, true);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, subject, null,
+				true, null);
+	}
+
+	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode, String reqRefNum,
+								 String refIdType, String refId, String subject, HashMap<String, String> maskParams) {
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, subject, null,
+				true, maskParams);
+	}
+
+	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode, String reqRefNum,
+								 String refIdType, String refId, JobRemindMsgTrackingDto jrDto, String subject, HashMap<String, String> maskParams) {
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, subject, null,
+				true, maskParams);
 	}
 
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId, JobRemindMsgTrackingDto jrDto) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, null, null, true);
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, null, null,
+				true, null);
 	}
 
 	@Async("emailAsyncExecutor")
 	public void sendNotificationWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode, String reqRefNum, String refIdType,
-											 String refId, JobRemindMsgTrackingDto jrDto, String subject, String moduleType, boolean smsOnlyOfficerHour) {
+											 String refId, JobRemindMsgTrackingDto jrDto, String subject, String moduleType, boolean smsOnlyOfficerHour,
+											 HashMap<String, String> maskParams) {
 		log.info(StringUtil.changeForLog("sendemail start... ref type is " + StringUtil.nullToEmptyStr(refIdType)
 				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
 				+ "templateId is "+ templateId+"thread name is " + Thread.currentThread().getName()));
@@ -199,14 +238,17 @@ public class NotificationHelper {
 			List<String> ccEmail;
 			List<String> bccEmail;
 			MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
+			if(AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())){
+				return;
+			}
 			//get mesContext
 			String mesContext;
 			String emailTemplate = msgTemplateDto.getMessageContent();
 			//replace num
 			emailTemplate = replaceNum(emailTemplate);
 			if (templateContent != null && !templateContent.isEmpty()) {
-				if(templateContent.get("msgContent")!= null ){
-					mesContext= (String) templateContent.get("msgContent");
+				if(templateContent.get("msgContent") != null ){
+					mesContext = (String) templateContent.get("msgContent");
 				}else {
 					mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 				}
@@ -219,6 +261,23 @@ public class NotificationHelper {
 					return;
 				}
 				sendSms(templateId, mesContext, refId, smsOnlyOfficerHour);
+				if (jrDto != null) {
+					List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
+					jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+					jobList.add(jrDto);
+					iaisSystemClient.createJobRemindMsgTracking(jobList);
+				}
+			} else if (RECEIPT_TYPE_NOTIFICATION.equals(refIdType) ||
+					RECEIPT_TYPE_ANNONUCEMENT.equals(refIdType) ||
+					RECEIPT_TYPE_ACTION_REQUIRED.equals(refIdType)) {
+				// send message
+				sendMessage(mesContext, refId, refIdType, subject, maskParams);
+				if (jrDto != null) {
+					List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
+					jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+					jobList.add(jrDto);
+					iaisSystemClient.createJobRemindMsgTracking(jobList);
+				}
 			} else {
 				int emailFlag = systemParamConfig.getEgpEmailNotifications();
 				if(0 == emailFlag){
@@ -339,6 +398,62 @@ public class NotificationHelper {
 		}
 		log.info(StringUtil.changeForLog("sendemail end... queryCode is"+queryCode + "templateId is "
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
+	}
+
+	private void sendMessage(String mesContext, String appNo, String refIdType, String subject, HashMap<String, String> maskParams) {
+		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
+		ApplicationDto applicationDto = hcsaAppClient.getAppByNo(appNo).getEntity();
+		String serviceId = applicationDto.getServiceId();
+		HcsaServiceDto hcsaServiceDto = hcsaServiceClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+		String serviceCode = hcsaServiceDto.getSvcCode();
+		InterMessageDto interMessageDto = new InterMessageDto();
+		interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+		interMessageDto.setSubject(subject);
+		interMessageDto.setMessageType(refIdType);
+		String mesNO = getHelperMessageNo();
+		interMessageDto.setRefNo(mesNO);
+		interMessageDto.setService_id(serviceCode+"@");
+		interMessageDto.setUserId(grpDto.getLicenseeId());
+		interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+		interMessageDto.setMsgContent(mesContext);
+		interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+		interMessageDto.setMaskParams(maskParams);
+		saveInterMessage(interMessageDto);
+	}
+
+	private void saveInterMessage(InterMessageDto interMessageDto) {
+		String moduleName = currentApp + "-" + currentDomain;
+		EicRequestTrackingDto dto = new EicRequestTrackingDto();
+		dto.setStatus(AppConsts.EIC_STATUS_PENDING_PROCESSING);
+		dto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+		dto.setActionClsName(this.getClass().getName());
+		dto.setActionMethod("callEicInterMsg");
+		dto.setDtoClsName(interMessageDto.getClass().getName());
+		dto.setDtoObject(JsonUtil.parseToJson(interMessageDto));
+		dto.setRefNo(interMessageDto.getRefNo());
+		dto.setModuleName(moduleName);
+		eicClient.saveEicTrack(dto);
+		callEicInterMsg(interMessageDto);
+		dto = eicClient.getPendingRecordByReferenceNumber(interMessageDto.getRefNo()).getEntity();
+		Date now = new Date();
+		dto.setProcessNum(1);
+		dto.setFirstActionAt(now);
+		dto.setLastActionAt(now);
+		dto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+		List<EicRequestTrackingDto> list = IaisCommonUtils.genNewArrayList(1);
+		list.add(dto);
+		eicClient.updateStatus(list);
+	}
+
+	public void callEicInterMsg(InterMessageDto interMessageDto) {
+		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+		emailSmsClient.saveInboxMessage(interMessageDto, signature.date(), signature.authorization(),
+				signature2.date(), signature2.authorization()).getEntity();
+	}
+
+	private String getHelperMessageNo() {
+		return masterCodeClient.messageID().getEntity();
 	}
 
 	private void sendSms(String templateId, String mesContext, String refId, boolean smsOnlyOfficerHour) {
