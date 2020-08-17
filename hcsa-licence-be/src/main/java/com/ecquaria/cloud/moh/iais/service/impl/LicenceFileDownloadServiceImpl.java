@@ -416,7 +416,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             every.setAuditTrailDto(intranet);
         }
         GobalRiskAccpetDto gobalRiskAccpetDtos=new GobalRiskAccpetDto();
-        gobalRiskAccpetDtos.setRequired(true);
+        gobalRiskAccpetDtos.setMoreSvc(true);
         gobalRiskAccpetDtos.setGobalRiskAccpetDtos(accpetDtos);
         try {
             GobalRiskAccpetDto entity = hcsaConfigClient.getGobalRiskAccpetDtoByGobalRiskAccpetDto(gobalRiskAccpetDtos).getEntity();
