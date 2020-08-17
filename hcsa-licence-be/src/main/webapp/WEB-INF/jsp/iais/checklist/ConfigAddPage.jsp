@@ -80,8 +80,8 @@
             <div class="form-group">
                 <iais:field value="HCI Code"></iais:field>
                 <div class="col-md-3">
-                    <input type="text" id="hciCode" name="hciCode" maxlength="7" value="${hciCode}"
-                           style="border-color: white"/>
+                    <input type="text" class="needDisableI" id="hciCode" name="hciCode" maxlength="7" value="${hciCode}"
+                           />
                     <span id="error_hciCode" name="iaisErrorMsg" class="error-msg"></span>
                 </div>
             </div>
@@ -121,7 +121,10 @@
     >
 </div>
 
+
 <script type="text/javascript">
+
+
     $(document).ready(function(){
         checkInputStatus();
     })
@@ -152,6 +155,7 @@
         $('#serviceNameField span').hide();
         $('#moduleField span').hide();
         $('#typeField span').hide();
+        $('#hciCode').attr('disabled', null);
         checkInputStatus()
     }
 
@@ -170,9 +174,13 @@
     function disableInput() {
         $('.nice-select').addClass('disabled');
         $('#hciCode').attr('disabled', 'disabled');
+        $('#hciCode').val(null);
         $('#serviceNameField span').hide();
         $('#moduleField span').hide();
         $('#typeField span').hide();
+
+        $('.needDisableI').css('border-color', '#ededed');
+        $('.needDisableI').css('color', '#999');
 
         Utils.clearClickStatus('serviceFieldGroup')
     }
@@ -189,7 +197,8 @@
         $('#typeField').append("<span style=\"color: red\"> *</span>");
 
         $('.nice-select').removeClass('disabled');
-        $('#hciCode').attr('disabled');
+        $('#hciCode').attr('disabled', null);
+        $("#hciCode").removeAttr("style","");
         hasClick = false;
     }
 
