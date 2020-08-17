@@ -103,10 +103,10 @@ public class EmailResendDelegator {
         String start = ParamUtil.getRequestString(bpc.request,"start");
         String end = ParamUtil.getRequestString(bpc.request,"end");
         if(!StringUtil.isEmpty(start)){
-            searchParam.addFilter("start", start,true);
+            searchParam.addFilter("start", start + " 00:00:00",true);
         }
         if(!StringUtil.isEmpty(end)){
-            searchParam.addFilter("end",  end,true);
+            searchParam.addFilter("end",  end + " 23:59:59",true);
         }
         if(!StringUtil.isEmpty(end) && !StringUtil.isEmpty(start)){
             try {
