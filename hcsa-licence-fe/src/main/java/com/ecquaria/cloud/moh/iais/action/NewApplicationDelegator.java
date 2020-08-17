@@ -5324,7 +5324,9 @@ public class NewApplicationDelegator {
                     }
                     //set AppSvcDisciplineAllocationDto
                     //NewApplicationHelper.setDisciplineAllocationDtoInfo(appSvcRelatedInfoDto);
-                    if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType()) && rfi != null){
+                    if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())
+                            ||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())
+                            || rfi != null){
                         //gen dropdown map
                         String svcCode = appSvcRelatedInfoDto.getServiceCode();
                         List<AppSvcPrincipalOfficersDto> appSvcCgoDtos = NewApplicationHelper.transferCgoToPsnDtoList(appSvcRelatedInfoDto.getAppSvcCgoDtoList());
@@ -5570,7 +5572,6 @@ public class NewApplicationDelegator {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
         Map<String,AppSvcPersonAndExtDto> licPersonMap = IaisCommonUtils.genNewHashMap();
         if(loginContext != null){
-            String appType = appSubmissionDto.getAppType();
             appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
             List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
             licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(licPersonList);
@@ -5579,7 +5580,7 @@ public class NewApplicationDelegator {
             //set data into psnMap
             Map<String,AppSvcPersonAndExtDto> personMap = IaisCommonUtils.genNewHashMap();
             personMap.putAll(licPersonMap);
-            if(draft != null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
+            if(draft != null){
                 List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                     for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
@@ -5598,6 +5599,33 @@ public class NewApplicationDelegator {
             ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
             log.info(StringUtil.changeForLog("user info is empty....."));
         }
+        //change
+//        Map<String,AppSvcPrincipalOfficersDto> licPersonMap = IaisCommonUtils.genNewHashMap();
+//        if(loginContext != null){
+//            appSubmissionDto.setLicenseeId(loginContext.getLicenseeId());
+//            List<PersonnelListQueryDto> licPersonList = requestForChangeService.getLicencePersonnelListQueryDto(loginContext.getLicenseeId());
+//            //exchange order
+//            licPersonMap = NewApplicationHelper.getLicPsnIntoSelMap(bpc.request,licPersonList);
+//            licPersonMap.forEach((k,v)->{
+//                //set empty field
+//                AppPsnEditDto appPsnEditDto = NewApplicationHelper.setNeedEditField(v);
+//                v.setPsnEditDto(appPsnEditDto);
+//            });
+//            ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
+//            Map<String,AppSvcPrincipalOfficersDto> personMap = (Map<String, AppSvcPrincipalOfficersDto>) ParamUtil.getSessionAttr(bpc.request, PERSONSELECTMAP);
+//            if(personMap != null){
+//                licPersonMap.forEach((k,v)->{
+//                    personMap.put(k,v);
+//                });
+//                ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) personMap);
+//            }else{
+//                ParamUtil.setSessionAttr(bpc.request,PERSONSELECTMAP, (Serializable) licPersonMap);
+//            }
+//        }else{
+//            appSubmissionDto.setLicenseeId("");
+//            ParamUtil.setSessionAttr(bpc.request,LICPERSONSELECTMAP, (Serializable) licPersonMap);
+//            log.info(StringUtil.changeForLog("user info is empty....."));
+//        }
     }
 
     private void setPsnDroTo(AppSubmissionDto appSubmissionDto,BaseProcessClass bpc){
