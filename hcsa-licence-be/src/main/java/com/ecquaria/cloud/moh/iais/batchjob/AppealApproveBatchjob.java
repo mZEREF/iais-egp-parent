@@ -263,6 +263,10 @@ public class AppealApproveBatchjob {
             }
 
             ApplicationDto o = (ApplicationDto)CopyUtil.copyMutableObject(appealApplication);
+            LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(o.getId()).getEntity();
+            //not need new licence no
+            o.setNeedNewLicNo(false);
+            o.setOriginLicenceId(licAppCorrelationDto.getLicenceId());
             o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             appealApplicaiton.add(o);
             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();

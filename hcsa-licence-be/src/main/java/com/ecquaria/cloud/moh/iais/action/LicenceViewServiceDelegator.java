@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -259,12 +260,12 @@ public class LicenceViewServiceDelegator {
         list.add(serviceId);
         List<HcsaServiceStepSchemeDto> entity = hcsaConfigClient.getServiceStepsByServiceIds(list).getEntity();
         List<String> stringList = IaisCommonUtils.genNewArrayList();
-        Map<String,String> stepNameMap=new HashMap<>(entity.size());
+        Map<String,String> stepNameMap= Maps.newHashMapWithExpectedSize(entity.size());
         for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : entity) {
             stringList.add(hcsaServiceStepSchemeDto.getStepCode());
             stepNameMap.put(hcsaServiceStepSchemeDto.getStepCode(),hcsaServiceStepSchemeDto.getStepName());
         }
-        bpc.request.getSession().setAttribute("stepNameMap", stepNameMap);
+        bpc.request.getSession().setAttribute("stepNameMap",(Serializable)stepNameMap);
         bpc.request.getSession().setAttribute("hcsaServiceStepSchemeDtoList", stringList);
 
         boolean canEidtPremise  = canEidtPremise(applicationViewDto.getApplicationGroupDto().getId());

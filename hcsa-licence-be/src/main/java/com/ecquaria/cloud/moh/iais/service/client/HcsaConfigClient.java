@@ -381,4 +381,7 @@ public interface HcsaConfigClient {
 
     @GetMapping(value = "/hcsa-config/svc-specific-correlation-by-spec-service-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<HcsaSvcSpecifiedCorrelationDto>> getHcsaSvcSpecifiedCorrelationDto(@RequestParam("speServiceId") String speServiceId);
+
+    @PostMapping(value = "/hcsa-routing/hcsa-cessation-flow",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApplicationDto>> needToSendTask(@RequestBody List<ApplicationDto> applicationDtos);
 }

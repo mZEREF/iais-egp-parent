@@ -367,16 +367,16 @@
                <a class="btn btn-secondary width-70" onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
              </div>
            </div>--%>
-
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
           <div class="col-xs-10 col-md-6">
             <div class="components width-center">
               <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-12 col-md-12" style="margin-top: 1%">
+
           <%-- <div class="col-xs-10 col-md-6">
              <div class="components width-center">
                <a class="btn btn-secondary width-70" onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
@@ -465,34 +465,34 @@
 
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-6" style="margin-top: 20px ;margin-bottom: 20px">
-          <label class="col-xs-12 col-md-8 control-label" >Service Sub-Types</label>
-          <div class="col-xs-12 col-md-7">
+        <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
+          <label class="col-xs-12 col-md-12 control-label " >Service Sub-Types</label>
+          <div class="col-xs-12 col-md-4">
             <label>Page Name</label>
           </div >
-          <div  class="col-xs-12 col-md-5"><input  type="text" maxlength="100" value="" ></div>
-
-          <div class="form-group"  id="add">
-            <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
-
-              <div class="col-xs-12 col-md-4" style="margin-left: 100%">
-                <label class="col-xs-12 col-md-12 control-label"  style="text-align: center">UP/DOWN</label>
-              </div>
-            </div>
+          <div  class="col-xs-12 col-md-8"><input  type="text"  style="width: 20%;" maxlength="100" value="" ></div>
+          <div >
           </div>
           <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
             <div class="view">
-              <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+              <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                 <input class="add" type="text"  style="margin-left:0px" maxlength="100" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed.name}">
               </div>
               <div class="value">
                 <input type="text" value="0" name="level" style="display: none" >
               </div>
-              <div  class="col-xs-12 col-md-3" >
+              <div  class="col-xs-12 col-md-2" >
                 <a class="btn  btn-secondary  view"   >indent</a>
               </div>
               <div  class="col-xs-12 col-md-2">
                 <a class="btn  btn-secondary view"   >outdent</a>
+              </div>
+              <div class="col-xs-12 col-md-2 up">
+                <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
+                <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+              </div>
+              <div class="col-xs-12 col-md-2">
+                <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
               </div>
             </div>
             <c:forEach items="${hcsaSvcSubtypeOrSubsumed.list}" var="hcsaSvcSubtypeOrSubsumed2">
@@ -509,6 +509,13 @@
                 <div  class="col-xs-12 col-md-2">
                   <a class="btn  btn-secondary view"  >outdent</a>
                 </div>
+                <div class="col-xs-12 col-md-2 up">
+                  <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
+                  <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                  <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                </div>
               </div>
               <c:forEach items="${hcsaSvcSubtypeOrSubsumed2.list}" var="hcsaSvcSubtypeOrSubsumed3">
                 <div class="view">
@@ -523,6 +530,13 @@
                   </div>
                   <div  class="col-xs-12 col-md-2">
                     <a class="btn  btn-secondary view"   >outdent</a>
+                  </div>
+                  <div class="col-xs-12 col-md-2 up">
+                    <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
+                    <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+                  </div>
+                  <div class="col-xs-12 col-md-2">
+                    <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
                   </div>
                 </div>
               </c:forEach>
@@ -612,6 +626,9 @@
 
 </style>
 <script type="text/javascript">
+    $(document).ready(function () {
+        a();
+    });
     function kpi() {
 
         location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
@@ -770,6 +787,13 @@
     }
 
 
-
+    var  a = function upDown() {
+        let length = $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").length;
+        if (length == 1) {
+            $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').attr("style","display: none");
+        } else {
+            $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').removeAttr("style");
+        }
+    }
 </script>
 </>

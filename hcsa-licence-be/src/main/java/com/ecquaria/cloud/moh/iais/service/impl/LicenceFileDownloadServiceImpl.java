@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
@@ -490,6 +491,12 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         applicationListDto.setAuditTrailDto(intranet);
         List<ApplicationDto> updateTaskList=IaisCommonUtils.genNewArrayList();
+        for(ApplicationGroupDto applicationGroupDto : applicationGroup){
+            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationGroupDto.getAppType())){
+                application = hcsaConfigClient.needToSendTask(application).getEntity();
+                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(application)+"application APPLICATION_TYPE_CESSATION"));
+            }
+        }
         requeOrNew(requestForInfList,applicationGroup,application,updateTaskList);
         update(listApplicationDto,applicationGroup,application);
         log.info(StringUtil.changeForLog(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size()));

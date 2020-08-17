@@ -437,18 +437,18 @@
               <a class="btn btn-secondary width-70" onclick="showSUSPENSION()"><span class="view">SUSPENSION</span></a>
             </div>
           </div>--%>
-
+          <div class="col-xs-10 col-md-6">
+            <div class="components width-center">
+              <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
+            </div>
+          </div>
 
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12" style="margin-top: 1%">
-          <div class="col-xs-10 col-md-6">
-            <div class="components width-center">
-              <a class="btn btn-secondary width-70" onclick="showWITHDRAWAL()"><span class="view">WITHDRAWAL</span></a>
-            </div>
-          </div>
+
           <%--  <div class="col-xs-10 col-md-6">
               <div class="components  width-center">
                 <a class="btn btn-secondary width-70" onclick="showREVOCATION()"><span class="view">REVOCATION</span></a>
@@ -540,76 +540,89 @@
 
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-6" style="margin-top: 20px ;margin-bottom: 20px">
-          <label class="col-xs-12 col-md-8 control-label" >Service Sub-Types</label>
-
-          <div class="col-xs-12 col-md-7">
+        <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
+          <label class="col-xs-12 col-md-12 control-label" >Service Sub-Types</label>
+          <div class="col-xs-12 col-md-4">
             <label>Page Name</label>
           </div >
-          <div  class="col-xs-12 col-md-5">
-            <input  type="text" maxlength="100" value="" name="pageName">
+          <div  class="col-xs-12 col-md-8">
+            <input  type="text" maxlength="100" style="width: 20%;" value="" name="pageName">
             <span name="iaisErrorMsg" class="error-msg" id="error_pageName"></span>
           </div>
           <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed"></span>
-          <div class="form-group"  id="add">
-            <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
-
-              <div class="col-xs-12 col-md-4" style="margin-left: 100%">
-                <label class="col-xs-12 col-md-12 control-label"  style="text-align: center">UP/DOWN</label>
-              </div>
-            </div>
+          <div>
           </div>
-
           <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
-            <div class="view">
-              <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+            <div class="view col-xs-12 col-md-12" >
+              <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                 <input class="add" type="text"  style="margin-left:0px" name="subType" maxlength="100" value="${hcsaSvcSubtypeOrSubsumed.name}">
               </div>
               <div class="value">
                 <input type="text" value="0" name="level" style="display: none">
               </div>
-              <div  class="col-xs-12 col-md-3" >
-                <a class="btn  btn-secondary  view" onclick="indents(this)"   >indent</a>
+              <div  class="col-xs-12 col-md-2" >
+                <a class="btn  btn-secondary  view"  onclick="indents(this)"   >indent</a>
               </div>
               <div  class="col-xs-12 col-md-2">
                 <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
               </div>
+              <div class="col-xs-12 col-md-2 up">
+                <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
+                <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+              </div>
+              <div class="col-xs-12 col-md-2">
+                <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+              </div>
             </div>
             <c:forEach items="${hcsaSvcSubtypeOrSubsumed.list}" var="hcsaSvcSubtypeOrSubsumed2">
-              <div class="view">
-                <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+              <div class="view col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                   <input class="add" type="text"  style="margin-left:60px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
                 </div>
                 <div class="value">
                   <input type="text" value="1" name="level" style="display: none" >
                 </div>
-                <div  class="col-xs-12 col-md-3" >
+                <div  class="col-xs-12 col-md-2" >
                   <a class="btn  btn-secondary  view" onclick="indents(this)"   >indent</a>
                 </div>
                 <div  class="col-xs-12 col-md-2">
                   <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
                 </div>
+                <div class="col-xs-12 col-md-2 up">
+                  <a class="btn  btn-secondary up view"onclick="up(this)">UP</a>
+                  <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+                </div>
+                <div class="col-xs-12 col-md-2">
+                  <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
+                </div>
               </div>
               <c:forEach items="${hcsaSvcSubtypeOrSubsumed2.list}" var="hcsaSvcSubtypeOrSubsumed3">
-                <div class="view">
-                  <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+                <div class="view col-xs-12 col-md-12">
+                  <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                     <input class="add" type="text"  style="margin-left:120px" maxlength="100" name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
                   </div>
                   <div class="value">
                     <input type="text" value="2" name="level" style="display: none" >
                   </div>
-                  <div  class="col-xs-12 col-md-3" >
+                  <div  class="col-xs-12 col-md-2" >
                     <a class="btn  btn-secondary  view" onclick="indents(this)"   >indent</a>
                   </div>
                   <div  class="col-xs-12 col-md-2">
                     <a class="btn  btn-secondary view"  onclick="outdent(this)" >outdent</a>
+                  </div>
+                  <div class="col-xs-12 col-md-2 up">
+                    <a class="btn  btn-secondary up view" onclick="up(this)">UP</a>
+                    <a class="btn  btn-secondary down view" onclick="down(this)">DOWN</a>
+                  </div>
+                  <div class="col-xs-12 col-md-2">
+                    <a class="btn  btn-secondary view"  onclick="removeThis(this)" >-</a>
                   </div>
                 </div>
               </c:forEach>
             </c:forEach>
           </c:forEach>
 
-          <div class="col-xs-12 col-md-6">
+          <div class="col-xs-12 col-md-12">
             <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" onclick="addAsItem(this)"> + </a><label for="addAsItem"> Add Item</label>
           </div>
         </div>
@@ -678,7 +691,9 @@
 
 <iais:confirm msg="Are you sure you want to cancel?" yesBtnDesc="NO" cancelBtnDesc="YES" yesBtnCls="btn btn-secondary" cancelBtnCls="btn btn-primary" cancelFunc="cancel()" callBack="displays()" popupOrder="cancel"></iais:confirm>
 <script type="text/javascript">
-
+    $(document).ready(function () {
+        a();
+    });
     function cancel() {
 
         SOP.Crud.cfxSubmit("mainForm","back","back","");
@@ -853,28 +868,53 @@
 
     });
 
+    function removeThis(obj) {
+        $(obj).closest("div").closest("div.view").remove();
+        a();
+    }
 
+    function up(obj) {
 
+    }
+
+    function down(obj) {
+
+    }
     function addAsItem(obj) {
-        $(obj).closest("div").prev("div").append(" <div class=\"view\">\n" +
-            "          <div class=\"col-xs-12 col-md-7\" style=\"padding-right: 20%;\" >\n" +
+        $(obj).closest("div").prev("div").after(" <div class=\"view col-xs-12 col-md-12\">\n" +
+            "          <div class=\"col-xs-12 col-md-4\" style=\"padding-right: 20%;\" >\n" +
             "            <input class=\"add\" type=\"text\"  style=\"\" name=\"subType\">\n" +
             "          </div>\n" +
             "            <div class=\"value\">\n" +
             "              <input type=\"text\" value=\"0\" name=\"level\"  style=\"display: none\">\n" +
             "            </div>\n" +
-            "          <div  class=\"col-xs-12 col-md-3\" >\n" +
+            "          <div  class=\"col-xs-12 col-md-2\" >\n" +
             "            <a class=\"btn  btn-secondary  view\" onclick=\"indents(this)\"   >indent</a>\n" +
             "          </div>\n" +
             "          <div  class=\"col-xs-12 col-md-2\">\n" +
             "            <a class=\"btn  btn-secondary view\"  onclick=\"outdent(this)\" >outdent</a>\n" +
             "          </div>\n" +
+            "           <div class=\"col-xs-12 col-md-2 up\">\n" +
+            "                    <a class=\"btn  btn-secondary up view\" onclick=\"up(this)\">UP</a>\n" +
+            "                    <a class=\"btn  btn-secondary down view\" onclick=\"down(this)\">DOWN</a>\n" +
+            "                  </div>\n" +
+            "                  <div class=\"col-xs-12 col-md-2\">\n" +
+            "                    <a class=\"btn  btn-secondary view\"  onclick=\"removeThis(this)\" >-</a>\n" +
+            "                  </div>"+
             "          </div>");
-
+          a();
     }
 
+   var  a = function upDown() {
+        let length = $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").length;
+        if (length == 1) {
+            $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').attr("style","display: none");
+        } else {
+            $('#addAsItem').closest("div").closest("div.Sub-Types").children("div.view").children('.up').removeAttr("style");
+        }
+    }
     function indents(obj) {
-        let jQuery = $(obj).closest('div.view').children("div.col-md-7").children();
+        let jQuery = $(obj).closest('div.view').children("div.col-md-4").children();
         let jQuery2 = $(obj).closest('div.view').children("div.value").children();
         var jQuery1 = jQuery.attr("style");
         if(jQuery1!=""){
@@ -908,9 +948,9 @@
 
         }
     }
-    
+
     function outdent(obj) {
-        let jQuery = $(obj).closest('div.view').children("div.col-md-7").children();
+        let jQuery = $(obj).closest('div.view').children("div.col-md-4").children();
         let jQuery2 = $(obj).closest('div.view').children("div.value").children();
         var jQuery1 = jQuery.attr("style");
         if(jQuery1!=""){
