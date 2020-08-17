@@ -459,7 +459,7 @@
     </sql>
     <sql key="audit"  remarks="audit">
         <![CDATA[
-            SELECT
+            SELECT DISTINCT
             T1.notification_id,T3.history_id,T1.notification_type,SUBSTRING(RECIPIENT_VALUE_ALL,1, LEN(RECIPIENT_VALUE_ALL) - 1) recipient,T1.sender,T1.subject,T1.content,T1.number_of_attempts,
             T2.file_name,T3.log_msg,T3.sent_time
             FROM notification T1
