@@ -155,7 +155,7 @@ public class EmailResendDelegator {
         String id =  ParamUtil.getMaskedString(bpc.request, "emailId");
         String notiId =  ParamUtil.getMaskedString(bpc.request, "notiId");
         BlastManagementDto blastManagementDtoById = new BlastManagementDto();
-        if(id == null || id.isEmpty()){
+        if(StringUtil.isEmpty(id)){
             id = (String)ParamUtil.getSessionAttr(bpc.request,"BlastMsgId");
             blastManagementDtoById = (BlastManagementDto) ParamUtil.getSessionAttr(bpc.request,"resendBlastedit");
         }else{
