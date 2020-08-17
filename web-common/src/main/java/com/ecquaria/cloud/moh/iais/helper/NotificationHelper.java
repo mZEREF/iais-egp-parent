@@ -23,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
@@ -234,6 +235,201 @@ public class NotificationHelper {
 	}
 
 
+	public void sendNotification(EmailParam emailParam){
+		if (emailParam == null){
+			return;
+		}
+
+		String templateId = emailParam.getTemplateId();
+		Map<String, Object> templateContent = emailParam.getTemplateContent();
+		String queryCode = emailParam.getQueryCode();
+		String reqRefNum = emailParam.getReqRefNum();
+		String refIdType = emailParam.getRefIdType();
+		String refId = emailParam.getRefId();
+		JobRemindMsgTrackingDto jrDto = emailParam.getJobRemindMsgTrackingDto();
+		String subject = emailParam.getSubject();
+		String moduleType = emailParam.getModuleType();
+		boolean smsOnlyOfficerHour = emailParam.isSmsOnlyOfficerHour();
+		HashMap<String, String> maskParams = emailParam.getMaskParams();
+
+		log.info(StringUtil.changeForLog("sendemail start... ref type is " + StringUtil.nullToEmptyStr(refIdType)
+				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
+				+ "templateId is "+ templateId+"thread name is " + Thread.currentThread().getName()));
+
+		try {
+			List<String> receiptEmail;
+			List<String> ccEmail;
+			List<String> bccEmail;
+			MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
+			/*if(AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())){
+				return;
+			}*/
+			//get mesContext
+			String mesContext;
+			String emailTemplate = msgTemplateDto.getMessageContent();
+			//replace num
+			emailTemplate = replaceNum(emailTemplate);
+			if (templateContent != null && !templateContent.isEmpty()) {
+				if(templateContent.get("msgContent") != null ){
+					mesContext = (String) templateContent.get("msgContent");
+				}else {
+					mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
+				}
+			} else {
+				mesContext = emailTemplate;
+			}
+			if(RECEIPT_TYPE_SMS.equals(refIdType)) {
+				int smsFlag = systemParamConfig.getEgpSmsNotifications();
+				if(0 == smsFlag){
+					return;
+				}
+				sendSms(templateId, mesContext, refId, smsOnlyOfficerHour);
+				if (jrDto != null) {
+					List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
+					jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+					jobList.add(jrDto);
+					iaisSystemClient.createJobRemindMsgTracking(jobList);
+				}
+			} else if (RECEIPT_TYPE_NOTIFICATION.equals(refIdType) ||
+					RECEIPT_TYPE_ANNONUCEMENT.equals(refIdType) ||
+					RECEIPT_TYPE_ACTION_REQUIRED.equals(refIdType)) {
+				// send message
+				if(StringUtil.isEmpty(subject)){
+					subject = msgTemplateDto.getTemplateName();
+				}
+				sendMessage(mesContext, refId, refIdType, subject, maskParams);
+				if (jrDto != null) {
+					List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
+					jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+					jobList.add(jrDto);
+					iaisSystemClient.createJobRemindMsgTracking(jobList);
+				}
+			} else {
+				int emailFlag = systemParamConfig.getEgpEmailNotifications();
+				if(0 == emailFlag){
+					log.info("please turn on email param.......");
+					return;
+				}
+				EmailDto emailDto = new EmailDto();
+				//get assign officer address and other address
+				InspectionEmailTemplateDto inspectionEmailTemplateDto = new InspectionEmailTemplateDto();
+				if (msgTemplateDto.getRecipient() != null && msgTemplateDto.getRecipient().size() > 0) {
+					inspectionEmailTemplateDto = getRecript(msgTemplateDto.getRecipient(), refIdType, refId, moduleType, inspectionEmailTemplateDto);
+					receiptEmail = inspectionEmailTemplateDto.getReceiptEmails();
+					if (!IaisCommonUtils.isEmpty(receiptEmail)) {
+						emailDto.setReceipts(receiptEmail);
+					}
+				}
+				if (msgTemplateDto.getCcrecipient() != null && msgTemplateDto.getCcrecipient().size() > 0) {
+					inspectionEmailTemplateDto = getRecript(msgTemplateDto.getCcrecipient(), refIdType, refId, moduleType, inspectionEmailTemplateDto);
+					ccEmail = inspectionEmailTemplateDto.getReceiptEmails();
+					if (!IaisCommonUtils.isEmpty(ccEmail)) {
+						emailDto.setCcList(ccEmail);
+					}
+				}
+				if (msgTemplateDto.getBccrecipient() != null && msgTemplateDto.getBccrecipient().size() > 0) {
+					inspectionEmailTemplateDto = getRecript(msgTemplateDto.getBccrecipient(), refIdType, refId, moduleType, inspectionEmailTemplateDto);
+					bccEmail = inspectionEmailTemplateDto.getReceiptEmails();
+					if (!IaisCommonUtils.isEmpty(bccEmail)) {
+						emailDto.setBccList(bccEmail);
+					}
+				}
+				emailDto.setContent(mesContext);
+				if (StringUtil.isEmpty(subject)) {
+					msgTemplateDto.setTemplateName(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), templateContent));
+					emailDto.setSubject(msgTemplateDto.getTemplateName());
+				} else {
+					emailDto.setSubject(subject);
+				}
+				emailDto.setSender(this.mailSender);
+				if (queryCode != null) {
+					emailDto.setClientQueryCode(queryCode);
+				} else {
+					emailDto.setClientQueryCode("no queryCode");
+				}
+				if (reqRefNum != null) {
+					emailDto.setReqRefNum(reqRefNum);
+				} else {
+					emailDto.setReqRefNum("no reqRefNum");
+				}
+				boolean jobRemindFlag = false;
+				//send other address
+				if (!IaisCommonUtils.isEmpty(emailDto.getReceipts())) {
+					if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)) {
+						String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+						HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+						HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+						IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
+								MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+								signature2.date(), signature2.authorization(), String.class);
+					} else {
+						emailSmsClient.sendEmail(emailDto, null);
+					}
+					if (jrDto != null) {
+						List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
+						jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+						jobList.add(jrDto);
+						iaisSystemClient.createJobRemindMsgTracking(jobList);
+						jobRemindFlag = true;
+					}
+				} else {
+					log.info("No receipts. Won't send email.");
+				}
+				//send officer address
+				Map<String, String> officerNameMap = inspectionEmailTemplateDto.getOfficerNameMap();
+				Map<String, String> emailAddressMap = inspectionEmailTemplateDto.getEmailAddressMap();
+				if (officerNameMap != null && emailAddressMap != null) {
+					for (Map.Entry<String, String> onMap : officerNameMap.entrySet()) {
+						String orgUserKey = onMap.getKey();
+						String orgName = onMap.getKey();
+						List<String> officerEmails = IaisCommonUtils.genNewArrayList();
+						String officerEmail = emailAddressMap.get(orgUserKey);
+						officerEmails.add(officerEmail);
+						if (templateContent != null && !templateContent.isEmpty()) {
+							boolean officerFlag = templateContent.containsKey("officer_name");
+							if(officerFlag) {
+								templateContent.put("officer_name", orgName);
+								mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
+							}
+						}
+						emailDto.setContent(mesContext);
+						emailDto.setReceipts(officerEmails);
+						if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)) {
+							String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+							HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+							HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+							IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/no-attach-emails", HttpMethod.POST, emailDto,
+									MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+									signature2.date(), signature2.authorization(), String.class);
+						} else {
+							emailSmsClient.sendEmail(emailDto, null);
+						}
+					}
+					if (!jobRemindFlag && jrDto != null) {
+						List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
+						jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+						jobList.add(jrDto);
+						iaisSystemClient.createJobRemindMsgTracking(jobList);
+					}
+				}
+			}
+		} catch (Exception e) {
+			log.error("Error when sending email ==>", e);
+			if (jrDto != null) {
+				List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
+				jrDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+				jobList.add(jrDto);
+				iaisSystemClient.createJobRemindMsgTracking(jobList);
+			}
+		}
+		log.info(StringUtil.changeForLog("sendemail end... queryCode is"+queryCode + "templateId is "
+				+ templateId+"thread name is " + Thread.currentThread().getName()));
+
+
+
+	}
+
+
 	/**
 	 * don't use this method to send notification
 	 */
@@ -250,9 +446,9 @@ public class NotificationHelper {
 			List<String> ccEmail;
 			List<String> bccEmail;
 			MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
-			if(AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())){
+			/*if(AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())){
 				return;
-			}
+			}*/
 			//get mesContext
 			String mesContext;
 			String emailTemplate = msgTemplateDto.getMessageContent();
