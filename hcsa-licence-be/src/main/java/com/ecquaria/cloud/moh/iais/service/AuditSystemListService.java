@@ -31,4 +31,8 @@ public interface AuditSystemListService {
     void sendEmailToIns(String emailKey,String appGroupNo,AuditTaskDataFillterDto auditTaskDataFillterDto);
 
     void sendMailForAuditPlaner(String emailKey);
+
+    void sendMailForAuditPlanerForSms(String emailKey);
+
+    void sendEmailToInsForSms(String emailKey);
 }

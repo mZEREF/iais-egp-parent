@@ -43,12 +43,19 @@ public class AuditListReminderJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) {
         logAbout("AuditListReminderJob");
         try{
-             if(isSendEmail()){
+             if(isSendEmail(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND,"AuditListReminderJob")){
                  auditSystemListService.sendMailForAuditPlaner(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND);
-                 saveJobRemindMsgTrackingDto();
+                 saveJobRemindMsgTrackingDto(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND,"AuditListReminderJob");
              }else {
                  JobLogger.log("AuditListReminderJob is not send email time");
              }
+
+            if(isSendEmail(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND_SMS,"AuditListReminderJobSMS")){
+                auditSystemListService.sendMailForAuditPlanerForSms(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND_SMS);
+                saveJobRemindMsgTrackingDto(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND_SMS,"AuditListReminderJobSMS");
+            }else {
+                JobLogger.log("AuditListReminderJob is not send SMS time");
+            }
 
         }catch (Exception e){
             log.error(e.getMessage(), e);
@@ -63,14 +70,14 @@ public class AuditListReminderJobHandler extends IJobHandler {
         JobLogger.log(StringUtil.changeForLog("****The***** " + methodName +" ******Start ****"));
     }
 
-    private boolean isSendEmail(){
+    private boolean isSendEmail(String emailKey,String msgKey){
         Calendar calendar =  Calendar.getInstance();
         calendar.setTime(new Date());
         int dateOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         // dateOfMonth = 0
         if( dateOfMonth != -1){
             int auditInspectorListReminderRate = systemParamConfig.getAuditInspectorListReminderRate();
-            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDtoByMsgAAndCreatedAt(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND,"AuditListReminderJob").getEntity();
+            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDtoByMsgAAndCreatedAt(emailKey,msgKey).getEntity();
             if(jobRemindMsgTrackingDto == null ){
                return true;
             }
@@ -84,11 +91,12 @@ public class AuditListReminderJobHandler extends IJobHandler {
         return false;
     }
 
-    private void saveJobRemindMsgTrackingDto(){
+
+    private void saveJobRemindMsgTrackingDto(String emailKey,String msgKey){
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
-        jobRemindMsgTrackingDto.setRefNo(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND);
-        jobRemindMsgTrackingDto.setMsgKey("AuditListReminderJob");
+        jobRemindMsgTrackingDto.setRefNo(emailKey);
+        jobRemindMsgTrackingDto.setMsgKey(msgKey);
         jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         jobRemindMsgTrackingDto.setAuditTrailDto(intranet);
         systemBeLicClient.updateJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);

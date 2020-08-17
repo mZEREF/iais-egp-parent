@@ -94,6 +94,16 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     static String[] category = {"ADTYPE001", "ADTYPE002", "ADTYPE003"};
 
     @Override
+    public void sendMailForAuditPlanerForSms(String emailKey) {
+        List<OrgUserDto> userDtoList = organizationClient. retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_AUDIT_PLAN).getEntity();
+        if( !IaisCommonUtils.isEmpty(userDtoList)){
+            sendEmailToInsForSms(emailKey);//NOSONAR
+        }else {
+            log.info("----------no audit plan user ---------");
+        }
+    }
+
+    @Override
     public void sendMailForAuditPlaner(String emailKey) {
         List<OrgUserDto> userDtoList = organizationClient. retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_AUDIT_PLAN).getEntity();
         if( !IaisCommonUtils.isEmpty(userDtoList)){
@@ -234,6 +244,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
        // send email
         if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
             sendEmailToIns(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK,auditCombinationDto.getEventRefNo(),temp);
+            sendEmailToInsForSms(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK_SMS);
         }else {
             log.info("-----------Inspector id is null or UserIdToEmails is null");
         }
@@ -352,6 +363,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         //send email to insp
         if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
             sendEmailToIns(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK,groupNo,temp);
+            sendEmailToInsForSms(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK_SMS);
         }else {
             log.info("-----------Inspector id is null or UserIdToEmails is null");
         }
@@ -380,7 +392,17 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
     }
 
-    private Map<String,Object> getParamByMesskey(String key,String appNo,AuditTaskDataFillterDto auditTaskDataFillterDto){
+    @Override
+    public void sendEmailToInsForSms(String emailKey) {
+        try{
+            Map<String,Object> param = IaisCommonUtils.genNewHashMap();
+            notificationHelper.sendNotification(emailKey,param,emailKey,emailKey,null,null);
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+        }
+    }
+
+    private Map<String,Object> getParamByMesskey(String key, String appNo, AuditTaskDataFillterDto auditTaskDataFillterDto){
         Map<String,Object> param =   IaisCommonUtils.genNewHashMap();
         String syName = AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME;
         String newDateString = Formatter.formatDate(new Date());

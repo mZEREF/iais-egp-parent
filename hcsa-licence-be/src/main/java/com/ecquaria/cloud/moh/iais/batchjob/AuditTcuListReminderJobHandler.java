@@ -49,12 +49,19 @@ public class AuditTcuListReminderJobHandler extends IJobHandler {
     public ReturnT<String> execute(String s) {
         logAbout("AuditTcuListReminderJob");
         try{
-              if(isSendEmail() && isHaveTcuAudited(auditSystemPotitalListService.getSystemPotentailAdultList())){
+              if(isSendEmail(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND,"AuditTcuListReminderJob") && isHaveTcuAudited(auditSystemPotitalListService.getSystemPotentailAdultList())){
                   auditSystemListService.sendMailForAuditPlaner(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND);
-                  saveJobRemindMsgTrackingDto();
+                  saveJobRemindMsgTrackingDto(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND,"AuditTcuListReminderJob");
               }else {
                   JobLogger.log("AuditTcuListReminderJob is no tcu task or no system send email time");
               }
+
+            if(isSendEmail(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND_SMS,"AuditTcuListReminderJobSMS") && isHaveTcuAudited(auditSystemPotitalListService.getSystemPotentailAdultList())){
+                auditSystemListService.sendMailForAuditPlanerForSms(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND_SMS);
+                saveJobRemindMsgTrackingDto(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND_SMS,"AuditTcuListReminderJobSMS");
+            }else {
+                JobLogger.log("AuditTcuListReminderJob is no tcu task or no system send SMS time");
+            }
         }catch (Exception e){
             log.error(e.getMessage(), e);
             JobLogger.log(e);
@@ -79,13 +86,13 @@ public class AuditTcuListReminderJobHandler extends IJobHandler {
         }
         return false;
     }
-    private boolean isSendEmail(){
+    private boolean isSendEmail(String emailKey,String msgKey){
         int auditInspectorListReminderWeek = systemParamConfig.getAuditInspectorListTcuReminderWeek();
         Calendar calendar =  Calendar.getInstance();
         calendar.setTime(new Date());
         int weekDay = calendar.get(Calendar.DAY_OF_WEEK);
         if((weekDay -1 == auditInspectorListReminderWeek) || (weekDay == 1 && auditInspectorListReminderWeek ==7)){
-            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDtoByMsgAAndCreatedAt(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND,"AuditTcuListReminderJob").getEntity();
+            JobRemindMsgTrackingDto jobRemindMsgTrackingDto = systemBeLicClient.getJobRemindMsgTrackingDtoByMsgAAndCreatedAt(emailKey,msgKey).getEntity();
             if(jobRemindMsgTrackingDto == null ){
                 return true;
             }
@@ -98,11 +105,11 @@ public class AuditTcuListReminderJobHandler extends IJobHandler {
         return false;
     }
 
-    private void saveJobRemindMsgTrackingDto(){
+    private void saveJobRemindMsgTrackingDto(String emailKey,String msgKey){
         AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
-        jobRemindMsgTrackingDto.setRefNo(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND);
-        jobRemindMsgTrackingDto.setMsgKey("AuditTcuListReminderJob");
+        jobRemindMsgTrackingDto.setRefNo(emailKey);
+        jobRemindMsgTrackingDto.setMsgKey(msgKey);
         jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         jobRemindMsgTrackingDto.setAuditTrailDto(intranet);
         systemBeLicClient.updateJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
