@@ -4,8 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
@@ -66,8 +65,23 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
+    public SearchResult<PersonnelQueryDto> searchPsnInfo(SearchParam searchParam) {
+        return licenceClient.searchPsnInfo(searchParam).getEntity();
+    }
+
+    @Override
+    public SearchResult<PersonnlAssessQueryDto> searchAssessPsnInfo(SearchParam searchParam) {
+        return licenceClient.assessPsnDoQuery(searchParam).getEntity();
+    }
+
+    @Override
     public List<PersonnelListQueryDto> getLicencePersonnelListQueryDto(String licenseeId) {
         return licenceClient.getPersonnel(licenseeId).getEntity();
+    }
+
+    @Override
+    public List<PersonnelListDto> getPersonnelListAssessment(List<String> idNos) {
+        return licenceClient.getPersonnelListAssessment(idNos).getEntity();
     }
 
 }

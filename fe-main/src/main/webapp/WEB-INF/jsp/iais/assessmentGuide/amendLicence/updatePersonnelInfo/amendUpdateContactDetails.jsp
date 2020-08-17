@@ -70,4 +70,8 @@
         $("[name='guide_action_type']").val("updateContactSort");
         $("#mainForm").submit();
     }
+
+    $("#personnelId").change(function () {
+        guideSubmit("searchById","second");
+    });
 </script>

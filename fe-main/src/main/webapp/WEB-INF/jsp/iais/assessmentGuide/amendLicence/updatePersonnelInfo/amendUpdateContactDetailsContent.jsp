@@ -3,7 +3,7 @@
     <p class="form-check-title">Choose the personnel who's information you wish to amend</p>
 
     <iais:row>
-        <iais:select name="personnelOptions" options="personnelOptions"/>
+        <iais:select name="personnelOptions" options="personnelOptions" id="personnelId" value="${param.personnelOptions}"/>
     </iais:row>
 
     <p class="form-check-title">The following licences will be affected by the change of personal Info</p>
@@ -29,11 +29,79 @@
                 </c:when>
                 <c:otherwise>
                     <c:forEach var="pool" items="${amendUpdateContactSearchResult.rows}" varStatus="status">
-                        <tr>
-                            <td>${pool.svcId}</td>
-                            <td>${pool.licenceNo}</td>
-                            <td>CGO\PO\DPO</td>
-                        </tr>
+                        <c:forEach var="assessMap" items="${pool.licPsnTypeDtoMaps}" varStatus="status">
+                            <tr>
+                                <td>${pool.svcName}</td>
+                                <td>${assessMap.key}</td>
+                                <td>
+                                    <c:forEach var="assessList" items="${assessMap.value.psnTypes}" varStatus="assessStatus">
+                                        <c:choose>
+                                            <c:when test="${assessMap.value.psnTypes.size() == 1}">
+                                                <c:choose>
+                                                    <c:when test="${assessList == 'CGO'}">
+                                                        Clinical Governance Officer
+                                                    </c:when>
+                                                    <c:when test="${assessList == 'PO'}">
+                                                        Principal Officer
+                                                    </c:when>
+                                                    <c:when test="${assessList == 'DPO'}">
+                                                        Deputy Principal Officer
+                                                    </c:when>
+                                                    <c:when test="${assessList == 'MP'}">
+                                                        MedAlert Person
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        Service Personnel
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:choose>
+                                                    <c:when test="${assessMap.value.psnTypes.size() == assessStatus.index + 1}">
+                                                        <c:choose>
+                                                            <c:when test="${assessList == 'CGO'}">
+                                                                Clinical Governance Officer
+                                                            </c:when>
+                                                            <c:when test="${assessList == 'PO'}">
+                                                                Principal Officer
+                                                            </c:when>
+                                                            <c:when test="${assessList == 'DPO'}">
+                                                                Deputy Principal Officer
+                                                            </c:when>
+                                                            <c:when test="${assessList == 'MP'}">
+                                                                MedAlert Person
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                Service Personnel
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <c:choose>
+                                                            <c:when test="${assessList == 'CGO'}">
+                                                                Clinical Governance Officer,
+                                                            </c:when>
+                                                            <c:when test="${assessList == 'PO'}">
+                                                                Principal Officer,
+                                                            </c:when>
+                                                            <c:when test="${assessList == 'DPO'}">
+                                                                Deputy Principal Officer,
+                                                            </c:when>
+                                                            <c:when test="${assessList == 'MP'}">
+                                                                MedAlert Person,
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                Service Personnel,
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+                                </td>
+                            </tr>
+                        </c:forEach>
                     </c:forEach>
                 </c:otherwise>
             </c:choose>

@@ -296,14 +296,14 @@
     <JavaCode defClass="" executor="" methodName="updateLicenceesSort_OnStepProcess_0" name="updateLicenceesSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="updateContactSort" x="1790" y="-370">
+  <AutomaticStep defClass="" executor="" icon="" name="updateContactSort" x="1800" y="-300">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="updateContactSort_OnStepProcess_0" name="updateContactSort_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="updateContactPage" x="1750" y="-260">
+  <AutomaticStep defClass="" executor="" icon="" name="updateContactPage" x="1750" y="-240">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -434,6 +434,13 @@
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="doResumePage_OnStepProcess_0" name="doResumePage_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="searchByNRIC" x="1800" y="-380">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="searchByNRIC_OnStepProcess_0" name="searchByNRIC_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
  </Steps>
@@ -661,7 +668,6 @@
    <position>{(1870,-40)(1890,-490)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch5" linkstyle="Direct" name="" sourceName="/Pages/WebPage/withdrawAppPage" style="oblique">
-
    <position>{(850,270)(880,390)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch6" linkstyle="Direct" name="" sourceName="/Pages/WebPage/ceaseLicPage" style="oblique">
@@ -899,16 +905,16 @@
    <position>{(1650,-350)(1620,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/updateContactSort" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch7" style="rectanular">
-   <position>{(1760,-480)(1810,-350)}</position>
+   <position>{(1760,-480)(1820,-280)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/updateContactPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch7" style="rectanular">
-   <position>{(1760,-480)(1770,-240)}</position>
+   <position>{(1760,-480)(1770,-220)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic4_2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/updateContactSort" style="rectanular">
-   <position>{(1810,-350)(1720,120)}</position>
+   <position>{(1820,-280)(1720,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic4_2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/updateContactPage" style="rectanular">
-   <position>{(1770,-240)(1720,120)}</position>
+   <position>{(1770,-220)(1720,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/addRemovePersonalPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch8" style="rectanular">
    <position>{(1530,-480)(1540,-360)}</position>
@@ -1045,6 +1051,12 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/resumeDraftApp" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doResumePage" style="rectanular">
    <position>{(1920,-290)(1860,120)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/searchByNRIC" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch7" style="rectanular">
+   <position>{(1760,-480)(1820,-360)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic4_2" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/searchByNRIC" style="rectanular">
+   <position>{(1820,-360)(1720,120)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -1104,6 +1116,7 @@
    <SwitchCase component="/Merges/Merge/Merge2" value=""/>
    <SwitchCase component="/Steps/AutomaticStep/updateContactSort" value="&quot;updateContactSort&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/updateContactPage" value="&quot;updateContactPage&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/searchByNRIC" value="&quot;searchById&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge2" executor="" icon="" leftOperand="guide_action_type" name="Switch8" x="1510" y="-500">
    <Description/>

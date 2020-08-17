@@ -267,6 +267,10 @@ public class INTERNET___MohAccessmentGuide___1 extends BaseProcessClass {
 	public void doResumePage_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "resumePage", this);
 	}
+
+	public void searchByNRIC_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "searchByIdNo", this);
+	}
 	
 
 }
