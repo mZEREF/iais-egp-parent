@@ -35,8 +35,8 @@
                             </div>
                             <div class="col-lg-4 col-xs-12">
                                 <div class="withdraw-addmore gradient-light-grey">
-                                    <a href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4><i
-                                            class="fa fa-plus-circle"></i> Add more applications</h4></a> <%--NOSONAR--%>
+                                    <a href="#newappModal" data-toggle="modal" data-target="#newappModal"><h4><em
+                                            class="fa fa-plus-circle"></em> Add more applications</h4></a> <%--NOSONAR--%>
                                 </div>
                             </div>
                         </div>
