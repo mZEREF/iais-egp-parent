@@ -183,6 +183,11 @@ public class TaskServiceImpl implements TaskService {
                         taskType = TaskConsts.TASK_TYPE_MAIN_FLOW_SUPER;
                         assignDate = null;
                         break;
+                    case TaskConsts.TASK_SCHEME_TYPE_ROUND :
+                        if(StringUtil.isEmpty(userId)){
+                            //0066643
+                        }
+                        break;
                 }
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison taskType is -->:"+taskType));
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
