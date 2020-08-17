@@ -81,7 +81,7 @@ public class FESingpassLandingDelegator {
 
         String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
         LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
-        log.info("oLoginInfo =>>>>>>> " + oLoginInfo);
+        log.info(StringUtil.changeForLog("oLoginInfo" + oLoginInfo));
         if (oLoginInfo == null){
             return;
         }
