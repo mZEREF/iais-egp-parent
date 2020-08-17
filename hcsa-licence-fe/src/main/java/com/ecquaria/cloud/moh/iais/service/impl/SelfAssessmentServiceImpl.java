@@ -262,8 +262,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     templateContent.put("serviceName", svcName);
                 }
 
-                notificationHelper.sendNotificationWithJobTrack(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR, randomStr, NotificationHelper.RECEIPT_TYPE_APP , appNo,
-                        null, null,  NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK, false);
+                notificationHelper.sendNotification(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR, randomStr, NotificationHelper.RECEIPT_TYPE_APP , appNo,
+                        null, null,  NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK, false, null);
             }
         }
 

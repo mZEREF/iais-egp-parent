@@ -226,7 +226,17 @@ public class NotificationHelper {
 				true, null);
 	}
 
+	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode, String reqRefNum, String refIdType,
+								 String refId, JobRemindMsgTrackingDto jrDto, String subject, String moduleType, boolean smsOnlyOfficerHour,
+								 HashMap<String, String> maskParams) {
+		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, jrDto, subject, moduleType,
+				smsOnlyOfficerHour, maskParams);
+	}
+
 	@Async("emailAsyncExecutor")
+	/**
+	 * don't use this method to send notification
+	 */
 	public void sendNotificationWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode, String reqRefNum, String refIdType,
 											 String refId, JobRemindMsgTrackingDto jrDto, String subject, String moduleType, boolean smsOnlyOfficerHour,
 											 HashMap<String, String> maskParams) {
