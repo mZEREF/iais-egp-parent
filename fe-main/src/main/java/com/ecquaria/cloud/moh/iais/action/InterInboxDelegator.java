@@ -539,7 +539,7 @@ public class InterInboxDelegator {
         boolean result = true;
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        String tmp = "The selected licence(s) is/are not eligible for renewal: ";
+        String tmp = MessageUtil.getMessageDesc("INBOX_ACK013");
         StringBuilder errorMessage = new StringBuilder();
         if(licIds != null){
             List<String> licIdValue = IaisCommonUtils.genNewArrayList();
@@ -595,7 +595,7 @@ public class InterInboxDelegator {
                     String errorMessage2 = errorMap.get("errorMessage2");
                     if(StringUtil.isEmpty(errorMessage2)){
                         //RFC_ERR011
-                        errorMessage.append("There is already a pending application for the selected licence");
+                        errorMessage.append(MessageUtil.getMessageDesc("RFC_ERR011"));
                     }else{
                         errorMessage.append(errorMessage2);
                     }

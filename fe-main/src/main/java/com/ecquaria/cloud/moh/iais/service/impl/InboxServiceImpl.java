@@ -309,10 +309,12 @@ public class InboxServiceImpl implements InboxService {
         if(licenceDto != null){
             String licenceStatus = licenceDto.getStatus();
             if(!ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceStatus)){
-                errorMap.put("errorMessage2","The selected licence(s) is/are not Active and hence ineligible for amendment/renewal/appeal/cessation");
+                String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK011");
+                errorMap.put("errorMessage2",errorMsg);
             }
         }else{
-            errorMap.put("errorMessage2","The selected licence(s) is/are not Active and hence ineligible for amendment/renewal/appeal/cessation");
+            String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK011");
+            errorMap.put("errorMessage2",errorMsg);
             return errorMap;
         }
         List<ApplicationDto> apps = appInboxClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
@@ -330,7 +332,8 @@ public class InboxServiceImpl implements InboxService {
         //Verify whether the new licence is generated
         LicenceDto entity = licenceInboxClient.getLicdtoByOrgId(licenceId).getEntity();
         if(entity != null){
-            errorMap.put("errorMessage2","You have already renewed this licence.");
+            String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK014");
+            errorMap.put("errorMessage2",errorMsg);
         }
         //check expiry date
         Date expiryDate = licenceDto.getExpiryDate();

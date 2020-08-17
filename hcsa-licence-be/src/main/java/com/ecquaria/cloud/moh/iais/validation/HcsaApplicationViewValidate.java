@@ -98,7 +98,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         if(StringUtil.isEmpty(recommendationStr)){
                             errMap.put("recommendation","GENERAL_ERR0024");
                         }else if(RECOMMENDATION_REJECT.equals(recommendationStr)){
-                            errMap.put("recommendation","The value of recommendation cannot be 'Reject'.");
+                            //errMap.put("recommendation","The value of recommendation cannot be 'Reject'.");
                         }
                     }else if(DECISION_REJECT.equals(decisionValue)){
 
@@ -238,7 +238,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     public void verifyReturnFee(String returnFeeStr, Map<String, String> errMap, String oldApplicationNo){
         //verify numeric
         if(!CommonValidator.isCurrency(returnFeeStr)){
-            errMap.put("returnFee","The field is Invalid");
+            errMap.put("returnFee","GENERAL_ERR0027");
         }else{
             ApplicationService applicationService = SpringContextHelper.getContext().getBean(ApplicationServiceImpl.class);
             AppFeeDetailsDto appFeeDetailsDto = applicationService.getAppFeeDetailsDtoByApplicationNo(oldApplicationNo);
@@ -246,7 +246,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 Double laterFee = appFeeDetailsDto.getLaterFee();
                 Double returnFee = Double.valueOf(returnFeeStr);
                 if(returnFee>laterFee){
-                    errMap.put("returnFee","The amount keyed in has exceeded the original amount licensee has paid");
+                    errMap.put("returnFee","GENERAL_ERR0034");
                 }
             }
         }
@@ -273,7 +273,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 errMap.put("recomInNumber","GENERAL_ERR0024");
             }else{
                 if(!CommonValidator.isPositiveInteger(number)){
-                    errMap.put("recomInNumber","The field is Invalid.");
+                    errMap.put("recomInNumber","GENERAL_ERR0027");
                 }else{
                     ParamUtil.setRequestAttr(request,"otherNumber",number);
                 }
