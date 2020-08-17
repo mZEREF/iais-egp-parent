@@ -193,8 +193,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                 for (int j = 0; j < newMatList.size(); j++) {
                     AppSvcPrincipalOfficersDto newMatDto = newMatList.get(j);
                     AppSvcPrincipalOfficersDto oldMatDto = oldMatList.get(j);
-                    clearAppSvcPrincipalOfficersDto(newMatDto);
-                    clearAppSvcPrincipalOfficersDto(oldMatDto);
+                    clearAppSvcPrincipalOfficersDto(newMatE);
+                    clearAppSvcPrincipalOfficersDto(oldMatE);
                     newMatE.setName(newMatDto.getName());
                     newMatE.setMobileNo(newMatDto.getMobileNo());
                     newMatE.setEmailAddr(newMatDto.getEmailAddr());
