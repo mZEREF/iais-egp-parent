@@ -106,6 +106,7 @@
         <c:if test="${PageCanEdit}">
           var $PremEle = $('#mainPrem');
           unreadonlyPartPage($PremEle);
+          $PremEle.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
         </c:if>
         <!-- init end-->
         init = 1;

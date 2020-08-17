@@ -1968,6 +1968,13 @@ public class NewApplicationHelper {
                     }
                 }
             }
+            //confirm with mingde , person_ext field can edit anytime
+            appPsnEditDto.setPreferredMode(true);
+            appPsnEditDto.setSubSpeciality(true);
+            appPsnEditDto.setSpecialityOther(true);
+            appPsnEditDto.setSpeciality(true);
+            appPsnEditDto.setProfRegNo(true);
+            appPsnEditDto.setProfessionType(true);
         }
         return appPsnEditDto;
     }

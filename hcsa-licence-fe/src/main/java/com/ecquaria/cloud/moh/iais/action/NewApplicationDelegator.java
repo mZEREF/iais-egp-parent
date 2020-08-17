@@ -668,9 +668,29 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             }
             //65718
-            //remove
+            //remove premises align info
             List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-
+            List<AppGrpPrimaryDocDto> newGrpPrimaryDocDtos = IaisCommonUtils.genNewArrayList();
+            if(!IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
+                for(AppGrpPrimaryDocDto appGrpPrimaryDocDto:appGrpPrimaryDocDtos){
+                    String docPremName = appGrpPrimaryDocDto.getPremisessName();
+                    String docPremType = appGrpPrimaryDocDto.getPremisessType();
+                    //add prem doc
+                    if(!StringUtil.isEmpty(docPremName) && !StringUtil.isEmpty(docPremType)){
+                        for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtoList){
+                            String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                            String premType = appGrpPremisesDto.getPremisesType();
+                            if(docPremName.equals(premIndexNo) && docPremType.equals(premType)){
+                                newGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
+                            }
+                        }
+                    }else if(StringUtil.isEmpty(docPremName) && StringUtil.isEmpty(docPremType)){
+                        //add comm doc
+                        newGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
+                    }
+                }
+                appSubmissionDto.setAppGrpPrimaryDocDtos(newGrpPrimaryDocDtos);
+            }
             List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
             if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
                 for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
@@ -703,6 +723,7 @@ public class NewApplicationDelegator {
                         appSvcRelatedInfoDto.setAppSvcDisciplineAllocationDtoList(newDisciplineAllocations);
                     }
                 }
+                appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);
             }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }
@@ -979,6 +1000,7 @@ public class NewApplicationDelegator {
         if(!IaisCommonUtils.isEmpty(premHcasDocConfigs) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
             for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
                 String premIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                String premType = appGrpPremisesDto.getPremisesType();
                 for(HcsaSvcDocConfigDto premHcasDocConfig:premHcasDocConfigs){
                     String errName = "prem"+premHcasDocConfig.getId()+premIndexNo;
                     Boolean isMandatory = premHcasDocConfig.getIsMandatory();
@@ -986,17 +1008,19 @@ public class NewApplicationDelegator {
                     if(isMandatory && IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList)){
                         isEmpty = true;
                     }else if(isMandatory && !IaisCommonUtils.isEmpty(appGrpPrimaryDocDtoList)){
-
+                        isEmpty = true;
                         for(AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList){
-                            String configId = premHcasDocConfig.getId();
-                            String docConfigId = appGrpPrimaryDocDto.getSvcComDocId();
-                            if(configId.equals(docConfigId)){
-                                isEmpty = true;
-                                break;
+                            String docPremName = appGrpPrimaryDocDto.getPremisessName();
+                            String docPremType = appGrpPrimaryDocDto.getPremisessType();
+                            if(!StringUtil.isEmpty(docPremName) && !StringUtil.isEmpty(docPremType)){
+                                if(docPremName.equals(premIndexNo) && docPremType.equals(premType)){
+                                    isEmpty = false;
+                                    break;
+                                }
                             }
                         }
                     }
-                    if(!isEmpty){
+                    if(isEmpty){
                         errorMap.put(errName, MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field"));
                     }
                 }
@@ -1330,6 +1354,10 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request,"isrfiSuccess","N");
             return;
         }
+        //sync person data
+//        Map<String,AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
+//        NewApplicationHelper.syncPsnData(appSubmissionDto,personMap);
+
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();

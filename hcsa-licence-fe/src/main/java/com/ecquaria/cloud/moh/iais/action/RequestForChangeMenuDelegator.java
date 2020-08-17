@@ -25,13 +25,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPsnTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelTypeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.PreOrPostInspectionResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterInboxUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.SgNoValidator;
@@ -392,6 +397,7 @@ public class RequestForChangeMenuDelegator {
                     appSubmissionDto = requestForChangeService.getAppSubmissionDtoByLicenceId(premisesListQueryDto.getLicenceId());
                     List<String> names = IaisCommonUtils.genNewArrayList();
                     if (appSubmissionDto != null) {
+                        appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                         // from draft,rfi
                         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                         if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() > 0) {
@@ -1017,6 +1023,26 @@ public class RequestForChangeMenuDelegator {
      * @param bpc
      * @Decription prepareAckPage
      */
+    public void PrepareAckPage(BaseProcessClass bpc) {
+        log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
+        Date createDate = (Date) ParamUtil.getRequestAttr(bpc.request,"createDate");
+        if(createDate == null){
+            ParamUtil.setRequestAttr(bpc.request,"createDate",new Date());
+        }
+        InterInboxUserDto interInboxUserDto = (InterInboxUserDto)ParamUtil.getSessionAttr(bpc.request,"INTER_INBOX_USER_INFO");
+        String licenseeId = null;
+        if(interInboxUserDto!=null){
+            licenseeId = interInboxUserDto.getLicenseeId();
+        }else{
+            log.error(StringUtil.changeForLog("interInboxUserDto null"));
+        }
+        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
+        String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
+        ParamUtil.setRequestAttr(bpc.request,"emailAddress",emailAddress);
+        log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
+    }
+
+
     public void selectLicence(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do selectLicence start ...."));
         PremisesListQueryDto premisesListQueryDto = (PremisesListQueryDto) ParamUtil.getSessionAttr(bpc.request, RfcConst.PREMISESLISTQUERYDTO);
@@ -1037,11 +1063,6 @@ public class RequestForChangeMenuDelegator {
     }
 
 
-    public void PrepareAckPage(BaseProcessClass bpc) {
-        log.debug(StringUtil.changeForLog("the do prepareAckPage start ...."));
-
-        log.debug(StringUtil.changeForLog("the do prepareAckPage end ...."));
-    }
 
     /**
      * @param bpc

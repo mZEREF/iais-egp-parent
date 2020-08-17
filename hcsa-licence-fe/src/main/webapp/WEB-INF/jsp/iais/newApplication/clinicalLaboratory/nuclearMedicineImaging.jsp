@@ -252,10 +252,10 @@
   $(document).ready(function () {
       pageController('');
 
-      if(${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isClickEdit}){
-          disabledPage();
-          $('.addListBtn').addClass('hidden');
-      }
+      <%--if(${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isClickEdit}){--%>
+          <%--disabledPage();--%>
+          <%--$('.addListBtn').addClass('hidden');--%>
+      <%--}--%>
 
       <!--for reload when have personnelSel-->
       <c:if test="${'NMI' ==currentSvcCode || 'NMA'== currentSvcCode}">
@@ -268,6 +268,8 @@
 
       if(${AppSubmissionDto.needEditController && !isClickEdit}){
           disabledPage();
+          $('.addListBtn').addClass('hidden');
+          $('.text-danger').addClass('hidden');
       }
 
       doEdit();
@@ -403,6 +405,7 @@
           $('#isEditHiddenVal').val('1');
           $('#edit-content').addClass('hidden');
           $('.addListBtn').removeClass('hidden');
+          $('.text-danger').removeClass('hidden');
       });
   }
 var spRemove = function(){
