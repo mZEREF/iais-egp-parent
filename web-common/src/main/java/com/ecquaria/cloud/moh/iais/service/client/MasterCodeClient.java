@@ -22,4 +22,7 @@ public interface MasterCodeClient {
     @RequestMapping(path = "/iais-mastercode/caches",method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<SearchResult<MasterCodeView>> retrieveMasterCodes(SearchParam param);
+
+    @RequestMapping(path = "/message-id",method = RequestMethod.GET)
+    FeignResponseEntity<String> messageID();
 }
