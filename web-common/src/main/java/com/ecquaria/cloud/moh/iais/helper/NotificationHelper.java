@@ -222,6 +222,7 @@ public class NotificationHelper {
 			} else {
 				int emailFlag = systemParamConfig.getEgpEmailNotifications();
 				if(0 == emailFlag){
+					log.info("please turn on email param.......");
 					return;
 				}
 				EmailDto emailDto = new EmailDto();
