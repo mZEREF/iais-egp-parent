@@ -477,7 +477,7 @@ public class MasterCodeDelegator {
                         String version = masterCodeToExcelDto1.getVersion();
                         String uploadVersion = masterCodeToExcelDto.getVersion();
                         if (!StringUtil.isEmpty(version)){
-                            double versionDou = Double.valueOf(version);
+                            double versionDou = Double.parseDouble(version);
                             int versionInt = (int) versionDou;
                             if (versionInt > Integer.parseInt(uploadVersion)){
                                 String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0006");
