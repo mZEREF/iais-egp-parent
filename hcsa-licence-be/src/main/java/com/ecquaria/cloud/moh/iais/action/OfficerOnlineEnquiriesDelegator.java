@@ -375,7 +375,7 @@ public class OfficerOnlineEnquiriesDelegator {
                                 addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
                                 reqForInfoSearchListDto.setAddress(addressList);
                             }
-                            reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                            //reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
                 }
@@ -925,7 +925,7 @@ public class OfficerOnlineEnquiriesDelegator {
                                 addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
                                 reqForInfoSearchListDto.setAddress(addressList);
                             }
-                            reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
+                            //reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
                 }

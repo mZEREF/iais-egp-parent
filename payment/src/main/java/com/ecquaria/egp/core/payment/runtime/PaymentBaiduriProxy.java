@@ -23,8 +23,6 @@ import com.stripe.param.checkout.SessionCreateParams;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import sop.config.ConfigUtil;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -214,13 +212,13 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 				}else{
 					status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 				}
-				/*if(paymentIntent!=null){
-					if(paymentIntent.getStatus().equals("succeeded")){
+				if(paymentIntent!=null){
+					if("succeeded".equals(paymentIntent.getStatus())){
 						status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
 					}else {
 						status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 					}
-				}*/
+				}
 //				setReceiptStatus(status);
 				setPaymentTransStatus(status);
 //				String message = fields.get("vpc_Message");
