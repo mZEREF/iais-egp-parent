@@ -303,6 +303,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             emailParam.setModuleType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
             emailParam.setQueryCode(applicationNo);
             emailParam.setReqRefNum(applicationNo);
+            emailParam.setTemplateContent(map);
             notificationHelper.sendNotification(emailParam);
         }
     }

@@ -293,6 +293,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RFI);
+            emailParam.setTemplateContent(map);
             emailParam.setMaskParams(maskParams);
             emailParam.setModuleType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
             emailParam.setQueryCode(applicationNo);

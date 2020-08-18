@@ -92,12 +92,12 @@ public interface InspectionAssignTaskService {
     /**
       * @author: shicheng
       * @Date 2020/6/23
-      * @Param: td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto
+      * @Param: td, taskUserIds, applicationDtos, auditTrailDto, applicationGroupDto, loginContext
       * @return: void
       * @Descripation: 
       */
     void assignReschedulingTask(TaskDto td, List<String> taskUserIds, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
-                                ApplicationGroupDto applicationGroupDto, String inspManHours);
+                                ApplicationGroupDto applicationGroupDto, String inspManHours, LoginContext loginContext);
 
     /**
      * @author: shicheng

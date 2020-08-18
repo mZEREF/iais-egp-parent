@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
@@ -166,8 +167,14 @@ public class InspRemindRecNcMesgBatchJob {
         templateContent.put("applicant", licName);
         templateContent.put("date", strDate);
         templateContent.put("ncDtos", inspEmailFieldDtos);
-        notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION, templateContent, appNo, appNo,
-                NotificationHelper.RECEIPT_TYPE_APP, appNo);
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION);
+        emailParam.setTemplateContent(templateContent);
+        emailParam.setQueryCode(appNo);
+        emailParam.setReqRefNum(appNo);
+        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        emailParam.setRefId(appNo);
+        notificationHelper.sendNotification(emailParam);
     }
 
     private List<InspEmailFieldDto> getEmailFieldByAppId(String appId) {
