@@ -188,8 +188,14 @@ public class NotificationHelper {
 	@Deprecated
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId) {
-		sendNotificationWithJobTrack(templateId, templateContent, queryCode, reqRefNum, refIdType, refId, null, null, null,
-				true, null);
+		EmailParam emailParam = new EmailParam();
+		emailParam.setTemplateId(templateId);
+		emailParam.setTemplateContent(templateContent);
+		emailParam.setQueryCode(queryCode);
+		emailParam.setReqRefNum(reqRefNum);
+		emailParam.setRefIdType(refIdType);
+		emailParam.setRefId(refId);
+		sendNotification(emailParam);
 	}
 
 	@Async("emailAsyncExecutor")
@@ -382,30 +388,6 @@ public class NotificationHelper {
 		}
 		log.info(StringUtil.changeForLog("sendemail end... queryCode is"+queryCode + "templateId is "
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
-	}
-
-
-
-	/**
-	 * don't use this method to send notification
-	 */
-	@Deprecated
-	public void sendNotificationWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode, String reqRefNum, String refIdType,
-											 String refId, JobRemindMsgTrackingDto jrDto, String subject, String moduleType, boolean smsOnlyOfficerHour,
-											 HashMap<String, String> maskParams) {
-		EmailParam emailParam = new EmailParam();
-		emailParam.setTemplateId(templateId);
-		emailParam.setTemplateContent(templateContent);
-		emailParam.setQueryCode(queryCode);
-		emailParam.setReqRefNum(reqRefNum);
-		emailParam.setRefIdType(refIdType);
-		emailParam.setRefId(refId);
-		emailParam.setJobRemindMsgTrackingDto(jrDto);
-		emailParam.setSubject(subject);
-		emailParam.setModuleType(moduleType);
-		emailParam.setSmsOnlyOfficerHour(smsOnlyOfficerHour);
-		emailParam.setMaskParams(maskParams);
-		sendNotification(emailParam);
 	}
 
 	private void sendMessage(String mesContext, String appNo, String refIdType, String subject, HashMap<String, String> maskParams) {
