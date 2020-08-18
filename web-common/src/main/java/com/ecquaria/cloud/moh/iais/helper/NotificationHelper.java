@@ -23,7 +23,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
@@ -235,7 +234,7 @@ public class NotificationHelper {
 	}
 
 
-	public void sendNotification(EmailParam emailParam){
+	/*public void sendNotification(EmailParam emailParam){
 		if (emailParam == null){
 			return;
 		}
@@ -261,9 +260,9 @@ public class NotificationHelper {
 			List<String> ccEmail;
 			List<String> bccEmail;
 			MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
-			/*if(AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())){
+			*//*if(AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())){
 				return;
-			}*/
+			}*//*
 			//get mesContext
 			String mesContext;
 			String emailTemplate = msgTemplateDto.getMessageContent();
@@ -427,14 +426,14 @@ public class NotificationHelper {
 
 
 
-	}
+	}*/
 
 
 	/**
 	 * don't use this method to send notification
 	 */
 	@Async("emailAsyncExecutor")
-	@Deprecated
+	//@Deprecated
 	public void sendNotificationWithJobTrack(String templateId, Map<String, Object> templateContent, String queryCode, String reqRefNum, String refIdType,
 											 String refId, JobRemindMsgTrackingDto jrDto, String subject, String moduleType, boolean smsOnlyOfficerHour,
 											 HashMap<String, String> maskParams) {
@@ -446,9 +445,9 @@ public class NotificationHelper {
 			List<String> ccEmail;
 			List<String> bccEmail;
 			MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
-			/*if(AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())){
+			if(AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())){
 				return;
-			}*/
+			}
 			//get mesContext
 			String mesContext;
 			String emailTemplate = msgTemplateDto.getMessageContent();
