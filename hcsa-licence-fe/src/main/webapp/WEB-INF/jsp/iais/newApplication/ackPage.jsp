@@ -140,8 +140,8 @@
                     <c:choose>
                     <c:when test="${requestInformationConfig == null && 'error' != AckStatus}">
                         <a class="btn btn-primary aMarginleft col-md-2 pull-right" id="toDashBoard"  >Go to <br>Dashboard</a>
-                        <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="toChooseSvc" >Apply for <br>Another Licence</a>
                         <c:if test="${AppSubmissionDto.appType!='APTY005'}">
+                            <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="toChooseSvc" >Apply for <br>Another Licence</a>
                             <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doSelfAssessment">Submit <br>Self-Assessment</a>
                             <a class="btn btn-secondary aMarginleft col-md-3 pull-right" id="doPrefInsDate">Indicate preferred<br>Inspection Date</a>
                         </c:if>
