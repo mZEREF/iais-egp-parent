@@ -439,7 +439,7 @@ public class MasterCodeDelegator {
                     cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue()) && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
-                    if (cartOptional.isPresent()) {
+                    if (cartOptional != null && cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                         if(StringUtil.isEmpty(masterCodeToExcelDto1.getFilterValue())){
                             String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0007");
@@ -472,14 +472,14 @@ public class MasterCodeDelegator {
                     }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getVersion())){
-                    if (cartOptional.isPresent()) {
+                    if (cartOptional != null && cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                         String version = masterCodeToExcelDto1.getVersion();
                         String uploadVersion = masterCodeToExcelDto.getVersion();
                         if (!StringUtil.isEmpty(version)){
                             double versionDou = Double.parseDouble(version);
                             int versionInt = (int) versionDou;
-                            if (versionInt > Integer.parseInt(uploadVersion)){
+                            if (versionInt >= Integer.parseInt(uploadVersion)){
                                 String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0006");
                                 errItems.add(errMsg);
                                 result = true;
@@ -487,7 +487,7 @@ public class MasterCodeDelegator {
                         }
                     }
                 }
-                if (cartOptional.isPresent()) {
+                if (cartOptional != null && cartOptional.isPresent()) {
                     MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
                     masterCodeToExcelDto.setMasterCodeId(masterCodeToExcelDto1.getMasterCodeId());
                     masterCodeToExcelDto.setMasterCodeKey(masterCodeToExcelDto1.getMasterCodeKey());
