@@ -495,6 +495,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationGroupDto.getAppType())){
                 application = hcsaConfigClient.needToSendTask(application).getEntity();
                 log.info(StringUtil.changeForLog(JsonUtil.parseToJson(application)+"application APPLICATION_TYPE_CESSATION"));
+                applicationListDto.setApplication(application);
             }
         }
         requeOrNew(requestForInfList,applicationGroup,application,updateTaskList);
@@ -732,6 +733,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization());
             }
+            log.info("update request for info start");
+            updateTask(requestForInfList);
+            log.info("update request for info end");
             log.info(StringUtil.changeForLog(JsonUtil.parseToJson(updateTaskList)+"updateTaskList"));
             updateTask(updateTaskList);
         }

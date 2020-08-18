@@ -22,8 +22,12 @@
                    join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1
                    <#if licenseeId??> and li.LICENSEE_ID =:licenseeId </#if>
                    <#if type??> and p.PREMISES_TYPE=:type </#if> and
-                   li.STATUS ='LICEST001' and p.ID in (SELECT p.ID from premises as p WHERE VERSION IN (select max(v.version) from premises as v group by v.HCI_CODE))
-            ]]>
+                   li.STATUS ='LICEST001' and p.ID in (
+                   SELECT  max (p.ID) as PREMISES_ID FROM
+                   licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
+                   join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1
+                  <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>and
+                   li.STATUS ='LICEST001' group by p.HCI_CODE)]]>
     </sql>
 </sqls>
 
