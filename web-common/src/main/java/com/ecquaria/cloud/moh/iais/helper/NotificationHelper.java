@@ -659,8 +659,10 @@ public class NotificationHelper {
 	public void callEicInterMsg(InterMessageDto interMessageDto) {
 		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-		emailSmsClient.saveInboxMessage(interMessageDto, signature.date(), signature.authorization(),
-				signature2.date(), signature2.authorization()).getEntity();
+		String gatewayUrl = env.getProperty("iais.intra.gateway.url");
+		IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/iais-inter-inbox-message", HttpMethod.POST, interMessageDto,
+				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+				signature2.date(), signature2.authorization(), InterMessageDto.class);
 	}
 
 	private String getHelperMessageNo() {
