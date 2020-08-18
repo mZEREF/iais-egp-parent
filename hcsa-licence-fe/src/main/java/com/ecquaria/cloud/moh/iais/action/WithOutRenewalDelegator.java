@@ -521,7 +521,7 @@ public class WithOutRenewalDelegator {
                 }
             }
             boolean eqGrpPremisesResult = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
-            if (eqGrpPremisesResult&&appSubmissionDtos.size()==1) {
+            if (eqGrpPremisesResult && appSubmissionDtos.size() == 1) {
                 if (appGrpPremisesDtoList != null) {
                     for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
                         List<LicenceDto> attribute = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
@@ -561,7 +561,7 @@ public class WithOutRenewalDelegator {
                                 appSubmissionDtoByLicenceId.setAmount(0.0);
                                 AppGrpPremisesDto appGrpPremisesDto = appGrpPremisesDtoList.get(i);
                                 List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
-                                AppGrpPremisesDto copyMutableObject=(AppGrpPremisesDto)CopyUtil.copyMutableObject(appGrpPremisesDto);
+                                AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
                                 appGrpPremisesDtos.add(copyMutableObject);
                                 if (groupLic) {
                                     appGrpPremisesDtos.get(0).setGroupLicenceFlag(licenceDto.getId());
@@ -644,12 +644,13 @@ public class WithOutRenewalDelegator {
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
         }
         HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(laterFeeDetails);
-        ParamUtil.setRequestAttr(bpc.request,"laterFeeDetailsMap",laterFeeDetailsMap);
+        ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);
         requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = appSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         //Boolean update = outRenewalService.isUpdate(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+        if (appSubmissionDtos.size() == 1) {
         Set<String> idNos = IaisCommonUtils.genNewHashSet();
         List<String> updateCgo = outRenewalService.isUpdateCgo(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
         List<String> updatePo = outRenewalService.isUpdatePo(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
@@ -730,7 +731,7 @@ public class WithOutRenewalDelegator {
             for (LicKeyPersonnelDto dto : licByPerId) {
                 String licenceId = dto.getLicenceId();
                 String licseeId = dto.getLicenseeId();
-                if (finalLicenseeId.equals(licseeId)&&!notReNewLicIds.contains(licenceId)&&!currentLicenceId.equals(licenceId)) {
+                if (finalLicenseeId.equals(licseeId) && !notReNewLicIds.contains(licenceId) && !currentLicenceId.equals(licenceId)) {
                     notReNewLicIds.add(licenceId);
                 }
             }
@@ -777,7 +778,7 @@ public class WithOutRenewalDelegator {
                     try {
                         NewApplicationHelper.setSubmissionDtoSvcData(bpc.request, appSubmissionDto);
                     } catch (CloneNotSupportedException e) {
-                        log.error(e.getMessage(),e);
+                        log.error(e.getMessage(), e);
                     }
                     appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
                     appSubmissionDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
@@ -812,6 +813,7 @@ public class WithOutRenewalDelegator {
                 autoAppSubmissionDtos.addAll(notReNewappSubmissionDtos);
             }
         });
+    }
         AppSubmissionListDto appSubmissionListDto = new AppSubmissionListDto();
         String submissionId = generateIdClient.getSeqId().getEntity();
         Long l = System.currentTimeMillis();
