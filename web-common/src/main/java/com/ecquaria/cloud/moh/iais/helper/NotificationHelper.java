@@ -52,6 +52,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -459,6 +460,16 @@ public class NotificationHelper {
 
 	private void sendSms(String refIdType, String templateId, String mesContext, String refId, boolean smsOnlyOfficerHour, MsgTemplateDto msgTemplateDto) {
 		try{
+			List<String> roles = null;
+			if (msgTemplateDto.getRecipient() != null && msgTemplateDto.getRecipient().size() > 0) {
+				roles = msgTemplateDto.getRecipient();
+			}
+			if (msgTemplateDto.getCcrecipient() != null && msgTemplateDto.getCcrecipient().size() > 0) {
+				roles = msgTemplateDto.getCcrecipient();
+			}
+			if (msgTemplateDto.getBccrecipient() != null && msgTemplateDto.getBccrecipient().size() > 0) {
+				roles = msgTemplateDto.getBccrecipient();
+			}
 			SmsDto smsDto = new SmsDto();
 			smsDto.setSender(mailSender);
 			smsDto.setContent(mesContext);
@@ -468,9 +479,18 @@ public class NotificationHelper {
 			if (RECEIPT_TYPE_SMS_PSN.equals(refIdType)) {
 				mobile = hcsaLicenceClient.getMobileByRole(refId).getEntity();
 			} else if (RECEIPT_TYPE_SMS_APP.equals(refIdType)) {
-
+				mobile = getMobileAssignedOfficer(roles, refId);
+				mobile = getMobileOfficer(roles, mobile);
 			} else if (RECEIPT_TYPE_SMS_LICENCE_ID.equals(refIdType)) {
-
+				mobile = getMobilePersonnel(roles, refId);
+				LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(refId).getEntity();
+				if(licenceDto != null){
+					String licenseeId = licenceDto.getLicenseeId();
+					if(!StringUtil.isEmpty(licenseeId)) {
+						mobile = getMobileLicensee(roles, licenseeId, mobile);
+					}
+				}
+				mobile = getMobileOfficer(roles, mobile);
 			}
 			if (mobile != null && !mobile.isEmpty()) {
 				emailHistoryCommonClient.sendSMS(mobile, smsDto, refNo);
@@ -478,6 +498,158 @@ public class NotificationHelper {
 		}catch (Exception e){
 			log.error(StringUtil.changeForLog("error"));
 		}
+	}
+
+	private List<String> getMobilePersonnel(List<String> roles, String licenceId) {
+		List<String> mobile = IaisCommonUtils.genNewArrayList();
+		if(IaisCommonUtils.isEmpty(roles)){
+			return mobile;
+		}
+		for (String role : roles) {
+			if (RECEIPT_ROLE_SVC_PERSONNEL.equals(role)) {
+				List<PersonnelsDto> personnelsDtos = hcsaLicenceClient.getPersonnelDtoByLicId(licenceId).getEntity();
+				log.info(StringUtil.changeForLog("PersonnelsDto Size = " + personnelsDtos.size()));
+				if(!IaisCommonUtils.isEmpty(personnelsDtos)){
+					for(PersonnelsDto personnelsDto : personnelsDtos){
+						KeyPersonnelDto keyPersonnelDto = personnelsDto.getKeyPersonnelDto();
+						if(keyPersonnelDto != null){
+							String mobileNo = keyPersonnelDto.getMobileNo();
+							if(!StringUtil.isEmpty(mobileNo)){
+								mobile.add(mobileNo);
+							}
+						}
+					}
+				}
+			}
+		}
+		return mobile;
+	}
+
+	private List<String> getMobileOfficer(List<String> roles, List<String> mobile) {
+		if(IaisCommonUtils.isEmpty(roles)){
+			return mobile;
+		}
+		List<String> adminRoles = IaisCommonUtils.genNewArrayList();
+		List<String> passRoles = IaisCommonUtils.genNewArrayList();
+		adminRoles.add(RoleConsts.USER_ROLE_ASO);
+		adminRoles.add(RoleConsts.USER_ROLE_PSO);
+		adminRoles.add(RoleConsts.USER_ROLE_AO1);
+		adminRoles.add(RoleConsts.USER_ROLE_AO2);
+		adminRoles.add(RoleConsts.USER_ROLE_AO3);
+		adminRoles.add(RoleConsts.USER_ROLE_INSPECTIOR);
+		adminRoles.add(RoleConsts.USER_ROLE_INSPECTION_LEAD);
+		adminRoles.add(RoleConsts.USER_ROLE_AUDIT_PLAN);
+		if (roles.contains(RECEIPT_ROLE_MOH_OFFICER)) {
+			passRoles.addAll(adminRoles);
+		} else {
+			roles.forEach(r -> {
+				String role = r.substring(3, r.length());
+				if (adminRoles.contains(role)) {
+					passRoles.add(role);
+				}
+			});
+		}
+
+		if (!IaisCommonUtils.isEmpty(passRoles)){
+			List<OrgUserDto> userList = null;
+			if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+				userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
+			}
+			if (!IaisCommonUtils.isEmpty(userList)) {
+				for (OrgUserDto u : userList) {
+					if (!StringUtil.isEmpty(u.getMobileNo())) {
+						mobile.add(u.getMobileNo());
+					}
+				}
+			}
+			Set<String> mobileSet = new HashSet<>(mobile);
+			mobile = new ArrayList<>(mobileSet);
+		}
+		return mobile;
+	}
+
+	private List<String> getMobileAssignedOfficer(List<String> roles, String appNo) {
+		List<String> mobile = IaisCommonUtils.genNewArrayList();
+		if(IaisCommonUtils.isEmpty(roles)){
+			return mobile;
+		}
+		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
+		//licensee
+		mobile = getMobileLicensee(roles, grpDto.getLicenseeId(), mobile);
+		//officer
+		Set<String> userIds = IaisCommonUtils.genNewHashSet();
+		List<AppPremisesRoutingHistoryDto> hisList;
+		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+		if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+			hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
+		} else {
+			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
+			params.put("appNo", appNo);
+			hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
+					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+					signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
+		}
+		if (IaisCommonUtils.isEmpty(hisList)) {
+			return mobile;
+		}
+		Map<String, List<String>> userMap = IaisCommonUtils.genNewHashMap();
+		for (AppPremisesRoutingHistoryDto his : hisList) {
+			if (userMap.get(his.getRoleId()) == null) {
+				userMap.put(his.getRoleId(), IaisCommonUtils.genNewArrayList());
+			}
+			userMap.get(his.getRoleId()).add(his.getActionby());
+		}
+		for (String role : roles) {
+			if (RECEIPT_ROLE_ASSIGNED_ASO.equals(role) && userMap.get(RoleConsts.USER_ROLE_ASO) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_ASO));
+			} else if (RECEIPT_ROLE_ASSIGNED_PSO.equals(role) && userMap.get(RoleConsts.USER_ROLE_PSO) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_PSO));
+			} else if (RECEIPT_ROLE_ASSIGNED_AO1.equals(role) && userMap.get(RoleConsts.USER_ROLE_AO1) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_AO1));
+			} else if (RECEIPT_ROLE_ASSIGNED_AO2.equals(role) && userMap.get(RoleConsts.USER_ROLE_AO2) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_AO2));
+			} else if (RECEIPT_ROLE_ASSIGNED_AO3.equals(role) && userMap.get(RoleConsts.USER_ROLE_AO3) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_AO3));
+			} else if (RECEIPT_ROLE_ASSIGNED_INSPECTOR.equals(role) && userMap.get(RoleConsts.USER_ROLE_INSPECTIOR) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTIOR));
+			} else if (RECEIPT_ROLE_ASSIGNED_INSPECTOR_LEAD.equals(role) && userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD) != null) {
+				userIds.addAll(userMap.get(RoleConsts.USER_ROLE_INSPECTION_LEAD));
+			}
+		}
+		if (IaisCommonUtils.isEmpty(userIds)) {
+			return mobile;
+		}
+		List<OrgUserDto> userList;
+		if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
+		} else {
+			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			userList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/moh-officer-info", HttpMethod.POST, userIds,
+					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+					signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
+		}
+		if (!IaisCommonUtils.isEmpty(userList)) {
+			for (OrgUserDto u : userList) {
+				if (!StringUtil.isEmpty(u.getMobileNo())) {
+					mobile.add(u.getMobileNo());
+				}
+			}
+		}
+		Set<String> mobileSet = new HashSet<>(mobile);
+		mobile = new ArrayList<>(mobileSet);
+		return mobile;
+	}
+
+	private List<String> getMobileLicensee(List<String> roles, String licenseeId, List<String> mobile) {
+		for (String role : roles) {
+			if (RECEIPT_ROLE_LICENSEE.equals(role)) {
+				List<String> mails = IaisEGPHelper.getLicenseeMobiles(licenseeId);
+				mobile.addAll(mails);
+			}
+		}
+		return mobile;
 	}
 
 	private String replaceNum(String emailTemplate) {
