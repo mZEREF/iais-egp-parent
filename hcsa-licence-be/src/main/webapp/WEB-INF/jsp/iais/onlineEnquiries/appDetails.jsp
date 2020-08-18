@@ -168,7 +168,7 @@
 <%--                                                            <td>&nbsp;${person.idNo} (${person.idType})</td>--%>
 <%--                                                        </tr>--%>
 <%--                                                    </c:forEach>--%>
-                                                    <c:forEach var="personMap" items="${appSvcRelatedInfoDto.appSvcMedAlertPersonList}">--%>
+                                                    <c:forEach var="personMap" items="${appSvcRelatedInfoDto.appSvcMedAlertPersonList}">
                                                         <tr>
                                                             <td align="right">MedAlert Contact Person</td>
                                                             <td> ${personMap.name}</td>
@@ -176,7 +176,6 @@
                                                         <tr>
                                                             <td align="right">MedAlert Contact Person ID</td>
                                                             <td> ${personMap.idNo} (${personMap.idType})</td>
-                                                            <td>&nbsp;${person.idNo} (${person.idType})</td>
                                                         </tr>
 
                                                     </c:forEach>
