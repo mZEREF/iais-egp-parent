@@ -30,7 +30,7 @@
                             <td>
                                 <div class="form-check">
                                     <input class="form-check-input licenceCheck" id="amendLicenseId" type="radio"
-                                           name="amendLicenseId" value="amendLicInfoId${status.index}" aria-invalid="false"/>
+                                           name="amendLicenseId" value="amendLicenseId${status.index}" aria-invalid="false"/>
                                     <label class="form-check-label" for="amendLicenseId"><span
                                             class="check-circle"></span>
                                     </label>
