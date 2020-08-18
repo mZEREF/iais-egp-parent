@@ -24,6 +24,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.service.client.CommonFeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
@@ -118,6 +119,8 @@ public class NotificationHelper {
 	TaskOrganizationClient taskOrganizationClient;
 	@Autowired
 	private HcsaAppClient hcsaAppClient;
+	@Autowired
+	private CommonFeMessageClient commonFeMessageClient;
 	@Autowired
 	private MasterCodeClient masterCodeClient;
 	@Autowired
@@ -408,7 +411,12 @@ public class NotificationHelper {
 		interMessageDto.setMsgContent(mesContext);
 		interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		interMessageDto.setMaskParams(maskParams);
-		saveInterMessage(interMessageDto);
+		if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)) {
+			interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+			commonFeMessageClient.createInboxMessage(interMessageDto);
+		} else {
+			saveInterMessage(interMessageDto);
+		}
 	}
 
 	private void saveInterMessage(InterMessageDto interMessageDto) {
