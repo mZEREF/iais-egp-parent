@@ -719,7 +719,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 break;
             case "1":
                 if(!StringUtil.isEmpty(hciCode)){
-                    filters.put("hciCode", hciCode);count="3";
+                    filters.put("hciCode", hciCode);
                 }
                 if(!StringUtil.isEmpty(hciName)){
                     filters.put("hciName", hciName);
@@ -1283,7 +1283,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 break;
             case "1":
                 if(!StringUtil.isEmpty(parm.getFilters().get("hciCode"))){
-                    filters.put("hciCode", parm.getFilters().get("hciCode"));count="3";
+                    filters.put("hciCode", parm.getFilters().get("hciCode"));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("hciName"))){
                     filters.put("hciName", parm.getFilters().get("hciName"));

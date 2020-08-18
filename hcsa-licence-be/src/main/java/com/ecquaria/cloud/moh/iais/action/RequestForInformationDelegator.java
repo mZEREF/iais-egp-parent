@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -18,8 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.NewRfiPageListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -29,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -347,19 +345,12 @@ public class RequestForInformationDelegator {
                 stringBuilder.append("<p>   ").append(j+i+1).append(". ").append("Documentations : ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
             }
         }
-        map.put("APPLICANT_NAME",StringUtil.viewHtml(applicantName));
-        map.put("APPLICATION_NUMBER",StringUtil.viewHtml(licenceNo));
-        map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
-        map.put("EDITSELECT","");
-        map.put("COMMENTS",StringUtil.viewHtml(""));
         String url = "https://" + systemParamConfig.getInterServerName() +
                 "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
                 "?licenseeId=" + licenseeId;
-        map.put("A_HREF", url);
-        map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
-        String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
-        mesContext=mesContext.replace("Comments : -","");
-        mesContext=mesContext.replace("Sections Allowed for Change :","");
+        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
+        map.put("ApplicationNumber", licenceNo);
+        String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licenseeId);
 
@@ -382,31 +373,23 @@ public class RequestForInformationDelegator {
         requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto1);
 
         //send message to FE user.
-        InterMessageDto interMessageDto = new InterMessageDto();
-        interMessageDto.setMaskParams(mapPrem);
-        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",StringUtil.viewHtml(licenceNo));
-        interMessageDto.setSubject(subject);
-        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-        String messageNo = inboxMsgService.getMessageNo();
-        interMessageDto.setRefNo(messageNo);
-        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
-        interMessageDto.setService_id(svcDto.getSvcCode()+'@');
-        interMessageDto.setMsgContent(mesContext);
-        interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-        interMessageDto.setUserId(licenseeId);
-        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        inboxMsgService.saveInterMessage(interMessageDto);
-        log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
+//        InterMessageDto interMessageDto = new InterMessageDto();
+//        interMessageDto.setMaskParams(mapPrem);
+//        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+//        interMessageDto.setSubject(subject);
+//        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+//        String messageNo = inboxMsgService.getMessageNo();
+//        interMessageDto.setRefNo(messageNo);
+//        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
+//        interMessageDto.setService_id(svcDto.getSvcCode()+'@');
+//        interMessageDto.setMsgContent(mesContext);
+//        interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+//        interMessageDto.setUserId(licenseeId);
+//        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        inboxMsgService.saveInterMessage(interMessageDto);
+//        log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
 
         try {
-            EmailDto emailDto=new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(subject);
-            emailDto.setSender(mailSender);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            emailDto.setClientQueryCode(licPremId);
-            emailClient.sendNotification(emailDto).getEntity();
 
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
             Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
@@ -419,8 +402,27 @@ public class RequestForInformationDelegator {
             emailMap.put("Remarks", stringBuilder.toString());
             emailMap.put("systemLink", loginUrl);
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-//            notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI, emailMap, licenceNo, licenceNo,
-//                    NotificationHelper.RECEIPT_TYPE_LICENCE_ID, licenseeId);
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI);
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setQueryCode(licenceNo);
+            emailParam.setReqRefNum(licenceNo);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+            emailParam.setRefId(licenseeId);
+            emailParam.setSubject(subject);
+            //email
+            notificationHelper.sendNotification(emailParam);
+            //msg
+            emailMap.put("systemLink", url);
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+            emailParam.setMaskParams(mapPrem);
+            notificationHelper.sendNotification(emailParam);
+            //sms
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+            notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
@@ -520,9 +522,7 @@ public class RequestForInformationDelegator {
         requestForInformationService.updateLicEicRequestTrackingDto(eicRequestTrackingDto);
         requestForInformationService.createFeRfiLicDto(licPremisesReqForInfoDto);
 
-        String inBoxTemplateId= MsgTemplateConstants.MSG_TEMPLATE_RFI;
-        InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(inBoxTemplateId);
-        LicenceViewDto licenceViewDto=licInspNcEmailService.getLicenceDtoByLicPremCorrId(reqInfoId);
+        InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI);
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licPremisesReqForInfoDto.getLicenseeId());
         String applicantName=licenseeDto.getName();
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
@@ -538,47 +538,33 @@ public class RequestForInformationDelegator {
                 stringBuilder.append("<p>   ").append(j+i+1).append(". ").append("Documentations : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
             }
         }
-        map.put("APPLICANT_NAME",StringUtil.viewHtml(applicantName));
-        map.put("APPLICATION_NUMBER",StringUtil.viewHtml(licPremisesReqForInfoDto.getLicenceNo()));
-        map.put("DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
-        map.put("EDITSELECT","");
-        map.put("COMMENTS",StringUtil.viewHtml(""));
         String url = "https://" + systemParamConfig.getInterServerName() +
                 "/hcsa-licence-web/eservice/INTERNET/MohClientReqForInfo" +
                 "?licenseeId=" + licPremisesReqForInfoDto.getLicenseeId();
-        map.put("A_HREF", url);
-        map.put("MOH_NAME", StringUtil.viewHtml(AppConsts.MOH_AGENCY_NAME));
-        String mesContext= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getMessageContent(),map);
-        mesContext=mesContext.replace("Comments : -","");
-        mesContext=mesContext.replace("Sections Allowed for Change :","");
+        map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
+        map.put("ApplicationNumber", licPremisesReqForInfoDto.getLicenceNo());
+        String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
         HashMap<String,String> mapPrem=IaisCommonUtils.genNewHashMap();
         mapPrem.put("licenseeId",licPremisesReqForInfoDto.getLicenseeId());
         //send message to FE user.
-        InterMessageDto interMessageDto = new InterMessageDto();
-        interMessageDto.setMaskParams(mapPrem);
-        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",StringUtil.viewHtml(licPremisesReqForInfoDto.getLicenceNo()));
-        interMessageDto.setSubject(subject);
-        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-        String messageNo = inboxMsgService.getMessageNo();
-        interMessageDto.setRefNo(messageNo);
-        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
-        interMessageDto.setService_id(svcDto.getSvcCode()+'@');
-        interMessageDto.setMsgContent(mesContext);
-        interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-        interMessageDto.setUserId(licPremisesReqForInfoDto.getLicenseeId());
-        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        inboxMsgService.saveInterMessage(interMessageDto);
+//        InterMessageDto interMessageDto = new InterMessageDto();
+//        interMessageDto.setMaskParams(mapPrem);
+//        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+//        String subject=rfiEmailTemplateDto.getSubject().replace("Application Number",StringUtil.viewHtml(licPremisesReqForInfoDto.getLicenceNo()));
+//        interMessageDto.setSubject(subject);
+//        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+//        String messageNo = inboxMsgService.getMessageNo();
+//        interMessageDto.setRefNo(messageNo);
+//        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
+//        interMessageDto.setService_id(svcDto.getSvcCode()+'@');
+//        interMessageDto.setMsgContent(mesContext);
+//        interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+//        interMessageDto.setUserId(licPremisesReqForInfoDto.getLicenseeId());
+//        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//        inboxMsgService.saveInterMessage(interMessageDto);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
 
         try {
-            EmailDto emailDto=new EmailDto();
-            emailDto.setContent(mesContext);
-            emailDto.setSubject(subject);
-            emailDto.setSender(mailSender);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licPremisesReqForInfoDto.getLicenseeId()));
-            emailDto.setClientQueryCode(reqInfoId);
-            emailClient.sendNotification(emailDto).getEntity();
 
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
             Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
@@ -591,8 +577,27 @@ public class RequestForInformationDelegator {
             emailMap.put("Remarks", stringBuilder.toString());
             emailMap.put("systemLink", loginUrl);
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-//            notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI, emailMap, licenceNo, licenceNo,
-//                    NotificationHelper.RECEIPT_TYPE_LICENCE_ID, licenseeId);
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI);
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setQueryCode(licPremisesReqForInfoDto.getLicenceNo());
+            emailParam.setReqRefNum(licPremisesReqForInfoDto.getLicenceNo());
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+            emailParam.setRefId(licPremisesReqForInfoDto.getLicenseeId());
+            emailParam.setSubject(subject);
+            //email
+            notificationHelper.sendNotification(emailParam);
+            //msg
+            emailMap.put("systemLink", url);
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+            emailParam.setMaskParams(mapPrem);
+            notificationHelper.sendNotification(emailParam);
+            //sms
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+            notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
