@@ -2346,6 +2346,7 @@ public class HcsaApplicationDelegator {
                     if(patNeedTrans){
                         String patTransType = appCessMiscDto.getPatTransType();
                         String patTransTo = appCessMiscDto.getPatTransTo();
+
                         appCessHciDto.setPatientSelect(patTransType);
                         if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                             appCessHciDto.setPatHciName(patTransTo);
@@ -2356,7 +2357,9 @@ public class HcsaApplicationDelegator {
                         if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                             appCessHciDto.setPatOthers(patTransTo);
                         }
-
+                    }else {
+                        String remarks = appCessMiscDto.getPatNoReason();
+                        appCessHciDto.setPatNoRemarks(remarks);
                     }
                     ParamUtil.setSessionAttr(request, "confirmDtos", (Serializable) appCessDtosByLicIds);
                     ParamUtil.setSessionAttr(request, "reasonOption", (Serializable) getReasonOption());
