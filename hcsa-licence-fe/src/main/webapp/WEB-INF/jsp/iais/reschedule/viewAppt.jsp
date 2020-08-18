@@ -25,7 +25,7 @@
 
                         <table class="table">
                             <thead>
-                            <tr align="center">
+                            <tr>
                                 <th class="form-check">
                                     <c:if test="${!empty apptViewDtos}">
                                         <input class="form-check-input licenceCheck" type="checkbox" name="userUids" id="checkboxAll" onchange="javascirpt:checkAll();"/>
@@ -81,7 +81,7 @@
                             </iais:action>
                             <br>
                             <iais:action style="text-align:right;"  >
-                                <button class="btn btn-primary RescheduleButton" type="button" disabled onclick="doRequest()">Reason for Request</button>
+                                <button class="btn btn-primary RescheduleButton" type="button" disabled onclick="doRequest()">Request to reschedule</button>
                             </iais:action>
                         </iais:row>
 

@@ -23,7 +23,7 @@
                     <div class="table-gp">
 
                         <table class="table">
-                            <tr align="center">
+                            <tr >
                                 <td class="sorting"><strong>S/N</strong></td>
                                 <td class="sorting"><strong>Premises</strong></td>
                                 <td class="sorting"><strong>Service(s)</strong></td>
@@ -41,7 +41,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="pool" items="${apptViewDtos}" varStatus="status">
-                                        <tr align="center">
+                                        <tr >
                                             <td class="row_no"><c:out value="${status.index + 1}"/></td>
                                             <td><c:out value="${pool.address}"/></td>
                                             <td>
@@ -70,7 +70,7 @@
                             </iais:action>
                             <br>
                             <iais:action style="text-align:right;"  >
-                                <button class="btn btn-primary RescheduleButton" type="button"  onclick="doReschedule()">Reschedule</button>
+                                <button class="btn btn-primary RescheduleButton" type="button"  onclick="doReschedule()">Submit</button>
                             </iais:action>
                         </iais:row>
 
