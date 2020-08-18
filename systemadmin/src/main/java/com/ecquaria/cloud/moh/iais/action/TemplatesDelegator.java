@@ -14,11 +14,10 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.TemplatesService;
 import lombok.extern.slf4j.Slf4j;
@@ -88,11 +87,11 @@ public class TemplatesDelegator {
             "SUS",
             "TRE",
             "WIT");
-    private final FilterParameter filterParameter = new FilterParameter.Builder()
-            .clz(MsgTemplateQueryDto.class)
-            .searchAttr(MsgTemplateConstants.MSG_SEARCH_PARAM)
-            .resultAttr(MsgTemplateConstants.MSG_SEARCH_RESULT)
-            .sortField(MsgTemplateConstants.TEMPLATE_SORT_COLUM).sortType(SearchParam.ASCENDING).build();
+//    private final FilterParameter filterParameter = new FilterParameter.Builder()
+//            .clz(MsgTemplateQueryDto.class)
+//            .searchAttr(MsgTemplateConstants.MSG_SEARCH_PARAM)
+//            .resultAttr(MsgTemplateConstants.MSG_SEARCH_RESULT)
+//            .sortField(MsgTemplateConstants.TEMPLATE_SORT_COLUM).sortType(SearchParam.ASCENDING).build();
 
     private final TemplatesService templatesService;
 
@@ -112,7 +111,8 @@ public class TemplatesDelegator {
 
     public void prepareData(BaseProcessClass bpc) {
         HttpServletRequest request = bpc.request;
-        SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter,true);
+        SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request,MsgTemplateConstants.MSG_SEARCH_PARAM,
+                MsgTemplateQueryDto.class.getName(),MsgTemplateConstants.TEMPLATE_SORT_COLUM,SearchParam.ASCENDING,false);
         QueryHelp.setMainSql(MsgTemplateConstants.MSG_TEMPLATE_FILE, MsgTemplateConstants.MSG_TEMPLATE_SQL,searchParam);
         SearchResult<MsgTemplateQueryDto> searchResult = templatesService.getTemplateResults(searchParam);
         if(!StringUtil.isEmpty(searchResult)){
@@ -301,55 +301,54 @@ public class TemplatesDelegator {
         Date endDate = Formatter.parseDate(ParamUtil.getString(request, SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO));
         String templateStartDate = Formatter.formatDateTime(startDate,SystemAdminBaseConstants.DATE_FORMAT);
         String templateEndDate = Formatter.formatDateTime(endDate,SystemAdminBaseConstants.DATE_FORMAT);
-        Map<String,Object> templateMap = IaisCommonUtils.genNewHashMap();
+        SearchParam searchParam = HalpSearchResultHelper.gainSearchParam(request,MsgTemplateConstants.MSG_SEARCH_PARAM,
+                MsgTemplateQueryDto.class.getName(),MsgTemplateConstants.TEMPLATE_SORT_COLUM,SearchParam.ASCENDING,true);
         if (!StringUtil.isEmpty(process) && !"Please Select".equals(msgType)){
-            templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS,process);
+            searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS,process,true);
         }else{
-            templateMap.remove(MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS);
+            searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_MESSAGE_PROCESS);
         }
         if (!StringUtil.isEmpty(msgType) && !"Please Select".equals(msgType)){
-            templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE,msgType);
+            searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE,msgType,true);
         }else{
-            templateMap.remove(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
+            searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_MSGTYPE);
         }
-        if(!StringUtil.isEmpty(deliveryMode) && !"Please Select".equals(msgType)){
-            templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE,deliveryMode);
+        if(!StringUtil.isEmpty(deliveryMode) && !"Please Select".equals(deliveryMode)){
+            searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE,deliveryMode,true);
         }else{
-            templateMap.remove(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
+            searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_DELIVERY_MODE);
         }
         if(!StringUtil.isEmpty(templateName)){
-            templateMap.put(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME,'%'+templateName+'%');
+            searchParam.addFilter(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME,'%'+templateName+'%',true);
         }else{
-            templateMap.remove(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME);
+            searchParam.removeFilter(MsgTemplateConstants.MSG_TEMPLATE_TEMPLATE_NAME);
         }
         if (startDate != null && endDate != null){
             if(startDate.before(endDate)){
-                templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate);
-                templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate);
+                searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate,true);
+                searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate,true);
             }else{
-                templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
-                templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
+                searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
+                searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
                 ParamUtil.setRequestAttr(request,SystemAdminBaseConstants.TEMPLATE_DATE_ERR_MSG, "Effective Start Date cannot be later than Effective End Date");
             }
         }else{
             if (!StringUtil.isEmpty(templateStartDate)){
-                templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate);
+                searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM,templateStartDate,true);
             }else{
-                templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
+                searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_FROM);
             }
             if (!StringUtil.isEmpty(templateEndDate)){
-                templateMap.put(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate);
+                searchParam.addFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO,templateEndDate,true);
             }else{
-                templateMap.remove(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
+                searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
             }
         }
-        filterParameter.setFilters(templateMap);
-        filterParameter.setPageNo(1);
     }
 
     public void doPage(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        SearchResultHelper.doPage(request,filterParameter);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, MsgTemplateConstants.MSG_SEARCH_PARAM);
+        HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
 
     @GetMapping(value = "suggest-template-description")
@@ -365,8 +364,8 @@ public class TemplatesDelegator {
     }
 
     public void doSort(BaseProcessClass bpc){
-        HttpServletRequest request = bpc.request;
-        SearchResultHelper.doSort(request,filterParameter);
+        SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, MsgTemplateConstants.MSG_SEARCH_PARAM);
+        HalpSearchResultHelper.doSort(bpc.request,searchParam);
     }
 
     public void preView(BaseProcessClass bpc){

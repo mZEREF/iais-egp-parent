@@ -85,7 +85,7 @@
                                 <th>Actual Send date</th>
                                 <th>Attachment</th>
                                 <th>Status</th>
-                                <th>Edit</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
