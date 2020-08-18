@@ -466,11 +466,15 @@
     function checkRecommendationDMS(){
         var selectValue = $("[name='decisionValues']").val();
         if(selectValue == "decisionApproval"){
-            $('#recommendationDropdown').removeClass('hidden');
-            checkRecommendationOtherDropdown();
+            if(${!isAppealType}){
+                $('#recommendationDropdown').removeClass('hidden');
+                checkRecommendationOtherDropdown();
+            }
         }else{
-            $('#recommendationDropdown').addClass('hidden');
-            $('#recommendationOtherDropdown').addClass('hidden');
+            if(${!isAppealType}) {
+                $('#recommendationDropdown').addClass('hidden');
+                $('#recommendationOtherDropdown').addClass('hidden');
+            }
         }
     }
 

@@ -620,9 +620,8 @@ public class HcsaApplicationDelegator {
                 successInfo = "LOLEV_ACK024";
             }
         }
-
         //give clarification
-        if(StringUtil.isEmpty(nextStage) && ApplicationConsts.PROCESSING_DECISION_REPLY.equals(nextStageReplys)){
+        if(StringUtil.isEmpty(nextStage) && ApplicationConsts.PROCESSING_DECISION_REPLY.equals(nextStageReplys) && !"isDMS".equals(isDMS)){
             successInfo = "LOLEV_ACK028";
         }
 
@@ -1273,10 +1272,11 @@ public class HcsaApplicationDelegator {
     }
 
     private void checkRecommendationShowName(BaseProcessClass bpc,ApplicationViewDto applicationViewDto){
+        String appType = applicationViewDto.getApplicationDto().getApplicationType();
         String recommendationShowName = "Recommendation";
         if(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus())){
             recommendationShowName = "Licence Tenure Period";
-        }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+        }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(appType)){
             recommendationShowName = "Recommended Licence Period";
         }
         ParamUtil.setSessionAttr(bpc.request,"recommendationShowName",recommendationShowName);
@@ -2470,6 +2470,7 @@ public class HcsaApplicationDelegator {
         String applicationType = applicationDto.getApplicationType();
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)) {
+            ParamUtil.setSessionAttr(request,"isAppeal","Y");
             //get appeal type
             String appId = applicationDto.getId();
 //            AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
