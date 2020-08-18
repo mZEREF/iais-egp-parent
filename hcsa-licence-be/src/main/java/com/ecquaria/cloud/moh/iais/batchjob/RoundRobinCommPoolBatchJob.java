@@ -21,35 +21,35 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptCalendarStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
+import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
@@ -58,6 +58,7 @@ import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClien
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
@@ -65,14 +66,11 @@ import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -105,7 +103,16 @@ public class RoundRobinCommPoolBatchJob {
     private HcsaConfigClient hcsaConfigClient;
 
     @Autowired
+    private NotificationHelper notificationHelper;
+
+    @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
+    @Autowired
+    private LicenseeService licenseeService;
+
+    @Autowired
+    private CessationClient cessationClient;
 
     @Autowired
     private OrganizationClient organizationClient;
@@ -270,7 +277,6 @@ public class RoundRobinCommPoolBatchJob {
         return dateStr;
     }
 
-
     private void assignReschedulingTask(TaskDto td,String userId, List<ApplicationDto> applicationDtos, AuditTrailDto auditTrailDto,
                                         ApplicationGroupDto applicationGroupDto) {
         //update
@@ -326,12 +332,12 @@ public class RoundRobinCommPoolBatchJob {
         }
 
         //get inspection date
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorrId, InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+        Date inspDate = appPremisesRecommendationDto.getRecomInDate();
+        //get inspector address
+        OrgUserDto orgUserDto = organizationClient.retrieveOrgUserAccountById(userId).getEntity();
+        String address = orgUserDto.getEmail();
         //is fast tracking
-        String serviceId = applicationDto.getServiceId();
-        Date submitDt = applicationGroupDto.getSubmitDt();
-        String licenseeId = applicationGroupDto.getLicenseeId();
-        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-        String serviceCode = hcsaServiceDto.getSvcCode();
         String appNo = applicationDto.getApplicationNo();
         String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                 MessageConstants.MESSAGE_INBOX_URL_RE_SCHEDULING_CONFIRM_DATE + appNo;
@@ -358,7 +364,7 @@ public class RoundRobinCommPoolBatchJob {
                 taskService.updateTask(td);
                 taskService.createTasks(taskDtoList);
                 inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
-                createMessage(url, serviceCode, submitDt, licenseeId, maskParams);
+                createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address);
             } else {
                 //update App
                 ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
@@ -385,7 +391,7 @@ public class RoundRobinCommPoolBatchJob {
             taskService.updateTask(td);
             taskService.createTasks(taskDtoList);
             inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
-            createMessage(url, serviceCode, submitDt, licenseeId, maskParams);
+            createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address);
         }
     }
 
@@ -426,32 +432,29 @@ public class RoundRobinCommPoolBatchJob {
         return applicationDtos;
     }
 
-    private void createMessage(String url, String serviceCode, Date submitDt, String licenseeId, HashMap<String, String> maskParams) {
-        MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST).getEntity();
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
-        map.put("submitDt", StringUtil.viewHtml(strSubmitDt));
-        map.put("process_url", StringUtil.viewHtml(url));
-        String templateMessageByContent;
-        try {
-            templateMessageByContent = MsgUtil.getTemplateMessageByContent(mtd.getMessageContent(), map);
-        }catch (IOException | TemplateException e) {
-            log.error(e.getMessage(), e);
-            throw new IaisRuntimeException(e);
-        }
-        InterMessageDto interMessageDto = new InterMessageDto();
-        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-        interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_INSP_FE_RE_SCHEDULING);
-        interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-        String mesNO = inboxMsgService.getMessageNo();
-        interMessageDto.setRefNo(mesNO);
-        interMessageDto.setService_id(serviceCode+"@");
-        interMessageDto.setUserId(licenseeId);
-        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-        interMessageDto.setMsgContent(templateMessageByContent);
-        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        interMessageDto.setMaskParams(maskParams);
-        inboxMsgService.saveInterMessage(interMessageDto);
+    private void createMessage(String url, ApplicationDto applicationDto, ApplicationGroupDto applicationGroupDto, HashMap<String, String> maskParams,
+                               Date inspDate, String address) {
+        String dateStr = Formatter.formatDateTime(inspDate, "yyyy/MM/dd");
+        String dateTime = Formatter.formatDateTime(inspDate, "HH:mm:ss");
+        String appNo = applicationDto.getApplicationNo();
+        String licenseeId = applicationGroupDto.getLicenseeId();
+        LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
+        AppGrpPremisesDto appGrpPremisesDto = cessationClient.getAppGrpPremisesDtoByAppId(applicationDto.getId()).getEntity();
+        Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
+        map.put("applicant", licenseeDto.getName());
+        map.put("hciName", appGrpPremisesDto.getHciName());
+        map.put("date", dateStr);
+        map.put("dateTime", dateTime);
+        map.put("systemLink", url);
+        map.put("address", address);
+        EmailParam emailParam = new EmailParam();
+        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE);
+        emailParam.setTemplateContent(map);
+        emailParam.setMaskParams(maskParams);
+        emailParam.setModuleType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+        emailParam.setQueryCode(appNo);
+        emailParam.setReqRefNum(appNo);
+        notificationHelper.sendNotification(emailParam);
     }
 
     private void saveInspectionDate(String appPremCorrId, List<TaskDto> taskDtoList, ApplicationDto applicationDto, Map<String, String> apptUserIdSvrIdMap,
