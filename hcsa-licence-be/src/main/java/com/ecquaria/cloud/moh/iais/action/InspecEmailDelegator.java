@@ -383,6 +383,7 @@ public class InspecEmailDelegator {
             taskDto.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             completedTask(taskDto);
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_DRAFT_LETTER,InspectionConstants.PROCESS_DECI_ROTE_EMAIL_INSPECTION_LEAD_REVIEW, taskDto, userId,inspectionEmailTemplateDto.getRemarks());
+            taskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTION_LEAD);
             createAppPremisesRoutingHistory(applicationViewDto.getApplicationDto().getApplicationNo(), ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_REVIEW,ApplicationConsts.APPLICATION_STATUS_PENDING_EMAIL_SENDING, taskDto, userId,"");
 
         }
