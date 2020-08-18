@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -24,16 +25,15 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskHcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloudfeign.FeignException;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DurationFormatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * TaskServiceImpl
@@ -114,6 +114,15 @@ public class TaskServiceImpl implements TaskService {
                     taskType = TaskConsts.TASK_TYPE_MAIN_FLOW_SUPER;
                     assignDate = null;
                     break;
+                case TaskConsts.TASK_SCHEME_TYPE_ROUND :
+                    if(StringUtil.isEmpty(userId)){
+                        //0066643
+                        List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
+                        if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+                            userId = orgUserDtos.get(0).getUserId();
+                        }
+                    }
+                    break;
             }
             log.info(StringUtil.changeForLog("The getRoutingTask taskType is -->:"+taskType));
             log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:"+userId));
@@ -186,6 +195,10 @@ public class TaskServiceImpl implements TaskService {
                     case TaskConsts.TASK_SCHEME_TYPE_ROUND :
                         if(StringUtil.isEmpty(userId)){
                             //0066643
+                            List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
+                            if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+                                userId = orgUserDtos.get(0).getUserId();
+                            }
                         }
                         break;
                 }

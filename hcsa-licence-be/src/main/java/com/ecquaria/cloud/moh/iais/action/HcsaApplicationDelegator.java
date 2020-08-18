@@ -1644,7 +1644,7 @@ public class HcsaApplicationDelegator {
                 }else{
                     throw new IaisRuntimeException("This getAppPremisesCorrelationId can not get the broadcast -- >:"+applicationViewDto.getAppPremisesCorrelationId());
                 }
-            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)){
+            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus)){
                 if(applicationDto.isFastTracking()){
                     TaskDto newTaskDto = taskService.getRoutingTask(applicationDto,stageId,roleId,newCorrelationId);
                     broadcastOrganizationDto.setCreateTask(newTaskDto);
@@ -1652,11 +1652,11 @@ public class HcsaApplicationDelegator {
                 List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
                 applicationDtoList = removeFastTrackingAndTransfer(applicationDtoList);
                 boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
-                        ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+                        appStatus);
                 if(isAllSubmit){
-                    // send the task to Ao3
+                    // send the task to Ao2  or Ao3
                     TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,
-                            HcsaConsts.ROUTING_STAGE_AO3,roleId,IaisEGPHelper.getCurrentAuditTrailDto());
+                            stageId,roleId,IaisEGPHelper.getCurrentAuditTrailDto());
                     List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                     List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
                     broadcastOrganizationDto.setOneSubmitTaskList(taskDtos);
@@ -1678,7 +1678,9 @@ public class HcsaApplicationDelegator {
                 broadcastOrganizationDto.setCreateTask(newTaskDto);
             }
             //add history for next stage start
-            if(!(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)&&!applicationDto.isFastTracking())&&!ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
+            if(!((ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(appStatus)||ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02.equals(appStatus))
+                    &&!applicationDto.isFastTracking())
+                    &&!ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
                 AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDtoNew =getAppPremisesRoutingHistory(applicationDto.getApplicationNo(),applicationDto.getStatus(),stageId,null,
                         taskDto.getWkGrpId(),null,null,externalRemarks,roleId);
                 broadcastApplicationDto.setNewTaskHistory(appPremisesRoutingHistoryDtoNew);
