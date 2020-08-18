@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -18,7 +17,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNc
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
@@ -27,41 +25,37 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppEicClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
@@ -69,7 +63,6 @@ import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,6 +91,9 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     private ApplicationClient applicationClient;
 
     @Autowired
+    private NotificationHelper notificationHelper;
+
+    @Autowired
     private OrganizationClient organizationClient;
 
     @Autowired
@@ -105,12 +101,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Autowired
     private TaskService taskService;
-
-    @Autowired
-    private InspEmailService inspEmailService;
-
-    @Autowired
-    private EmailClient emailClient;
 
     @Autowired
     private ApplicationViewService applicationViewService;
@@ -286,48 +276,29 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             List<EicRequestTrackingDto> eicRequestTrackingDtos = IaisCommonUtils.genNewArrayList();
             eicRequestTrackingDtos.add(eicRequestTrackingDto);
             appEicClient.updateStatus(eicRequestTrackingDtos);
-            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
-            String serviceCode = hcsaServiceDto.getSvcCode();
-            InterMessageDto interMessageDto = new InterMessageDto();
-            interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-            interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION);
-            interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-            String mesNO = inboxMsgService.getMessageNo();
-            interMessageDto.setRefNo(mesNO);
-            interMessageDto.setService_id(serviceCode+"@");
             String url = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() +
                     MessageConstants.MESSAGE_INBOX_URL_USER_UPLOAD_RECTIFICATION +
                     taskDto.getRefNo() + "&recVersion=" + version;
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
             maskParams.put("appPremCorrId", taskDto.getRefNo());
-            MsgTemplateDto mtd = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION).getEntity();
-            Map<String, Object> params = IaisCommonUtils.genNewHashMap();
-            params.put("process_url", url);
+            String applicationNo = applicationDto.getApplicationNo();
+            Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
             LicenseeDto licDto = licenseeService.getLicenseeDtoById(applicationViewDto.getApplicationGroupDto().getLicenseeId());
-            params.put("applicant_name", StringUtil.viewHtml(licDto.getName()));
-            params.put("hci_code", StringUtil.viewHtml(applicationViewDto.getHciCode()));
-            params.put("hci_name", StringUtil.viewHtml(applicationViewDto.getHciName()));
-            params.put("service_name", StringUtil.viewHtml(HcsaServiceCacheHelper.getServiceNameById
-                    (applicationViewDto.getApplicationDto().getServiceId())));
-            params.put("application_number", applicationViewDto.getApplicationDto().getApplicationNo());
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(mtd.getMessageContent(), params);
-            interMessageDto.setMsgContent(templateMessageByContent);
-            interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            interMessageDto.setUserId(licenseeId);
-            interMessageDto.setMaskParams(maskParams);
-            interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            inboxMsgService.saveInterMessage(interMessageDto);
+            map.put("APPLICANT_NAME",licDto.getName());
+            map.put("APPLICATION_NUMBER",StringUtil.viewHtml(applicationNo));
+            map.put("DETAILS","");
+            map.put("COMMENTS",StringUtil.viewHtml(""));
+            map.put("EDITSELECT","");
+            map.put("A_HREF",url);
+            map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RFI);
+            emailParam.setMaskParams(maskParams);
+            emailParam.setModuleType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+            emailParam.setQueryCode(applicationNo);
+            emailParam.setReqRefNum(applicationNo);
+            notificationHelper.sendNotification(emailParam);
 
-            InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_NC_RECTIFICATION);
-            if(inspectionEmailTemplateDto != null) {
-                EmailDto emailDto = new EmailDto();
-                emailDto.setContent(templateMessageByContent);
-                emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
-                emailDto.setSender(mailSender);
-                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                emailDto.setClientQueryCode(taskDto.getId());
-                emailClient.sendNotification(emailDto);
-            }
         }
     }
 
