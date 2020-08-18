@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -262,8 +263,16 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     templateContent.put("serviceName", svcName);
                 }
 
-                notificationHelper.sendNotification(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR, randomStr, NotificationHelper.RECEIPT_TYPE_APP , appNo,
-                        null, null,  NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK, false, null);
+                EmailParam email = new EmailParam();
+                email.setTemplateId(msgTmgId);
+                email.setTemplateContent(templateContent);
+                email.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
+                email.setReqRefNum(randomStr);
+                email.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                email.setRefId(appNo);
+                email.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
+                email.setSmsOnlyOfficerHour(false);
+                notificationHelper.sendNotification(email);
             }
         }
 

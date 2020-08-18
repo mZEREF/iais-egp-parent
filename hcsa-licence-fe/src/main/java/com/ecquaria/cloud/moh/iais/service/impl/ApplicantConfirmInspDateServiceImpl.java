@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -807,8 +808,16 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             map.put("officer_name", "officer_name");
             StringBuilder sb = new StringBuilder("MOH HALP - [Internal] Licensee Request to Reschedule Inspection Appointment Date for ");
             sb.append(appNo);
-            notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_REJECT_APPT_REQUEST_A_DATE, map, appNo, appNo,
-                    NotificationHelper.RECEIPT_TYPE_APP, appNo, sb.toString());
+
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REJECT_APPT_REQUEST_A_DATE);
+            emailParam.setTemplateContent(map);
+            emailParam.setQueryCode(appNo);
+            emailParam.setReqRefNum(appNo);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+            emailParam.setRefId(appNo);
+            emailParam.setSubject(sb.toString());
+            notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }

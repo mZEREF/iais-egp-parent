@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -319,13 +320,38 @@ public class ApplicationServiceImpl implements ApplicationService {
                 jobRemindMsgTrackingDto.setCreateTime(new Date());
                 jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
-                notificationHelper.sendNotification(msgTmgId, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, randomStr, refType , reqRefNum, jobRemindMsgTrackingDto);
+
+                EmailParam email8 = new EmailParam();
+                email8.setTemplateId(msgTmgId);
+                email8.setTemplateContent(templateContent);
+                email8.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY);
+                email8.setReqRefNum(randomStr);
+                email8.setRefIdType(refType);
+                email8.setRefId(reqRefNum);
+                email8.setJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
+                notificationHelper.sendNotification(email8);
+
+                EmailParam email1 = new EmailParam();
+                email1.setTemplateId(msgTmgId2);
+                email1.setTemplateContent(templateContent);
+                email1.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR);
+                email1.setReqRefNum(randomStr);
+                email1.setRefIdType(refType);
+                email1.setRefId(reqRefNum);
 
                 //EN-CHM-001
-                notificationHelper.sendNotification(msgTmgId2, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR, randomStr, refType , reqRefNum);
+                notificationHelper.sendNotification(email1);
+
+                EmailParam email2 = new EmailParam();
+                email2.setTemplateId(msgTmgId3);
+                email2.setTemplateContent(templateContent);
+                email2.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC);
+                email2.setReqRefNum(randomStr);
+                email2.setRefIdType(refType);
+                email2.setRefId(reqRefNum);
 
                 //EN-CHM-002
-                notificationHelper.sendNotification(msgTmgId3, templateContent, HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, randomStr, refType , reqRefNum);
+                notificationHelper.sendNotification(email2);
             }
 
             log.info("===>>>>alertSelfDeclNotification end");
