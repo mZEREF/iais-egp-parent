@@ -24,7 +24,7 @@
             <div class="center-content">
                 <div class="panel-group" id="accordion" style="text-align: center;" role="tablist" aria-multiselectable="true">
                     <h2>
-                        <span>Types of Premises</span>
+                        <span>Types of Premise</span>
                     </h2>
                     <div class="form-group" id="serviceDivByrole" style="margin-top: 50px;">
                         <div class="col-xs-3 col-sm-3 col-md-3"></div>
