@@ -54,10 +54,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author weilu
@@ -374,6 +371,8 @@ public class CessationFeServiceImpl implements CessationFeService {
                 log.info(StringUtil.changeForLog("====================eic error================="));
             }
         }
+        //sort by appNo
+        Collections.sort(appCessationDtosConfirms,(s1,s2)->(s1.getAppNo().compareTo(s2.getAppNo())));
         return appCessationDtosConfirms;
     }
 
@@ -382,6 +381,14 @@ public class CessationFeServiceImpl implements CessationFeService {
         LicenceDto entity = licenceClient.getLicBylicId(licIds.get(0)).getEntity();
         return entity.isGrpLic();
     }
+
+
+    public static void main(String[] args) {
+        String appNo = "AC2008170091465-03";
+        String[] split = appNo.split("-0");
+        System.out.println(split[1]);
+    }
+
 
     /*
     utils

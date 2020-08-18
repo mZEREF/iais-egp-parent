@@ -16,17 +16,17 @@
         <input type="hidden" id="personnelNo" name="personnelNo" value=""/>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="row" style="margin-left: 15%;margin-right: 10%">
-            <div class="col-xs-12">
-                <div class="col-sm-5 col-md-1">
-                    <label class="control-label" for="psnType">Roles:</label>
+            <div class="col-xs-12" style="margin-bottom: 1%">
+                <div class="col-sm-12 col-md-1">
+                    <label style="margin-left: -31%" class="control-label" for="psnType">Roles:</label>
                 </div>
-                <div class="col-sm-5 col-md-4">
+                <div class="col-sm-12 col-md-4" style="margin-right: 2%;width: 20%">
                     <iais:select name="psnTypes" id="psnType" value="${psnType}" options="PersonnelRoleList"
                                  firstOption="All" onchange="doSearch()"></iais:select>
                 </div>
-                <div class="col-sm-5 col-md-4">
+                <div class="col-sm-12 col-md-4" style="width: 35%">
                 </div>
-                <div class="col-sm-5 col-md-3">
+                <div class="col-sm-12 col-md-3" style="margin-right: 2%">
                     <div class="search-wrap">
                         <div class="input-group">
                             <input class="form-control" placeholder="Search Your Keywords" value="${personName}" type="text" name="personName">
@@ -38,13 +38,13 @@
             <div class="table-gp">
                 <div id="personPagDiv"></div>
                 <table class="table">
-                    <thead>
+                    <thead style="align-content: center">
                     <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Mobile</th>
-                        <th>Licence</th>
-                        <th>Roles</th>
+                        <th style="width: 12%">Name</th>
+                        <th style="width: 12%">Email</th>
+                        <th style="width: 12%">Mobile</th>
+                        <th style="width: 12%">Licence</th>
+                        <th style="width: 12%">Roles</th>
                     </tr>
                     </thead>
                     <c:choose>
@@ -70,6 +70,11 @@
 <style>
     .col-md-4 {
         width: 23%;
+    }
+    .table {
+        width: 88%;
+        max-width: 100%;
+        margin-bottom: 20px;
     }
 </style>
 <script>

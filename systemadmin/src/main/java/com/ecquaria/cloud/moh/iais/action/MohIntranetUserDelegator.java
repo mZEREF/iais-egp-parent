@@ -1028,6 +1028,7 @@ public class MohIntranetUserDelegator {
         String so10 = "ASO_LEAD";
         String so11 = "PSO";
         String so12 = "PSO_LEAD";
+        String so13 = "SYSTEM_USER_ADMIN";
         roleOptions.add(so1);
         roleOptions.add(so2);
         roleOptions.add(so3);
@@ -1040,6 +1041,7 @@ public class MohIntranetUserDelegator {
         roleOptions.add(so10);
         roleOptions.add(so11);
         roleOptions.add(so12);
+        roleOptions.add(so13);
         return roleOptions;
     }
 

@@ -62,10 +62,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author weilu
@@ -334,6 +331,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                 licNos.add(licenceNo);
             }
         }
+        Collections.sort(appCessationDtosConfirms,(s1, s2)->(s1.getAppNo().compareTo(s2.getAppNo())));
         return appCessationDtosConfirms;
     }
 

@@ -283,22 +283,6 @@
                     <label class="form-check-label" for="confirmInfo"><span class="check-square"></span>I have read and
                         agreed with the above information</label>
                 </div>
-
-                <c:if test="${isGrpLic}">
-                    <div class="application-tab-footer">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-6">
-                                <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
-                            </div>
-                            <div class="col-xs-12 col-sm-6">
-                                <div class="button-group"><a class="btn btn-primary next"
-                                                             onclick="confirmSubmit('submit')">Submit</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </c:if>
-                <c:if test="${!isGrpLic}">
                     <div class="application-tab-footer">
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
@@ -311,7 +295,6 @@
                             </div>
                         </div>
                     </div>
-                </c:if>
             </div>
         </div>
     </div>
