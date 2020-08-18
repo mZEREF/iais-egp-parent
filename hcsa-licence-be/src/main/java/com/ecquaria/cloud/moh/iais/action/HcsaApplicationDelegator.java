@@ -2160,8 +2160,8 @@ public class HcsaApplicationDelegator {
     }
 
     private void sendRFCRejectEmail(String licenseeId,String serviceId){
-        String subject = "reassign reject";
-        String mesContext = "reassign email";
+        String subject = "Request for information reject";
+        String mesContext = "Request for information email";
         EmailDto emailDto = new EmailDto();
         emailDto.setContent(mesContext);
         emailDto.setSubject(subject);
