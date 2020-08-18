@@ -132,7 +132,6 @@ public class InspecEmailDelegator {
     public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
-        String templateId="08BDA324-5D13-EA11-BE78-000C29D29DB0";
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
 
         String correlationId = taskDto.getRefNo();
@@ -142,7 +141,7 @@ public class InspecEmailDelegator {
         String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
         String applicantName=licenseeDto.getName();
-        InspectionEmailTemplateDto inspectionEmailTemplateDto = inspEmailService.loadingEmailTemplate(templateId);
+        InspectionEmailTemplateDto inspectionEmailTemplateDto = new InspectionEmailTemplateDto();
         inspectionEmailTemplateDto.setAppPremCorrId(correlationId);
         inspectionEmailTemplateDto.setApplicantName(applicantName);
         inspectionEmailTemplateDto.setApplicationNumber(appNo);
@@ -154,27 +153,27 @@ public class InspecEmailDelegator {
         if(appPreRecommentdationDto!=null){
             inspectionEmailTemplateDto.setBestPractices(appPreRecommentdationDto.getBestPractice());
         }
-        Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+        //Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(correlationId);
-        if(ncAnswerDtos.size()!=0){
-            StringBuilder stringBuilder=new StringBuilder();
-            int i=0;
-            for (NcAnswerDto ncAnswerDto:ncAnswerDtos
-            ) {
-                stringBuilder.append("<tr><td>").append(++i);
-                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
-                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
-                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
-                stringBuilder.append("</td></tr>");
-            }
-            map.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
-        }
-        makeEmail(inspectionEmailTemplateDto, map);
+//        if(ncAnswerDtos.size()!=0){
+//            StringBuilder stringBuilder=new StringBuilder();
+//            int i=0;
+//            for (NcAnswerDto ncAnswerDto:ncAnswerDtos
+//            ) {
+//                stringBuilder.append("<tr><td>").append(++i);
+//                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
+//                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
+//                stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
+//                stringBuilder.append("</td></tr>");
+//            }
+//            map.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
+//        }
+//        makeEmail(inspectionEmailTemplateDto, map);
 
-        if(inspectionEmailTemplateDto.getBestPractices()!=null){
-            map.put("BEST_PRACTICE",StringUtil.viewHtml(inspectionEmailTemplateDto.getBestPractices()));
-        }
-        map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
+//        if(inspectionEmailTemplateDto.getBestPractices()!=null){
+//            map.put("BEST_PRACTICE",StringUtil.viewHtml(inspectionEmailTemplateDto.getBestPractices()));
+//        }
+        //map.put("MOH_NAME", AppConsts.MOH_AGENCY_NAME);
         String mesContext;
         {
             List<String> leads = organizationClient.getInspectionLead(taskDto.getWkGrpId()).getEntity();
@@ -205,8 +204,12 @@ public class InspecEmailDelegator {
                 List<ApptUserCalendarDto> apptUserCalendarDtos= appointmentClient.cancelCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
                 mapTemplate.put("InspectionEndDate", Formatter.formatDate(apptUserCalendarDtos.get(0).getEndSlot().get(0)));
             }
+            Map<String,Object> mapTableTemplate=IaisCommonUtils.genNewHashMap();
+            MsgTemplateDto msgTableTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_TABLE_12);
+
             if(ncAnswerDtos.size()!=0){
                 StringBuilder stringBuilder=new StringBuilder();
+                stringBuilder.append("<tr>").append(applicationViewDto.getServiceType()).append("</tr>");
                 int i=0;
                 for (NcAnswerDto ncAnswerDto:ncAnswerDtos
                 ) {
@@ -218,21 +221,25 @@ public class InspecEmailDelegator {
                     stringBuilder.append(TD).append(StringUtil.viewHtml("1".equals(ncAnswerDto.getRef())?"Yes":"No"));
                     stringBuilder.append("</td></tr>");
                 }
-                mapTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
+                mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
             }
-            mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
+            //mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
             if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
                 String stringBuilder = "<tr><td>" + 1 +
                         TD + StringUtil.viewHtml(appPreRecommentdationDto.getBestPractice()) +
                         TD + StringUtil.viewHtml(appPreRecommentdationDto.getRemarks()) +
                         "</td></tr>";
-                mapTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder));
+                mapTableTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder));
             }
+            msgTableTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
+
+            mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",msgTableTemplateDto.getMessageContent());
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
             mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDate(new Date())));
             mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
             mapTemplate.put("InspectorDID", leadDto.getMobileNo());
             mapTemplate.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+            msgTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(),mapTemplate));
 
             int index = 1;
             String replaceStr = "num_rep";
@@ -240,7 +247,6 @@ public class InspecEmailDelegator {
                 msgTemplateDto.setMessageContent(msgTemplateDto.getMessageContent().replaceFirst(replaceStr,  index + "."));
                 index++;
             }
-            msgTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(),mapTemplate));
             mesContext= msgTemplateDto.getMessageContent();
             inspectionEmailTemplateDto.setSubject(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),mapTemplate));
         }

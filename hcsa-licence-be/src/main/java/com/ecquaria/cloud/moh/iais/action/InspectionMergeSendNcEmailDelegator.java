@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -11,27 +13,34 @@ import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.sample.DemoConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
+import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptUserCalendarDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdCheckListShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AdhocNcCheckItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -39,21 +48,26 @@ import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.InspectionPreTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppointmentClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -92,20 +106,25 @@ public class InspectionMergeSendNcEmailDelegator {
     @Autowired
     EmailClient emailClient;
     @Autowired
-    private InboxMsgService inboxMsgService;
+    OrganizationClient organizationClient;
+    @Autowired
+    private SystemParamConfig systemParamConfig;
     @Autowired
     FillupChklistService fillupChklistService;
     @Autowired
     AppInspectionStatusClient appInspectionStatusClient;
     @Autowired
     NotificationHelper notificationHelper;
+    @Autowired
+    InspectionTaskClient inspectionTaskClient;
+    @Autowired
+    private AppointmentClient appointmentClient;
     private static final String INS_EMAIL_DTO="insEmailDto";
     private static final String TASK_DTO="taskDto";
     private static final String SUBJECT="subject";
     private static final String MSG_CON="messageContent";
     private static final String APP_VIEW_DTO="applicationViewDto";
-    private static final String BELOW_REVIEW="Below are the review outcome";
-    private static final String THANKS="<p>Thank you.</p>";
+    private static final String TD="</td><td>";
 
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
@@ -121,7 +140,7 @@ public class InspectionMergeSendNcEmailDelegator {
 
     }
 
-    public void prepareData(BaseProcessClass bpc)  {
+    public void prepareData(BaseProcessClass bpc) throws IOException, TemplateException {
         log.info("=======>>>>>prepareData>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request = bpc.request;
         TaskDto taskDto= (TaskDto) ParamUtil.getSessionAttr(request,TASK_DTO);
@@ -136,99 +155,135 @@ public class InspectionMergeSendNcEmailDelegator {
             appCorrDto.setId(correlationId);
             appPremisesCorrelationDtos.add(appCorrDto);
         }
-        StringBuilder mesContext=new StringBuilder();
-        String oneEmail="";
-        for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
-        ) {
-            try{
-                oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
-                if(oneEmail.contains(BELOW_REVIEW)){
-                    mesContext.append(oneEmail.substring(0,oneEmail.indexOf(BELOW_REVIEW)));
-                    break;
-                }
-            }catch (Exception e){
-                log.error(e.getMessage(), e);
-            }
-        }
+        //String oneEmail="";
 
         List<String> appPremCorrIds= IaisCommonUtils.genNewArrayList();
         List<String> svcNames=IaisCommonUtils.genNewArrayList();
 
-        for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
-        ) {
-            try{
-                String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
-                appPremCorrIds.add(appPremisesCorrelationDto.getId());
-                ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
-                svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getSvcName());
-                if(oneEmail.contains(BELOW_REVIEW) && oneEmail.contains(THANKS)){
-                    mesContext.append(ncEmail.substring(ncEmail.indexOf(BELOW_REVIEW),ncEmail.indexOf(THANKS)));
-                }
-                else {
-                    mesContext.append(ncEmail);
-                }
-            }catch (Exception e){
-                log.error(e.getMessage(), e);
-            }
-        }
-        for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
-        ) {
-            try{
-                oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
-                if(oneEmail.contains(THANKS)){
-                    mesContext.append(oneEmail.substring(oneEmail.indexOf(THANKS)));
-                    break;
-                }
-            }catch (Exception e){
-                log.error(e.getMessage(), e);
-            }
-        }
+
+//        {
+//
+//            for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
+//            ) {
+//                try{
+//                    String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
+//                    if( ncEmail.contains(THANKS)){
+//                        mesContext.append(ncEmail.substring(0,ncEmail.indexOf(THANKS)));
+//                    }
+//                    else {
+//                        mesContext.append(ncEmail);
+//                    }
+//                }catch (Exception e){
+//                    log.error(e.getMessage(), e);
+//                }
+//            }
+//            for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
+//            ) {
+//                try{
+//                    oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
+//                    if(oneEmail.contains(THANKS)){
+//                        mesContext.append(oneEmail.substring(oneEmail.indexOf(THANKS)));
+//                        break;
+//                    }
+//                }catch (Exception e){
+//                    log.error(e.getMessage(), e);
+//                }
+//            }
+//        }
+        InspectionEmailTemplateDto inspectionEmailTemplateDto= new InspectionEmailTemplateDto();
+        String mesContext;
         {
-            mesContext=new StringBuilder();
-            oneEmail="";
-            for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
-            ) {
-                try{
-                    oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
-                    if(oneEmail.contains("//")){
-                        mesContext.append(oneEmail.substring(0,oneEmail.indexOf("//")));
-                        break;
-                    }
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
+            List<String> leads = organizationClient.getInspectionLead(taskDto.getWkGrpId()).getEntity();
+            OrgUserDto leadDto=organizationClient.retrieveOrgUserAccountById(leads.get(0)).getEntity();
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            MsgTemplateDto msgTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL);
+            Map<String,Object> mapTemplate=IaisCommonUtils.genNewHashMap();
+            LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(applicationViewDto.getApplicationGroupDto().getLicenseeId());
+            mapTemplate.put("inspection_lead", leadDto.getDisplayName());
+            mapTemplate.put("ApplicantName", licenseeDto.getName());
+            mapTemplate.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationViewDto.getApplicationDto().getApplicationType()}).get(0).getText());
+            mapTemplate.put("ApplicationNumber", applicationViewDto.getApplicationDto().getApplicationNo());
+            mapTemplate.put("ApplicationDate", applicationViewDto.getSubmissionDate());
+            mapTemplate.put("systemLink", loginUrl);
+            mapTemplate.put("HCI_CODE", applicationViewDto.getHciCode());
+            mapTemplate.put("Address", applicationViewDto.getHciAddress());
+            mapTemplate.put("HCI_Postal_Code", applicationViewDto.getHciPostalCode());
+            mapTemplate.put("LicenseeName", licenseeDto.getName());
+            AppPremisesRecommendationDto appPreRecommentdationDtoInspectionDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
+            mapTemplate.put("InspectionDate", Formatter.formatDate(appPreRecommentdationDtoInspectionDate.getRecomInDate()));
+//cancel old calendar
+            AppPremisesInspecApptDto appPremisesInspecApptDto=inspectionTaskClient.getSpecificDtoByAppPremCorrId(correlationId).getEntity();
+            ApptUserCalendarDto cancelCalendarDto = new ApptUserCalendarDto();
+            AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+            if(appPremisesInspecApptDto!=null&&appPremisesInspecApptDto.getApptRefNo()!=null){
+                cancelCalendarDto.setApptRefNo(appPremisesInspecApptDto.getApptRefNo());
+                cancelCalendarDto.setAuditTrailDto(auditTrailDto);
+                cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_NON_AVAILIBLE);
+                List<ApptUserCalendarDto> apptUserCalendarDtos= appointmentClient.cancelCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
+                mapTemplate.put("InspectionEndDate", Formatter.formatDate(apptUserCalendarDtos.get(0).getEndSlot().get(0)));
             }
-
-
-
+            Map<String,Object> mapTableTemplate=IaisCommonUtils.genNewHashMap();
+            MsgTemplateDto msgTableTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_TABLE_12);
+            int sn=1;
             for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
             ) {
                 try{
-                    String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
-                    if(oneEmail.contains("//") && oneEmail.contains(THANKS)){
-                        mesContext.append(ncEmail.substring(ncEmail.indexOf("//"),ncEmail.indexOf(THANKS)));
+                    appPremCorrIds.add(appPremisesCorrelationDto.getId());
+                    ApplicationViewDto appViewDto = inspEmailService.getAppViewByCorrelationId(appPremisesCorrelationDto.getId());
+                    svcNames.add(inspectionService.getHcsaServiceDtoByServiceId(appViewDto.getApplicationDto().getServiceId()).getSvcName());
+
+                    AppPremisesRecommendationDto appPreRecommentdationDto =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(appPremisesCorrelationDto.getId(),InspectionConstants.RECOM_TYPE_TCU);
+                    List<NcAnswerDto> ncAnswerDtos=insepctionNcCheckListService.getNcAnswerDtoList(appPremisesCorrelationDto.getId());
+
+                    if(ncAnswerDtos.size()!=0){
+                        StringBuilder stringBuilder=new StringBuilder();
+                        stringBuilder.append("<tr>").append(appViewDto.getServiceType()).append("</tr>");
+                        int i=0;
+                        for (NcAnswerDto ncAnswerDto:ncAnswerDtos
+                        ) {
+                            stringBuilder.append("<tr><td>").append(++i);
+                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getType()));
+                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getItemQuestion()));
+                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getClause()));
+                            stringBuilder.append(TD).append(StringUtil.viewHtml(ncAnswerDto.getRemark()));
+                            stringBuilder.append(TD).append(StringUtil.viewHtml("1".equals(ncAnswerDto.getRef())?"Yes":"No"));
+                            stringBuilder.append("</td></tr>");
+                        }
+                        mapTableTemplate.put("NC_DETAILS",StringUtil.viewHtml(stringBuilder.toString()));
                     }
-                    else {
-                        mesContext.append(ncEmail);
+                    //mapTemplate.put("ServiceName", applicationViewDto.getServiceType());
+                    if(appPreRecommentdationDto!=null&&(appPreRecommentdationDto.getBestPractice()!=null||appPreRecommentdationDto.getRemarks()!=null)){
+                        String stringBuilder = "<tr><td>" + sn +
+                                TD + StringUtil.viewHtml(appPreRecommentdationDto.getBestPractice()) +
+                                TD + StringUtil.viewHtml(appPreRecommentdationDto.getRemarks()) +
+                                "</td></tr>";
+                        mapTableTemplate.put("Observation_Recommendation",StringUtil.viewHtml(stringBuilder));
+                        sn++;
                     }
                 }catch (Exception e){
                     log.error(e.getMessage(), e);
                 }
             }
-            for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
-            ) {
-                try{
-                    oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
-                    if(oneEmail.contains(THANKS)){
-                        mesContext.append(oneEmail.substring(oneEmail.indexOf(THANKS)));
-                        break;
-                    }
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
+
+            msgTableTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTableTemplateDto.getMessageContent(),mapTableTemplate));
+
+            mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",msgTableTemplateDto.getMessageContent());
+            mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
+            mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDate(new Date())));
+            mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
+            mapTemplate.put("InspectorDID", leadDto.getMobileNo());
+            mapTemplate.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+            msgTemplateDto.setMessageContent(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(),mapTemplate));
+
+            int index = 1;
+            String replaceStr = "num_rep";
+            while(msgTemplateDto.getMessageContent().contains(replaceStr)){
+                msgTemplateDto.setMessageContent(msgTemplateDto.getMessageContent().replaceFirst(replaceStr,  index + "."));
+                index++;
             }
+            mesContext= msgTemplateDto.getMessageContent();
+            inspectionEmailTemplateDto.setSubject(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),mapTemplate));
         }
-        InspectionEmailTemplateDto inspectionEmailTemplateDto= new InspectionEmailTemplateDto();
         inspectionEmailTemplateDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
         inspectionEmailTemplateDto.setMessageContent(mesContext.toString());
         inspectionEmailTemplateDto.setSubject("Inspection – Summary of Inspection Outcome");
@@ -478,31 +533,46 @@ public class InspectionMergeSendNcEmailDelegator {
             }
             try {
                 String licenseeId=applicationViewDto.getApplicationGroupDto().getLicenseeId();
-                InterMessageDto interMessageDto = new InterMessageDto();
-                interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-                interMessageDto.setSubject(inspectionEmailTemplateDto.getSubject());
-                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-                String mesNO = inboxMsgService.getMessageNo();
-                interMessageDto.setRefNo(mesNO);
-                HcsaServiceDto hcsaServiceDto= HcsaServiceCacheHelper.getServiceById(applicationViewDto.getApplicationDto().getServiceId());
-                interMessageDto.setService_id(hcsaServiceDto.getSvcCode()+'@');
-                interMessageDto.setMsgContent(inspectionEmailTemplateDto.getMessageContent());
-                interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
-                interMessageDto.setUserId(licenseeId);
-                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                inboxMsgService.saveInterMessage(interMessageDto);
+//                InterMessageDto interMessageDto = new InterMessageDto();
+//                interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+//                interMessageDto.setSubject(inspectionEmailTemplateDto.getSubject());
+//                interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+//                String mesNO = inboxMsgService.getMessageNo();
+//                interMessageDto.setRefNo(mesNO);
+//                HcsaServiceDto hcsaServiceDto= HcsaServiceCacheHelper.getServiceById(applicationViewDto.getApplicationDto().getServiceId());
+//                interMessageDto.setService_id(hcsaServiceDto.getSvcCode()+'@');
+//                interMessageDto.setMsgContent(inspectionEmailTemplateDto.getMessageContent());
+//                interMessageDto.setStatus(MessageConstants.MESSAGE_STATUS_UNREAD);
+//                interMessageDto.setUserId(licenseeId);
+//                interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+//                inboxMsgService.saveInterMessage(interMessageDto);
 
-                EmailDto emailDto=new EmailDto();
-                emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
-                emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
-                emailDto.setSender(mailSender);
-                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-                emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
+//                EmailDto emailDto=new EmailDto();
+//                emailDto.setContent(inspectionEmailTemplateDto.getMessageContent());
+//                emailDto.setSubject(inspectionEmailTemplateDto.getSubject());
+//                emailDto.setSender(mailSender);
+//                emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
+//                emailDto.setClientQueryCode(applicationViewDto.getApplicationDto().getAppGrpId());
                 Map<String,Object> mapTemplate=IaisCommonUtils.genNewHashMap();
                 mapTemplate.put("msgContent",inspectionEmailTemplateDto.getMessageContent());
-                notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL,mapTemplate,applicationViewDto.getApplicationDto().getApplicationNo(),applicationViewDto.getApplicationDto().getApplicationNo(),
-                    NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL);
+                emailParam.setTemplateContent(mapTemplate);
+                emailParam.setQueryCode(applicationViewDto.getApplicationDto().getApplicationNo());
+                emailParam.setReqRefNum(applicationViewDto.getApplicationDto().getApplicationNo());
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                emailParam.setRefId(licenseeId);
+                emailParam.setSubject(inspectionEmailTemplateDto.getSubject());
+                notificationHelper.sendNotification(emailParam);
                 //emailClient.sendNotification(emailDto).getEntity();
+                //msg
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL_MSG);
+                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                notificationHelper.sendNotification(emailParam);
+                //sms
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_INSPECTOR_EMAIL_SMS);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                notificationHelper.sendNotification(emailParam);
             }catch (Exception e){
                 log.error(e.getMessage(), e);
             }
