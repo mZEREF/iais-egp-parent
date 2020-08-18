@@ -156,12 +156,12 @@ public class WithdrawalDelegator {
                     Map<String, String> errorMap = validationResult.retrieveAll();
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
-                    if (commonsMultipartFile !=null){
+                    if (commonsMultipartFile !=null && commonsMultipartFile.getSize() > 0){
                         ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
                     }
                     ParamUtil.setRequestAttr(bpc.request,"withdrawDtoView",withdrawnDto);
                 }else{
-                    if (commonsMultipartFile != null){
+                    if (commonsMultipartFile != null && commonsMultipartFile.getSize() > 0 ){
                         String fileRepoId = serviceConfigService.saveFileToRepo(commonsMultipartFile);
                         AppPremisesSpecialDocDto appPremisesSpecialDocDto = new AppPremisesSpecialDocDto();
                         appPremisesSpecialDocDto.setSubmitDt(new Date());
@@ -175,8 +175,8 @@ public class WithdrawalDelegator {
                     withdrawnDtoList.add(withdrawnDto);
                 }
             }
+            withdrawalService.saveWithdrawn(withdrawnDtoList);
         }
-        withdrawalService.saveWithdrawn(withdrawnDtoList);
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
     }
 
