@@ -32,22 +32,22 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskInspectionComplianceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
-import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionFillCheckListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionHistoryShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.FillupChklistService;
@@ -66,7 +66,6 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,6 +96,9 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private NotificationHelper notificationHelper;
 
     @Autowired
     private InspectionAssignTaskService inspectionAssignTaskService;
@@ -248,8 +250,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                 selfAssMtFlag = 2;
             }
         }
+        String preInspecComments = inspectionPreTaskDto.getPreInspecComments();
         if(!StringUtil.isEmpty(appRfiDecision)){
-            String preInspecComments = inspectionPreTaskDto.getPreInspecComments();
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId,
                     licenseeDto, loginContext, preInspecComments);
             if(!StringUtil.isEmpty(selfRfiDecision)){
@@ -272,13 +274,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         }
         //self rfi
         if(!StringUtil.isEmpty(selfRfiDecision)){
-            InterMessageDto interMessageDto = new InterMessageDto();
-            interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
-            interMessageDto.setSubject(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + applicationNo);
-            interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
-            String mesNO = inboxMsgService.getMessageNo();
-            interMessageDto.setRefNo(mesNO);
-            interMessageDto.setService_id(serviceCode+"@");
             String url;
             HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
             //Have you completed a self-assessment checklist?
@@ -294,22 +289,21 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
                         "&selfDeclAction=rfi";
                 maskParams.put("selfDeclApplicationNumber", taskDto.getApplicationNo());
             }
-            MsgTemplateDto autoEntity = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_RFI).getEntity();
             Map<String ,Object> map = IaisCommonUtils.genNewHashMap();
             map.put("APPLICANT_NAME",licenseeDto.getName());
             map.put("APPLICATION_NUMBER",StringUtil.viewHtml(applicationNo));
             map.put("DETAILS","");
-            map.put("COMMENTS",StringUtil.viewHtml(""));
+            map.put("COMMENTS",StringUtil.viewHtml(preInspecComments));
             map.put("EDITSELECT","");
             map.put("A_HREF",url);
             map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
-            String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
-            interMessageDto.setMsgContent(templateMessageByContent);
-            interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            interMessageDto.setUserId(licenseeId);
-            interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            interMessageDto.setMaskParams(maskParams);
-            inboxMsgService.saveInterMessage(interMessageDto);
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RFI);
+            emailParam.setMaskParams(maskParams);
+            emailParam.setModuleType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+            emailParam.setQueryCode(applicationNo);
+            emailParam.setReqRefNum(applicationNo);
+            notificationHelper.sendNotification(emailParam);
         }
     }
 
