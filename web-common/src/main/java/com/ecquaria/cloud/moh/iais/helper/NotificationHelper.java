@@ -69,10 +69,12 @@ public class NotificationHelper {
 	public static final String RECEIPT_TYPE_APP_GRP 			  	 = "GRP";
 	public static final String RECEIPT_TYPE_APP 				 	 = "APP";
 	public static final String RECEIPT_TYPE_LICENCE_ID               = "LIC";
-	public static final String RECEIPT_TYPE_SMS		                 = "SMS";
-	public static final String RECEIPT_TYPE_NOTIFICATION 			 = "MESTYPE001";
-	public static final String RECEIPT_TYPE_ANNONUCEMENT			 = "MESTYPE002";
-	public static final String RECEIPT_TYPE_ACTION_REQUIRED			 = "MESTYPE003";
+	public static final String RECEIPT_TYPE_SMS_PSN		             = "SMS_PSN";
+	public static final String RECEIPT_TYPE_SMS_APP		             = "SMS_APP";
+	public static final String RECEIPT_TYPE_SMS_LICENCE_ID		     = "SMS_LIC";
+	public static final String MESSAGE_TYPE_NOTIFICATION 			 = "MESTYPE001";
+	public static final String MESSAGE_TYPE_ANNONUCEMENT			 = "MESTYPE002";
+	public static final String MESSAGE_TYPE_ACTION_REQUIRED			 = "MESTYPE003";
 
 	public static final String RECEIPT_ROLE_LICENSEE                			= "EM-LIC";
 	public static final String RECEIPT_ROLE_AUTHORISED_PERSON       			= "EM-AP";
@@ -245,21 +247,21 @@ public class NotificationHelper {
 			} else {
 				mesContext = emailTemplate;
 			}
-			if(RECEIPT_TYPE_SMS.equals(refIdType)) {
+			if(refIdType.contains("SMS")) {
 				int smsFlag = systemParamConfig.getEgpSmsNotifications();
 				if(0 == smsFlag){
 					return;
 				}
-				sendSms(templateId, mesContext, refId, smsOnlyOfficerHour);
+				sendSms(refIdType, templateId, mesContext, refId, smsOnlyOfficerHour, msgTemplateDto);
 				if (jrDto != null) {
 					List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 					jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 					jobList.add(jrDto);
 					iaisSystemClient.createJobRemindMsgTracking(jobList);
 				}
-			} else if (RECEIPT_TYPE_NOTIFICATION.equals(refIdType) ||
-					RECEIPT_TYPE_ANNONUCEMENT.equals(refIdType) ||
-					RECEIPT_TYPE_ACTION_REQUIRED.equals(refIdType)) {
+			} else if (MESSAGE_TYPE_NOTIFICATION.equals(refIdType) ||
+					MESSAGE_TYPE_ANNONUCEMENT.equals(refIdType) ||
+					MESSAGE_TYPE_ACTION_REQUIRED.equals(refIdType)) {
 				// send message
 				if(StringUtil.isEmpty(subject)){
 					subject = msgTemplateDto.getTemplateName();
@@ -412,7 +414,6 @@ public class NotificationHelper {
 		interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		interMessageDto.setMaskParams(maskParams);
 		if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)) {
-			interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 			commonFeMessageClient.createInboxMessage(interMessageDto);
 		} else {
 			saveInterMessage(interMessageDto);
@@ -456,15 +457,22 @@ public class NotificationHelper {
 		return masterCodeClient.messageID().getEntity();
 	}
 
-	private void sendSms(String templateId, String mesContext, String refId, boolean smsOnlyOfficerHour) {
+	private void sendSms(String refIdType, String templateId, String mesContext, String refId, boolean smsOnlyOfficerHour, MsgTemplateDto msgTemplateDto) {
 		try{
 			SmsDto smsDto = new SmsDto();
 			smsDto.setSender(mailSender);
 			smsDto.setContent(mesContext);
 			smsDto.setOnlyOfficeHour(smsOnlyOfficerHour);
 			String refNo = templateId;
-			List<String> mobile = hcsaLicenceClient.getMobileByRole(refId).getEntity();
-			if (!IaisCommonUtils.isEmpty(mobile)) {
+			List<String> mobile = null;
+			if (RECEIPT_TYPE_SMS_PSN.equals(refIdType)) {
+				mobile = hcsaLicenceClient.getMobileByRole(refId).getEntity();
+			} else if (RECEIPT_TYPE_SMS_APP.equals(refIdType)) {
+
+			} else if (RECEIPT_TYPE_SMS_LICENCE_ID.equals(refIdType)) {
+
+			}
+			if (mobile != null && !mobile.isEmpty()) {
 				emailHistoryCommonClient.sendSMS(mobile, smsDto, refNo);
 			}
 		}catch (Exception e){
