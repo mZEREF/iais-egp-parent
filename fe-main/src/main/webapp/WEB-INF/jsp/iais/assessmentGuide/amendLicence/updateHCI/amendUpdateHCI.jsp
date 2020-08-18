@@ -37,8 +37,10 @@
 </div>
 <%@include file="../../assessmentGuideMenuFoot.jsp" %>
 <script type="application/javascript">
-    $("#amendLicence").attr('checked', 'true');
-    $("#amendLicence2").attr('checked', 'true');
+    $(function () {
+        $("#amendLicence").attr('checked', 'true');
+        $("#amendLicence2").attr('checked', 'true');
+    });
 
     function jumpToPagechangePage() {
         $("[name='guide_action_type']").val("updateHCIPage");

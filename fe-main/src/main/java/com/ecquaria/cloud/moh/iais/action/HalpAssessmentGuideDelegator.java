@@ -1523,7 +1523,6 @@ public class HalpAssessmentGuideDelegator {
                 else if("amendLic7".equals(action)){
                     ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend4_2");
                 }
-
                 ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
             }
