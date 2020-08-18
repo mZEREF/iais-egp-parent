@@ -46,10 +46,9 @@
                             </td>
                             <td width="20%">
                                 <p>
-                                    <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${appSupDocDto.document}"
-                                       title="Download" class="downloadFile">
-                                        <c:out value="${appSupDocDto.document}"></c:out>
-                                    </a>
+                                    <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${appSupDocDto.fileRepoId}"/>&fileRepoName=${appSupDocDto.document}"
+                                       title="Download" class="downloadFile"><span id="${appSupDocDto.fileRepoId}Down">trueDown</span> </a>
+                                    <a onclick="doVerifyFileGo('${appSupDocDto.fileRepoId}')"><c:out value="${appSupDocDto.document}"></c:out></a>
                                 </p>
                             </td>
                             <td width="10%">
@@ -113,9 +112,11 @@
                                     </td>
                                     <td width="20%">
                                         <p>
-                                            <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}.${interalFile.docType}"
-                                               title="Download" class="downloadFile"><c:out
-                                                    value="${interalFile.docName}.${interalFile.docType}"></c:out></a>
+                                            <a hidden href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"  value="${interalFile.fileRepoId}"/>&fileRepoName=${interalFile.docName}.${interalFile.docType}"
+                                               title="Download" class="downloadFile"><span id="${interalFile.fileRepoId}Down">trueDown</span></a>
+                                            <a  onclick="doVerifyFileGo('${interalFile.fileRepoId}')"><c:out
+                                                    value="${interalFile.docName}.${interalFile.docType}"></c:out>
+                                            </a>
                                         </p>
                                     </td>
                                     <td width="10%">
@@ -153,7 +154,31 @@
         </div>
     </div>
 </div>
+<iais:confirm msg="GENERAL_ACK018"  needCancel="false" callBack="tagConfirmCallbacksupport()" popupOrder="support" ></iais:confirm>
+<script type="text/javascript">
+    function doVerifyFileGo(verify) {
+        showWaiting();
+        var data = {"repoId":verify};
+        $.post(
+            "${pageContext.request.contextPath}/verifyFileExist",
+            data,
+            function (data) {
+                if(data != null ){
+                 if(data.verify == 'N'){
+                     $('#support').modal('show');
+                 }else {
+                     $("#"+verify+"Down").click();
+                 }
+                    dismissWaiting();
+                }
+            }
+        )
+    }
 
+    function tagConfirmCallbacksupport(){
+        $('#support').modal('hide');
+    }
+</script>
 
 
 

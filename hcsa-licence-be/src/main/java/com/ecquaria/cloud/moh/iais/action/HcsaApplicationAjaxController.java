@@ -175,4 +175,22 @@ public class HcsaApplicationAjaxController{
         return map;
     }
 
+
+    @RequestMapping(value = "/verifyFileExist", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> verifyFileExist(HttpServletRequest request){
+        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+        String reportId  = ParamUtil.getString(request,"repoId");
+        if(StringUtil.isEmpty(reportId)){
+            map.put("verify","N");
+            return map;
+        }
+        byte[] data = fileRepoClient.getFileFormDataBase(reportId).getEntity();;
+        if(data == null){
+            map.put("verify","N");
+            return map;
+        }
+        map.put("verify","Y");
+        return map;
+    }
 }
