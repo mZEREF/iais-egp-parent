@@ -36,12 +36,8 @@
     <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel1_1.jsp" %>
 </div>
 <%@include file="../assessmentGuideMenuLevel/assessmentGuideMenuLevel2.jsp" %>
-<%@include file="../assessmentGuideMenuFoot.jsp" %>
+<%@include file="../assessmentGuideServiceMenuFoot.jsp" %>
 <script type="text/javascript">
-    $(function (){
-        $(".assessment-level-2").attr("hidden","true");
-    });
-
     $("#applyLicence").attr('checked', 'true');
 
     $(document).ready(function () {
