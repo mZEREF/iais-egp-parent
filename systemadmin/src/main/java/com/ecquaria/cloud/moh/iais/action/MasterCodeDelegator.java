@@ -425,7 +425,7 @@ public class MasterCodeDelegator {
                     }
                 }
                 if (codeEffFrom != null && codeEffTo != null){
-                    if (codeEffFrom.compareTo(codeEffTo) > 0) {
+                    if (codeEffFrom.compareTo(codeEffTo) >= 0) {
                         String errMsg = "Effective Start Date cannot be later than Effective End Date.";
                         errItems.add(errMsg);
                         result = true;
@@ -504,7 +504,7 @@ public class MasterCodeDelegator {
             ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
             ParamUtil.setSessionAttr(request,"ERR_RESULT_LIST_MAP",(Serializable) errResult);
         }catch (Exception e){
-//            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "File save failed");
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "The upload form is not predefined format for uploading.");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }
