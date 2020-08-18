@@ -1,7 +1,6 @@
 <div class="form-check-gp">
 
-    <p class="form-check-title">Scenario: if "Change in licensee's information" and system detects that the licensee is a "solo/company" entity
-    </p>
+    <p class="form-check-title">You select one licence to change at a time:</p>
 
     <iais:pagination  param="amendUpdateLicenseeSearchParam" result="amendUpdateLicenseeSearchResult"/>
     <div class="table-gp">
