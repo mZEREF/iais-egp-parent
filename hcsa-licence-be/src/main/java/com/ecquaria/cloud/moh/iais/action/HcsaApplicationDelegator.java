@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -1581,6 +1582,24 @@ public class HcsaApplicationDelegator {
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 String oldAppId = premiseMiscDto.getRelateRecId();
                 ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                if (oldApplication != null){
+                    String oldAppNo = oldApplication.getApplicationNo();
+                    if (!StringUtil.isEmpty(oldAppNo)){
+                        AppFeeDetailsDto appFeeDetailsDto = applicationService.getAppFeeDetailsDtoByApplicationNo(oldAppNo);
+                        if (appFeeDetailsDto != null){
+                            Double fee = appFeeDetailsDto.getLaterFee();
+                            if (fee != null && fee >0d){
+                                appReturnFeeDto.setApplicationNo(oldAppNo);
+                                appReturnFeeDto.setReturnAmount(fee);
+                                appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
+                                List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
+                                saveReturnFeeDtos.add(appReturnFeeDto);
+                                broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+                                broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
+                            }
+                        }
+                    }
+                }
 
 //                AppFeeDetailsDto appFeeDetailsDto = applicationService.getAppFeeDetailsDtoByApplicationNo(oldApplication.getApplicationNo());
 //                appReturnFeeDto.setApplicationNo(oldApplication.getApplicationNo());
