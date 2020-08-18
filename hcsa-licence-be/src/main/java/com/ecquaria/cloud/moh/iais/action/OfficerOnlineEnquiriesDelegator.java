@@ -169,7 +169,10 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setSessionAttr(request, "licenceNo", null);
         ParamUtil.setSessionAttr(request, "reqInfoId", null);
         ParamUtil.setSessionAttr(request,SEARCH_NO,null);
-
+        licenceParameter.setPageNo(1);
+        applicationParameter.setPageNo(1);
+        licenseeParameter.setPageNo(1);
+        serviceParameter.setPageNo(1);
         // 		Start->OnStepProcess
     }
 
