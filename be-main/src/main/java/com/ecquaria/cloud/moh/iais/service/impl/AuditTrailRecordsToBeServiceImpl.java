@@ -25,8 +25,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -246,6 +244,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
         for (AuditTrailEntityDto a:auditTrailEntityEventDto.getAuditTrailEntityDtos()
         ) {
             a.setMigrated(2);
+            a.setAuditId(null);
         }
         return auditTrailMainBeClient.syucUpdateAuditTrail(auditTrailEntityEventDto.getAuditTrailEntityDtos()).getStatusCode() == 200;
 
