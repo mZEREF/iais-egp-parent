@@ -145,4 +145,12 @@ public class TaskOrganizationClientFallback implements TaskOrganizationClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<TaskDto>> getTaskRfi(String applicationNo) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

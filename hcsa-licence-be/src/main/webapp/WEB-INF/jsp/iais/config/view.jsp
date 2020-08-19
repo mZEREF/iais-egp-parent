@@ -470,7 +470,7 @@
           <div class="col-xs-12 col-md-4">
             <label>Page Name</label>
           </div >
-          <div  class="col-xs-12 col-md-8"><input  type="text"  style="width: 20%;" maxlength="100" value="" ></div>
+          <div  class="col-xs-12 col-md-8"><input  type="text"  style="width: 20%;" maxlength="100" value="${pageName}" ></div>
           <div >
           </div>
           <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
@@ -497,7 +497,7 @@
             </div>
             <c:forEach items="${hcsaSvcSubtypeOrSubsumed.list}" var="hcsaSvcSubtypeOrSubsumed2">
               <div class="view">
-                <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+                <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                   <input class="add" type="text"  style="margin-left:60px" maxlength="100" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed2.name}">
                 </div>
                 <div class="value">
@@ -519,7 +519,7 @@
               </div>
               <c:forEach items="${hcsaSvcSubtypeOrSubsumed2.list}" var="hcsaSvcSubtypeOrSubsumed3">
                 <div class="view">
-                  <div class="col-xs-12 col-md-7" style="padding-right: 20%;" >
+                  <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
                     <input class="add" type="text"  style="margin-left:120px" maxlength="100" readonly name="subType" value="${hcsaSvcSubtypeOrSubsumed3.name}">
                   </div>
                   <div class="value">

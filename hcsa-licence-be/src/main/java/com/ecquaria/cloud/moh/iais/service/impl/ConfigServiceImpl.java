@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
@@ -1068,6 +1069,9 @@ public class ConfigServiceImpl implements ConfigService {
         List<String> stringList = IaisCommonUtils.genNewArrayList();
         for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : hcsaServiceStepSchemeDtos) {
             String stepCode = hcsaServiceStepSchemeDto.getStepCode();
+            if(HcsaConsts.STEP_LABORATORY_DISCIPLINES.equals(stepCode)){
+                request.setAttribute("pageName",hcsaServiceStepSchemeDto.getStepName());
+            }
             stringList.add(stepCode);
         }
         request.setAttribute("PremisesType", set);

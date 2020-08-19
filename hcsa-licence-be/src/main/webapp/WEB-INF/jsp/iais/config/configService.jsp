@@ -546,7 +546,7 @@
             <label>Page Name</label>
           </div >
           <div  class="col-xs-12 col-md-8">
-            <input  type="text" maxlength="100" style="width: 20%;" value="" name="pageName">
+            <input  type="text" maxlength="100" style="width: 20%;" value="${pageName}" name="pageName">
             <span name="iaisErrorMsg" class="error-msg" id="error_pageName"></span>
           </div>
           <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed"></span>

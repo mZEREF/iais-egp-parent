@@ -95,4 +95,6 @@ public interface TaskService {
     List<TaskDto> getTaskbyApplicationNo(String applicationNo);
 
     List<TaskDto> getTaskByUrlAndRefNo( String refNo, String processUrl);
+
+    List<TaskDto> getTaskRfi(String applicationNo);
 }

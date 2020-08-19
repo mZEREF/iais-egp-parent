@@ -78,4 +78,6 @@ public interface TaskOrganizationClient {
 
     @GetMapping(value = "/iais-orguser-be/OrgUsers/{roleId}")
     FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccountByRoleId(@PathVariable("roleId") String roleId);
+    @GetMapping(value = "/iais-task/get-rfi-task-application-no",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<TaskDto>> getTaskRfi(@RequestParam("applicationNo") String applicationNo);
 }

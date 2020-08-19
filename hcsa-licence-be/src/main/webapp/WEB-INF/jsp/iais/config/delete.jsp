@@ -446,7 +446,7 @@
           <div class="col-xs-12 col-md-4">
             <label>Page Name</label>
           </div >
-          <div  class="col-xs-12 col-md-8"><input  type="text"  style="width: 20%;" maxlength="100" value="" ></div>
+          <div  class="col-xs-12 col-md-8"><input  type="text"  style="width: 20%;" maxlength="100" value="${pageName}" ></div>
           <div >
           </div>
           <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">

@@ -383,6 +383,11 @@ public class TaskServiceImpl implements TaskService {
         return taskOrganizationClient.getTaskByUrlAndRefNo(refNo,processUrl).getEntity();
     }
 
+    @Override
+    public List<TaskDto> getTaskRfi(String applicationNo) {
+        return  taskOrganizationClient.getTaskRfi(applicationNo).getEntity();
+    }
+
 
     @Override
     public List<TaskEmailDto> getEmailNotifyList(){

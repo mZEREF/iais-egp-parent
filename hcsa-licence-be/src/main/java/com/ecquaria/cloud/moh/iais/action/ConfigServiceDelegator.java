@@ -401,6 +401,7 @@ public class ConfigServiceDelegator {
             hcsaServiceStepSchemeDtos.add(hcsaServiceStepSchemeDto);
             count++;
         }
+        request.setAttribute("pageName",pageName);
         if(cgoDto.getMandatoryCount()>0&&cgoDto.getMaximumCount()>0){
             HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto=new HcsaServiceStepSchemeDto();
             hcsaServiceStepSchemeDto.setStatus("CMSTAT001");
