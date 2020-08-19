@@ -245,7 +245,7 @@
                                             </c:if>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY008'}">
-                                            <c:if test="${app.status == 'APST005'||app.status == 'APST075'}">
+                                            <c:if test="${app.status == 'APST005'||app.status == 'APST075' || app.status == 'APST076'}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>

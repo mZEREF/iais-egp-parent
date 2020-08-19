@@ -903,12 +903,7 @@ public class InterInboxDelegator {
         RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
         recallApplicationDto.setAppId(appId);
         recallApplicationDto.setAppNo(appNo);
-        Boolean recallResult = inboxService.recallApplication(recallApplicationDto);
-        if(!recallResult){
-            ParamUtil.setRequestAttr(request,"appCannotRecall", recallResult);
-            ParamUtil.setRequestAttr(request,InboxConst.APP_RECALL_RESULT, "The application can not recall");
-        }
-
+        inboxService.recallApplication(recallApplicationDto);
     }
 
     public void appToAppView(BaseProcessClass bpc) throws IOException {
