@@ -4,9 +4,7 @@ BE
 "System Management / Project Management" -- egov-project.xml
 2) admin  - login via SOP SMC  https://egp.sit.intra.iais.com/console/process/SYSTEM/Index
 "Access Control / Menu Management" -- Menu.xml
-3) rolemgr  - login via SOP SMC  https://egp.sit.intra.iais.com/console/process/SYSTEM/Index
-"Access Control / Role Management" -- Role.xml
-4) accmgr  - login via SOP SMC  https://egp.sit.intra.iais.com/console/process/SYSTEM/Index
+3) accmgr  - login via SOP SMC  https://egp.sit.intra.iais.com/console/process/SYSTEM/Index
 "Access Control / User Management" -- sop6-user.xml
 
 
@@ -19,5 +17,3 @@ FE
 "System Management / Project Management" -- egov-project.xml
 2) admin  - login via SOP SMC  https://egp.sit.iinter.iais.com/console/process/SYSTEM/Index
 "Access Control / Menu Management" -- Menu.xml
-3) rolemgr  - login via SOP SMC  https://egp.sit.inter.iais.com/console/process/SYSTEM/Index
-"Access Control / Role Management" -- Role.xml
