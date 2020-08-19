@@ -298,6 +298,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             emailParam.setModuleType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
             emailParam.setQueryCode(applicationNo);
             emailParam.setReqRefNum(applicationNo);
+            emailParam.setRefId(applicationNo);
             notificationHelper.sendNotification(emailParam);
 
         }
