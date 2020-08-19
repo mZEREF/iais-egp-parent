@@ -65,6 +65,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -1031,9 +1032,14 @@ public class HcsaApplicationDelegator {
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
         String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
+        Date date = new Date();
+        String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         //new application send email
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String MohName = AppConsts.MOH_AGENCY_NAME;
         String applicationType = applicationDto.getApplicationType();
+        String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
+        String emailAddress = "ecquaria@ecquaria.com";
         String msgId = "";
         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
@@ -1042,28 +1048,63 @@ public class HcsaApplicationDelegator {
             //send sms
             sendSMS(msgId,licenseeId,msgInfoMap);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
+            log.info(StringUtil.changeForLog("send new application notification start"));
             //send email
-            EmailDto emailDto = new EmailDto();
-            emailDto.setContent("Renewal Application Reject Context");
-            emailDto.setSubject(" MOH HALP - Renewal Application - " + applicationNo + " is Rejected");
-            emailDto.setSender(mailSender);
-            emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-            emailDto.setClientQueryCode(licenseeId);
-            //send
-            emailClient.sendNotification(emailDto).getEntity();
-
-            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-            String applicationName = licenseeDto.getName();
-            Date date = new Date();
-            String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
-            String appType = MasterCodeUtil.getCodeDesc(applicationType);
-            //send sms
-            sendSMS(msgId,licenseeId,msgInfoMap);
-            //send message
-            String subject = "MOH IAIS – Renew" + applicationNo + " - Rejected ";
-            String mesContext = "renew reject message";
-            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-            sendMessage(subject,licenseeId,mesContext,maskParams,applicationViewDto.getApplicationDto().getServiceId(),MessageConstants.MESSAGE_TYPE_NOTIFICATION);
+            ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+            if(applicationGroupDto != null){
+                String groupLicenseeId = applicationGroupDto.getLicenseeId();
+                log.info(StringUtil.changeForLog("send new application notification groupLicenseeId : " + groupLicenseeId));
+                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(groupLicenseeId).getEntity();
+                if(licenseeDto != null){
+                    String applicantName = licenseeDto.getName();
+                    log.info(StringUtil.changeForLog("send new application notification applicantName : " + applicantName));
+                    Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+                    map.put("ApplicantName", applicantName);
+                    map.put("ApplicationType", applicationTypeShow);
+                    map.put("ApplicationNumber", applicationNo);
+                    map.put("ApplicationDate", appDate);
+                    map.put("emailAddress", emailAddress);
+                    map.put("MOH_AGENCY_NAME", MohName);
+                    try {
+                        String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
+                        EmailParam emailParam = new EmailParam();
+                        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT);
+                        emailParam.setTemplateContent(map);
+                        emailParam.setQueryCode(applicationNo);
+                        emailParam.setReqRefNum(applicationNo);
+                        emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                        emailParam.setRefId(applicationNo);
+                        emailParam.setSubject(subject);
+                        //send email
+                        log.info(StringUtil.changeForLog("send new application email"));
+                        notificationHelper.sendNotification(emailParam);
+                        //send sms
+                        EmailParam smsParam = new EmailParam();
+                        smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_SMS);
+                        smsParam.setSubject(subject);
+                        smsParam.setQueryCode(applicationNo);
+                        smsParam.setReqRefNum(applicationNo);
+                        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                        smsParam.setRefId(applicationNo);
+                        log.info(StringUtil.changeForLog("send new application sms"));
+                        notificationHelper.sendNotification(smsParam);
+                        //send message
+                        EmailParam messageParam = new EmailParam();
+                        messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_MESSAGE);
+                        messageParam.setTemplateContent(map);
+                        messageParam.setQueryCode(applicationNo);
+                        messageParam.setReqRefNum(applicationNo);
+                        messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                        messageParam.setRefId(applicationNo);
+                        messageParam.setSubject(subject);
+                        log.info(StringUtil.changeForLog("send new application message"));
+                        notificationHelper.sendNotification(messageParam);
+                        log.info(StringUtil.changeForLog("send new application notification end"));
+                    }catch (Exception e){
+                        log.error(e.getMessage(), e);
+                    }
+                }
+            }
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             //send email Appeal - Send SMS to licensee when appeal application is approved
             Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
