@@ -747,7 +747,7 @@ public class AppealServiceImpl implements AppealService {
         request.setAttribute("draftStatus", AppConsts.COMMON_STATUS_IACTIVE);
         saveData(request);
         String newApplicationNo = arrayToString(applicationDtoListlist,appNo);
-        request.setAttribute("newApplicationNo", newApplicationNo);
+        request.setAttribute("newApplicationNo", appNo);
         //todo send email
         try {
             sendEmail(request);
@@ -755,7 +755,7 @@ public class AppealServiceImpl implements AppealService {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
-        return newApplicationNo;
+        return appNo;
     }
 
     public String arrayToString(List<ApplicationDto> applicationDtoListlist,String groupNo){

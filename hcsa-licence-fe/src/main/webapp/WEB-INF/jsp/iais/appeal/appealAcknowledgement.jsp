@@ -22,7 +22,7 @@
       </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-10" style="margin-left: -15px">
-          Your appeal application has been successfully submitted, the application number is
+          Your appeal application has been successfully submitted, the submission number is
           <strong style="text-decoration: underline">${newApplicationNo}</strong>
           <br><br><br>
         </div>
