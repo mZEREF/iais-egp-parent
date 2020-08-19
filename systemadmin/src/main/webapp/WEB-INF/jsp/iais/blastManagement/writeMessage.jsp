@@ -138,7 +138,7 @@
         console.log('init1')
         $("#htmlEditroAreaWriteMessage").show();
         tinymce.init({
-            selector: "#htmlEditor",  // change this value according to your HTML
+            selector: "#htmlEditroAreaWriteMessage",  // change this value according to your HTML
             menubar: 'file edit view insert format tools',
             plugins: ['print preview fullpage',
                 'advlist autolink lists link image charmap print preview anchor',
@@ -153,7 +153,7 @@
             max_chars: 4000,
             setup: function (ed) {
                 var content;
-                var allowedKeys = [8, 46]; // backspace, delete and cursor keys
+                var allowedKeys = [8,13, 46]; // backspace, delete and cursor keys
                 ed.on('keydown', function (e) {
                     if (allowedKeys.indexOf(e.keyCode) != -1) return true;
                     if (tinymce_getContentLength() + 1 >= this.settings.max_chars) {

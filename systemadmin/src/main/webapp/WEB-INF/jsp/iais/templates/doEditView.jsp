@@ -179,7 +179,7 @@
             max_chars: 8000,
             setup: function (ed) {
                 var content;
-                var allowedKeys = [8, 46]; // backspace, delete and cursor keys
+                var allowedKeys = [8,13, 46]; // backspace, delete and cursor keys
                 ed.on('keydown', function (e) {
                     if (allowedKeys.indexOf(e.keyCode) != -1) return true;
                     if (tinymce_getContentLength() + 1 >= this.settings.max_chars) {
