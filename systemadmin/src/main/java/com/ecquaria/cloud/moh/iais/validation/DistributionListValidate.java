@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class DistributionListValidate implements CustomizeValidator {
                 for (String item :distribution.getEmailAddress()
                 ) {
                     if(!ValidationUtils.isEmail(item)){
-                        errMap.put("addr","Please key in a valid email address");
+                        errMap.put("addr", MessageUtil.getMessageDesc("USER_ERR005"));
                     }
                 }
             }
@@ -37,7 +38,7 @@ public class DistributionListValidate implements CustomizeValidator {
                 for (String item :distribution.getEmailAddress()
                 ) {
                     if (!item.matches("^[8|9][0-9]{7}$")) {
-                        errMap.put("mobileNo", "Please key in a valid mobile number");
+                        errMap.put("mobileNo", MessageUtil.getMessageDesc("GENERAL_ERR0007"));
                     }
                 }
             }

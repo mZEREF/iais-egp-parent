@@ -203,7 +203,7 @@ public class BlastManagementDelegator {
         String distribution = ParamUtil.getRequestString(bpc.request,"distributionList");
         if(start != null && end !=null && start.compareTo(end)>0){
             Map<String,String> err = IaisCommonUtils.genNewHashMap();
-            err.put("errDate","Scheduled Send Date From cannot be later than Scheduled Send Date To");
+            err.put("errDate",MessageUtil.getMessageDesc("ESB_ERR004"));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(err));
         }else{
             searchParam.getParams().clear();
