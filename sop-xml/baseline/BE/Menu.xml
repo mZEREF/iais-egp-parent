@@ -1,0 +1,462 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Menus>
+  <Menu name="CLOUD_CC" displayLabel="Cloud CC" fullpath="Cloud CC" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Home" url="/cc" fullpath="Cloud CC/Home" priority="100"/>
+      <MenuItem displayLabel="My Profile" url="/cc/process/EGPCLOUD/MyProfile/" fullpath="Cloud CC/My Profile" priority="100"/>
+      <MenuItem displayLabel="Digital Services" fullpath="Cloud CC/Digital Services" priority="100">
+        <MenuItems>
+          <MenuItem displayLabel="Company Registration" url="/cr/eservice/DEMOPROJECT/CR/" fullpath="Cloud CC/Digital Services/Company Registration" priority="100"/>
+          <MenuItem displayLabel="Billboard, Signboard, and Advertisement License" url="/bsalic/eservice/DEMOPROJECT/BSALic/" fullpath="Cloud CC/Digital Services/Billboard, Signboard, and Advertisement License" priority="100"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="Logout" url="/egov/process/EGPCLOUD/IdentityProviderLogout/" fullpath="Cloud CC/Logout" priority="100"/>
+      <MenuItem displayLabel="About" fullpath="Cloud CC/About" priority="100"/>
+      <MenuItem displayLabel="InspectorProcessRec" url="/hcsa-licence-web/eservicecontinue/INTRANET/MohInspectorProRectification" fullpath="Cloud CC/InspectorProcessRec" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="WORKSPACE" displayLabel="Workspace" fullpath="Workspace" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Home" url="/process/SYSTEM/Home/" fullpath="Workspace/Home" priority="100"/>
+      <MenuItem displayLabel="My Tasks" url="/process/EGOV/MyTask/" fullpath="Workspace/My Tasks" priority="100"/>
+      <MenuItem displayLabel="Common Tray" url="/process/EGOV/CommonTray/" fullpath="Workspace/Common Tray" priority="100"/>
+      <MenuItem displayLabel="Applications" url="/process/EGOV/ApplicationList/" fullpath="Workspace/Applications" priority="100"/>
+      <MenuItem displayLabel="My Profile" url="/process/EGOV/MyProfile/" fullpath="Workspace/My Profile" priority="100"/>
+      <MenuItem displayLabel="Change Password" url="/process/SYSTEM/UserPassword_Change/" fullpath="Workspace/Change Password" priority="100"/>
+      <MenuItem displayLabel="MohRiskConfigMenu" url="/hcsa-licence-web/eservice/INTRANET/MohRiskConigMenu" fullpath="Workspace/MohRiskConfigMenu" priority="100"/>
+      <MenuItem displayLabel="MohRiskFinancialConfig" url="/hcsa-licence-web/eservice/INTRANET/MohFinancialRiskSubConfig" fullpath="Workspace/MohRiskFinancialConfig" priority="100"/>
+      <MenuItem displayLabel="MohLeadershipRisk" url="/hcsa-licence-web/eservice/INTRANET/MohLeadershipRiskSubConfig" fullpath="Workspace/MohLeadershipRisk" priority="100"/>
+      <MenuItem displayLabel="MohIndividualConfig" url="/hcsa-licence-web/eservice/INTRANET/MohIndividualConfig" fullpath="Workspace/MohIndividualConfig" priority="100"/>
+      <MenuItem displayLabel="MohRiskGolbalConfig" url="/hcsa-licence-web/eservice/INTRANET/MohGolbalRiskSubConfig" fullpath="Workspace/MohRiskGolbalConfig" priority="100"/>
+      <MenuItem displayLabel="InspectionCommonPool" url="/hcsa-licence-web/eservice/INTRANET/MohInspectionAllotTaskInspector" fullpath="Workspace/InspectionCommonPool" priority="100"/>
+      <MenuItem displayLabel="InspectionSuperPool" url="/hcsa-licence-web/eservice/INTRANET/MohInspectionSupSearch" fullpath="Workspace/InspectionSuperPool" priority="100"/>
+      <MenuItem displayLabel="MohMasterCode" url="/system-admin-web/eservice/INTRANET/MohMasterCode" fullpath="Workspace/MohMasterCode" priority="100"/>
+      <MenuItem displayLabel="MohInspectionReassignTask" url="/hcsa-licence-web/eservice/INTRANET/MohInspectionReassignTask" fullpath="Workspace/MohInspectionReassignTask" priority="100"/>
+      <MenuItem displayLabel="MohUser" url="/system-admin-web/eservice/INTRANET/MohIntranetUser" fullpath="Workspace/MohUser" priority="100"/>
+      <MenuItem displayLabel="MohRiskLegsilativeConfig" url="/hcsa-licence-web/eservice/INTRANET/MohLegislativeRiskSubConfig" fullpath="Workspace/MohRiskLegsilativeConfig" priority="100"/>
+      <MenuItem displayLabel="HcsaMohWeightageRiskConfig" url="/hcsa-licence-web/eservice/INTRANET/MohWeightageSubConfig" fullpath="Workspace/HcsaMohWeightageRiskConfig" priority="100"/>
+      <MenuItem displayLabel="MohPublicHoliday" url="/system-admin-web/eservice/INTRANET/MohPublicHoliday" fullpath="Workspace/MohPublicHoliday" priority="100"/>
+      <MenuItem displayLabel="MohANTemplate" url="/system-admin-web/eservice/INTRANET/MohAlertNotificationTemplate" fullpath="Workspace/MohANTemplate" priority="100"/>
+      <MenuItem displayLabel="MohRiskLicenceTenureConfig" url="/hcsa-licence-web/eservice/INTRANET/MohLicTenureRiskSubConfig" fullpath="Workspace/MohRiskLicenceTenureConfig" priority="100"/>
+      <MenuItem displayLabel="KPI" url="/hcsa-licence-web/eservice/INTRANET/MohKPIAndReminder" fullpath="Workspace/KPI" priority="100"/>
+      <MenuItem displayLabel="Appointment Non-Availability" url="/hcsa-licence-web/eservice/INTRANET/MohInspSupAddAvailability" fullpath="Workspace/Appointment Non-Availability" priority="0"/>
+      <MenuItem displayLabel="MohMassEmailSMS" url="/system-admin-web/eservice/INTRANET/MohMassEmailSMS" fullpath="Workspace/MohMassEmailSMS" priority="100"/>
+      <MenuItem displayLabel="MohOnlineEnquiries" url="/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries" fullpath="Workspace/MohOnlineEnquiries" priority="100"/>
+      <MenuItem displayLabel="Checklist Config Management" url="/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration" fullpath="Workspace/Checklist Config Management" priority="100"/>
+      <MenuItem displayLabel="Adhoc Checklist" url="/hcsa-licence-web/eservice/INTRANET/MohAdhocChecklist" fullpath="Workspace/Adhoc Checklist" priority="100"/>
+      <MenuItem displayLabel="Blacked Out Date Management" url="/system-admin-web/eservice/INTRANET/MohBlackedOutDate" fullpath="Workspace/Blacked Out Date Management" priority="100"/>
+      <MenuItem displayLabel="System Parameter" url="/system-admin-web/eservice/INTRANET/MohSystemParameter" fullpath="Workspace/System Parameter" priority="100"/>
+      <MenuItem displayLabel="Preferred Date Range Period" url="/hcsa-licence-web/eservice/INTRANET/MohPreferredDateRangePeriod" fullpath="Workspace/Preferred Date Range Period" priority="100"/>
+      <MenuItem displayLabel="Audit Trail Management" url="/system-admin-web/eservice/INTRANET/MohAuditTrail" fullpath="Workspace/Audit Trail Management" priority="100"/>
+      <MenuItem displayLabel="Error Message Management" url="/system-admin-web/eservice/INTRANET/MohErrorMessage" fullpath="Workspace/Error Message Management" priority="100"/>
+      <MenuItem displayLabel="Inspector Calendar" url="/system-admin-web/eservice/INTRANET/MohInspectorCalendar" fullpath="Workspace/Inspector Calendar" priority="100"/>
+      <MenuItem displayLabel="Inspector Team Non Working Day" url="/system-admin-web/eservice/INTRANET/MohInspTeamNonWorkingDay" fullpath="Workspace/Inspector Team Non Working Day" priority="100"/>
+      <MenuItem displayLabel="Professional Information Management" url="/hcsa-licence-web/eservice/INTRANET/MohProfessionalInformation" fullpath="Workspace/Professional Information Management" priority="100"/>
+      <MenuItem displayLabel="MohMassEmailBlast" url="/system-admin-web/eservice/INTRANET/MohMassEmailBlast" fullpath="Workspace/MohMassEmailBlast" priority="100"/>
+      <MenuItem displayLabel="MohAduitSystemList" url="/hcsa-licence-web/eservice/INTRANET/MohAduitSystemList" fullpath="Workspace/MohAduitSystemList" priority="100"/>
+      <MenuItem displayLabel="MohAuditTcuList" url="/hcsa-licence-web/eservice/INTRANET/MohAduitTcuList" fullpath="Workspace/MohAuditTcuList" priority="100"/>
+      <MenuItem displayLabel="MohAuditManualList" url="/hcsa-licence-web/eservice/INTRANET/MohAuditManualList" fullpath="Workspace/MohAuditManualList" priority="100"/>
+      <MenuItem displayLabel="Checklist Item Management" url="/hcsa-licence-web/eservice/INTRANET/MohChecklistItem" fullpath="Workspace/Checklist Item Management" priority="100"/>
+      <MenuItem displayLabel="MohDefineUnavailability" url="/main-web/eservice/INTRANET/MohDefineUnavailability" fullpath="Workspace/MohDefineUnavailability" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="MohEmailResend" url="/system-admin-web/eservice/INTRANET/MohEmailResend" fullpath="Workspace/MohEmailResend" priority="100"/>
+      <MenuItem displayLabel="MohServiceConfig" url="/hcsa-licence-web/eservice/INTRANET/MohServiceConfig" fullpath="Workspace/MohServiceConfig" priority="100"/>
+      <MenuItem displayLabel="Regulation Management" url="/hcsa-licence-web/eservice/INTRANET/MohRegulation" fullpath="Workspace/Regulation Management" priority="100"/>
+      <MenuItem displayLabel="MohAduitCancelTask" url="/hcsa-licence-web/eservice/INTRANET/MohAduitCancelTask" fullpath="Workspace/MohAduitCancelTask" priority="100"/>
+      <MenuItem displayLabel="MohLicenceManagement" url="/hcsa-licence-web/eservice/INTRANET/MohLicenceManagement" fullpath="Workspace/MohLicenceManagement" priority="100"/>
+      <MenuItem displayLabel="MohOfficerReScheduling" url="/hcsa-licence-web/eservice/INTRANET/MohOfficerReScheduling" fullpath="Workspace/MohOfficerRescheduling" priority="100"/>
+      <MenuItem displayLabel="MohPremiseWorkload" url="/hcsa-licence-web/eservice/INTRANET/MohPremiseWorkload" fullpath="Workspace/MohPremiseWorkload" priority="100" microservice="Yes"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="EGOV_ADMINISTRATOR" displayLabel="System Management" fullpath="System Management" priority="100" microservice="No">
+    <MenuItems>
+      <MenuItem displayLabel="Agency Management" url="/process/EGOV/AgencyManagement/" fullpath="System Management/Agency Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Project Management" url="/process/EGOV/ProjectManagement/" fullpath="System Management/Project Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Role Management" url="/process/EGOV/Role_List/" fullpath="System Management/Role Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Privilege Management" url="/process/EGOV/PrivilegeManagement/" fullpath="System Management/Privilege Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Process Management" url="/process/EGOV/ProcessManagement/" fullpath="System Management/Process Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Service Registry Publishing" url="/process/EGOV/SvcRegPublishManagement/" fullpath="System Management/Service Registry Publishing" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Service Classification Management" url="/process/EGOV/SvcClassificationManagement/" fullpath="System Management/Service Classification Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="MyCase" url="/process/EGOV/MyCaseManagement/" fullpath="System Management/MyCase" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Assignment Enquiry" fullpath="System Management/Assignment Enquiry" priority="100" microservice="No">
+        <MenuItems>
+          <MenuItem displayLabel="Role Assignments" url="/process/EGOV/RoleAssignments_List/" fullpath="System Management/Assignment Enquiry/Role Assignments" priority="100" microservice="No"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="Stage Indicator Management" url="/process/SYSTEM/StageIndicatorManagement/" fullpath="System Management/Stage Indicator Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Form Lookup Configuration" url="/process/EGOV/MasterCodeManagement/" fullpath="System Management/Form Lookup Configuration" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Migration" fullpath="System Management/Migration" priority="100" microservice="No">
+        <MenuItems>
+          <MenuItem displayLabel="Import" url="/process/EGOV/Import_Activate/" fullpath="System Management/Migration/Import" priority="100" microservice="No"/>
+          <MenuItem displayLabel="Export" url="/process/EGOV/Export_Activate/" fullpath="System Management/Migration/Export" priority="100" microservice="No"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="Retry Management" url="/process/EGOV/APIRetryManagement/" fullpath="System Management/Retry Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="System Information" url="/process/EGOV/System_Info/" fullpath="System Management/System Information" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Rest Service Management" url="/process/EGOV/RestServiceMappingManagement/" fullpath="System Management/Rest Service Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Web Service Management" url="/process/EGOV/WebService_List/" fullpath="System Management/Web Service Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Transfer Retry Management" url="/process/EGOV/TransferRetryManagement/" fullpath="System Management/Transfer Retry Management" priority="100" microservice="No"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="EGOV_ADMINISTRATOR_PAYMENT" displayLabel="Payment" fullpath="Payment" priority="100" microservice="No">
+    <MenuItems>
+      <MenuItem displayLabel="Mechanism Management" url="/process/EGOV/PaymentMechanismManagement/" fullpath="Payment/Mechanism Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Transaction Management" url="/process/EGOV/PaymentTransactionManagement/" fullpath="Payment/Transaction Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Over-the-Counter Payment Management" url="/process/EGOV/OTCPaymentManagement/" fullpath="Payment/Over-the-Counter Payment Management" priority="100"/>
+      <MenuItem displayLabel="Payment Transaction Query" url="/process/EGOV/PaymentTransactionQuery/" fullpath="Payment/Payment Transaction Query" priority="100"/>
+      <MenuItem displayLabel="Client Management" url="/process/EGOV/ClientManagement/" fullpath="Payment/Client Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Client Transaction Management" url="/process/EGOV/ClientTransactionManagement/" fullpath="Payment/Client Transaction Management" priority="100" microservice="No"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="EGOV_CORE_TOP" displayLabel="eGov Top Menu" fullpath="eGov Top Menu" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Home" url="/process/SYSTEM/Home/" fullpath="eGov Top Menu/Home" priority="100"/>
+      <MenuItem displayLabel="My Tasks" url="/process/EGOV/MyTask/" fullpath="eGov Top Menu/My Tasks" priority="100"/>
+      <MenuItem displayLabel="My Profile" url="/process/EGOV/MyProfile/" fullpath="eGov Top Menu/My Profile" priority="100"/>
+      <MenuItem displayLabel="Logout" url="/process/SYSTEM/IdentityProviderLogout" fullpath="eGov Top Menu/Logout" priority="100"/>
+      <MenuItem displayLabel="About" fullpath="eGov Top Menu/About" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="SYSTEM_ACCOUNT_MGR" displayLabel="System Account Management" fullpath="System Account Management" priority="100" microservice="No">
+    <MenuItems>
+      <MenuItem displayLabel="Agent User Management" url="/process/EGOV/AgentUserManagement/" fullpath="System Account Management/Agent User Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="System User Management" url="/process/EGOV/SystemUserManagement/" fullpath="System Account Management/System User Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Trusted User Management" url="/process/EGOV/SystemTrustedUserManagement/" fullpath="System Account Management/Trusted User Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Agency Staff Management" url="/process/EGOV/SystemCounterStaffManagement/" fullpath="System Account Management/Agency Staff Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Working Group Management" url="/process/EGOV/WorkingGroupManagement/" fullpath="System Account Management/Working Group Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Assignment Enquiry" fullpath="System Account Management/Assignment Enquiry" priority="100" microservice="No">
+        <MenuItems>
+          <MenuItem displayLabel="User Assignments" url="/process/EGOV/UserAssignments_List/" fullpath="System Account Management/Assignment Enquiry/User Assignments" priority="100" microservice="No"/>
+        </MenuItems>
+      </MenuItem>
+    </MenuItems>
+  </Menu>
+  <Menu name="AGENCY_SVC_REG" displayLabel="Service Development" fullpath="Service Development" priority="100" microservice="No">
+    <MenuItems>
+      <MenuItem displayLabel="BAT Configuration" url="/process/EGOV/BATConfiguration/" fullpath="Service Development/BAT Configuration" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Service Registry" url="/process/EGOV/SvcRegManagement/" fullpath="Service Development/Service Registry" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Service Registry Approval" url="/process/EGOV/SvcRegApprovalManagement/" fullpath="Service Development/Service Registry Approval" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Service Dev Studio" url="/process/SYSTEM/ServiceDevStudio/" fullpath="Service Development/Service Dev Studio" priority="100" microservice="No"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="AGENCY_ACCOUNT_MGR" displayLabel="Agency Account Management" fullpath="Agency Account Management" priority="100" microservice="No">
+    <MenuItems>
+      <MenuItem displayLabel="Trusted User Management" url="/process/EGOV/AgencyTrustedUserManagement/" fullpath="Agency Account Management/Trusted User Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Agency Staff Management" url="/process/EGOV/AgencyCounterStaffManagement/" fullpath="Agency Account Management/Agency Staff Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Working Group Management" url="/process/EGOV/AgencyWorkingGroupManagement/" fullpath="Agency Account Management/Working Group Management" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Task Reassignment" url="/process/EGOV/TaskReassignmentList/" fullpath="Agency Account Management/Task Reassignment" priority="100" microservice="No"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="EGP_REPORT" displayLabel="Report Management" fullpath="Report Management" priority="100" microservice="No">
+    <MenuItems>
+      <MenuItem displayLabel="Generate Report" url="/process/EGOV/EGPReportGenerate/" fullpath="Report Management/Generate Report" priority="100" microservice="No"/>
+      <MenuItem displayLabel="Report Output Listing" url="/process/EGOV/ReportingMgmt_ReportListing/" fullpath="Report Management/Report Output Listing" priority="100" microservice="No"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="EGOV_CLOUD_TOP" displayLabel="eGov Cloud Top Menu" fullpath="eGov Cloud Top Menu" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Home" url="/egov/process/EGPCLOUD/Home/" fullpath="eGov Cloud Top Menu/Home" priority="100"/>
+      <MenuItem displayLabel="NAS Home" url="/nas/process/EGPCLOUD/Home/" fullpath="eGov Cloud Top Menu/NAS Home" priority="100"/>
+      <MenuItem displayLabel="My Task" url="/egov/process/EGPCLOUD/MyTask/" fullpath="eGov Cloud Top Menu/My Task" priority="100"/>
+      <MenuItem displayLabel="My Profile" url="/egov/process/EGPCLOUD/MyProfile/" fullpath="eGov Cloud Top Menu/My Profile" priority="100"/>
+      <MenuItem displayLabel="Logout" url="/egov/process/EGPCLOUD/IdentityProviderLogout/" fullpath="eGov Cloud Top Menu/Logout" priority="100"/>
+      <MenuItem displayLabel="About" fullpath="eGov Cloud Top Menu/About" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="CLOUD_WORKSPACE" displayLabel="Cloud Workspace" fullpath="Cloud Workspace" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Home" url="/egov/process/EGPCLOUD/Home/" fullpath="Cloud Workspace/Home" priority="100"/>
+      <MenuItem displayLabel="NAS Home" url="/nas/process/EGPCLOUD/Home/" fullpath="Cloud Workspace/NAS Home" priority="100"/>
+      <MenuItem displayLabel="My Task" url="/egov/process/EGPCLOUD/MyTask/" fullpath="Cloud Workspace/My Task" priority="100"/>
+      <MenuItem displayLabel="Common Tray" url="/egov/process/EGPCLOUD/CommonTray/" fullpath="Cloud Workspace/Common Tray" priority="100"/>
+      <MenuItem displayLabel="Applications" url="/egov/process/EGPCLOUD/ApplicationList/" fullpath="Cloud Workspace/Applications" priority="100"/>
+      <MenuItem displayLabel="Endorsements" url="/egov/process/EGPCLOUD/EndorsementList/" fullpath="Cloud Workspace/Endorsements" priority="100"/>
+      <MenuItem displayLabel="My Profile" url="/egov/process/EGPCLOUD/MyProfile/" fullpath="Cloud Workspace/My Profile" priority="100"/>
+      <MenuItem displayLabel="Change Password" url="/egov/process/EGPCLOUD/UserPassword_Change/" fullpath="Cloud Workspace/Change Password" priority="100"/>
+      <MenuItem displayLabel="ApplicationView" url="/hcsalicence/eservice/INTRANET/ApplicationView" fullpath="Cloud Workspace/ApplicationView" priority="100"/>
+      <MenuItem displayLabel="ChecklistItem" url="/hcsaconfig/eservice/INTRANET/MohChecklistItem" fullpath="Cloud Workspace/ChecklistItem" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="CLOUD_PAYMENT" displayLabel="Cloud Payment" fullpath="Cloud Payment" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Over-the-Counter Payment Management" url="/egov/process/EGPCLOUD/OTCPaymentManagement" fullpath="Cloud Payment/Over-the-Counter Payment Management" priority="100"/>
+      <MenuItem displayLabel="Payment Transaction Query" url="/egov/process/EGPCLOUD/PaymentTransactionQuery/" fullpath="Cloud Payment/Payment Transaction Query" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="CLOUD_NAS" displayLabel="NAS System" fullpath="NAS System" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="System User Management" url="/nas/process/EGPCLOUD/SystemUserManagement" fullpath="NAS System/System User Management" priority="100"/>
+      <MenuItem displayLabel="NAS User Management" url="/nas/process/EGPCLOUD/NasUserManagement" fullpath="NAS System/NAS User Management" priority="100"/>
+      <MenuItem displayLabel="Report" fullpath="NAS System/Report" priority="100">
+        <MenuItems>
+          <MenuItem displayLabel="Generate Report" url="/nas/process/NAS/NASReportGenerate" fullpath="NAS System/Report/Generate Report" priority="100"/>
+          <MenuItem displayLabel="Report Output Listing" url="/nas/process/NAS/ReportingMgmt_ReportListing" fullpath="NAS System/Report/Report Output Listing" priority="100"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="Authentication Service Configuration" url="/nas/process/EGPCLOUD/AuthenticationServiceConfiguration" fullpath="NAS System/Authentication Service Configuration" priority="100"/>
+      <MenuItem displayLabel="Service Provider Management" url="/nas/process/EGPCLOUD/ServiceProviderManagement" fullpath="NAS System/Service Provider Management" priority="100"/>
+      <MenuItem displayLabel="Service Provider Log Management" url="/nas/process/EGPCLOUD/ServiceProviderLogManagement" fullpath="NAS System/Service Provider Log Management" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="TOP_MENU" displayLabel="Top Menu" fullpath="Top Menu" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Home" url="/process/SYSTEM/Home/" fullpath="Top Menu/Home" priority="100"/>
+      <MenuItem displayLabel="Inbox" url="/process/SYSTEM/SOPFormTaskInbox/" fullpath="Top Menu/Inbox" priority="100"/>
+      <MenuItem displayLabel="Settings" url="/process/SYSTEM/Update_Profile/" fullpath="Top Menu/Settings" priority="100"/>
+      <MenuItem displayLabel="Logout" url="/system/logout.jsp" fullpath="Top Menu/Logout" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="SOP6_WORKSPACE" displayLabel="My Workspace" fullpath="My Workspace" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Home" url="/process/SYSTEM/Home" fullpath="My Workspace/Home" priority="100"/>
+      <MenuItem displayLabel="My Inbox" url="/process/SYSTEM/SOPFormTaskInbox/" fullpath="My Workspace/My Inbox" priority="100"/>
+      <MenuItem displayLabel="Common Tray" url="/process/SYSTEM/TaskCommonTray" fullpath="My Workspace/Common Tray" priority="100"/>
+      <MenuItem displayLabel="Update Profile" url="/process/SYSTEM/Update_Profile" fullpath="My Workspace/Update Profile" priority="100"/>
+      <MenuItem displayLabel="Change Password" url="/process/SYSTEM/UserPassword_Change" fullpath="My Workspace/Change Password" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="SOP6_ACCESS_CTRL" displayLabel="Access Control" fullpath="Access Control" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="User Management" url="/process/SYSTEM/User_List" fullpath="Access Control/User Management" priority="100"/>
+      <MenuItem displayLabel="Role Management" url="/process/SYSTEM/Role_List" fullpath="Access Control/Role Management" priority="100"/>
+      <MenuItem displayLabel="Function Management" url="/process/SYSTEM/Function_List" fullpath="Access Control/Function Management" priority="100"/>
+      <MenuItem displayLabel="Privilege Management" url="/process/SYSTEM/Privilege_List" fullpath="Access Control/Privilege Management" priority="100"/>
+      <MenuItem displayLabel="Menu Management" url="/process/SYSTEM/Menu_List" fullpath="Access Control/Menu Management" priority="100"/>
+      <MenuItem displayLabel="Assignment Enquiry" fullpath="Access Control/Assignment Enquiry" priority="100">
+        <MenuItems>
+          <MenuItem displayLabel="User Assignments" url="/process/SYSTEM/UserAssignments_List" fullpath="Access Control/Assignment Enquiry/User Assignments" priority="100"/>
+          <MenuItem displayLabel="Role Assignments" url="/process/SYSTEM/RoleAssignments_List" fullpath="Access Control/Assignment Enquiry/Role Assignments" priority="100"/>
+          <MenuItem displayLabel="Function Privilege Assignment" url="/process/SYSTEM/FunctionPrivilegeAssignment_List" fullpath="Access Control/Assignment Enquiry/Function Privilege Assignment" priority="100"/>
+          <MenuItem displayLabel="Restricted Resource Listing" url="/process/SYSTEM/Privilege_Resource_Link_List" fullpath="Access Control/Assignment Enquiry/Restricted Resource Listing" priority="100"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="User Group Management" fullpath="Access Control/User Group Management" priority="100">
+        <MenuItems>
+          <MenuItem displayLabel="Tree Listing" url="/process/SYSTEM/UserGroupTree_List" fullpath="Access Control/User Group Management/Tree Listing" priority="100"/>
+          <MenuItem displayLabel="Perspective Listing" url="/process/SYSTEM/UserGroupPerspective_List" fullpath="Access Control/User Group Management/Perspective Listing" priority="100"/>
+          <MenuItem displayLabel="Group Listing" url="/process/SYSTEM/UserGroup_List" fullpath="Access Control/User Group Management/Group Listing" priority="100"/>
+          <MenuItem displayLabel="Membership Listing" url="/process/SYSTEM/UserGroupMembership_List" fullpath="Access Control/User Group Management/Membership Listing" priority="100"/>
+        </MenuItems>
+      </MenuItem>
+    </MenuItems>
+  </Menu>
+  <Menu name="SOP6_USER_GRP_ACC_MGMT" displayLabel="User Group Account Mgmt" fullpath="User Group Account Mgmt" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="User Management" url="/process/SYSTEM/UserGroupAccMgmt_User_List" fullpath="User Group Account Mgmt/User Management" priority="100"/>
+      <MenuItem displayLabel="User Assignments" url="/process/SYSTEM/UserGroupAccMgmt_UserAssignments_List" fullpath="User Group Account Mgmt/User Assignments" priority="100"/>
+      <MenuItem displayLabel="Group Listing" url="/process/SYSTEM/UserGroupAccMgmt_UserGroup_List" fullpath="User Group Account Mgmt/Group Listing" priority="100"/>
+      <MenuItem displayLabel="Membership Listing" url="/process/SYSTEM/UserGroupAccMgmt_UserGroupMembership_List" fullpath="User Group Account Mgmt/Membership Listing" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="SOP6_BPM" displayLabel="Business Process Mgmt" fullpath="Business Process Mgmt" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="SOP Project" fullpath="Business Process Mgmt/SOP Project" priority="100">
+        <MenuItems>
+          <MenuItem displayLabel="SOP Project Management" url="/process/SYSTEM/SOPProject" fullpath="Business Process Mgmt/SOP Project/SOP Project Management" priority="100"/>
+          <MenuItem displayLabel="Project Member Assignment" url="/process/SYSTEM/SOPProjectMemberAssignment" fullpath="Business Process Mgmt/SOP Project/Project Member Assignment" priority="100"/>
+          <MenuItem displayLabel="Project Settings" url="/process/SYSTEM/SOPProjectSettings" fullpath="Business Process Mgmt/SOP Project/Project Settings" priority="100"/>
+          <MenuItem displayLabel="Project Audit Trail" url="/process/SYSTEM/SOPProjectAuditLog" fullpath="Business Process Mgmt/SOP Project/Project Audit Trail" priority="100"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="Process Management" url="/process/SYSTEM/Process_List" fullpath="Business Process Mgmt/Process Management" priority="100"/>
+      <MenuItem displayLabel="Stage Indicator Management" url="/process/SYSTEM/StageIndicatorManagement/" fullpath="Business Process Mgmt/Stage Indicator Management" priority="100"/>
+      <MenuItem displayLabel="Task Assignment Rule" url="/process/SYSTEM/TaskAssignmentRule" fullpath="Business Process Mgmt/Task Assignment Rule" priority="100"/>
+      <MenuItem displayLabel="Task Reassignment" url="/process/SYSTEM/Task_Reassign" fullpath="Business Process Mgmt/Task Reassignment" priority="100"/>
+      <MenuItem displayLabel="Announcement Management" url="/process/SYSTEM/Announcement_List/" fullpath="Business Process Mgmt/Announcement Management" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="SOP6_CONFIG" displayLabel="System Configuration" fullpath="System Configuration" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Language Settings" url="/process/SYSTEM/Language" fullpath="System Configuration/Language Settings" priority="100"/>
+      <MenuItem displayLabel="SMC Listing" url="/process/SYSTEM/ListingConfig_List" fullpath="System Configuration/SMC Listing" priority="100"/>
+      <MenuItem displayLabel="User Domain Environment" url="/process/SYSTEM/User_Domain_Env" fullpath="System Configuration/User Domain Environment" priority="100"/>
+      <MenuItem displayLabel="SOP System Settings" url="/process/SYSTEM/Configuration_List" fullpath="System Configuration/SOP System Settings" priority="100"/>
+      <MenuItem displayLabel="Non-Working Day" url="/process/SYSTEM/NonWorkingDay/Start/" fullpath="System Configuration/Non-Working Day" priority="100"/>
+      <MenuItem displayLabel="System Information" url="/process/SYSTEM/System_Info" fullpath="System Configuration/System Information" priority="100"/>
+      <MenuItem displayLabel="Translation" url="/process/SYSTEM/Translation_List" fullpath="System Configuration/Translation" priority="100"/>
+      <MenuItem displayLabel="Report" fullpath="System Configuration/Report" priority="100">
+        <MenuItems>
+          <MenuItem displayLabel="Report Server Engine Configuration" url="/process/SYSTEM/ReportingMgmt_ServerEngineConfig/" fullpath="System Configuration/Report/Report Server Engine Configuration" priority="100"/>
+          <MenuItem displayLabel="Report Server Configuration" url="/process/SYSTEM/ReportingMgmt_ReportSeverConfig/" fullpath="System Configuration/Report/Report Server Configuration" priority="100"/>
+          <MenuItem displayLabel="Report Management" url="/process/SYSTEM/ReportingMgmt_ReportConfig_List/" fullpath="System Configuration/Report/Report Management" priority="100"/>
+          <MenuItem displayLabel="Report Output Listing" url="/process/SYSTEM/ReportingMgmt_ReportListing/" fullpath="System Configuration/Report/Report Output Listing" priority="100"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="Job Scheduler" fullpath="System Configuration/Job Scheduler" priority="100">
+        <MenuItems>
+          <MenuItem displayLabel="Job Schedules" url="/process/SYSTEM/JobSchedule" fullpath="System Configuration/Job Scheduler/Job Schedules" priority="100"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="Message Template" url="/process/SYSTEM/MessageTemplate_List/" fullpath="System Configuration/Message Template" priority="100"/>
+      <MenuItem displayLabel="Web Service Management" url="/process/SYSTEM/WebService_List/" fullpath="System Configuration/Web Service Management" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="SOP6_DEV_TOOLS" displayLabel="Development Tools" fullpath="Development Tools" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Migration" fullpath="Development Tools/Migration" priority="100">
+        <MenuItems>
+          <MenuItem displayLabel="Import" url="/process/SYSTEM_TOOLS/Deployment_Activate" fullpath="Development Tools/Migration/Import" priority="100"/>
+          <MenuItem displayLabel="Export" url="/process/SYSTEM_TOOLS/Export_Activate/" fullpath="Development Tools/Migration/Export" priority="100"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="Ecquaria Framework Tools" fullpath="Development Tools/Ecquaria Framework Tools" priority="100">
+        <MenuItems>
+          <MenuItem displayLabel="Cache Viewer" url="/process/SYSTEM_TOOLS/CacheListing/" fullpath="Development Tools/Ecquaria Framework Tools/Cache Viewer" priority="100"/>
+          <MenuItem displayLabel="Configuration Viewer" url="/process/SYSTEM_TOOLS/EFConfiguration" fullpath="Development Tools/Ecquaria Framework Tools/Configuration Viewer" priority="100"/>
+          <MenuItem displayLabel="Datasource Information" url="/process/SYSTEM_TOOLS/EFDatabase" fullpath="Development Tools/Ecquaria Framework Tools/Datasource Information" priority="100"/>
+          <MenuItem displayLabel="Transaction Information" url="/process/SYSTEM_TOOLS/EFTransaction" fullpath="Development Tools/Ecquaria Framework Tools/Transaction Information" priority="100"/>
+          <MenuItem displayLabel="Log Viewer" url="/process/SYSTEM_TOOLS/LogViewer" fullpath="Development Tools/Ecquaria Framework Tools/Log Viewer" priority="100"/>
+          <MenuItem displayLabel="Logging Management" url="/process/SYSTEM_TOOLS/EFLogging/" fullpath="Development Tools/Ecquaria Framework Tools/Logging Management" priority="100"/>
+          <MenuItem displayLabel="Scheduler Viewer" url="/process/SYSTEM_TOOLS/EFScheduler/" fullpath="Development Tools/Ecquaria Framework Tools/Scheduler Viewer" priority="100"/>
+          <MenuItem displayLabel="Session Viewer" url="/process/SYSTEM_TOOLS/SessionViewer/" fullpath="Development Tools/Ecquaria Framework Tools/Session Viewer" priority="100"/>
+          <MenuItem displayLabel="SOP Process Monitor" url="/process/SYSTEM_TOOLS/SOPProcessMonitor/" fullpath="Development Tools/Ecquaria Framework Tools/SOP Process Monitor" priority="100"/>
+          <MenuItem displayLabel="Ecquaria Framework Performance Monitoring" fullpath="Development Tools/Ecquaria Framework Tools/Ecquaria Framework Performance Monitoring" priority="100">
+            <MenuItems>
+              <MenuItem displayLabel="Dashboard" url="/process/SYSTEM_TOOLS/PerfMon_Dashboard/" fullpath="Development Tools/Ecquaria Framework Tools/Ecquaria Framework Performance Monitoring/Dashboard" priority="100"/>
+              <MenuItem displayLabel="Admin Configuration" url="/process/SYSTEM_TOOLS/PerfMon_Admin_Configuration/" fullpath="Development Tools/Ecquaria Framework Tools/Ecquaria Framework Performance Monitoring/Admin Configuration" priority="100"/>
+              <MenuItem displayLabel="Metrics Configuration" url="/process/SYSTEM_TOOLS/PerfMon_Metrics_Configuration/" fullpath="Development Tools/Ecquaria Framework Tools/Ecquaria Framework Performance Monitoring/Metrics Configuration" priority="100"/>
+              <MenuItem displayLabel="Notification Configuration" url="/process/SYSTEM_TOOLS/PerfMon_Notification_Configuration/" fullpath="Development Tools/Ecquaria Framework Tools/Ecquaria Framework Performance Monitoring/Notification Configuration" priority="100"/>
+            </MenuItems>
+          </MenuItem>
+        </MenuItems>
+      </MenuItem>
+    </MenuItems>
+  </Menu>
+  <Menu name="AUDIT_TRAIL" displayLabel="SOP Audit Trail" fullpath="SOP Audit Trail" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="SOP Audit Trail" url="/process/SYSTEM/SOPAuditLog/" fullpath="SOP Audit Trail/SOP Audit Trail" priority="100"/>
+      <MenuItem displayLabel="SOP Audit Trail Configuration" url="/process/SYSTEM/AuditLogConfigure_List/" fullpath="SOP Audit Trail/SOP Audit Trail Configuration" priority="100"/>
+      <MenuItem displayLabel="User Session Management" url="/process/SYSTEM/User_Session/" fullpath="SOP Audit Trail/User Session Management" priority="100"/>
+      <MenuItem displayLabel="Exception" url="/process/SYSTEM/ExceptionHandlerManagement/" fullpath="SOP Audit Trail/Exception" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="SOPForm" displayLabel="SOPForm" fullpath="SOPForm" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Master Form Management" url="/process/SOPFORMS/MasterFormManagement/" fullpath="SOPForm/Master Form Management" priority="100"/>
+      <MenuItem displayLabel="Fill Form" url="/process/SOPFORMS/SopFormMeta/" fullpath="SOPForm/Fill Form" priority="100"/>
+      <MenuItem displayLabel="Form Summary Management" url="/process/SOPFORMS/CaseType_List/" fullpath="SOPForm/Form Summary Management" priority="100"/>
+      <MenuItem displayLabel="List Management" url="/process/SOPFORMS/MasterCodeManagement" fullpath="SOPForm/List Management" priority="100"/>
+      <MenuItem displayLabel="Submission Summary" url="/process/SOPFORMS/CaseDetails" fullpath="SOPForm/Submission Summary" priority="100"/>
+      <MenuItem displayLabel="Assignment Enquiry" fullpath="SOPForm/Assignment Enquiry" priority="100">
+        <MenuItems>
+          <MenuItem displayLabel="Master Form Member Assignment" url="/process/SOPFORMS/MasterFormMemberAssignment_List/" fullpath="SOPForm/Assignment Enquiry/Master Form Member Assignment" priority="100"/>
+        </MenuItems>
+      </MenuItem>
+    </MenuItems>
+  </Menu>
+  <Menu name="Authentication_Service" displayLabel="Authentication Service" fullpath="Authentication Service" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Authentication Service Configuration" url="/process/SYSTEM/AuthenticationServiceConfiguration/" fullpath="Authentication Service/Authentication Service Configuration" priority="100"/>
+      <MenuItem displayLabel="Service Provider Management" url="/process/SYSTEM/ServiceProviderManagement/" fullpath="Authentication Service/Service Provider Management" priority="100"/>
+      <MenuItem displayLabel="Log Management" url="/process/SYSTEM/ServiceProviderLogManagement/" fullpath="Authentication Service/Log Management" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="SINGLE_SIGN_ON" displayLabel="Single Sign On" fullpath="Single Sign On" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Identity Provider Management" url="/process/SYSTEM/IdentityProviderManagement/" fullpath="Single Sign On/Identity Provider Management" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="MOBILE_NAM_MGMT" displayLabel="Mobile NAM Mgmt" fullpath="Mobile NAM Mgmt" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Client Registration Management" url="/process/SYSTEM/ClientRegistrationManagement/" fullpath="Mobile NAM Mgmt/Client Registration Management" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="Data_Synchronise_Trail" displayLabel="Data Synchronise Trail" fullpath="Data Synchronise Trail" priority="100">
+    <MenuItems>
+      <MenuItem displayLabel="Logger Management" url="/process/SYSTEM/DataSyncLoggerManagement/" fullpath="Data Synchronise Trail/Logger Management" priority="100"/>
+      <MenuItem displayLabel="Manual Executor" url="/process/SYSTEM/DataSyncManualExecute/" fullpath="Data Synchronise Trail/Manual Executor" priority="100"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="WORKSPACE_EE" displayLabel="Workspace" fullpath="Workspace (EE)" priority="100" microservice="Yes">
+    <MenuItems>
+      <MenuItem displayLabel="Home" url="/egov/process/EGPCLOUD/Home/" fullpath="Workspace (EE)/Home" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="My Tasks" url="/egov/process/EGPCLOUD/MyTask/" fullpath="Workspace (EE)/My Tasks" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Common Tray" url="/egov/process/EGPCLOUD/CommonTray/" fullpath="Workspace (EE)/Common Tray" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="My Profile" url="/egov/process/EGPCLOUD/MyProfile/" fullpath="Workspace (EE)/My Profile" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Change Password" url="/egov/process/EGPCLOUD/UserPassword_Change/" fullpath="Workspace (EE)/Change Password" priority="100" microservice="Yes"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="SOP6_ACCESS_CTRL_EE" displayLabel="Access Control" fullpath="Access Control (EE)" priority="100" microservice="Yes">
+    <MenuItems>
+      <MenuItem displayLabel="System User Management" url="/egov/process/EGPCLOUD/SystemUserManagement/" fullpath="Access Control (EE)/System User Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Trusted User Management" url="/egov/process/EGPCLOUD/TrustedUserManagement/" fullpath="Access Control (EE)/Trusted User Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Agency Staff Management" url="/egov/process/EGPCLOUD/AgencyCounterStaffManagement/" fullpath="Access Control (EE)/Agency Staff Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Agent User Management" url="/egov/process/EGPCLOUD/AgentUserManagement/" fullpath="Access Control (EE)/Agent User Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Agency Management" url="/egov/process/EGPCLOUD/AgencyManagement/" fullpath="Access Control (EE)/Agency Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Role Management" url="/egov/process/EGPCLOUD/Role_List/" fullpath="Access Control (EE)/Role Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Privilege Management" url="/egov/process/EGPCLOUD/PrivilegeManagement/" fullpath="Access Control (EE)/Privilege Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Working Group Management" url="/egov/process/EGPCLOUD/WorkingGroupManagement/" fullpath="Access Control (EE)/Working Group Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Assignment Enquiry" fullpath="Access Control (EE)/Assignment Enquiry" priority="100" microservice="Yes">
+        <MenuItems>
+          <MenuItem displayLabel="User Assignments" url="/egov/process/EGPCLOUD/UserAssignments_List/" fullpath="Access Control (EE)/Assignment Enquiry/User Assignments" priority="100" microservice="Yes"/>
+          <MenuItem displayLabel="Role Assignments" url="/egov/process/EGPCLOUD/RoleAssignments_List/" fullpath="Access Control (EE)/Assignment Enquiry/Role Assignments" priority="100" microservice="Yes"/>
+          <MenuItem displayLabel="Restricted Resource Listing" url="/egov/process/EGPCLOUD/Privilege_Resource_Link_List" fullpath="Access Control (EE)/Assignment Enquiry/Restricted Resource Listing" priority="100" microservice="Yes"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="Menu Management" url="/egov/process/EGPCLOUD/Menu_List/" fullpath="Access Control (EE)/Menu Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="User Group Management" fullpath="Access Control (EE)/User Group Management" priority="100" microservice="Yes">
+        <MenuItems>
+          <MenuItem displayLabel="Membership Listing" url="/egov/process/EGPCLOUD/UserGroupMembership_List" fullpath="Access Control (EE)/User Group Management/Membership Listing" priority="100" microservice="Yes"/>
+        </MenuItems>
+      </MenuItem>
+    </MenuItems>
+  </Menu>
+  <Menu name="SOP6_BPM_EE" displayLabel="Business Process Mgmt" fullpath="Business Process Mgmt (EE)" priority="100" microservice="Yes">
+    <MenuItems>
+      <MenuItem displayLabel="Project Management" url="/egov/process/EGPCLOUD/ProjectManagement/" fullpath="Business Process Mgmt (EE)/Project Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Process Management" url="/egov/process/EGPCLOUD/ProcessManagement/" fullpath="Business Process Mgmt (EE)/Process Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Stage Indicator Management" url="/egov/process/EGPCLOUD/StageIndicatorManagement/" fullpath="Business Process Mgmt (EE)/Stage Indicator Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Task Reassignment" url="/egov/process/EGPCLOUD/TaskReassignmentList/" fullpath="Business Process Mgmt (EE)/Task Reassignment" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Transfer Retry Management" url="/egov/process/EGPCLOUD/TransferRetryManagement/" fullpath="Business Process Mgmt (EE)/Transfer Retry Management" priority="100" microservice="Yes"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="EGPCLOUD_ADMINISTRATOR_PAYMENT_EE" displayLabel="Payment" fullpath="Payment (EE)" priority="100" microservice="Yes">
+    <MenuItems>
+      <MenuItem displayLabel="Mechanism Management" url="/egov/process/EGPCLOUD/PaymentMechanismManagement/" fullpath="Payment (EE)/Mechanism Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Transaction Management" url="/egov/process/EGPCLOUD/PaymentTransactionManagement/" fullpath="Payment (EE)/Transaction Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Client Management" url="/egov/process/EGPCLOUD/ClientManagement/" fullpath="Payment (EE)/Client Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Client Transaction Management" url="/egov/process/EGPCLOUD/ClientTransactionManagement/" fullpath="Payment (EE)/Client Transaction Management" priority="100" microservice="Yes"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="AGENCY_SVC_REG_EE" displayLabel="Service Development" fullpath="Service Development (EE)" priority="100" microservice="Yes">
+    <MenuItems>
+      <MenuItem displayLabel="Service Registry" url="/egov/process/EGPCLOUD/SvcRegManagement/" fullpath="Service Development (EE)/Service Registry" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Service Registry Approval" url="/egov/process/EGPCLOUD/SvcRegApprovalManagement/" fullpath="Service Development (EE)/Service Registry Approval" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Service Dev Studio" url="/sds/process/EGPCLOUD/ServiceDevStudio/" fullpath="Service Development (EE)/Service Dev Studio" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Service Registry Publishing" url="/egov/process/EGPCLOUD/SvcRegPublishManagement/" fullpath="Service Development (EE)/Service Registry Publishing" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Service Classification Management" url="/egov/process/EGPCLOUD/SvcClassificationManagement/" fullpath="Service Development (EE)/Service Classification Management" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="BAT Configuration" url="/egov/process/EGPCLOUD/BATConfiguration/" fullpath="Service Development (EE)/BAT Configuration" priority="100" microservice="Yes"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="SOP6_CONFIG_EE" displayLabel="System Configuration" fullpath="System Configuration (EE)" priority="100" microservice="Yes">
+    <MenuItems>
+      <MenuItem displayLabel="Job Scheduler" fullpath="System Configuration (EE)/Job Scheduler" priority="100" microservice="Yes">
+        <MenuItems>
+          <MenuItem displayLabel="Job Management" url="/egov/process/EGPCLOUD/JobInfoManagement" fullpath="System Configuration (EE)/Job Scheduler/Job Management" priority="100" microservice="Yes"/>
+          <MenuItem displayLabel="Trigger Log" url="/egov/process/EGPCLOUD/TriggerLogManagement" fullpath="System Configuration (EE)/Job Scheduler/Trigger Log" priority="100" microservice="Yes"/>
+          <MenuItem displayLabel="Executor Management" url="/egov/process/EGPCLOUD/ExecutorManagement" fullpath="System Configuration (EE)/Job Scheduler/Executor Management" priority="100" microservice="Yes"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="Non-Working Day" url="/egov/process/EGPCLOUD/NonWorkingDay" fullpath="System Configuration (EE)/Non-Working Day" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="System Information" url="/egov/process/EGPCLOUD/System_Info" fullpath="System Configuration (EE)/System Information" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Form Lookup Configuration" url="/egov/process/EGPCLOUD/FormLookupManagement/" fullpath="System Configuration (EE)/Form Lookup Configuration" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="Report" fullpath="System Configuration (EE)/Report" priority="100" microservice="Yes">
+        <MenuItems>
+          <MenuItem displayLabel="Report Server Engine Configuration" url="/egov/process/EGPCLOUD/ReportingMgmt_ServerEngineConfig/" fullpath="System Configuration (EE)/Report/Report Server Engine Configuration" priority="100" microservice="Yes"/>
+          <MenuItem displayLabel="Report Server Configuration" url="/egov/process/EGPCLOUD/ReportingMgmt_ReportSeverConfig/" fullpath="System Configuration (EE)/Report/Report Server Configuration" priority="100" microservice="Yes"/>
+        </MenuItems>
+      </MenuItem>
+      <MenuItem displayLabel="System Setting" url="/egov/process/EGPCLOUD/Configuration_List" fullpath="System Configuration (EE)/System Setting" priority="100" microservice="Yes"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="AUDIT_TRAIL_EE" displayLabel="Audit Trail" fullpath="Audit Trail (EE)" priority="100" microservice="Yes">
+    <MenuItems>
+      <MenuItem displayLabel="Audit Trail" url="/egov/process/EGPCLOUD/SOPAuditLog/" fullpath="Audit Trail (EE)/Audit Trail" priority="100" microservice="Yes"/>
+      <MenuItem displayLabel="User Session Management" url="/egov/process/EGPCLOUD/User_Session/" fullpath="Audit Trail (EE)/User Session Management" priority="100" microservice="Yes"/>
+    </MenuItems>
+  </Menu>
+  <Menu name="SOP6_DEV_TOOLS_EE" displayLabel="Development Tools" fullpath="Development Tools (EE)" priority="100" microservice="Yes">
+    <MenuItems>
+      <MenuItem displayLabel="Migration" fullpath="Development Tools (EE)/Migration" priority="100" microservice="Yes">
+        <MenuItems>
+          <MenuItem displayLabel="Import" url="/egov/process/EGPCLOUD/Import_Activate" fullpath="Development Tools (EE)/Migration/Import" priority="100" microservice="Yes"/>
+          <MenuItem displayLabel="Export" url="/egov/process/EGPCLOUD/Export_Activate/" fullpath="Development Tools (EE)/Migration/Export" priority="100" microservice="Yes"></MenuItem></MenuItems></MenuItem></MenuItems></Menu></Menus>

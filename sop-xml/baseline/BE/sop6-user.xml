@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<users>
+    <user>
+        <userDomain>intranet</userDomain>
+        <id>halp_admin</id>
+        <displayName>HALP Admin</displayName>
+        <picture></picture>
+        <digitizedSignature></digitizedSignature>
+        <password>$2a$12$jpVlKw0wFI6X845QlRF3u.YzpY4abtk20pLFweTY2/g4dvr..Rl1G</password>
+        <email>admin@admin.com</email>
+        <mobileNo></mobileNo>
+        <accountStatus>A</accountStatus>
+        <remarks></remarks>
+        <salutation></salutation>
+        <firstName></firstName>
+        <middleName></middleName>
+        <lastName></lastName>
+        <citizenship></citizenship>
+        <identityNo></identityNo>
+        <passportNo></passportNo>
+        <gender></gender>
+        <dateOfBirth></dateOfBirth>
+        <maritalStatus></maritalStatus>
+        <contactNo></contactNo>
+        <address></address>
+        <addressPostalCode></addressPostalCode>
+        <addressState></addressState>
+        <addressCountryCode></addressCountryCode>
+        <passwordChallengeQuestion>aaaa</passwordChallengeQuestion>
+        <passwordChallengeAnswer>ddddd</passwordChallengeAnswer>
+        <passwordChallengeHint></passwordChallengeHint>
+        <isSystem>N</isSystem>
+        <isFirstTimeLogin>Y</isFirstTimeLogin>
+        <accountActivateDatetime>2020-08-19 00:00:00</accountActivateDatetime>
+        <salt></salt>
+        <accountDeactivateDatetime></accountDeactivateDatetime>
+    </user>
+</users>
