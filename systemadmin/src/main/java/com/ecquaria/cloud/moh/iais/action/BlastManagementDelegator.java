@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
@@ -50,7 +51,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -357,9 +357,9 @@ public class BlastManagementDelegator {
         blastManagementDto.setMsgContent(messageContent);
         if(StringUtil.isEmpty(content)){
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("content","The field is mandatory.");
+            errMap.put("content", MessageUtil.replaceMessage("GENERAL_ERR0006","Content","field"));
             if(StringUtil.isEmpty(subject)){
-                errMap.put("subject","The field is mandatory.");
+                errMap.put("subject",MessageUtil.replaceMessage("GENERAL_ERR0006","Subject","field"));
             }
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
@@ -432,7 +432,7 @@ public class BlastManagementDelegator {
         if(distribution == null){
             getDistribution(bpc,blastManagementDto.getMode());
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("distribution","Please select distribution list for mass email.");
+            errMap.put("distribution",MessageUtil.getMessageDesc("ESB_ERR001"));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
 

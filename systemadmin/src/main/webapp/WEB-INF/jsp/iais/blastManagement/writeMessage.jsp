@@ -72,7 +72,7 @@
                 </div>
             </div>
         </div>
-        <iais:confirm msg="Content could not exceed 4000"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+        <iais:confirm msg="Content cannot be exceeded 4000 characters"  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
         <input hidden value="${id}" id="blastId" >
         <input hidden value="" id="action" name="action">
         <input hidden value="0" id="fileChange" name="fileChange">

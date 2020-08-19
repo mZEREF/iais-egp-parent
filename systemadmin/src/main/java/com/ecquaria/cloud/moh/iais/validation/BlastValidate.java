@@ -7,7 +7,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,26 +30,22 @@ public class BlastValidate implements CustomizeValidator {
             for (String item :blastManagementDto.getEmailAddress()
             ) {
                 if(!item.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
-                    errMap.put("addr","Please key in a valid email address");
+                    errMap.put("addr",MessageUtil.getMessageDesc("ESB_ERR002"));
                 }
             }
         }
         String step = (String)ParamUtil.getSessionAttr(request,"BlastManagementStep");
         if("fillMessage".equals(step)){
             if(blastManagementDto.getSchedule() == null){
-                errMap.put("date","The field is mandatory.");
+                errMap.put("date",MessageUtil.replaceMessage("GENERAL_ERR0006","Send date and time","field"));
             }
             String HH = blastManagementDto.getHH();
             String MM = blastManagementDto.getMM();
             if(HH == null){
-                errMap.put("HH","The field is mandatory.");
-            }else if(!(StringUtils.isNumeric(HH) &&  Integer.parseInt(HH) < 24)){
-                errMap.put("HH","Field format is wrong");
+                errMap.put("HH",MessageUtil.replaceMessage("GENERAL_ERR0006","HH","field"));
             }
             if(MM == null){
-                errMap.put("HH","The field is mandatory.");
-            }else if(!(StringUtils.isNumeric(MM) &&  Integer.parseInt(MM) < 60)){
-                errMap.put("HH","Field format is wrong");
+                errMap.put("HH",MessageUtil.replaceMessage("GENERAL_ERR0006","MM","field"));
             }
             if(blastManagementDto.getSchedule() != null && HH != null && MM != null) {
                 SimpleDateFormat newformat = new SimpleDateFormat(AppConsts.DEFAULT_DATE_FORMAT);
@@ -58,7 +53,7 @@ public class BlastValidate implements CustomizeValidator {
                 schedule = blastManagementDto.getSchedule();
                 Date now = new Date();
                 if (schedule.compareTo(now) < 0) {
-                    errMap.put("date", "Send date and time cannot be earlier than now");
+                    errMap.put("date", MessageUtil.getMessageDesc("EMM_ERR007"));
                 }
             }
         }
