@@ -543,7 +543,7 @@ public class InspectionMergeSendNcEmailDelegator {
                 emailParam.setQueryCode(applicationViewDto.getApplicationDto().getApplicationNo());
                 emailParam.setReqRefNum(applicationViewDto.getApplicationDto().getApplicationNo());
                 emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                emailParam.setRefId(licenseeId);
+                emailParam.setRefId(applicationViewDto.getApplicationDto().getApplicationNo());
                 emailParam.setSubject(inspectionEmailTemplateDto.getSubject());
                 notificationHelper.sendNotification(emailParam);
                 //emailClient.sendNotification(emailDto).getEntity();

@@ -2078,7 +2078,7 @@ public class HcsaApplicationDelegator {
             emailMap.put("officer_name", "officer_name");
             emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
             emailMap.put("ApplicationNumber", applicationViewDto.getApplicationDto().getApplicationNo());
-            emailMap.put("TAT_time", new Date());
+            emailMap.put("TAT_time", Formatter.formatDate(new Date()));
             emailMap.put("details", "HCI Name :"+applicationViewDto.getHciName()+"<br>"+"HCI Address :"+applicationViewDto.getHciAddress()+"<br>"+"Licensee :"+applicationName+"<br>"+"Comment :"+internalRemarks+"<br>");
             emailMap.put("systemLink", loginUrl);
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);

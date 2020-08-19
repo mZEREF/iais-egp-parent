@@ -396,9 +396,9 @@ public class RequestForInformationDelegator {
             emailMap.put("ApplicantName", applicantName);
             emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
             emailMap.put("ApplicationNumber", licenceNo);
-            emailMap.put("ApplicationDate", new Date());
+            emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
             emailMap.put("email", "");
-            emailMap.put("TATtime", dueDate);
+            emailMap.put("TATtime", Formatter.formatDate(dueDate));
             emailMap.put("Remarks", stringBuilder.toString());
             emailMap.put("systemLink", loginUrl);
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
@@ -408,7 +408,7 @@ public class RequestForInformationDelegator {
             emailParam.setQueryCode(licenceNo);
             emailParam.setReqRefNum(licenceNo);
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-            emailParam.setRefId(licenseeId);
+            emailParam.setRefId(licenceNo);
             emailParam.setSubject(subject);
             //email
             notificationHelper.sendNotification(emailParam);
@@ -571,9 +571,9 @@ public class RequestForInformationDelegator {
             emailMap.put("ApplicantName", applicantName);
             emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
             emailMap.put("ApplicationNumber", licPremisesReqForInfoDto.getLicenceNo());
-            emailMap.put("ApplicationDate", new Date());
+            emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
             emailMap.put("email", "");
-            emailMap.put("TATtime", dueDate);
+            emailMap.put("TATtime", Formatter.formatDate(dueDate));
             emailMap.put("Remarks", stringBuilder.toString());
             emailMap.put("systemLink", loginUrl);
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
@@ -583,7 +583,7 @@ public class RequestForInformationDelegator {
             emailParam.setQueryCode(licPremisesReqForInfoDto.getLicenceNo());
             emailParam.setReqRefNum(licPremisesReqForInfoDto.getLicenceNo());
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-            emailParam.setRefId(licPremisesReqForInfoDto.getLicenseeId());
+            emailParam.setRefId(licPremisesReqForInfoDto.getLicenceNo());
             emailParam.setSubject(subject);
             //email
             notificationHelper.sendNotification(emailParam);
