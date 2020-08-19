@@ -291,7 +291,7 @@ public class NotificationHelper {
 				if (StringUtil.isEmpty(subject)) {
 					subject = msgTemplateDto.getTemplateName();
 				}
-				if (refIdType.contains("SMS")) {
+				if (!StringUtil.isEmpty(refIdType) && refIdType.contains("SMS")) {
 					int smsFlag = systemParamConfig.getEgpSmsNotifications();
 					if (0 == smsFlag) {
 						return;
