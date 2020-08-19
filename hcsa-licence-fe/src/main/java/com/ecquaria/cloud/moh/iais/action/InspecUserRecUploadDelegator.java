@@ -21,6 +21,7 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.service.ApplicantConfirmInspDateService;
 import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,9 @@ public class InspecUserRecUploadDelegator {
     @Autowired
     private SystemParamConfig systemParamConfig;
 
+    @Autowired
+    private ApplicantConfirmInspDateService applicantConfirmInspDateService;
+
     /**
      * StartStep: inspecUserRectifiUploadStart
      *
@@ -60,7 +64,8 @@ public class InspecUserRecUploadDelegator {
         ParamUtil.setSessionAttr(bpc.request, "recFileTypeHint", null);
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", null);
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
-        String appPremCorrId = ParamUtil.getMaskedString(bpc.request, "appPremCorrId");
+        String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+        String appPremCorrId = applicantConfirmInspDateService.getAppPremCorrIdByAppNo(applicationNo);
         String versionStr = ParamUtil.getRequestString(bpc.request, "recVersion");
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
         int sysFileSize = systemParamConfig.getUploadFileLimit();
