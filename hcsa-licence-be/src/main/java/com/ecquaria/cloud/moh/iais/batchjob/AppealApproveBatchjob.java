@@ -183,7 +183,7 @@ public class AppealApproveBatchjob {
                             appealApproveDto);
                     break;
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_LATE_RENEW_FEE:
-                    applicationLateRenewFee();
+                    applicationLateRenewFee(applicationDto);
                     break;
                 case ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO :
                     applicationAddCGO(appealApplicaiton,appealPersonnel,rollBackPersonnel,appealApproveDto,appealApplicationGroupDtos);
@@ -241,8 +241,25 @@ public class AppealApproveBatchjob {
         }
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationRejection is end ..."));
     }
-    private void applicationLateRenewFee(){
-     // do not need to do.
+    private void applicationLateRenewFee(ApplicationDto application){
+        log.error(StringUtil.changeForLog("send applicationLateRenewFee email start"));
+        // send return fee email
+        EmailDto emailDto=new EmailDto();
+        emailDto.setClientQueryCode("Appeal approved");
+        emailDto.setSender(mailSender);
+        emailDto.setContent("appeal return fee email");
+        emailDto.setSubject("MOH HALP – Appeal - return fee");
+        String grpId = application.getAppGrpId();
+        ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(grpId).getEntity();
+        String licenseeId = applicationGroupDto.getLicenseeId();
+        List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
+        if(licenseeEmailAddrs!=null){
+            emailDto.setReceipts(licenseeEmailAddrs);
+            emailClient.sendNotification(emailDto);
+        }else{
+            log.error(StringUtil.changeForLog("licenseeEmailAddrs is none"));
+        }
+        log.error(StringUtil.changeForLog("send applicationLateRenewFee email end"));
     }
     private void applicationAddCGO(List<ApplicationDto> appealApplicaiton,List<AppSvcKeyPersonnelDto> appealPersonnel,
                                    List<AppSvcKeyPersonnelDto> rollBackPersonnel,
