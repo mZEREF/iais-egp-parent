@@ -322,6 +322,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
                 emailParam.setJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
                 notificationHelper.sendNotification(emailParam);
+
+               /* emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                notificationHelper.sendNotification(emailParam);*/
             }
 
             log.info("===>>>>alertSelfDeclNotification end");
