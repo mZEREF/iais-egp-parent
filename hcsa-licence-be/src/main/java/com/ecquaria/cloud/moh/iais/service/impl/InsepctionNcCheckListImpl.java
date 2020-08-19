@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppIntranetDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.HcsaChklSvcRegulationDto;
@@ -30,6 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.ItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremisesAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.SectionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.RimRiskCountDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -84,8 +86,8 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
     FileRepoClient fileRepoClient;
     @Autowired
     private BeEicGatewayClient gatewayClient;
-
-
+    @Autowired
+    private OrganizationClient organizationClient;
     @Value("${iais.hmac.keyId}")
     private String keyId;
 
@@ -113,10 +115,27 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             LicPremisesAuditDto licPremisesAuditDto =  appViewDto.getLicPremisesAuditDto();
             if(licPremisesAuditDto != null){
                 hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto);
+                if(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY.equalsIgnoreCase(licPremisesAuditDto.getIncludeRiskType())){
+                    ApplicationGroupDto applicationGroupDto = appViewDto.getApplicationGroupDto();
+                    if(applicationGroupDto != null ){
+                        saveRimRiskCountByLicenseeId(applicationGroupDto.getLicenseeId());
+                    }
+                }
             }
         }
     }
 
+    @Override
+    public void saveRimRiskCountByLicenseeId(String licenseeId) {
+        RimRiskCountDto rimRiskCountDto = organizationClient.getUenRimRiskCountDtoByLicenseeId(licenseeId).getEntity();
+        if( rimRiskCountDto == null){
+         log.info(StringUtil.changeForLog("----------getUenRimRiskCountDtoByLicenseeId : " + licenseeId + " have no licensee."));
+        }else {
+            rimRiskCountDto.setLeadshipGovAuditCount(rimRiskCountDto.getLeadshipGovAuditCount()+1);
+            rimRiskCountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+            organizationClient.doRimRiskCountSave(rimRiskCountDto);
+        }
+    }
     @Override
     public InspectionFillCheckListDto getNcCheckList(InspectionFillCheckListDto infillDto, AppPremisesPreInspectChklDto appPremDto, List<AppPremisesPreInspectionNcItemDto> itemDtoList, AppPremisesRecommendationDto appPremisesRecommendationDto) {
         List<InspectionCheckQuestionDto> fillCheckList = infillDto.getCheckList();

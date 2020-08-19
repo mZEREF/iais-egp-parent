@@ -34,4 +34,6 @@ public interface InsepctionNcCheckListService {
     void removeFiles(String id);
     void deleteInvalidFile( InspectionFDtosDto serListDto);
     void saveLicPremisesAuditDtoByApplicationViewDto(ApplicationViewDto applicationViewDto);
+
+    void saveRimRiskCountByLicenseeId(String licenseeId);
 }

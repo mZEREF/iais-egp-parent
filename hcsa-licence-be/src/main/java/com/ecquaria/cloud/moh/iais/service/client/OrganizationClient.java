@@ -7,15 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionTaskPoolListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.LicenseeQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationLicDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -166,4 +158,10 @@ public interface OrganizationClient {
     @RequestMapping(value = "/iais-orguser-be/intranet-user-role-list/{userAccId}",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<OrgUserRoleDto>> getUserRoleByUserAccId(@RequestParam("userAccId") String userAccId);
+
+    @GetMapping(value = "/iais-rimriskcount/get-rim-risk-count-uen/{licenseeId}")
+    FeignResponseEntity<RimRiskCountDto> getUenRimRiskCountDtoByLicenseeId(@PathVariable("licenseeId") String licenseId);
+
+    @PostMapping(value = "/iais-rimriskcount/saveRimRiskCount",consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<RimRiskCountDto> doRimRiskCountSave(@RequestBody RimRiskCountDto rimRiskCountDto);
 }
