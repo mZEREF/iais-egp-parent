@@ -72,7 +72,8 @@
          WHERE B.STATUS != 'CMSTAT002' AND B.STATUS !='APST009'
          AND B.STATUS !='APST051' AND B.STATUS != 'APST072'
          AND B.STATUS != 'APST074'
-         AND B.STATUS != 'APST073' AND B.APP_TYPE != 'APTY007'
+         AND B.STATUS != 'APST073'
+         AND B.APP_TYPE != 'APTY007'
             <#if id??> AND CHARINDEX(:id, app.id) >0</#if>
             <#if appType??> AND B.app_type = :appType</#if>
             <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
@@ -168,7 +169,7 @@
                 join hcsal.dbo.licence T3 on t2.LICENCE_ID = t3.ID
                 WHERE T1.ID in (select max(T1.ID) from hcsal.dbo.key_personnel as T1 group by T1.ID_NO)
 			    <#if licenseeId??>AND t3.LICENSEE_ID =:licenseeId</#if>
-			    <#if idNo??> AND T1.ID_NO :idNo</#if>
+			    <#if idNo??> AND T1.ID_NO =:idNo</#if>
         ]]>
     </sql>
     <sql key="getLicenceBySerName" remarks="getLicenceBySerName">
