@@ -392,8 +392,8 @@ public class OfficerOnlineEnquiriesDelegator {
                                         reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
                                     }
                                     addressList.add(licAddress);
-                                    reqForInfoSearchListDto.setAddress(addressList);
                                 }
+                                reqForInfoSearchListDto.setAddress(addressList);
                                 reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                             }
                         }
@@ -971,8 +971,8 @@ public class OfficerOnlineEnquiriesDelegator {
                                         reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
                                     }
                                     addressList.add(licAddress);
-                                    reqForInfoSearchListDto.setAddress(addressList);
                                 }
+                                reqForInfoSearchListDto.setAddress(addressList);
                                 reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                             }
                         }
@@ -1550,8 +1550,8 @@ public class OfficerOnlineEnquiriesDelegator {
                                         reqForInfoSearchListDto.setHciName(premisesDto.getHciName());
                                     }
                                     addressList.add(licAddress);
-                                    reqForInfoSearchListDto.setAddress(addressList);
                                 }
+                                reqForInfoSearchListDto.setAddress(addressList);
                                 reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                             }
                         }

@@ -285,15 +285,15 @@ public class InspectionMergeSendNcEmailDelegator {
             inspectionEmailTemplateDto.setSubject(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),mapTemplate));
         }
         inspectionEmailTemplateDto.setAppPremCorrId(applicationViewDto.getAppPremisesCorrelationId());
-        inspectionEmailTemplateDto.setMessageContent(mesContext.toString());
-        inspectionEmailTemplateDto.setSubject("Inspection – Summary of Inspection Outcome");
+        inspectionEmailTemplateDto.setMessageContent(mesContext);
+        inspectionEmailTemplateDto.setSubject("Inspection - Summary of Inspection Outcome");
 
         List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{InspectionConstants.PROCESS_DECI_REVISE_EMAIL_CONTENT,InspectionConstants.PROCESS_DECI_SENDS_EMAIL_APPLICANT});
 
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrIds", (Serializable) appPremCorrIds);
         ParamUtil.setRequestAttr(request,"appTypeOption", appTypeOption);
-        ParamUtil.setSessionAttr(request,MSG_CON, mesContext.toString());
+        ParamUtil.setSessionAttr(request,MSG_CON, mesContext);
         ParamUtil.setRequestAttr(request,"svcNames",svcNames);
         ParamUtil.setSessionAttr(request,APP_VIEW_DTO,applicationViewDto);
         ParamUtil.setSessionAttr(request,INS_EMAIL_DTO, inspectionEmailTemplateDto);
