@@ -425,7 +425,7 @@ public class NotificationHelper {
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
 		ApplicationDto applicationDto = hcsaAppClient.getAppByNo(appNo).getEntity();
 		String serviceId = applicationDto.getServiceId();
-		HcsaServiceDto hcsaServiceDto = hcsaServiceClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+		HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
 		String serviceCode = hcsaServiceDto.getSvcCode();
 		InterMessageDto interMessageDto = new InterMessageDto();
 		interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);

@@ -298,6 +298,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                     templateContent.put("serviceNames", svcNames);
                 }
 
+
                 String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/";
                 //EN-NAP-008
                 String applicantName = licenseeDto.getName();
@@ -323,8 +324,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                 emailParam.setJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
                 notificationHelper.sendNotification(emailParam);
 
-               /* emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                notificationHelper.sendNotification(emailParam);*/
+                if (!IaisCommonUtils.isEmpty(appList)){
+                    ApplicationDto applicationDto = appList.get(0);
+                    emailParam.setRefId(applicationDto.getApplicationNo());
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    notificationHelper.sendNotification(emailParam);
+                }
             }
 
             log.info("===>>>>alertSelfDeclNotification end");
