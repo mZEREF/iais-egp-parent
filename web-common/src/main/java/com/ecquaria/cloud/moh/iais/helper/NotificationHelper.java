@@ -847,7 +847,7 @@ public class NotificationHelper {
 		List<AppPremisesRoutingHistoryDto> hisList;
 		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-		if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+		if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 			hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
 		} else {
 			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
