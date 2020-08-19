@@ -39,7 +39,7 @@
       <MenuItem displayLabel="MohANTemplate" url="/system-admin-web/eservice/INTRANET/MohAlertNotificationTemplate" fullpath="Workspace/MohANTemplate" priority="100"/>
       <MenuItem displayLabel="MohRiskLicenceTenureConfig" url="/hcsa-licence-web/eservice/INTRANET/MohLicTenureRiskSubConfig" fullpath="Workspace/MohRiskLicenceTenureConfig" priority="100"/>
       <MenuItem displayLabel="KPI" url="/hcsa-licence-web/eservice/INTRANET/MohKPIAndReminder" fullpath="Workspace/KPI" priority="100"/>
-      <MenuItem displayLabel="Appointment Non-Availability" url="/hcsa-licence-web/eservice/INTRANET/MohInspSupAddAvailability" fullpath="Workspace/Appointment Non-Availability" priority="0"/>
+      <MenuItem displayLabel="Appointment Non-Availability" url="/hcsa-licence-web/eservice/INTRANET/MohInspSupAddAvailability" fullpath="Workspace/Appointment Non-Availability" priority="100"/>
       <MenuItem displayLabel="MohMassEmailSMS" url="/system-admin-web/eservice/INTRANET/MohMassEmailSMS" fullpath="Workspace/MohMassEmailSMS" priority="100"/>
       <MenuItem displayLabel="MohOnlineEnquiries" url="/hcsa-licence-web/eservice/INTRANET/MohOnlineEnquiries" fullpath="Workspace/MohOnlineEnquiries" priority="100"/>
       <MenuItem displayLabel="Checklist Config Management" url="/hcsa-licence-web/eservice/INTRANET/MohChecklistConfiguration" fullpath="Workspace/Checklist Config Management" priority="100"/>
