@@ -451,9 +451,10 @@ public class RoundRobinCommPoolBatchJob {
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RE_SCHEDULING_INSPECTION_DATE);
         emailParam.setTemplateContent(map);
         emailParam.setMaskParams(maskParams);
-        emailParam.setModuleType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
         emailParam.setQueryCode(appNo);
         emailParam.setReqRefNum(appNo);
+        emailParam.setRefId(appNo);
         notificationHelper.sendNotification(emailParam);
     }
 
