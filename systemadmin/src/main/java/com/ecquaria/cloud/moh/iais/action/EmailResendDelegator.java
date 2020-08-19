@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
@@ -129,7 +130,7 @@ public class EmailResendDelegator {
                 int comparatorValue = endDate.compareTo(startDate);
                 if (comparatorValue < 0){
                     Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-                    errorMap.put("later", "Send Date From cannot be later than Send Date To");
+                    errorMap.put("later", MessageUtil.getMessageDesc("EMM_ERR006"));
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 }
             }catch (Exception e){
@@ -229,7 +230,7 @@ public class EmailResendDelegator {
             sch = blastManagementDto.getSchedule();
             Date now = new Date();
             if (sch.compareTo(now) < 0) {
-                errMap.put("date", "Send date and time cannot be earlier than now");
+                errMap.put("date", MessageUtil.getMessageDesc("EMM_ERR007"));
             }
         }
         if(errMap.isEmpty()){
