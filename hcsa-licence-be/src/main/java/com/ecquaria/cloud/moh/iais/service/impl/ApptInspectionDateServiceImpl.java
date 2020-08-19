@@ -1031,6 +1031,14 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
             emailParam.setRefId(appNo);
             notificationHelper.sendNotification(emailParam);
+            EmailParam smsParam = new EmailParam();
+            smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
+            smsParam.setSubject("MOH HALP - Select Inspection Appointment Date");
+            smsParam.setQueryCode(appNo);
+            smsParam.setReqRefNum(appNo);
+            smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+            smsParam.setRefId(appNo);
+            notificationHelper.sendNotification(smsParam);
         } catch (Exception e){
             log.error(e.getMessage(), e);
         }
