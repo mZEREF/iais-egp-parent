@@ -349,7 +349,7 @@ public class NotificationHelper {
 					boolean jobRemindFlag = false;
 					//send other address
 					if (!IaisCommonUtils.isEmpty(emailDto.getReceipts())) {
-						if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)) {
+						if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 							String gatewayUrl = env.getProperty("iais.inter.gateway.url");
 							HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 							HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -388,7 +388,7 @@ public class NotificationHelper {
 							}
 							emailDto.setContent(mesContext);
 							emailDto.setReceipts(officerEmails);
-							if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)) {
+							if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 								String gatewayUrl = env.getProperty("iais.inter.gateway.url");
 								HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 								HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
@@ -439,7 +439,7 @@ public class NotificationHelper {
 		interMessageDto.setMsgContent(mesContext);
 		interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 		interMessageDto.setMaskParams(maskParams);
-		if (AppConsts.DOMAIN_INTERNET.equals(currentDomain)) {
+		if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 			commonFeMessageClient.createInboxMessage(interMessageDto);
 		} else {
 			saveInterMessage(interMessageDto);
@@ -577,7 +577,7 @@ public class NotificationHelper {
 
 		if (!IaisCommonUtils.isEmpty(passRoles)){
 			List<OrgUserDto> userList = null;
-			if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+			if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 				userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
 			}
 			if (!IaisCommonUtils.isEmpty(userList)) {
@@ -606,7 +606,7 @@ public class NotificationHelper {
 		List<AppPremisesRoutingHistoryDto> hisList;
 		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-		if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+		if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 			hisList = hcsaAppClient.getAppPremisesRoutingHistorysByAppNo(appNo).getEntity();
 		} else {
 			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
@@ -647,7 +647,7 @@ public class NotificationHelper {
 			return mobile;
 		}
 		List<OrgUserDto> userList;
-		if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+		if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
 		} else {
 			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
@@ -890,7 +890,7 @@ public class NotificationHelper {
 		}
 
 		List<OrgUserDto> userList = null;
-		if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+		if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 			userList = taskOrganizationClient.retrieveOrgUsers(userIds).getEntity();
 		} else {
 			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
@@ -945,7 +945,7 @@ public class NotificationHelper {
 
 		if (!IaisCommonUtils.isEmpty(passRoles)){
 			List<OrgUserDto> userList = null;
-			if (AppConsts.DOMAIN_INTRANET.equals(currentDomain)) {
+			if (AppConsts.DOMAIN_INTRANET.equalsIgnoreCase(currentDomain)) {
 				userList = taskOrganizationClient.retrieveOrgUserByroleId(passRoles).getEntity();
 			}
 			if (!IaisCommonUtils.isEmpty(userList)) {
