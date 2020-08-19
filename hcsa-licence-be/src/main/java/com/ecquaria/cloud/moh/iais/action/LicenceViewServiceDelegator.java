@@ -115,6 +115,8 @@ public class LicenceViewServiceDelegator {
         appEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
         if(appEditSelectDto==null){
             appEditSelectDto = applicationViewDto.getAppEditSelectDto();
+        }else {
+            bpc.request.getSession().setAttribute("pageAppEditSelectDto",applicationViewDto.getAppEditSelectDto());
         }
         log.info(StringUtil.changeForLog(appEditSelectDto+"appEditSelectDto"));
         bpc.request.getSession().setAttribute("appEditSelectDto",appEditSelectDto);

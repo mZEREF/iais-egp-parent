@@ -1296,6 +1296,8 @@ public class ServiceMenuDelegator {
             map.put("appType", ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
             map.put("licenseeId",licenseeId);
             String entity = applicationClient.selectDarft(map).getEntity();
+            String new_ack001 = MessageUtil.getMessageDesc("NEW_ACK001");
+            bpc.request.setAttribute("new_ack001",new_ack001);
             bpc.request.setAttribute(NewApplicationDelegator.SELECT_DRAFT_NO, entity);
         }
     }

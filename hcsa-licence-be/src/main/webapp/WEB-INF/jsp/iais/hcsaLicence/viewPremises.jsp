@@ -9,6 +9,7 @@
 %>
 <input style="display: none" value="${NOT_VIEW}" id="view">
 <c:set var="appEdit" value="${appEditSelectDto}"/>
+<c:set value="${pageAppEditSelectDto}" var="pageEdit"></c:set>
 <div class="main-content">
   <div class="container">
     <div class="row">
@@ -47,7 +48,7 @@
                               <c:if test="${rfi=='rfi'}">
                                 <c:if test="${(appEdit.premisesEdit || appEdit.premisesListEdit)&& canEidtPremise }">
                                   <input class="form-check-input" id="premisesCheckbox" type="checkbox"
-                                         name="editCheckbox" aria-invalid="false" value="premises">
+                                         name="editCheckbox" <c:if test="${pageEdit.premisesEdit}">checked</c:if> aria-invalid="false" value="premises">
                                 </c:if>
                               </c:if>
                             </p>
@@ -544,7 +545,7 @@
                             <p class="text-right">
                               <c:if test="${rfi=='rfi'}">
                                 <c:if test="${appEdit.docEdit}">
-                                  <input class="form-check-input" id="primaryCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
+                                  <input class="form-check-input" <c:if test="${pageEdit.docEdit}">checked</c:if>  id="primaryCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="primary">
                                 </c:if>
                               </c:if>
                             </p>
@@ -1087,8 +1088,7 @@
 
                               <c:if test="${appEdit.serviceEdit}">
                                 <c:if test="${rfi=='rfi'}">
-                                  <input class="form-check-input" id="serviceCheckbox" type="checkbox"
-                                         name="editCheckbox" aria-invalid="false" value="service">
+                                  <input class="form-check-input" <c:if test="${pageEdit.serviceEdit}">checked</c:if> id="serviceCheckbox" type="checkbox" name="editCheckbox" aria-invalid="false" value="service">
                                 </c:if>
                               </c:if>
                             </p>
@@ -1125,6 +1125,18 @@
   </div>
 </div>
 <script>
+  $(document).ready(function () {
+      <c:if test="${pageAppEditSelectDto.docEdit}">
+      $('#primaryCheckbox').closest("div.panel-body").attr("style","");
+      </c:if>
+      <c:if test="${pageAppEditSelectDto.premisesEdit}">
+      $('#premisesCheckbox').closest("div.panel-body").attr("style","");
+      </c:if>
+      <c:if test="${pageAppEditSelectDto.serviceEdit}">
+      $('#serviceCheckbox').closest("div.panel-body").attr("style","");
+      </c:if>
+  });
+
   $('#hciNameClick').click(function () {
       let jQuery = $('#hciNameShowOrHidden').attr('style');
       if(jQuery.match("display: none")){

@@ -1726,6 +1726,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         String isrfiSuccess = "N";
         requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
+        requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         appSubmissionDto.setPartPremise(appSubmissionDto.isGroupLic());
         appSubmissionDto.setGetAppInfoFromDto(true);
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -1765,7 +1766,6 @@ public class NewApplicationDelegator {
             List<AppSubmissionDto> personAppSubmissionList = personContact(bpc, appSubmissionDto, oldAppSubmissionDto);
             AppSubmissionDto personAppsubmit = getPersonAppsubmit(oldAppSubmissionDto, appSubmissionDto, bpc);
             personAppsubmit.setPartPremise(personAppsubmit.isGroupLic());
-            requestForChangeService.premisesDocToSvcDoc(personAppsubmit);
             // true is auto
             boolean autoRfc = personAppsubmit.isAutoRfc();
             if (!autoRfc) {

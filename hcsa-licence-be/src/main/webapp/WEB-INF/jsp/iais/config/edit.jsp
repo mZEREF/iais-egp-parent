@@ -460,15 +460,16 @@
                 <td >${routingStage.appTypeName}</td>
                 <td >${routingStage.stageName}</td>
                 <td >
-                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%">
+                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%;text-align:left">
                     <select name="isMandatory${routingStage.stageCode}${routingStages.key}">
                       <option value="">Please Select</option>
                       <option value="mandatory"<c:if test="${routingStage.isMandatory=='true'}">selected="selected"</c:if> >Mandatory</option>
                       <option value="optional" <c:if test="${routingStage.isMandatory=='false'}">selected="selected"</c:if>>Optional</option>
                     </select>
+                    <span name="iaisErrorMsg" class="error-msg" id="error_isMandatory${routingStages.key}${status.index}"></span>
                   </div>
 
-                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%" >
+                  <div class="col-xs-12 col-md-6" style="margin-top: 1%;margin-bottom: 1%;text-align:left" >
                     <input type="text" name="stageId${routingStage.stageCode}${routingStages.key}" value="${routingStage.routingSchemeId}" style="display:none;">
 
                     <select  name="RoutingScheme${routingStage.stageCode}${routingStages.key}"   >
@@ -489,14 +490,14 @@
                 </td>
 
                 <td>
-                  <div class="col-xs-12 col-md-12">
+                  <div class="col-xs-12 col-md-12" style="text-align:left">
                     <input style="margin: 8px 0px 8px" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >
                     <span class="error-msg" name="iaisErrorMsg" id="error_manhourCount${routingStages.key}${status.index}"></span>
                   </div>
 
                 </td>
                 <td>
-                  <div class="col-xs-12 col-md-12">
+                  <div class="col-xs-12 col-md-12" style="text-align:left">
                     <input name="workstageId${routingStage.stageCode}${routingStages.key}" type="text" style="display: none" value="${routingStage.workStageId}">
                     <select name="workingGroup${routingStage.stageCode}${routingStages.key}">
                       <option value="">Please Select</option>

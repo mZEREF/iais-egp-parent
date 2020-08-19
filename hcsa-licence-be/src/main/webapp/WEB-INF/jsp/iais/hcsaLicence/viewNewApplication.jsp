@@ -1087,7 +1087,6 @@
         $('.panel-body').attr("style","background-color: #999999;");
         </c:if>
     });
-
     $('#primaryCheckbox').click(function () {
       let jQuery = $(this).closest("div.panel-body");
         let jQuery1 = jQuery.attr("style");
