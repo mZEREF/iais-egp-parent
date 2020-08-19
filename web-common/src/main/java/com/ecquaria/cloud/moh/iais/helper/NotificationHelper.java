@@ -288,12 +288,15 @@ public class NotificationHelper {
 				} else {
 					mesContext = emailTemplate;
 				}
+				if (StringUtil.isEmpty(subject)) {
+					subject = msgTemplateDto.getTemplateName();
+				}
 				if (refIdType.contains("SMS")) {
 					int smsFlag = systemParamConfig.getEgpSmsNotifications();
 					if (0 == smsFlag) {
 						return;
 					}
-					sendSms(refIdType, templateId, mesContext, refId, smsOnlyOfficerHour, msgTemplateDto);
+					sendSms(refIdType, templateId, subject, refId, smsOnlyOfficerHour, msgTemplateDto);
 					if (jrDto != null) {
 						List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 						jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -331,12 +334,7 @@ public class NotificationHelper {
 						}
 					}
 					emailDto.setContent(mesContext);
-					if (StringUtil.isEmpty(subject)) {
-						msgTemplateDto.setTemplateName(MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), templateContent));
-						emailDto.setSubject(msgTemplateDto.getTemplateName());
-					} else {
-						emailDto.setSubject(subject);
-					}
+					emailDto.setSubject(subject);
 					emailDto.setSender(this.mailSender);
 					if (queryCode != null) {
 						emailDto.setClientQueryCode(queryCode);
