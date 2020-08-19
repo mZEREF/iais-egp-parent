@@ -969,6 +969,12 @@ public class WithOutRenewalDelegator {
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
         String renewEffectiveDate = ParamUtil.getDate(bpc.request, "renewEffectiveDate");
+        String userAgreement = ParamUtil.getString(bpc.request, "verifyInfoCheckbox");
+        if (!StringUtil.isEmpty(userAgreement) && AppConsts.YES.equals(userAgreement)) {
+            ParamUtil.setSessionAttr(bpc.request, "userAgreement", Boolean.TRUE);
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "userAgreement", Boolean.FALSE);
+        }
         if (!StringUtil.isEmpty(renewEffectiveDate)) {
             Date date = Formatter.parseDate(renewEffectiveDate);
             if (date.before(new Date())||date.equals(new Date())) {

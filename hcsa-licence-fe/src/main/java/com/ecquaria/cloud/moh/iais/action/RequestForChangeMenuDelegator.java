@@ -1008,6 +1008,9 @@ public class RequestForChangeMenuDelegator {
 
     public void preparePersonnelBank(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do prePayment start ...."));
+        PersonnelListDto personnelEditDto = (PersonnelListDto) ParamUtil.getSessionAttr(bpc.request, "personnelEditDto");
+        String emailAddr = personnelEditDto.getEmailAddr();
+        ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddr);
         ParamUtil.setSessionAttr(bpc.request, "pmtRefNo", "N/A");
         ParamUtil.setSessionAttr(bpc.request, "createDate", new Date());
         ParamUtil.setSessionAttr(bpc.request, "dAmount", "$0");

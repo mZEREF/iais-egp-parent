@@ -92,5 +92,10 @@ public class CessationClientFallback implements CessationClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<AppCessMiscDto> getAppMiscDtoByAppId(String appId) {
+        return null;
+    }
+
 
 }

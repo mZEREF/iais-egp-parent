@@ -100,7 +100,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         if (licIds != null && !licIds.isEmpty()) {
             for (String licId : licIds) {
                 AppCessLicDto appCessDto = new AppCessLicDto();
-                LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
+                LicenceDto licenceDto = licenceClient.getLicDtoById(licId).getEntity();
                 List<PremisesDto> premisesDtos = licenceClient.getPremisesDto(licId).getEntity();
                 String svcName = licenceDto.getSvcName();
                 String licenceNo = licenceDto.getLicenceNo();
@@ -389,22 +389,22 @@ public class CessationFeServiceImpl implements CessationFeService {
             appCessationDtosConfirms.add(appCessatonConfirmDto);
         }
         //update apps
-//        Date today = new Date();
-//        String todayStr = DateUtil.formatDate(today);
-//        Date date2 = DateUtil.parseDate(todayStr);
-//        for(ApplicationDto applicationDto : applicationDtos){
-//            String appId = applicationDto.getId();
-//            List<AppPremiseMiscDto> appPremiseMiscDtos = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
-//            if(!IaisCommonUtils.isEmpty(appPremiseMiscDtos)){
-//                Date effectiveDate = appPremiseMiscDtos.get(0).getEffectiveDate();
-//                String effectiveDateStr = DateUtil.formatDate(effectiveDate);
-//                Date date1 = DateUtil.parseDate(effectiveDateStr);
-//                if(date1.after(date2)){
-//                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
-//                }
-//            }
-//        }
-//        applicationClient.updateApplicationList(applicationDtos);
+        Date today = new Date();
+        String todayStr = DateUtil.formatDate(today);
+        Date date2 = DateUtil.parseDate(todayStr);
+        for(ApplicationDto applicationDto : applicationDtos){
+            String appId = applicationDto.getId();
+            List<AppPremiseMiscDto> appPremiseMiscDtos = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
+            if(!IaisCommonUtils.isEmpty(appPremiseMiscDtos)){
+                Date effectiveDate = appPremiseMiscDtos.get(0).getEffectiveDate();
+                String effectiveDateStr = DateUtil.formatDate(effectiveDate);
+                Date date1 = DateUtil.parseDate(effectiveDateStr);
+                if(date1.after(date2)){
+                    applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
+                }
+            }
+        }
+        applicationClient.updateApplicationList(applicationDtos);
         List<String> licNos = IaisCommonUtils.genNewArrayList();
         for (AppCessatonConfirmDto appCessatonConfirmDto : appCessationDtosConfirms) {
             String licenceNo = appCessatonConfirmDto.getLicenceNo();

@@ -124,4 +124,7 @@ public interface LicenceClient {
 
     @GetMapping(value = "/hcsa-licence//check-new-licensee")
     FeignResponseEntity<Boolean> checkIsNewLicsee(@RequestParam("licenseeId") String licenseeId);
+
+    @GetMapping(value = "/hcsa-licence/licenceById/{licId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicenceDto> getLicDtoById(@PathVariable("licId") String licenceId);
 }

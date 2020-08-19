@@ -289,34 +289,11 @@
                                 <a onclick="confirmBack('back')"><em class="fa fa-angle-left"></em> Back</a>
                             </div>
                             <div class="col-xs-12 col-sm-6">
-                                <div class="button-group"><a class="btn btn-primary next" data-toggle="modal"
-                                                             data-target="#singlePremise">Submit</a>
+                                <div class="button-group"><a class="btn btn-primary next" onclick="confirmSubmit('submit')">Submit</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="singlePremise" tabindex="-1" role="dialog" aria-labelledby="singlePremise"
-         style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h5 class="modal-title" id="gridSystemModalLabel">Confirmation Box</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-10 col-md-offset-2"><span style="font-size: 2rem">Please confirm the cessation of this licence</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="confirmSubmit('submit')">Confirm</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
             </div>
         </div>
     </div>

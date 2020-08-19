@@ -291,4 +291,9 @@ public class LicenceInFallback implements LicenceClient {
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<LicenceDto> getLicDtoById(String licenceId) {
+        return null;
+    }
 }
