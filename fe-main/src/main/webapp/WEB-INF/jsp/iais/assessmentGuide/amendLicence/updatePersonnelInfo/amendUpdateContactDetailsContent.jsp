@@ -4,7 +4,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12 col-md-5">
-            <iais:select name="personnelOptions" options="personnelOptions" id="personnelId" value="${param.personnelOptions}"/>
+            <iais:select name="personnelOptions" options="personnelOptions" id="personnelId" value="${param.personnelOptions}" firstOption="Please Select"/>
         </div>
     </div>
     <div class="row">

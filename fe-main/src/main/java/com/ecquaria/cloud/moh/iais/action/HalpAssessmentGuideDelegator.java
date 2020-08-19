@@ -121,6 +121,7 @@ public class HalpAssessmentGuideDelegator {
         AuditTrailHelper.auditFunction("HalpAssessmentGuideDelegator", "HalpAssessmentGuideDelegators");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         log.info("****end ******");
+        ParamUtil.setSessionAttr(bpc.request, "personnelOptions", null);
     }
 
 
@@ -1380,24 +1381,27 @@ public class HalpAssessmentGuideDelegator {
         SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"ID_NO",SearchParam.DESCENDING,false);
         amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
-        SearchResult<PersonnlAssessQueryDto> amendDetailsSearchResult = requestForChangeService.searchAssessPsnInfo(amendDetailsSearchParam);
-        if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
-            ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM, amendDetailsSearchParam);
-            ParamUtil.setSessionAttr(bpc.request, "personnelOptions", (Serializable) selectOptions);
-            ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_RESULT, amendDetailsSearchResult);
-        }
+        ParamUtil.setSessionAttr(bpc.request, "personnelOptions", (Serializable) selectOptions);
         log.info("****end ******");
     }
 
     public void searchByIdNo(BaseProcessClass bpc) {
         String idNo = ParamUtil.getString(bpc.request,"personnelOptions");
-        ParamUtil.setSessionAttr(bpc.request, "amend_personnel_id", idNo);
-        List<String> idNos = IaisCommonUtils.genNewArrayList();
-        String id = idNo.split(",")[1];
-        idNos.add(id);
-        if (idNos.size() >0){
-            SearchParam assessLicParam = HalpSearchResultHelper.gainSearchParam(bpc.request,GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"ID_NO",SearchParam.DESCENDING,true);
-            assessLicParam.addFilter("idNo",idNos,true);
+        if (idNo != null && !"Please Select".equals(idNo)){
+            List<String> idNos = IaisCommonUtils.genNewArrayList();
+            String id = idNo.split(",")[1];
+            idNos.add(id);
+            if (idNos.size() >0){
+                SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM,PersonnlAssessQueryDto.class.getName(),"ID_NO",SearchParam.DESCENDING,false);
+                amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
+                amendDetailsSearchParam.addFilter("idNo",idNos,true);
+                QueryHelp.setMainSql("interInboxQuery", "appPersonnelQuery", amendDetailsSearchParam);
+                SearchResult<PersonnlAssessQueryDto> amendDetailsSearchResult = requestForChangeService.searchAssessPsnInfo(amendDetailsSearchParam);
+                if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
+                    ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM, amendDetailsSearchParam);
+                    ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_RESULT, amendDetailsSearchResult);
+                }
+            }
         }
     }
 
