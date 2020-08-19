@@ -212,13 +212,13 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 				}else{
 					status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 				}
-				if(paymentIntent!=null){
-					if("succeeded".equals(paymentIntent.getStatus())){
+				/*if(paymentIntent!=null){
+					if(paymentIntent.getStatus().equals("succeeded")){
 						status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
 					}else {
 						status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
 					}
-				}
+				}*/
 //				setReceiptStatus(status);
 				setPaymentTransStatus(status);
 //				String message = fields.get("vpc_Message");
