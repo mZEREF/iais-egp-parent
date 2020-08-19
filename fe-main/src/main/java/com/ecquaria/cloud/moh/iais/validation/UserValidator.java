@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidat
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,23 +37,23 @@ public class UserValidator implements CustomizeValidator {
                 boolean b = SgNoValidator.validateFin(dto.getIdentityNo());
                 boolean b1 = SgNoValidator.validateNric(dto.getIdentityNo());
                 if (!(b || b1)) {
-                    map.put("identityNo", "Please key in a valid NRIC/FIN");
+                    map.put("identityNo", MessageUtil.getMessageDesc("GENERAL_ERR0008"));
                 }
             }
 
             if (dto.getEmail() != null && !ValidationUtils.isEmail(dto.getEmail())) {
-                map.put("email", "Please key in a valid email address");
+                map.put("email", MessageUtil.getMessageDesc("GENERAL_ERR0014"));
             }
 
             if(dto.getMobileNo() != null && !StringUtil.isEmpty(dto.getMobileNo())){
                 if (!dto.getMobileNo().matches("^[8|9][0-9]{7}$")) {
-                    map.put("mobileNo", "Please key in a valid mobile number");
+                    map.put("mobileNo", MessageUtil.getMessageDesc("GENERAL_ERR0007"));
                 }
             }
 
             if(dto.getOfficeTelNo() != null && !StringUtil.isEmpty(dto.getOfficeTelNo())) {
                 if (!dto.getOfficeTelNo().matches("^[6][0-9]{7}$")) {
-                    map.put("officeTelNo", "Please key in a valid phone number");
+                    map.put("officeTelNo", MessageUtil.getMessageDesc("GENERAL_ERR0015"));
                 }
             }
 
@@ -61,7 +62,7 @@ public class UserValidator implements CustomizeValidator {
                     String idType = IaisEGPHelper.checkIdentityNoType(dto.getIdentityNo());
                     FeUserDto feUserDto = orgUserManageService.getFeUserAccountByNricAndType(dto.getIdentityNo(), idType);
                     if(feUserDto != null){
-                        map.put("identityNo", "A user account has already been created for this ID");
+                        map.put("identityNo", MessageUtil.getMessageDesc("GENERAL_ERR0035"));
                     }
                 }
             }
