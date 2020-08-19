@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQueryDto;
@@ -31,12 +33,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationD
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.TaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -379,7 +377,14 @@ public class BackendInboxDelegator {
                     log.debug(StringUtil.changeForLog("the do approve start ...."));
                     routingTask(bpc,"",successStatus,"",applicationViewDto,taskDto);
                     log.debug(StringUtil.changeForLog("the do approve end ...."));
-
+                    //send reject email
+                    if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(successStatus)){
+                        try{
+                            rejectSendNotification(applicationViewDto);
+                        }catch (Exception e){
+                            log.error(StringUtil.changeForLog("send reject notification error"),e);
+                        }
+                    }
 
                 }
             }
@@ -408,6 +413,82 @@ public class BackendInboxDelegator {
         }
 
     }
+
+    private void rejectSendNotification(ApplicationViewDto applicationViewDto)throws Exception{
+        String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
+        String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
+        Date date = new Date();
+        String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String MohName = AppConsts.MOH_AGENCY_NAME;
+        String applicationType = applicationDto.getApplicationType();
+        String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
+        String emailAddress = "ecquaria@ecquaria.com";
+        if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
+            renewalSendNotification(applicationTypeShow,applicationNo,appDate,emailAddress,MohName,applicationDto);
+        }
+    }
+
+    private void renewalSendNotification(String applicationTypeShow,String applicationNo,String appDate,String emailAddress,String MohName,ApplicationDto applicationDto){
+        log.info(StringUtil.changeForLog("send new application notification start"));
+        //send email
+        ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+        if(applicationGroupDto != null){
+            String groupLicenseeId = applicationGroupDto.getLicenseeId();
+            log.info(StringUtil.changeForLog("send new application notification groupLicenseeId : " + groupLicenseeId));
+            LicenseeDto licenseeDto = organizationMainClient.getLicenseeDtoById(groupLicenseeId).getEntity();
+            if(licenseeDto != null){
+                String applicantName = licenseeDto.getName();
+                log.info(StringUtil.changeForLog("send new application notification applicantName : " + applicantName));
+                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+                map.put("ApplicantName", applicantName);
+                map.put("ApplicationType", applicationTypeShow);
+                map.put("ApplicationNumber", applicationNo);
+                map.put("ApplicationDate", appDate);
+                map.put("emailAddress", emailAddress);
+                map.put("MOH_AGENCY_NAME", MohName);
+                try {
+                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT);
+                    emailParam.setTemplateContent(map);
+                    emailParam.setQueryCode(applicationNo);
+                    emailParam.setReqRefNum(applicationNo);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    emailParam.setRefId(applicationNo);
+                    emailParam.setSubject(subject);
+                    //send email
+                    log.info(StringUtil.changeForLog("send new application email"));
+                    notificationHelper.sendNotification(emailParam);
+                    //send sms
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_SMS);
+                    smsParam.setSubject(subject);
+                    smsParam.setQueryCode(applicationNo);
+                    smsParam.setReqRefNum(applicationNo);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    smsParam.setRefId(applicationNo);
+                    log.info(StringUtil.changeForLog("send new application sms"));
+                    notificationHelper.sendNotification(smsParam);
+                    //send message
+                    EmailParam messageParam = new EmailParam();
+                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_MESSAGE);
+                    messageParam.setTemplateContent(map);
+                    messageParam.setQueryCode(applicationNo);
+                    messageParam.setReqRefNum(applicationNo);
+                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    messageParam.setRefId(applicationNo);
+                    messageParam.setSubject(subject);
+                    log.info(StringUtil.changeForLog("send new application message"));
+                    notificationHelper.sendNotification(messageParam);
+                    log.info(StringUtil.changeForLog("send new application notification end"));
+                }catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+
 
     private void inspectorAo1(BaseProcessClass bpc, ApplicationViewDto applicationViewDto,TaskDto taskDto){
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
