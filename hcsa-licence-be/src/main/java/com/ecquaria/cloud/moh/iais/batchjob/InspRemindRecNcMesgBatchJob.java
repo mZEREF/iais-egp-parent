@@ -179,10 +179,18 @@ public class InspRemindRecNcMesgBatchJob {
         smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION);
         smsParam.setQueryCode(appNo);
         smsParam.setReqRefNum(appNo);
-        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+        smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
         smsParam.setRefId(appNo);
         smsParam.setSubject("MOH HALP - Reminder to submit documentary proof of rectification");
         notificationHelper.sendNotification(smsParam);
+        EmailParam msgParam = new EmailParam();
+        msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REMIND_NC_RECTIFICATION);
+        msgParam.setTemplateContent(templateContent);
+        msgParam.setQueryCode(appNo);
+        msgParam.setReqRefNum(appNo);
+        msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+        msgParam.setRefId(appNo);
+        notificationHelper.sendNotification(msgParam);
     }
 
     private List<InspEmailFieldDto> getEmailFieldByAppId(String appId) {
