@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AuditSystemListService;
 import com.ecquaria.cloud.moh.iais.service.client.*;
@@ -383,9 +384,23 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         try {
             if(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND.equalsIgnoreCase(emailKey)
                     || MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND.equalsIgnoreCase(emailKey)){
-                notificationHelper.sendNotification(emailKey,param,emailKey,emailKey,null,null);
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(emailKey);
+                emailParam.setTemplateContent(param);
+                emailParam.setQueryCode(emailKey);
+                emailParam.setReqRefNum(emailKey);
+                emailParam.setRefIdType(null);
+                emailParam.setRefId(null);
+                notificationHelper.sendNotification(emailParam);
             }else {
-                notificationHelper.sendNotification(emailKey,param,appGroupNo,appGroupNo, NotificationHelper.RECEIPT_TYPE_APP,appGroupNo);
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(emailKey);
+                emailParam.setTemplateContent(param);
+                emailParam.setQueryCode(appGroupNo);
+                emailParam.setReqRefNum(appGroupNo);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                emailParam.setRefId(appGroupNo);
+                notificationHelper.sendNotification(emailParam);
             }
         }catch (Exception e){
             log.error(e.getMessage(),e);
@@ -396,7 +411,14 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     public void sendEmailToInsForSms(String emailKey) {
         try{
             Map<String,Object> param = IaisCommonUtils.genNewHashMap();
-            notificationHelper.sendNotification(emailKey,param,emailKey,emailKey,null,null);
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(emailKey);
+            emailParam.setTemplateContent(param);
+            emailParam.setQueryCode(emailKey);
+            emailParam.setReqRefNum(emailKey);
+            emailParam.setRefIdType(null);
+            emailParam.setRefId(null);
+            notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.error(e.getMessage(),e);
         }
