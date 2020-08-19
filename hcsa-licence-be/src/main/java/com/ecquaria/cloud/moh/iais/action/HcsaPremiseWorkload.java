@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaPrimiseWork
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +71,7 @@ public class HcsaPremiseWorkload {
         String type = ParamUtil.getRequestString(bpc.request,"stageSelect");
         if(StringUtil.isEmpty(type)){
             Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
-            errMap.put("stageSelect","The field is mandatory.");
+            errMap.put("stageSelect", MessageUtil.replaceMessage("GENERAL_ERR0006","Types of Premise","field"));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errMap));
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.FALSE);
         }else{
@@ -112,13 +113,13 @@ public class HcsaPremiseWorkload {
             }else{
                 if(StringUtil.isEmpty(manhour)){
                     item.setManhourCount(null);
-                    errMap.put(name,"The field is mandatory.");
+                    errMap.put(name,MessageUtil.replaceMessage("GENERAL_ERR0006","Workload Manhours","field"));
                 }else if(!StringUtils.isNumeric(manhour)){
                     item.setManhourCount(manhour);
-                    errMap.put(name,"Please only key in numbers.");
+                    errMap.put(name,MessageUtil.getMessageDesc("GENERAL_ERR0027"));
                 }else{
                     item.setManhourCount(manhour);
-                    errMap.put(name,"The field is mandatory.");
+                    errMap.put(name,MessageUtil.replaceMessage("GENERAL_ERR0006","Workload Manhours","field"));
                 }
             }
         }
