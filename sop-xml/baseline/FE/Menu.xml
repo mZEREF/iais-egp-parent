@@ -8,13 +8,13 @@
         <MenuItems>
           <MenuItem displayLabel="Company Registration" url="/cr/eservice/DEMOPROJECT/CR/" fullpath="Cloud CC/Digital Services/Company Registration" priority="100"/>
           <MenuItem displayLabel="Billboard, Signboard, and Advertisement License" url="/bsalic/eservice/DEMOPROJECT/BSALic/" fullpath="Cloud CC/Digital Services/Billboard, Signboard, and Advertisement License" priority="100"/>
-          <MenuItem displayLabel="MohNewApplication" url="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu" fullpath="Cloud CC/Digital Services/MohNewApplication" priority="0"/>
-          <MenuItem displayLabel="InterInbox" url="/main-web/eservice/INTERNET/MohInternetInbox" fullpath="Cloud CC/Digital Services/InterInbox" priority="0"/>
-          <MenuItem displayLabel="Payment" url="/payment/eservice/INTERNET/PaymentRequest" fullpath="Cloud CC/Digital Services/Payment" priority="0"/>
-          <MenuItem displayLabel="MohAppPremSelfDecl" url="/hcsa-licence-web/eservicecontinue/INTERNET/MohAppPremSelfDecl" fullpath="Cloud CC/Digital Services/MohAppPremSelfDecl" priority="0"/>
-          <MenuItem displayLabel="InspecUserUploadRecFile" url="/hcsa-licence-web/eservice/INTERNET/MohInspecUserRectifiUpload" fullpath="Cloud CC/Digital Services/InspecUserUploadRecFile" priority="0"/>
-          <MenuItem displayLabel="CompanyAdmin" url="/main-web/eservice/INTERNET/MohFeAdminUserManagement" fullpath="Cloud CC/Digital Services/CompanyAdmin" priority="0"/>
-          <MenuItem displayLabel="UserAccount" url="/main-web/eservice/INTERNET/MohFeUserManagement" fullpath="Cloud CC/Digital Services/UserAccount" priority="0"/>
+          <MenuItem displayLabel="MohNewApplication" url="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu" fullpath="Cloud CC/Digital Services/MohNewApplication" priority="100"/>
+          <MenuItem displayLabel="InterInbox" url="/main-web/eservice/INTERNET/MohInternetInbox" fullpath="Cloud CC/Digital Services/InterInbox" priority="100"/>
+          <MenuItem displayLabel="Payment" url="/payment/eservice/INTERNET/PaymentRequest" fullpath="Cloud CC/Digital Services/Payment" priority="100"/>
+          <MenuItem displayLabel="MohAppPremSelfDecl" url="/hcsa-licence-web/eservicecontinue/INTERNET/MohAppPremSelfDecl" fullpath="Cloud CC/Digital Services/MohAppPremSelfDecl" priority="100"/>
+          <MenuItem displayLabel="InspecUserUploadRecFile" url="/hcsa-licence-web/eservice/INTERNET/MohInspecUserRectifiUpload" fullpath="Cloud CC/Digital Services/InspecUserUploadRecFile" priority="100"/>
+          <MenuItem displayLabel="CompanyAdmin" url="/main-web/eservice/INTERNET/MohFeAdminUserManagement" fullpath="Cloud CC/Digital Services/CompanyAdmin" priority="100"/>
+          <MenuItem displayLabel="UserAccount" url="/main-web/eservice/INTERNET/MohFeUserManagement" fullpath="Cloud CC/Digital Services/UserAccount" priority="100"/>
         </MenuItems>
       </MenuItem>
       <MenuItem displayLabel="Logout" url="/egov/process/EGPCLOUD/IdentityProviderLogout/" fullpath="Cloud CC/Logout" priority="100"/>
@@ -328,22 +328,22 @@
       <MenuItem displayLabel="Manual Executor" url="/process/SYSTEM/DataSyncManualExecute/" fullpath="Data Synchronise Trail/Manual Executor" priority="100"/>
     </MenuItems>
   </Menu>
-  <Menu name="INTER_INBOX" displayLabel="InterInbox" fullpath="InterInbox" priority="0">
+  <Menu name="INTER_INBOX" displayLabel="InterInbox" fullpath="InterInbox" priority="100">
     <MenuItems>
-      <MenuItem displayLabel="eServices" fullpath="InterInbox/eServices" priority="0">
+      <MenuItem displayLabel="eServices" fullpath="InterInbox/eServices" priority="100">
         <MenuItems>
-          <MenuItem displayLabel="Apply for a New Licence" url="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu" fullpath="InterInbox/eServices/Apply for a New Licence" priority="0"/>
-          <MenuItem displayLabel="Renew a Licence" fullpath="InterInbox/eServices/Renew a Licence" priority="0"/>
-          <MenuItem displayLabel="Amend a Licence" fullpath="InterInbox/eServices/Amend a Licence" priority="0"/>
-          <MenuItem displayLabel="Request to Cease a Licence" fullpath="InterInbox/eServices/Request to Cease a Licence" priority="0"/>
-          <MenuItem displayLabel="Edit a Drafted Application" fullpath="InterInbox/eServices/Edit a Drafted Application" priority="0"/>
-          <MenuItem displayLabel="Withdraw an Application" fullpath="InterInbox/eServices/Withdraw an Application" priority="0"/>
+          <MenuItem displayLabel="Apply for a New Licence" url="/hcsa-licence-web/eservice/INTERNET/MohServiceFeMenu" fullpath="InterInbox/eServices/Apply for a New Licence" priority="100"/>
+          <MenuItem displayLabel="Renew a Licence" fullpath="InterInbox/eServices/Renew a Licence" priority="100"/>
+          <MenuItem displayLabel="Amend a Licence" fullpath="InterInbox/eServices/Amend a Licence" priority="100"/>
+          <MenuItem displayLabel="Request to Cease a Licence" fullpath="InterInbox/eServices/Request to Cease a Licence" priority="100"/>
+          <MenuItem displayLabel="Edit a Drafted Application" fullpath="InterInbox/eServices/Edit a Drafted Application" priority="100"/>
+          <MenuItem displayLabel="Withdraw an Application" fullpath="InterInbox/eServices/Withdraw an Application" priority="100"/>
           <MenuItem displayLabel="View Appointments" url="/hcsa-licence-web/eservice/INTERNET/MohClientRescheduling" fullpath="InterInbox/eServices/View Appointments" priority="1" microservice="Yes"/>
         </MenuItems>
       </MenuItem>
-      <MenuItem displayLabel="Premises List" url="/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList" fullpath="InterInbox/Premises List" priority="0"/>
-      <MenuItem displayLabel="Personnel List" url="/hcsa-licence-web/eservice/INTERNET/MohRfcPersonnelList" fullpath="InterInbox/Personnel List" priority="0"/>
-      <MenuItem displayLabel="Licensee Details" url="/main-web/eservice/INTERNET/MohLicenseeCompanyDetail" fullpath="InterInbox/Licensee Details" priority="0"/>
+      <MenuItem displayLabel="Premises List" url="/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList" fullpath="InterInbox/Premises List" priority="100"/>
+      <MenuItem displayLabel="Personnel List" url="/hcsa-licence-web/eservice/INTERNET/MohRfcPersonnelList" fullpath="InterInbox/Personnel List" priority="100"/>
+      <MenuItem displayLabel="Licensee Details" url="/main-web/eservice/INTERNET/MohLicenseeCompanyDetail" fullpath="InterInbox/Licensee Details" priority="100"/>
     </MenuItems>
   </Menu>
   <Menu name="WORKSPACE_EE" displayLabel="Workspace" fullpath="Workspace (EE)" priority="100" microservice="Yes">
