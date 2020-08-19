@@ -47,5 +47,9 @@
             </tbody>
         </table>
     </div>
-    <a class="btn btn-primary"  onclick="guideSubmit('renew2','second')">NEXT</a>
+    <c:choose>
+        <c:when test="${!empty renewLicSearchResult.rows}">
+            <a class="btn btn-primary " onclick="guideSubmit('renew2','second')">NEXT</a>
+        </c:when>
+    </c:choose>
 </div>

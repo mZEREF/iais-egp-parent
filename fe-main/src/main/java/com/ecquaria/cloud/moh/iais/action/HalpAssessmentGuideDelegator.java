@@ -1585,7 +1585,22 @@ public class HalpAssessmentGuideDelegator {
     public void doAmenfLicStep(BaseProcessClass bpc) throws IOException {
         String action = ParamUtil.getString(bpc.request, "guide_action_type");
         String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
+        String idNoPersonnal = ParamUtil.getString(bpc.request, "personnelOptions");
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
+        if (idNoPersonnal != null){
+            String id = idNoPersonnal.split(",")[1];
+            if("amendLic7".equals(action)) {
+                StringBuilder url2 = new StringBuilder();
+                url2.append(InboxConst.URL_HTTPS)
+                        .append(bpc.request.getServerName())
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList/preparePersonnelEdit")
+                        .append("?personnelNo=")
+                        .append(MaskUtil.maskValue("personnelNo", id));
+                String tokenUrl2 = RedirectUtil.appendCsrfGuardToken(url2.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl2);
+                return;
+            }
+        }
         if(licIdValue != null){
             Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
             if(errorMap.isEmpty()){

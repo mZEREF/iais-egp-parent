@@ -1,12 +1,15 @@
 <div class="form-check-gp">
-
-    <p class="form-check-title">Choose the personnel who's information you wish to amend</p>
-
-    <iais:row>
-        <iais:select name="personnelOptions" options="personnelOptions" id="personnelId" value="${param.personnelOptions}"/>
-    </iais:row>
-
-    <p class="form-check-title">The following licences will be affected by the change of personal Info</p>
+    <div class="row">
+        <p class="form-check-title">Choose the personnel who's information you wish to amend</p>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-5">
+            <iais:select name="personnelOptions" options="personnelOptions" id="personnelId" value="${param.personnelOptions}"/>
+        </div>
+    </div>
+    <div class="row">
+        <p class="form-check-title">The following licences will be affected by the change of personal Info</p>
+    </div>
 
     <iais:pagination  param="amendUpdateContactSearchParam" result="amendUpdateContactSearchResult"/>
     <div class="table-gp">

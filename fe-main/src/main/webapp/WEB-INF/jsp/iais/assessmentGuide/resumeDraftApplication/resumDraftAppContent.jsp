@@ -8,7 +8,7 @@
             <iais:sortableHeader needSort="true" field="APPLICATION_NO" value="Application Number"/>
             <iais:sortableHeader needSort="true" field="app_type" value="Type"/>
             <iais:sortableHeader needSort="true" field="service_id" value="Service"/>
-            <iais:sortableHeader needSort="true" field="STATUS" value="Status"/>
+            <iais:sortableHeader needSort="false" field="STATUS" value="Status"/>
         </tr>
         </thead>
         <tbody>
