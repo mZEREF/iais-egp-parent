@@ -71,6 +71,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -155,41 +156,22 @@ public class InspectionMergeSendNcEmailDelegator {
             appCorrDto.setId(correlationId);
             appPremisesCorrelationDtos.add(appCorrDto);
         }
-        //String oneEmail="";
+        Iterator<AppPremisesCorrelationDto> iterator=appPremisesCorrelationDtos.iterator();
+        while (iterator.hasNext()){
+            AppPremisesCorrelationDto appPremisesCorrelationDto=iterator.next();
+            try {
+                inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId());
+            }catch (Exception e){
+                iterator.remove();
+            }
+
+        }
 
         List<String> appPremCorrIds= IaisCommonUtils.genNewArrayList();
         List<String> svcNames=IaisCommonUtils.genNewArrayList();
 
 
-//        {
-//
-//            for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtos
-//            ) {
-//                try{
-//                    String ncEmail= inspEmailService.getInsertEmail(appPremisesCorrelationDto.getId()).getMessageContent();
-//                    if( ncEmail.contains(THANKS)){
-//                        mesContext.append(ncEmail.substring(0,ncEmail.indexOf(THANKS)));
-//                    }
-//                    else {
-//                        mesContext.append(ncEmail);
-//                    }
-//                }catch (Exception e){
-//                    log.error(e.getMessage(), e);
-//                }
-//            }
-//            for (AppPremisesCorrelationDto aDto:appPremisesCorrelationDtos
-//            ) {
-//                try{
-//                    oneEmail=inspEmailService.getInsertEmail(aDto.getId()).getMessageContent();
-//                    if(oneEmail.contains(THANKS)){
-//                        mesContext.append(oneEmail.substring(oneEmail.indexOf(THANKS)));
-//                        break;
-//                    }
-//                }catch (Exception e){
-//                    log.error(e.getMessage(), e);
-//                }
-//            }
-//        }
+
         InspectionEmailTemplateDto inspectionEmailTemplateDto= new InspectionEmailTemplateDto();
         String mesContext;
         {

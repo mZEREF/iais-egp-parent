@@ -130,7 +130,7 @@
                                                     <iais:row id="selectDecisionMsgRevise" style="display: none">
                                                         <label class="col-xs-0 col-md-2 control-label col-sm-2"></label>
                                                         <iais:value style="color:#ff0000;">
-                                                            Revise is mandatory
+                                                            Need Revise is mandatory.
                                                         </iais:value>
                                                     </iais:row>
                                                     <c:if test="${ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION ==applicationViewDto.applicationDto.applicationType}">
