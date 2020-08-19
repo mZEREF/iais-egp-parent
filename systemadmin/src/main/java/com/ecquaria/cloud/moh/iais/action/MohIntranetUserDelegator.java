@@ -293,6 +293,7 @@ public class MohIntranetUserDelegator {
             }
             intranetUserService.removeRole(removeRoleIds);
             removeRoleIds.clear();
+            //todo:role
             intranetUserService.removeEgpRoles(orgUserDto.getUserDomain(), orgUserDto.getUserId(), removeRoleIds);
         }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
