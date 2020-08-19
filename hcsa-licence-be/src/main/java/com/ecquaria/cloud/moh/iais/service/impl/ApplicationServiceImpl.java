@@ -234,15 +234,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         //ApplicationDto applicationDto, String statgId,String roleId,String correlationId
     }
 
-    @Override
-    public void alertSelfDeclNotification() {
-        log.info("===>>>>alertSelfDeclNotification start");
-        List<SelfAssMtEmailDto> allAssLt = applicationClient.getPendingSubmitSelfAss().getEntity();
-
-        String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT;
-        String msgTmgId2 = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR;
-        String msgTmgId3 = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC;
-
+    private void sendSelfDecl(String queryCode, String msgTemplateId, List<SelfAssMtEmailDto> allAssLt){
         Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
 
         for (SelfAssMtEmailDto i : allAssLt) {
@@ -320,42 +312,33 @@ public class ApplicationServiceImpl implements ApplicationService {
                 jobRemindMsgTrackingDto.setCreateTime(new Date());
                 jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(msgTemplateId);
+                emailParam.setTemplateContent(templateContent);
+                emailParam.setQueryCode(queryCode);
+                emailParam.setReqRefNum(randomStr);
+                emailParam.setRefIdType(refType);
+                emailParam.setRefId(reqRefNum);
 
-                EmailParam email8 = new EmailParam();
-                email8.setTemplateId(msgTmgId);
-                email8.setTemplateContent(templateContent);
-                email8.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY);
-                email8.setReqRefNum(randomStr);
-                email8.setRefIdType(refType);
-                email8.setRefId(reqRefNum);
-                email8.setJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
-                notificationHelper.sendNotification(email8);
-
-                EmailParam email1 = new EmailParam();
-                email1.setTemplateId(msgTmgId2);
-                email1.setTemplateContent(templateContent);
-                email1.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR);
-                email1.setReqRefNum(randomStr);
-                email1.setRefIdType(refType);
-                email1.setRefId(reqRefNum);
-
-                //EN-CHM-001
-                notificationHelper.sendNotification(email1);
-
-                EmailParam email2 = new EmailParam();
-                email2.setTemplateId(msgTmgId3);
-                email2.setTemplateContent(templateContent);
-                email2.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC);
-                email2.setReqRefNum(randomStr);
-                email2.setRefIdType(refType);
-                email2.setRefId(reqRefNum);
-
-                //EN-CHM-002
-                notificationHelper.sendNotification(email2);
+                emailParam.setJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
+                notificationHelper.sendNotification(emailParam);
             }
 
             log.info("===>>>>alertSelfDeclNotification end");
         }
+    }
+
+    @Override
+    public void alertSelfDeclNotification() {
+        log.info("===>>>>alertSelfDeclNotification start");
+        List<SelfAssMtEmailDto> email008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY).getEntity();
+        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, email008);
+
+        List<SelfAssMtEmailDto> email001 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR).getEntity();
+        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR, email001);
+
+        List<SelfAssMtEmailDto> email002 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC).getEntity();
+        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC, email002);
     }
 
     @Override
