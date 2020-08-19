@@ -304,6 +304,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             emailParam.setQueryCode(applicationNo);
             emailParam.setReqRefNum(applicationNo);
             emailParam.setTemplateContent(map);
+            emailParam.setRefId(applicationNo);
             notificationHelper.sendNotification(emailParam);
         }
     }
