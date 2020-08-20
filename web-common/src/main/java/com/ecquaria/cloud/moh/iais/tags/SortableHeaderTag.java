@@ -73,7 +73,7 @@ public class SortableHeaderTag extends DivTagSupport {
 
             generateHtml(sb,isActiveUp,isActiveDown);
         }
-        sb.append(StringUtil.viewHtml(value));
+        sb.append("<p style=\"margin-top: 6px;\">"+StringUtil.viewHtml(value)+"</p>");
         sb.append("</th>");
 
         try {
