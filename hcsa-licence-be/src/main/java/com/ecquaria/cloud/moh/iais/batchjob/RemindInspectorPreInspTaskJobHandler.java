@@ -117,7 +117,7 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
         JobLogger.log(StringUtil.changeForLog("Inspection Date = " + inspDate));
         List<Date> dayList = MiscUtil.getDateInPeriodByRecurrence(new Date(), inspDate);
         if(!IaisCommonUtils.isEmpty(dayList)){
-            int nowDays = dayList.size();
+            int nowDays = dayList.size() - 1;
             log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
             JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
             if(days == nowDays){
