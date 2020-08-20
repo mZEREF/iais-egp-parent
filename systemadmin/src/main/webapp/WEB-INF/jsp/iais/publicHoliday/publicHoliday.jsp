@@ -69,13 +69,13 @@
                             <table class="table">
                                 <thead>
                                 <tr align="center">
-                                    <th></th>
-                                    <th>S/N</th>
+                                    <iais:sortableHeader needSort="false" field="" value=" "/>
+                                    <iais:sortableHeader needSort="false" field="" value="S/N"/>
                                     <iais:sortableHeader needSort="true" field="FROM_DATE" value="Year"/>
                                     <iais:sortableHeader needSort="true"  field="FROM_DATE" value="Non-working Date"/>
                                     <iais:sortableHeader needSort="true"  field="DESCRIPTION" value="Holiday Description"/>
                                     <iais:sortableHeader needSort="true" field="status" value="Status"/>
-                                    <th>Action</th>
+                                    <iais:sortableHeader needSort="false" field="" value="Action"/>
                                 </tr>
                                 </thead>
                                 <tbody>
