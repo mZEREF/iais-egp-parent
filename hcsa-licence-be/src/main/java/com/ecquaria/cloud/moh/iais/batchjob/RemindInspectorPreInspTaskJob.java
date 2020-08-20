@@ -108,6 +108,7 @@ public class RemindInspectorPreInspTaskJob {
             JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
             if(days == nowDays){
                 Map<String, Object> templateMap = getEmailField(applicationDto, appPremisesCorrelationDto);
+
                 notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_REMIND_INSPECTOR_PRE_INSP_READY, templateMap, appNo, appNo,
                         NotificationHelper.RECEIPT_TYPE_APP, appNo);
             }

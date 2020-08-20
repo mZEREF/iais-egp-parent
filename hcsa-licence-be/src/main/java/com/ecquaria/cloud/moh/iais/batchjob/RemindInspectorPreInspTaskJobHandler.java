@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -121,8 +122,30 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
             JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
             if(days == nowDays){
                 Map<String, Object> templateMap = getEmailField(applicationDto, appPremisesCorrelationDto);
-                notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_REMIND_INSPECTOR_PRE_INSP_READY, templateMap, appNo, appNo,
-                        NotificationHelper.RECEIPT_TYPE_APP, appNo);
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REMIND_INSPECTOR_PRE_INSP_READY);
+                emailParam.setTemplateContent(templateMap);
+                emailParam.setQueryCode(appNo);
+                emailParam.setReqRefNum(appNo);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                emailParam.setRefId(appNo);
+                notificationHelper.sendNotification(emailParam);
+                EmailParam smsParam = new EmailParam();
+                smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REMIND_INSPECTOR_PRE_INSP_READY);
+                smsParam.setQueryCode(appNo);
+                smsParam.setReqRefNum(appNo);
+                smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                smsParam.setRefId(appNo);
+                smsParam.setSubject("MOH HALP - [Internal] Inspection Task not ready for inspection");
+                notificationHelper.sendNotification(smsParam);
+                EmailParam msgParam = new EmailParam();
+                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REMIND_INSPECTOR_PRE_INSP_READY);
+                msgParam.setTemplateContent(templateMap);
+                msgParam.setQueryCode(appNo);
+                msgParam.setReqRefNum(appNo);
+                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                msgParam.setRefId(appNo);
+                notificationHelper.sendNotification(msgParam);
             }
         }
     }
