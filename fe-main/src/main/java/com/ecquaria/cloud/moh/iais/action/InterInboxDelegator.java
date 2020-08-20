@@ -552,7 +552,7 @@ public class InterInboxDelegator {
         boolean result = true;
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        String tmp = MessageUtil.getMessageDesc("INBOX_ACK013");
+        String tmp = MessageUtil.getMessageDesc("INBOX_ACK015");
         StringBuilder errorMessage = new StringBuilder();
         if(licIds != null){
             List<String> licIdValue = IaisCommonUtils.genNewArrayList();
