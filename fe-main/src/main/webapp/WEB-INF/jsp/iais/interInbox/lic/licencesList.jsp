@@ -107,16 +107,16 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <iais:sortableHeader needSort="false" field="" value=" " />
+                        <iais:sortableHeader needSort="false" field="" value=" " style="width:1%;"/>
                         <iais:sortableHeader needSort="true" field="LICENCE_NO"
-                                             value="Licence No."/>
-                        <iais:sortableHeader needSort="true" field="SVC_NAME" value="Type"/>
-                        <iais:sortableHeader needSort="true" field="LIC_STATUS_DESC" value="Status" style="width:9%;"/>
-                        <iais:sortableHeader needSort="true" field="address" value="Premises" style="width:19%;"/>
+                                             value="Licence No." style="width:15%;"/>
+                        <iais:sortableHeader needSort="true" field="SVC_NAME" value="Type" style="width:12%;"/>
+                        <iais:sortableHeader needSort="true" field="LIC_STATUS_DESC" value="Status" style="width:2%;"/>
+                        <iais:sortableHeader needSort="true" field="address" value="Premises" style="width:22%;"/>
                         <iais:sortableHeader needSort="true" field="START_DATE"
-                                             value="Start Date"/>
+                                             value="Start Date" style="width:11%;"/>
                         <iais:sortableHeader needSort="true" field="EXPIRY_DATE"
-                                             value="Expiry Date"/>
+                                             value="Expiry Date" style="width:11%;"/>
                     </tr>
                     </thead>
                     <tbody>
