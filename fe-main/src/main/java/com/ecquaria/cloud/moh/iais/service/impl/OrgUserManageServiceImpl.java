@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
@@ -21,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.FEMainRbacClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
@@ -48,6 +50,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Autowired
     private UserClient userClient;
+
+    @Autowired
+    private FEMainRbacClient feMainRbacClient;
 
     @Autowired
     private EicGatewayFeMainClient eicGatewayFeMainClient;
@@ -234,24 +239,25 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             return;
         }
 
-        clientUser = MiscUtil.transferEntityDto(userDto, ClientUser.class);
-        clientUser.setUserDomain(userDto.getUserDomain());
-        clientUser.setId(userDto.getUserId());
-        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+        String userId = userDto.getUserId();
         String email = userDto.getEmail();
         String salutation = userDto.getSalutation();
+
+        clientUser = MiscUtil.transferEntityDto(userDto, ClientUser.class);
+        clientUser.setId(userId);
+        clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
+        clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
         clientUser.setSalutation(salutation);
         clientUser.setEmail(email);
 
         UserIdentifier userIdentifier = new UserIdentifier();
-        userIdentifier.setId(userDto.getUserId());
-        userIdentifier.setUserDomain(userDto.getUserDomain());
-
+        userIdentifier.setId(userId);
+        userIdentifier.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
 
         String randomStr = IaisEGPHelper.generateRandomString(6);
         String pwd = PasswordUtil.encryptPassword(userIdentifier, randomStr, null);
-        clientUser.setPassword(pwd);
 
+        clientUser.setPassword(pwd);
         clientUser.setPasswordChallengeQuestion("A");
         clientUser.setPasswordChallengeAnswer("A");
 
@@ -261,7 +267,18 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         calendar.add(Calendar.DAY_OF_MONTH, 12);
         clientUser.setAccountActivateDatetime(activeDate);
         clientUser.setAccountDeactivateDatetime(calendar.getTime());
-        String json = JsonUtil.parseToJson(clientUser);
+
+        OrgUserRoleDto userRoleDto = userDto.getUserRoleDto();
+        if (userDto != null){
+            EgpUserRoleDto egpUserRole = new EgpUserRoleDto();
+            egpUserRole.setUserId(userId);
+            egpUserRole.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+            egpUserRole.setRoleId(userRoleDto.getRoleName());
+            egpUserRole.setPermission("A");
+
+            //assign role
+            feMainRbacClient.createUerRoleIds(egpUserRole).getEntity();
+        }
         userClient.createClientUser(clientUser);
     }
 
