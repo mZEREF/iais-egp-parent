@@ -3,11 +3,9 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -17,22 +15,23 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.WithdrawalService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.sz.commons.util.FileUtil;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: Hc
@@ -133,6 +132,7 @@ public class WithdrawalDelegator {
         String withdrawnReason = ParamUtil.getRequestString(mulReq, "withdrawalReason");
         String paramAppNos = ParamUtil.getString(mulReq, "withdraw_app_list");
         List<WithdrawnDto> withdrawnDtoList = IaisCommonUtils.genNewArrayList();
+        String isValid = IaisEGPConstant.YES;
         if (!StringUtil.isEmpty(paramAppNos)){
             String[] withdrawAppNos = paramAppNos.split("#");
             for (int i =0;i<withdrawAppNos.length;i++){
@@ -147,15 +147,22 @@ public class WithdrawalDelegator {
                 withdrawnDto.setApplicationNo(appNo);
                 withdrawnDto.setLicenseeId(loginContext.getLicenseeId());
                 withdrawnDto.setWithdrawnReason(withdrawnReason);
+                boolean remarkEmpty = true;
                 if ("WDR005".equals(withdrawnReason)){
                     String withdrawnRemarks = ParamUtil.getRequestString(bpc.request, "withdrawnRemarks");
                     withdrawnDto.setWithdrawnRemarks(withdrawnRemarks);
+                    if(StringUtil.isEmpty(withdrawnRemarks)){
+                        remarkEmpty = false;
+                    }
                 }
                 ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
+                if(!remarkEmpty){
+                    validationResult.addMessage("withdrawnRemarks",MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks","field"));
+                }
                 if(validationResult != null && validationResult.isHasErrors()){
                     Map<String, String> errorMap = validationResult.retrieveAll();
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
+                    isValid = IaisEGPConstant.NO;
                     if (commonsMultipartFile !=null && commonsMultipartFile.getSize() > 0){
                         ParamUtil.setRequestAttr(bpc.request,"file_upload_withdraw",commonsMultipartFile.getFileItem().getName());
                     }
@@ -177,7 +184,7 @@ public class WithdrawalDelegator {
             }
             withdrawalService.saveWithdrawn(withdrawnDtoList);
         }
-        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,IaisEGPConstant.YES);
+        ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID,isValid);
     }
 
     public void saveDateStep(BaseProcessClass bpc){
