@@ -61,8 +61,11 @@
                                         <egov-smc:commonLabel><c:out value="${item.displayLabel}"/></egov-smc:commonLabel>
                                     </a>
                                 </li>
+
                             </c:otherwise>
                         </c:choose>
+                        <li class="divider" role="separator"></li>
+                        <li><a href="#">Step-by-step guide to eServices</a></li>
                         </ol>
                     </c:if>
                 </c:when>
