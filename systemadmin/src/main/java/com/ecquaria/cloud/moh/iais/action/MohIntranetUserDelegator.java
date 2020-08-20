@@ -12,6 +12,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -72,6 +74,7 @@ public class MohIntranetUserDelegator {
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.SEARCH_PARAM, null);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.SEARCH_RESULT, null);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, null);
+        ParamUtil.setSessionAttr(bpc.request, "roleMap", null);
         ParamUtil.setSessionAttr(bpc.request, "orgUserDtos1", null);
         SearchParam searchParam = SearchResultHelper.getSearchParam(request, filterParameter, true);
         QueryHelp.setMainSql("systemAdmin", "IntranetUserQuery", searchParam);
@@ -228,20 +231,21 @@ public class MohIntranetUserDelegator {
         List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(userAccId);
         List<String> roleNames = IaisCommonUtils.genNewArrayList();
         List<String> assignRoleIds = IaisCommonUtils.genNewArrayList();
-        roleNames.clear();
-        assignRoleIds.clear();
+        Map<String,String> roleMap = IaisCommonUtils.genNewHashMap();
         if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
             for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
                 String roleName = orgUserRoleDto.getRoleName();
                 String assignRoleId = orgUserRoleDto.getId();
                 roleNames.add(roleName);
                 assignRoleIds.add(assignRoleId);
+                roleMap.put(assignRoleId,roleName);
             }
         }
         assignRoleOption.removeAll(roleNames);
         ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", assignRoleOption);
         ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoles", roleNames);
         ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoleIds", assignRoleIds);
+        ParamUtil.setSessionAttr(bpc.request, "roleMap", (Serializable) roleMap);
 
         if (userAccId != null) {
             OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(userAccId);
@@ -287,14 +291,20 @@ public class MohIntranetUserDelegator {
         }
         if (removeRoles != null) {
             List<String> removeRoleIds = IaisCommonUtils.genNewArrayList();
-            removeRoleIds.clear();
             for (String removeRole : removeRoles) {
                 removeRoleIds.add(removeRole);
             }
             intranetUserService.removeRole(removeRoleIds);
-            removeRoleIds.clear();
+
             //todo:role
-            intranetUserService.removeEgpRoles(orgUserDto.getUserDomain(), orgUserDto.getUserId(), removeRoleIds);
+            List<String> removeRoleNames = IaisCommonUtils.genNewArrayList();
+            Map<String,String> roleMap = (Map<String,String>)ParamUtil.getSessionAttr(bpc.request, "roleMap");
+            roleMap.forEach((roleId, roleName) -> {
+                if(removeRoleIds.contains(roleId)){
+                    removeRoleNames.add(roleName);
+                }
+            });
+            intranetUserService.removeEgpRoles(orgUserDto.getUserDomain(), orgUserDto.getUserId(), removeRoleNames);
         }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
         ParamUtil.setRequestAttr(bpc.request, "userAccId", userAccId);
@@ -1029,7 +1039,10 @@ public class MohIntranetUserDelegator {
         String so10 = "ASO_LEAD";
         String so11 = "PSO";
         String so12 = "PSO_LEAD";
-        String so13 = "SYSTEM_USER_ADMIN";
+        String so13 = "APO";
+        String so14 = "AO";
+        String so15 = "SYSTEM_USER_ADMIN";
+        String so16 =  "BROADCAST";
         roleOptions.add(so1);
         roleOptions.add(so2);
         roleOptions.add(so3);
@@ -1043,6 +1056,9 @@ public class MohIntranetUserDelegator {
         roleOptions.add(so11);
         roleOptions.add(so12);
         roleOptions.add(so13);
+        roleOptions.add(so14);
+        roleOptions.add(so15);
+        roleOptions.add(so16);
         return roleOptions;
     }
 
