@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <users>
     <user>
-        <userDomain>intranet</userDomain>
+        <userDomain>cs_hcsa</userDomain>
         <id>halp_admin</id>
         <displayName>HALP Admin</displayName>
         <picture></picture>
