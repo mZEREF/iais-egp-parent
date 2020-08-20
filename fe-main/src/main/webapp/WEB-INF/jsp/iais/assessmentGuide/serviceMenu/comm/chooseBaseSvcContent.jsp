@@ -10,6 +10,15 @@
 
 <div class="row">
     <div class="col-xs-12 col-md-7">
+        <div class="row">
+            <div class="col-xs12 col-md-12" style="font-size: 16px;">
+                Below are your existing base service licences. Select an existing base service prescribed as underlying to the special licensable service if applicable. Else, please add a new base service accordingly.
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 col-md-7">
         <div class="self-assessment-checkbox-gp gradient-light-grey">
             <c:if test="${reloadSvcInfo.size()>0}">
                 <c:set var="reloadSvcInfo" value="${appSvcRelatedInfoList.get(0)}"/>
@@ -108,6 +117,11 @@
                     </c:forEach>
                 </div>
             </c:forEach>
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    Note: In the absence of a pre-existing base service, you may only apply for 1 premises at a time. <a href="<iais:code code="URL001"/> ">Learn more</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
