@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -684,8 +685,12 @@ public class ServiceMenuDelegator {
                     QueryHelp.setMainSql("applicationQuery", "getLicenceBySerName",searchParam);
                     SearchResult<MenuLicenceDto> searchResult = licenceViewService.getMenuLicence(searchParam);
                     if(searchResult.getRowCount()<=1){
-                        //0066206
-                        nextstep = CHOOSE_ALIGN;
+                        if(basechks.length > 1){
+                            //0066206
+                            nextstep = CHOOSE_ALIGN;
+                        }else{
+                            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
+                        }
                     }
                     //reset
                     searchParam = initSearParam();
