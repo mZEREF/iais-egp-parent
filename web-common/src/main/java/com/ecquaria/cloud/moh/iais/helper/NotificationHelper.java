@@ -539,7 +539,14 @@ public class NotificationHelper {
 			}
 			if (mobile != null && !mobile.isEmpty()) {
 				if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
-					//todo eic
+					smsDto.setReceipts(mobile);
+					smsDto.setReqRefNum(refNo);
+					HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+					HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+					String gatewayUrl = env.getProperty("iais.intra.gateway.url");
+					IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/send-sms", HttpMethod.POST, smsDto,
+							MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+							signature2.date(), signature2.authorization(), InterMessageDto.class);
 				} else {
 					emailHistoryCommonClient.sendSMS(mobile, smsDto, refNo);
 				}
