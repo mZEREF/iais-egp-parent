@@ -80,7 +80,6 @@ public class EmailResendDelegator {
                 i ++;
             }
         }
-        lastxxDays(bpc);
         QueryHelp.setMainSql("systemAdmin", "failEmail",searchParam);
         SearchResult<ResendListDto> searchResult = blastManagementListService.resendList(searchParam);
         ParamUtil.setSessionAttr(bpc.request,"resendSearchResult",searchResult);
@@ -104,23 +103,11 @@ public class EmailResendDelegator {
         searchParam.setSort("sent_time", SearchParam.ASCENDING);
         String start = ParamUtil.getRequestString(bpc.request,"start");
         String end = ParamUtil.getRequestString(bpc.request,"end");
-        String xxdays = ParamUtil.getRequestString(bpc.request,"xxdays");
-        if(xxdays != null){
-            Date enddate = new Date();
-            Formatter.formatDateTime(enddate, "dd/MM/yyyy");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.add(Calendar.DATE, -Integer.valueOf(xxdays));
-            SimpleDateFormat sj = new SimpleDateFormat("dd/MM/yyyy");
-            searchParam.addFilter("start",  sj.format(calendar.getTime()) + " 00:00:00",true);
-            searchParam.addFilter("end",  Formatter.formatDate(enddate) + " 23:59:59",true);
-        }else{
-            if(!StringUtil.isEmpty(start)){
-                searchParam.addFilter("start", start + " 00:00:00",true);
-            }
-            if(!StringUtil.isEmpty(end)){
-                searchParam.addFilter("end",  end + " 23:59:59",true);
-            }
+        if(!StringUtil.isEmpty(start)){
+            searchParam.addFilter("start", start + " 00:00:00",true);
+        }
+        if(!StringUtil.isEmpty(end)){
+            searchParam.addFilter("end",  end + " 23:59:59",true);
         }
 
         if(!StringUtil.isEmpty(end) && !StringUtil.isEmpty(start)){
@@ -137,11 +124,9 @@ public class EmailResendDelegator {
                 log.error(e.getMessage(), e);
             }
         }
-        lastxxDays(bpc);
         ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",searchParam);
         ParamUtil.setRequestAttr(bpc.request,"start",start);
         ParamUtil.setRequestAttr(bpc.request,"end",end);
-        ParamUtil.setRequestAttr(bpc.request,"xxdays",xxdays);
     }
 
     private void lastxxDays(BaseProcessClass bpc){
