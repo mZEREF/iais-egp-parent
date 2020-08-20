@@ -212,6 +212,7 @@
                     '                                </div>')
             }
         });
+        $('#newappModal').modal('hide');
     });
 
     function doSubmit() {
