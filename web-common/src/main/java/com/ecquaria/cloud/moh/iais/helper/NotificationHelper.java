@@ -538,7 +538,11 @@ public class NotificationHelper {
 				mobile = getMobileOfficer(roles, mobile);
 			}
 			if (mobile != null && !mobile.isEmpty()) {
-				emailHistoryCommonClient.sendSMS(mobile, smsDto, refNo);
+				if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
+					//todo eic
+				} else {
+					emailHistoryCommonClient.sendSMS(mobile, smsDto, refNo);
+				}
 			}
 		}catch (Exception e){
 			log.error(StringUtil.changeForLog("error"));
