@@ -113,15 +113,11 @@
                     </c:forEach>
                 </div>
             </c:forEach>
-            <c:if test="${multiSameSvc}">
-                <div class="row">
-                    <%--<div class="col-xs-12 col-md-1">--%>
-                    <%--</div>--%>
-                    <div class="col-xs-12 col-md-12">
-                        Note: In the absence of a pre-existing base service, you may only apply for 1 premises at a time. <a href="<iais:code code="URL001"/> ">Learn more</a>
-                    </div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    Note: In the absence of a pre-existing base service, you may only apply for 1 premises at a time. <a href="<iais:code code="URL001"/> ">Learn more</a>
                 </div>
-            </c:if>
+            </div>
         </div>
     </div>
 </div>

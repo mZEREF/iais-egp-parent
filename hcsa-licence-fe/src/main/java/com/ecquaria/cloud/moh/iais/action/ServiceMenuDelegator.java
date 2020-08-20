@@ -352,35 +352,6 @@ public class ServiceMenuDelegator {
         if(svcPremises.size() == 0) {
             noExistBaseLic = true;
         }
-        boolean multiSameSvc = false;
-        //svcCode,count
-        Map<String,Integer> baseCount = IaisCommonUtils.genNewHashMap();
-        if(baseAndSpcSvcMap != null && baseAndSpcSvcMap.size()>1){
-            for(Map.Entry<String, List<HcsaServiceDto>> kv:baseAndSpcSvcMap.entrySet()){
-                List<HcsaServiceDto> hcsaServiceDtos = kv.getValue();
-                if(hcsaServiceDtos != null){
-                    for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
-                        String svcCode = hcsaServiceDto.getSvcCode();
-                        Integer count = baseCount.get(svcCode);
-                        if(count != null){
-                            count ++;
-
-                        }else{
-                            count = 1;
-                        }
-                        baseCount.put(svcCode,count);
-                    }
-                }
-            }
-            for(Map.Entry<String, Integer> kv:baseCount.entrySet()){
-                Integer count = kv.getValue();
-                if(count != null && count >1){
-                    multiSameSvc = true;
-                    break;
-                }
-            }
-        }
-        ParamUtil.setSessionAttr(bpc.request,"multiSameSvc",multiSameSvc);
         ParamUtil.setSessionAttr(bpc.request,BASE_SVC_PREMISES_MAP, (Serializable) svcPremises);
         ParamUtil.setSessionAttr(bpc.request,BASE_LIC_PREMISES_MAP, (Serializable) baseLicMap);
         ParamUtil.setSessionAttr(bpc.request,NO_EXIST_BASE_LIC,noExistBaseLic);
