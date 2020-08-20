@@ -1,9 +1,11 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -33,6 +35,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -86,6 +89,9 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
     @Autowired
     private AppConfigClient appConfigClient;
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Autowired
     private EicRequestTrackingHelper eicRequestTrackingHelper;
@@ -806,6 +812,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             map.put("dateStrList", dateStrList);
             map.put("fe_date", dateStr);
             map.put("officer_name", "officer_name");
+            String url = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            map.put("systemLink", url);
             StringBuilder sb = new StringBuilder("MOH HALP - [Internal] Licensee Request to Reschedule Inspection Appointment Date for ");
             sb.append(appNo);
 
