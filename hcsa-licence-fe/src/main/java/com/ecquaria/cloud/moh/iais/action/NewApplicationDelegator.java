@@ -1270,7 +1270,7 @@ public class NewApplicationDelegator {
         if (!StringUtil.isEmpty(appNo)) {
             ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(appNo).getEntity();
             if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())) {
-                InterMessageDto interMessageBySubjectLike = appSubmissionService.getInterMessageBySubjectLike(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + applicationDto.getApplicationNo(), MessageConstants.MESSAGE_STATUS_UNRESPONSE);
+                InterMessageDto interMessageBySubjectLike = appSubmissionService.getInterMessageBySubjectLike(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + applicationDto.getApplicationNo(), MessageConstants.MESSAGE_STATUS_RESPONSE);
                 List<AppEditSelectDto> entity = applicationClient.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
                 String url = "";
                 String s = MaskUtil.maskValue("appNo", applicationDto.getApplicationNo());
@@ -1280,14 +1280,14 @@ public class NewApplicationDelegator {
                     if (rfcFlag && premisesListEdit) {
                         url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST + s;
                         sendURL(bpc.request, bpc.response, url);
-                        ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
+                        bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
                         return;
                     }
                 }
 
                 url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION + s;
                 sendURL(bpc.request, bpc.response, url);
-                ParamUtil.setSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
+                bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
                 return;
             }
             //cessation
@@ -2085,6 +2085,77 @@ public class NewApplicationDelegator {
         return appSubmissionDtoList;
     }
 
+    private List<String> changeCgo(List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList) throws Exception {
+        List<String> ids=IaisCommonUtils.genNewArrayList();
+        if (appSvcCgoDtoList != null && oldAppSvcCgoDtoList != null) {
+            List<AppSvcCgoDto> n = copyAppSvcCgo(appSvcCgoDtoList);
+            List<AppSvcCgoDto> o = copyAppSvcCgo(oldAppSvcCgoDtoList);
+            if(n.equals(o)){
+                return ids;
+            }
+            for(AppSvcCgoDto appSvcCgoDto : n){
+                for(AppSvcCgoDto appSvcCgoDto1 : o){
+                    if(appSvcCgoDto.getIdNo().equals(appSvcCgoDto1.getIdNo())){
+                     boolean b=   appSvcCgoDto.getName().equals(appSvcCgoDto1.getName())&&appSvcCgoDto.getDesignation().equals(appSvcCgoDto1.getDesignation())
+                             &&appSvcCgoDto.getEmailAddr().equals(appSvcCgoDto1.getEmailAddr())&&appSvcCgoDto.getMobileNo().equals(appSvcCgoDto1.getMobileNo());
+                        if(!b){
+                            ids.add(appSvcCgoDto.getIdNo()) ;
+                        }
+                    }
+                }
+            }
+        }
+        return ids;
+    }
+    private List<String> changePo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList, List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList)  throws Exception{
+        List<String> ids=IaisCommonUtils.genNewArrayList();
+        if (appSvcPrincipalOfficersDtoList != null && oldAppSvcPrincipalOfficersDtoList != null) {
+            List<AppSvcPrincipalOfficersDto> n = copyAppSvcPo(appSvcPrincipalOfficersDtoList);
+            List<AppSvcPrincipalOfficersDto> o = copyAppSvcPo(oldAppSvcPrincipalOfficersDtoList);
+            if(n.equals(o)){
+                return ids;
+            }
+            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : n){
+                for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto1 : o){
+                    if(appSvcPrincipalOfficersDto.getIdNo().equals(appSvcPrincipalOfficersDto1.getIdNo())){
+                        boolean b = appSvcPrincipalOfficersDto.getName().equals(appSvcPrincipalOfficersDto1.getName())
+                                &&appSvcPrincipalOfficersDto.getSalutation().equals(appSvcPrincipalOfficersDto1.getSalutation())
+                                &&appSvcPrincipalOfficersDto.getDesignation().equals(appSvcPrincipalOfficersDto1.getDesignation())
+                                &&appSvcPrincipalOfficersDto.getOfficeTelNo().equals(appSvcPrincipalOfficersDto1.getOfficeTelNo())
+                                &&appSvcPrincipalOfficersDto.getMobileNo().equals(appSvcPrincipalOfficersDto1.getMobileNo())
+                                &&appSvcPrincipalOfficersDto.getEmailAddr().equals(appSvcPrincipalOfficersDto1.getEmailAddr());
+                        if(!b){
+                            ids.add(appSvcPrincipalOfficersDto.getIdNo());
+                        }
+                    }
+                }
+            }
+        }
+        return ids;
+    }
+    private List<String> changeMeadrter(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList, List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList1) throws Exception{
+        List<String> ids=IaisCommonUtils.genNewArrayList();
+        if (appSvcMedAlertPersonList != null && oldAppSvcMedAlertPersonList1 != null) {
+            List<AppSvcPrincipalOfficersDto> n = copyMedaler(appSvcMedAlertPersonList);
+            List<AppSvcPrincipalOfficersDto> o = copyMedaler(oldAppSvcMedAlertPersonList1);
+            if(n.equals(o)){
+                return ids;
+            }
+            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : n){
+                for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto1 : o){
+                    if(appSvcPrincipalOfficersDto.getIdNo().equals(appSvcPrincipalOfficersDto1.getIdNo())){
+                        boolean b=appSvcPrincipalOfficersDto.getSalutation().equals(appSvcPrincipalOfficersDto1.getSalutation())
+                                &&appSvcPrincipalOfficersDto.getName().equals(appSvcPrincipalOfficersDto1.getName())
+                                &&appSvcPrincipalOfficersDto.getMobileNo().equals(appSvcPrincipalOfficersDto1.getMobileNo())
+                                &&appSvcPrincipalOfficersDto.getEmailAddr().equals(appSvcPrincipalOfficersDto1.getEmailAddr())
+                                &&appSvcPrincipalOfficersDto.getPreferredMode().equals(appSvcPrincipalOfficersDto1.getPreferredMode());
+                    }
+                }
+            }
+
+        }
+        return ids;
+    }
     private boolean eqCgo(List<AppSvcCgoDto> appSvcCgoDtoList, List<AppSvcCgoDto> oldAppSvcCgoDtoList) throws Exception {
         if (appSvcCgoDtoList != null && oldAppSvcCgoDtoList != null) {
             List<AppSvcCgoDto> n = copyAppSvcCgo(appSvcCgoDtoList);
@@ -2217,7 +2288,7 @@ public class NewApplicationDelegator {
         changePerson.setAmount(0.0);
         changePerson.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         changePerson.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-        changePerson.setIsNeedNewLicNo(AppConsts.YES);
+        changePerson.setIsNeedNewLicNo(AppConsts.NO);
         changePerson.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         appSubmissionService.transform(changePerson, appSubmissionDto.getLicenseeId());
         PreOrPostInspectionResultDto preOrPostInspectionResultDto1 = appSubmissionService.judgeIsPreInspection(changePerson);

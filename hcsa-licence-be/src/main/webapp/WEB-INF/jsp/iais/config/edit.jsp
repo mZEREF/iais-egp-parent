@@ -486,9 +486,7 @@
                     </select>
                     <span name="iaisErrorMsg" class="error-msg" id="error_schemeType${routingStages.key}${status.index}"></span>
                   </div>
-
                 </td>
-
                 <td>
                   <div class="col-xs-12 col-md-12" style="text-align:left">
                     <input style="margin: 8px 0px 8px" type="text" maxlength="2" name="WorkloadManhours${routingStage.stageCode}${routingStages.key}" value="${routingStage.manhours}" >

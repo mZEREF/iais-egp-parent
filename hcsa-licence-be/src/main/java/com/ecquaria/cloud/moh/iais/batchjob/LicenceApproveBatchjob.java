@@ -1680,6 +1680,13 @@ public class LicenceApproveBatchjob {
             }
             int version = 1;
             if (originLicenceDto != null) {
+                //appeal add cgo not need new licence no
+                if(applicationDto!=null){
+                    if(!applicationDto.isNeedNewLicNo()&&applicationDto.getOriginLicenceId()!=null){
+                        licenceDto.setLicenceNo(originLicenceDto.getLicenceNo());
+                        version=originLicenceDto.getVersion()+1;
+                    }
+                }
                 licenceDto.setOriginLicenceId(originLicenceDto.getId());
                 licenceDto.setMigrated(originLicenceDto.isMigrated());
             } else {

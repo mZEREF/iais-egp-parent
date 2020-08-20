@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
@@ -36,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +62,8 @@ public class InterInboxDelegator {
 
     @Autowired
     private InboxService inboxService;
-
+    @Autowired
+    private LicenceInboxClient licenceInboxClient;
     @Autowired
     private InterInboxDelegator(InboxService inboxService){
         this.inboxService = inboxService;
@@ -430,6 +433,16 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String licMaskId = ParamUtil.getString(bpc.request, "licenceNo");
         String licId = ParamUtil.getMaskedString(bpc.request,licMaskId);
+        LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+        boolean isActive = licenceDto != null && ApplicationConsts.LICENCE_STATUS_ACTIVE.equals(licenceDto.getStatus());
+        if(!isActive){
+            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,MessageUtil.getMessageDesc("INBOX_ACK011"));
+            List<String> licIdValues = IaisCommonUtils.genNewArrayList();
+            licIdValues.add(licId);
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
+            ParamUtil.setRequestAttr(bpc.request,"licIsAppealed",Boolean.FALSE);
+            return;
+        }
         List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licId);
         if(!draftByLicAppId.isEmpty()){
             String isNeedDelete = bpc.request.getParameter("isNeedDelete");

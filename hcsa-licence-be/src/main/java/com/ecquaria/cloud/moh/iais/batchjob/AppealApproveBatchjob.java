@@ -283,7 +283,9 @@ public class AppealApproveBatchjob {
             LicAppCorrelationDto licAppCorrelationDto = hcsaLicenceClient.getOneLicAppCorrelationByApplicationId(o.getId()).getEntity();
             //not need new licence no
             o.setNeedNewLicNo(false);
-            o.setOriginLicenceId(licAppCorrelationDto.getLicenceId());
+            if(licAppCorrelationDto!=null){
+                o.setOriginLicenceId(licAppCorrelationDto.getLicenceId());
+            }
             o.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             appealApplicaiton.add(o);
             ApplicationGroupDto applicationGroupDto = applicationClient.getAppById(o.getAppGrpId()).getEntity();
@@ -293,19 +295,11 @@ public class AppealApproveBatchjob {
         }
 
         if(appealDto != null){
-            String relateRecId = appealDto.getRelateRecId();
-            if(relateRecId!=null){
-                ApplicationDto applicationDto = applicationClient.getApplicationById(relateRecId).getEntity();
-                if(applicationDto!=null){
-                    try {
-                        sendEmailApproved(applicationDto,ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO,"",
-                                "","" );
-                    }catch (Exception e){
-                        log.error(e.getMessage(),e);
-                    }
-
-                }
-
+            try {
+                sendEmailApproved(appealApplication,ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO,"",
+                        "","" );
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
             }
         }
 
