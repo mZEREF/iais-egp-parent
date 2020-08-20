@@ -826,15 +826,6 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             smsParam.setRefId(appNo);
             smsParam.setSubject(sb.toString());
             notificationHelper.sendNotification(smsParam);
-            EmailParam msgParam = new EmailParam();
-            msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REJECT_APPT_REQUEST_A_DATE);
-            msgParam.setTemplateContent(map);
-            msgParam.setQueryCode(appNo);
-            msgParam.setReqRefNum(appNo);
-            msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            msgParam.setRefId(appNo);
-            msgParam.setSubject(sb.toString());
-            notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
