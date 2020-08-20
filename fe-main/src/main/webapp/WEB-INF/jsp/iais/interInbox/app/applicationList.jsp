@@ -303,7 +303,7 @@
             $('#draftAppealAppealByLicAppId').modal('show');
         }
 
-        $('#deleteDraftMessage').find('span').closest('div').css('width','70%');
+        $('#deleteDraftMessage').find('div.modal-body').find('div.row div').css('width','70%');
     });
 
     function delDraftYesBtn() {
