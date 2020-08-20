@@ -217,11 +217,11 @@ public class ResponseForInformationDelegator {
                         Boolean fileType = booleanMap.get("fileType");
                         //size
                         if(!fileSize){
-                            errMap.put("selectedFile", MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
+                            errMap.put("UploadFile"+doc.getId(), MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(systemParamConfig.getUploadFileLimit()),"sizeMax"));
                         }
                         //type
                         if(!fileType){
-                            errMap.put("selectedFile",MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
+                            errMap.put("UploadFile"+doc.getId(),MessageUtil.replaceMessage("GENERAL_ERR0018", systemParamConfig.getUploadFileType(),"fileType"));
                         }
                     }
                 }
