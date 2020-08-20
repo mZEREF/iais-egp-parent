@@ -88,7 +88,7 @@ public class AccessUtil {
         if (orgUser != null) {
             loginContext.setUserId(orgUser.getId());
             loginContext.setLoginId(user.getId());
-            loginContext.setUserDomain(user.getUserDomain());
+            loginContext.setUserDomain(orgUser.getUserDomain());
             loginContext.setUserName(user.getDisplayName());
             List<String> userRoles = client.retrieveUserRoles(orgUser.getId()).getEntity();
             loginContext.setOrgId(orgUser.getOrgId());
