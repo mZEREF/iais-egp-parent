@@ -1184,7 +1184,7 @@ public class RequestForChangeMenuDelegator {
 
         if (!StringUtil.isEmpty(result)) {
             log.debug(StringUtil.changeForLog("payment result:" + result));
-            String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "reqRefNo");
+            String pmtRefNo = ParamUtil.getMaskedString(bpc.request, "txnRefNo");
             if ("success".equals(result) && !StringUtil.isEmpty(pmtRefNo)) {
                 log.info("credit card payment success");
                 switchValue = "ack";
