@@ -71,7 +71,7 @@
                                                     <strong>${infoReply.title}</strong>
                                                 </div>
                                             </iais:row>
-                                            <iais:row style="text-align:center;">
+                                            <iais:row >
                                                 <iais:value width="18">
                                                     <label>
                                                         <textarea  maxlength="1000" name="userReply${infoReply.id}"
