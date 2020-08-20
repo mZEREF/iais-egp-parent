@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
+import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.AppSelectSvcDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -86,12 +87,9 @@ public class HalpAssessmentGuideDelegator {
     private static final String BACK_ATTR = "back";
     private static final String NEXT = "next";
 
-    private static final String SERVIC_STEP = "serviceStep";
     private static final String APP_SELECT_SERVICE = "appSelectSvc";
     private static final String HAS_EXISTING_BASE = "hasExistingBase";
-    private static final String URL_HTTPS = "https://";
     private static final String ONLY_BASE_SVC = "onlyBaseSvc";
-    private static final String APP_ALIGN_LIC = "appAlignLic";
     private static final String BASEANDSPCSVCMAP = "baseAndSpcSvcMap";
     private static final String RETAIN_LIC_PREMISES_LIST =  "retainLicPremisesList";
     private static final String NO_EXIST_BASE_LIC = "noExistBaseLic";
@@ -1317,6 +1315,7 @@ public class HalpAssessmentGuideDelegator {
         if (!StringUtil.isEmpty(amendHCISearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, "amendHCISearchParam", amendHCISearchParam);
             ParamUtil.setRequestAttr(bpc.request, "amendHCISearchResult", amendHCISearchResult);
+            ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) amendHCISearchResult.getRows());
         }
         log.info("****end ******");
     }
@@ -1591,6 +1590,8 @@ public class HalpAssessmentGuideDelegator {
         String licId = ParamUtil.getString(bpc.request, "amendLicenseId");
         String idNoPersonnal = ParamUtil.getString(bpc.request, "personnelOptions");
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
+        String hiddenIndex = ParamUtil.getMaskedString(bpc.request, licId+"hiddenIndex");
+        String premiseIdValue = ParamUtil.getMaskedString(bpc.request, licId+"premiseId");
         if (idNoPersonnal != null){
             String id = idNoPersonnal.split(",")[1];
             if("amendLic7".equals(action)) {
@@ -1608,14 +1609,36 @@ public class HalpAssessmentGuideDelegator {
         if(licIdValue != null){
             Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
             if(errorMap.isEmpty()){
-                StringBuilder url = new StringBuilder();
-                url.append(InboxConst.URL_HTTPS)
-                        .append(bpc.request.getServerName())
-                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
-                        .append("?licenceId=")
-                        .append(MaskUtil.maskValue("licenceId",licIdValue));
-                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-                bpc.response.sendRedirect(tokenUrl);
+                if ("amendLic2".equals(action)){
+                    StringBuilder url3 = new StringBuilder();
+                    url3.append(InboxConst.URL_HTTPS)
+                            .append(bpc.request.getServerName())
+                            .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPermisesList/doPremisesList")
+                            .append("?hiddenIndex=")
+                            .append(hiddenIndex)
+                            .append("&premisesId")
+                            .append(hiddenIndex)
+                            .append("=")
+                            .append(MaskUtil.maskValue("premisesId"+hiddenIndex, premiseIdValue))
+                            .append("&crud_action_type")
+                            .append("=prePremisesEdit")
+                            .append("&licId")
+                            .append(hiddenIndex)
+                            .append("=")
+                            .append(MaskUtil.maskValue("licId"+hiddenIndex, licIdValue));
+                    String tokenUrl2 = RedirectUtil.appendCsrfGuardToken(url3.toString(), bpc.request);
+                    bpc.response.sendRedirect(tokenUrl2);
+                }
+                else{
+                    StringBuilder url = new StringBuilder();
+                    url.append(InboxConst.URL_HTTPS)
+                            .append(bpc.request.getServerName())
+                            .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohRequestForChange")
+                            .append("?licenceId=")
+                            .append(MaskUtil.maskValue("licenceId",licIdValue));
+                    String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                    bpc.response.sendRedirect(tokenUrl);
+                }
             }else{
                 if ("amendLic2".equals(action)){
                     ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend2");
@@ -1646,7 +1669,7 @@ public class HalpAssessmentGuideDelegator {
         HttpServletRequest request = bpc.request;
         StringBuilder url = new StringBuilder();
         url.append(InboxConst.URL_HTTPS).append(request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohRfcPersonnelList");
+                .append("/main-web/eservice/INTERNET/MohFeAdminUserManagement");
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
         bpc.response.sendRedirect(tokenUrl);
     }

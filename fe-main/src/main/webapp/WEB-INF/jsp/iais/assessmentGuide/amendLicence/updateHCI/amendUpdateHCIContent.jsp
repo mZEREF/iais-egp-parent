@@ -33,6 +33,8 @@
                                             class="check-circle"></span>
                                     </label>
                                     <input type="hidden" name="amendLicenseId${status.index}" value="<iais:mask name= "amendLicenseId${status.index}" value="${pool.licenceId}"/>"/>
+                                    <input type="hidden" name="amendLicenseId${status.index}hiddenIndex" value="<iais:mask name= "amendLicenseId${status.index}hiddenIndex" value="${status.index}"/>"/>
+                                    <input type="hidden" name="amendLicenseId${status.index}premiseId" value="<iais:mask name= "amendLicenseId${status.index}premiseId" value="${pool.premisesId}"/>"/>
                                 </div>
                             </td>
                             <td>${pool.hciName}</td>
@@ -52,5 +54,4 @@
             <a class="btn btn-primary " onclick="guideSubmit('amendLic2','second')">NEXT</a>
         </c:when>
     </c:choose>
-
 </div>

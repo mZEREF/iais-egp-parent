@@ -16,7 +16,7 @@
                aria-invalid="false">
         <label class="form-check-label" for="amendLicence4_2">
             <span class="check-circle"></span>
-            <span style="font-weight: bold;">Update contact details (eg contact number, residential address, email addresses)</span>
+            <span style="font-weight: bold;">Update contact details (e.g. contact number, residential address, email addresses)</span>
         </label>
     </div>
 </div>
