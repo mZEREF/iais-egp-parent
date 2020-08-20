@@ -201,7 +201,7 @@ public class ResponseForInformationDelegator {
         if(!IaisCommonUtils.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto())){
             for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
                 CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
-                String errDocument=MessageUtil.replaceMessage("GENERAL_ERR0006","Document","field");
+                String errDocument=MessageUtil.replaceMessage("GENERAL_ERR0006","Supporting Documents","field");
                 if(!(file != null && file.getSize() != 0&&!StringUtil.isEmpty(file.getOriginalFilename()))){
                     errMap.put("UploadFile"+doc.getId(),errDocument);
                 }
@@ -231,7 +231,7 @@ public class ResponseForInformationDelegator {
             for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
                 String userReply=mulReq.getParameter("userReply"+info.getId());
                 if(StringUtil.isEmpty(userReply)){
-                    errMap.put("userReply"+info.getId(),"ERR0009");
+                    errMap.put("userReply"+info.getId(),MessageUtil.replaceMessage("GENERAL_ERR0006","Information","field"));
                 }
             }
         }
