@@ -206,6 +206,7 @@ public class FeAdminManageDelegate {
                 successMap.put("save","suceess");
                 orgUserManageService.editUserAccount(feUserDto);
                 orgUserManageService.updateEgpUser(feUserDto);
+
                 //update be user
                 OrganizationDto organizationById = orgUserManageService.getOrganizationById(feUserDto.getOrgId());
                 OrganizationDto organizationDto = new OrganizationDto();
