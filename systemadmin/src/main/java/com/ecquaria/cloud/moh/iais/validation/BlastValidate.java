@@ -26,14 +26,6 @@ public class BlastValidate implements CustomizeValidator {
     public Map<String, String> validate(HttpServletRequest request) {
         Map<String, String> errMap = IaisCommonUtils.genNewHashMap();
         BlastManagementDto blastManagementDto = (BlastManagementDto) ParamUtil.getSessionAttr(request, "blastManagementDto");
-        if(blastManagementDto.getEmailAddress() != null){
-            for (String item :blastManagementDto.getEmailAddress()
-            ) {
-                if(!item.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")){
-                    errMap.put("addr",MessageUtil.getMessageDesc("ESB_ERR002"));
-                }
-            }
-        }
         String step = (String)ParamUtil.getSessionAttr(request,"BlastManagementStep");
         if("fillMessage".equals(step)){
             if(blastManagementDto.getSchedule() == null){
