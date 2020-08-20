@@ -26,4 +26,5 @@ public class EmailParam {
     private String moduleType;
     private boolean smsOnlyOfficerHour = true;
     private HashMap<String, String> maskParams;
+    private HashMap<String, String> subjectParams;
 }

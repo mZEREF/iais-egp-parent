@@ -240,6 +240,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         for (SelfAssMtEmailDto i : allAssLt) {
             String reqRefNum;
             String refType;
+            String tlGroupNumber = "-";
+            String tlAppType = "-";
+            String tlSvcName = "-";
             List<ApplicationDto> appList;
             String randomStr = IaisEGPHelper.generateRandomString(26);
             int msgTrackRefNumType = i.getMsgTrackRefNumType();
@@ -258,8 +261,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                         for (ApplicationDto app : appList) {
                             if (!flag) {
                                 String appNum = app.getApplicationNo();
+                                tlGroupNumber = appNum.substring(0, appNum.length() - 3);
                                 String[] split = appNum.split("-");
                                 String appType = MasterCodeUtil.getCodeDesc(app.getApplicationType());
+                                tlAppType = appType;
                                 Date appSubmitDate = app.getStartDate();
 
                                 templateContent.put("applicationNumber", StringUtil.viewHtml(split[0]));
@@ -272,6 +277,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                             HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
                             if (serviceDto != null) {
                                 String svcName = serviceDto.getSvcName();
+                                tlSvcName = svcName;
                                 svcNames.add(svcName);
                             }
                         }
@@ -284,6 +290,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                     appList = i.getAppList();
                     //never null
                     ApplicationDto app = appList.get(0);
+
+                    tlGroupNumber = app.getApplicationNo();
+                    tlAppType = MasterCodeUtil.getCodeDesc(app.getApplicationType());
+                    
                     reqRefNum = String.valueOf(app.getEndDate().getTime());
                     templateContent.put("applicationNumber", reqRefNum);
                     templateContent.put("applicationType", MasterCodeUtil.getCodeDesc(app.getApplicationType()));
@@ -293,11 +303,11 @@ public class ApplicationServiceImpl implements ApplicationService {
                     HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(app.getServiceId());
                     if (serviceDto != null) {
                         String svcName = serviceDto.getSvcName();
+                        tlSvcName = svcName;
                         svcNames.add(svcName);
                     }
                     templateContent.put("serviceNames", svcNames);
                 }
-
 
                 String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/";
                 //EN-NAP-008
@@ -313,7 +323,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                 jobRemindMsgTrackingDto.setCreateTime(new Date());
                 jobRemindMsgTrackingDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 
+
+                HashMap<String, String> subjectParams = IaisCommonUtils.genNewHashMap();
+                subjectParams.put("[applicationNo]", tlGroupNumber);
+                subjectParams.put("[appType]", tlAppType);
+                subjectParams.put("[serviceName]", tlSvcName);
                 EmailParam emailParam = new EmailParam();
+                emailParam.setSubjectParams(subjectParams);
                 emailParam.setTemplateId(msgTemplateId);
                 emailParam.setTemplateContent(templateContent);
                 emailParam.setQueryCode(queryCode);

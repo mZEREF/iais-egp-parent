@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
@@ -74,6 +76,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Autowired
     private AppSubmissionService appSubmissionService;
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     @Value("${iais.hmac.keyId}")
     private String keyId;
@@ -223,11 +228,20 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
 
     /**
-     * EN-INS-004
+     * EN-CHM-003 EN-INS-004
      * @param correlationIds
      */
     private void sendEmailToInspector(List<String> correlationIds){
         String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_EMAIL_INSPECTOR;
+        String msgTmgId2 = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_EMAIL_INSPECTOR_EMAIL_CHM;
+
+        List<String> svcNameList = IaisCommonUtils.genNewArrayList();
+        Map<String, Object> tlContent = IaisCommonUtils.genNewHashMap();
+        String tlGroupNumber = "-";
+        String tlAppType = "-";
+        Date tlDate = null;
+        String tlGroupId = null;
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/";
         for (String s : correlationIds){
             ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(s).getEntity();
             if (applicationDto != null){
@@ -235,6 +249,10 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 String randomStr = IaisEGPHelper.generateRandomString(26);
 
                 String appNo = applicationDto.getApplicationNo();
+
+                tlGroupId = applicationDto.getAppGrpId();
+
+                tlGroupNumber = appNo.substring(0, appNo.length() - 3);
 
                 List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionService.getAppGrpPremisesDto(appNo);
 
@@ -250,18 +268,29 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 }
 
                 String svcId = applicationDto.getServiceId();
-                String appType = applicationDto.getApplicationType();
+                String appType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
                 Date appDate = applicationDto.getStartDate();
 
+                tlAppType = appType;
+                tlDate = appDate;
+
                 templateContent.put("applicationNo", appNo);
-                templateContent.put("applicationType", MasterCodeUtil.getCodeDesc(appType));
+                templateContent.put("applicationType", appType);
                 templateContent.put("applicationDate", Formatter.formatDateTime(appDate));
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
 
                 if (serviceDto != null) {
                     String svcName = serviceDto.getSvcName();
+
+                    svcNameList.add(svcName);
+
                     templateContent.put("serviceName", svcName);
                 }
+
+
+                templateContent.put("MOH_GROUP_NAME", "-");
+                templateContent.put("MOH_AGENCY_NAME", "-");
+
 
                 EmailParam email = new EmailParam();
                 email.setTemplateId(msgTmgId);
@@ -276,7 +305,21 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             }
         }
 
-
+        String randomStr = IaisEGPHelper.generateRandomString(26);
+        tlContent.put("applicationNo", tlGroupNumber);
+        tlContent.put("applicationType", tlAppType);
+        tlContent.put("applicationDate", Formatter.formatDateTime(tlDate));
+        tlContent.put("systemLink", loginUrl);
+        EmailParam email = new EmailParam();
+        email.setTemplateId(msgTmgId2);
+        email.setTemplateContent(tlContent);
+        email.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
+        email.setReqRefNum(randomStr);
+        email.setRefId(tlGroupId);
+        email.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP_GRP);
+        email.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
+        email.setSmsOnlyOfficerHour(false);
+        notificationHelper.sendNotification(email);
     }
 
 

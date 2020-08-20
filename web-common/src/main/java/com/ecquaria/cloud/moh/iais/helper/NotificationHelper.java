@@ -194,6 +194,17 @@ public class NotificationHelper {
 		return email;
 	}
 
+	private String replaceText(String text, HashMap<String, String> params){
+		for (Map.Entry<String, String> entry : params.entrySet()){
+			String sign = entry.getKey();
+			String value = entry.getValue();
+			if (text.indexOf(sign) != -1){
+				text = text.replace(sign, value);
+			}
+		}
+		return text;
+	}
+
 	@Deprecated
 	public void sendNotification(String templateId, Map<String, Object> templateContent, String queryCode,
 								 String reqRefNum, String refIdType, String refId) {
@@ -219,6 +230,7 @@ public class NotificationHelper {
 		String reqRefNum = emailParam.getReqRefNum();
 		String refIdType = emailParam.getRefIdType();
 		String refId = emailParam.getRefId();
+		HashMap<String, String> subjectParams = emailParam.getSubjectParams();
 		JobRemindMsgTrackingDto jrDto = emailParam.getJobRemindMsgTrackingDto();
 		String subject = emailParam.getSubject();
 		String moduleType = emailParam.getModuleType();
@@ -288,9 +300,15 @@ public class NotificationHelper {
 				} else {
 					mesContext = emailTemplate;
 				}
+
 				if (StringUtil.isEmpty(subject)) {
 					subject = msgTemplateDto.getTemplateName();
 				}
+
+				if (!IaisCommonUtils.isEmpty(subjectParams)){
+					subject = replaceText(subject, subjectParams);
+				}
+
 				if (!StringUtil.isEmpty(refIdType) && refIdType.contains("SMS")) {
 					int smsFlag = systemParamConfig.getEgpSmsNotifications();
 					if (0 == smsFlag) {
@@ -810,6 +828,7 @@ public class NotificationHelper {
 		Map<String, Object> params = IaisCommonUtils.genNewHashMap();
 		params.put("processUrl", processUrl);
 		params.put("taskStatus", taskStatus);
+		params.put("appNo", appNo);
 		String gatewayUrl = env.getProperty("iais.inter.gateway.url");
 		List<OrgUserDto> orgUserList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/inspector-by-task", HttpMethod.POST, params,
 				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
