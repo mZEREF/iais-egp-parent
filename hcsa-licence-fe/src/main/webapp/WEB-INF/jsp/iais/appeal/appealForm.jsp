@@ -118,8 +118,8 @@
           <div class="file-upload-gp">
             <div class="fileContent col-xs-2">
               ${upFile.originalFilename}
-              <input class="selectedFile"  id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1">
-              <a class="btn btn-file-upload btn-secondary" >Upload</a>
+              <input class="selectedFile"  id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile()">
+              <a class="btn btn-file-upload btn-secondary" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</a>
 
             </div>
             <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
@@ -207,12 +207,30 @@
   });
 
 $('#submit').click(function () {
-
-  if(uploadFileValidate()){
+  uploadFileValidate();
+  var error = $('#error_litterFile_Show').html();
+  if(error == undefined || error == ""){
     SOP.Crud.cfxSubmit("mainForm", "submit","submit","");
   }
-
 });
+
+  function doUserRecUploadConfirmFile() {
+    var file = $('#selectedFile').val();
+    file= file.split("\\");
+    $("span[name='fileName']").html(file[file.length-1]);
+
+    if(file!=''){
+      $('#delete').attr("style","display: inline-block;margin-left: 20px");
+      $('#isDelete').val('Y');
+      $('#error_litterFile_Show').html("");
+      $('#error_file').html("");
+    }
+    uploadFileValidate();
+  }
+
+  function doUserRecUploadConfirmUpload() {
+    $("#selectedFile").trigger('click');
+  }
 
 function uploadFileValidate(){
   var configFileSize = $("#configFileSize").val();
@@ -228,6 +246,7 @@ function uploadFileValidate(){
     $('#error_litterFile_Show').html("");
     $('#error_file').html("");
   } else if(error =="N"){
+    clearFileFunction();
     flag = false;
     $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
     $('#error_file').html("");
@@ -240,6 +259,15 @@ $('#delete').click(function () {
 });
 
 function deleteFileFunction(){
+  $('.selectedFile').val('');
+  $('#delete').attr("style","display: none");
+  $("span[name='fileName']").html('');
+  $('#isDelete').val('N');
+  $('#error_litterFile_Show').html("");
+  $('#error_file').html("");
+}
+
+function clearFileFunction(){
   $('.selectedFile').val('');
   $('#delete').attr("style","display: none");
   $("span[name='fileName']").html('');
@@ -290,22 +318,6 @@ function isCheck(obj) {
 
 }
 
-
-$('.selectedFile').change(function () {
-    var file = $(this).val();
-    file= file.split("\\");
-    $("span[name='fileName']").html(file[file.length-1]);
-
-    if(file!=''){
-        $('#delete').attr("style","display: inline-block;margin-left: 20px");
-        $('#isDelete').val('Y');
-        $('#error_litterFile_Show').html("");
-        $('#error_file').html("");
-    }
-
- /*   $fileUploadContentEle = $(this).closest('div.file-upload-gp');
-    $fileUploadContentEle.find('.delBtn').removeClass('hidden');*/
-});
   function getFileName(o) {
       var pos = o.lastIndexOf("\\");
       return o.substring(pos + 1);
