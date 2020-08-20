@@ -407,7 +407,7 @@ public class MassEmailDelegator {
         List<SelectOption> selectOptions = IaisCommonUtils.genNewArrayList();
         selectOptions.add(new SelectOption(EMAIL,EMAIL));
         selectOptions.add(new SelectOption(SMS,SMS));
-        ParamUtil.setRequestAttr(bpc.request, "modeSelection",  (Serializable) selectOptions);
+        ParamUtil.setRequestAttr(bpc.request, "mode",  (Serializable) selectOptions);
     }
 
     private void setRoleSelection(BaseProcessClass bpc, String service){
