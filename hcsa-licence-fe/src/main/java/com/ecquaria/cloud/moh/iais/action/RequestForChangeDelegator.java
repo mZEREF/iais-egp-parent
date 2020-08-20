@@ -322,7 +322,7 @@ public class RequestForChangeDelegator {
         int maxFile = systemParamConfig.getUploadFileLimit();
         ParamUtil.setSessionAttr(bpc.request, "prepareTranfer", appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "AppSubmissionDto", appSubmissionDto);
-        ParamUtil.setRequestAttr(bpc.request, "maxFile", 1);
+        ParamUtil.setRequestAttr(bpc.request, "maxFile", maxFile);
         log.debug(StringUtil.changeForLog("the do prepareTranfer end ...."));
     }
 
