@@ -2,33 +2,47 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.client.rbac.ClientUser;
-import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserUpLoadDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import com.ecquaria.csrfguard.action.IAction;
-import com.google.inject.internal.util.$ImmutableList;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -40,12 +54,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
-import sun.security.krb5.internal.PAData;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.nio.file.Files;
-import java.util.*;
 
 /**
  * @author weilu
@@ -208,13 +216,12 @@ public class MohIntranetUserDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String id = ParamUtil.getMaskedString(bpc.request, "maskUserId");
         OrgUserDto orgUserDto = intranetUserService.findIntranetUserById(id);
-        String userDomain = orgUserDto.getUserDomain();
         String userId = orgUserDto.getUserId();
-        ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, userDomain);
+        ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
         if (clientUser != null && clientUser.isFirstTimeLoginNo()) {
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
             intranetUserService.updateOrgUser(orgUserDto);
-            deleteEgpUser(userDomain, userId);
+            deleteEgpUser(userId);
         } else {
             ParamUtil.setRequestAttr(request, "deleteMod", "no");
         }
@@ -280,7 +287,7 @@ public class MohIntranetUserDelegator {
 
                 EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
                 egpUserRoleDto.setUserId(orgUserDto.getUserId());
-                egpUserRoleDto.setUserDomain(orgUserDto.getUserDomain());
+                egpUserRoleDto.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
                 egpUserRoleDto.setRoleId(assignRole);
                 egpUserRoleDto.setPermission("A");
                 //egpUserRoleDto.isSystem()
@@ -304,7 +311,7 @@ public class MohIntranetUserDelegator {
                     removeRoleNames.add(roleName);
                 }
             });
-            intranetUserService.removeEgpRoles(orgUserDto.getUserDomain(), orgUserDto.getUserId(), removeRoleNames);
+            intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
         }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
         ParamUtil.setRequestAttr(bpc.request, "userAccId", userAccId);
@@ -733,7 +740,7 @@ public class MohIntranetUserDelegator {
 
     private void saveEgpUser(OrgUserDto orgUserDto) {
         ClientUser clientUser = MiscUtil.transferEntityDto(orgUserDto, ClientUser.class);
-        clientUser.setUserDomain(orgUserDto.getUserDomain());
+        clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
         clientUser.setId(orgUserDto.getUserId());
         clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
         String email = orgUserDto.getEmail();
@@ -750,8 +757,7 @@ public class MohIntranetUserDelegator {
 
     private void editEgpUser(OrgUserDto orgUserDto) {
         String userId = orgUserDto.getUserId();
-        String userDomain = orgUserDto.getUserDomain();
-        ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, userDomain);
+        ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
         if (clientUser != null) {
             Date accountActivateDatetime = orgUserDto.getAccountActivateDatetime();
             Date accountDeactivateDatetime = orgUserDto.getAccountDeactivateDatetime();
@@ -762,7 +768,7 @@ public class MohIntranetUserDelegator {
             String salutation = orgUserDto.getSalutation();
             String mobileNo = orgUserDto.getMobileNo();
 
-            clientUser.setUserDomain(userDomain);
+            clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
             clientUser.setId(userId);
             clientUser.setDisplayName(displayName);
             clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
@@ -781,8 +787,8 @@ public class MohIntranetUserDelegator {
         }
     }
 
-    private Boolean deleteEgpUser(String userDomian, String userId) {
-        return intranetUserService.deleteEgpUser(userDomian, userId);
+    private Boolean deleteEgpUser(String userId) {
+        return intranetUserService.deleteEgpUser(AppConsts.HALP_EGP_DOMAIN, userId);
     }
 
     private void prepareOption(BaseProcessClass bpc) {

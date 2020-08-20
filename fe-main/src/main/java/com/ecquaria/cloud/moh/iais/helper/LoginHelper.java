@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -21,6 +22,7 @@ public final class LoginHelper {
     public static final String CORPPASS_URL = "/main-web/eservice/INTERNET/FE_Landing/1/croppass";
 
     public static void initUserInfo(HttpServletRequest request, HttpServletResponse response, User user){
+        user.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
         SessionManager.getInstance(request).imitateLogin(user, true, true);
         SessionManager.getInstance(request).initSopLoginInfo(request);
 
