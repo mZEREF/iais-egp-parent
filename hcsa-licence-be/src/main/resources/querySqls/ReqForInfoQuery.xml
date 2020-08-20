@@ -59,6 +59,7 @@
     <sql key = "licenceQuery" remarks = "Query Licence Data by condition">
         <![CDATA[
             SELECT distinct
+                CONCAT(lic.id ,case licApp.id when null then '' else licApp.id end) as LIC_APP_KEY_ID,
                 licApp.id as LIC_APP_ID,
                 lic.id as id,
                 lic.licence_no as licence_no,

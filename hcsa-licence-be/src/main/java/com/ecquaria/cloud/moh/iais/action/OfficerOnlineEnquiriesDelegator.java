@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ReqForInfoSearchListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.RfiApplicationQueryDto;
@@ -352,7 +353,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
 
 
-                    if(!StringUtil.isEmpty(lic.getAppId())){
+                    if(lic.getAppId()!=null){
                         filter.put("id", lic.getAppId());
                         filter.remove("svc_names");
                         applicationParameter.setFilters(filter);
@@ -397,23 +398,26 @@ public class OfficerOnlineEnquiriesDelegator {
                                 reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                             }
                         }
-                        else {
-                            List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
-                            reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
-                            reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
-                            reqForInfoSearchListDto.setServiceName(lic.getServiceName());
-                            try {
-                                LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(lic.getLicenseeId());
-                                reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
-                            } catch (Exception e) {
-                                log.error(e.getMessage(), e);
-                            }
-                            List<String> addressList = IaisCommonUtils.genNewArrayList();
-                            for (PremisesDto premisesDto:premisesDtoList
-                            ) {
-                                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
-                                reqForInfoSearchListDto.setAddress(addressList);
-                            }
+
+                    } else {
+                        List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
+                        reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
+                        reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
+                        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(lic.getServiceName()).getEntity();
+                        reqForInfoSearchListDto.setServiceName(svcDto.getId());
+                        try {
+                            LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(lic.getLicenseeId());
+                            reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
+                        }
+                        List<String> addressList = IaisCommonUtils.genNewArrayList();
+                        for (PremisesDto premisesDto:premisesDtoList
+                        ) {
+                            addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                            reqForInfoSearchListDto.setAddress(addressList);
+                        }
+                        if(lic.getLicAppId()==null){
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
@@ -935,7 +939,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
 
 
-                    if(!StringUtil.isEmpty(lic.getAppId())){
+                    if(lic.getAppId()!=null){
                         filters.put("id", lic.getAppId());
                         filters.remove("svc_names");
                         applicationParameter.setFilters(filters);
@@ -983,23 +987,25 @@ public class OfficerOnlineEnquiriesDelegator {
                                 reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                             }
                         }
-                        else {
-                            List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
-                            reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
-                            reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
-                            reqForInfoSearchListDto.setServiceName(lic.getServiceName());
-                            try {
-                                LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(lic.getLicenseeId());
-                                reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
-                            } catch (Exception e) {
-                                log.error(e.getMessage(), e);
-                            }
-                            List<String> addressList = IaisCommonUtils.genNewArrayList();
-                            for (PremisesDto premisesDto:premisesDtoList
-                            ) {
-                                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
-                                reqForInfoSearchListDto.setAddress(addressList);
-                            }
+                    }else {
+                        List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
+                        reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
+                        reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
+                        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(lic.getServiceName()).getEntity();
+                        reqForInfoSearchListDto.setServiceName(svcDto.getId());
+                        try {
+                            LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(lic.getLicenseeId());
+                            reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
+                        }
+                        List<String> addressList = IaisCommonUtils.genNewArrayList();
+                        for (PremisesDto premisesDto:premisesDtoList
+                        ) {
+                            addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                            reqForInfoSearchListDto.setAddress(addressList);
+                        }
+                        if(lic.getLicAppId()==null){
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
@@ -1521,7 +1527,7 @@ public class OfficerOnlineEnquiriesDelegator {
                     reqForInfoSearchListDto.setExpiryDate(lic.getExpiryDate());
 
 
-                    if(!StringUtil.isEmpty(lic.getAppId())){
+                    if(lic.getAppId()!=null){
                         filters.put("id", lic.getAppId());
                         filters.remove("svc_names");
                         applicationParameter.setFilters(filters);
@@ -1569,23 +1575,26 @@ public class OfficerOnlineEnquiriesDelegator {
                                 reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                             }
                         }
-                        else {
-                            List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
-                            reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
-                            reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
-                            reqForInfoSearchListDto.setServiceName(lic.getServiceName());
-                            try {
-                                LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(lic.getLicenseeId());
-                                reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
-                            } catch (Exception e) {
-                                log.error(e.getMessage(), e);
-                            }
-                            List<String> addressList = IaisCommonUtils.genNewArrayList();
-                            for (PremisesDto premisesDto:premisesDtoList
-                            ) {
-                                addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
-                                reqForInfoSearchListDto.setAddress(addressList);
-                            }
+
+                    }else {
+                        List<PremisesDto> premisesDtoList = hcsaLicenceClient.getPremisess(lic.getId()).getEntity();
+                        reqForInfoSearchListDto.setHciCode(premisesDtoList.get(0).getHciCode());
+                        reqForInfoSearchListDto.setHciName(premisesDtoList.get(0).getHciName());
+                        HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(lic.getServiceName()).getEntity();
+                        reqForInfoSearchListDto.setServiceName(svcDto.getId());
+                        try {
+                            LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(lic.getLicenseeId());
+                            reqForInfoSearchListDto.setLicenseeName(licenseeDto.getName());
+                        } catch (Exception e) {
+                            log.error(e.getMessage(), e);
+                        }
+                        List<String> addressList = IaisCommonUtils.genNewArrayList();
+                        for (PremisesDto premisesDto:premisesDtoList
+                        ) {
+                            addressList.add(MiscUtil.getAddress(premisesDto.getBlkNo(),premisesDto.getStreetName(),premisesDto.getBuildingName(),premisesDto.getFloorNo(),premisesDto.getUnitNo(),premisesDto.getPostalCode()));
+                            reqForInfoSearchListDto.setAddress(addressList);
+                        }
+                        if(lic.getLicAppId()==null){
                             reqForInfoSearchListDtos.add(reqForInfoSearchListDto);
                         }
                     }
