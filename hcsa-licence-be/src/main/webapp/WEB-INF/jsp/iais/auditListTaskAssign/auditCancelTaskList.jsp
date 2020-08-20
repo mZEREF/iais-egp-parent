@@ -32,8 +32,8 @@
                                 <th>Service Name</th>
                                 <th>Audit Type</th>
                                 <th>Assigned Inspector</th>
-                                <th>Cancel Reason</th>
-                                <th>Select for Audit</th>
+                                <th>Reasons for Cancellation</th>
+                                <th>Select for Cancellation</th>
                                 <!--% <th>Reason</th> -->
                             </tr>
                             </thead>

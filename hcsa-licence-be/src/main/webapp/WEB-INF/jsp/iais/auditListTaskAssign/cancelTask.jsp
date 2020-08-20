@@ -35,7 +35,7 @@
                                     <th>Assigned Inspector</th>
                                     <th>Status</th>
                                     <th>Select for Cancellation</th>
-                                    <th>Resaons for Cancellation</th>
+                                    <th>Reasons for Cancellation</th>
                                 </tr>
                                 </thead>
                                 <tbody>
