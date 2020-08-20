@@ -11,6 +11,14 @@ import org.springframework.http.HttpHeaders;
 
 public class FEMainRbacClientFallback implements FEMainRbacClient{
     @Override
+    public FeignResponseEntity<Boolean> deleteUerRoleIds(String var1, String var2, String var3) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<String> createUerRoleIds(EgpUserRoleDto var1) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

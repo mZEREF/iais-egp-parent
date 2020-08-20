@@ -3,11 +3,13 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
@@ -21,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.FEMainRbacClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeAdminClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeUserClient;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
@@ -308,7 +311,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             }else{
                 epgUserId = RoleConsts.USER_ROLE_ORG_ADMIN;
             }
-            egpUserFeClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),epgUserId);
+            feMainRbacClient.deleteUerRoleIds(AppConsts.HALP_EGP_DOMAIN,feUserDto.getUserId(),epgUserId);
         }else{
             clientUser = MiscUtil.transferEntityDto(feUserDto, ClientUser.class);
             clientUser.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
@@ -341,7 +344,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         egpUserRoleDto.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
         egpUserRoleDto.setRoleId(feUserDto.getUserRole());
         egpUserRoleDto.setPermission("A");
-        egpUserFeClient.createUerRoleIds(egpUserRoleDto);
+        feMainRbacClient.createUerRoleIds(egpUserRoleDto);
     }
 
     @Override
