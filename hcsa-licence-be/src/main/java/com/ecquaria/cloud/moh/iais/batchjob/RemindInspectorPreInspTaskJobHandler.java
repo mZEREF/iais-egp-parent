@@ -138,14 +138,6 @@ public class RemindInspectorPreInspTaskJobHandler extends IJobHandler {
                 smsParam.setRefId(appNo);
                 smsParam.setSubject("MOH HALP - [Internal] Inspection Task not ready for inspection");
                 notificationHelper.sendNotification(smsParam);
-                EmailParam msgParam = new EmailParam();
-                msgParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_REMIND_INSPECTOR_PRE_INSP_READY);
-                msgParam.setTemplateContent(templateMap);
-                msgParam.setQueryCode(appNo);
-                msgParam.setReqRefNum(appNo);
-                msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                msgParam.setRefId(appNo);
-                notificationHelper.sendNotification(msgParam);
             }
         }
     }
