@@ -73,7 +73,7 @@
                         <a class="back" href="#" id="back" ><em class="fa fa-angle-left"></em> Back</a>
                     </div>
                     <div class="text-right text-center-mobile col-md-6">
-                        <a class="btn btn-primary next" id="submitService">Continue</a>
+                        <a class="btn btn-primary next" id="submitService">NEXT</a>
                     </div>
                 </div>
             </div>
