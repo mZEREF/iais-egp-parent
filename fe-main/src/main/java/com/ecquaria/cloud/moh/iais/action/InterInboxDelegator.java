@@ -302,7 +302,7 @@ public class InterInboxDelegator {
         licParam.addFilter("licenseeId",interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.LICENCE_QUERY_KEY,licParam);
         List<SelectOption> licStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_LICENCE_STATUS);
-        MasterCodePair mcp_status = new MasterCodePair("status", "LIC_STATUS_DESC", licStatus);
+        MasterCodePair mcp_status = new MasterCodePair("lic.status", "LIC_STATUS_DESC", licStatus);
         licParam.addMasterCode(mcp_status);
         SearchResult licResult = inboxService.licenceDoQuery(licParam);
         List<InboxLicenceQueryDto> inboxLicenceQueryDtoList = licResult.getRows();

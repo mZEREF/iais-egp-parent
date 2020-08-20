@@ -94,8 +94,36 @@
                 lic.licensee_id,
                 lic.status,
                 lic.start_date,
-                lic.expiry_date
-            FROM LICENCE AS lic
+                lic.expiry_date,
+                (case lic.IS_GRP_LIC
+                    when '0' then
+                        CONCAT(p.BLK_NO ,
+                           case p.STREET_NAME
+                              when null then null
+                              when '' then null
+                              else ' '+p.STREET_NAME end
+                           , case p.BUILDING_NAME
+                              when null then null
+                              when '' then null
+                              else ' '+p.BUILDING_NAME end
+                           , case p.FLOOR_NO
+                              when null then null
+                              when '' then null
+                              else ' # '+p.FLOOR_NO end
+                           , case p.UNIT_NO
+                              when null then null
+                              when '' then null
+                              else '-'+p.UNIT_NO end
+                           , case p.POSTAL_CODE
+                              when null then null
+                              when '' then null
+                              else ', '+p.POSTAL_CODE end
+                          )
+                    else 'multi' end
+                    ) as address
+                FROM LICENCE AS lic
+                JOIN lic_premises lp on lp.LICENCE_ID  = lic.ID
+                JOIN premises p on p.ID  = lp.PREMISES_ID
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
             <#if serviceType??> AND lic.svc_name = :serviceType</#if>
