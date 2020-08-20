@@ -116,9 +116,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
 
     @Autowired
-    private InboxMsgService inboxMsgService;
-
-    @Autowired
     private SystemParamConfig systemParamConfig;
 
     @Autowired
@@ -138,9 +135,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Autowired
     private HcsaLicenceClient hcsaLicenceClient;
-
-    @Autowired
-    private MsgTemplateClient msgTemplateClient;
 
     @Autowired
     private LicenseeService licenseeService;
@@ -209,8 +203,6 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         String reMarks = inspectionPreTaskDto.getReMarks();
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
-        String serviceCode = hcsaServiceDto.getSvcCode();
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
         String licenseeId = applicationGroupDto.getLicenseeId();
         LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
