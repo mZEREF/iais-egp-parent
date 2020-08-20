@@ -97,16 +97,17 @@ public class ResponseForInformationDelegator {
     public void preDetail(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the do preDetail start ...."));
         HttpServletRequest request=bpc.request;
-        LicPremisesReqForInfoDto licPremisesReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(request,"licPreReqForInfoDto");
-        if(licPremisesReqForInfoDto==null){
-            try {
-                String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
-                licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
-                logAbout("ReqForInfoId:"+licPremisesReqForInfoDto.getId());
-            }catch (Exception e){
-                log.error(e.getMessage(),e);
-            }
+        LicPremisesReqForInfoDto licPremisesReqForInfoDto ;
+
+        try {
+            String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);
+            licPremisesReqForInfoDto=responseForInformationService.getLicPreReqForInfo(id);
+            logAbout("ReqForInfoId:"+licPremisesReqForInfoDto.getId());
+        }catch (Exception e){
+            licPremisesReqForInfoDto= (LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(request,"licPreReqForInfoDto");
+            log.error(e.getMessage(),e);
         }
+
         ParamUtil.setSessionAttr(request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
         // 		doRFI->OnStepProcess
     }
