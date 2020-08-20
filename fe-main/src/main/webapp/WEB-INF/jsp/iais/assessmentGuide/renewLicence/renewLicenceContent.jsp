@@ -27,7 +27,7 @@
                         <tr>
                             <td>
                                 <div class="form-check">
-                                    <input class="form-check-input licenceCheck" id="licenceNo" type="radio"
+                                    <input class="form-check-input licenceCheck" id="licenceNo" type="radio" <c:if test="${status.index == 0}">checked</c:if>
                                            name="renewLicenId" value="renew1LicenId${status.index}" aria-invalid="false"/>
                                     <label class="form-check-label" for="licenceNo"><span
                                             class="check-circle"></span>

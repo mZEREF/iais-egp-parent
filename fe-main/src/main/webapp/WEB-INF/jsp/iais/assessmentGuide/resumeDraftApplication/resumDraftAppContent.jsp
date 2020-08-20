@@ -25,7 +25,7 @@
                     <tr>
                         <td>
                             <div class="form-check hover">
-                                <input class="form-check-input" id="draftApp" type="radio"
+                                <input class="form-check-input" id="draftApp" type="radio" <c:if test="${status.index == 0}">checked</c:if>
                                        name="resumeAppNos" aria-invalid="false" value="draftApp${status.index}">
                                 <label class="form-check-label" for="draftApp"><span
                                         class="check-circle"></span></label>
