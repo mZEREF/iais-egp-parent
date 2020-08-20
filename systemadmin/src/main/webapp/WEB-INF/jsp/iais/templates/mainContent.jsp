@@ -25,7 +25,7 @@
                                 <iais:sortableHeader needSort="true" field="delivery_mode" value="BCC Recipients" style="width:10%;"/>
                                 <iais:sortableHeader needSort="true" field="effective_from" value="Effective Start Date" style="width:10%;"/>
                                 <iais:sortableHeader needSort="true" field="effective_to" value="Effective End Date" style="width:10%;"/>
-                                <th style="width:7%;">Action</th>
+                                <iais:sortableHeader needSort="false" field="" value="Action"/>
                             </tr>
                             </thead>
                             <tbody>
