@@ -989,7 +989,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             submitDt = new Date();
         }
         Date today = new Date();
-        String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy HH:mm:ss");
+        String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
         String todayDate = Formatter.formatDateTime(today, "dd/MM/yyyy");
         String todayTime = Formatter.formatDateTime(today, "HH:mm:ss");
         AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremCorrId);
