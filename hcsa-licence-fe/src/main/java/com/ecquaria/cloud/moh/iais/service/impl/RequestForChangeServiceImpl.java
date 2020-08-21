@@ -1474,9 +1474,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         emailMap.put("Licensee", applicantName);
         emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
-        emailMap.put("ReductionResidentialBeds",appSubmissionDto.getServiceName());
-        emailMap.put("RemoveSubsumedService", "");
-        emailMap.put("ChangeManagementLicensee", "");
+        StringBuilder stringBuilder=new StringBuilder();
+        if(!StringUtil.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())){
+            for (int i=0;i<appSubmissionDto.getAppSvcRelatedInfoDtoList().size();i++) {
+                stringBuilder.append("<p>   ").append(i+1).append(". ").append(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(i).getServiceName()).append("</p>");
+            }
+        }
+        emailMap.put("ServiceNames",stringBuilder);
         emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
         notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER, emailMap, appSubmissionDto.getLicenceNo(), appSubmissionDto.getLicenceNo(),
                 NotificationHelper.RECEIPT_TYPE_LICENCE_ID, appSubmissionDto.getLicenceId());
