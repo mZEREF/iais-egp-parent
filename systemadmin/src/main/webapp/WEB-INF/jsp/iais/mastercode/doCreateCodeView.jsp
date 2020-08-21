@@ -25,6 +25,7 @@
                                 <div class="col-xs-8 col-sm-6 col-md-5">
                                     <iais:select name="codeCategoryCMC" firstOption="Please Select" options="codeCategory"
                                                  value="${param.codeCategoryCMC}"/>
+                                    <span id="error_codeCategory" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </iais:value>
                         </div>
