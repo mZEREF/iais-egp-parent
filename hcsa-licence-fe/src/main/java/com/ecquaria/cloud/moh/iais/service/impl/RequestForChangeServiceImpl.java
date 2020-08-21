@@ -1238,7 +1238,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         if(newTypeFlag || (rfi && clickEdit)){
                             if(hciFlag){
                                 String premisesHci = NewApplicationHelper.getPremKey(appGrpPremisesDto);
-                                Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci,ApplicationConsts.PREMISES_TYPE_CONVEYANCE).getEntity();
+                                Boolean flag = licenceClient.getOtherLicseePremises(licenseeId,premisesHci,ApplicationConsts.PREMISES_TYPE_OFF_SITE).getEntity();
                                 if(flag){
                                     needAppendMsg = true;
                                 }
