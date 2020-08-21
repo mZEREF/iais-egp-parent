@@ -139,7 +139,7 @@
                                         <tr>
                                             <c:if test="${cease==1}">
                                                 <td class="form-check" onclick="javascript:controlCease('${isASO}')" >
-                                                    <c:if test="${pool.licenceStatus!='Lapsed'&&pool.licenceStatus!='Ceased'&&pool.licenceStatus!='Expired'&&pool.licenceId!=null}">
+                                                    <c:if test="${pool.licenceStatus!='Lapsed'&&pool.licenceStatus!='Ceased'&&pool.licenceStatus!='Expired'&&pool.licenceStatus!='Inactive'&&pool.licenceId!=null}">
                                                         <input class="form-check-input licenceCheck" id="licence${status.index + 1}" type="checkbox"
                                                                name="appIds" value="${pool.appId}|${pool.isCessation}|${pool.licenceId}|${pool.licenceStatus}"   >
                                                         <label class="form-check-label" for="licence${status.index + 1}"><span
@@ -157,8 +157,8 @@
                                             </td>
                                             <td><c:out value="${pool.applicationType}"/></td>
                                             <td>
-                                                <c:if test="${pool.licenceId!=null}"><a onclick="javascript:doLicInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licenceId)}')">${pool.licenceNo}</a></c:if>
-                                                <c:if test="${pool.licenceId==null}">${pool.licenceNo}</c:if>
+                                                <c:if test="${pool.licenceId!=null&&pool.licenceStatus!='Inactive'}"><a onclick="javascript:doLicInfo('${MaskUtil.maskValue(IaisEGPConstant.CRUD_ACTION_VALUE,pool.licenceId)}')">${pool.licenceNo}</a></c:if>
+                                                <c:if test="${pool.licenceId==null|| pool.licenceStatus=='Inactive'}">${pool.licenceNo}</c:if>
                                             </td>
                                             <td><c:out value="${pool.hciCode}"/><c:if test="${empty pool.hciCode}">-</c:if></td>
                                             <td><c:out value="${pool.hciName}"/></td>

@@ -98,6 +98,7 @@ public class ResponseForInformationDelegator {
         log.debug(StringUtil.changeForLog("the do preDetail start ...."));
         HttpServletRequest request=bpc.request;
         LicPremisesReqForInfoDto licPremisesReqForInfoDto ;
+        ParamUtil.setRequestAttr(bpc.request,"sysFileSize",systemParamConfig.getUploadFileLimit());
 
         try {
             String id =  ParamUtil.getMaskedString(bpc.request, IaisEGPConstant.CRUD_ACTION_VALUE);

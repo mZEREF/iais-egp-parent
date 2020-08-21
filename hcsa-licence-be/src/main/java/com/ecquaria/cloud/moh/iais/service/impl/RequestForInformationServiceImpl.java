@@ -51,8 +51,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -161,6 +159,7 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
     };
     private final String[] licStatus=new String[]{
             ApplicationConsts.LICENCE_STATUS_ACTIVE,
+            ApplicationConsts.LICENCE_STATUS_IACTIVE,
             ApplicationConsts.LICENCE_STATUS_CEASED,
             ApplicationConsts.LICENCE_STATUS_EXPIRY,
             ApplicationConsts.LICENCE_STATUS_LAPSED,

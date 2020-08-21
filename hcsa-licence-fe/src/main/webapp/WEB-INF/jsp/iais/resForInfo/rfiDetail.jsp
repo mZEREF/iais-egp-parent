@@ -15,6 +15,8 @@
     <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
+    <input type="hidden" name="sysFileSize" id="sysFileSize" value="${sysFileSize}"/>
+
     <div class="main-content">
         <br><br><br>
         <div class="container">
@@ -172,7 +174,7 @@
     });
 
     $('.commDoc').change(function () {
-        var maxFileSize = 100;
+        var maxFileSize = $('#sysFileSize').val();
         var error = validateUploadSizeMaxOrEmpty(maxFileSize, $(this));
         if (error == "N"){
             $(this).closest('.file-upload-gp').find('.error-msg').html('The file has exceeded the maximum upload size of '+ maxFileSize + 'M.');

@@ -458,7 +458,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
         searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
-        if(reqForInfoSearchListDtos.size()<3){
+        if(reqForInfoSearchListDtos.size()<1){
             searchListDtoSearchResult.setRowCount(reqForInfoSearchListDtos.size());
         }
         ParamUtil.setSessionAttr(request,"SearchResult", searchListDtoSearchResult);
