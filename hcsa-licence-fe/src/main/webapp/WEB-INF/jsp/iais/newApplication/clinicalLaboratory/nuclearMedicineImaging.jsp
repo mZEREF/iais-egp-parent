@@ -249,7 +249,9 @@
 </div>
 
 <script>
+    var init = 0;
   $(document).ready(function () {
+
       pageController('');
 
       <%--if(${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType) && !isClickEdit}){--%>
@@ -274,6 +276,8 @@
 
       doEdit();
       spRemove();
+
+      init = 1;
   });
 
   var absencePsnSel = function (val) {
@@ -303,6 +307,17 @@
       $('.personnelSel').change(function () {
           var personnelSel = $(this).val();
           var $personnelContentEle = $(this).closest('table.personnel-content');
+          if(init != 0){
+              //clear data;
+              $personnelContentEle.find('div.personnel-designation select[name="designation"]').val('');
+              var designation = $personnelContentEle.find('div.personnel-designation  option[value=""]').html();
+              $personnelContentEle.find('select[name="designation"]').next().find('.current').html(designation);
+
+              $personnelContentEle.find('div.personnel-name input[name="name"]').val('');
+              $personnelContentEle.find('div.personnel-regnNo input[name="regnNo"]').val('');
+              $personnelContentEle.find('div.personnel-wrkExpYear input[name="wrkExpYear"]').val('');
+              $personnelContentEle.find('div.personnel-qualification input[name="qualification"]').val('');
+          }
           personnelSelFun(personnelSel,$personnelContentEle);
       });
   };
