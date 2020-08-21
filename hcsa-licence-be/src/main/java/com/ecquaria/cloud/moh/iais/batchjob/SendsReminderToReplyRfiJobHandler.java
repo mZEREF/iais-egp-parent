@@ -169,6 +169,10 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
             emailParam.setSubject(subject);
             //email
             notificationHelper.sendNotification(emailParam);
+            //sms
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_SMS);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+            notificationHelper.sendNotification(emailParam);
             //msg
             emailMap.put("systemLink", url);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
@@ -177,10 +181,7 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
             emailParam.setMaskParams(mapPrem);
             emailParam.setRefId(applicationDto.getApplicationNo());
             notificationHelper.sendNotification(emailParam);
-            //sms
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_SMS);
-            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-            notificationHelper.sendNotification(emailParam);
+
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }

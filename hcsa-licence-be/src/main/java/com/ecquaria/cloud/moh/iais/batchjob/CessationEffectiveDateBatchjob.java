@@ -9,12 +9,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -26,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.sz.commons.util.MsgUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -240,8 +244,32 @@ public class CessationEffectiveDateBatchjob {
                 emailMap.put("ApplicationDate", Formatter.formatDateTime(date));
                 emailMap.put("email", "");
                 emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE, emailMap, licenceNo, licenceNo,
-                        NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
+                emailParam.setTemplateContent(emailMap);
+                emailParam.setQueryCode(licenceNo);
+                emailParam.setReqRefNum(licenceNo);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                emailParam.setRefId(id);
+                Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+                InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
+                map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
+                map.put("ApplicationNumber", licenceNo);
+                String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+                emailParam.setSubject(subject);
+                //email
+                notificationHelper.sendNotification(emailParam);
+                //sms
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_SMS);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                notificationHelper.sendNotification(emailParam);
+                //msg
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_MSG);
+                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+                List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(id).getEntity();
+                ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
+                emailParam.setRefId(applicationDto.getApplicationNo());
+                notificationHelper.sendNotification(emailParam);
                 //cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
@@ -284,8 +312,32 @@ public class CessationEffectiveDateBatchjob {
             emailMap.put("ApplicationDate", Formatter.formatDateTime(date));
             emailMap.put("email", "");
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-            notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE, emailMap, licenceNo, licenceNo,
-                    NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setQueryCode(licenceNo);
+            emailParam.setReqRefNum(licenceNo);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+            emailParam.setRefId(id);
+            Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+            InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
+            map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
+            map.put("ApplicationNumber", licenceNo);
+            String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getSubject(),map);
+            emailParam.setSubject(subject);
+            //email
+            notificationHelper.sendNotification(emailParam);
+            //sms
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_SMS);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+            notificationHelper.sendNotification(emailParam);
+            //msg
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_MSG);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+            List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(id).getEntity();
+            ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
+            emailParam.setRefId(applicationDto.getApplicationNo());
+            notificationHelper.sendNotification(emailParam);
             //cessationBeService.sendEmail(EFFECTIVEDATAEQUALDATA, date, svcName, id, licenseeId, licenceNo);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
