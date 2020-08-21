@@ -49,10 +49,10 @@
                                             <iais:field value="Due Date :"/>
                                             <div class="col-sm-7 col-md-4 col-xs-10">
                                                 <c:choose>
-                                                    <c:when test="${licPreReqForInfoDto.status!='RFIST002'&&licPreReqForInfoDto.status!='RFIST004'}">
+                                                    <c:when test="${licPreReqForInfoDto.status!='RFIST004'}">
                                                         <iais:value width="18">
-                                                            <label class="control-label"><fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}"
-                                                                                                         pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></label>
+                                                            <label class="control-label">
+                                                                <fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></label>
                                                         </iais:value>
                                                     </c:when>
                                                     <c:otherwise>
