@@ -114,9 +114,9 @@
                         <iais:sortableHeader needSort="true" field="LIC_STATUS_DESC" value="Status" style="width:2%;"/>
                         <iais:sortableHeader needSort="true" field="address" value="Premises" style="width:22%;"/>
                         <iais:sortableHeader needSort="true" field="START_DATE"
-                                             value="Start Date" style="width:11%;"/>
+                                             value="Start Date" style="width:13%;"/>
                         <iais:sortableHeader needSort="true" field="EXPIRY_DATE"
-                                             value="Expiry Date" style="width:11%;"/>
+                                             value="Expiry Date" style="width:13%;"/>
                     </tr>
                     </thead>
                     <tbody>
