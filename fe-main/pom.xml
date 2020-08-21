@@ -61,6 +61,23 @@
             <artifactId>ecq-sz-commons</artifactId>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>sz-sit</id>
+            <properties>
+                <package.properties.path>configs/sz-sit</package.properties.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>sz-dev</id>
+            <properties>
+                <package.properties.path>configs/sz-dev</package.properties.path>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
     <build>
         <finalName>main-web</finalName>
         <resources>
@@ -108,7 +125,20 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>${package.properties.path}</directory>
+                            <targetPath>WEB-INF/classes</targetPath>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
 </project>
