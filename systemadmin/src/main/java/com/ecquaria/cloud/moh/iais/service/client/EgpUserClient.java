@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
+import com.ecquaria.cloud.role.Role;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sop.rbac.user.UserIdentifier;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -41,4 +43,7 @@ public interface EgpUserClient {
 
     @RequestMapping(path = {"/api/v1/userroleassignments"}, consumes = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.POST}, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> createUerRoleIds(@RequestBody EgpUserRoleDto var1);
+
+    @RequestMapping(path = "/api/v1/roles/{map}", method = RequestMethod.GET)
+    FeignResponseEntity<List<Role>> search(@RequestParam("map") Map<String,String> map);
 }

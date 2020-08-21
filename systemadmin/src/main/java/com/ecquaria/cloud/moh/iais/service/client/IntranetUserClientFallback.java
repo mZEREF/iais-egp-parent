@@ -134,4 +134,9 @@ public class IntranetUserClientFallback implements IntranetUserClient{
         entity.setHeaders(headers);
         return entity;
     }
+
+    @Override
+    public FeignResponseEntity<List<OrgUserRoleDto>> getUserRoleByIds(List<String> ids) {
+        return null;
+    }
 }

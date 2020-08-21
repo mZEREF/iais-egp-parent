@@ -67,4 +67,7 @@ public interface IntranetUserClient {
 
     @GetMapping(value = "/iais-orguser-be/intranet-user-role-list/{userAccId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<OrgUserRoleDto>> retrieveRolesByuserAccId(@RequestParam("userAccId") String userAccId);
+
+    @PostMapping(value = "/iais-orguser-be/user-role-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserRoleDto>> getUserRoleByIds(@RequestBody List<String> ids);
 }

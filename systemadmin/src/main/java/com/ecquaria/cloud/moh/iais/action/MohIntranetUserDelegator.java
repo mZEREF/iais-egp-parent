@@ -31,7 +31,9 @@ import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
+import com.ecquaria.cloud.role.Role;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -234,18 +237,26 @@ public class MohIntranetUserDelegator {
         if (request != null) {
             userAccId = ParamUtil.getMaskedString(bpc.request, "maskUserId");
         }
-        List<String> assignRoleOption = getAssignRoleOption();
+        List<Role> rolesByDomain = intranetUserService.getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
+        List<String> assignRoleOption = IaisCommonUtils.genNewArrayList();
+        Map<String, String> roleMap = IaisCommonUtils.genNewHashMap();
+        if (!IaisCommonUtils.isEmpty(rolesByDomain)) {
+            for (Role role : rolesByDomain) {
+                String name = role.getName();
+                String assignRoleId = role.getId();
+                assignRoleOption.add(name);
+                roleMap.put(name, assignRoleId);
+            }
+        }
         List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(userAccId);
         List<String> roleNames = IaisCommonUtils.genNewArrayList();
         List<String> assignRoleIds = IaisCommonUtils.genNewArrayList();
-        Map<String,String> roleMap = IaisCommonUtils.genNewHashMap();
         if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
             for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
                 String roleName = orgUserRoleDto.getRoleName();
                 String assignRoleId = orgUserRoleDto.getId();
                 roleNames.add(roleName);
                 assignRoleIds.add(assignRoleId);
-                roleMap.put(assignRoleId,roleName);
             }
         }
         assignRoleOption.removeAll(roleNames);
@@ -269,6 +280,7 @@ public class MohIntranetUserDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
+        Map<String, String> roleMap = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "roleMap");
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
         String[] assignRoles = ParamUtil.getStrings(bpc.request, "assignRole");
@@ -282,13 +294,14 @@ public class MohIntranetUserDelegator {
                 OrgUserRoleDto orgUserRoleDto = new OrgUserRoleDto();
                 orgUserRoleDto.setUserAccId(userAccId);
                 orgUserRoleDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-                orgUserRoleDto.setRoleName(assignRole);
+                String roleId = roleMap.get(assignRole);
+                orgUserRoleDto.setRoleName(roleId);
                 orgUserRoleDtos.add(orgUserRoleDto);
 
                 EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
                 egpUserRoleDto.setUserId(orgUserDto.getUserId());
                 egpUserRoleDto.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
-                egpUserRoleDto.setRoleId(assignRole);
+                egpUserRoleDto.setRoleId(roleId);
                 egpUserRoleDto.setPermission("A");
                 //egpUserRoleDto.isSystem()
                 EgpUserRoleDtos.add(egpUserRoleDto);
@@ -301,16 +314,15 @@ public class MohIntranetUserDelegator {
             for (String removeRole : removeRoles) {
                 removeRoleIds.add(removeRole);
             }
-            intranetUserService.removeRole(removeRoleIds);
-
-            //todo:role
             List<String> removeRoleNames = IaisCommonUtils.genNewArrayList();
-            Map<String,String> roleMap = (Map<String,String>)ParamUtil.getSessionAttr(bpc.request, "roleMap");
-            roleMap.forEach((roleId, roleName) -> {
-                if(removeRoleIds.contains(roleId)){
+            List<OrgUserRoleDto> orgUserRoleDtoById = intranetUserService.getOrgUserRoleDtoById(removeRoleIds);
+            if(!IaisCommonUtils.isEmpty(orgUserRoleDtoById)){
+                for(OrgUserRoleDto orgUserRoleDto :orgUserRoleDtoById ){
+                    String roleName = orgUserRoleDto.getRoleName();
                     removeRoleNames.add(roleName);
                 }
-            });
+            }
+            intranetUserService.removeRole(removeRoleIds);
             intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
         }
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.FALSE);
@@ -893,10 +905,10 @@ public class MohIntranetUserDelegator {
                 if (!StringUtil.isEmpty(remarks)) {
                     orgUserDto.setRemarks(remarks);
                 }
-                if(!StringUtil.isEmpty(startDateStr)){
+                if (!StringUtil.isEmpty(startDateStr)) {
                     orgUserDto.setStartDateStr(startDateStr);
                 }
-                if(!StringUtil.isEmpty(endDateStr)){
+                if (!StringUtil.isEmpty(endDateStr)) {
                     orgUserDto.setEndDateStr(endDateStr);
                 }
                 orgUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTRANET);
@@ -938,7 +950,7 @@ public class MohIntranetUserDelegator {
             String error = "Account Activation Start is a mandatory field.";
             errors.add(error);
         }
-        if (!StringUtil.isEmpty(startDateStr)&&accountActivateDatetime==null) {
+        if (!StringUtil.isEmpty(startDateStr) && accountActivateDatetime == null) {
             String error = "Please key in a valid Account Activation Start date.";
             errors.add(error);
         }
@@ -948,7 +960,7 @@ public class MohIntranetUserDelegator {
             String error = "Account Activation End is a mandatory field.";
             errors.add(error);
         }
-        if (!StringUtil.isEmpty(endDateStr)&&accountDeactivateDatetime == null) {
+        if (!StringUtil.isEmpty(endDateStr) && accountDeactivateDatetime == null) {
             String error = "Please key in a valid Account Activation End date.";
             errors.add(error);
         }
@@ -980,13 +992,13 @@ public class MohIntranetUserDelegator {
             }
         }
         String mobileNo = orgUserDto.getMobileNo();
-        if(!StringUtil.isEmpty(mobileNo)){
+        if (!StringUtil.isEmpty(mobileNo)) {
             if (!mobileNo.matches("^[8|9][0-9]{7}$")) {
                 errors.add("Please key in a valid mobile number.");
             }
         }
         String officeTelNo = orgUserDto.getOfficeTelNo();
-        if(!StringUtil.isEmpty(officeTelNo)) {
+        if (!StringUtil.isEmpty(officeTelNo)) {
             if (!officeTelNo.matches("^[6][0-9]{7}$")) {
                 errors.add("Please key in a valid office number.");
             }
@@ -1029,43 +1041,6 @@ public class MohIntranetUserDelegator {
         result.add(so2);
         result.add(so3);
         return result;
-    }
-
-    private List<String> getAssignRoleOption() {
-        List<String> roleOptions = IaisCommonUtils.genNewArrayList();
-        String so1 = "INSPECTOR";
-        String so2 = "INSPECTOR_LEAD";
-        String so3 = "AO1";
-        String so4 = "AO1_LEAD";
-        String so5 = "AO2";
-        String so6 = "AO2_LEAD";
-        String so7 = "AO3";
-        String so8 = "AO3_LEAD";
-        String so9 = "ASO";
-        String so10 = "ASO_LEAD";
-        String so11 = "PSO";
-        String so12 = "PSO_LEAD";
-        String so13 = "APO";
-        String so14 = "AO";
-        String so15 = "SYSTEM_USER_ADMIN";
-        String so16 =  "BROADCAST";
-        roleOptions.add(so1);
-        roleOptions.add(so2);
-        roleOptions.add(so3);
-        roleOptions.add(so4);
-        roleOptions.add(so5);
-        roleOptions.add(so6);
-        roleOptions.add(so7);
-        roleOptions.add(so8);
-        roleOptions.add(so9);
-        roleOptions.add(so10);
-        roleOptions.add(so11);
-        roleOptions.add(so12);
-        roleOptions.add(so13);
-        roleOptions.add(so14);
-        roleOptions.add(so15);
-        roleOptions.add(so16);
-        return roleOptions;
     }
 
     private static File inputStreamToFile(InputStream ins, File file) {

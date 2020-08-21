@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
@@ -8,12 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
+import com.ecquaria.cloud.role.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.rbac.user.UserIdentifier;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -135,6 +138,18 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public List<OrgUserRoleDto> retrieveRolesByuserAccId(String userAccId) {
         return intranetUserClient.retrieveRolesByuserAccId(userAccId).getEntity();
+    }
+
+    @Override
+    public List<OrgUserRoleDto> getOrgUserRoleDtoById(List<String> ids) {
+        return intranetUserClient.getUserRoleByIds(ids).getEntity();
+    }
+
+    @Override
+    public List<Role> getRolesByDomain(String domain) {
+        Map<String,String> map  =  IaisCommonUtils.genNewHashMap();
+        map.put("userDomain", domain);
+        return egpUserClient.search(map).getEntity();
     }
 
     @Override
