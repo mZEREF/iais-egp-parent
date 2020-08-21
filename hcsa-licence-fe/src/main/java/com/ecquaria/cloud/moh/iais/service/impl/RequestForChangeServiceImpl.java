@@ -1446,15 +1446,16 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto= organizationLienceseeClient.getLicenseeById(appSubmissionDto.getLicenseeId()).getEntity();
+        LicenseeDto newLicenseeDto= organizationLienceseeClient.getLicenseeById(appSubmissionDto.getNewLicenseeId()).getEntity();
         String applicantName=licenseeDto.getName();
-        emailMap.put("name_transferee", "name_transferee");
+        emailMap.put("name_transferee", newLicenseeDto.getName());
         emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{appSubmissionDto.getAppType()}).get(0).getText());
         emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
         emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         emailMap.put("ExistingLicensee", applicantName);
         emailMap.put("transferee_licensee", applicantName);
         emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
-        emailMap.put("Hypelink", loginUrl);
+        //emailMap.put("Hypelink", loginUrl);
         emailMap.put("HCSA_Regulations", "");
         emailMap.put("ApplicantName", applicantName);
         emailMap.put("systemLink", loginUrl);
