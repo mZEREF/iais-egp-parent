@@ -299,7 +299,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             emailParam.setQueryCode(applicationNo);
             emailParam.setReqRefNum(applicationNo);
             emailParam.setRefId(applicationNo);
-            emailParam.setSubject("MOH HALP - Request for information for Application Number" + applicationNo);
+            emailParam.setSubject("MOH HALP - Request for information for Application Number " + applicationNo);
             notificationHelper.sendNotification(emailParam);
 
         }
