@@ -74,7 +74,7 @@ public interface AppointmentClient {
     @GetMapping(value = "/iais-appointment/date-holiday-list")
     FeignResponseEntity<List<Date>> getHolidays();
 
-    @PutMapping(value = "/iais-appointment/appt-calendar-refno", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<List<ApptUserCalendarDto>> cancelCalenderByApptRefNoAndStatus(@RequestBody ApptUserCalendarDto apptUserCalendarDto);
+    @PutMapping(value = "/iais-appointment/appt-calendar-refno-status", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<ApptUserCalendarDto>> getCalenderByApptRefNoAndStatus(@RequestBody ApptUserCalendarDto apptUserCalendarDto);
 
 }

@@ -553,8 +553,8 @@ public class InspectReviseNcEmailDelegator {
             if(appPremisesInspecApptDto!=null&&appPremisesInspecApptDto.getApptRefNo()!=null){
                 cancelCalendarDto.setApptRefNo(appPremisesInspecApptDto.getApptRefNo());
                 cancelCalendarDto.setAuditTrailDto(auditTrailDto);
-                cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_NON_AVAILIBLE);
-                List<ApptUserCalendarDto> apptUserCalendarDtos= appointmentClient.cancelCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
+                cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_RESERVED);
+                List<ApptUserCalendarDto> apptUserCalendarDtos= appointmentClient.getCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
                 mapTemplate.put("InspectionEndDate", Formatter.formatDate(apptUserCalendarDtos.get(0).getEndSlot().get(0)));
             }
             Map<String,Object> mapTableTemplate=IaisCommonUtils.genNewHashMap();
