@@ -473,19 +473,21 @@ public class RequestForInformationDelegator {
         Date dueDate;
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
-        if(date==null){
-            errorMap.put("Due_date",MessageUtil.replaceMessage("GENERAL_ERR0006","Due Date","field"));
-        }else {
-            String newDate= ParamUtil.getString(request, "Due_date");
-            dueDate=Formatter.parseDate(newDate);
-            newDate=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(dueDate);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
-            Date tomorrow= calendar.getTime();
-            String now=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(tomorrow);
-            if(newDate.compareTo(now) <0 ){
-                errorMap.put("Due_date","PRF_ERR007");
+        if(status.equals(RequestForInformationConstants.RFI_RETRIGGER)){
+            if(date==null){
+                errorMap.put("Due_date",MessageUtil.replaceMessage("GENERAL_ERR0006","Due Date","field"));
+            }else {
+                String newDate= ParamUtil.getString(request, "Due_date");
+                dueDate=Formatter.parseDate(newDate);
+                newDate=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(dueDate);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) + 1);
+                Date tomorrow= calendar.getTime();
+                String now=new SimpleDateFormat(SystemAdminBaseConstants.DATE_FORMAT).format(tomorrow);
+                if(newDate.compareTo(now) <0 ){
+                    errorMap.put("Due_date","PRF_ERR007");
+                }
             }
         }
         if (!errorMap.isEmpty()) {

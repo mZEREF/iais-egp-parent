@@ -47,19 +47,20 @@
                                         </iais:row>
                                         <iais:row>
                                             <iais:field value="Due Date :"/>
-                                            <div class="col-sm-7 col-md-4 col-xs-10">
-                                                <c:choose>
-                                                    <c:when test="${licPreReqForInfoDto.status!='RFIST004'}">
-                                                        <iais:value width="18">
-                                                            <label class="control-label">
-                                                                <fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></label>
-                                                        </iais:value>
-                                                    </c:when>
-                                                    <c:otherwise>
+                                            <c:choose>
+                                                <c:when test="${licPreReqForInfoDto.status=='RFIST004'}">
+                                                    <iais:value width="18">
+                                                        <label class="control-label">
+                                                            <fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}" pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></label>
+                                                    </iais:value>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <div class="col-sm-7 col-md-4 col-xs-10">
                                                         <iais:datePicker name="Due_date" dateVal="${licPreReqForInfoDto.dueDateSubmission}"/>
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </div>
+                                                    </div>
+                                                </c:otherwise>
+                                            </c:choose>
+
                                             <c:if test="${licPreReqForInfoDto.status!='RFIST002'&&licPreReqForInfoDto.status!='RFIST004'}">
                                                 <div class="col-sm-7 col-md-2 col-xs-10">
                                                     <button class="btn btn-secondary" type="button" data-toggle="modal" data-target= "#extendsDueDate">
