@@ -1271,24 +1271,26 @@ public class NewApplicationDelegator {
             ApplicationDto applicationDto = applicationClient.getApplicationDtoByAppNo(appNo).getEntity();
             if (ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus())) {
                 InterMessageDto interMessageBySubjectLike = appSubmissionService.getInterMessageBySubjectLike(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + applicationDto.getApplicationNo(), MessageConstants.MESSAGE_STATUS_RESPONSE);
-                List<AppEditSelectDto> entity = applicationClient.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
-                String url = "";
-                String s = MaskUtil.maskValue("appNo", applicationDto.getApplicationNo());
-                if (!entity.isEmpty()) {
-                    boolean rfcFlag = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType());
-                    boolean premisesListEdit = entity.get(0).isPremisesListEdit();
-                    if (rfcFlag && premisesListEdit) {
-                        url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST + s;
-                        sendURL(bpc.request, bpc.response, url);
-                        bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
-                        return;
+                if(interMessageBySubjectLike.getId()!=null){
+                    List<AppEditSelectDto> entity = applicationClient.getAppEditSelectDtos(applicationDto.getId(), ApplicationConsts.APPLICATION_EDIT_TYPE_RFI).getEntity();
+                    String url = "";
+                    String s = MaskUtil.maskValue("appNo", applicationDto.getApplicationNo());
+                    if (!entity.isEmpty()) {
+                        boolean rfcFlag = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType());
+                        boolean premisesListEdit = entity.get(0).isPremisesListEdit();
+                        if (rfcFlag && premisesListEdit) {
+                            url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_PREMISES_LIST + s;
+                            sendURL(bpc.request, bpc.response, url);
+                            bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
+                            return;
+                        }
                     }
-                }
 
-                url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION + s;
-                sendURL(bpc.request, bpc.response, url);
-                bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
-                return;
+                    url = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_NEWAPPLICATION + s;
+                    sendURL(bpc.request, bpc.response, url);
+                    bpc.request.getSession().setAttribute(AppConsts.SESSION_INTER_INBOX_MESSAGE_ID, interMessageBySubjectLike.getId());
+                    return;
+                }
             }
             //cessation
             if (ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())) {
