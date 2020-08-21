@@ -289,7 +289,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RFI);
             emailParam.setMaskParams(maskParams);
-            emailParam.setModuleType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
             emailParam.setQueryCode(applicationNo);
             emailParam.setReqRefNum(applicationNo);
             emailParam.setTemplateContent(map);
