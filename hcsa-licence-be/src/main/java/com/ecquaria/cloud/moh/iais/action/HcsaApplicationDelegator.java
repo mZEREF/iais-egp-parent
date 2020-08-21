@@ -1088,7 +1088,7 @@ public class HcsaApplicationDelegator {
                 emailMap.put("email_address", "");
                 emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                 notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED, emailMap, applicationNo, applicationNo,
-                        NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                        NotificationHelper.RECEIPT_TYPE_APP, applicationNo);
             }catch (Exception e){
                 log.info("-----RFC Application - Send SMS to transferor when licence transfer application is rejected. licenseeId is null---------");
             }
@@ -2132,7 +2132,7 @@ public class HcsaApplicationDelegator {
             emailMap.put("systemLink", loginUrl);
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
             notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION, emailMap, applicationViewDto.getApplicationDto().getApplicationNo(), applicationViewDto.getApplicationDto().getApplicationNo(),
-                    NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                    NotificationHelper.RECEIPT_TYPE_APP, applicationViewDto.getApplicationDto().getApplicationNo());
         }catch (Exception e){
             log.error(StringUtil.changeForLog("send email error!-The following email will be triggered when Approval Officer routes an application back for Internal Clarification"));
         }

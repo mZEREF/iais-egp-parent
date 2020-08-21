@@ -1413,7 +1413,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("systemLink", loginUrl);
         emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
         notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT, emailMap, appSubmissionDto.getAppGrpNo(), appSubmissionDto.getAppGrpNo(),
-                NotificationHelper.RECEIPT_TYPE_APP, appSubmissionDto.getLicenseeId());
+                NotificationHelper.RECEIPT_TYPE_APP_GRP, appSubmissionDto.getAppGrpId());
     }
 
     @Override
@@ -1438,7 +1438,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("email_address", "");
         emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
         notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT, emailMap, appSubmissionDto.getAppGrpNo(), appSubmissionDto.getAppGrpNo(),
-                NotificationHelper.RECEIPT_TYPE_APP, appSubmissionDto.getLicenseeId());
+                NotificationHelper.RECEIPT_TYPE_APP_GRP, appSubmissionDto.getAppGrpId());
     }
 
     @Override
@@ -1461,7 +1461,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("email", "");
         emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
         notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED, emailMap, appSubmissionDto.getAppGrpNo(), appSubmissionDto.getAppGrpNo(),
-                NotificationHelper.RECEIPT_TYPE_APP, appSubmissionDto.getLicenseeId());
+                NotificationHelper.RECEIPT_TYPE_APP_GRP, appSubmissionDto.getAppGrpId());
     }
 
     @Override
@@ -1474,12 +1474,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         emailMap.put("Licensee", applicantName);
         emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
-        emailMap.put("ReductionResidentialBeds", "");
+        emailMap.put("ReductionResidentialBeds",appSubmissionDto.getServiceName());
         emailMap.put("RemoveSubsumedService", "");
         emailMap.put("ChangeManagementLicensee", "");
         emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-        notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER, emailMap, appSubmissionDto.getAppGrpNo(), appSubmissionDto.getAppGrpNo(),
-                NotificationHelper.RECEIPT_TYPE_APP, appSubmissionDto.getLicenseeId());
+        notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER, emailMap, appSubmissionDto.getLicenceNo(), appSubmissionDto.getLicenceNo(),
+                NotificationHelper.RECEIPT_TYPE_LICENCE_ID, appSubmissionDto.getLicenceId());
     }
 
 
