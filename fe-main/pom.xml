@@ -69,6 +69,24 @@
             </properties>
         </profile>
         <profile>
+            <id>sg-sit</id>
+            <properties>
+                <package.properties.path>configs/sg-sit</package.properties.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>uat</id>
+            <properties>
+                <package.properties.path>configs/uat</package.properties.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <package.properties.path>configs/prod</package.properties.path>
+            </properties>
+        </profile>
+        <profile>
             <id>sz-dev</id>
             <properties>
                 <package.properties.path>configs/sz-dev</package.properties.path>
