@@ -87,7 +87,7 @@
 
     <sql key = "licenceQuery" remarks = "Query Inter-Licence Data by condition">
         <![CDATA[
-             SELECT
+             SELECT DISTINCT
                 lic.id,
                 lic.licence_no,
                 lic.svc_name,
