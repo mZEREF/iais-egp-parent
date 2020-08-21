@@ -1453,11 +1453,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
         emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         emailMap.put("ExistingLicensee", applicantName);
-        emailMap.put("transferee_licensee", applicantName);
+        emailMap.put("transferee_licensee", newLicenseeDto.getName());
         emailMap.put("LicenceNumber", appSubmissionDto.getLicenceNo());
         //emailMap.put("Hypelink", loginUrl);
         emailMap.put("HCSA_Regulations", "");
-        emailMap.put("ApplicantName", applicantName);
         emailMap.put("systemLink", loginUrl);
         emailMap.put("email", "");
         emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
