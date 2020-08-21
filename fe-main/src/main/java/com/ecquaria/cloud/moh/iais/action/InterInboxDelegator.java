@@ -947,8 +947,9 @@ public class InterInboxDelegator {
         List<SelectOption> inboxServiceSelectList = IaisCommonUtils.genNewArrayList();
         inboxServiceSelectList.add(new SelectOption("All", "All"));
         inboxServiceSelectList.add(new SelectOption("BLB@", "Blood Banking"));
-        inboxServiceSelectList.add(new SelectOption("TCB@", "Tissue Banking"));
         inboxServiceSelectList.add(new SelectOption("CLB@", "Clinical Laboratory"));
+        inboxServiceSelectList.add(new SelectOption("RDS@", "Radiological Service"));
+        inboxServiceSelectList.add(new SelectOption("TCB@", "Tissue Banking"));
         inboxServiceSelectList.add(new SelectOption("NMA@", "Nuclear Medicine (Assay)"));
         inboxServiceSelectList.add(new SelectOption("NMI@", "Nuclear Medicine (Imaging)"));
         ParamUtil.setRequestAttr(request, "inboxServiceSelect", inboxServiceSelectList);
