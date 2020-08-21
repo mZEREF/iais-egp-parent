@@ -4,6 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib prefix="iais" uri="http://www.ecq.com/iais" %>
 <%@ taglib prefix="egov-cloud" uri="ecquaria/sop/egov-cloud" %>
+<%@ page import="com.ecquaria.cloud.moh.iais.common.constant.AppConsts" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%
     //handle to the Engine APIs
     sop.webflow.rt.api.BaseProcessClass process =
@@ -46,9 +48,19 @@
                                         <iais:row>
                                             <iais:field value="Due Date :"/>
                                             <div class="col-sm-7 col-md-4 col-xs-10">
-                                                <iais:datePicker name="Due_date" dateVal="${licPreReqForInfoDto.dueDateSubmission}"/>
+                                                <c:choose>
+                                                    <c:when test="${licPreReqForInfoDto.status!='RFIST002'&&licPreReqForInfoDto.status!='RFIST004'}">
+                                                        <iais:value width="18">
+                                                            <label class="control-label"><fmt:formatDate value="${licPreReqForInfoDto.dueDateSubmission}"
+                                                                                                         pattern="${AppConsts.DEFAULT_DATE_FORMAT}"/></label>
+                                                        </iais:value>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <iais:datePicker name="Due_date" dateVal="${licPreReqForInfoDto.dueDateSubmission}"/>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </div>
-                                            <c:if test="${licPreReqForInfoDto.status!='RFIST002'}">
+                                            <c:if test="${licPreReqForInfoDto.status!='RFIST002'&&licPreReqForInfoDto.status!='RFIST004'}">
                                                 <div class="col-sm-7 col-md-2 col-xs-10">
                                                     <button class="btn btn-secondary" type="button" data-toggle="modal" data-target= "#extendsDueDate">
                                                         Extends

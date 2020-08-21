@@ -454,7 +454,7 @@ public class RequestForInformationDelegator {
 
         String[] status=new String[]{licPremisesReqForInfoDto.getStatus()};
         if(licPremisesReqForInfoDto.getStatus().equals(RequestForInformationConstants.RFI_CLOSE)){
-            status=new String[]{RequestForInformationConstants.RFI_CLOSE,RequestForInformationConstants.RFI_RETRIGGER};
+            status=new String[]{RequestForInformationConstants.RFI_CLOSE_OFFICER,RequestForInformationConstants.RFI_RETRIGGER};
         }
         if(licPremisesReqForInfoDto.getStatus().equals(RequestForInformationConstants.RFI_CLOSE_OFFICER)){
             status=new String[]{RequestForInformationConstants.RFI_CLOSE_OFFICER};
@@ -565,47 +565,48 @@ public class RequestForInformationDelegator {
 //        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
 //        inboxMsgService.saveInterMessage(interMessageDto);
         log.debug(StringUtil.changeForLog("the do requestForInformation end ...."));
+        if(status.equals(RequestForInformationConstants.RFI_RETRIGGER)){
+            try {
 
-        try {
-
-            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
-            Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
-            emailMap.put("ApplicantName", applicantName);
-            emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
-            emailMap.put("ApplicationNumber", licPremisesReqForInfoDto.getLicenceNo());
-            emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
-            emailMap.put("email", "");
-            emailMap.put("TATtime", Formatter.formatDate(dueDate));
-            emailMap.put("Remarks", stringBuilder.toString());
-            emailMap.put("systemLink", loginUrl);
-            emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-            EmailParam emailParam = new EmailParam();
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI);
-            emailParam.setTemplateContent(emailMap);
-            emailParam.setQueryCode(licPremisesReqForInfoDto.getLicenceNo());
-            emailParam.setReqRefNum(licPremisesReqForInfoDto.getLicenceNo());
-            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-            LicenceViewDto licenceViewDto= hcsaLicenceClient.getLicenceViewDtoByLicPremCorrId(licPremisesReqForInfoDto.getLicPremId()).getEntity();
-            List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
-            ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
-            emailParam.setRefId(licenceViewDto.getLicenceDto().getId());
-            emailParam.setSubject(subject);
-            //email
-            notificationHelper.sendNotification(emailParam);
-            //msg
-            emailMap.put("systemLink", url);
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
-            emailParam.setTemplateContent(emailMap);
-            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
-            emailParam.setMaskParams(mapPrem);
-            emailParam.setRefId(applicationDto.getApplicationNo());
-            notificationHelper.sendNotification(emailParam);
-            //sms
-            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
-            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
-            notificationHelper.sendNotification(emailParam);
-        }catch (Exception e){
-            log.error(e.getMessage(), e);
+                String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
+                emailMap.put("ApplicantName", applicantName);
+                emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
+                emailMap.put("ApplicationNumber", licPremisesReqForInfoDto.getLicenceNo());
+                emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
+                emailMap.put("email", "");
+                emailMap.put("TATtime", Formatter.formatDate(dueDate));
+                emailMap.put("Remarks", stringBuilder.toString());
+                emailMap.put("systemLink", loginUrl);
+                emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI);
+                emailParam.setTemplateContent(emailMap);
+                emailParam.setQueryCode(licPremisesReqForInfoDto.getLicenceNo());
+                emailParam.setReqRefNum(licPremisesReqForInfoDto.getLicenceNo());
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                LicenceViewDto licenceViewDto= hcsaLicenceClient.getLicenceViewDtoByLicPremCorrId(licPremisesReqForInfoDto.getLicPremId()).getEntity();
+                List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
+                ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
+                emailParam.setRefId(licenceViewDto.getLicenceDto().getId());
+                emailParam.setSubject(subject);
+                //email
+                notificationHelper.sendNotification(emailParam);
+                //msg
+                emailMap.put("systemLink", url);
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
+                emailParam.setTemplateContent(emailMap);
+                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+                emailParam.setMaskParams(mapPrem);
+                emailParam.setRefId(applicationDto.getApplicationNo());
+                notificationHelper.sendNotification(emailParam);
+                //sms
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_SMS);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
+                notificationHelper.sendNotification(emailParam);
+            }catch (Exception e){
+                log.error(e.getMessage(), e);
+            }
         }
 
 
