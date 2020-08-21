@@ -812,7 +812,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
             map.put("dateStrList", dateStrList);
             map.put("fe_date", dateStr);
             map.put("officer_name", "officer_name");
-            String url = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            String url = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + MessageConstants.MESSAGE_CALL_BACK_URL_BEINBOX;
             map.put("systemLink", url);
             StringBuilder sb = new StringBuilder("MOH HALP - [Internal] Licensee Request to Reschedule Inspection Appointment Date for ");
             sb.append(appNo);
