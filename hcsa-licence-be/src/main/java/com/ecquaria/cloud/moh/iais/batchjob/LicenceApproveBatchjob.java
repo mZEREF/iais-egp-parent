@@ -1912,8 +1912,9 @@ public class LicenceApproveBatchjob {
             //send sms
             try {
                 //send email
+                HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                 newApplicationApproveSendEmail(licenceDto, applicationNo, null, null, false, null);
-
+                sendMessage("New application Approve - Application no : " + applicationNo,licenceDto.getLicenseeId(),"New application Content",maskParams,serviceId);
                 sendSMS(msgId, licenceDto.getLicenseeId(), msgInfoMap);
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send sms error"), e);

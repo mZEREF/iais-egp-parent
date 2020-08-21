@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemParameterConstants;
@@ -23,7 +24,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppGroupQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionAppInGroupQueryDto;
@@ -37,18 +40,8 @@ import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
-import com.ecquaria.cloud.moh.iais.service.AppPremisesRoutingHistoryMainService;
-import com.ecquaria.cloud.moh.iais.service.ApplicationViewMainService;
-import com.ecquaria.cloud.moh.iais.service.BroadcastMainService;
-import com.ecquaria.cloud.moh.iais.service.InspectionMainService;
-import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.service.*;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
@@ -67,6 +60,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -113,6 +107,9 @@ public class BackendInboxDelegator {
 
     @Autowired
     private EmailClient emailClient;
+
+    @Autowired
+    private InspEmailService inboxMsgService;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -414,9 +411,32 @@ public class BackendInboxDelegator {
 
     }
 
+    private void sendMessage(String subject, String licenseeId, String templateMessageByContent, HashMap<String, String> maskParams, String serviceId, String messageType){
+        if(StringUtil.isEmpty(messageType)){
+            messageType = MessageConstants.MESSAGE_TYPE_NOTIFICATION;
+        }
+        HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+        InterMessageDto interMessageDto = new InterMessageDto();
+        interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
+        interMessageDto.setSubject(subject);
+        interMessageDto.setMessageType(messageType);
+        String refNo = inboxMsgService.getMessageNo();
+        interMessageDto.setRefNo(refNo);
+        if(serviceDto != null){
+            interMessageDto.setService_id(serviceDto.getSvcCode()+"@");
+        }
+        interMessageDto.setUserId(licenseeId);
+        interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        interMessageDto.setMsgContent(templateMessageByContent);
+        interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        interMessageDto.setMaskParams(maskParams);
+        inboxMsgService.saveInterMessage(interMessageDto);
+    }
+
     private void rejectSendNotification(ApplicationViewDto applicationViewDto)throws Exception{
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
         String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         Date date = new Date();
         String appDate = Formatter.formatDateTime(date, "dd/MM/yyyy");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
@@ -426,6 +446,9 @@ public class BackendInboxDelegator {
         String emailAddress = "ecquaria@ecquaria.com";
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
             renewalSendNotification(applicationTypeShow,applicationNo,appDate,emailAddress,MohName,applicationDto);
+        }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
+            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+            sendMessage("New application Reject - Application no : " + applicationNo,licenseeId, "New application Content",maskParams,applicationViewDto.getApplicationDto().getServiceId(),null);
         }
     }
 

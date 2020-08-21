@@ -1048,6 +1048,9 @@ public class HcsaApplicationDelegator {
             sendRejectEmail(applicationNo,licenseeId,appGrpId);
             //send sms
             sendSMS(msgId,licenseeId,msgInfoMap);
+            //send message
+            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+            sendMessage("New application Reject - Application no : " + applicationNo,licenseeId, "New application Content",maskParams,applicationViewDto.getApplicationDto().getServiceId(),null);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
             renewalSendNotification(applicationTypeShow,applicationNo,appDate,emailAddress,MohName,applicationDto);
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
