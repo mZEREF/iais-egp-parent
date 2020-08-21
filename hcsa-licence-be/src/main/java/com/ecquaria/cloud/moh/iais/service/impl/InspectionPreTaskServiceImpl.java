@@ -294,6 +294,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             emailParam.setReqRefNum(applicationNo);
             emailParam.setTemplateContent(map);
             emailParam.setRefId(applicationNo);
+            emailParam.setSubject("MOH HALP - Request for information for Application Number" + applicationNo);
             notificationHelper.sendNotification(emailParam);
         }
     }
