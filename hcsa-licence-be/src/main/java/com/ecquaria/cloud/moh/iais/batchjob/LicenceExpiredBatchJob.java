@@ -73,6 +73,7 @@ public class LicenceExpiredBatchJob {
             for (LicenceDto licenceDto : licenceDtos) {
                 //shi fou you qi ta de app zai zuo
                 String licId = licenceDto.getId();
+                ids.clear();
                 ids.add(licId);
                 Map<String, Boolean> stringBooleanMap = cessationBeService.listResultCeased(ids);
                 if (stringBooleanMap.get(licId)) {

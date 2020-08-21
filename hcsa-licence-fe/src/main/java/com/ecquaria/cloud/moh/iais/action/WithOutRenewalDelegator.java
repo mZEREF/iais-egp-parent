@@ -852,8 +852,11 @@ public class WithOutRenewalDelegator {
                 EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, l.toString(), bpc.process);
         rfcAppSubmissionDtos.addAll(noAutoAppSubmissionDtos);
         rfcAppSubmissionDtos.addAll(autoAppSubmissionDtos);
+        List<AppSubmissionDto> renewAppSubmissionDtos = IaisCommonUtils.genNewArrayList();
+        renewAppSubmissionDtos.addAll(rfcAppSubmissionDtos);
+        renewAppSubmissionDtos.addAll(appSubmissionDtos3);
         List<String> serviceNamesAck = IaisCommonUtils.genNewArrayList();
-        for (AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos) {
+        for (AppSubmissionDto appSubmissionDto : renewAppSubmissionDtos) {
             String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
             String appType = appSubmissionDto.getAppType();
             if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
@@ -862,6 +865,8 @@ public class WithOutRenewalDelegator {
                 serviceName = serviceName + " (Amendment)" ;
             }
             serviceNamesAck.add(serviceName);
+        }
+        for (AppSubmissionDto appSubmissionDto : rfcAppSubmissionDtos) {
             appSubmissionDto.setServiceName(appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName());
             appSubmissionDto.setAmountStr("$0");
             appSubmissionDto.setAmount(0.0);

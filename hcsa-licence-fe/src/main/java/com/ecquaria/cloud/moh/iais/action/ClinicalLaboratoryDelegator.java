@@ -582,7 +582,6 @@ public class ClinicalLaboratoryDelegator {
                 return;
             }
         }
-
         String isEdit = ParamUtil.getString(bpc.request, NewApplicationDelegator.IS_EDIT);
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.REQUESTINFORMATIONCONFIG);
         boolean isRfi = false;

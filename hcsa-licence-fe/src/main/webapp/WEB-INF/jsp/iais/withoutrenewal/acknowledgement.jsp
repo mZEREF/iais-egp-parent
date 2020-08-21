@@ -39,7 +39,7 @@
                                         <p class="ack-font-20"><strong>Submission successful</strong></p>
                                     </div>
 
-                                    <c:forEach items="${serviceNames}" var="serviceName">
+                                    <c:forEach items="${serviceNamesAck}" var="serviceName">
                                         <div class="col-xs-12">
                                             <p class="ack-font-20">- <strong><c:out value="${serviceName}"/> </strong></p>
                                         </div>

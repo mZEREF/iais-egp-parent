@@ -104,7 +104,7 @@
         });
 
         $('#RfcSkip').click(function () {
-            $("[name='nextStep']").val('next');
+            $("[name='nextStep']").val('skip');
             nextFun();
         });
 

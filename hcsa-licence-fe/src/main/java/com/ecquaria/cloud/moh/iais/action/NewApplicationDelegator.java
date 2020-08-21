@@ -2078,6 +2078,7 @@ public class NewApplicationDelegator {
             appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
             appSubmissionDtoByLicenceId.setAutoRfc(true);
+            appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }
