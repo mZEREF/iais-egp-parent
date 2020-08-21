@@ -65,31 +65,33 @@
                                     <tbody>
                                     <c:choose>
                                         <c:when test="${'APTY005' ==AppSubmissionDto.appType}">
-                                            <tr>
-                                                <td><c:out value="${AppSubmissionDto.appGrpNo}"/></td>
-                                                <c:if test="${'Credit'==AppSubmissionDto.paymentMethod}">
-                                                    <td><c:out value="${txnRefNo}"/></td>
-                                                </c:if>
-                                                <td><c:out value="${txnDt}"/></td>
-                                                <td><c:if test="${AppSubmissionDto.amount==null}">N/A</c:if>
-                                                    <c:if test="${AppSubmissionDto.amount!=null}">
-                                                        <c:out value="${AppSubmissionDto.amountStr}"/>
+                                            <c:forEach var="ackPageAppSubmission" items="${ackPageAppSubmissionDto}">
+                                                <tr>
+                                                    <td><c:out value="${ackPageAppSubmission.appGrpNo}"/></td>
+                                                    <c:if test="${'Credit'==ackPageAppSubmission.paymentMethod}">
+                                                        <td><c:out value="${txnRefNo}"/></td>
                                                     </c:if>
-                                                </td>
-                                                <td>
-                                                    <c:choose>
-                                                        <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
-                                                            Credit Card
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <c:if test="${AppSubmissionDto.paymentMethod==null}">N/A</c:if>
-                                                            <c:if test="${AppSubmissionDto.paymentMethod!=null}">
-                                                                <c:out value="${AppSubmissionDto.paymentMethod}"/>
-                                                            </c:if>
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </td>
-                                            </tr>
+                                                    <td><c:out value="${txnDt}"/></td>
+                                                    <td><c:if test="${ackPageAppSubmission.amount==null}">N/A</c:if>
+                                                        <c:if test="${ackPageAppSubmission.amount!=null}">
+                                                            <c:out value="${ackPageAppSubmission.amountStr}"/>
+                                                        </c:if>
+                                                    </td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${'Credit'==ackPageAppSubmission.paymentMethod}">
+                                                                Credit Card
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <c:if test="${ackPageAppSubmission.paymentMethod==null}">N/A</c:if>
+                                                                <c:if test="${ackPageAppSubmission.paymentMethod!=null}">
+                                                                    <c:out value="${ackPageAppSubmission.paymentMethod}"/>
+                                                                </c:if>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
                                         </c:when>
                                         <c:otherwise>
                                             <tr>
