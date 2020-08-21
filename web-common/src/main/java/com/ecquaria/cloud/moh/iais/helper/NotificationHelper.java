@@ -543,7 +543,7 @@ public class NotificationHelper {
 					smsDto.setReqRefNum(refNo);
 					HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 					HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-					String gatewayUrl = env.getProperty("iais.intra.gateway.url");
+					String gatewayUrl = env.getProperty("iais.inter.gateway.url");
 					IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/send-sms", HttpMethod.POST, smsDto,
 							MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 							signature2.date(), signature2.authorization(), InterMessageDto.class);
