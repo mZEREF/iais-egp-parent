@@ -9,6 +9,7 @@
         <input type="hidden" name="action_grp_value" value="">
         <input type="hidden" name="action_id_value" value="">
         <input type="hidden" name="action_status_value" value="">
+        <input type="hidden" name="action_self_value" value="">
         <input type="hidden" name="action_type_value" value="">
         <input type="hidden" value="" id="isNeedDelete" name="isNeedDelete">
         <div id="clearBody">
@@ -123,13 +124,14 @@
                             <tr>
                                 <td hidden>
                                     <p class="appId"><iais:mask name="action_id_value" value="${app.id}"/></p>
+                                    <p class="appSelfFlag">${app.selfAssmtFlag}</p>
+                                    <p class="appGroupId">${app.appGrpId}</p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Application No.</p>
                                     <p><a href="#"
                                           <c:if test="${app.status == 'APST008' || app.status =='APST060'}">class="appdraftNo"</c:if>
-                                          <c:if test="${app.status != 'APST008'}">class="appNo"</c:if>
-                                    >${app.applicationNo}</a>
+                                          <c:if test="${app.status != 'APST008'}">class="appNo"</c:if>>${app.applicationNo}</a>
                                     </p>
                                 </td>
                                 <td>
@@ -157,7 +159,7 @@
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                         <option value="Appeal">Appeal</option>
-                                                        <c:if test="${app.selfAssmtFlag == 0}">
+                                                        <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                             <option value="Assessment">Assessment</option>
                                                         </c:if>
                                                 </select>
@@ -176,7 +178,7 @@
                                                     <c:if test="${app.canRecall}">
                                                         <option value="Recall">Recall</option>
                                                     </c:if>
-                                                    <c:if test="${app.selfAssmtFlag == 0}">
+                                                    <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}}">
                                                         <option value="Assessment">Assessment</option>
                                                     </c:if>
                                                 </select>
@@ -198,7 +200,7 @@
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <option value="Withdraw">Withdraw</option>
-                                                    <c:if test="${app.selfAssmtFlag == 0}">
+                                                    <c:if test="${app.selfAssmtFlag == 0 || app.selfAssmtFlag == 2}">
                                                         <option value="Assessment">Assessment</option>
                                                     </c:if>
                                                 </select>

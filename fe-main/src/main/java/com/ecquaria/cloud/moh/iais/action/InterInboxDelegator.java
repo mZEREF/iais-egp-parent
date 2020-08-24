@@ -924,6 +924,35 @@ public class InterInboxDelegator {
         inboxService.recallApplication(recallApplicationDto);
     }
 
+    public void doSelfAssMt(BaseProcessClass bpc) throws IOException {
+        HttpServletRequest request = bpc.request;
+
+        //selfDeclAction // selfDeclApplicationNumber // appGroupId
+        String appSelfFlag = ParamUtil.getString(request, "action_self_value");
+        String appGroupId = ParamUtil.getString(request, "action_grp_value");
+        String selfDeclApplicationNumber = ParamUtil.getString(request, "action_no_value");
+        if ("0".equals(appSelfFlag)){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohSelfAssessmentSubmit")
+                    .append("?appGroupId =")
+                    .append(MaskUtil.maskValue("appGroupId",appGroupId))
+                    .append("&selfDeclApplicationNumber=")
+                    .append(MaskUtil.maskValue("selfDeclApplicationNumber",selfDeclApplicationNumber));
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }
+        StringBuilder url = new StringBuilder();
+        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohSelfAssessmentSubmit")
+                .append("?selfDeclAction=rfi")
+                .append("&selfDeclApplicationNumber=")
+                .append(MaskUtil.maskValue("selfDeclApplicationNumber",selfDeclApplicationNumber));
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        bpc.response.sendRedirect(tokenUrl);
+
+    }
+
     public void appToAppView(BaseProcessClass bpc) throws IOException {
         String appNo = ParamUtil.getString(bpc.request, InboxConst.ACTION_NO_VALUE);
         StringBuilder url = new StringBuilder();

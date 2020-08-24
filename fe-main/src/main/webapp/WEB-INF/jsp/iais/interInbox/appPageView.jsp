@@ -103,6 +103,8 @@
         var appNo = $(this).closest("tr").find(".appNo").html();
         var appId = $(this).closest("tr").find(".appId").html();
         var appStatus = $(this).closest("tr").find(".appStatus").html();
+        var appGrpId = $(this).closest("tr").find(".appGroupId").html();
+        var appSelfFlag = $(this).closest("tr").find(".appSelfFlag").html();
         var appType = $(this).closest("tr").find(".apptype").html();
         var action = $(this).val();
         if ("Continue" == action) {
@@ -131,8 +133,17 @@
         }
 
         if ("Delete" == action) {
+            showWaiting();
             $("[name='action_no_value']").val($(this).closest("tr").find(".appdraftNo").html());
             $('#deleteDraftModal').modal('show');
+        }
+
+        if ("Assessment" == action){
+            showWaiting();
+            $("[name='action_no_value']").val(appNo);
+            $("[name='action_grp_value']").val(appGrpId);
+            $("[name='action_self_value']").val(appSelfFlag);
+            submit("doSelfAssMt");
         }
     });
 
