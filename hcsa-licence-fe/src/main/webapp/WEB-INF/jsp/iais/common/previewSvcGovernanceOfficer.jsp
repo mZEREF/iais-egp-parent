@@ -1,5 +1,10 @@
+<c:forEach var="stepSchem" items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}">
+    <c:if test="${stepSchem.stepCode == 'SVST002'}">
+        <c:set var="currStepName" value="${stepSchem.stepName}"/>
+    </c:if>
+</c:forEach>
 <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">${currStepMap.get("SVST002")}</label>
+    <label style="font-size: 2.2rem">${currStepName}</label>
     <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
 

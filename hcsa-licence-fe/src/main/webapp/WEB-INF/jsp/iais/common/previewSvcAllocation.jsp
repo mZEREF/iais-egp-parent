@@ -1,6 +1,14 @@
+<c:forEach var="stepSchem" items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}">
+    <c:if test="${stepSchem.stepCode == 'SVST003'}">
+        <c:set var="currStepName" value="${stepSchem.stepName}"/>
+    </c:if>
+    <c:if test="${stepSchem.stepCode == 'SVST001'}">
+        <c:set var="svcScopePageName" value="${stepSchem.stepName}"/>
+    </c:if>
+</c:forEach>
 <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}"></c:set>
 <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">${currStepMap.get("SVST003")}</label>
+    <label style="font-size: 2.2rem">${currStepName}</label>
     <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">
@@ -11,7 +19,7 @@
                             <thead style="text-decoration: none">
                             <tr>
                                 <th>Premises</th>
-                                <th>${currStepMap.get("SVST001")}</th>
+                                <th>${svcScopePageName}</th>
                                 <th>Clinical Governance Officers</th>
                             </tr>
                             </thead>

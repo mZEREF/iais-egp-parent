@@ -1,5 +1,10 @@
 <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">${currStepMap.get("SVST001")}</label>
+    <c:forEach var="stepSchem" items="${currentPreviewSvcInfo.hcsaServiceStepSchemeDtos}">
+        <c:if test="${stepSchem.stepCode == 'SVST001'}">
+            <c:set var="currStepName" value="${stepSchem.stepName}"/>
+        </c:if>
+    </c:forEach>
+    <label style="font-size: 2.2rem">${currStepName}</label>
 
     <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
