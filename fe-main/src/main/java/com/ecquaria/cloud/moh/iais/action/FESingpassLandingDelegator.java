@@ -68,6 +68,11 @@ public class FESingpassLandingDelegator {
     }
 
 
+    private boolean isTestMode(HttpServletRequest request){
+        String openTestMode = (String) ParamUtil.getSessionAttr(request, "openTestMode");
+        return !StringUtil.isEmpty(openTestMode) && "Y".equals(openTestMode) ? true : false;
+    }
+
     /**
      * StartStep: singpassCallBack
      *
@@ -78,15 +83,20 @@ public class FESingpassLandingDelegator {
         HttpServletRequest request = bpc.request;
         log.info("singpassCallBack===========>>>Start");
         AuditTrailHelper.auditFunction("FE Landing Singpass", "Login");
+        String identityNo;
+        if (isTestMode(request)){
+            identityNo = ParamUtil.getString(request, UserConstants.ENTITY_ID);
+        }else {
+            String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
+            LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
+            log.info(StringUtil.changeForLog("oLoginInfo" + oLoginInfo));
+            if (oLoginInfo == null){
+                return;
+            }
 
-        String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
-        LoginInfo oLoginInfo = SIMUtil.doSingPassArtifactResolution(request, samlArt);
-        log.info(StringUtil.changeForLog("oLoginInfo" + oLoginInfo));
-        if (oLoginInfo == null){
-            return;
+            identityNo = oLoginInfo.getLoginID();
         }
 
-        String identityNo = oLoginInfo.getLoginID();
         String idType = IaisEGPHelper.checkIdentityNoType(identityNo);
 
         log.info(StringUtil.changeForLog("singpassCallBack nric " + identityNo));

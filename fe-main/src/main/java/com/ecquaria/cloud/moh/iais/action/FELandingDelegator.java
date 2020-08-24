@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
+import com.ecquaria.cloud.moh.iais.helper.PropertiesUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import java.util.List;
 @Delegator(value = "feLandingDelegator")
 @Slf4j
 public class FELandingDelegator {
+
 
 	/**
 	 * StartStep: startStep
@@ -49,6 +51,9 @@ public class FELandingDelegator {
 					.append("/main-web/eservice/INTERNET/MohInternetInbox");
 			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
 		}
+
+		String openTestMode = PropertiesUtil.prop("iais.singpass.test.mode");
+		ParamUtil.setSessionAttr(bpc.request, "openTestMode", openTestMode);
 
 		List<String> mohIssueUenList = (List<String>) ParamUtil.getSessionAttr(bpc.request, "uenList");
 		ParamUtil.setSessionAttr(bpc.request, "uenList", null);
