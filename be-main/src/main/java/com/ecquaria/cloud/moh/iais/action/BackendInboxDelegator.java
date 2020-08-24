@@ -436,7 +436,7 @@ public class BackendInboxDelegator {
         inboxMsgService.saveInterMessage(interMessageDto);
     }
 
-    private void rejectSendNotification(ApplicationViewDto applicationViewDto)throws Exception{
+    private void rejectSendNotification(ApplicationViewDto applicationViewDto) {
         String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
         String appGrpId = applicationViewDto.getApplicationDto().getAppGrpId();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
