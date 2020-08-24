@@ -935,7 +935,7 @@ public class InterInboxDelegator {
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
                     .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohSelfAssessmentSubmit")
-                    .append("?appGroupId =")
+                    .append("?appGroupId=")
                     .append(MaskUtil.maskValue("appGroupId",appGroupId))
                     .append("&selfDeclApplicationNumber=")
                     .append(MaskUtil.maskValue("selfDeclApplicationNumber",selfDeclApplicationNumber));
