@@ -853,10 +853,12 @@ public class InsRepServiceImpl implements InsRepService {
             String workId = null;
             for (String id : wkGrpIds) {
                 WorkingGroupDto entity = organizationClient.getWrkGrpById(id).getEntity();
-                String groupDomain = entity.getGroupDomain();
-                if ("hcsa".equals(groupDomain)) {
-                    workId = entity.getId();
-                    break;
+                if(entity != null){
+                    String groupDomain = entity.getGroupDomain();
+                    if ("hcsa".equals(groupDomain)) {
+                        workId = entity.getId();
+                        break;
+                    }
                 }
             }
             List<String> leadId = organizationClient.getInspectionLead(workId).getEntity();
