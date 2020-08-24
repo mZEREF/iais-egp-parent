@@ -49,7 +49,6 @@ import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.ApptInspectionDateService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.OfficersReSchedulingService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -89,6 +88,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
     private OrganizationClient organizationClient;
 
     @Autowired
+    private SystemParamConfig systemParamConfig;
+
+    @Autowired
     private NotificationHelper notificationHelper;
 
     @Autowired
@@ -108,12 +110,6 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
 
     @Autowired
     private TaskService taskService;
-
-    @Autowired
-    private SystemParamConfig systemParamConfig;
-
-    @Autowired
-    private InboxMsgService inboxMsgService;
 
     @Autowired
     private InspectionAssignTaskService inspectionAssignTaskService;
@@ -999,10 +995,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         if(StringUtil.isEmpty(hciName)){
             hciName = "-";
         }
-        //todo
-        String address1 = "";
-        String address2 = "";
-        String phoneNo = "";
+        String address1 = systemParamConfig.getSystemAddressOne();
+        String address2 = systemParamConfig.getSystemAddressTwo();
+        String phoneNo = systemParamConfig.getSystemPhoneNumber();
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         map.put("applicant", licName);
         String appTypeShow = MasterCodeUtil.getCodeDesc(appType);
