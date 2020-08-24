@@ -16,7 +16,6 @@ public class GenerateKeyPair {
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			System.out.println("generate fail");
 		}
 		;
 
