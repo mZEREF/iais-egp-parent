@@ -389,17 +389,19 @@ public class RequestForChangeDelegator {
                    error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(maxFile),"sizeMax"));
                }
                appPremisesSpecialDocDto.setDocName(file.getOriginalFilename());
-           }else{
-               String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
-               log.info(StringUtil.changeForLog("The fileRepoGuid is -->:"+fileRepoGuid));
-               Long size= file.getSize()/1024;
-               AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
-               appPremisesSpecialDocDto.setDocName(file.getOriginalFilename());
-               appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(file.getBytes()));
-               appPremisesSpecialDocDto.setFileRepoId(fileRepoGuid);
-               appPremisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
-               appPremisesSpecialDocDto.setSubmitBy(auditTrailDto.getMohUserGuid());
-               appPremisesSpecialDocDto.setSubmitDt(new Date());
+               //0066841
+               if(fileValidate.get("fileType") && fileValidate.get("fileSize")){
+                   String fileRepoGuid = serviceConfigService.saveFileToRepo(file);
+                   log.info(StringUtil.changeForLog("The fileRepoGuid is -->:"+fileRepoGuid));
+                   Long size= file.getSize()/1024;
+                   AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+                   appPremisesSpecialDocDto.setDocName(file.getOriginalFilename());
+                   appPremisesSpecialDocDto.setMd5Code(FileUtil.genMd5FileChecksum(file.getBytes()));
+                   appPremisesSpecialDocDto.setFileRepoId(fileRepoGuid);
+                   appPremisesSpecialDocDto.setDocSize(Integer.valueOf(size.toString()));
+                   appPremisesSpecialDocDto.setSubmitBy(auditTrailDto.getMohUserGuid());
+                   appPremisesSpecialDocDto.setSubmitDt(new Date());
+               }
            }
         }else if(appPremisesSpecialDocDto == null || StringUtil.isEmpty(appPremisesSpecialDocDto.getFileRepoId())){
             error.put("selectedFileError",MessageUtil.replaceMessage("GENERAL_ERR0006","Letter of Undertaking","field"));
