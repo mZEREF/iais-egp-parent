@@ -8,6 +8,7 @@
         <input type="hidden" name="action_no_value" value="">
         <input type="hidden" name="action_grp_value" value="">
         <input type="hidden" name="action_id_value" value="">
+        <input type="hidden" name="action_status_value" value="">
         <input type="hidden" name="action_type_value" value="">
         <input type="hidden" value="" id="isNeedDelete" name="isNeedDelete">
         <div id="clearBody">
@@ -141,7 +142,7 @@
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Status</p>
-                                    <p><iais:code code="${app.status}"/></p>
+                                    <p class="appStatus"><iais:code code="${app.status}"/></p>
                                 </td>
                                 <td>
                                     <p class="visible-xs visible-sm table-row-title">Date Submitted</p>
@@ -191,6 +192,7 @@
                                                           || app.status == 'APST031'
                                                           || app.status == 'APST049'
                                                           || app.status == 'APST039'
+                                                          || app.status == 'APST040'
                                                           || app.status == 'APST011'
                                                           || app.status == 'APST004'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">

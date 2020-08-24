@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -45,6 +46,7 @@ public interface InboxService {
     Map<String,Boolean> listResultCeased(List<String> licIds);
     Map<String,String> appealIsApprove(String appIdOrLicenceId,String type);
     List<ApplicationSubDraftDto> getDraftByLicAppId(String licAppId);
+    ApplicationDraftDto getDraftByAppNo(String appNo);
     void  deleteDraftByNo(String draftNo);
     public LicenceViewDto getLicenceViewDtoByLicenceId(String licenceId);
     public LicenseeDto getLicenseeDtoBylicenseeId(String licenseeId);

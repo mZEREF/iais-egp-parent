@@ -80,4 +80,6 @@ public interface AppInboxClient {
     FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppId(@RequestParam(value = "licAppId",required = false)String licAppId);
     @PutMapping(value = "/iais-submission/delete-draft-by-no")
     FeignResponseEntity  deleteDraftByNo(@RequestParam("draftNo") String draftNo);
+    @GetMapping(value = "/iais-submission/draft-app-no")
+    FeignResponseEntity<ApplicationDraftDto>  getDraftInfoByAppNo(@RequestParam("appNo") String appNo);
 }

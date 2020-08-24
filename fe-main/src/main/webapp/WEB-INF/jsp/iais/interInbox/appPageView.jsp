@@ -102,12 +102,14 @@
     $(".appDoSelectActive").change(function () {
         var appNo = $(this).closest("tr").find(".appNo").html();
         var appId = $(this).closest("tr").find(".appId").html();
+        var appStatus = $(this).closest("tr").find(".appStatus").html();
         var appType = $(this).closest("tr").find(".apptype").html();
         var action = $(this).val();
         if ("Continue" == action) {
             showWaiting();
             $("[name='action_no_value']").val($(this).closest("tr").find(".appdraftNo").html());
             $("[name='action_type_value']").val(appType);
+            $("[name='action_status_value']").val(appStatus);
             submit('appDraft');
         }
         if ("Appeal" == action) {

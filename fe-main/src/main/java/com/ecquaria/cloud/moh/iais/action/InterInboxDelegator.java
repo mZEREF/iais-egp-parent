@@ -853,7 +853,12 @@ public class InterInboxDelegator {
     public void appDoDraft(BaseProcessClass bpc) throws IOException {
         log.debug("The prepareEdit start ...");
         HttpServletRequest request = bpc.request;
+
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
+        String appStatus = ParamUtil.getString(request, "action_status_value");
+        if (MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_RECALLED).equals(appStatus)){
+            appNo = inboxService.getDraftByAppNo(appNo).getDraftNo();
+        }
         if(InboxConst.APP_DO_DRAFT_TYPE_RFC.equals(ParamUtil.getString(request, InboxConst.ACTION_TYPE_VALUE))){
             StringBuilder url = new StringBuilder();
             url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())

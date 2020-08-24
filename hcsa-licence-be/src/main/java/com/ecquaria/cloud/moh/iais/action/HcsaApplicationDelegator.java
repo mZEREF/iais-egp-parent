@@ -1707,15 +1707,6 @@ public class HcsaApplicationDelegator {
                         }
                     }
                 }
-
-//                AppFeeDetailsDto appFeeDetailsDto = applicationService.getAppFeeDetailsDtoByApplicationNo(oldApplication.getApplicationNo());
-//                appReturnFeeDto.setApplicationNo(oldApplication.getApplicationNo());
-//                appReturnFeeDto.setReturnAmount(appFeeDetailsDto.getLaterFee());
-//                appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
-//                List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
-//                saveReturnFeeDtos.add(appReturnFeeDto);
-//                broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
-//                broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
             }
         }
 

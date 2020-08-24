@@ -207,11 +207,11 @@ public class InboxServiceImpl implements InboxService {
 
     @Override
     public List<RecallApplicationDto> canRecallApplications(List<RecallApplicationDto> recallApplicationDtos) {
-        List<String> refNoList = IaisCommonUtils.genNewArrayList();
         List<RecallApplicationDto> recallApplicationDtoList = IaisCommonUtils.genNewArrayList();
         for (RecallApplicationDto h:recallApplicationDtos
              ) {
             String appId = h.getAppId();
+            List<String> refNoList = IaisCommonUtils.genNewArrayList();
             List<AppPremisesCorrelationDto> appPremisesCorrelationDtoList = appInboxClient.listAppPremisesCorrelation(appId).getEntity();
             for (AppPremisesCorrelationDto appPremisesCorrelationDto:appPremisesCorrelationDtoList
                     ) {
@@ -467,6 +467,11 @@ public class InboxServiceImpl implements InboxService {
     public List<ApplicationSubDraftDto> getDraftByLicAppId(String licAppId) {
 
         return appInboxClient.getDraftByLicAppId(licAppId).getEntity();
+    }
+
+    @Override
+    public ApplicationDraftDto getDraftByAppNo(String appNo) {
+        return appInboxClient.getDraftInfoByAppNo(appNo).getEntity();
     }
 
     @Override
