@@ -248,7 +248,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             int msgTrackRefNumType = i.getMsgTrackRefNumType();
 
             LicenseeDto licenseeDto= inspEmailService.getLicenseeDtoById(i.getLicenseeId());
-            if (licenseeDto != null){
+            if (licenseeDto == null){
                 continue;
             }
 
