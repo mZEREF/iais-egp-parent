@@ -114,6 +114,9 @@ public class BackendInboxDelegator {
     @Value("${iais.email.sender}")
     private String mailSender;
 
+    @Value("${iais.system.one.address}")
+    private String systemAddressOne;
+
     static private String APPSTATUSCATEID = "BEE661EE-220C-EA11-BE7D-000C29F371DC";
 
     public void start(BaseProcessClass bpc){
@@ -445,30 +448,89 @@ public class BackendInboxDelegator {
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(applicationType);
         String emailAddress = "ecquaria@ecquaria.com";
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-            renewalSendNotification(applicationTypeShow,applicationNo,appDate,emailAddress,MohName,applicationDto);
+            renewalSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto);
         }else if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-            HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
-            sendMessage("New application Reject - Application no : " + applicationNo,licenseeId, "New application Content",maskParams,applicationViewDto.getApplicationDto().getServiceId(),null);
+            newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto);
         }
     }
 
-    private void renewalSendNotification(String applicationTypeShow,String applicationNo,String appDate,String emailAddress,String MohName,ApplicationDto applicationDto){
+    private void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto){
         log.info(StringUtil.changeForLog("send new application notification start"));
+        //send email
+        ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+        if(applicationGroupDto != null) {
+            String groupLicenseeId = applicationGroupDto.getLicenseeId();
+            log.info(StringUtil.changeForLog("send new application notification groupLicenseeId : " + groupLicenseeId));
+            LicenseeDto licenseeDto = organizationMainClient.getLicenseeDtoById(groupLicenseeId).getEntity();
+            if (licenseeDto != null) {
+                String applicantName = licenseeDto.getName();
+                log.info(StringUtil.changeForLog("send new application notification applicantName : " + applicantName));
+                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+                map.put("ApplicantName", applicantName);
+                map.put("applicationType", applicationTypeShow);
+                map.put("applicationNumber", applicationNo);
+                map.put("applicationDate", appDate);
+                map.put("emailAddress", systemAddressOne);
+                map.put("MOH_AGENCY_NAME", MohName);
+                try {
+                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_ID);
+                    emailParam.setTemplateContent(map);
+                    emailParam.setQueryCode(applicationNo);
+                    emailParam.setReqRefNum(applicationNo);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    emailParam.setRefId(applicationNo);
+                    emailParam.setSubject(subject);
+                    //send email
+                    log.info(StringUtil.changeForLog("send new application email"));
+                    notificationHelper.sendNotification(emailParam);
+                    //send sms
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_SMS_ID);
+                    smsParam.setSubject(subject);
+                    smsParam.setQueryCode(applicationNo);
+                    smsParam.setReqRefNum(applicationNo);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    smsParam.setRefId(applicationNo);
+                    log.info(StringUtil.changeForLog("send new application sms"));
+                    notificationHelper.sendNotification(smsParam);
+                    //send message
+                    EmailParam messageParam = new EmailParam();
+                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_REJECTED_MESSAGE_ID);
+                    messageParam.setTemplateContent(map);
+                    messageParam.setQueryCode(applicationNo);
+                    messageParam.setReqRefNum(applicationNo);
+                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    messageParam.setRefId(applicationNo);
+                    messageParam.setSubject(subject);
+                    log.info(StringUtil.changeForLog("send new application message"));
+                    notificationHelper.sendNotification(messageParam);
+                    log.info(StringUtil.changeForLog("send new application notification end"));
+                }catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    private void renewalSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto){
+        log.info(StringUtil.changeForLog("send renewal application notification start"));
         //send email
         ApplicationGroupDto applicationGroupDto = applicationViewService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
         if(applicationGroupDto != null){
             String groupLicenseeId = applicationGroupDto.getLicenseeId();
-            log.info(StringUtil.changeForLog("send new application notification groupLicenseeId : " + groupLicenseeId));
+            log.info(StringUtil.changeForLog("send renewal application notification groupLicenseeId : " + groupLicenseeId));
             LicenseeDto licenseeDto = organizationMainClient.getLicenseeDtoById(groupLicenseeId).getEntity();
             if(licenseeDto != null){
                 String applicantName = licenseeDto.getName();
-                log.info(StringUtil.changeForLog("send new application notification applicantName : " + applicantName));
+                log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicantName));
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                 map.put("ApplicantName", applicantName);
                 map.put("ApplicationType", applicationTypeShow);
                 map.put("ApplicationNumber", applicationNo);
                 map.put("ApplicationDate", appDate);
-                map.put("emailAddress", emailAddress);
+                map.put("emailAddress", systemAddressOne);
                 map.put("MOH_AGENCY_NAME", MohName);
                 try {
                     String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is rejected ";
@@ -481,7 +543,7 @@ public class BackendInboxDelegator {
                     emailParam.setRefId(applicationNo);
                     emailParam.setSubject(subject);
                     //send email
-                    log.info(StringUtil.changeForLog("send new application email"));
+                    log.info(StringUtil.changeForLog("send renewal application email"));
                     notificationHelper.sendNotification(emailParam);
                     //send sms
                     EmailParam smsParam = new EmailParam();
@@ -491,7 +553,7 @@ public class BackendInboxDelegator {
                     smsParam.setReqRefNum(applicationNo);
                     smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
                     smsParam.setRefId(applicationNo);
-                    log.info(StringUtil.changeForLog("send new application sms"));
+                    log.info(StringUtil.changeForLog("send renewal application sms"));
                     notificationHelper.sendNotification(smsParam);
                     //send message
                     EmailParam messageParam = new EmailParam();
@@ -502,9 +564,9 @@ public class BackendInboxDelegator {
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(applicationNo);
                     messageParam.setSubject(subject);
-                    log.info(StringUtil.changeForLog("send new application message"));
+                    log.info(StringUtil.changeForLog("send renewal application message"));
                     notificationHelper.sendNotification(messageParam);
-                    log.info(StringUtil.changeForLog("send new application notification end"));
+                    log.info(StringUtil.changeForLog("send renewal application notification end"));
                 }catch (Exception e){
                     log.error(e.getMessage(), e);
                 }
