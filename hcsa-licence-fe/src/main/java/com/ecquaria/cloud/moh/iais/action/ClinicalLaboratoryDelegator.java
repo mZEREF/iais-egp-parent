@@ -89,6 +89,7 @@ public class ClinicalLaboratoryDelegator {
     //dropdown
     public static final String DROPWOWN_IDTYPESELECT = "IdTypeSelect";
 
+    private static final String CURR_STEP_NAME = "currStepName";
     /**
      * StartStep: doStart
      *
@@ -204,6 +205,9 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         ParamUtil.setSessionAttr(bpc.request, "reloadLaboratoryDisciplines", (Serializable) reloadChkLstMap);
+        //curr step name
+        String stepName = getStepName(bpc,currentSvcId,HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
+        ParamUtil.setRequestAttr(bpc.request,CURR_STEP_NAME,stepName);
         log.debug(StringUtil.changeForLog("the do prepareLaboratoryDisciplines end ...."));
     }
 
@@ -303,6 +307,11 @@ public class ClinicalLaboratoryDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "ReloadAllocationMap", (Serializable) reloadAllocation);
 
+        //curr step name
+        String stepName = getStepName(bpc,currentSvcId,HcsaLicenceFeConstant.DISCIPLINEALLOCATION);
+        ParamUtil.setRequestAttr(bpc.request,CURR_STEP_NAME,stepName);
+        String svcScopePageName = getStepName(bpc,currentSvcId,HcsaLicenceFeConstant.LABORATORYDISCIPLINES);
+        ParamUtil.setRequestAttr(bpc.request,"svcScopePageName",svcScopePageName);
         log.debug(StringUtil.changeForLog("the do prepareDisciplineAllocation end ...."));
     }
 
@@ -2666,4 +2675,20 @@ public class ClinicalLaboratoryDelegator {
         return personMap;
     }
 
+    private String getStepName(BaseProcessClass bpc,String currSvcId,String stepCode){
+        String stepName = "";
+        ServiceStepDto serviceStepDto = (ServiceStepDto) ParamUtil.getSessionAttr(bpc.request, ShowServiceFormsDelegator.SERVICESTEPDTO);
+        if(serviceStepDto != null && !StringUtil.isEmpty(currSvcId)){
+            List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos = serviceStepDto.getHcsaServiceStepSchemeDtos();
+            if(!IaisCommonUtils.isEmpty(hcsaServiceStepSchemeDtos)){
+                for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto:hcsaServiceStepSchemeDtos){
+                    if(currSvcId.equals(hcsaServiceStepSchemeDto.getServiceId()) && stepCode.equals(hcsaServiceStepSchemeDto.getStepCode())){
+                        stepName = hcsaServiceStepSchemeDto.getStepName();
+                        break;
+                    }
+                }
+            }
+        }
+        return stepName;
+    }
 }

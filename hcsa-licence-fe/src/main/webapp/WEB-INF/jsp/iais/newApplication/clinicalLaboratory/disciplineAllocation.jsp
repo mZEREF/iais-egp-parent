@@ -34,7 +34,7 @@
                         <div class="application-service-steps">
                           <div class="discipline-allocation">
                             <span class="error-msg" name="iaisErrorMsg" id="error_CGO"></span>
-                            <h2>Discipline Allocation</h2>
+                            <h2>${currStepName}</h2>
                             <p>Please ensure that each laboratory discipline is assigned to a clinical governance officer.</p>
                             <div class="table-gp">
                               <c:if test="${AppSubmissionDto.needEditController}">
@@ -72,7 +72,7 @@
                                 <thead>
                                 <tr>
                                   <th>Premises</th>
-                                  <th>Laboratory Disciplines</th>
+                                  <th>${svcScopePageName}</th>
                                   <th>Clinical Governance Officers</th>
                                 </tr>
                                 </thead>
