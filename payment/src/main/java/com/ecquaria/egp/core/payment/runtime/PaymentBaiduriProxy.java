@@ -1,7 +1,6 @@
 package com.ecquaria.egp.core.payment.runtime;
 
 import com.ecquaria.cloud.RedirectUtil;
-import com.ecquaria.cloud.ServerConfig;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.PaymentBaiduriProxyUtil;
 import com.ecquaria.cloud.entity.sopprojectuserassignment.SMCStringHelperUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
@@ -66,7 +65,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		String continueToken = getContinueToken();
 		bpc.request.getSession().setAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey(), continueToken);
 		
-		String bigsURL = ServerConfig.getInstance().getFrontendURL()+ConfigUtil.getString("baiduri.url");
+		String bigsURL = AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+ConfigUtil.getString("baiduri.url");
 		if (StringHelper.isEmpty(bigsURL)) {
             throw new PaymentException("baiduri.url is not set.");
         }
