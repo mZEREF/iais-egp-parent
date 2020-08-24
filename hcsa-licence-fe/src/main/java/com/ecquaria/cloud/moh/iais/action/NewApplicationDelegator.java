@@ -990,8 +990,9 @@ public class NewApplicationDelegator {
             String name = "common" + comm.getId();
 
             Boolean isMandatory = comm.getIsMandatory();
+            String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
             if (isMandatory && appGrpPrimaryDocDtoList == null || isMandatory && appGrpPrimaryDocDtoList.isEmpty()) {
-                errorMap.put(name, MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field"));
+                errorMap.put(name, err006);
             } else if (isMandatory && !appGrpPrimaryDocDtoList.isEmpty()) {
                 Boolean flag = Boolean.FALSE;
                 for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
@@ -1002,7 +1003,7 @@ public class NewApplicationDelegator {
                     }
                 }
                 if (!flag) {
-                    errorMap.put(name, MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field"));
+                    errorMap.put(name, err006);
                 }
             }
         }
@@ -1338,17 +1339,17 @@ public class NewApplicationDelegator {
                     appCessHciDto.setEffectiveDate(effectiveDate);
                     if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                         appCessHciDto.setPatHciName(patTransTo);
-                        appCessHciDto.setPatNeedTrans(true);
+                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
                     } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                         appCessHciDto.setPatRegNo(patTransTo);
-                        appCessHciDto.setPatNeedTrans(true);
+                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
                     } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
                         appCessHciDto.setPatOthers(patTransTo);
-                        appCessHciDto.setPatNeedTrans(true);
+                        appCessHciDto.setPatNeedTrans(Boolean.TRUE);
                     } else {
                         String remarks = appCessMiscDto.getPatNoReason();
                         appCessHciDto.setPatNoRemarks(remarks);
-                        appCessHciDto.setPatNeedTrans(false);
+                        appCessHciDto.setPatNeedTrans(Boolean.FALSE);
                     }
                     List<AppCessHciDto> appCessHciDtos = appCessDtosByLicIds.get(0).getAppCessHciDtos();
                     appCessHciDtos.clear();
