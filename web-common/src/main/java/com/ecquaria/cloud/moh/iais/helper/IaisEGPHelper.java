@@ -206,10 +206,10 @@ public final class IaisEGPHelper extends EGPHelper {
                     dto.setNricNumber(user.getId());
                 }
                 dto.setMohUserGuid(loginContext.getUserId());
+                dto.setOperationType(AppConsts.USER_DOMAIN_INTRANET.equals(loginContext.getUserDomain()) ?
+                        AuditTrailConsts.OPERATION_TYPE_INTRANET : AuditTrailConsts.OPERATION_TYPE_INTERNET);
             }
             dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
-            dto.setOperationType(AppConsts.USER_DOMAIN_INTRANET.equals(user.getUserDomain()) ?
-                    AuditTrailConsts.OPERATION_TYPE_INTRANET : AuditTrailConsts.OPERATION_TYPE_INTERNET);
         }
         dto.setSessionId(session.getId());
         dto.setClientIp(MiscUtil.getClientIp(request));
