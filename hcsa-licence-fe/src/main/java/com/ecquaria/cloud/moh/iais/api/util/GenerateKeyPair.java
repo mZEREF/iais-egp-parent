@@ -10,26 +10,17 @@ import java.security.SecureRandom;
 @Slf4j
 public class GenerateKeyPair {
 
-	private String priKey;
-	private String pubKey;
-
 	public void run() {
 		try {
 			java.security.KeyPairGenerator keygen = java.security.KeyPairGenerator
 					.getInstance("RSA");
 			SecureRandom secrand = new SecureRandom();
-			secrand.generateSeed(128);//setSeed("dasdas2dsds".getBytes()); // 初始化随机产生器
+			secrand.generateSeed(128);//setSeed("dasdas2dsds".getBytes());
 			keygen.initialize(1024, secrand);
 			KeyPair keys = keygen.genKeyPair();
 
 			PublicKey pubkey = keys.getPublic();
 			PrivateKey prikey = keys.getPrivate();
-
-			pubKey = bytesToHexStr(pubkey.getEncoded());
-			priKey = bytesToHexStr(prikey.getEncoded());
-
-			//System.out.println("pubKey=" + pubKey);
-			//System.out.println("priKey=" + priKey);
 
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
