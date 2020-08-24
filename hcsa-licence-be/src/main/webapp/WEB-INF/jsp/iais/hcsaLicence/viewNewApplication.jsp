@@ -52,12 +52,6 @@
                           <div class="col-xs-6 col-md-6">
                             <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}"  style="display: none"><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}"/></span>
                           </div>
-                           <div class="col-xs-6 col-md-3">
-                           <span class="newVal " style="margin-left: 3%" attr="${checkList.otherScopeName}" ><c:out value="${checkList.otherScopeName}"/></span>
-                          </div>
-                          <div class="col-xs-6 col-md-3">
-                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].otherScopeName}"  style="display: none"><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].otherScopeName}"/></span>
-                          </div>
                          </span>
                     </p>
                   </div>
@@ -299,17 +293,15 @@
                 </tr>
                 </thead>
                 <c:forEach var="appGrpPrem" items="${appSubmissionDto.appGrpPremisesDtoList}" varStatus="status">
-                  <c:set var="hciNameOldAppSubmissionDtos" value=" ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/>
+                  <c:set var="hciNameOldAppSubmissionDtos" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}"/>
                   <c:set var="conveyanceVehicleNoOldAppSubmissionDtos" value=" ${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].conveyanceVehicleNo}"/>
                   <c:if test="${hciNameOldAppSubmissionDtos!='' && hciNameOldAppSubmissionDtos!=null}" >
                     <c:set value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].hciName}" var="oldAppSubmissionDto"></c:set>
                   </c:if>
                   <c:set var="reloadMapValue" value="${appGrpPrem.premisesIndexNo}"/>
-
-                  <tbody>
+                  <c:set var="oldReloadMapValue" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].premisesIndexNo}"></c:set>
                   <c:forEach var="disciplineAllocation" items="${reloadDisciplineAllocationMap[reloadMapValue]}" varStatus="stat">
                     <c:set value="${reloadOld[reloadMapValue]}" var="reloaded"></c:set>
-                    ${stat.end}
                     <tr>
                       <c:if test="${stat.first}">
                         <td style="text-align: center" rowspan="${reloadDisciplineAllocationMap[reloadMapValue].size()}">
@@ -329,7 +321,7 @@
                           <span class="newVal " attr="${disciplineAllocation.chkLstName}"><c:out value="${disciplineAllocation.chkLstName}"/></span>
                         </div>
                         <div  class="col-xs-6">
-                          <span class="oldVal " attr="${reloadOld[reloadMapValue][stat.index].chkLstName}"  style="display: none"><c:out value="${reloadOld[reloadMapValue][stat.index].chkLstName}"/></span>
+                          <span class="oldVal " attr="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"  style="display: none"><c:out value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/></span>
                         </div>
                         </p>
 
@@ -340,7 +332,7 @@
                           <span class="newVal " attr="${disciplineAllocation.cgoSelName}" ><c:out value="${disciplineAllocation.cgoSelName}"/></span>
                         </div>
                         <div class="col-xs-6">
-                          <span class="oldVal " attr="${reloadOld[reloadMapValue][stat.index].cgoSelName}"  style="display: none"><c:out value="${reloadOld[reloadMapValue][stat.index].cgoSelName}"/></span>
+                          <span class="oldVal " attr="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}"  style="display: none"><c:out value="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}"/></span>
                         </div>
                         </p>
                       </td>

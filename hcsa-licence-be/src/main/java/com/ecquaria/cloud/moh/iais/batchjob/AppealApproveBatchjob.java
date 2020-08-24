@@ -303,7 +303,10 @@ public class AppealApproveBatchjob {
                 log.error(e.getMessage(),e);
             }
         }
-
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        beEicGatewayClient.updateAppSvcKeyPersonnelDto(appealPersonnel,signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationAddCGO is end ..."));
     }
     private void applicationChangeHciName(List<ApplicationDto> appealApplicaiton,List<AppGrpPremisesEntityDto> appealAppGrpPremisesDto,

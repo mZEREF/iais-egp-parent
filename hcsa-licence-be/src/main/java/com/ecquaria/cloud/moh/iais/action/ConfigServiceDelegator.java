@@ -87,6 +87,10 @@ public class ConfigServiceDelegator {
         log.info("*********addNewService  start***********");
         bpc.request.getSession().removeAttribute("routingStage");
         configService.addNewService(bpc.request);
+        Object individualPremises = bpc.request.getAttribute("individualPremises");
+        if(individualPremises==null){
+            bpc.request.setAttribute("individualPremises","0");
+        }
     }
     public void saveOrUpdate(BaseProcessClass bpc) throws Exception{
         log.info("*********saveOrUpdate  start***********");
@@ -457,7 +461,7 @@ public class ConfigServiceDelegator {
         String[] serviceDocMandatories = request.getParameterValues("serviceDocMandatory");
         String numberfields = request.getParameter("Numberfields");
         String individualPremises = request.getParameter("individualPremises");
-
+        request.setAttribute("individualPremises",individualPremises);
         request.setAttribute("serviceDocSize",numberDocument);
         if(descriptionServiceDocs!=null){
             for(int i=0;i<descriptionServiceDocs.length;i++){
@@ -502,7 +506,7 @@ public class ConfigServiceDelegator {
                 }else if("1".equals(commDocMandatory[i])){
                     hcsaSvcDocConfigDto.setIsMandatory(Boolean.TRUE);
                 }
-                hcsaSvcDocConfigDto.setDupForPrem("0");
+                hcsaSvcDocConfigDto.setDupForPrem(individualPremises);
                 if(!StringUtil.isEmpty(commDocIds[i])){
                     hcsaSvcDocConfigDto.setId(commDocIds[i]);
                 }

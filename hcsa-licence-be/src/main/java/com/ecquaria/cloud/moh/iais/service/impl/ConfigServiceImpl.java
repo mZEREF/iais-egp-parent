@@ -453,13 +453,13 @@ public class ConfigServiceImpl implements ConfigService {
         }else if(!serviceIsUsed){
             Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
             if(parse.before(new Date())){
-                errorMap.put("effectiveDate","Effective Date should be future date");
+                errorMap.put("effectiveDate","RSM_ERR012");
             }
         }
         if(!StringUtil.isEmpty(endDate)){
             Date parse = new SimpleDateFormat("dd/MM/yyyy").parse(effectiveDate);
             if(endDate.before(parse)){
-                errorMap.put("effectiveEndDate", "CHKL_ERR002");
+                errorMap.put("effectiveEndDate", "EMM_ERR004");
             }
         }
 
@@ -529,7 +529,7 @@ public class ConfigServiceImpl implements ConfigService {
             }
             if(!StringUtil.isEmpty(mandatoryCount)&&!StringUtil.isEmpty(maximumCount)){
                 if(mandatoryCount>maximumCount){
-                    errorMap.put("maximumCount"+i,"Maximum Count has to be larger than Minimum Count");
+                    errorMap.put("maximumCount"+i,"SC_ERR006");
                 }
             }
         }
@@ -840,6 +840,10 @@ public class ConfigServiceImpl implements ConfigService {
             hcsaServiceDto.setServiceIsUsed(false);
         }
         setAttribute(request,hcsaServiceDto);
+        Object individualPremises = request.getAttribute("individualPremises");
+        if(individualPremises==null){
+           request.setAttribute("individualPremises","0");
+        }
     }
 
 

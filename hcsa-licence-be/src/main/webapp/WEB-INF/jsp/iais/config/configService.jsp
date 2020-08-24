@@ -328,10 +328,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label">Will the doc be duplicated for individual premises?</label>
           <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" checked value="0"><label>No</label>
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" <c:if test="${individualPremises==0}">checked</c:if> value="0"><label>No</label>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" value="1"><label>Yes</label>
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" <c:if test="${individualPremises==1}">checked</c:if> value="1"><label>Yes</label>
           </div>
         </div>
       </div>

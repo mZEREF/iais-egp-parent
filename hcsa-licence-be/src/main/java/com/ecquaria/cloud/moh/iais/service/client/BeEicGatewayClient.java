@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesInspecApptDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataRequest;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.BeSyncCompareDataResponse;
@@ -170,4 +171,9 @@ public class BeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HttpStatus.class);
     }
 
+    public FeignResponseEntity<HttpStatus> updateAppSvcKeyPersonnelDto(List<AppSvcKeyPersonnelDto> appealPersonnel,
+                                                               String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-svc-key-personel", HttpMethod.POST, appealPersonnel,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HttpStatus.class);
+    }
 }

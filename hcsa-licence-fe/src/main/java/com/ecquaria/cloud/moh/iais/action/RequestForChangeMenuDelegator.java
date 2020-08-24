@@ -1116,10 +1116,13 @@ public class RequestForChangeMenuDelegator {
         }catch (Exception e){
             log.info(e.getMessage(), e);
         }
-        bpc.request.getSession().setAttribute("payMethod", payMethod);
         if (0.0 == appSubmissionDtos.get(0).getAmount()) {
-            ParamUtil.setRequestAttr(bpc.request, "PmtStatus", ApplicationConsts.PAYMENT_METHOD_NAME_GIRO);
-            ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "ack");
+            StringBuilder url = new StringBuilder();
+            url.append("https://")
+                    .append(bpc.request.getServerName())
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohRfcPermisesList/1/prepareAckPage");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
             return;
         }
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)

@@ -136,22 +136,14 @@
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-6">
-                                          <c:if test="${appGrpPremDto.certIssuedDt==null}">
-                                             <span class="newVal " attr="-">
-                                               -
-                                              </span>
-                                          </c:if>
                                           <c:if test="${appGrpPremDto.certIssuedDt!=null}">
-                                              <span class="newVal " attr="${appGrpPremDto.certIssuedDt}">
-                                                <fmt:formatDate value="${appGrpPremDto.certIssuedDt}" pattern="dd/MM/yyyy"/>
-                                              </span>
+                                             <span class="newVal " attr="${appGrpPremDto.certIssuedDt}">
+                                            <fmt:formatDate value="${appGrpPremDto.certIssuedDt}" pattern="dd/MM/yyyy"/>
+                                          </span>
                                           </c:if>
                                         </div>
                                         <div class="col-md-6">
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
-                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt==null}">
-                                              <span class="oldVal " attr="-" style="display: none">-</span>
-                                            </c:if>
                                             <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt!=null}">
                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}"
                                                    style="display: none"><fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}" pattern="dd/MM/yyyy"/>
@@ -296,16 +288,11 @@
                                     </div>
                                     <div class="col-md-6">
                                       <div class="col-md-6">
-                                           <span class="newVal "
-                                                 attr="${appGrpPremDto.blkNo}"><c:out
-                                                   value="${appGrpPremDto.blkNo}"/></span>
+                                           <span class="newVal " attr="${appGrpPremDto.blkNo}"><c:out value="${appGrpPremDto.blkNo}"/></span>
                                       </div>
                                       <div class="col-md-6">
-                                          <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"
-                                                style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"/></span>
+                                          <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}" style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].blkNo}"/></span>
                                       </div>
-
-                                      </span>
                                     </div>
                                   </div>
 
@@ -315,14 +302,11 @@
                                     </div>
                                     <div class="col-md-6">
                                       <div class="col-md-6">
-                                           <span class="newVal "
-                                                 attr="${appGrpPremDto.floorNo}"><c:out
-                                                   value="${appGrpPremDto.floorNo}"/></span>
+                                           <span class="newVal " attr="${appGrpPremDto.floorNo}"><c:out value="${appGrpPremDto.floorNo}"/></span>
 
                                       </div>
                                       <div class="col-md-6">
-                                             <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"
-                                                   style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"/></span>
+                                             <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}" style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].floorNo}"/></span>
                                       </div>
                                     </div>
                                   </div>
