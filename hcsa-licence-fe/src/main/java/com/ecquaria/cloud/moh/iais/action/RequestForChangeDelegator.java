@@ -242,23 +242,15 @@ public class RequestForChangeDelegator {
         ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
-        //stepCode,stepName
-        Map<String,String> currStepMap = IaisCommonUtils.genNewHashMap();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
             String svcId = appSvcRelatedInfoDto.getServiceId();
             if(!StringUtil.isEmpty(svcId)){
                 List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
                 appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
-                if(!IaisCommonUtils.isEmpty(hcsaServiceStepSchemesByServiceId)){
-                    for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto:hcsaServiceStepSchemesByServiceId){
-                        currStepMap.put(hcsaServiceStepSchemeDto.getStepCode(),hcsaServiceStepSchemeDto.getStepName());
-                    }
-                }
                 ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             }
         }
-        ParamUtil.setRequestAttr(bpc.request,"currStepMap",currStepMap);
         log.debug(StringUtil.changeForLog("the do prepareFirstView end ...."));
     }
 

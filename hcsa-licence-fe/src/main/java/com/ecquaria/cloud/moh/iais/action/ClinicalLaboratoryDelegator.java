@@ -457,10 +457,7 @@ public class ClinicalLaboratoryDelegator {
             //
             if(reloadDisciplineAllocationMap != null){
             }
-            //stepCode,stepName
-            Map<String,String> currStepMap = IaisCommonUtils.genNewHashMap();
             for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto:hcsaServiceStepSchemesByServiceId){
-                currStepMap.put(hcsaServiceStepSchemeDto.getStepCode(),hcsaServiceStepSchemeDto.getStepName());
                 switch (hcsaServiceStepSchemeDto.getStepCode()){
                     case HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS:
                         List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
@@ -558,7 +555,6 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             ParamUtil.setSessionAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
             ParamUtil.setSessionAttr(bpc.request, "iframeId", iframeId);
-            ParamUtil.setRequestAttr(bpc.request,"currStepMap",currStepMap);
         }
 
         log.debug(StringUtil.changeForLog("the do prepareView end ...."));
