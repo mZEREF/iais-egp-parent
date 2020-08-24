@@ -888,10 +888,10 @@ public class RequestForChangeMenuDelegator {
             }
         }
         if ("update".equals(editSelect)) {
-            if (StringUtil.isEmpty(email)) {
+            if (StringUtil.isEmpty(salutation)) {
                 errMap.put("salutation", "UC_CHKLMD001_ERR001");
             }
-            if (StringUtil.isEmpty(email)) {
+            if (StringUtil.isEmpty(psnName)) {
                 errMap.put("psnName", "UC_CHKLMD001_ERR001");
             }
             if (StringUtil.isEmpty(email)) {
@@ -1601,10 +1601,8 @@ public class RequestForChangeMenuDelegator {
                     appSvcCgoDto.setEmailAddr(personnelListDto.getEmailAddr());
                     appSvcCgoDto.setMobileNo(personnelListDto.getMobileNo());
                     appSvcCgoDto.setDesignation(personnelListDto.getDesignation());
-                    appSvcCgoDto.setProfRegNo(personnelListDto.getProfessionRegnNo());
-                    appSvcCgoDto.setProfessionType(personnelListDto.getProfessionType());
-                    appSvcCgoDto.setSpeciality(personnelListDto.getSpeciality());
-                    appSvcCgoDto.setSubSpeciality(personnelListDto.getSubSpeciality());
+                    appSvcCgoDto.setName(personnelListDto.getPsnName());
+                    appSvcCgoDto.setSalutation(personnelListDto.getSalutation());
                 }
             }
             List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
@@ -1614,10 +1612,8 @@ public class RequestForChangeMenuDelegator {
                     appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
                     appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
                     appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
-                    appSvcPrincipalOfficersDto.setProfRegNo(personnelListDto.getProfessionRegnNo());
-                    appSvcPrincipalOfficersDto.setProfessionType(personnelListDto.getProfessionType());
-                    appSvcPrincipalOfficersDto.setSpeciality(personnelListDto.getSpeciality());
-                    appSvcPrincipalOfficersDto.setSubSpeciality(personnelListDto.getSubSpeciality());
+                    appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
+                    appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
                 }
             }
             List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
@@ -1627,10 +1623,8 @@ public class RequestForChangeMenuDelegator {
                     appSvcPrincipalOfficersDto.setEmailAddr(personnelListDto.getEmailAddr());
                     appSvcPrincipalOfficersDto.setMobileNo(personnelListDto.getMobileNo());
                     appSvcPrincipalOfficersDto.setDesignation(personnelListDto.getDesignation());
-                    appSvcPrincipalOfficersDto.setProfRegNo(personnelListDto.getProfessionRegnNo());
-                    appSvcPrincipalOfficersDto.setProfessionType(personnelListDto.getProfessionType());
-                    appSvcPrincipalOfficersDto.setSpeciality(personnelListDto.getSpeciality());
-                    appSvcPrincipalOfficersDto.setSubSpeciality(personnelListDto.getSubSpeciality());
+                    appSvcPrincipalOfficersDto.setName(personnelListDto.getPsnName());
+                    appSvcPrincipalOfficersDto.setSalutation(personnelListDto.getSalutation());
                 }
             }
         }
