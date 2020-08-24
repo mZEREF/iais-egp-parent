@@ -67,12 +67,6 @@ public class FESingpassLandingDelegator {
         log.info("initLoginInfo===========>>>End");
     }
 
-
-    private boolean isTestMode(HttpServletRequest request){
-        String openTestMode = (String) ParamUtil.getSessionAttr(request, "openTestMode");
-        return !StringUtil.isEmpty(openTestMode) && "Y".equals(openTestMode) ? true : false;
-    }
-
     /**
      * StartStep: singpassCallBack
      *
@@ -83,8 +77,9 @@ public class FESingpassLandingDelegator {
         HttpServletRequest request = bpc.request;
         log.info("singpassCallBack===========>>>Start");
         AuditTrailHelper.auditFunction("FE Landing Singpass", "Login");
+        ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
         String identityNo;
-        if (isTestMode(request)){
+        if (LoginHelper.isTestMode(request)){
             identityNo = ParamUtil.getString(request, UserConstants.ENTITY_ID);
         }else {
             String samlArt = ParamUtil.getString(request, Constants.SAML_ART);
@@ -95,6 +90,11 @@ public class FESingpassLandingDelegator {
             }
 
             identityNo = oLoginInfo.getLoginID();
+        }
+
+        if (StringUtil.isEmpty(identityNo)){
+            log.info(StringUtil.changeForLog("identityNo ====>>>>>>>>>" + identityNo));
+            return;
         }
 
         String idType = IaisEGPHelper.checkIdentityNoType(identityNo);

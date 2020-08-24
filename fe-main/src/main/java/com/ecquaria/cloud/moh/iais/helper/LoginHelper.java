@@ -5,6 +5,8 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +42,11 @@ public final class LoginHelper {
             log.error(e.getMessage(), e);
         }
 
+    }
+
+    public static boolean isTestMode(HttpServletRequest request){
+        String openTestMode = (String) ParamUtil.getSessionAttr(request, "openTestMode");
+        return !StringUtil.isEmpty(openTestMode) && "Y".equals(openTestMode) ? true : false;
     }
 
     private LoginHelper() {

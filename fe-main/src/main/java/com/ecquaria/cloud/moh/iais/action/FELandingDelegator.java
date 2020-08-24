@@ -52,7 +52,7 @@ public class FELandingDelegator {
 			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
 		}
 
-		String openTestMode = PropertiesUtil.prop("iais.singpass.test.mode");
+		String openTestMode = PropertiesUtil.prop("moh.halp.login.test.mode");
 		ParamUtil.setSessionAttr(bpc.request, "openTestMode", openTestMode);
 
 		List<String> mohIssueUenList = (List<String>) ParamUtil.getSessionAttr(bpc.request, "uenList");
