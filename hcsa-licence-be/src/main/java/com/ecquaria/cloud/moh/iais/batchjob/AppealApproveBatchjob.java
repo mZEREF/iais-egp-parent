@@ -18,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -321,6 +322,9 @@ public class AppealApproveBatchjob {
                appGrpPremisesDto1.setHciName(hciName);
                appealAppGrpPremisesDto.add(appGrpPremisesDto1);
            }
+        }
+        if (appealDto == null) {
+            throw new IaisRuntimeException("appeal dto is null");
         }
         ApplicationDto entity = applicationClient.getApplicationById(appealDto.getRelateRecId()).getEntity();
         ApplicationDto o = (ApplicationDto)CopyUtil.copyMutableObject(entity);
