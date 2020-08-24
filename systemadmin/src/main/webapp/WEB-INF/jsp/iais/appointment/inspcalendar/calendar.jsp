@@ -16,7 +16,11 @@
 
 <webui:setLayout name="iais-intranet"/>
 
-
+<style>
+  .column-sort{
+    margin-top: 3px;
+  }
+</style>
 <div class="main-content">
   <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -120,15 +124,15 @@
                   <table class="table">
                     <thead>
                     <tr>
-                      <iais:sortableHeader needSort="false"   field="index" value="No."></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="NAME" value="Inspector ID"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="BLOCK_OUT_START" value="Year"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="BLOCK_OUT_START" value="Non-Available Date Start"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="BLOCK_OUT_END" value="Non-Available Date End"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="REMARKS" value="Non-Available Date Description"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="RECURRENCE" value="Recurrence"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="true"   field="RECURRENCE_END_DATE" value="Recurrence End Date"></iais:sortableHeader>
-                      <iais:sortableHeader needSort="false"   field="action" value="Action"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"  style="width:1%" field="index" value="No."></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true" style="width:10%"  field="NAME" value="Inspector ID"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"  style="width:10%"  field="BLOCK_OUT_START" value="Year"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"  style="width:15%"  field="BLOCK_OUT_START" value="Non-Available Date Start"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"  style="width:15%"  field="BLOCK_OUT_END" value="Non-Available Date End"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"   style="width:20%" field="REMARKS" value="Non-Available Date Description"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"  style="width:15%"  field="RECURRENCE" value="Recurrence"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="true"  style="width:20%"  field="RECURRENCE_END_DATE" value="Recurrence End Date"></iais:sortableHeader>
+                      <iais:sortableHeader needSort="false"  style="width:20%"  field="action" value="Action"></iais:sortableHeader>
                     </tr>
                     </thead>
                     <tbody>

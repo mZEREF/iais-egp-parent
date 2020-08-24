@@ -11,7 +11,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <webui:setLayout name="iais-intranet"/>
-
+<style>
+    .column-sort{
+        margin-top: 3px;
+    }
+</style>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");

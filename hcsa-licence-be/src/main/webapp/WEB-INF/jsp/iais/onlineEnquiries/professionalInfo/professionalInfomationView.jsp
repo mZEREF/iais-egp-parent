@@ -12,7 +12,11 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <webui:setLayout name="iais-intranet"/>
 
-
+<style>
+    .column-sort{
+        margin-top: 3px;
+    }
+</style>
 <%
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
@@ -149,7 +153,7 @@
                                     <thead>
                                     <tr>
                                         <td></td>
-                                        <iais:sortableHeader needSort="false" field="index"
+                                        <iais:sortableHeader style="padding-bottom:15px" needSort="false" field="index"
                                                              value="S/N"></iais:sortableHeader>
                                         <iais:sortableHeader needSort="true" field="name"
                                                              value="Name"></iais:sortableHeader>

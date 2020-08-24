@@ -11,6 +11,11 @@
 <webui:setLayout name="iais-intranet"/>
 
 
+<style>
+  .column-sort{
+    margin-top: 3px;
+  }
+</style>
 <%
   sop.webflow.rt.api.BaseProcessClass process =
           (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");

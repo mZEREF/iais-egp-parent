@@ -15,7 +15,11 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass) request.getAttribute("process");
 %>
-
+<style>
+    .column-sort{
+        margin-top: 3px;
+    }
+</style>
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
@@ -63,13 +67,13 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <iais:sortableHeader needSort="false" style="padding-bottom:15px" field="" value="No."></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="CLAUSE_NO"
+                                    <iais:sortableHeader needSort="false" style="width:5%; padding-bottom:8px" field="" value="No."></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="true" style="width:5%" field="CLAUSE_NO"
                                                          value="Regulation Clause Number"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="CLAUSE"
+                                    <iais:sortableHeader needSort="true" style="width:5%"  field="CLAUSE"
                                                          value="Regulations"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="true" field="status" value="Status"></iais:sortableHeader>
-                                    <iais:sortableHeader needSort="false" style="padding-bottom:15px" field="action" value="Action"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="true" style="width:10%"  field="status" value="Status"></iais:sortableHeader>
+                                    <iais:sortableHeader needSort="false" style="padding-bottom:8px" field="action" value="Action"></iais:sortableHeader>
                                 </tr>
                                 </thead>
                                 <tbody>

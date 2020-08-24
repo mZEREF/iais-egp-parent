@@ -7,6 +7,12 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
 %>
+
+<style>
+    .column-sort{
+        margin-top: 3px;
+    }
+</style>
 <webui:setLayout name="iais-intranet"/>
 <div class="main-content">
 <form id = "mainForm" method = "post" action=<%=process.runtime.continueURL()%>>
@@ -59,14 +65,14 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <iais:sortableHeader needSort="false"  field="" value="S/N" style="padding-bottom:20px"></iais:sortableHeader>
-                            <iais:sortableHeader style="width:10%" needSort="true"  field="domain_type" value="Type"></iais:sortableHeader>
-                            <iais:sortableHeader style="width:20%" needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:1%" needSort="false"  field="" value="S/N" ></iais:sortableHeader>
+                            <iais:sortableHeader style="width:5%; padding-bottom:10px" needSort="true"  field="domain_type" value="Type"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:5%" needSort="true"   field="msg_type" value="Message Type"></iais:sortableHeader>
                             <iais:sortableHeader style="width:10%" needSort="true"   field="module" value="Module"></iais:sortableHeader>
-                            <iais:sortableHeader style="width:20%" needSort="true"   field="description" value="Description"></iais:sortableHeader>
-                            <iais:sortableHeader style="width:30%" needSort="true"   field="message" value="Message"></iais:sortableHeader>
-                            <iais:sortableHeader style="width:20%" needSort="true"   field="status" value="Status"></iais:sortableHeader>
-                            <iais:sortableHeader needSort="false"   field="action" style="padding-bottom:22px" value="Action"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:15%" needSort="true"   field="description" value="Description"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:5%" needSort="true"   field="message" value="Message"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:5%" needSort="true"   field="status" value="Status"></iais:sortableHeader>
+                            <iais:sortableHeader style="width:5%" needSort="false"   field="action" value="Action"></iais:sortableHeader>
                         </tr>
                         </thead>
                         <tbody style="text-align: left">
@@ -83,13 +89,13 @@
                                 <c:forEach var = "msgQuery" items = "${msgSearchResult.rows}" varStatus="status">
                                     <tr>
                                         <td align="left" class="row_no" style="width: 5px">${(status.index + 1) + (msgSearchParam.pageNo - 1) * msgSearchParam.pageSize}</td>
-                                        <td align="left" style="width: 5px"><iais:code code="${msgQuery.domainType}"></iais:code></td>
-                                        <td align="left" style="width: 5px"><iais:code code="${msgQuery.msgType}"></iais:code></td>
-                                        <td align="left" style="width: 5px"><iais:code code="${msgQuery.module}"></iais:code></td>
-                                        <td align="left" style="width: 5px"><c:out value="${msgQuery.description}"></c:out></td>
+                                        <td align="left" ><iais:code code="${msgQuery.domainType}"></iais:code></td>
+                                        <td align="left" ><iais:code code="${msgQuery.msgType}"></iais:code></td>
+                                        <td align="left" ><iais:code code="${msgQuery.module}"></iais:code></td>
+                                        <td align="left" ><c:out value="${msgQuery.description}"></c:out></td>
                                         <td align="left" ><c:out value="${msgQuery.message}"></c:out></td>
-                                        <td align="left"  ><iais:code code="${msgQuery.status}"></iais:code></td>
-                                        <td align="left"style="width: 50px">
+                                        <td align="left" ><iais:code code="${msgQuery.status}"></iais:code></td>
+                                        <td align="left">
                                             <button type="button"   onclick="prepareEdit('<iais:mask name="msgQueryId" value="${msgQuery.id}"/>')"  class="btn btn-default btn-sm" >Edit</button>
                                             <%--<iais:link icon="form_edit" title="Edit" onclick="javascript:prepareEdit('${msgQuery.id}');"/>
                                             <iais:link icon="form_delete" title="Disable" onclick="javascript:disable('${msgQuery.id}');"/>--%>
