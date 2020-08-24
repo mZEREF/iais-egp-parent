@@ -371,13 +371,14 @@ public class NewApplicationHelper {
                     if("-1".equals(idType)||StringUtil.isEmpty(idType)){
                         oneErrorMap.put("idType"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
                     }
+                    String errName = MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field");
                     if(StringUtil.isEmpty(name)){
-                        oneErrorMap.put("name"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
+                        oneErrorMap.put("name"+poIndex, errName);
                     }else if (name.length()>66){
 
                     }
                     if(StringUtil.isEmpty(salutation)){
-                        oneErrorMap.put("salutation"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field"));
+                        oneErrorMap.put("salutation"+poIndex, errName);
                     }
                     if(StringUtil.isEmpty(designation)){
                         oneErrorMap.put("designation"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));
