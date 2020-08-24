@@ -252,7 +252,7 @@
                 mt.delivery_mode,
                 mt.effective_from,
                 mt.effective_to,
-                (SELECT mtp.process_type FROM message_template_process AS mtp WHERE mtp.message_template_id = mt.ID ) as process
+                (SELECT DISTINCT mtp.process_type FROM message_template_process AS mtp WHERE mtp.message_template_id = mt.ID ) as process
             FROM message_template AS mt) AS T1
             CROSS APPLY
 			(

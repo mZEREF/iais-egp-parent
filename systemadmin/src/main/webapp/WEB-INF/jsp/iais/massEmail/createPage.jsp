@@ -77,7 +77,7 @@
                             <c:choose>
                                 <c:when test="${'1'.equals(distributionCanEdit)}">
                                     <iais:value width="10">
-                                        <iais:select firstOption="Please Select" name="mode" id="mode" options="modeSelection" value="${distribution.getMode()}" ></iais:select>
+                                        <iais:select firstOption="Please Select" name="mode" id="mode" options="mode" value="${distribution.getMode()}" ></iais:select>
                                     </iais:value>
                                 </c:when>
                                 <c:otherwise>
