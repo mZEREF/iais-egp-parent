@@ -48,12 +48,6 @@ import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +57,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /****
  *
@@ -241,15 +242,23 @@ public class RequestForChangeDelegator {
         ParamUtil.setRequestAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request,RfcConst.FIRSTVIEW,AppConsts.TRUE);
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        //stepCode,stepName
+        Map<String,String> currStepMap = IaisCommonUtils.genNewHashMap();
         if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
             AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSvcRelatedInfoDtos.get(0);
             String svcId = appSvcRelatedInfoDto.getServiceId();
             if(!StringUtil.isEmpty(svcId)){
                 List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemesByServiceId = serviceConfigService.getHcsaServiceStepSchemesByServiceId(svcId);
                 appSvcRelatedInfoDto.setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemesByServiceId);
+                if(!IaisCommonUtils.isEmpty(hcsaServiceStepSchemesByServiceId)){
+                    for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto:hcsaServiceStepSchemesByServiceId){
+                        currStepMap.put(hcsaServiceStepSchemeDto.getStepCode(),hcsaServiceStepSchemeDto.getStepName());
+                    }
+                }
                 ParamUtil.setRequestAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             }
         }
+        ParamUtil.setRequestAttr(bpc.request,"currStepMap",currStepMap);
         log.debug(StringUtil.changeForLog("the do prepareFirstView end ...."));
     }
 

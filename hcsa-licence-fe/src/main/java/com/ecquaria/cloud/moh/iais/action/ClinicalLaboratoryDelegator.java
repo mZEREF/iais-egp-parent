@@ -256,7 +256,6 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
             ParamUtil.setRequestAttr(bpc.request, GOVERNANCEOFFICERSDTOLIST, appSvcCgoDtoList);
         }
-
         log.debug(StringUtil.changeForLog("the do prepareGovernanceOfficers end ...."));
     }
 
@@ -384,7 +383,6 @@ public class ClinicalLaboratoryDelegator {
         deputyFlagSelect.add(deputyFlagOp3);
         ParamUtil.setRequestAttr(bpc.request, "DeputyFlagSelect", deputyFlagSelect);
 
-
         log.debug(StringUtil.changeForLog("the do preparePrincipalOfficers end ...."));
     }
 
@@ -458,10 +456,11 @@ public class ClinicalLaboratoryDelegator {
             //64688
             //
             if(reloadDisciplineAllocationMap != null){
-
-
             }
+            //stepCode,stepName
+            Map<String,String> currStepMap = IaisCommonUtils.genNewHashMap();
             for(HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto:hcsaServiceStepSchemesByServiceId){
+                currStepMap.put(hcsaServiceStepSchemeDto.getStepCode(),hcsaServiceStepSchemeDto.getStepName());
                 switch (hcsaServiceStepSchemeDto.getStepCode()){
                     case HcsaConsts.STEP_CLINICAL_GOVERNANCE_OFFICERS:
                         List<AppSvcCgoDto> appSvcCgoDtos = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
@@ -559,6 +558,7 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
             ParamUtil.setSessionAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
             ParamUtil.setSessionAttr(bpc.request, "iframeId", iframeId);
+            ParamUtil.setRequestAttr(bpc.request,"currStepMap",currStepMap);
         }
 
         log.debug(StringUtil.changeForLog("the do prepareView end ...."));
@@ -1225,7 +1225,6 @@ public class ClinicalLaboratoryDelegator {
 
         List<SelectOption> designation = genPersonnelDesignSel(currentSvcCode);
         ParamUtil.setSessionAttr(bpc.request, "NuclearMedicineImagingDesignation", (Serializable) designation);
-
 
         log.debug(StringUtil.changeForLog("the do prepareServicePersonnel end ...."));
     }

@@ -208,15 +208,7 @@ public class ServiceConfigServiceImpl implements ServiceConfigService {
 
     @Override
     public List<HcsaServiceStepSchemeDto> getHcsaServiceStepSchemesByServiceId(String serviceId) {
-        List<HcsaServiceStepSchemeDto> result = IaisCommonUtils.genNewArrayList();
-        List<HcsaServiceStepSchemeDto> hcsaServiceStepSchemeDtos =  appConfigClient.getServiceStepsByServiceId(serviceId).getEntity();
-        if(hcsaServiceStepSchemeDtos!=null && hcsaServiceStepSchemeDtos.size() > 0){
-            for (HcsaServiceStepSchemeDto hcsaServiceStepSchemeDto : hcsaServiceStepSchemeDtos){
-                hcsaServiceStepSchemeDto.setStepName(MasterCodeUtil.getCodeDesc(hcsaServiceStepSchemeDto.getStepCode()));
-                result.add(hcsaServiceStepSchemeDto);
-            }
-        }
-        return result;
+        return appConfigClient.getServiceStepsByServiceId(serviceId).getEntity();
     }
     @Override
     public List<HcsaServiceCorrelationDto> getCorrelation(){

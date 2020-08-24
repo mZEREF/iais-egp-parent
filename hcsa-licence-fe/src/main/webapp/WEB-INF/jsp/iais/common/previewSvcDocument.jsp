@@ -1,5 +1,5 @@
 <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">SERVICE SPECIFIC DOCUMENTS</label>
+    <label style="font-size: 2.2rem">${currStepMap.get("SVST005")}</label>
     <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">

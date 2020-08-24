@@ -1,5 +1,5 @@
 <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">LABORATORY DISCIPLINES</label>
+    <label style="font-size: 2.2rem">${currStepMap.get("SVST001")}</label>
 
     <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">

@@ -1,5 +1,5 @@
 <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">CLINICAL GOVERNANCE OFFICER</label>
+    <label style="font-size: 2.2rem">${currStepMap.get("SVST002")}</label>
     <div class="amend-preview-info">
         <c:forEach var="cgo" items="${currentPreviewSvcInfo.appSvcCgoDtoList}" varStatus="status">
 

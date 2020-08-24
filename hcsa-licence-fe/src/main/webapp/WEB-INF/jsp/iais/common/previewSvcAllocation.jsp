@@ -1,6 +1,6 @@
 <c:set var="appGrpPremisesDtoList" value="${AppSubmissionDto.appGrpPremisesDtoList}"></c:set>
 <div class="amended-service-info-gp">
-    <label style="font-size: 2.2rem">DISCIPLINE ALLOCATION</label>
+    <label style="font-size: 2.2rem">${currStepMap.get("SVST003")}</label>
     <div class="amend-preview-info">
         <p></p>
         <div class="form-check-gp">
@@ -11,7 +11,7 @@
                             <thead style="text-decoration: none">
                             <tr>
                                 <th>Premises</th>
-                                <th>Laboratory Disciplines</th>
+                                <th>${currStepMap.get("SVST001")}</th>
                                 <th>Clinical Governance Officers</th>
                             </tr>
                             </thead>

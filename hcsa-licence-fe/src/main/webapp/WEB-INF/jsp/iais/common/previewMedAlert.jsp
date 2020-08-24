@@ -1,5 +1,5 @@
 <div class="amended-service-info-gp">
-  <label style="font-size: 2.2rem">MEDALERT PERSON</label>
+  <label style="font-size: 2.2rem">${currStepMap.get("SVST007")}</label>
   <div class="amend-preview-info">
     <div class="form-check-gp">
       <div class="row">
