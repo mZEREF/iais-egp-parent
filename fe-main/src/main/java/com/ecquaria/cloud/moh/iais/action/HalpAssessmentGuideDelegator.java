@@ -1618,13 +1618,13 @@ public class HalpAssessmentGuideDelegator {
                             .append(hiddenIndex)
                             .append("&premisesId")
                             .append(hiddenIndex)
-                            .append("=")
+                            .append('=')
                             .append(MaskUtil.maskValue("premisesId"+hiddenIndex, premiseIdValue))
                             .append("&crud_action_type")
                             .append("=prePremisesEdit")
                             .append("&licId")
                             .append(hiddenIndex)
-                            .append("=")
+                            .append('=')
                             .append(MaskUtil.maskValue("licId"+hiddenIndex, licIdValue));
                     String tokenUrl2 = RedirectUtil.appendCsrfGuardToken(url3.toString(), bpc.request);
                     bpc.response.sendRedirect(tokenUrl2);
