@@ -16,8 +16,26 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGroupMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcChckListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDisciplineAllocationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcDocDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcLaboratoryDisciplinesDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPersonnelDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
@@ -64,8 +82,16 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
-import com.ecquaria.cloud.moh.iais.service.*;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
+import com.ecquaria.cloud.moh.iais.service.CessationFeService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
+import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
+import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
+import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -130,7 +156,7 @@ public class NewApplicationDelegator {
 
     private static final String DRAFTCONFIG = "DraftConfig";
     private static final String GROUPLICENCECONFIG = "GroupLicenceConfig";
-
+    private static final String RFI_REPLY_SVC_DTO = "rfiReplySvcDto";
 
     //page name
     public static final String APPLICATION_PAGE_NAME_PREMISES = "APPPN01";
@@ -2577,7 +2603,14 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do prepareAckPage start ...."));
         String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-        String licenceId = appSubmissionDto.getLicenceId();
+        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        String licenceId = "";
+        if(appSubmissionDto != null){
+            licenceId = appSubmissionDto.getLicenseeId();
+            if(StringUtil.isEmpty(licenceId) && loginContext != null){
+                licenceId = loginContext.getLicenseeId();
+            }
+        }
         if (!StringUtil.isEmpty(licenceId)) {
             List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(licenceId).getEntity();
             for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
@@ -2598,6 +2631,12 @@ public class NewApplicationDelegator {
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
         ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
+        String ackStatus = (String) ParamUtil.getRequestAttr(bpc.request, ACKSTATUS);
+        boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
+        if(isRfi && "error".equals(ackStatus)){
+            List<HcsaServiceDto> hcsaServiceDtoList = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request,RFI_REPLY_SVC_DTO);
+            ParamUtil.setSessionAttr(bpc.request,AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+        }
         log.info(StringUtil.changeForLog("the do prepareAckPage end ...."));
     }
 
@@ -4346,6 +4385,25 @@ public class NewApplicationDelegator {
                 coMap.put("information", "information");
                 coMap.put("previewli", "previewli");
                 bpc.request.getSession().setAttribute("coMap", coMap);
+                //control premises edit
+                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+                AppGrpPremisesEntityDto rfiPremises = appSubmissionService.getPremisesByAppNo(appNo);
+                String rfiPremHci = IaisCommonUtils.genPremisesKey(rfiPremises.getPostalCode(),rfiPremises.getBlkNo(),rfiPremises.getFloorNo(),rfiPremises.getUnitNo());
+                if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType())){
+                    rfiPremHci = rfiPremises.getHciName()+rfiPremHci;
+                }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())){
+                    rfiPremHci = rfiPremises.getVehicleNo()+rfiPremHci;
+                }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(rfiPremises.getPremisesType())){
+
+                }
+                if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                    for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                        String premHci = NewApplicationHelper.genPremHci(appGrpPremisesDto);
+                        if(rfiPremHci.equals(premHci)){
+                            appGrpPremisesDto.setRfiCanEdit(true);
+                        }
+                    }
+                }
             } else {
                 ApplicationDto applicationDto = appSubmissionService.getMaxVersionApp(appNo);
                 if (applicationDto != null) {
@@ -4353,7 +4411,7 @@ public class NewApplicationDelegator {
                     if (hcsaServiceDto != null) {
                         List<HcsaServiceDto> hcsaServiceDtoList = IaisCommonUtils.genNewArrayList();
                         hcsaServiceDtoList.add(hcsaServiceDto);
-                        ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, (Serializable) hcsaServiceDtoList);
+                        ParamUtil.setSessionAttr(bpc.request, RFI_REPLY_SVC_DTO, (Serializable) hcsaServiceDtoList);
                     }
                     String errMsg = "You have already replied to this RFI";
                     jumpToAckPage(bpc, NewApplicationConstant.ACK_STATUS_ERROR, errMsg);

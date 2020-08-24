@@ -63,4 +63,5 @@ public interface AppSubmissionService {
     List<AppGrpPremisesDto> getLicPremisesInfo(String id);
     Boolean isNewLicensee(String licenseeId);
     InterMessageDto getInterMessageBySubjectLike(String subject,String status);
+    AppGrpPremisesEntityDto getPremisesByAppNo(String appNo);
 }

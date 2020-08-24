@@ -306,4 +306,6 @@ public interface ApplicationClient  {
     FeignResponseEntity  deleteDraftByNo(@RequestParam("draftNo") String draftNo);
     @GetMapping(value = "/iais-application/app-edit-select-by-type",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppEditSelectDto>> getAppEditSelectDtos(@RequestParam(name="appId")String appId, @RequestParam(name = "changeType")String changeType);
+    @GetMapping(value = "/iais-submission/get-prem-by-app-no",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppGrpPremisesEntityDto> getPremisesByAppNo(@RequestParam("appNo") String appNo);
 }

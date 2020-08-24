@@ -87,7 +87,7 @@
                                 <h4 class="text-danger"><em class="fa fa-times-circle removeBtn"></em></h4>
                                 <c:set var="canEdit" value="false"/>
                             </c:when>
-                            <c:when test="${(requestInformationConfig != null || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType) && '1' != appGrpPremisesDto.existingData }">
+                            <c:when test="${((requestInformationConfig != null && appGrpPremisesDto.rfiCanEdit) || 'APTY004' ==AppSubmissionDto.appType || 'APTY005' ==AppSubmissionDto.appType) && '1' != appGrpPremisesDto.existingData }">
                                 <c:set var="canEdit" value="false"/>
                                 <c:if test="${AppSubmissionDto.appEditSelectDto.premisesEdit}">
                                     <a class="premises-summary-preview premisesEdit app-font-size-16"><em class="fa fa-pencil-square-o"></em><span style="display: inline-block;">&nbsp;</span>Edit</a>
