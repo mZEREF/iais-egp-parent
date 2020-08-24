@@ -226,7 +226,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
     @Override
     public void createClientUser(FeUserDto userDto) {
-
+        if (userDto == null) {
+            return;
+        }
         //TODO : simple create
         FeignResponseEntity<ClientUser> result = userClient.findUser(AppConsts.USER_DOMAIN_INTERNET, userDto.getUserId());
         int status = result.getStatusCode();
