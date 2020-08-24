@@ -102,16 +102,19 @@ public class InsReportDelegator {
         if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_REPORT_REVISION.equals(appStatus) || ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR.equals(appStatus)|| ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(appStatus)) {
             appPremisesRecommendationDto = initRecommendation(correlationId, applicationViewDto, bpc);
         }
+        String recommendation = appPremisesRecommendationDto.getRecommendation();
+        if(StringUtil.isEmpty(recommendation)){
+            String periodDefault = insRepService.getPeriodDefault(applicationViewDto,taskDto);
+            appPremisesRecommendationDto.setPeriod(periodDefault);
+        }
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> recommendationOption = getRecommendationOption(applicationType);
         List<SelectOption> processingDe = getProcessingDecision(appStatus);
-        String periodDefault = insRepService.getPeriodDefault(applicationViewDto,taskDto);
-        appPremisesRecommendationDto.setPeriod(periodDefault);
-        ParamUtil.setRequestAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         String infoClassTop = "active";
         String infoClassBelow = "tab-pane active";
         String reportClassBelow = "tab-pane";
+        ParamUtil.setRequestAttr(bpc.request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         ParamUtil.setSessionAttr(bpc.request, "appType", null);
         ParamUtil.setSessionAttr(bpc.request, "infoClassTop", infoClassTop);
         ParamUtil.setSessionAttr(bpc.request, "reportClassTop", null);
@@ -259,6 +262,7 @@ public class InsReportDelegator {
                 }
                 appPremisesRecommendationDto.setChronoUnit(chrono);
                 appPremisesRecommendationDto.setRecomInNumber(num);
+                appPremisesRecommendationDto.setRecommendation(recommendation);
             } else if (!StringUtil.isEmpty(periods) && !OTHERS.equals(periods) && InspectionReportConstants.APPROVEDLTC.equals(recommendation) || InspectionReportConstants.APPROVED.equals(recommendation)) {
                 String[] splitPeriods = periods.split("\\s+");
                 String count = splitPeriods[0];
@@ -271,6 +275,7 @@ public class InsReportDelegator {
                 appPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
                 appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.REJECTED);
                 appPremisesRecommendationDto.setRecomInNumber(0);
+                appPremisesRecommendationDto.setRecommendation(recommendation);
             }
         }
         AppPremisesRecommendationDto engageEnforcementAppPremisesRecommendationDto = new AppPremisesRecommendationDto();

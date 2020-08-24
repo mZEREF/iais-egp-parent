@@ -100,7 +100,6 @@ public class CessationEffectiveDateBatchjob {
                     boolean grpLic = applicationDtos.get(0).isGrpLic();
                     if (grpLic) {
                         Set<String> statusSet = IaisCommonUtils.genNewHashSet();
-                        statusSet.clear();
                         for (ApplicationDto applicationDto : applicationDtos) {
                             String status = applicationDto.getStatus();
                             statusSet.add(status);
@@ -138,7 +137,6 @@ public class CessationEffectiveDateBatchjob {
                         }
                         //create grp licence and ceased old licence
                         List<String> grpLicIds = IaisCommonUtils.genNewArrayList();
-                        grpLicIds.clear();
                         grpLicIds.add(appGrpId);
                         List<ApplicationLicenceDto> applicationLicenceDtos = applicationClient.getCessGroup(grpLicIds).getEntity();
                         List<String> serviceIds = licenceApproveBatchjob.getAllServiceId(applicationLicenceDtos);
