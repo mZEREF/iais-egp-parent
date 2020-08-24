@@ -140,10 +140,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                     }else{
                         blastManagementListService.sendEmail(email,null);
                     }
-                    if(item.getId() != null){
-                        //update mass email actual time
-                        blastManagementListService.setActual(item.getId());
-                    }
+
                 }catch (Exception e){
                     log.info(e.getMessage(),e);
                     return ReturnT.FAIL;
@@ -152,7 +149,10 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 List<String> mobile = blastManagementListService.getMobileByRole(item.getRecipientsRole());
                 sendSMS(item.getMessageId(), mobile,item.getMsgContent());
             }
-
+            if(item.getId() != null){
+                //update mass email actual time
+                blastManagementListService.setActual(item.getId());
+            }
             //send inbox msg
             InterMessageDto interMessageDto = new InterMessageDto();
             log.info(StringUtil.changeForLog("send inbox msg"));
