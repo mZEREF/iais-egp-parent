@@ -3550,8 +3550,9 @@ public class NewApplicationDelegator {
             String name = "common" + comm.getId();
 
             Boolean isMandatory = comm.getIsMandatory();
+            String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
             if (isMandatory && appGrpPrimaryDocDtoList == null || isMandatory && appGrpPrimaryDocDtoList.isEmpty()) {
-                documentMap.put(name, MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field"));
+                documentMap.put(name, err006);
             } else if (isMandatory && !appGrpPrimaryDocDtoList.isEmpty()) {
                 Boolean flag = Boolean.FALSE;
                 for (AppGrpPrimaryDocDto appGrpPrimaryDocDto : appGrpPrimaryDocDtoList) {
@@ -3562,10 +3563,9 @@ public class NewApplicationDelegator {
                     }
                 }
                 if (!flag) {
-                    documentMap.put(name, MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field"));
+                    documentMap.put(name, err006);
                 }
             }
-
         }
 
 
