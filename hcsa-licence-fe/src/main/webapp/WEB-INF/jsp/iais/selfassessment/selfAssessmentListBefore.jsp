@@ -76,7 +76,7 @@
                                         <a class="back" id="backLastPageId" style="text-decoration:none" ><em class="fa fa-angle-left"> </em> Back</a>
                                     </c:when>
                                     <c:otherwise>
-                                        <a  class="back" id="backLink" style="text-decoration:none" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initMsgView"><em class="fa fa-angle-left"> </em> Back</a>
+                                        <a  class="back" id="backLink" style="text-decoration:none" href="/main-web/eservice/INTERNET/MohInternetInbox"><em class="fa fa-angle-left"> </em> Back</a>
                                     </c:otherwise>
                                 </c:choose>
                                 <a class="btn btn-primary next <c:if test="${fn:length(selfAssessmentQueryAttr) == 0 || hasSubmitted eq 'Y'}"> disabled</c:if>" id="submitAllDataButtonId" style="float:right" href="#">Submit</a>
