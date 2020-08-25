@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppReturnFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
@@ -42,12 +43,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.*;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigMainClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +106,9 @@ public class BackendInboxDelegator {
 
     @Autowired
     private InspEmailService inboxMsgService;
+
+    @Autowired
+    ApplicationMainClient applicationMainClient;
 
     @Value("${iais.email.sender}")
     private String mailSender;
@@ -720,16 +719,24 @@ public class BackendInboxDelegator {
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                 String returnFee = appPremisesRecommendationDto.getRemarks();
                 if(!StringUtil.isEmpty(returnFee)){
-                    String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
-                    if(!StringUtil.isEmpty(oldApplicationNo)){
-                        AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
-                        appReturnFeeDto.setApplicationNo(oldApplicationNo);
-                        appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
-                        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
-                        List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
-                        saveReturnFeeDtos.add(appReturnFeeDto);
-                        broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
-                        broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
+                    List<AppPremiseMiscDto> premiseMiscDtoList = applicationMainClient.getAppPremiseMiscDtoListByAppId(applicationDto.getId()).getEntity();
+                    if(!IaisCommonUtils.isEmpty(premiseMiscDtoList)){
+                        AppPremiseMiscDto appPremiseMiscDto = premiseMiscDtoList.get(0);
+                        String oldAppId = appPremiseMiscDto.getRelateRecId();
+                        ApplicationDto oldApplication = applicationMainClient.getApplicationById(oldAppId).getEntity();
+                        if(oldApplication != null){
+                            String oldApplicationNo = oldApplication.getApplicationNo();
+                            if(!StringUtil.isEmpty(oldApplicationNo)){
+                                AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                                appReturnFeeDto.setApplicationNo(oldApplicationNo);
+                                appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
+                                appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
+                                List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
+                                saveReturnFeeDtos.add(appReturnFeeDto);
+                                broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+                                broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
+                            }
+                        }
                     }
                 }
             }
