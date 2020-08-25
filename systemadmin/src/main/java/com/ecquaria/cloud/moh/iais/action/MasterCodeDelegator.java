@@ -13,10 +13,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeToExcelDto;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.*;
@@ -433,14 +431,31 @@ public class MasterCodeDelegator {
                 }
                 Optional<MasterCodeToExcelDto> cartOptional = null;
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
-                    masterCodeToExcelDto.setCodeCategory(masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory()));
+                    String  codeCategory =  masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory());
+                    if (!StringUtil.isEmpty(codeCategory)){
+                        String errMsg = "CodeCategory Value must be an existing Code Value.";
+                        errItems.add(errMsg);
+                        result = true;
+                    }else{
+                        masterCodeToExcelDto.setCodeCategory(codeCategory);
+                    }
                 }
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory()) && !StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())){
-                    cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue()) && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
+                    cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue())
+                            && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 }
+
+
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
                     if (cartOptional != null && cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
+                        if(masterCodeToExcelDto1.getFilterValue() != null){
+                            log.info(StringUtil.changeForLog("masterCodeToExcelDto1 hua ===========> " + masterCodeToExcelDto1.getFilterValue()));
+                        }
+                        if(masterCodeToExcelDto1.getRemakes() != null) {
+                            log.info(StringUtil.changeForLog("masterCodeToExcelDto1 hua ===========> " + masterCodeToExcelDto1.getRemakes()));
+                        }
+                        log.info(StringUtil.changeForLog("masterCodeToExcelDto1 hua ===========> " + JsonUtil.parseToJson(masterCodeToExcelDto1)));
                         if(StringUtil.isEmpty(masterCodeToExcelDto1.getFilterValue())){
                             String errMsg = MessageUtil.getMessageDesc("SYSPAM_ERROR0007");
                             errItems.add(errMsg);
@@ -504,6 +519,7 @@ public class MasterCodeDelegator {
             ParamUtil.setRequestAttr(request,"ERR_CONTENT","SUCCESS");
             ParamUtil.setSessionAttr(request,"ERR_RESULT_LIST_MAP",(Serializable) errResult);
         }catch (Exception e){
+            log.error(e.getMessage(), e);
             errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "The upload form is not predefined format for uploading.");
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
