@@ -48,6 +48,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -277,6 +278,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 templateContent.put("applicationNo", appNo);
                 templateContent.put("applicationType", appType);
                 templateContent.put("applicationDate", Formatter.formatDateTime(appDate));
+                templateContent.put("officer_name", "");
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
 
                 if (serviceDto != null) {
@@ -306,8 +308,14 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         tlContent.put("applicationType", tlAppType);
         tlContent.put("applicationDate", Formatter.formatDateTime(tlDate));
         tlContent.put("systemLink", loginUrl);
+        tlContent.put("officer_name", "");
         EmailParam email = new EmailParam();
         email.setTemplateId(msgTmgId2);
+
+        HashMap<String, String> subjectMap = IaisCommonUtils.genNewHashMap();
+        subjectMap.put("[appType]", tlAppType);
+        subjectMap.put("[applicationNo]", tlGroupNumber);
+        email.setSubjectParams(subjectMap);
         email.setTemplateContent(tlContent);
         email.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
         email.setReqRefNum(randomStr);
@@ -342,8 +350,10 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public void saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList) {
+        List<String> correlationIds = selfAssessmentList.stream().map(SelfAssessment::getCorrId).collect(Collectors.toList());
+        sendEmailToInspector(correlationIds);
 
-        //TODO if from inbox , should not create task
+        /*//TODO if from inbox , should not create task
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
            try {
@@ -381,7 +391,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             }catch (Exception e){
                 log.error(StringUtil.changeForLog("encounter failure when sync self assessment to be"), e);
             }
-        }
+        }*/
 
     }
 

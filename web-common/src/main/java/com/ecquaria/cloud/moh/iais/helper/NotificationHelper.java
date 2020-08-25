@@ -392,17 +392,17 @@ public class NotificationHelper {
 					//send officer address
 					Map<String, String> officerNameMap = inspectionEmailTemplateDto.getOfficerNameMap();
 					Map<String, String> emailAddressMap = inspectionEmailTemplateDto.getEmailAddressMap();
-					if (officerNameMap != null && emailAddressMap != null) {
-						for (Map.Entry<String, String> onMap : officerNameMap.entrySet()) {
-							String orgUserKey = onMap.getKey();
-							String orgName = onMap.getKey();
+					if (!IaisCommonUtils.isEmpty(officerNameMap)  && !IaisCommonUtils.isEmpty(emailAddressMap)) {
+						for (Map.Entry<String, String> officerEntry : officerNameMap.entrySet()) {
+							String key = officerEntry.getKey();
+							String officerValue = officerEntry.getValue();
 							List<String> officerEmails = IaisCommonUtils.genNewArrayList();
-							String officerEmail = emailAddressMap.get(orgUserKey);
+							String officerEmail = emailAddressMap.get(key);
 							officerEmails.add(officerEmail);
 							if (templateContent != null && !templateContent.isEmpty()) {
 								boolean officerFlag = templateContent.containsKey("officer_name");
 								if (officerFlag) {
-									templateContent.put("officer_name", orgName);
+									templateContent.put("officer_name", officerValue);
 									mesContext = MsgUtil.getTemplateMessageByContent(emailTemplate, templateContent);
 								}
 							}
