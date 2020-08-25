@@ -263,7 +263,8 @@ public class InspectionPreDelegator {
                 String rfiSelectValue = ParamUtil.getRequestString(bpc.request, "rfiSelectValue");
                 List<String> rfiUpWindowsCheck = (List<String>)ParamUtil.getSessionAttr(bpc.request, "rfiUpWindowsCheck");
                 if(StringUtil.isEmpty(rfiSelectValue) || IaisCommonUtils.isEmpty(rfiUpWindowsCheck)){
-                    errorMap.put("nextStage", "Please select at least 1 section to unlock");
+                    String nextStage = MessageUtil.dateIntoMessage("RFI_ERR001");
+                    errorMap.put("nextStage", nextStage);
                     validationResult.setHasErrors(true);
                 }
             }
