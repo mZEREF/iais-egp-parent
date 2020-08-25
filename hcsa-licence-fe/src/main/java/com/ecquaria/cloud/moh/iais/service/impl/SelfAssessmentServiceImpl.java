@@ -281,16 +281,12 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
                 if (serviceDto != null) {
                     String svcName = serviceDto.getSvcName();
-
                     svcNameList.add(svcName);
-
                     templateContent.put("serviceName", svcName);
                 }
 
-
                 templateContent.put("MOH_GROUP_NAME", "-");
                 templateContent.put("MOH_AGENCY_NAME", "-");
-
 
                 EmailParam email = new EmailParam();
                 email.setTemplateId(msgTmgId);
@@ -346,6 +342,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public void saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList) {
+
+        //TODO if from inbox , should not create task
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
            try {
