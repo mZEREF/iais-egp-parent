@@ -232,7 +232,7 @@ public class InspecUserRecUploadDelegator {
                 return errorMap;
             }
             if(300 < uploadRemarksLen){
-                errorMap.put("remarks", "The Remarks should not be more than 300 characters.");
+                errorMap.put("remarks", "UC_INSP_ERR011");
             }
         } else {
             int sysFileSize = inspSetMaskValueDto.getSqlFileSize();
