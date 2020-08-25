@@ -1384,7 +1384,54 @@ public class NewApplicationDelegator {
                 return;
             }
             AppSubmissionDto appSubmissionDto = appSubmissionService.getAppSubmissionDto(appNo);
-            if (appSubmissionDto != null && !IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList())) {
+            if (appSubmissionDto != null && !IaisCommonUtils.isEmpty(appSubmissionDto.getAppGrpPremisesDtoList()) && applicationDto != null) {
+                if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())){
+                    AppGrpPremisesEntityDto rfiPremises = appSubmissionService.getPremisesByAppNo(appNo);
+                    String premHci = IaisCommonUtils.genPremisesKey(rfiPremises.getPostalCode(),rfiPremises.getBlkNo(),rfiPremises.getFloorNo(),rfiPremises.getUnitNo());
+                    if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(rfiPremises.getPremisesType())){
+                        premHci = rfiPremises.getHciName()+premHci;
+                    }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(rfiPremises.getPremisesType())){
+                        premHci = rfiPremises.getVehicleNo()+premHci;
+                    }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(rfiPremises.getPremisesType())){
+
+                    }
+                    List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
+                    List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
+                    for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
+                        if(premHci.equals(NewApplicationHelper.genPremHci(appGrpPremisesDto))){
+                            NewApplicationHelper.setWrkTime(appGrpPremisesDto);
+                            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                            //set ph name
+                            NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos,publicHolidayList);
+                            newPremisesDtos.add(appGrpPremisesDto);
+                            break;
+                        }
+                    }
+                    appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
+                    String svcId = applicationDto.getServiceId();
+                    List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
+                    if(!StringUtil.isEmpty(svcId) && !IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
+                        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+                        List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
+                        List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
+                        for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                            if(svcId.equals(appSvcRelatedInfoDto.getServiceId())){
+                                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(svcId);
+                                appSvcRelatedInfoDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                                appSvcRelatedInfoDto.setServiceName(hcsaServiceDto.getSvcName());
+                                appSvcRelatedInfoDto.setServiceType(hcsaServiceDto.getSvcType());
+                                List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
+                                List<HcsaSvcDocConfigDto> svcDocConfig = serviceConfigService.getAllHcsaSvcDocs(svcId);
+                                NewApplicationHelper.setDocInfo(appGrpPrimaryDocDtos, appSvcDocDtos, primaryDocConfig, svcDocConfig);
+                                appSvcRelatedInfoDto.setAppSvcDocDtoLit(appSvcDocDtos);
+                                newSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
+                                break;
+                            }
+                        }
+                        appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
+                    }
+                }
+
                 for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
                     NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                 }
@@ -5443,16 +5490,8 @@ public class NewApplicationDelegator {
                 for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
                     appGrpPremisesDto = NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                     List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
-                    if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
-                        for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodDtos) {
-                            String dayName = appPremPhOpenPeriodDto.getDayName();
-                            String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
-                            if (StringUtil.isEmpty(dayName) && !StringUtil.isEmpty(phDateStr)) {
-                                dayName = NewApplicationHelper.getPhName(publicHolidayList, phDateStr);
-                                appPremPhOpenPeriodDto.setDayName(dayName);
-                            }
-                        }
-                    }
+                    //set ph name
+                    NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos,publicHolidayList);
                     appGrpPremisesDto.setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
                 }
             }

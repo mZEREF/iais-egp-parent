@@ -888,14 +888,7 @@ public class NewApplicationAjaxController {
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
             if(!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)){
                 List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
-                for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto:appPremPhOpenPeriodDtos){
-                    String dayName = appPremPhOpenPeriodDto.getDayName();
-                    String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
-                    if(StringUtil.isEmpty(dayName) && !StringUtil.isEmpty(phDateStr)){
-                        dayName = NewApplicationHelper.getPhName(publicHolidayList,phDateStr);
-                        appPremPhOpenPeriodDto.setDayName(dayName);
-                    }
-                }
+                NewApplicationHelper.setPhName(appPremPhOpenPeriodDtos,publicHolidayList);
             }
         }
 

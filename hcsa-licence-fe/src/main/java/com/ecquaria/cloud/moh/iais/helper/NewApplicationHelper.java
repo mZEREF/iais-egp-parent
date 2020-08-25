@@ -1439,7 +1439,8 @@ public class NewApplicationHelper {
 //                    AppSvcPersonExtDto currSvcPsnExtDto = getPsnExtDtoBySvcCode(appSvcPersonExtDtos,svcCode);
                     AppSvcPrincipalOfficersDto person = genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,true);
 
-                    person.setDesignation(psnDto.getDesignation());
+//                    person.setDesignation(psnDto.getDesignation());
+                    person.setPreferredMode(psnDto.getPreferredMode());
                     person.setProfessionType(psnDto.getProfessionType());
                     person.setProfRegNo(psnDto.getProfRegNo());
                     person.setSpeciality(psnDto.getSpeciality());
@@ -2035,6 +2036,19 @@ public class NewApplicationHelper {
         specialtyAttr.put("class", "specialty");
         specialtyAttr.put("style", "display: none;");
         return specialtyAttr;
+    }
+
+    public static void setPhName(List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos,List<SelectOption> publicHolidayList){
+        if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
+            for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodDtos) {
+                String dayName = appPremPhOpenPeriodDto.getDayName();
+                String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
+                if (StringUtil.isEmpty(dayName) && !StringUtil.isEmpty(phDateStr)) {
+                    dayName = NewApplicationHelper.getPhName(publicHolidayList, phDateStr);
+                    appPremPhOpenPeriodDto.setDayName(dayName);
+                }
+            }
+        }
     }
 
     //=============================================================================

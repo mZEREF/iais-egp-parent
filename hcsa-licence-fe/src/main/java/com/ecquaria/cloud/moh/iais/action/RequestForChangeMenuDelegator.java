@@ -1113,6 +1113,7 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM, "prePayment");
             return;
         }
+        bpc.request.getSession().setAttribute("payMethod", payMethod);
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) ParamUtil.getSessionAttr(bpc.request, "appSubmissionDtos");
         try {
             requestForChangeService.sendRfcSubmittedEmail(appSubmissionDtos.get(0),payMethod);

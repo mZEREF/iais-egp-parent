@@ -55,7 +55,12 @@
                                 <tr>
                                     <td>${appSubmissionDtos.get(0).appGrpNo}</td>
                                     <c:if test="${'Credit'== payMethod}">
-                                        <td>${pmtRefNo}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${empty pmtRefNo}">N/A</c:when>
+                                                <c:otherwise> ${pmtRefNo}</c:otherwise>
+                                            </c:choose>
+                                        </td>
                                     </c:if>
                                     <td><fmt:formatDate value="${createDate}" pattern="dd/MM/yyyy"></fmt:formatDate></td>
                                     <td>${dAmount}</td>
