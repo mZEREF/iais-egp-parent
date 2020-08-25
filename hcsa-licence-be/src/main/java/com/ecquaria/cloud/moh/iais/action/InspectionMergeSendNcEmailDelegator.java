@@ -201,8 +201,12 @@ public class InspectionMergeSendNcEmailDelegator {
                 cancelCalendarDto.setApptRefNo(appPremisesInspecApptDto.getApptRefNo());
                 cancelCalendarDto.setAuditTrailDto(auditTrailDto);
                 cancelCalendarDto.setStatus(AppointmentConstants.CALENDAR_STATUS_RESERVED);
-                List<ApptUserCalendarDto> apptUserCalendarDtos= appointmentClient.getCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
-                mapTemplate.put("InspectionEndDate", Formatter.formatDate(apptUserCalendarDtos.get(0).getEndSlot().get(0)));
+                try {
+                    List<ApptUserCalendarDto> apptUserCalendarDtos= appointmentClient.getCalenderByApptRefNoAndStatus(cancelCalendarDto).getEntity();
+                    mapTemplate.put("InspectionEndDate", Formatter.formatDate(apptUserCalendarDtos.get(0).getEndSlot().get(0)));
+                }catch (Exception e){
+                    log.info(e.getMessage(),e);
+                }
             }
             Map<String,Object> mapTableTemplate=IaisCommonUtils.genNewHashMap();
             MsgTemplateDto msgTableTemplateDto= notificationHelper.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_INS_002_TABLE_12);
