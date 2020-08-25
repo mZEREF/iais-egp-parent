@@ -28,7 +28,7 @@
                 </div>
                 <iais:row>
                   <iais:value width="7">
-                    <p><label>The appointment date has been reject.</label></p>
+                    <p><label><iais:message key="LOLEV_ACK047" escape="true"></iais:message></label></p>
                   </iais:value>
                 </iais:row>
                 <iais:action >
