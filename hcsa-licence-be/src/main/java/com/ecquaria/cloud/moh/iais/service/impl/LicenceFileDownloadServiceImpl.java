@@ -734,10 +734,10 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         signature2.date(), signature2.authorization());
             }
             log.info("update request for info start");
-            updateTask(requestForInfList);
+            updateRfiTask(requestForInfList);
             log.info("update request for info end");
             log.info(StringUtil.changeForLog(JsonUtil.parseToJson(updateTaskList)+"updateTaskList"));
-            updateTask(updateTaskList);
+            updateRfiTask(updateTaskList);
         }
 
     }
@@ -785,7 +785,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         map.forEach((k,v)->{
             boolean flag=false;
             for(ApplicationDto application :v){
-                if(application.getStatus().equals(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY)){
+                if(application.getStatus().equals(ApplicationConsts.PENDING_ASO_REPLY)||application.getStatus().equals(ApplicationConsts.PENDING_PSO_REPLY)
+                ||application.getStatus().equals(ApplicationConsts.PENDING_INP_REPLY)){
                     requestForInforList.add(application);
                     flag=true;
                 }
@@ -835,7 +836,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         applicationDtoList.add(application);
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         requestForChange++;
-                    }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(application.getStatus())){
+                    }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         requestForChange--;
                     }
                     if(requestForChange==i){
@@ -864,7 +866,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                         applicationDtoList.add(application);
                     }else if(ApplicationConsts.APPLICATION_STATUS_TRANSFER_ORIGIN.equals(application.getStatus())){
                         reNew++;
-                    }else if(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(application.getStatus())){
+                    }else if(ApplicationConsts.PENDING_ASO_REPLY.equals(application.getStatus())
+                    ||ApplicationConsts.PENDING_PSO_REPLY.equals(application.getStatus())
+                    ||ApplicationConsts.PENDING_INP_REPLY.equals(application.getStatus())){
                         reNew--;
                     }
 

@@ -13,7 +13,6 @@ public class AppointmentUtil {
 
         return new String[]{
                 ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION,
-                ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY,
                 ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO,
                 ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK,
                 ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK,
@@ -25,7 +24,10 @@ public class AppointmentUtil {
                 ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_APPLICANT,
                 ApplicationConsts.APPLICATION_STATUS_OFFICER_RESCHEDULING_PENDING_FE,
                 ApplicationConsts.APPLICATION_STATUS_PENDING_RE_APPOINTMENT_SCHEDULING,
-                ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED
+                ApplicationConsts.APPLICATION_STATUS_CREATE_AUDIT_TASK_CANCELED,
+                ApplicationConsts.PENDING_ASO_REPLY,
+                ApplicationConsts.PENDING_PSO_REPLY,
+                ApplicationConsts.PENDING_INP_REPLY
         };
     }
 }

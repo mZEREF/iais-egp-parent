@@ -2817,7 +2817,11 @@ public class HcsaApplicationDelegator {
                 }
             }
         }
-        if((ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY.equals(applicationViewDto.getApplicationDto().getStatus())
+        List<String> status=new ArrayList<>(3);
+        status.add(ApplicationConsts.PENDING_ASO_REPLY);
+        status.add(ApplicationConsts.PENDING_PSO_REPLY);
+        status.add(ApplicationConsts.PENDING_INP_REPLY);
+        if((status.contains(applicationViewDto.getApplicationDto().getStatus())
                 || ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus()))
                 && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())){
 

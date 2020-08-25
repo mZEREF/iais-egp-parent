@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -22,6 +23,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPrimaryDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionListDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionRequestInformationDto;
@@ -92,12 +94,16 @@ import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
 import com.ecquaria.sz.commons.util.FileUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
@@ -213,7 +219,12 @@ public class NewApplicationDelegator {
 
     @Value("${iais.email.sender}")
     private String mailSender;
-
+    @Autowired
+    private HcsaAppClient hcsaAppClient;
+    @Value("${iais.current.domain}")
+    private String currentDomain;
+    @Autowired
+    private Environment env;
     /**
      * StartStep: Start
      *
@@ -588,7 +599,16 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do preparePayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("appSubmissionDtos");
-
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        List<String> strList = new ArrayList<>(5);
+        coMap.forEach((k, v) -> {
+            if (!StringUtil.isEmpty(v)) {
+                strList.add(v);
+            }
+        });
+        String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
+        strList.add(serviceConfig);
+        appSubmissionDto.setStepColor(strList);
         AppSubmissionDto tranferSub = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "app-rfc-tranfer");
         if (tranferSub != null) {
             if (appSubmissionDtos == null) {
@@ -1392,9 +1412,40 @@ public class NewApplicationDelegator {
     public void doRequestInformationSubmit(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doRequestInformationSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
-
-        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
+        AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
         String appGrpNo = appSubmissionDto.getAppGrpNo();
+        List<ApplicationDto> entity = applicationClient.getApplicationsByGroupNo(appGrpNo).getEntity();
+        String appNo="";
+        for(ApplicationDto applicationDto : entity){
+            if((ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION.equals(applicationDto.getStatus()))){
+                    appNo=applicationDto.getApplicationNo();
+                    break;
+            }
+        }
+        List<AppPremisesRoutingHistoryDto> hisList;
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+        Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
+        params.put("appNo", appNo);
+        hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
+                MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
+        if(hisList!=null){
+            for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
+                if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
+                        || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
+                    if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        appSubmissionRequestInformationDto.setRfiStatus(ApplicationConsts.PENDING_ASO_REPLY);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        appSubmissionRequestInformationDto.setRfiStatus(ApplicationConsts.PENDING_PSO_REPLY);
+                    }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                        appSubmissionRequestInformationDto.setRfiStatus(ApplicationConsts.PENDING_INP_REPLY);
+                    }
+                }
+            }
+        }
+        AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO);
         //oldAppSubmissionDtos
 //        List<AppSubmissionDto> appSubmissionDtoByGroupNo = appSubmissionService.getAppSubmissionDtoByGroupNo(appGrpNo);
         StringBuilder stringBuilder = new StringBuilder(10);
@@ -1424,7 +1475,6 @@ public class NewApplicationDelegator {
 
         appSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         oldAppSubmissionDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-        AppSubmissionRequestInformationDto appSubmissionRequestInformationDto = new AppSubmissionRequestInformationDto();
 
         appSubmissionRequestInformationDto.setAppSubmissionDto(appSubmissionDto);
         appSubmissionRequestInformationDto.setOldAppSubmissionDto(oldAppSubmissionDto);
@@ -1437,7 +1487,7 @@ public class NewApplicationDelegator {
             List<AppSubmissionDto> appSubmissionDtos = new ArrayList<>(1);
             appSubmissionDto.setAmountStr("N/A");
             appSubmissionDtos.add(appSubmissionDto);
-            ParamUtil.setSessionAttr(bpc.request, "appSubmissionDtos", (Serializable) appSubmissionDtos);
+            ParamUtil.setSessionAttr(bpc.request, "ackPageAppSubmissionDto", (Serializable) appSubmissionDtos);
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
@@ -1537,6 +1587,16 @@ public class NewApplicationDelegator {
         //validate reject  apst050
         log.info(StringUtil.changeForLog("the do doRequestForChangeSubmit start ...."));
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        List<String> strList = new ArrayList<>(5);
+        coMap.forEach((k, v) -> {
+            if (!StringUtil.isEmpty(v)) {
+                strList.add(v);
+            }
+        });
+        String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
+        strList.add(serviceConfig);
+        appSubmissionDto.setStepColor(strList);
         List<ApplicationDto> applicationDtos = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
         Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
         //todo chnage edit
@@ -2448,7 +2508,16 @@ public class NewApplicationDelegator {
             }
         }
         appSubmissionDto.setChangeSelectDto(appEditSelectDto);
-
+        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        List<String> strList = new ArrayList<>(5);
+        coMap.forEach((k, v) -> {
+            if (!StringUtil.isEmpty(v)) {
+                strList.add(v);
+            }
+        });
+        String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
+        strList.add(serviceConfig);
+        appSubmissionDto.setStepColor(strList);
         appSubmissionDto = appSubmissionService.submit(appSubmissionDto, bpc.process);
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
 

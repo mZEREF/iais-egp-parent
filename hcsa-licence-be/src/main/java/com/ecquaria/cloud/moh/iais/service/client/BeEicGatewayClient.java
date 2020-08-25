@@ -171,9 +171,9 @@ public class BeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HttpStatus.class);
     }
 
-    public FeignResponseEntity<HttpStatus> updateAppSvcKeyPersonnelDto(List<AppSvcKeyPersonnelDto> appealPersonnel,
+    public FeignResponseEntity<List> updateAppSvcKeyPersonnelDto(List<AppSvcKeyPersonnelDto> appealPersonnel,
                                                                String date, String authorization, String dateSec, String authorizationSec) {
-        return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/app-svc-key-personel", HttpMethod.POST, appealPersonnel,
-                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HttpStatus.class);
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/app-svc-key-personel", HttpMethod.POST, appealPersonnel,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, AppSvcKeyPersonnelDto.class);
     }
 }

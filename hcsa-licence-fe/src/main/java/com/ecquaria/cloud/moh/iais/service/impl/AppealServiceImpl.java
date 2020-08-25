@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.action.AppealDelegator;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppliSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcKeyPersonnelDto;
@@ -61,6 +63,9 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -111,6 +116,8 @@ public class AppealServiceImpl implements AppealService {
     private RequestForChangeService requestForChangeService;
     @Autowired
     private SystemParamConfig systemParamConfig;
+    @Autowired
+    private Environment env;
     @Override
     public String submitData(HttpServletRequest request) {
         String appealingFor = (String) request.getSession().getAttribute(APPEALING_FOR);
@@ -704,7 +711,30 @@ public class AppealServiceImpl implements AppealService {
                 applicationGroupDto.setGroupNo(entity1.getApplicationNo().substring(0, entity1.getApplicationNo().lastIndexOf('-')));
                 applicationDto.setApplicationNo(entity1.getApplicationNo());
                 applicationGroupDto.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_SUBMITED);
-                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION_REPLY);
+                List<AppPremisesRoutingHistoryDto> hisList;
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+                Map<String, Object> params = IaisCommonUtils.genNewHashMap(1);
+                params.put("appNo", appNo);
+                hisList = IaisEGPHelper.callEicGatewayWithParamForList(gatewayUrl + "/v1/app-routing-history", HttpMethod.GET, params,
+                        MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization(), AppPremisesRoutingHistoryDto.class).getEntity();
+                if(hisList!=null){
+                    for(AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto : hisList){
+                        if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())
+                                || InspectionConstants.PROCESS_DECI_REQUEST_FOR_INFORMATION.equals(appPremisesRoutingHistoryDto.getProcessDecision())){
+                            if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                                applicationDto.setStatus(ApplicationConsts.PENDING_ASO_REPLY);
+                            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                                applicationDto.setStatus(ApplicationConsts.PENDING_PSO_REPLY);
+                            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION_READINESS.equals(appPremisesRoutingHistoryDto.getAppStatus())){
+                                applicationDto.setStatus(ApplicationConsts.PENDING_INP_REPLY);
+                            }
+                        }
+                    }
+                }
+
                 s = entity1.getApplicationNo();
                 entity1.setStatus(ApplicationConsts.APPLICATION_STATUS_DELETED);
                 request.getSession().setAttribute("rfiApplication", entity1);

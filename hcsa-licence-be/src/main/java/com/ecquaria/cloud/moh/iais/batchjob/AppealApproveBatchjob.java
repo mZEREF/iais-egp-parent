@@ -297,7 +297,7 @@ public class AppealApproveBatchjob {
 
         if(appealDto != null){
             try {
-                sendEmailApproved(appealApplication,ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO,"",
+                sendEmailApproved(appealApproveDto.getApplicationDto(),ApplicationConsts.APPEAL_REASON_APPLICATION_ADD_CGO,"",
                         "","" );
             }catch (Exception e){
                 log.error(e.getMessage(),e);
