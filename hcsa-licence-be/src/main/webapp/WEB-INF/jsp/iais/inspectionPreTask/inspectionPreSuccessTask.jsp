@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -14,13 +15,13 @@
           <div class="bg-title">
             <c:choose>
               <c:when test="${'routeBack' eq successPage}">
-                <h2>You have successfully routed back your application</h2>
+                <h2><iais:message key="LOLEV_ACK033" escape="true"></iais:message></h2>
               </c:when>
               <c:when test="${'requestForInfo' eq successPage}">
                 <h2><c:out value="${successInfo}"></c:out></h2>
               </c:when>
               <c:otherwise>
-                <h2>The application has been submitted</h2>
+                <h2><iais:message key="LOLEV_ACK029" escape="true"></iais:message></h2>
               </c:otherwise>
             </c:choose>
           </div>
