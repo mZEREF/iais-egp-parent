@@ -40,11 +40,11 @@
                 <table class="table">
                     <thead style="align-content: center">
                     <tr>
-                        <th style="width: 12%">Name</th>
-                        <th style="width: 12%">Email</th>
-                        <th style="width: 12%">Mobile</th>
-                        <th style="width: 12%">Licence</th>
-                        <th style="width: 12%">Roles</th>
+                        <th style="width: 15%">Name</th>
+                        <th style="width: 15%">Email</th>
+                        <th style="width: 15%">Mobile</th>
+                        <th style="width: 30%">Licence</th>
+                        <th style="width: 25%">Roles</th>
                     </tr>
                     </thead>
                     <c:choose>
