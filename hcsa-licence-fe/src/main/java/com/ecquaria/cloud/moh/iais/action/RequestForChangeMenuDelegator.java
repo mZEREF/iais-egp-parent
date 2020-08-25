@@ -62,6 +62,7 @@ import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.util.CopyUtil;
@@ -1175,7 +1176,7 @@ public class RequestForChangeMenuDelegator {
      * @param bpc
      * @Decription doPayment
      */
-    public void doPayment(BaseProcessClass bpc) {
+    public void doPayment(BaseProcessClass bpc) throws IOException, TemplateException {
         log.debug(StringUtil.changeForLog("the do doPayment start ...."));
         String switchValue = "loading";
         String pmtStatus = ParamUtil.getString(bpc.request, "result");

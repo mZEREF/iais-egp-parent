@@ -6,7 +6,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import freemarker.template.TemplateException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,8 +85,8 @@ public interface RequestForChangeService {
      Map<String, String> doValidatePremiss(AppSubmissionDto appSubmissionDto, AppSubmissionDto oldAppSubmissionDto, List<String> premisesHciList, String  masterCodeDto ,boolean isRfi);
      void svcDocToPresmise(AppSubmissionDto appSubmissionDto);
     void premisesDocToSvcDoc( AppSubmissionDto appSubmissionDtoByLicenceId);
-    void sendRfcSubmittedEmail(AppSubmissionDto appSubmissionDto, String pmtMethod);
-    void sendRfcLicenseeEmail(AppSubmissionDto appSubmissionDto);
-    void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto);
-    void sendRfcPaymentOnlineOrGIROSuccesedEmail(AppSubmissionDto appSubmissionDto);
+    void sendRfcSubmittedEmail(AppSubmissionDto appSubmissionDto, String pmtMethod) throws IOException, TemplateException;
+    void sendRfcLicenseeEmail(AppSubmissionDto appSubmissionDto) throws IOException, TemplateException;
+    void sendRfcEmailToOfficer(AppSubmissionDto appSubmissionDto) throws IOException, TemplateException;
+    void sendRfcPaymentOnlineOrGIROSuccesedEmail(AppSubmissionDto appSubmissionDto) throws IOException, TemplateException;
     }

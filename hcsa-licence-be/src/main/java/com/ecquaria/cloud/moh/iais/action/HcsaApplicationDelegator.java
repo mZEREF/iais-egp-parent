@@ -1085,8 +1085,30 @@ public class HcsaApplicationDelegator {
                 emailMap.put("ApplicationDate", new Date());
                 emailMap.put("email_address", "");
                 emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED, emailMap, applicationNo, applicationNo,
-                        NotificationHelper.RECEIPT_TYPE_APP, applicationNo);
+                EmailParam emailParam = new EmailParam();
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED);
+                emailParam.setTemplateContent(emailMap);
+                emailParam.setQueryCode(applicationNo);
+                emailParam.setReqRefNum(applicationNo);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                emailParam.setRefId(applicationNo);
+                Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+                MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED).getEntity();
+                map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
+                map.put("ApplicationNumber", applicationNo);
+                String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(),map);
+                emailParam.setSubject(subject);
+                //email
+                notificationHelper.sendNotification(emailParam);
+                //msg
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
+                emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                emailParam.setRefId(applicationNo);
+                notificationHelper.sendNotification(emailParam);
+                //sms
+                emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_SMS);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                notificationHelper.sendNotification(emailParam);
             }catch (Exception e){
                 log.info("-----RFC Application - Send SMS to transferor when licence transfer application is rejected. licenseeId is null---------");
             }
@@ -2180,8 +2202,30 @@ public class HcsaApplicationDelegator {
             emailMap.put("details", "HCI Name :"+applicationViewDto.getHciName()+"<br>"+"HCI Address :"+applicationViewDto.getHciAddress()+"<br>"+"Licensee :"+applicationName+"<br>"+"Comment :"+internalRemarks+"<br>");
             emailMap.put("systemLink", loginUrl);
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-            notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION, emailMap, applicationViewDto.getApplicationDto().getApplicationNo(), applicationViewDto.getApplicationDto().getApplicationNo(),
-                    NotificationHelper.RECEIPT_TYPE_APP, applicationViewDto.getApplicationDto().getApplicationNo());
+            EmailParam emailParam = new EmailParam();
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION);
+            emailParam.setTemplateContent(emailMap);
+            emailParam.setQueryCode(applicationViewDto.getApplicationDto().getApplicationNo());
+            emailParam.setReqRefNum(applicationViewDto.getApplicationDto().getApplicationNo());
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+            emailParam.setRefId(applicationViewDto.getApplicationDto().getApplicationNo());
+            Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+            MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION).getEntity();
+            map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
+            map.put("ApplicationNumber", applicationViewDto.getApplicationDto().getApplicationNo());
+            String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(),map);
+            emailParam.setSubject(subject);
+            //email
+            notificationHelper.sendNotification(emailParam);
+            //msg
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_MSG);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            emailParam.setRefId(applicationViewDto.getApplicationDto().getApplicationNo());
+            notificationHelper.sendNotification(emailParam);
+            //sms
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS);
+            emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+            notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.error(StringUtil.changeForLog("send email error!-The following email will be triggered when Approval Officer routes an application back for Internal Clarification"));
         }
