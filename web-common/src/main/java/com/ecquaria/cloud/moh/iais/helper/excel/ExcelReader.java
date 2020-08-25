@@ -4,15 +4,20 @@ import com.ecquaria.cloud.moh.iais.common.annotation.ExcelProperty;
 import com.ecquaria.cloud.moh.iais.common.annotation.ExcelSheetProperty;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -164,6 +169,17 @@ public final class ExcelReader {
     @SuppressWarnings("deprecation")
     private static String getCellValue(final Cell cell) {
         String cellValue = "";
+        if(cell == null){
+            log.info(StringUtil.changeForLog("cell is null"));
+        }else{
+            log.info(StringUtil.changeForLog("cell is not null"));
+        }
+        if(cell.getCellType() == CellType.BLANK){
+            log.info(StringUtil.changeForLog("cell is blank"));
+        }else{
+            log.info(StringUtil.changeForLog("cell is not blank"));
+        }
+
         if (cell != null && cell.getCellType() != CellType.BLANK) {
             switch (cell.getCellType()) {
                 case NUMERIC:
