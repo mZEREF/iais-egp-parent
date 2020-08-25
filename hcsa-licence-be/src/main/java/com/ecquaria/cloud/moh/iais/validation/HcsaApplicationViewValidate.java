@@ -176,7 +176,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                         //rfiSelectValue
                         String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
                         if(StringUtil.isEmpty(rfiSelectValue)){
-                            errMap.put("nextStage", "PRF_ERR003");
+                            errMap.put("nextStage", "RFI_ERR001");
                         }
                     }
                 }
