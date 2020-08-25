@@ -332,7 +332,7 @@ public class InboxServiceImpl implements InboxService {
         //Verify whether the new licence is generated
         LicenceDto entity = licenceInboxClient.getLicdtoByOrgId(licenceId).getEntity();
         if(entity != null){
-            String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK014");
+            String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK013");
             errorMap.put("errorMessage2",errorMsg);
         }
         //check expiry date

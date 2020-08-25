@@ -420,7 +420,6 @@ public class WithOutRenewalDelegator {
                 //jump page to acknowledgement
                 //send email pay success
                 try {
-
                     sendEmail(bpc.request, groupId, "successfulOnlinePayment", licenseeId, amount, "xxxx-xxxx-xxxx");
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
@@ -1090,42 +1089,22 @@ public class WithOutRenewalDelegator {
         if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
-//            StringBuilder url = new StringBuilder();
-//            url.append("https://").append(bpc.request.getServerName())
-//                    .append("/payment-web/eservice/INTERNET/PaymentRequest")
-//                    .append("?amount=").append(MaskUtil.maskValue("amount", String.valueOf(totalAmount)))
-//                    .append("&payMethod=").append(MaskUtil.maskValue("payMethod", payMethod))
-//                    .append("&reqNo=").append(MaskUtil.maskValue("reqNo", groupNo))
-//                    .append("&backUrl=").append(MaskUtil.maskValue("backUrl", backUrl));
-//            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-//            bpc.response.sendRedirect(tokenUrl);
             Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
             fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(totalAmount));
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, groupNo);
-
             try {
                 String html= GatewayAPI.create_partner_trade_by_buyer(fieldMap,bpc.request,backUrl);
                 ParamUtil.setRequestAttr(bpc.request,"jumpHtml",html);
-
                 bpc.request.setAttribute("paymentAmount", totalAmount);
-                sendEmail(bpc.request, groupNo, "onlinePayment", licenseeId, totalAmount, "xxxx-xxxx-xxxx");
-
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }
-
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod) && !StringUtil.isEmpty(appGrpId)) {
             ApplicationGroupDto appGrp = new ApplicationGroupDto();
             appGrp.setId(appGrpId);
             appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS);
             serviceConfigService.updatePaymentStatus(appGrp);
-            try {
-                sendEmail(bpc.request, groupNo, ApplicationConsts.PAYMENT_METHOD_NAME_GIRO, licenseeId, totalAmount, "xxxx-xxxx-xxxx");
-
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
             String txnDt = DateUtil.formatDate(new Date(), "dd/MM/yyyy");
             ParamUtil.setSessionAttr(bpc.request, "txnDt", txnDt);
             ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE4);
