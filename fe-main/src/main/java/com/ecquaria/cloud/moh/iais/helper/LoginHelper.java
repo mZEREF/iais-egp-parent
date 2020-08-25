@@ -23,7 +23,7 @@ public final class LoginHelper {
     public static final String MAIN_WEB_URL = "/main-web/";
     public static final String CORPPASS_URL = "/main-web/eservice/INTERNET/FE_Landing/1/croppass";
 
-    public static void initUserInfo(HttpServletRequest request, HttpServletResponse response, User user){
+    public static void initUserInfo(HttpServletRequest request, HttpServletResponse response, User user, int loginType){
         user.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
         SessionManager.getInstance(request).imitateLogin(user, true, true);
         SessionManager.getInstance(request).initSopLoginInfo(request);
@@ -33,6 +33,7 @@ public final class LoginHelper {
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
+        auditTrailDto.setLoginType(loginType);
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
         trailDtoList.add(auditTrailDto);
         SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);

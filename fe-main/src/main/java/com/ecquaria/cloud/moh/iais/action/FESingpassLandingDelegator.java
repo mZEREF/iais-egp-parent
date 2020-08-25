@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
@@ -62,7 +63,7 @@ public class FESingpassLandingDelegator {
             user.setDisplayName(feUserDto.getDisplayName());
             user.setUserDomain(feUserDto.getUserDomain());
             user.setId(feUserDto.getUserId());
-            LoginHelper.initUserInfo(request, response, user);
+            LoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_SING_PASS);
         }
         log.info("initLoginInfo===========>>>End");
     }
@@ -193,7 +194,7 @@ public class FESingpassLandingDelegator {
                 user.setDisplayName(postCreateUser.getDisplayName());
                 user.setUserDomain(postCreateUser.getUserDomain());
                 user.setId(postCreateUser.getUserId());
-                LoginHelper.initUserInfo(request, response, user);
+                LoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_SING_PASS);
 
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }

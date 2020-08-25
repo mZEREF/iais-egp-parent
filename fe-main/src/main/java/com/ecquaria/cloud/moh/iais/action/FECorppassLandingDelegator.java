@@ -176,7 +176,7 @@ public class FECorppassLandingDelegator {
             user.setDisplayName(feUserDto.getDisplayName());
             user.setUserDomain(feUserDto.getUserDomain());
             user.setId(feUserDto.getUserId());
-            LoginHelper.initUserInfo(bpc.request, bpc.response, user);
+            LoginHelper.initUserInfo(bpc.request, bpc.response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
             ParamUtil.setRequestAttr(bpc.request, "isAdminRole", "Y");
         }else {
             // Add Audit Trail -- Start
@@ -253,7 +253,7 @@ public class FECorppassLandingDelegator {
                 user.setDisplayName(postUpdate.getDisplayName());
                 user.setUserDomain(postUpdate.getUserDomain());
                 user.setId(postUpdate.getUserId());
-                LoginHelper.initUserInfo(request, response, user);
+                LoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
 
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.YES);
             }

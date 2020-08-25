@@ -1,11 +1,9 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import javax.servlet.http.HttpServletResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +18,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
+
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyObject;
@@ -71,7 +73,7 @@ public class LoginHelperTest {
         when(applicationContext.getBean(SubmissionClient.class)).thenReturn(submissionClient);
         PowerMockito.mockStatic(AuditLogUtil.class);
         doNothing().when(AuditLogUtil.class, "callWithEventDriven", new Object[] {anyObject(), anyObject()});
-        LoginHelper.initUserInfo(request, response, user);
+        LoginHelper.initUserInfo(request, response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
         assertNotNull(user);
     }
 
