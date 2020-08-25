@@ -288,9 +288,15 @@ public class InspectionSendRecJobHandler extends IJobHandler {
         boolean containFlag = false;
         for(ChecklistItemDto checklistItemDto : checklistItemDtos){
             if(itemId.equals(checklistItemDto.getItemId())){
+                log.info(StringUtil.changeForLog("itemId Id = " + itemId));
+                JobLogger.log(StringUtil.changeForLog("itemId Id = " + itemId));
                 String category = getItemCategory(checklistConfigDto);
                 containFlag = true;
                 ChecklistItemDto clItemDto = hcsaChklClient.getChklItemById(itemId).getEntity();
+                if(clItemDto == null){
+                    log.info(StringUtil.changeForLog("clItemDto == null"));
+                    JobLogger.log(StringUtil.changeForLog("clItemDto == null"));
+                }
                 inspEmailFieldDto.setRegulation(clItemDto.getRegulationClause());
                 inspEmailFieldDto.setQuestion(clItemDto.getChecklistItem());
                 inspEmailFieldDto.setBeNcRemark(beRemark);
