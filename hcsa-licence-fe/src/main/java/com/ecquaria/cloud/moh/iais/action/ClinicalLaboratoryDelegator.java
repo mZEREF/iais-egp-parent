@@ -1398,9 +1398,6 @@ public class ClinicalLaboratoryDelegator {
                 Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
                 if (errorMap.isEmpty() && allChecked.isEmpty()) {
                     coMap.put("information", "information");
-                    //sync person dropdown and submisson dto
-                    personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcMedAlertPersonList,svcCode);
-                    ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
                 } else {
                     coMap.put("information", "");
                 }
@@ -1412,6 +1409,9 @@ public class ClinicalLaboratoryDelegator {
                     ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,AppServicesConsts.NAVTABS_SERVICEFORMS);
                     return;
                 } else {
+                    //sync person dropdown and submisson dto
+                    personMap = syncDropDownAndPsn(personMap,appSubmissionDto,appSvcMedAlertPersonList,svcCode);
+                    ParamUtil.setSessionAttr(bpc.request,NewApplicationDelegator.PERSONSELECTMAP, (Serializable) personMap);
                 }
             }else{
                 //sync person dropdown and submisson dto
