@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
@@ -14,7 +13,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
@@ -22,10 +20,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
@@ -287,8 +283,8 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                     templateContent.put("serviceName", svcName);
                 }
 
-                templateContent.put("MOH_GROUP_NAME", "-");
-                templateContent.put("MOH_AGENCY_NAME", "-");
+                templateContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
+                templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
                 EmailParam email = new EmailParam();
                 email.setTemplateId(msgTmgId);
@@ -309,6 +305,9 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         tlContent.put("applicationDate", Formatter.formatDateTime(tlDate));
         tlContent.put("systemLink", loginUrl);
         tlContent.put("officer_name", "");
+        tlContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
+        tlContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+
         EmailParam email = new EmailParam();
         email.setTemplateId(msgTmgId2);
 
