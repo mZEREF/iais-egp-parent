@@ -1,5 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -13,10 +14,10 @@
         <div class="intranet-content">
           <div class="bg-title">
             <c:if test="${'APTY007' eq applicationViewDto.applicationDto.applicationType}">
-              <h2>Inspection date for Audit task has been set.</h2>
+              <h2><iais:message key="LOLEV_ACK041" escape="true"></iais:message></h2>
             </c:if>
             <c:if test="${'APTY007' ne applicationViewDto.applicationDto.applicationType}">
-              <h2>The appointment date has been sent to the applicant for confirmation.</h2>
+              <h2><iais:message key="LOLEV_ACK040" escape="true"></iais:message></h2>
             </c:if>
           </div>
         </div>
