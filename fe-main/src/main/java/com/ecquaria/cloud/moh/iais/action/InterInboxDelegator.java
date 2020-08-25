@@ -921,7 +921,12 @@ public class InterInboxDelegator {
         RecallApplicationDto recallApplicationDto = new RecallApplicationDto();
         recallApplicationDto.setAppId(appId);
         recallApplicationDto.setAppNo(appNo);
-        inboxService.recallApplication(recallApplicationDto);
+        try{
+            inboxService.recallApplication(recallApplicationDto);
+        }catch (Exception e){
+            ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
+            ParamUtil.setRequestAttr(bpc.request,"delDraftAckMsg","The background task is not generated");
+        }
     }
 
     public void doSelfAssMt(BaseProcessClass bpc) throws IOException {
