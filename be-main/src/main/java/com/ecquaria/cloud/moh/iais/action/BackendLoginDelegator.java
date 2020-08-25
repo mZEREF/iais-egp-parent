@@ -125,7 +125,7 @@ public class BackendLoginDelegator {
                 log.error(e.getMessage(), e);
             }
             // End Audit Trail -- End
-            errMap.put("login","Please key in a valid userId");
+            errMap.put("login","LOGIN_ERR001");
         }
         return errMap;
     }

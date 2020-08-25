@@ -1,1 +1,1 @@
-<%@include file="/iais/login/intralogin.jsp"%>
+<%@include file="/WEB-INF/jsp/iais/login/intralogin.jsp"%>

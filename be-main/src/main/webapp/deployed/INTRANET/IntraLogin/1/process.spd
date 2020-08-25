@@ -51,6 +51,12 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="ErrorPage" stageIndicator="" x="590" y="360">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
@@ -66,8 +72,8 @@
   <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doLogin" style="oblique">
    <position>{(620,190)(460,260)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preLogin" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
-   <position>{(460,260)(270,120)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/ErrorPage" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
+   <position>{(460,260)(610,380)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/InvokeStep/ToBackendInbox" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
    <position>{(460,260)(430,370)}</position>
@@ -92,7 +98,7 @@
   </SynchronousLink>
  </Links>
  <Conditions>
-  <Condition componentIfFalse="/Steps/AutomaticStep/preLogin" componentIfTrue="/Steps/InvokeStep/ToBackendInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="440" y="240">
+  <Condition componentIfFalse="/Pages/WebPage/ErrorPage" componentIfTrue="/Steps/InvokeStep/ToBackendInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="440" y="240">
    <Description/>
   </Condition>
   <Condition componentIfFalse="/Steps/AutomaticStep/InitLogin" componentIfTrue="/Steps/InvokeStep/ToBackendInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="260" y="350">
