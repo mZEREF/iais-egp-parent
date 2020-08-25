@@ -28,7 +28,7 @@
                 </div>
                 <iais:row>
                   <iais:value width="7">
-                    <p><label>Congratulations, you have successfully submitted all your NC Rectifications to MOH.</label></p>
+                    <p><label><iais:message key="LOLEV_ACK038" escape="true"></iais:message></label></p>
                   </iais:value>
                 </iais:row>
                 <iais:action >
