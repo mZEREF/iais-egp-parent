@@ -12,7 +12,7 @@
                     data-toggle="tooltip" data-html="true"
                     title="" data-original-title='"Subsumed Service" is a service that does not have its own licence, but has regulatory requirements that will be issued under the relevant licensable healthcare service."'
                     style="position: absolute;left: 225px; top: 12px;z-index: 10" >i</a></span>
-            <span class="right-content">Add/Remove subsumed service(s). service subcategory(ies)</span>
+            <span class="right-content">Add/Remove subsumed service(s), service subcategory(ies)</span>
         </label>
     </div>
     <div class="form-check progress-step-check" style="width: 900px">

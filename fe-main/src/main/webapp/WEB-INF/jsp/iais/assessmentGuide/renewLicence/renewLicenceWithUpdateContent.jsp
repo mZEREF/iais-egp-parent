@@ -27,10 +27,10 @@
                         <tr>
                             <td>
                                 <div class="form-check">
-                                    <input class="form-check-input licenceCheck" id="licenceNo" type="radio" <c:if test="${status.index == 0}">checked</c:if>
-                                           name="renewLicenId" value="renew2LicenId${status.index}" aria-invalid="false"/>
+                                    <input class="form-check-input licenceCheck" id="licenceNo" type="checkbox"
+                                           name="renewLicenId" value="renew2LicenId${status.index}" aria-invalid="false" onclick="renewChk()"/>
                                     <label class="form-check-label" for="licenceNo"><span
-                                            class="check-circle"></span>
+                                            class="check-square"></span>
                                     </label>
                                     <input type="hidden" name="renew2LicenId${status.index}" value="<iais:mask name= "renew2LicenId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>
@@ -49,7 +49,7 @@
     </div>
     <c:choose>
         <c:when test="${!empty renewLicUpdateSearchResult.rows}">
-            <a class="btn btn-primary " onclick="guideSubmit('renew','second')">NEXT</a>
+            <a class="btn btn-primary" id="renew-next-btn" onclick="guideSubmit('renew','second')">NEXT</a>
         </c:when>
     </c:choose>
 </div>

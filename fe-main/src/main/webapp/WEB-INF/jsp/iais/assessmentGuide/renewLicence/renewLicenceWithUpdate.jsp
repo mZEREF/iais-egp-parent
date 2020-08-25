@@ -57,6 +57,7 @@
         $("#ceaseLicence").click(function(){
             guideSubmit("cease","main");
         });
+        renewChk();
     });
 
     function jumpToPagechangePage() {
@@ -70,5 +71,14 @@
         $("[name='guide_action_type']").val("renewSort");
         $("#mainForm").submit();
     }
+    
+    function renewChk() {
+        if (!$('.licenceCheck').is(':checked')){
+            $("#renew-next-btn").addClass('disabled');
+        }else{
+            $("#renew-next-btn").removeClass('disabled');
+        }
+    }
+
 </script>
 
