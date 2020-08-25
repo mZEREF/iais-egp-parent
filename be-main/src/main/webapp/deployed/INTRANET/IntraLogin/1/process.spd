@@ -82,13 +82,13 @@
    <position>{(520,120)(623,119)(620,190)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/FakeCond" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InitLogin" style="oblique">
-   <position>{(190,270)(185,150)}</position>
+   <position>{(190,270)(160,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preLogin" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/FakeCond" style="rectanular">
-   <position>{(185,150)(270,120)}</position>
+   <position>{(160,120)(270,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doLogin" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/FakeCond" style="rectanular">
-   <position>{(185,150)(165,90)(421,71)(623,72)(620,190)}</position>
+   <position>{(160,120)(165,90)(421,71)(623,72)(620,190)}</position>
   </SynchronousLink>
  </Links>
  <Conditions>

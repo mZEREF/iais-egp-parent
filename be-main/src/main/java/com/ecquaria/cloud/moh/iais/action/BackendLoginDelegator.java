@@ -15,15 +15,16 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationMainClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * BackendLoginDelegator
@@ -128,7 +129,7 @@ public class BackendLoginDelegator {
         }
         return errMap;
     }
-    public void aferSubmit(BaseProcessClass bpc){
+    public void afterSubmit(BaseProcessClass bpc){
 
     }
     public void initLogin(BaseProcessClass bpc){

@@ -17,7 +17,7 @@ public class INTRANET___IntraLogin___1 extends BaseProcessClass {
 	private static final String DELEGATOR ="backendLoginDelegator";
 
 	public void start_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "Start", this); 
+		EngineHelper.delegate(DELEGATOR, "start", this); 
 	// 		Start->OnStepProcess
 	}
 
@@ -32,7 +32,7 @@ public class INTRANET___IntraLogin___1 extends BaseProcessClass {
 	}
 
 	public void aferSubmit_OnStepProcess_0() throws Exception {
-		EngineHelper.delegate(DELEGATOR, "aferSubmit", this); 
+		EngineHelper.delegate(DELEGATOR, "afterSubmit", this); 
 
 	// 		AferSubmit->OnStepProcess
 	}
