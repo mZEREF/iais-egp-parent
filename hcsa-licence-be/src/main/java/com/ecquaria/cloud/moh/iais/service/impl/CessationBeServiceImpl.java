@@ -34,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
@@ -62,7 +63,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author weilu
@@ -279,7 +284,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             Date effectiveDate = appCessationDto.getEffectiveDate();
             try {
                 if (effectiveDate.after(new Date())) {
-                    String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+                    String loginUrl = HmacConstants.HTTPS + "://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                     LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
                     String applicantName=licenseeDto.getName();
@@ -287,26 +292,70 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ApplicationNumber", applicationNo);
                     emailMap.put("ServiceLicenceName", svcName);
-                    emailMap.put("CessationDate", Formatter.formatDateTime(appCessationDto.getEffectiveDate()));
+                    emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
                     emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
                     emailMap.put("email", "");
                     emailMap.put("systemLink", loginUrl);
                     emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                    notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE, emailMap, applicationNo, applicationNo,
-                            NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                    MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE).getEntity();
+                    Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+                    map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+                    map.put("ApplicationNumber", applicationNo);
+                    String subject= MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE);
+                    emailParam.setTemplateContent(emailMap);
+                    emailParam.setQueryCode(applicationNo);
+                    emailParam.setReqRefNum(applicationNo);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    emailParam.setRefId(applicationNo);
+                    emailParam.setSubject(subject);
+                    //email
+                    notificationHelper.sendNotification(emailParam);
+                    //msg
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
+                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    notificationHelper.sendNotification(emailParam);
+                    //sms
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_SMS);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    notificationHelper.sendNotification(emailParam);
+                    //sendEmail(FURTHERDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 } else {
                     Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
                     LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
-                    String applicantName=licenseeDto.getName();
+                    String applicantName = licenseeDto.getName();
                     emailMap.put("ApplicantName", applicantName);
                     emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     emailMap.put("ServiceLicenceName", svcName);
                     emailMap.put("ApplicationNumber", applicationNo);
-                    emailMap.put("CessationDate", Formatter.formatDateTime(appCessationDto.getEffectiveDate()));
+                    emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
                     emailMap.put("email", "");
                     emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                    notificationHelper.sendNotification(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE, emailMap, applicationNo, applicationNo,
-                            NotificationHelper.RECEIPT_TYPE_APP, licenseeId);
+                    MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
+                    Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+                    map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+                    map.put("ApplicationNumber", applicationNo);
+                    String subject= MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE);
+                    emailParam.setTemplateContent(emailMap);
+                    emailParam.setQueryCode(applicationNo);
+                    emailParam.setReqRefNum(applicationNo);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    emailParam.setRefId(applicationNo);
+                    emailParam.setSubject(subject);
+                    //email
+                    notificationHelper.sendNotification(emailParam);
+                    //msg
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG);
+                    emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    notificationHelper.sendNotification(emailParam);
+                    //sms
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_SMS);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    notificationHelper.sendNotification(emailParam);
+                    //sendEmail(PRESENTDATECESSATION, effectiveDate, svcName, licId, licenseeId, licenceNo);
                 }
             } catch (Exception e) {
                 e.getMessage();
