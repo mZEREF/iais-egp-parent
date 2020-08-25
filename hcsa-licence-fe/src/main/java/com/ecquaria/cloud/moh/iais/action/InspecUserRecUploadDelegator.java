@@ -228,7 +228,7 @@ public class InspecUserRecUploadDelegator {
 
         if(InspectionConstants.SWITCH_ACTION_SUCCESS.equals(actionValue)) {
             if (IaisCommonUtils.isEmpty(inspecUserRecUploadDto.getFileRepoDtos())) {
-                errorMap.put(errorKey, "ERR0009");
+                errorMap.put(errorKey, MessageUtil.replaceMessage("GENERAL_ERR0006", "Attachments","field"));
                 return errorMap;
             }
             if(300 < uploadRemarksLen){
