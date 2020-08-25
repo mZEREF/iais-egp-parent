@@ -28,7 +28,7 @@
                 </div>
                 <iais:row>
                   <iais:value width="7">
-                    <p><label>Your request for a particular date has been submitted.</label></p>
+                    <p><label><iais:message key="LOLEV_ACK046" escape="true"></iais:message></label></p>
                   </iais:value>
                 </iais:row>
                 <iais:action >
