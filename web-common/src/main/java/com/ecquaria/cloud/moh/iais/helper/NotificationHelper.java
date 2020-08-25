@@ -399,7 +399,7 @@ public class NotificationHelper {
 							List<String> officerEmails = IaisCommonUtils.genNewArrayList();
 							String officerEmail = emailAddressMap.get(key);
 							officerEmails.add(officerEmail);
-							if (templateContent != null && !templateContent.isEmpty()) {
+							if (!IaisCommonUtils.isEmpty(templateContent)) {
 								boolean officerFlag = templateContent.containsKey("officer_name");
 								if (officerFlag) {
 									templateContent.put("officer_name", officerValue);
