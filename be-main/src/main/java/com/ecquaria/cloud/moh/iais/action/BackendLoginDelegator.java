@@ -126,4 +126,10 @@ public class BackendLoginDelegator {
         }
         return errMap;
     }
+    public void aferSubmit(BaseProcessClass bpc){
+
+    }
+    public void initLogin(BaseProcessClass bpc){
+
+    }
 }

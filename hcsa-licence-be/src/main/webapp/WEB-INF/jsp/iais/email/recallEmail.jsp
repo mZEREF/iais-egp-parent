@@ -13,7 +13,9 @@
             <div class="center-content">
                 <div class="intranet-content">
                     <div class="bg-title">
-                        <iais:message key="LOLEV_ACK035" escape="true"></iais:message>
+                        <h2>
+                            <iais:message key="LOLEV_ACK035" escape="true"></iais:message>
+                        </h2>
                     </div>
                 </div>
                 <div align="left"><span><a  href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"> </em> Back</a></span></div>

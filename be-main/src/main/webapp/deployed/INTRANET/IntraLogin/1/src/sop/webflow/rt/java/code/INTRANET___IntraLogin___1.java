@@ -31,6 +31,18 @@ public class INTRANET___IntraLogin___1 extends BaseProcessClass {
 	// 		doLogin->OnStepProcess
 	}
 
+	public void aferSubmit_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "aferSubmit", this); 
+
+	// 		AferSubmit->OnStepProcess
+	}
+
+	public void initLogin_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "initLogin", this); 
+
+	// 		InitLogin->OnStepProcess
+	}
+
 	
 
 }

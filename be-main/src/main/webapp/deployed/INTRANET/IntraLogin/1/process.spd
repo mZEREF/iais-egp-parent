@@ -16,7 +16,7 @@
     <JavaCode defClass="" executor="" methodName="preLogin_OnStepProcess_0" name="preLogin_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doLogin" x="540" y="100">
+  <AutomaticStep defClass="" executor="" icon="" name="doLogin" x="600" y="170">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -29,6 +29,20 @@
    <OnStepProcess/>
    <OnStepComplete/>
   </InvokeStep>
+  <AutomaticStep defClass="" executor="" icon="" name="InitLogin" x="170" y="250">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="initLogin_OnStepProcess_0" name="initLogin_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="AferSubmit" x="500" y="100">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="aferSubmit_OnStepProcess_0" name="aferSubmit_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="LoginPage" stageIndicator="" x="400" y="100">
@@ -40,17 +54,17 @@
  </Pages>
  <Forms/>
  <Links>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/preLogin" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
-   <position>{(280,370)(270,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/InitLogin" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond3" style="oblique">
+   <position>{(280,370)(190,270)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/LoginPage" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preLogin" style="oblique">
    <position>{(270,120)(420,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/doLogin" linkstyle="Direct" name="" sourceName="/Pages/WebPage/LoginPage" style="oblique">
-   <position>{(420,120)(560,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/AferSubmit" linkstyle="Direct" name="" sourceName="/Pages/WebPage/LoginPage" style="oblique">
+   <position>{(420,120)(520,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Conditions/Condition/Cond2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doLogin" style="oblique">
-   <position>{(560,120)(460,260)}</position>
+   <position>{(620,190)(460,260)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preLogin" linkstyle="Direct" name="" sourceName="/Conditions/Condition/Cond2" style="oblique">
    <position>{(460,260)(270,120)}</position>
@@ -64,12 +78,27 @@
   <SynchronousLink destinationName="/Steps/InvokeStep/ToBackendInbox" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/Cond3" style="rectanular">
    <position>{(280,370)(430,370)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doLogin" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/AferSubmit" style="rectanular">
+   <position>{(520,120)(623,119)(620,190)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Conditions/Condition/FakeCond" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/InitLogin" style="oblique">
+   <position>{(190,270)(185,150)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/preLogin" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/FakeCond" style="rectanular">
+   <position>{(185,150)(270,120)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/doLogin" linkstyle="Rectangle" name="" sourceName="/Conditions/Condition/FakeCond" style="rectanular">
+   <position>{(185,150)(165,90)(421,71)(623,72)(620,190)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions>
   <Condition componentIfFalse="/Steps/AutomaticStep/preLogin" componentIfTrue="/Steps/InvokeStep/ToBackendInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond2" operator="=" rightOperand="&quot;Y&quot;" x="440" y="240">
    <Description/>
   </Condition>
-  <Condition componentIfFalse="/Steps/AutomaticStep/preLogin" componentIfTrue="/Steps/InvokeStep/ToBackendInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="260" y="350">
+  <Condition componentIfFalse="/Steps/AutomaticStep/InitLogin" componentIfTrue="/Steps/InvokeStep/ToBackendInbox" defClass="" executor="" icon="" leftOperand="isValid" name="Cond3" operator="=" rightOperand="&quot;Y&quot;" x="260" y="350">
+   <Description/>
+  </Condition>
+  <Condition componentIfFalse="/Steps/AutomaticStep/doLogin" componentIfTrue="/Steps/AutomaticStep/preLogin" defClass="" executor="" icon="" leftOperand="isFake" name="FakeCond" operator="=" rightOperand="&quot;Y&quot;" x="140" y="100">
    <Description/>
   </Condition>
  </Conditions>
