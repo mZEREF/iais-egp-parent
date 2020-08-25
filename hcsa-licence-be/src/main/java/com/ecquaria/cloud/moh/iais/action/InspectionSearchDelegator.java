@@ -22,6 +22,7 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -404,6 +405,7 @@ public class InspectionSearchDelegator {
     public void inspectionSupSearchValidate(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionSupSearchValidate start ...."));
         InspectionTaskPoolListDto inspectionTaskPoolListDto = getValueFromPage(bpc);
+        GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
             String propertyName;
@@ -413,8 +415,17 @@ public class InspectionSearchDelegator {
                 propertyName = "create";
             }
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionTaskPoolListDto, propertyName);
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            if("create".equals(propertyName)){
+                List<SelectOption> inspectorCheck = inspectionTaskPoolListDto.getInspectorCheck();
+                if(inspectorCheck == null){
+                    if(errorMap == null){
+                        errorMap = IaisCommonUtils.genNewHashMap();
+                    }
+                    errorMap.put("inspectorCheck", MessageUtil.replaceMessage("GENERAL_ERR0006", groupRoleFieldDto.getGroupMemBerName(),"field"));
+                }
+            }
             if (validationResult.isHasErrors()) {
-                Map<String, String> errorMap = validationResult.retrieveAll();
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
