@@ -2323,8 +2323,8 @@ public class HcsaApplicationDelegator {
     }
 
     private void sendRFCRejectEmail(String licenseeId,String serviceId){
-        String subject = "Request for information reject";
-        String mesContext = "Request for information email";
+        String subject = "Request for change reject";
+        String mesContext = "Request for change email";
         EmailDto emailDto = new EmailDto();
         emailDto.setContent(mesContext);
         emailDto.setSubject(subject);
