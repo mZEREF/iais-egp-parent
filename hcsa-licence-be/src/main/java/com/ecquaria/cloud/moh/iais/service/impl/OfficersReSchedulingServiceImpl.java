@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWor
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
-import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -50,7 +49,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -415,7 +413,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
 
     @Override
     public AppointmentDto subtractEndHourByApptDto(AppointmentDto appointmentDto) {
-        String endDateStr = appointmentDto.getEndDate();
+        /*String endDateStr = appointmentDto.getEndDate();
         if(!StringUtil.isEmpty(endDateStr)){
             try {
                 Date endDate = Formatter.parseDateTime(endDateStr, "yyyy-MM-dd HH:mm:ss");
@@ -427,7 +425,7 @@ public class OfficersReSchedulingServiceImpl implements OfficersReSchedulingServ
                 log.info(e.getMessage());
                 return appointmentDto;
             }
-        }
+        }*/
         return appointmentDto;
     }
 
