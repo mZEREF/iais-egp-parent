@@ -881,7 +881,7 @@ public class WithOutRenewalDelegator {
             String serviceName = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getServiceName();
             String appType = appSubmissionDto.getAppType();
             if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)){
-                serviceName = serviceName + " (Renew)" ;
+                serviceName = serviceName + " (Renewal)" ;
             }else {
                 serviceName = serviceName + " (Amendment)" ;
             }

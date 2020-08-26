@@ -157,7 +157,7 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     @Override
-    public List<String> saveCessations(List<AppCessationDto> appCessationDtos, String licenseeId) {
+    public Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos, String licenseeId) {
         if (StringUtil.isEmpty(licenseeId)) {
             licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
         }
@@ -198,7 +198,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             }
         });
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
-        return appIds;
+        return appIdPremisesMap;
     }
 
     @Override
@@ -248,18 +248,19 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     @Override
-    public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, List<String> appIds, LoginContext loginContext) throws Exception {
+    public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, String> appIdPremisesMap, LoginContext loginContext) throws Exception {
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appCessationDtos.size(); i++) {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
+            String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
             LicenceDto entity = hcsaLicenceClient.getLicenceDtoById(licId).getEntity();
             String licenseeId = entity.getLicenseeId();
             licIds.clear();
             licIds.add(licId);
-            String appId = appIds.get(i);
+            String appId = appIdPremisesMap.get(premiseId);
             ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
             String applicationNo = applicationDto.getApplicationNo();
             applicationDtos.add(applicationDto);
