@@ -297,6 +297,9 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                     log.info(StringUtil.changeForLog("clItemDto == null"));
                     JobLogger.log(StringUtil.changeForLog("clItemDto == null"));
                 }
+                if(inspEmailFieldDto == null){
+                    inspEmailFieldDto = new InspEmailFieldDto();
+                }
                 inspEmailFieldDto.setRegulation(clItemDto.getRegulationClause());
                 inspEmailFieldDto.setQuestion(clItemDto.getChecklistItem());
                 inspEmailFieldDto.setBeNcRemark(beRemark);
