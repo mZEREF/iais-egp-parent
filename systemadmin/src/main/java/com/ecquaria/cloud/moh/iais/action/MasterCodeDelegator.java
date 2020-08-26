@@ -432,8 +432,8 @@ public class MasterCodeDelegator {
                 Optional<MasterCodeToExcelDto> cartOptional = null;
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
                     String  codeCategory =  masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory());
-                    if (!StringUtil.isEmpty(codeCategory)){
-                        String errMsg = "CodeCategory Value must be an existing Code Value.";
+                    if (StringUtil.isEmpty(codeCategory)){
+                        String errMsg = "CodeCategory Value must be an existing CodeCategory Value.";
                         errItems.add(errMsg);
                         result = true;
                     }else{
