@@ -729,7 +729,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             for(ApplicationDto applicationDto :requestForInfList){
                 HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
                 HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                 beEicGatewayClient.updateApplication(applicationDto,signature.date(), signature.authorization(),
                         signature2.date(), signature2.authorization());
             }

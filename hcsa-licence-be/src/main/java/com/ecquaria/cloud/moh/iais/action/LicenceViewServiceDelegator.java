@@ -331,6 +331,7 @@ public class LicenceViewServiceDelegator {
             }
         }
         if(appSubmissionDto.getOldAppSubmissionDto()!=null){
+            formatDate(appSubmissionDto.getOldAppSubmissionDto().getAppGrpPremisesDtoList(), publicHolidayDtos);
             premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
@@ -797,15 +798,15 @@ public class LicenceViewServiceDelegator {
         if (oldAppSubmissionDto == null) {
             return;
         }
-         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         if (appGrpPremisesDtoList.size() < oldAppGrpPremisesDtoList.size()) {
             creatNewPremise(appGrpPremisesDtoList,oldAppGrpPremisesDtoList);
         }else if(oldAppGrpPremisesDtoList.size() < appGrpPremisesDtoList.size()){
             creatNewPremise(oldAppGrpPremisesDtoList,appGrpPremisesDtoList);
         }
-
-      List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
+        publicPH(appGrpPremisesDtoList,oldAppGrpPremisesDtoList);
+        List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         if (IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos) && oldAppGrpPrimaryDocDtos != null) {
             appGrpPrimaryDocDtos = new ArrayList<>(oldAppGrpPrimaryDocDtos.size());
@@ -1058,7 +1059,6 @@ public class LicenceViewServiceDelegator {
                     appSvcPersonnelDto.setDesignation("-");
                     appSvcPersonnelDto.setName("-");
                     appSvcPersonnelDto.setProfRegNo("-");
-
                     appSvcPersonnelDto.setQualification("-");
                     appSvcPersonnelDtoList.add(appSvcPersonnelDto);
                 }
@@ -1291,4 +1291,49 @@ public class LicenceViewServiceDelegator {
             }
         }
     }
+
+    private void publicPH(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){
+        if(appGrpPremisesDtoList.size()!=oldAppGrpPremisesDtoList.size()){
+            return;
+        }
+        for(int i=0;i<appGrpPremisesDtoList.size();i++){
+            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
+            List<AppPremPhOpenPeriodDto> oldAppPremPhOpenPeriodList = oldAppGrpPremisesDtoList.get(i).getAppPremPhOpenPeriodList();
+            List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos=IaisCommonUtils.genNewArrayList();
+            if(appPremPhOpenPeriodList==null&&oldAppPremPhOpenPeriodList!=null){
+                for(AppPremPhOpenPeriodDto appPremPhOpenPeriod : oldAppPremPhOpenPeriodList){
+                    AppPremPhOpenPeriodDto appPremPhOpenPeriodDto=new AppPremPhOpenPeriodDto();
+                    appPremPhOpenPeriodDto.setDayName("-");
+                    appPremPhOpenPeriodDtos.add(appPremPhOpenPeriodDto);
+                }
+                appGrpPremisesDtoList.get(i).setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
+            }else if(appPremPhOpenPeriodList!=null&&oldAppPremPhOpenPeriodList==null){
+                for(AppPremPhOpenPeriodDto appPremPhOpenPeriod : appPremPhOpenPeriodList){
+                    AppPremPhOpenPeriodDto appPremPhOpenPeriodDto=new AppPremPhOpenPeriodDto();
+                    appPremPhOpenPeriodDto.setDayName("-");
+                    appPremPhOpenPeriodDtos.add(appPremPhOpenPeriodDto);
+                }
+                oldAppGrpPremisesDtoList.get(i).setAppPremPhOpenPeriodList(appPremPhOpenPeriodDtos);
+            }else if(appPremPhOpenPeriodList!=null&&oldAppPremPhOpenPeriodList!=null){
+                if(appPremPhOpenPeriodList.size()>oldAppPremPhOpenPeriodList.size()){
+                    for(int j=0;j<appPremPhOpenPeriodList.size()-oldAppPremPhOpenPeriodList.size();j++){
+                        AppPremPhOpenPeriodDto appPremPhOpenPeriodDto=new AppPremPhOpenPeriodDto();
+                        appPremPhOpenPeriodDto.setDayName("-");
+                        appPremPhOpenPeriodDtos.add(appPremPhOpenPeriodDto);
+                    }
+                    oldAppPremPhOpenPeriodList.addAll(appPremPhOpenPeriodDtos);
+                }else if(oldAppPremPhOpenPeriodList.size()>appPremPhOpenPeriodList.size()){
+                    for(int j=0;j<oldAppPremPhOpenPeriodList.size()-appPremPhOpenPeriodList.size();j++){
+                        AppPremPhOpenPeriodDto appPremPhOpenPeriodDto=new AppPremPhOpenPeriodDto();
+                        appPremPhOpenPeriodDto.setDayName("-");
+                        appPremPhOpenPeriodDtos.add(appPremPhOpenPeriodDto);
+                    }
+                    appPremPhOpenPeriodList.addAll(appPremPhOpenPeriodDtos);
+                }
+
+            }
+
+        }
+    }
+
 }

@@ -455,7 +455,7 @@ public class InterInboxDelegator {
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
             }else {
-                bpc.request.setAttribute("draftByLicAppId","There is already an existing draft  for this licence "+stringBuilder.toString());
+                bpc.request.setAttribute("draftByLicAppId",MessageUtil.getMessageDesc("ACK030")+' '+stringBuilder.toString());
                 bpc.request.setAttribute("isAppealShow","1");
                 List<String> licIdValues = IaisCommonUtils.genNewArrayList();
                 licIdValues.add(licId);
@@ -519,7 +519,7 @@ public class InterInboxDelegator {
                         inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }else {
-                    bpc.request.setAttribute("draftByLicAppId","There is already an existing draft  for this licence "+stringBuilder.toString());
+                    bpc.request.setAttribute("draftByLicAppId",MessageUtil.getMessageDesc("ACK030")+' '+stringBuilder.toString());
                     bpc.request.setAttribute("isShow","1");
                     List<String> licIdValues = IaisCommonUtils.genNewArrayList();
                     licIdValues.add(licIdValue);
@@ -572,7 +572,7 @@ public class InterInboxDelegator {
                             inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                         }
                     }else {
-                        bpc.request.setAttribute("draftByLicAppId","There is already an existing draft  for this licence "+stringBuilder.toString());
+                        bpc.request.setAttribute("draftByLicAppId",MessageUtil.getMessageDesc("ACK030")+' '+stringBuilder.toString());
                         bpc.request.setAttribute("isRenewShow","1");
                         ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                         return;
@@ -808,7 +808,7 @@ public class InterInboxDelegator {
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
             }else {
-                bpc.request.setAttribute("draftByLicAppId","There is already an existing draft  for this application "+stringBuilder.toString());
+                bpc.request.setAttribute("draftByLicAppId",MessageUtil.getMessageDesc("ACK030")+' '+stringBuilder.toString());
                 bpc.request.setAttribute("isAppealApplicationShow","1");
                 bpc.request.setAttribute("appealApplication",appId);
                 return;

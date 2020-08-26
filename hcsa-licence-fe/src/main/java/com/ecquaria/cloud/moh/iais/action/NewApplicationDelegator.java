@@ -1654,7 +1654,6 @@ public class NewApplicationDelegator {
         appEditSelectDto.setDocEdit(true);
         appEditSelectDto.setPoEdit(true);
         appEditSelectDto.setDocEdit(false);
-        appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
         Map<String, String> map = doPreviewAndSumbit(bpc);
         if (!map.isEmpty()) {
@@ -1692,7 +1691,6 @@ public class NewApplicationDelegator {
         List<AppGrpPrimaryDocDto> dtoAppGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppGrpPrimaryDocDto> oldAppGrpPrimaryDocDtos = oldAppSubmissionDto.getAppGrpPrimaryDocDtos();
         docIsChange = eqDocChange(dtoAppGrpPrimaryDocDtos, oldAppGrpPrimaryDocDtos);
-        appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         appEditSelectDto.setDocEdit(docIsChange);
         if (appGrpPremisesDtoList != null) {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
@@ -1730,106 +1728,109 @@ public class NewApplicationDelegator {
         double amount = feeDto.getTotal();
         log.info(StringUtil.changeForLog("the amount is -->:" + amount));
         appSubmissionDto.setAmount(amount);
-        if (appGrpPremisesDtoList != null) {
-            int size = appGrpPremisesDtoList.size();
-            for (int i = 0; i < size; i++) {
-                //Get the selected license from page to save
-                List<LicenceDto> attribute = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
-                if (attribute != null) {
-                    for (LicenceDto string : attribute) {
-                        AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
-                        appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                        appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
-                        boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
-                        boolean equals = false;
-                        String address = appSubmissionDto.getAppGrpPremisesDtoList().get(i).getAddress();
-                        String premisesIndexNo = "";
-                        if (groupLic) {
-                            amendmentFeeDto.setChangeInLocation(equals);
-                            AppGrpPremisesDto appGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(i);
-                            premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
-                            boolean b = compareHciName(appGrpPremisesDto, appSubmissionDto.getAppGrpPremisesDtoList().get(i));
-                            amendmentFeeDto.setChangeInHCIName(!b);
-                            String grpAddress = appGrpPremisesDto.getAddress();
-                            equals = grpAddress.equals(address);
-                            amendmentFeeDto.setChangeInLocation(!equals);
-                            List<AppGrpPremisesDto> rfcAppGrpPremisesDtoList = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
-                            if (rfcAppGrpPremisesDtoList != null) {
-                                for (AppGrpPremisesDto appGrpPremisesDto1 : rfcAppGrpPremisesDtoList) {
-                                    appGrpPremisesDto1.setGroupLicenceFlag(string.getId());
+        if(grpPremiseIsChange){
+            if (appGrpPremisesDtoList != null) {
+                int size = appGrpPremisesDtoList.size();
+                for (int i = 0; i < size; i++) {
+                    //Get the selected license from page to save
+                    List<LicenceDto> attribute = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
+                    if (attribute != null) {
+                        for (LicenceDto string : attribute) {
+                            AppSubmissionDto appSubmissionDtoByLicenceId = requestForChangeService.getAppSubmissionDtoByLicenceId(string.getId());
+                            appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                            appSubmissionService.transform(appSubmissionDtoByLicenceId, appSubmissionDto.getLicenseeId());
+                            boolean groupLic = appSubmissionDtoByLicenceId.isGroupLic();
+                            boolean equals = false;
+                            String address = appSubmissionDto.getAppGrpPremisesDtoList().get(i).getAddress();
+                            String premisesIndexNo = "";
+                            if (groupLic) {
+                                amendmentFeeDto.setChangeInLocation(equals);
+                                AppGrpPremisesDto appGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(i);
+                                premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                                boolean b = compareHciName(appGrpPremisesDto, appSubmissionDto.getAppGrpPremisesDtoList().get(i));
+                                amendmentFeeDto.setChangeInHCIName(!b);
+                                String grpAddress = appGrpPremisesDto.getAddress();
+                                equals = grpAddress.equals(address);
+                                amendmentFeeDto.setChangeInLocation(!equals);
+                                List<AppGrpPremisesDto> rfcAppGrpPremisesDtoList = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
+                                if (rfcAppGrpPremisesDtoList != null) {
+                                    for (AppGrpPremisesDto appGrpPremisesDto1 : rfcAppGrpPremisesDtoList) {
+                                        appGrpPremisesDto1.setGroupLicenceFlag(string.getId());
+                                    }
+                                }
+
+                            } else {
+                                String oldAddress = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getAddress();
+                                equals = oldAddress.equals(address);
+                                boolean b = compareHciName(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i));
+                                amendmentFeeDto.setChangeInHCIName(!b);
+                                amendmentFeeDto.setChangeInLocation(!equals);
+                                premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
+                            }
+                            if (equals) {
+                                List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
+                                if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
+                                    for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                                        appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                                    }
                                 }
                             }
-
-                        } else {
-                            String oldAddress = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getAddress();
-                            equals = oldAddress.equals(address);
-                            boolean b = compareHciName(appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0), appSubmissionDto.getAppGrpPremisesDtoList().get(i));
-                            amendmentFeeDto.setChangeInHCIName(!b);
-                            amendmentFeeDto.setChangeInLocation(!equals);
-                            premisesIndexNo = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).getPremisesIndexNo();
-                        }
-                        if (equals) {
-                            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList();
-                            if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
-                                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                                    appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
-                                }
+                            appSubmissionDtoByLicenceId.setGroupLic(groupLic);
+                            appSubmissionDtoByLicenceId.setAmount(amount);
+                            AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(i);
+                            List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
+                            AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
+                            appGrpPremisesDtos.add(copyMutableObject);
+                            if (groupLic) {
+                                appGrpPremisesDtos.get(0).setGroupLicenceFlag(string.getId());
                             }
-                        }
-                        appSubmissionDtoByLicenceId.setGroupLic(groupLic);
-                        appSubmissionDtoByLicenceId.setAmount(amount);
-                        AppGrpPremisesDto appGrpPremisesDto = appSubmissionDto.getAppGrpPremisesDtoList().get(i);
-                        List<AppGrpPremisesDto> appGrpPremisesDtos = new ArrayList<>(1);
-                        AppGrpPremisesDto copyMutableObject = (AppGrpPremisesDto) CopyUtil.copyMutableObject(appGrpPremisesDto);
-                        appGrpPremisesDtos.add(copyMutableObject);
-                        if (groupLic) {
-                            appGrpPremisesDtos.get(0).setGroupLicenceFlag(string.getId());
-                        }
-                        appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
-                        appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
-                        appSubmissionDtoByLicenceId.setAppGrpNo(appGroupNo);
-                        PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
-                        if (preOrPostInspectionResultDto == null) {
-                            appSubmissionDtoByLicenceId.setPreInspection(true);
-                            appSubmissionDtoByLicenceId.setRequirement(true);
-                        } else {
-                            appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
-                            appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
-                        }
-                        if (isAutoRfc) {
-                            appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
-                        } else {
-                            appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
-                        }
-                        appSubmissionDtoByLicenceId.setAutoRfc(isAutoRfc);
+                            appSubmissionDtoByLicenceId.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+                            appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList().get(0).setPremisesIndexNo(premisesIndexNo);
+                            appSubmissionDtoByLicenceId.setAppGrpNo(appGroupNo);
+                            PreOrPostInspectionResultDto preOrPostInspectionResultDto = appSubmissionService.judgeIsPreInspection(appSubmissionDtoByLicenceId);
+                            if (preOrPostInspectionResultDto == null) {
+                                appSubmissionDtoByLicenceId.setPreInspection(true);
+                                appSubmissionDtoByLicenceId.setRequirement(true);
+                            } else {
+                                appSubmissionDtoByLicenceId.setPreInspection(preOrPostInspectionResultDto.isPreInspection());
+                                appSubmissionDtoByLicenceId.setRequirement(preOrPostInspectionResultDto.isRequirement());
+                            }
+                            if (isAutoRfc) {
+                                appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
+                            } else {
+                                appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
+                            }
+                            appSubmissionDtoByLicenceId.setAutoRfc(isAutoRfc);
 
-                        appEditSelectDto.setPremisesEdit(true);
-                        appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
-                        appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
-                        appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
-                        appSubmissionDtoByLicenceId.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
-                        String draftNo = appSubmissionDtoByLicenceId.getDraftNo();
-                        if (StringUtil.isEmpty(draftNo)) {
-                            appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
+                            appEditSelectDto.setPremisesEdit(true);
+                            appSubmissionDtoByLicenceId.setAppEditSelectDto(appEditSelectDto);
+                            appSubmissionDtoByLicenceId.setChangeSelectDto(appEditSelectDto);
+                            appSubmissionDtoByLicenceId.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
+                            appSubmissionDtoByLicenceId.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
+                            String draftNo = appSubmissionDtoByLicenceId.getDraftNo();
+                            if (StringUtil.isEmpty(draftNo)) {
+                                appSubmissionService.setDraftNo(appSubmissionDtoByLicenceId);
+                            }
+                            if (0.0 == amount) {
+                                appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                                appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                            } else {
+                                appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
+                            }
+                            appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
+                            RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
+                            requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
+                            appSubmissionDtoByLicenceId.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+                            appSubmissionDtoByLicenceId.setEffectiveDate(effectiveDate);
+                            appSubmissionDtoByLicenceId.setEffectiveDateStr(effectiveDateStr);
+                            NewApplicationHelper.syncPsnData(appSubmissionDtoByLicenceId, personMap);
+                            appSubmissionDtos.add(appSubmissionDtoByLicenceId);
                         }
-                        if (0.0 == amount) {
-                            appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
-                            appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
-                        } else {
-                            appSubmissionDtoByLicenceId.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
-                        }
-                        appSubmissionDtoByLicenceId.setGetAppInfoFromDto(true);
-                        RequestForChangeMenuDelegator.oldPremiseToNewPremise(appSubmissionDtoByLicenceId);
-                        requestForChangeService.premisesDocToSvcDoc(appSubmissionDtoByLicenceId);
-                        appSubmissionDtoByLicenceId.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                        appSubmissionDtoByLicenceId.setEffectiveDate(effectiveDate);
-                        appSubmissionDtoByLicenceId.setEffectiveDateStr(effectiveDateStr);
-                        NewApplicationHelper.syncPsnData(appSubmissionDtoByLicenceId, personMap);
-                        appSubmissionDtos.add(appSubmissionDtoByLicenceId);
                     }
                 }
             }
         }
+
 
         appSubmissionDto.setAutoRfc(isAutoRfc);
         String draftNo = appSubmissionDto.getDraftNo();
@@ -1871,7 +1872,6 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         if (grpPremiseIsChange || docIsChange) {
             appSubmissionDtos.add(appSubmissionDto);
-
             if (isAutoRfc) {
                 appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
                 autoSaveAppsubmission.addAll(appSubmissionDtos);
@@ -1906,15 +1906,39 @@ public class NewApplicationDelegator {
             if (!autoRfc) {
                 if (!notAutoSaveAppsubmission.isEmpty()) {
                     AppSubmissionDto appSubmissionDto1 = notAutoSaveAppsubmission.get(notAutoSaveAppsubmission.size() - 1);
+                    AppEditSelectDto appEditSelectDto1 = appSubmissionDto1.getAppEditSelectDto();
+                    appEditSelectDto1.setPremisesListEdit(grpPremiseIsChange);
+                    appEditSelectDto1.setDocEdit(docIsChange);
+                    appSubmissionDto1.setAppEditSelectDto(appEditSelectDto1);
                     appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
-                } else {
+                } else if(!autoSaveAppsubmission.isEmpty()){
+                    AppSubmissionDto appSubmissionDto1 =autoSaveAppsubmission.get(autoSaveAppsubmission.size() - 1);
+                    appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
+                    appSubmissionDto1.setAutoRfc(Boolean.FALSE);
+                    AppEditSelectDto appEditSelectDto1 = appSubmissionDto1.getAppEditSelectDto();
+                    appEditSelectDto1.setPremisesListEdit(grpPremiseIsChange);
+                    appEditSelectDto1.setDocEdit(docIsChange);
+                    appSubmissionDto1.setAppEditSelectDto(appEditSelectDto1);
+                    notAutoSaveAppsubmission.add(appSubmissionDto1);
+                    autoSaveAppsubmission.clear();
+                }else {
                     notAutoSaveAppsubmission.add(personAppsubmit);
                 }
             } else {
                 if (!autoSaveAppsubmission.isEmpty()) {
                     AppSubmissionDto appSubmissionDto1 = autoSaveAppsubmission.get(autoSaveAppsubmission.size() - 1);
                     appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
-                } else {
+                } else if(!notAutoSaveAppsubmission.isEmpty()){
+                    AppSubmissionDto appSubmissionDto1 = notAutoSaveAppsubmission.get(notAutoSaveAppsubmission.size() - 1);
+                    AppEditSelectDto appEditSelectDto1 = appSubmissionDto1.getAppEditSelectDto();
+                    appEditSelectDto1.setDocEdit(docIsChange);
+                    appEditSelectDto1.setServiceEdit(serviceIsChange);
+                    appSubmissionDto1.setAppEditSelectDto(appEditSelectDto1);
+                    appSubmissionDto1.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                    appSubmissionDto1.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+                    appSubmissionDto1.setIsNeedNewLicNo(AppConsts.YES);
+                    appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
+                }else {
                     autoSaveAppsubmission.add(personAppsubmit);
                 }
                 if (!notAutoSaveAppsubmission.isEmpty()) {
@@ -2421,6 +2445,27 @@ public class NewApplicationDelegator {
     private boolean changePersonAuto(AppSubmissionDto oldAppSubmissionDto, AppSubmissionDto appSubmissionDto) {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+        List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList = oldAppSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
+        if(appSvcLaboratoryDisciplinesDtoList!=null&&oldAppSvcLaboratoryDisciplinesDtoList!=null){
+            if(appSvcLaboratoryDisciplinesDtoList.size() > oldAppSvcLaboratoryDisciplinesDtoList.size()){
+                return true;
+            }else {
+                List<AppSvcChckListDto> newAppSvcChckListDto=IaisCommonUtils.genNewArrayList();
+                List<AppSvcChckListDto> oldAppSvcChckListDto=IaisCommonUtils.genNewArrayList();
+                for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
+                    List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                    newAppSvcChckListDto.addAll(appSvcChckListDtoList);
+                }
+                for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : oldAppSvcLaboratoryDisciplinesDtoList){
+                    List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                    oldAppSvcChckListDto.addAll(appSvcChckListDtoList);
+                }
+                if(newAppSvcChckListDto.size() > oldAppSvcChckListDto.size()){
+                    return true;
+                }
+            }
+        }
         List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
         List<AppSvcCgoDto> oldAppSvcCgoDtoList = oldAppSvcRelatedInfoDto.getAppSvcCgoDtoList();
         if (oldAppSvcCgoDtoList != null) {
