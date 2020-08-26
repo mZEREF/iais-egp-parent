@@ -1180,7 +1180,7 @@ public class HalpAssessmentGuideDelegator {
     public void doRenewStep(BaseProcessClass bpc) throws IOException {
         String [] licIds = ParamUtil.getStrings(bpc.request, "renewLicenId");
         Map<String, String> renewErrorMap = IaisCommonUtils.genNewHashMap();
-        String tmp = MessageUtil.getMessageDesc("INBOX_ACK013");
+        String tmp = MessageUtil.getMessageDesc("INBOX_ACK015");
         StringBuilder renewErrorMessage = new StringBuilder();
         boolean result = true;
         if(licIds != null){
