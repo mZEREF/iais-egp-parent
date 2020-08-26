@@ -320,7 +320,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             String applicantName = licenseeDto.getName();
             templateContent.put("ApplicantName", StringUtil.viewHtml(applicantName));
             templateContent.put("MOH_AGENCY_NAME", "-");
-            templateContent.put("emailAddress", "-");
+            templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
             templateContent.put("tatTime", Formatter.formatDate(new Date()));
             templateContent.put("systemLink", loginUrl);
             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
