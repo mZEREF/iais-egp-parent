@@ -158,8 +158,8 @@ public class CessationApplicationFeDelegator {
     public void saveData(BaseProcessClass bpc) throws Exception {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         List<AppCessationDto> appCessationDtos = (List<AppCessationDto>) ParamUtil.getSessionAttr(bpc.request, "appCessationDtosSave");
-        List<String> appIds = cessationFeService.saveCessations(appCessationDtos, loginContext);
-        List<AppCessatonConfirmDto> confirmDto = cessationFeService.getConfirmDto(appCessationDtos, appIds, loginContext);
+        Map<String, String> appIdPremisesMap = cessationFeService.saveCessations(appCessationDtos, loginContext);
+        List<AppCessatonConfirmDto> confirmDto = cessationFeService.getConfirmDto(appCessationDtos, appIdPremisesMap, loginContext);
         ParamUtil.setSessionAttr(bpc.request, "appCessConDtos", (Serializable) confirmDto);
     }
 

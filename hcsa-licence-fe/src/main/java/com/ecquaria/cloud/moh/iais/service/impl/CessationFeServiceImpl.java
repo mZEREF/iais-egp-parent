@@ -166,7 +166,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     }
 
     @Override
-    public List<String> saveCessations(List<AppCessationDto> appCessationDtos, LoginContext loginContext) {
+    public Map<String, String>  saveCessations(List<AppCessationDto> appCessationDtos, LoginContext loginContext) {
         String licenseeId = loginContext.getLicenseeId();
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
@@ -203,7 +203,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
         });
         cessationClient.saveCessation(appCessMiscDtos).getEntity();
-        return appIds;
+        return appIdPremisesMap;
     }
 
 
@@ -267,18 +267,19 @@ public class CessationFeServiceImpl implements CessationFeService {
     }
 
     @Override
-    public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, List<String> appIds, LoginContext loginContext) throws ParseException {
+    public List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, String> appIdPremisesMap, LoginContext loginContext) throws ParseException {
         List<AppCessatonConfirmDto> appCessationDtosConfirms = IaisCommonUtils.genNewArrayList();
         List<String> licIds = IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         for (int i = 0; i < appCessationDtos.size(); i++) {
             AppCessationDto appCessationDto = appCessationDtos.get(i);
+            String premiseId = appCessationDto.getPremiseId();
             String licId = appCessationDto.getLicId();
             LicenceDto licenceDto = licenceClient.getLicBylicId(licId).getEntity();
             String licenseeId = licenceDto.getLicenseeId();
             licIds.clear();
             licIds.add(licId);
-            String appId = appIds.get(i);
+            String appId = appIdPremisesMap.get(premiseId);
             ApplicationDto applicationDto = applicationClient.getApplicationById(appId).getEntity();
             applicationDtos.add(applicationDto);
             String applicationNo = applicationDto.getApplicationNo();

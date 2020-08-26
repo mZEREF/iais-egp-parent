@@ -590,7 +590,7 @@
             $("#selfPeriod").hide();
             const value = $("#periods").find("option:selected").text();
             $("#periodValue").html(value);
-        } else if(val != "Others" && recommation == 'IRE003' ) {
+        } else if(recommation == 'IRE003' ) {
             $("#periodValue").html('Reject');
         } else if (recommendationRfc == 'IRE007') {
             $("#periodValue").html('Approve');

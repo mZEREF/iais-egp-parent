@@ -27,7 +27,7 @@ public interface CessationFeService {
 
     void updateLicenceFe(List<String> licNos);
 
-    List<String> saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext);
+    Map<String, String>  saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext);
 
     List<String> listHciName();
 
@@ -35,7 +35,7 @@ public interface CessationFeService {
 
     void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId,String licNo) throws IOException, TemplateException;
 
-    List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, List<String> appIds, LoginContext loginContext) throws ParseException;
+    List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, String> appIdPremisesMap, LoginContext loginContext) throws ParseException;
 
     boolean isGrpLicence(List<String> licIds);
 }
