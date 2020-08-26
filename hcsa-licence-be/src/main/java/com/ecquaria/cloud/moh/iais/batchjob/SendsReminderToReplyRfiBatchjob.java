@@ -153,7 +153,7 @@ public class SendsReminderToReplyRfiBatchjob {
             emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
             emailMap.put("ApplicationNumber", licPremisesReqForInfoDto.getLicenceNo());
             emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
-            emailMap.put("email", "");
+            emailMap.put("email", systemParamConfig.getSystemAddressOne());
             emailMap.put("TATtime", Formatter.formatDate(cal.getTime()));
             emailMap.put("systemLink", loginUrl);
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);

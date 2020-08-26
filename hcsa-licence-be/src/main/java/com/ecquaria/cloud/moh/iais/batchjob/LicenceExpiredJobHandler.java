@@ -4,6 +4,7 @@ import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -46,6 +47,8 @@ public class LicenceExpiredJobHandler extends IJobHandler {
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private CessationBeService cessationBeService;
+    @Autowired
+    SystemParamConfig systemParamConfig;
     @Autowired
     private BeEicGatewayClient gatewayClient;
     @Value("${iais.hmac.keyId}")
@@ -101,7 +104,7 @@ public class LicenceExpiredJobHandler extends IJobHandler {
                         emailMap.put("ServiceLicenceName", svcName);
                         emailMap.put("LicenceNumber", licenceNo);
                         emailMap.put("CessationDate", Formatter.formatDateTime(date));
-                        emailMap.put("email", "");
+                        emailMap.put("email", systemParamConfig.getSystemAddressOne());
                         emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                         EmailParam emailParam = new EmailParam();
                         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);

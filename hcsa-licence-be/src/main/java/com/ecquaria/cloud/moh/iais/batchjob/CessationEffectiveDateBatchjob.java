@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -54,6 +55,8 @@ public class CessationEffectiveDateBatchjob {
     private HcsaLicenceClient hcsaLicenceClient;
     @Autowired
     private CessationBeService cessationBeService;
+    @Autowired
+    SystemParamConfig systemParamConfig;
     @Autowired
     private CessationClient cessationClient;
     @Autowired
@@ -240,7 +243,7 @@ public class CessationEffectiveDateBatchjob {
                 emailMap.put("ServiceLicenceName", svcName);
                 emailMap.put("ApplicationNumber", licenceNo);
                 emailMap.put("ApplicationDate", Formatter.formatDateTime(date));
-                emailMap.put("email", "");
+                emailMap.put("email", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);
@@ -308,7 +311,7 @@ public class CessationEffectiveDateBatchjob {
             emailMap.put("ServiceLicenceName", svcName);
             emailMap.put("ApplicationNumber", licenceNo);
             emailMap.put("ApplicationDate", Formatter.formatDateTime(date));
-            emailMap.put("email", "");
+            emailMap.put("email", systemParamConfig.getSystemAddressOne());
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE);

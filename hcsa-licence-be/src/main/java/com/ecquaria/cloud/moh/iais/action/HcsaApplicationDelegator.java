@@ -1082,8 +1082,8 @@ public class HcsaApplicationDelegator {
                 emailMap.put("ApplicantName", applicationName);
                 emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
                 emailMap.put("ApplicationNumber", applicationNo);
-                emailMap.put("ApplicationDate", new Date());
-                emailMap.put("email_address", "");
+                emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
+                emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED);

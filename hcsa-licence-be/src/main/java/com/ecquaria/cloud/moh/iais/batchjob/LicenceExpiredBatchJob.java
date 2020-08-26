@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -54,7 +55,8 @@ public class LicenceExpiredBatchJob {
 
     @Value("${iais.hmac.secretKey}")
     private String secretKey;
-
+    @Autowired
+    SystemParamConfig systemParamConfig;
     @Value("${iais.hmac.second.secretKey}")
     private String secSecretKey;
     @Autowired
@@ -129,7 +131,7 @@ public class LicenceExpiredBatchJob {
                 emailMap.put("ServiceLicenceName", svcName);
                 emailMap.put("LicenceNumber", licenceNo);
                 emailMap.put("CessationDate", Formatter.formatDateTime(date));
-                emailMap.put("email", "");
+                emailMap.put("email", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);
@@ -198,7 +200,7 @@ public class LicenceExpiredBatchJob {
                 emailMap.put("ServiceLicenceName", svcName);
                 emailMap.put("LicenceNumber", licenceNo);
                 emailMap.put("CessationDate", Formatter.formatDateTime(date));
-                emailMap.put("email", "");
+                emailMap.put("email", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                 EmailParam emailParam = new EmailParam();
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE);

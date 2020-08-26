@@ -314,7 +314,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("ServiceLicenceName", svcName);
                     emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
                     emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
-                    emailMap.put("email", "");
+                    emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("systemLink", loginUrl);
                     emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                     MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE).getEntity();
@@ -350,7 +350,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("ServiceLicenceName", svcName);
                     emailMap.put("ApplicationNumber", applicationNo);
                     emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
-                    emailMap.put("email", "");
+                    emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                     MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
                     Map<String,Object> map=IaisCommonUtils.genNewHashMap();

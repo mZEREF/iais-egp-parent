@@ -396,7 +396,7 @@ public class RequestForInformationDelegator {
             emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
             emailMap.put("ApplicationNumber", licenceNo);
             emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
-            emailMap.put("email", "");
+            emailMap.put("email", systemParamConfig.getSystemAddressOne());
             emailMap.put("TATtime", Formatter.formatDate(dueDate));
             emailMap.put("Remarks", stringBuilder.toString());
             emailMap.put("systemLink", loginUrl);
@@ -577,7 +577,7 @@ public class RequestForInformationDelegator {
                 emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{RequestForInformationConstants.AD_HOC}).get(0).getText());
                 emailMap.put("ApplicationNumber", licPremisesReqForInfoDto.getLicenceNo());
                 emailMap.put("ApplicationDate", Formatter.formatDate(new Date()));
-                emailMap.put("email", "");
+                emailMap.put("email", systemParamConfig.getSystemAddressOne());
                 emailMap.put("TATtime", Formatter.formatDate(dueDate));
                 emailMap.put("Remarks", stringBuilder.toString());
                 emailMap.put("systemLink", loginUrl);

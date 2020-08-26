@@ -1470,7 +1470,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         emailMap.put("ApplicationNumber", appSubmissionDto.getAppGrpNo());
         emailMap.put("ApplicationDate", Formatter.formatDateTime(new Date()));
         emailMap.put("systemLink", loginUrl);
-        emailMap.put("email_address", "");
+        emailMap.put("email_address", systemParamConfig.getSystemAddressOne());
         emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT);
@@ -1515,7 +1515,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //emailMap.put("Hypelink", loginUrl);
         emailMap.put("HCSA_Regulations", "");
         emailMap.put("systemLink", loginUrl);
-        emailMap.put("email", "");
+        emailMap.put("email", systemParamConfig.getSystemAddressOne());
         emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED);
