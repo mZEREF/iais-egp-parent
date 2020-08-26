@@ -20,17 +20,18 @@ import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * BackendLoginDelegator
@@ -101,6 +102,7 @@ public class BackendLoginDelegator {
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, "Y");
 
         User user = new User();
+        assert orgUserDto != null;
         user.setDisplayName(orgUserDto.getDisplayName());
         user.setMobileNo(orgUserDto.getMobileNo());
         user.setEmail(orgUserDto.getEmail());
