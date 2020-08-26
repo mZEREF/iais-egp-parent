@@ -87,28 +87,30 @@ public class SendsReminderToReplyRfiBatchjob {
     public void sendMsg(BaseProcessClass bpc)  {
         logAbout("sendMsg");
         List<LicPremisesReqForInfoDto> licPremisesReqForInfoDtos= requestForInformationService.getAllReqForInfo();
-        try{
-            for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
-            ) {
-                if(rfi.getReminder()<3){
-                    Calendar cal1 = Calendar.getInstance();
-                    cal1.setTime(rfi.getDueDateSubmission());
-                    String reminderMaxDay;
-                    switch (rfi.getReminder()){
-                        case 0:reminderMaxDay=reminderMax1Day;break;
-                        case 1:reminderMaxDay=reminderMax2Day;break;
-                        case 2:reminderMaxDay=reminderMax3Day;break;
-                        default:reminderMaxDay="0";
-                    }
-                    cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay)-1);
-                    if(cal1.getTime().compareTo(new Date())<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
+
+        for (LicPremisesReqForInfoDto rfi:licPremisesReqForInfoDtos
+        ) {
+            if(rfi.getReminder()<3){
+                Calendar cal1 = Calendar.getInstance();
+                cal1.setTime(rfi.getDueDateSubmission());
+                String reminderMaxDay;
+                switch (rfi.getReminder()){
+                    case 0:reminderMaxDay=reminderMax1Day;break;
+                    case 1:reminderMaxDay=reminderMax2Day;break;
+                    case 2:reminderMaxDay=reminderMax3Day;break;
+                    default:reminderMaxDay="0";
+                }
+                cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay)-1);
+                if(cal1.getTime().compareTo(new Date())<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
+                    try {
                         reminder(rfi);
+                    }catch (Exception e){
+                        log.info(e.getMessage(),e);
                     }
                 }
             }
-        }catch (Exception e){
-            log.info(e.getMessage(),e);
         }
+
     }
 
     private void reminder(LicPremisesReqForInfoDto licPremisesReqForInfoDto) throws IOException, TemplateException {

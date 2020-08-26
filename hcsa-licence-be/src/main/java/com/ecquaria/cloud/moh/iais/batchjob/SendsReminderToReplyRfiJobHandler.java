@@ -100,7 +100,11 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
                     }
                     cal1.add(Calendar.DAY_OF_MONTH, Integer.parseInt(reminderMaxDay)-1);
                     if(cal1.getTime().compareTo(new Date())<0&&(rfi.getStatus().equals(RequestForInformationConstants.RFI_NEW)||rfi.getStatus().equals(RequestForInformationConstants.RFI_RETRIGGER))){
-                        reminder(rfi);
+                        try {
+                            reminder(rfi);
+                        }catch (Exception e){
+                            log.info(e.getMessage(),e);
+                        }
                     }
                 }
             }
