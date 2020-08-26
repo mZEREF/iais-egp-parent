@@ -91,19 +91,11 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		try {
 			RequestOptions requestOptions=PaymentBaiduriProxyUtil.getStripeService().authentication();
 			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
-//			Map<String, Object> params = new HashMap<>();
-//			params.put("amount", Double.parseDouble(amo)/100);
-//			params.put("currency", "eur");
-//			params.put("source",fields.get("tok_amex"));
-//			params.put(
-//					"description",
-//					"My First Test Charge (created for API docs)"
-//			);
-//			Charge charge= PaymentBaiduriProxyUtil.getStripeService().createCharge(params);
+
 			SessionCreateParams createParams =
 					SessionCreateParams.builder()
 							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.IDEAL)
+//							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.IDEAL)
 							.setMode(SessionCreateParams.Mode.PAYMENT)
 							.setSuccessUrl(AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"./return.jsp")
 							.setCancelUrl(AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+"./return.jsp")
@@ -112,11 +104,11 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 											.setQuantity(1L)
 											.setPriceData(
 													SessionCreateParams.LineItem.PriceData.builder()
-															.setCurrency("eur")
+															.setCurrency("sgd")
 															.setUnitAmount(Long.valueOf(amo))
 															.setProductData(
 																	SessionCreateParams.LineItem.PriceData.ProductData.builder()
-																			.setName("T-shirt")
+																			.setName(AppConsts.MOH_SYSTEM_NAME)
 																			.build())
 															.build())
 											.build())
@@ -124,8 +116,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			Session session= PaymentBaiduriProxyUtil.getStripeService().createSession(createParams);
 			srcSystemConfDto.setClientKey(session.getId());
 			ParamUtil.setSessionAttr(bpc.request,"CHECKOUT_SESSION_ID",session.getId());
-//			PaymentIntent paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(session.getPaymentIntent());
-//			System.out.println(paymentIntent.getCharges());
+
 		} catch (StripeException e) {
 			log.info(e.getMessage(),e);
 			srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
