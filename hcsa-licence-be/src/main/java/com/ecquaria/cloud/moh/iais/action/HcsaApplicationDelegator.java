@@ -2834,7 +2834,8 @@ public class HcsaApplicationDelegator {
         log.info(StringUtil.changeForLog("The rfiCount is -->:"+rfiCount));
         if(!(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()))){
             if(rfiCount==0){
-                if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
+                if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType()) &&
+                        !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationViewDto.getApplicationDto().getApplicationType())){
                     nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
                 }
             }
