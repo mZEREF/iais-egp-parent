@@ -201,7 +201,16 @@
                   <td>
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                     <div class="col-xs-6">
-                      <span class="newVal " attr="${cgo.speciality}" ><c:out value="${cgo.speciality}"/></span>
+                      <span class="newVal " attr="${cgo.speciality}" >
+                        <c:choose>
+                          <c:when test="${'other' == cgo.speciality}">
+                            <c:out value="Others"/>
+                          </c:when>
+                          <c:otherwise>
+                            <c:out value="${cgo.speciality}"/>
+                          </c:otherwise>
+                        </c:choose>
+                        </span>
                     </div>
                     <div class="col-xs-6">
                       <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}</span>
@@ -216,7 +225,9 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
                     </td>
                     <td>
-                      <p><c:out value="${cgo.subSpeciality}"/></p>
+                      <div class="col-xs-6">
+                      <span class="newVal " attr="other"><c:out value="${cgo.specialityOther}"/></span>
+                      </div>
                     </td>
                   </tr>
                 </c:if>
