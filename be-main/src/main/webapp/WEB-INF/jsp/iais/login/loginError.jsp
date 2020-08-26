@@ -14,7 +14,7 @@
                 <div class="intranet-content">
                     <div class="bg-title">
                         <h2>
-                            <iais:message key="LOGIN_ERR002" escape="true"></iais:message>
+                            <iais:message key="LOGIN_ERR001" escape="true"></iais:message>
                         </h2>
                     </div>
                 </div>
