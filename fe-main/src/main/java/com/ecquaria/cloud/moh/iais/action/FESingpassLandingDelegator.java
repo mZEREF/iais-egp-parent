@@ -4,9 +4,9 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -28,7 +28,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Map;
 
 @Delegator(value = "singpassLandingDelegator")
@@ -102,8 +101,8 @@ public class FESingpassLandingDelegator {
 
         log.info(StringUtil.changeForLog("singpassCallBack nric " + identityNo));
 
-        List<String> mohIssueUenList = orgUserManageService.getUenListByIdAndType(identityNo, idType);
-        if (!IaisCommonUtils.isEmpty(mohIssueUenList)){
+        IaisApiResult iaisApiResult = orgUserManageService.checkIssueUen(identityNo, idType);
+        if (iaisApiResult.isHasError()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0013"));
             ParamUtil.setRequestAttr(request, "hasMohIssueUen", "Y");
         }else {

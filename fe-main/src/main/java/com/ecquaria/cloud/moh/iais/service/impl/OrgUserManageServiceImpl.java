@@ -5,6 +5,7 @@ import com.ecquaria.cloud.client.rbac.UserClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -357,5 +358,10 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public List<LicenseeKeyApptPersonDto> getPersonById(String id){
         return feAdminClient.getPersonByid(id).getEntity();
+    }
+
+    @Override
+    public IaisApiResult<Void> checkIssueUen(String idNo, String idType) {
+        return feUserClient.checkIssueUen(idNo, idType).getEntity();
     }
 }

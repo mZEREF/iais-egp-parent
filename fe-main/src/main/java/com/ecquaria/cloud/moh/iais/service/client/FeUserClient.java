@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.client;
 
 
+import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -62,4 +63,6 @@ public interface FeUserClient {
     @GetMapping(path = "/iais-licensee/licensee-by-id/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeDto> getLicenseeById(@PathVariable(name = "id") String id);
 
+    @GetMapping(path = "/iais-internet-user/check-uen-issue-date/")
+    FeignResponseEntity<IaisApiResult<Void>> checkIssueUen(@RequestParam(value = "idNo")String idNo, @RequestParam(value = "idType") String idType);
 }
