@@ -169,17 +169,6 @@ public final class ExcelReader {
     @SuppressWarnings("deprecation")
     private static String getCellValue(final Cell cell) {
         String cellValue = "";
-        if(cell == null){
-            log.info(StringUtil.changeForLog("cell is null"));
-        }else{
-            log.info(StringUtil.changeForLog("cell is not null"));
-        }
-        if(cell.getCellType() == CellType.BLANK){
-            log.info(StringUtil.changeForLog("cell is blank"));
-        }else{
-            log.info(StringUtil.changeForLog("cell is not blank"));
-        }
-
         if (cell != null && cell.getCellType() != CellType.BLANK) {
             switch (cell.getCellType()) {
                 case NUMERIC:
