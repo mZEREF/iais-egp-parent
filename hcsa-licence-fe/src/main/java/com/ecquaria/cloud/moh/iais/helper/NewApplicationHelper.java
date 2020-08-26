@@ -139,10 +139,10 @@ public class NewApplicationHelper {
                 boolean licPerson = appSvcCgoList.get(i).isLicPerson();
                 String idTypeNoKey = "idTypeNo"+i;
                 errMap = doPsnCommValidate(errMap,idTyp,idNo,licPerson,licPersonMap,idTypeNoKey,svcCode);
-                String idTypeNoErr = errMap.get(idTypeNoKey);
-                if(!StringUtil.isEmpty(idTypeNoErr)){
-                    continue;
-                }
+//                String idTypeNoErr = errMap.get(idTypeNoKey);
+//                if(!StringUtil.isEmpty(idTypeNoErr)){
+//                    continue;
+//                }
 
                 if("-1".equals(idTyp)||StringUtil.isEmpty(idTyp)){
                     errMap.put("idTyp"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
@@ -364,10 +364,10 @@ public class NewApplicationHelper {
                     boolean licPerson = poDto.get(i).isLicPerson();
                     String poIdTypeNoKey = "poIdTypeNo" + i;
                     oneErrorMap = doPsnCommValidate(oneErrorMap,idType,idNo,licPerson,licPersonMap,poIdTypeNoKey,svcCode);
-                    String idTypeNoErr = oneErrorMap.get(poIdTypeNoKey);
-                    if(!StringUtil.isEmpty(idTypeNoErr)){
-                        continue;
-                    }
+//                    String idTypeNoErr = oneErrorMap.get(poIdTypeNoKey);
+//                    if(!StringUtil.isEmpty(idTypeNoErr)){
+//                        continue;
+//                    }
                     if("-1".equals(idType)||StringUtil.isEmpty(idType)){
                         oneErrorMap.put("idType"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","ID No. Type","field"));
                     }
@@ -975,10 +975,10 @@ public class NewApplicationHelper {
                 boolean licPerson = medAlertPsnDtos.get(i).isLicPerson();
                 String idTypeNoKey = "idTypeNo"+i;
                 errMap = doPsnCommValidate(errMap,idTyp,idNo,licPerson,licPersonMap,idTypeNoKey,svcCode);
-                String idTypeNoErr = errMap.get(idTypeNoKey);
-                if(!StringUtil.isEmpty(idTypeNoErr)){
-                    continue;
-                }
+//                String idTypeNoErr = errMap.get(idTypeNoKey);
+//                if(!StringUtil.isEmpty(idTypeNoErr)){
+//                    continue;
+//                }
                 StringBuilder stringBuilder1=new StringBuilder();
                 if("-1".equals(idTyp)||StringUtil.isEmpty(idTyp)){
                     errMap.put("idTyp"+i, MessageUtil.replaceMessage("GENERAL_ERR0006","ID Type","field"));
