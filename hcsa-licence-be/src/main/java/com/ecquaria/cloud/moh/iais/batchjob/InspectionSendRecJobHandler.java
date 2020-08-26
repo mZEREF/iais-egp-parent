@@ -299,6 +299,10 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                 }
                 if(inspEmailFieldDto == null){
                     inspEmailFieldDto = new InspEmailFieldDto();
+                } else {
+                    clItemDto = new ChecklistItemDto();
+                    clItemDto.setRegulationClause("-");
+                    clItemDto.setChecklistItem("-");
                 }
                 inspEmailFieldDto.setRegulation(clItemDto.getRegulationClause());
                 inspEmailFieldDto.setQuestion(clItemDto.getChecklistItem());
