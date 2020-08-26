@@ -28,7 +28,7 @@
                             <td>
                                 <div class="form-check">
                                     <input class="form-check-input licenceCheck" id="licenceNo" type="checkbox"
-                                           name="renewLicenId" value="renew2LicenId${status.index}" aria-invalid="false" onclick="renewChk()"/>
+                                           name="renewLicenId" value="renew2LicenId${status.index}" aria-invalid="false" <c:if test="${fn:contains(licence_err_list, pool.licenceId)}">checked</c:if> onclick="renewChk()"/>
                                     <label class="form-check-label" for="licenceNo"><span
                                             class="check-square"></span>
                                     </label>

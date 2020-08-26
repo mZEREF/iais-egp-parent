@@ -57,6 +57,11 @@
         $("#ceaseLicence").click(function(){
             guideSubmit("cease","main");
         });
+
+        if ('${!empty licence_err_list}') {
+            renewChk();
+        }
+
         renewChk();
     });
 

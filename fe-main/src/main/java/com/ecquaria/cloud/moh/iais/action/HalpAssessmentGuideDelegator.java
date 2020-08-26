@@ -1406,6 +1406,7 @@ public class HalpAssessmentGuideDelegator {
 
     public void prepareSwitch(BaseProcessClass bpc) throws IOException {
         log.info("****start ******");
+        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",null);
     }
 
     public void ceaseLic(BaseProcessClass bpc) {
