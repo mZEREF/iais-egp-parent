@@ -392,6 +392,7 @@
 
 
     $(document).on("click",".applicationNoAHref",function(){
+        showWaiting();
         var href = this.getAttribute("data-href");
         var task = this.getAttribute("data-task");
         $.ajax({
