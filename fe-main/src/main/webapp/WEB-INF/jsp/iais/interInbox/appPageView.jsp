@@ -133,7 +133,6 @@
         }
 
         if ("Delete" == action) {
-            showWaiting();
             $("[name='action_no_value']").val($(this).closest("tr").find(".appdraftNo").html());
             $('#deleteDraftModal').modal('show');
         }
