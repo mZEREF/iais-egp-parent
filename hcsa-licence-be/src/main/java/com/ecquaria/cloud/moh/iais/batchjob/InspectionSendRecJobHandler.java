@@ -296,13 +296,13 @@ public class InspectionSendRecJobHandler extends IJobHandler {
                 if(clItemDto == null){
                     log.info(StringUtil.changeForLog("clItemDto == null"));
                     JobLogger.log(StringUtil.changeForLog("clItemDto == null"));
-                }
-                if(inspEmailFieldDto == null){
-                    inspEmailFieldDto = new InspEmailFieldDto();
-                } else {
                     clItemDto = new ChecklistItemDto();
                     clItemDto.setRegulationClause("-");
                     clItemDto.setChecklistItem("-");
+                }
+                if(inspEmailFieldDto == null){
+                    inspEmailFieldDto = new InspEmailFieldDto();
+
                 }
                 inspEmailFieldDto.setRegulation(clItemDto.getRegulationClause());
                 inspEmailFieldDto.setQuestion(clItemDto.getChecklistItem());
