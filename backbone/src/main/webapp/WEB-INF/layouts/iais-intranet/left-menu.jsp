@@ -15,8 +15,8 @@
 	<menu:exclude name="TOP_MENU" />
 	<menu:exclude name="EGOV_CORE_TOP" />
 	<menu:exclude name="EGOV_CLOUD_TOP" />
-<%--	<menu:exclude name="CLOUD_CC" />
-	<menu:exclude name="CLOUD_PAYMENT" />--%>
+  <menu:exclude name="CLOUD_CC" />
+	<menu:exclude name="CLOUD_PAYMENT" />
 </menu:load>
 
 <ul class="list-unstyled components" id="main-menu">
