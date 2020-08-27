@@ -1462,11 +1462,8 @@ public class HalpAssessmentGuideDelegator {
         SearchParam withdrawAppParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.WITHDRAW_APPLICATION_SEARCH_PARAM,InboxAppQueryDto.class.getName(),"CREATED_DT",SearchParam.DESCENDING,false);
 
 //        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE;
-        List<String> inParams = new ArrayList<>(Arrays.asList(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE));
-
-        SqlHelper.builderInSql(withdrawAppParam, "app_type", "appTypes",
-                inParams);
-
+        List<String> inParams = new ArrayList<>(Arrays.asList(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION, ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,ApplicationConsts.APPLICATION_TYPE_APPEAL));
+        SqlHelper.builderInSql(withdrawAppParam, "app_type", "appTypes", inParams);
         withdrawAppParam.addFilter("appStatus",ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, true);
         withdrawAppParam.addFilter("licenseeId", licenseeId, true);
         QueryHelp.setMainSql("interInboxQuery", "assessmentWithdrawAppQuery", withdrawAppParam);
