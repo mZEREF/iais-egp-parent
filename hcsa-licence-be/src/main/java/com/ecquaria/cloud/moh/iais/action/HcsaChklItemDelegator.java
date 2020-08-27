@@ -733,9 +733,9 @@ public class HcsaChklItemDelegator {
                     checkItemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getStatus()));
                 }
 
-                boolean blockExcel = true;
+                boolean blockExcel = false;
                 if (IaisCommonUtils.isEmpty(checkItemQueryDtoList)){
-                    blockExcel = false;
+                    blockExcel = true;
                 }
 
                 try {
