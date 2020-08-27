@@ -858,7 +858,7 @@ public class ConfigServiceImpl implements ConfigService {
             if (groupName.contains("Professional Screening") && stageCode.contains("PSO")) {
                 workingGroupDtoList.add(workingGroupDto);
             }
-            if (groupName.contains("Inspection Stage") && stageCode.contains("INS")) {
+            if (groupName.contains("Inspection") && stageCode.contains("INS")) {
                 workingGroupDtoList.add(workingGroupDto);
             }
             if (groupName.contains("Level 1 Approval") && stageCode.contains("AO1")) {
@@ -894,7 +894,7 @@ public class ConfigServiceImpl implements ConfigService {
                 if (groupName.contains("Professional Screening") && stageCode.contains("PSO")) {
                     workingGroupDtoList.add(workingGroupDto);
                 }
-                if (groupName.contains("Inspection Stage") && stageCode.contains("INS")) {
+                if (groupName.contains("Inspection") && stageCode.contains("INS")) {
                     workingGroupDtoList.add(workingGroupDto);
                 }
                 if (groupName.contains("Level 1 Approval") && stageCode.contains("AO1")) {

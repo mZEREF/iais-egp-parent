@@ -456,7 +456,9 @@ public class InterInboxDelegator {
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
             }else {
-                bpc.request.setAttribute("draftByLicAppId",MessageUtil.getMessageDesc("ACK030")+' '+stringBuilder.toString());
+                String ack030 = MessageUtil.getMessageDesc("ACK030");
+                String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                bpc.request.setAttribute("draftByLicAppId",replace);
                 bpc.request.setAttribute("isAppealShow","1");
                 List<String> licIdValues = IaisCommonUtils.genNewArrayList();
                 licIdValues.add(licId);
@@ -520,7 +522,9 @@ public class InterInboxDelegator {
                         inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                     }
                 }else {
-                    bpc.request.setAttribute("draftByLicAppId",MessageUtil.getMessageDesc("ACK030")+' '+stringBuilder.toString());
+                    String ack030 = MessageUtil.getMessageDesc("ACK030");
+                    String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                    bpc.request.setAttribute("draftByLicAppId",replace);
                     bpc.request.setAttribute("isShow","1");
                     return;
                 }
@@ -573,7 +577,9 @@ public class InterInboxDelegator {
                             inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                         }
                     }else {
-                        bpc.request.setAttribute("draftByLicAppId",MessageUtil.getMessageDesc("ACK030")+' '+stringBuilder.toString());
+                        String ack030 = MessageUtil.getMessageDesc("ACK030");
+                        String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                        bpc.request.setAttribute("draftByLicAppId",replace);
                         bpc.request.setAttribute("isRenewShow","1");
                         ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                         return;
@@ -809,7 +815,9 @@ public class InterInboxDelegator {
                     inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
                 }
             }else {
-                bpc.request.setAttribute("draftByLicAppId",MessageUtil.getMessageDesc("ACK030")+' '+stringBuilder.toString());
+                String ack030 = MessageUtil.getMessageDesc("ACK030");
+                String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                bpc.request.setAttribute("draftByLicAppId",replace);
                 bpc.request.setAttribute("isAppealApplicationShow","1");
                 bpc.request.setAttribute("appealApplication",appId);
                 return;

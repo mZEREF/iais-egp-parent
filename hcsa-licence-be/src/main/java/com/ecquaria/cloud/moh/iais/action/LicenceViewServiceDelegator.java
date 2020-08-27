@@ -1268,28 +1268,42 @@ public class LicenceViewServiceDelegator {
                     oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).setAddrType("-");
                 }
             }
+            if(StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getScdfRefNo())&&StringUtil.isEmpty(oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).getScdfRefNo())){
+
+            }else {
+                if(StringUtil.isEmpty(appGrpPremisesDtoList.get(i).getScdfRefNo())){
+                    appGrpPremisesDtoList.get(i).setScdfRefNo("-");
+                }
+                if(StringUtil.isEmpty(oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).getScdfRefNo())){
+                    oldAppSubmissionDtoAppGrpPremisesDtoList.get(i).setScdfRefNo("-");
+                }
+            }
         }
     }
 
-    private void oldAppSubmission(AppSubmissionDto appSubmissionDto,String hciCode){
-        if(appSubmissionDto==null){
+    private void oldAppSubmission(AppSubmissionDto appSubmissionDto,AppSubmissionDto oldAppSubmissionDto){
+        if(appSubmissionDto==null||oldAppSubmissionDto==null){
+            return;
+        }
+        if(!oldAppSubmissionDto.isGroupLic()){
             return;
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-        if(appGrpPremisesDtoList==null || appGrpPremisesDtoList.isEmpty()||hciCode==null){
+        List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
+        if(appGrpPremisesDtoList==null || oldAppSubmissionDtoAppGrpPremisesDtoList==null){
             return;
         }
-        List<AppGrpPremisesDto> appGrpPremisesDtos=IaisCommonUtils.genNewArrayList();
-        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
-            String hciCode1 = appGrpPremisesDto.getHciCode();
-            if(hciCode1!=null){
-                if(hciCode1.equals(hciCode)){
-                    appGrpPremisesDtos.add(appGrpPremisesDto);
-                }
-            }else {
+        String oldPremisesCode = appGrpPremisesDtoList.get(0).getOldPremisesCode();
+        List<AppGrpPremisesDto> appGrpPremisesDtos=new ArrayList<>(1);
+        for(AppGrpPremisesDto appGrpPremisesDto : oldAppSubmissionDtoAppGrpPremisesDtoList){
+            String hciCode = appGrpPremisesDto.getHciCode();
+            if(hciCode.equals(oldPremisesCode)){
                 appGrpPremisesDtos.add(appGrpPremisesDto);
+                break;
             }
         }
+        oldAppSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+
     }
 
     private void publicPH(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){

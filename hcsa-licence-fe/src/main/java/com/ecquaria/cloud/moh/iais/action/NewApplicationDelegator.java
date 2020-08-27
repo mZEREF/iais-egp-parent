@@ -1871,6 +1871,7 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> autoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         List<AppSubmissionDto> notAutoSaveAppsubmission = IaisCommonUtils.genNewArrayList();
         if (grpPremiseIsChange || docIsChange) {
+            appSubmissionDto.setOneLicDoRenew(Boolean.TRUE);
             appSubmissionDtos.add(appSubmissionDto);
             if (isAutoRfc) {
                 appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
@@ -2773,10 +2774,21 @@ public class NewApplicationDelegator {
                 licenceId = loginContext.getLicenseeId();
             }
         }
-        if (!StringUtil.isEmpty(licenceId)) {
-            List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(licenceId).getEntity();
+        String draftNo = appSubmissionDto.getDraftNo();
+        if(draftNo!=null){
+            AppSubmissionDto draftAppSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            if(draftAppSubmissionDto!=null){
+                draftAppSubmissionDto.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                applicationClient.saveDraft(draftAppSubmissionDto);
+            }
+        }
+        if (!StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
+            List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
             for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
-                applicationClient.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                String draftJson = applicationSubDraftDto.getDraftJson();
+                AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
+                appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                applicationClient.saveDraft(appSubmissionDto1);
             }
         }
         if (StringUtil.isEmpty(txnRefNo)) {

@@ -68,7 +68,7 @@
                                             <c:forEach var="ackPageAppSubmission" items="${ackPageAppSubmissionDto}">
                                                 <tr>
                                                     <td><c:out value="${ackPageAppSubmission.appGrpNo}"/></td>
-                                                    <c:if test="${'Credit'==ackPageAppSubmission.paymentMethod}">
+                                                    <c:if test="${'Credit'==AppSubmissionDto.paymentMethod}">
                                                         <td><c:out value="${txnRefNo}"/></td>
                                                     </c:if>
                                                     <td><c:out value="${txnDt}"/></td>
@@ -79,7 +79,7 @@
                                                     </td>
                                                     <td>
                                                         <c:choose>
-                                                            <c:when test="${'Credit'==ackPageAppSubmission.paymentMethod}">
+                                                            <c:when test="${'Credit'==AppSubmissionDto.paymentMethod}">
                                                                 Credit Card
                                                             </c:when>
                                                             <c:otherwise>

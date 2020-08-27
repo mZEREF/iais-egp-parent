@@ -141,6 +141,9 @@
                                             <fmt:formatDate value="${appGrpPremDto.certIssuedDt}" pattern="dd/MM/yyyy"/>
                                           </span>
                                           </c:if>
+                                          <c:if test="${appGrpPremDto.certIssuedDt==null}">
+                                             <span class="newVal " attr="-">-</span>
+                                          </c:if>
                                         </div>
                                         <div class="col-md-6">
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
@@ -148,6 +151,9 @@
                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}"
                                                    style="display: none"><fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}" pattern="dd/MM/yyyy"/>
                                                 </span>
+                                            </c:if>
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt==null}">
+                                             <span class="oldVal " attr="-" style="display: none">-</span>
                                             </c:if>
                                           </c:if>
                                         </div>
