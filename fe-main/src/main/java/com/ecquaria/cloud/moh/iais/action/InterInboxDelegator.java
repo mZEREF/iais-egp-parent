@@ -279,6 +279,7 @@ public class InterInboxDelegator {
         }
         log.info("inboxResult end=>>>>>>>>");
         if(!StringUtil.isEmpty(inboxResult)){
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",null);
             ParamUtil.setSessionAttr(request,InboxConst.INBOX_PARAM, inboxParam);
             ParamUtil.setRequestAttr(request,InboxConst.INBOX_RESULT, inboxResult);
             ParamUtil.setRequestAttr(request,InboxConst.MESSAGE_PAGE, InboxConst.MESSAGE_VIEW);
@@ -521,12 +522,12 @@ public class InterInboxDelegator {
                 }else {
                     bpc.request.setAttribute("draftByLicAppId",MessageUtil.getMessageDesc("ACK030")+' '+stringBuilder.toString());
                     bpc.request.setAttribute("isShow","1");
-                    List<String> licIdValues = IaisCommonUtils.genNewArrayList();
-                    licIdValues.add(licIdValue);
-                    ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
                     return;
                 }
             }
+            List<String> licIdValues = IaisCommonUtils.genNewArrayList();
+            licIdValues.add(licIdValue);
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
             if(errorMap.isEmpty()){
                 StringBuilder url = new StringBuilder();
                 url.append(InboxConst.URL_HTTPS)
