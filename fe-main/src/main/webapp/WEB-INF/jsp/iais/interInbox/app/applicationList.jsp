@@ -228,12 +228,21 @@
                                                     <option value="Delete">Delete</option>
                                                 </select>
                                             </c:if>
-                                            <c:if test="${app.status == 'APST007' || app.status == 'APST002'
-                                                          || app.status == 'APST012' || app.status == 'APST038'
+                                            <c:if test="${app.status == 'APST002'
+                                                       || app.status == 'APST012' || app.status == 'APST038'
                                                           || app.status == 'APST011' || app.status == 'APST023'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
                                                     <option value="Withdraw">Withdraw</option>
+                                                </select>
+                                            </c:if>
+                                            <c:if test="${app.status == 'APST007'}">
+                                                <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
+                                                    <option value="" selected>Select</option>
+                                                    <option value="Withdraw">Withdraw</option>
+                                                    <c:if test="${app.canRecall}">
+                                                        <option value="Recall">Recall</option>
+                                                    </c:if>
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST005' || app.status == 'APST006' || app.status == 'APST045'}">
