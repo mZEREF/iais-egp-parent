@@ -692,7 +692,12 @@ public class MasterCodeDelegator {
         masterCodeService.updateMasterCode(masterCodeDto);
 
         masterCodeDto.setMasterCodeId(null);
-        masterCodeDto.setVersion(masterCodeDto.getVersion() + 1);
+        Float oldVersion =  masterCodeDto.getVersion();
+        if (StringUtil.isEmpty(oldVersion)){
+            masterCodeDto.setVersion(1f);
+        }else{
+            masterCodeDto.setVersion(masterCodeDto.getVersion() + 1);
+        }
         masterCodeDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
         masterCodeService.saveMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
