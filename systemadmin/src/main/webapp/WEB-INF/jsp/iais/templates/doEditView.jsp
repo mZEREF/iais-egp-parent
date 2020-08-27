@@ -32,7 +32,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="templateName">Template Name</label>
+                            <iais:field value="Template Name" required="true"/>
                             <div class="col-xs-5 col-sm-5 col-md-5">
                                 <textarea style="width: 100%;" id="templateName" rows="10" cols="70" name="templateName" maxlength="500" >${MsgTemplateDto.templateName}</textarea>
                                 <span id="error_templateName" name="iaisErrorMsg" class="error-msg"></span>
@@ -49,7 +49,7 @@
                         </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label">To Recipients</label>
+                            <iais:field value="To Recipients" required="true"/>
                             <div class="col-xs-5 col-sm-5 col-md-5">
                                 <iais:multipleSelect name="recipient" selectValue="${recipientString}" options="recipient"></iais:multipleSelect>
                                 <span id="error_toRecipients" name="iaisErrorMsg"
@@ -89,14 +89,14 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="esd">Effective Start Date</label>
+                            <iais:field value="Effective Start Date" required="true"/>
                             <div class="col-xs-5 col-sm-5 col-md-5">
                                 <iais:datePicker id="esd" name="esd" dateVal="${MsgTemplateDto.effectiveFrom}"/>
                                 <span id="error_effectiveFrom" name="iaisErrorMsg" class="error-msg"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-4 control-label" for="eed">Effective End Date</label>
+                            <iais:field value="Effective End Date" required="true"/>
                             <div class="col-xs-5 col-sm-5 col-md-5">
                                 <iais:datePicker id="eed" name="eed"
                                                  dateVal="${MsgTemplateDto.effectiveTo}"/>
@@ -104,7 +104,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-12 control-label">Message Content</label>
+                            <iais:field value="Message Content" required="true"/>
                         </div>
                         <div class="form-group">
                             <textarea rows="40" name="messageContent" class="textarea" id="htmlEditor"
