@@ -124,7 +124,7 @@ public class ResponseForInformationDelegator {
         String crudActionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
 
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
-        ParamUtil.setRequestAttr(bpc.request,"maxSize",systemParamConfig.getUploadFileLimit());
+        ParamUtil.setRequestAttr(bpc.request,"sysFileSize",systemParamConfig.getUploadFileLimit());
         // 		doBack->OnStepProcess
     }
 
