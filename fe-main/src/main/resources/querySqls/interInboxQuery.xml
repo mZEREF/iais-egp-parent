@@ -95,7 +95,7 @@
                 lic.status,
                 lic.start_date,
                 lic.expiry_date,
-                (case
+                ltrim(case
                     when p3.premCount < '2' then
                         CONCAT(p.BLK_NO ,
                            case p.STREET_NAME
