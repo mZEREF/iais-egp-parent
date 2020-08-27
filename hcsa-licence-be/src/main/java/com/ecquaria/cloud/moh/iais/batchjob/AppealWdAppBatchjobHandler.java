@@ -30,14 +30,13 @@ public class AppealWdAppBatchjobHandler extends IJobHandler {
         try {
             List<ApplicationDto> applicationDtoList = applicationClient.saveWithdrawn().getEntity();
             if (applicationDtoList != null){
+                applicationDtoList.forEach(h -> {
+                    applicationService.updateFEApplicaiton(h);
+                });
                 log.error("**** The withdraw Application List size"+applicationDtoList.size());
             }else{
                 log.error("**** The withdraw Application List is null *****");
             }
-
-            applicationDtoList.forEach(h -> {
-                applicationService.updateFEApplicaiton(h);
-            });
         }catch (Exception e){
             log.error(e.getMessage(), e);
             JobLogger.log(e);
