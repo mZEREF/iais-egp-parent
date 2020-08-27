@@ -515,10 +515,16 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
         List<String> confirmRefNo = IaisCommonUtils.genNewArrayList();
         confirmRefNo.add(apptRefNo);
+        Date inspDate = new Date();
         if(inspectionDateMap != null) {
             for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
                 String refNo = inspDateMap.getKey();
                 cancelRefNo.add(refNo);
+            }
+            for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
+                List<ApptUserCalendarDto> apptUserCalendarDtos = inspDateMap.getValue();
+                inspDate = apptUserCalendarDtos.get(0).getStartSlot().get(0);
+                break;
             }
         }
         apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
@@ -534,7 +540,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         //send email
-        Map<String, Object> map = inspectionDateSendEmail(loginUrl, licenseeId, applicationViewDto, urlId);
+        Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, licenseeId, applicationViewDto, urlId);
         createMessage(url, applicationNo, maskParams, map);
         //update app Info and insp Info
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
@@ -586,10 +592,16 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         //cancel or confirm appointment date
         ApptCalendarStatusDto apptCalendarStatusDto = new ApptCalendarStatusDto();
         List<String> confirmRefNo = IaisCommonUtils.genNewArrayList();
+        Date inspDate = new Date();
         if(inspectionDateMap != null) {
             for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
                 String refNo = inspDateMap.getKey();
                 confirmRefNo.add(refNo);
+            }
+            for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
+                List<ApptUserCalendarDto> apptUserCalendarDtos = inspDateMap.getValue();
+                inspDate = apptUserCalendarDtos.get(0).getStartSlot().get(0);
+                break;
             }
         }
         apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
@@ -605,7 +617,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         //send email
-        Map<String, Object> map = inspectionDateSendEmail(loginUrl, licenseeId, applicationViewDto, urlId);
+        Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, licenseeId, applicationViewDto, urlId);
         //get service code to send message
         createMessage(url, applicationNo, maskParams, map);
         //save data to app table
@@ -973,7 +985,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
 
-    private Map<String, Object> inspectionDateSendEmail(String url, String licenseeId, ApplicationViewDto applicationViewDto, String appPremCorrId) {
+    private Map<String, Object> inspectionDateSendEmail(Date inspecDate, String url, String licenseeId, ApplicationViewDto applicationViewDto, String appPremCorrId) {
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
         String licName = licenseeDto.getName();
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
@@ -984,10 +996,9 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         if(submitDt == null){
             submitDt = new Date();
         }
-        Date today = new Date();
         String strSubmitDt = Formatter.formatDateTime(submitDt, "dd/MM/yyyy");
-        String todayDate = Formatter.formatDateTime(today, "dd/MM/yyyy");
-        String todayTime = Formatter.formatDateTime(today, "HH:mm:ss");
+        String todayDate = Formatter.formatDateTime(inspecDate, "dd/MM/yyyy");
+        String todayTime = Formatter.formatDateTime(inspecDate, "HH:mm:ss");
         AppGrpPremisesDto appGrpPremisesDto = inspectionAssignTaskService.getAppGrpPremisesDtoByAppGroId(appPremCorrId);
         String address = inspectionAssignTaskService.getAddress(appGrpPremisesDto);
         String hciName = appGrpPremisesDto.getHciName();
