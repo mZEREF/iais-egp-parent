@@ -737,7 +737,7 @@ public class HcsaChklItemDelegator {
 
         File file = null;
         try {
-            file = ExcelWriter.writerToExcel(checkItemQueryDtoList, CheckItemQueryDto.class, null, "Checklist_Items_Template", blockExcel, false);
+            file = ExcelWriter.writerToExcel(checkItemQueryDtoList, CheckItemQueryDto.class, null, "Checklist_Items_Template", blockExcel, true);
         } catch (Exception e) {
             log.error("=======>fileHandler error >>>>>", e);
         }
