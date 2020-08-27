@@ -4,12 +4,13 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * PaginationHandler
@@ -99,6 +100,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
                 }
             }
         }
+        ParamUtil.setSessionAttr(request,paginationDiv + "__SessionAttr",this);
     }
 
     public void doPaging(int pageNo) {
