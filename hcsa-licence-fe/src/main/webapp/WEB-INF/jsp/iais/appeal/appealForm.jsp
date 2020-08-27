@@ -119,7 +119,7 @@
             <div class="fileContent col-xs-2">
               ${upFile.originalFilename}
               <input class="selectedFile"  id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile()">
-              <a class="btn btn-file-upload btn-secondary" onclick="javascript:doUserRecUploadConfirmUpload()">Upload</a>
+              <a class="btn btn-file-upload btn-secondary">Upload</a>
 
             </div>
             <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
@@ -228,9 +228,6 @@ $('#submit').click(function () {
     uploadFileValidate();
   }
 
-  function doUserRecUploadConfirmUpload() {
-    $("#selectedFile").trigger('click');
-  }
 
 function uploadFileValidate(){
   var configFileSize = $("#configFileSize").val();
