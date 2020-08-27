@@ -444,8 +444,6 @@ public class MasterCodeDelegator {
                     cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeToExcelDto.getCodeValue())
                             && item.getCodeCategory().equals(masterCodeToExcelDto.getCodeCategory())).findFirst();
                 }
-
-
                 if (!StringUtil.isEmpty(masterCodeToExcelDto.getFilterValue())){
                     if (cartOptional != null && cartOptional.isPresent()) {
                         MasterCodeToExcelDto masterCodeToExcelDto1 =  cartOptional.get();
@@ -596,6 +594,7 @@ public class MasterCodeDelegator {
     public void doCreateCode(BaseProcessClass bpc) throws ParseException {
         logAboutStart("doCreate");
         HttpServletRequest request = bpc.request;
+        List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
         if (!SystemAdminBaseConstants.SAVE_ACTION.equals(type)) {
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
@@ -605,18 +604,29 @@ public class MasterCodeDelegator {
         getValueFromPage(masterCodeDto, request);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ValidationResult validationResult = WebValidationHelper.validateProperty(masterCodeDto, SystemAdminBaseConstants.SAVE_ACTION);
+        Optional<MasterCodeToExcelDto> cartOptional = null;
+        if (!StringUtil.isEmpty(masterCodeDto.getCodeCategory()) && !StringUtil.isEmpty(masterCodeDto.getCodeValue())){
+            cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeDto.getCodeValue())
+                    && item.getCodeCategory().equals(masterCodeDto.getCodeCategory())).findFirst();
+        }
         if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
             if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                 validationResult.setHasErrors(true);
             }
         }
+        if (cartOptional != null && cartOptional.isPresent()) {
+            validationResult.setHasErrors(true);
+        }
         if (validationResult != null && validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
                 if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
-                    validationResult.setHasErrors(true);
                     errorMap.put("effectiveTo", "Effective Start Date cannot be later than Effective End Date");
                 }
+            }
+            if (cartOptional != null && cartOptional.isPresent()) {
+                validationResult.setHasErrors(true);
+                errorMap.put("codeValue", "Code Value is duplicated in System");
             }
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
