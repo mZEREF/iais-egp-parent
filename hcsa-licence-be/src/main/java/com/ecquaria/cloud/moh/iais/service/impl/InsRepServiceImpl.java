@@ -193,9 +193,6 @@ public class InsRepServiceImpl implements InsRepService {
         }
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
             HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
-            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-                applicationDto.setInspReportNeedLast(true);
-            }
             hcsaRiskScoreDto.setAppType(applicationType);
             hcsaRiskScoreDto.setLicId(appInsRepDto.getLicenceId());
             List<ApplicationDto> applicationDtos = new ArrayList<>(1);
@@ -497,7 +494,6 @@ public class InsRepServiceImpl implements InsRepService {
         String defaultOption = null;
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
-        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         List<String> list = IaisCommonUtils.genNewArrayList();
         list.add(serviceId);
         List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
@@ -510,15 +506,12 @@ public class InsRepServiceImpl implements InsRepService {
         }
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
             HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
-            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-                applicationDto.setInspReportNeedLast(true);
-            }
             hcsaRiskScoreDto.setAppType(applicationType);
             AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
             hcsaRiskScoreDto.setLicId(appInsRepDto.getLicenceId());
             hcsaRiskScoreDto.setAppType(applicationType);
             List<ApplicationDto> applicationDtos = new ArrayList<>(1);
-            applicationDtos.add(applicationDto);
+            applicationDtos.add(applicationViewDto.getApplicationDto());
             hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
             hcsaRiskScoreDto.setServiceId(serviceId);
             HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
@@ -609,9 +602,6 @@ public class InsRepServiceImpl implements InsRepService {
         taskService.createTasks(taskDtos);
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
             HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
-            if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-                applicationDto.setInspReportNeedLast(true);
-            }
             hcsaRiskScoreDto.setAppType(applicationType);
             AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
             hcsaRiskScoreDto.setLicId(appInsRepDto.getLicenceId());
