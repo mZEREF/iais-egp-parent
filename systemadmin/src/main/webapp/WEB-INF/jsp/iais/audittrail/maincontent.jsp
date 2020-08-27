@@ -75,14 +75,14 @@
                   <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="operation" value="Operation"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"  field="domain" value="Operation Type"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="corpPassId" value="Corp-Pass ID"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="corpPassNric" value="Corp-Pass NRIC"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="uenId" value="UEN"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="singPassId" value="SingPass ID"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false"   field="corpPassId" value="Corp-Pass ID"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false"   field="corpPassNric" value="Corp-Pass NRIC"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false"   field="uenId" value="UEN"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false"   field="singPassId" value="SingPass ID"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="action_time" value="Operation Date"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="action_time" value="Operation Time"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="client_ip" value="Source Client IP"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="user_agent" value="User Agent"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"   field="user_agent" value="Browser name/Browser version"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="moh_user_id" value="MOH User&apos;s account ID"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="session_id" value="Session Id"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="application_number" value="Application ID"></iais:sortableHeader>
@@ -90,9 +90,7 @@
                   <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="userCase" value="Function / Use Case"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="programmeName" value="Program Name"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="dataActivities" value="Data Activities"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="createdby" value="Created by"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="createddate" value="Created date"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="false"   field="dataActivities" value="Data Activities"></iais:sortableHeader>
                 </tr>
                 </thead>
                 <tbody>
@@ -114,9 +112,9 @@
                         <td><c:out value="${resultRow.nricNumber}"></c:out></td>
                         <td><c:out value="${resultRow.uenId}"></c:out></td>
                         <td><c:out value="${resultRow.nricNumber}"></c:out></td>
-
+                        <td></td>
                         <td><fmt:formatDate value='${resultRow.actionTime}' pattern='dd/MM/yyyy' /></td>
-                        <td><fmt:formatDate value='${resultRow.actionTime}' pattern='hh:mm:ss' /></td>
+                        <td><fmt:formatDate value='${resultRow.actionTime}' pattern='HH:mm:ss' /></td>
                         <td><c:out value="${resultRow.clientIp}"></c:out></td>
                         <td><c:out value="${resultRow.userAgent}"></c:out></td>
                         <td><c:out value="${resultRow.mohUserId}"></c:out></td>
