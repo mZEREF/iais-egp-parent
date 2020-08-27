@@ -1187,6 +1187,7 @@ public class LicenceApproveBatchjob {
             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesEntityDto.getAppPremPhOpenPeriodDtoList();
             List<LicPremPhOpenPeriodDto> licPremPhOpenPeriodDtos = IaisCommonUtils.genNewArrayList();
             if (!IaisCommonUtils.isEmpty(appPremPhOpenPeriodDtos)) {
+                log.info(StringUtil.changeForLog("The licence Generate appPremPhOpenPeriodDtos.size() is -->:"+appPremPhOpenPeriodDtos.size()));
                 for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodDtos) {
                     LicPremPhOpenPeriodDto licPremPhOpenPeriodDto = MiscUtil.transferEntityDto(appPremPhOpenPeriodDto, LicPremPhOpenPeriodDto.class);
                     licPremPhOpenPeriodDto.setPremId(null);
@@ -1710,6 +1711,7 @@ public class LicenceApproveBatchjob {
         //status
         licenceDto.setStatus(getLicenceStatus(licenceDto,applicationGroupDto));
         licenceDto.setApplicationDtos(applicationDtos1);
+        log.info(StringUtil.changeForLog("The  licenceDto.getLicenceNo() is -->:"+licenceDto.getLicenceNo()));
         log.info(StringUtil.changeForLog("The  getLicenceDto end ..."));
         return licenceDto;
     }
