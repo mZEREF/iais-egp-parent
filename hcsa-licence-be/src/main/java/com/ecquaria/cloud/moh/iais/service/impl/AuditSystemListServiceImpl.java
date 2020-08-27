@@ -9,12 +9,14 @@ import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionForAuditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -300,7 +302,9 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         taskDto.setApplicationNo(eventRefNum+"-01");
         List<ApplicationDto> postApps = applicationClient.getAppsByGrpNo(eventRefNum).getEntity();
         if(postApps != null && postApps.size() >0 ){
-            String corrId = applicationClient.getCorrIdByAppId(postApps.get(0).getId()).getEntity();
+            String appId = postApps.get(0).getId();
+            createAuditAppLic(temp.getLicId(),appId ,auditCombinationDto.getLicPremisesAuditDto().getAuditTrailDto(),auditCombinationDto.getEventRefNo(),submitId);
+            String corrId = applicationClient.getCorrIdByAppId(appId).getEntity();
             taskDto.setRefNo(corrId);
             List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = new ArrayList(1);
             for(ApplicationDto applicationDto : postApps){
@@ -320,7 +324,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         List<TaskDto> createTaskDtoList = IaisCommonUtils.genNewArrayList();
         createTaskDtoList.add(taskDto);
         auditCombinationDto.setTaskDtos(createTaskDtoList);
-        //taskService.createTasks(createTaskDtoList);
         try {
             log.info("========================>>>>> create task !!!!");
             eventBusHelper.submitAsyncRequest(auditCombinationDto,submitId, EventBusConsts.SERVICE_NAME_ROUNTINGTASK,EventBusConsts.OPERATION_CREATE_AUDIT_TASK_CALL_BACK,auditCombinationDto.getEventRefNo(),null);
@@ -329,6 +332,19 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         }
     }
 
+    private void  createAuditAppLic(String licId, String appId , AuditTrailDto auditTrailDto,String eventRefNum,String submissionId){
+        try {
+            log.info(StringUtil.changeForLog("========================>>>>> create appLicCorrelation : appid ---"+ appId + " licId ----" +licId+" ---"+"===== !!!!"));
+            LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
+            licAppCorrelationDto.setLicenceId(licId);
+            licAppCorrelationDto.setApplicationId(appId);
+            licAppCorrelationDto.setAuditTrailDto(auditTrailDto);
+            eventBusHelper.submitAsyncRequest(licAppCorrelationDto,submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK_CALL_BACK,eventRefNum,null);
+        }catch (Exception e){
+            log.info("========================>>>>> create appLicCorrelation failed!!!!");
+            log.error(e.getMessage(), e);
+        }
+    }
     private int getConfigScoreForService(List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos,String serviceId,
                                          String stageId,String appType){
         int result = 0;
