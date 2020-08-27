@@ -137,7 +137,6 @@ public class ResponseForInformationDelegator {
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE, crudActionType);
 
         LicPremisesReqForInfoDto licPremisesReqForInfoDto=(LicPremisesReqForInfoDto) ParamUtil.getSessionAttr(bpc.request,"licPreReqForInfoDto");;
-        int i=0;
         try {
             for(LicPremisesReqForInfoDocDto doc :licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto()){
                 CommonsMultipartFile file= (CommonsMultipartFile) mulReq.getFile( "UploadFile"+doc.getId());
@@ -151,13 +150,15 @@ public class ResponseForInformationDelegator {
                     doc.setSubmitDt(new Date());
                     doc.setSubmitBy(licPremisesReqForInfoDto.getLicenseeId());
                 }
-                i++;
             }
-            i=0;
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
+        ParamUtil.setSessionAttr(bpc.request,"licPreReqForInfoDto",licPremisesReqForInfoDto);
+        try {
             for(LicPremisesReqForInfoReplyDto info :licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos()){
                 String userReply=mulReq.getParameter("userReply"+info.getId());
                 info.setUserReply(userReply);
-                i++;
             }
         }catch (Exception e){
             log.info(e.getMessage(),e);

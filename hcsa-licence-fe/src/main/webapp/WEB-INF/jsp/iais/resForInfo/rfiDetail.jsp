@@ -146,11 +146,15 @@
 <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 <script type="text/javascript">
     function doBack() {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "back");
+        dismissWaiting();
     }
 
     function doSubmit(reqInfoId) {
+        showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "submit");
+        dismissWaiting();
     }
 
     function getFileName(o) {
