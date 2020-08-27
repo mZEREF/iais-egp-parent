@@ -5,14 +5,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PageRecords;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * CommonActionAjax
@@ -33,7 +34,10 @@ public class CommonActionAjax {
         String checkIdStr = ParamUtil.getString(request, "checkId");
         PaginationHandler<?> handler = (PaginationHandler<?>) ParamUtil.getSessionAttr(request, pageDiv + "__SessionAttr");
 
-        return changeMemoryPageImpl(pageNo, pageDiv, checkIdStr, handler);
+        Map<String,Object> map = changeMemoryPageImpl(pageNo, pageDiv, checkIdStr, handler);
+        ParamUtil.setSessionAttr(request, pageDiv + "__SessionAttr", handler);
+
+        return map;
     }
 
     @RequestMapping(value="changeMemoryPageSize.do", method = RequestMethod.GET)
@@ -43,7 +47,9 @@ public class CommonActionAjax {
         int pageSize = ParamUtil.getInt(request, "newSize");
         PaginationHandler<?> handler = (PaginationHandler<?>) ParamUtil.getSessionAttr(request, pageDiv + "__SessionAttr");
         handler.setPageSize(pageSize);
-        return changeMemoryPageImpl(1, pageDiv, null, handler);
+        Map<String,Object> map = changeMemoryPageImpl(1, pageDiv, null, handler);
+        ParamUtil.setSessionAttr(request, pageDiv + "__SessionAttr", handler);
+        return map;
     }
 
     private Map<String,Object> changeMemoryPageImpl(int pageNo, String pageDiv, String checkIdStr,
@@ -92,13 +98,13 @@ public class CommonActionAjax {
                     }
                     sb.append("/>").append("</td>");
                 } else if (handler.getCheckType() == PaginationHandler.CHECK_TYPE_RADIO) {
-                    sb.append("<td><input type=\"radio\" id=\"").append(pageDiv).append("Check").append(i);
+                    sb.append("<td><div class=\"form-check\"><input class=\"form-check-input\" type=\"radio\" id=\"").append(pageDiv).append("Check").append(i);
                     sb.append("\" name=\"").append(pageDiv).append("Check").append("\" value=\"");
                     sb.append(pr.getId()).append('"');
                     if (pr.isChecked()) {
                         sb.append(" checked");
                     }
-                    sb.append("/>").append("</td>");
+                    sb.append("/>").append("<label class=\"form-check-label\"><span class=\"check-circle\"></span></label></div></td>");
                 }
                 if (handler.isCheckInTrail()) {
                     sb.insert(startLength + 4, ((TableRowHtmlGenerater) obj).generateTableRowHtml());
