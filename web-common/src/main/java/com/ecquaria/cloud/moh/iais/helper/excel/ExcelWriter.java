@@ -8,14 +8,8 @@ import com.ecquaria.cloud.moh.iais.helper.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 
@@ -39,18 +33,6 @@ import java.util.Map;
  **/
 @Slf4j
 public final class ExcelWriter {
-    /**
-     * Cell color, locked status, hidden or not
-     */
-    private static XSSFCellStyle lockStyle = null;
-
-    /**
-     * If without this value, the generated data will be locked
-     */
-    private static XSSFCellStyle unlockStyle = null;
-
-    private static XSSFCellStyle textStyle = null;
-
     private static XSSFWorkbook workbook;
 
     private static String safetyPwd = "password$1";
@@ -91,7 +73,7 @@ public final class ExcelWriter {
         try (OutputStream fileOutputStream = Files.newOutputStream(Paths.get(out.getPath()))) {
             workbook = XSSFWorkbookFactory.createWorkbook();
 
-            startInternal();
+            startInternal(workbook);
 
             Sheet sheet = workbook.createSheet(sheetName);
 
@@ -117,7 +99,7 @@ public final class ExcelWriter {
         try (InputStream fileInputStream = Files.newInputStream(Paths.get(file.getPath())); OutputStream outputStream =  Files.newOutputStream(Paths.get(out.getPath()))) {
             workbook = XSSFWorkbookFactory.createWorkbook(fileInputStream);
 
-            startInternal();
+            startInternal(workbook);
 
             Sheet sheet = workbook.getSheetAt(sheetAt);
 
@@ -157,12 +139,10 @@ public final class ExcelWriter {
         }
     }
 
-    private static void startInternal() {
-        initLockStyle();
-
-        initUnlockStyle();
-
-        initTextStyle();
+    private static void startInternal(XSSFWorkbook workbook) {
+        CellStyleHelper.initLockStyle(workbook);
+        CellStyleHelper.initTextStyle(workbook);
+        CellStyleHelper.initUnlockStyle(workbook);
     }
 
     private static ExcelSheetProperty getSheetPropertyByClz(Class<?> sourceClz){
@@ -218,7 +198,7 @@ public final class ExcelWriter {
         for (Object t : source) {
             Row sheetRow = sheet.createRow(cellIndex);
             Cell firstCell = sheetRow.createCell(0);
-            firstCell.setCellStyle(lockStyle);
+            firstCell.setCellStyle(CellStyleHelper.getLockStyle());
             firstCell.setCellValue(sequence);
 
             sequence++;
@@ -235,9 +215,9 @@ public final class ExcelWriter {
                     boolean hidden = annotation.hidden();
 
                     if (readOnly){
-                        cell.setCellStyle(lockStyle);
+                        cell.setCellStyle(CellStyleHelper.getLockStyle());
                     }else {
-                        cell.setCellStyle(unlockStyle);
+                        cell.setCellStyle(CellStyleHelper.getUnlockStyle());
                     }
 
                     if (hidden){
@@ -245,7 +225,7 @@ public final class ExcelWriter {
                     }
 
                     if (objectType == Date.class){
-                        cell.setCellStyle(textStyle);
+                        cell.setCellStyle(CellStyleHelper.getTextStyle());
                     }
 
                     Object val = sourceClz.getDeclaredMethod("get" +
@@ -274,53 +254,20 @@ public final class ExcelWriter {
                 if (row != null){
                     Cell cell = row.getCell(i);
                     if (cell != null){
-                        cell.setCellStyle(unlockStyle);
+                        cell.setCellStyle(CellStyleHelper.getUnlockStyle());
                     }
                 }
             }
         }
     }
 
-    private static void initUnlockStyle(){
-        if (workbook != null) {
-            XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
-            xssfCellStyle.setLocked(false);
-            xssfCellStyle.setHidden(false);
-            xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
-            xssfCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-            xssfCellStyle.setWrapText(true);
-            unlockStyle = xssfCellStyle;
-        }
-    }
 
-    private static void initTextStyle(){
-        if (workbook != null) {
-            XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
-            XSSFDataFormat format = workbook.createDataFormat();
-            xssfCellStyle.setDataFormat(format.getFormat("@"));
-            textStyle = xssfCellStyle;
-        }
-    }
-
-    private static void initLockStyle() {
-        if (workbook!= null) {
-            XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
-            xssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
-            xssfCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            xssfCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-            xssfCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
-            xssfCellStyle.setLocked(true);
-            xssfCellStyle.setHidden(true);
-            xssfCellStyle.setWrapText(true);
-            lockStyle = xssfCellStyle;
-        }
-    }
 
     private static void setFieldName(final Class<?> clz, final Sheet sheet, int startCellIndex) {
         Row sheetRow = sheet.createRow(startCellIndex);
         Cell firstCell = sheetRow.createCell(0);
         firstCell.setCellValue("SN");
-        firstCell.setCellStyle(lockStyle);
+        firstCell.setCellStyle(CellStyleHelper.getLockStyle());
         Field[] fields = clz.getDeclaredFields();
 
 
@@ -332,7 +279,7 @@ public final class ExcelWriter {
                 String rowName = annotation.cellName();
 
                 Cell cell = sheetRow.createCell(rowIndex);
-                cell.setCellStyle(unlockStyle);
+                cell.setCellStyle(CellStyleHelper.getUnlockStyle());
                 cell.setCellValue(rowName);
 
                 autoSizeCell.add(rowIndex);

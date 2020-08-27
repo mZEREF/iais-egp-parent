@@ -166,7 +166,6 @@ public final class ExcelReader {
         return getCellValue(sheet.getRow(rowIndex).getCell(cellIndex));
     }
 
-    @SuppressWarnings("deprecation")
     private static String getCellValue(final Cell cell) {
         String cellValue = "";
         if (cell != null && cell.getCellType() != CellType.BLANK) {
