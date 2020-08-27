@@ -1010,7 +1010,7 @@ public class ServiceMenuDelegator {
         paginationHandler.keepCurrentPageChecked();
         List<MenuLicenceDto> menuLicenceDtos = paginationHandler.getDisplayCheckedData();
         MenuLicenceDto menuLicenceDto = new MenuLicenceDto();
-        if(!StringUtil.isEmpty(menuLicenceDtos)){
+        if(!StringUtil.isEmpty(menuLicenceDtos) && menuLicenceDtos.size() > 0){
             menuLicenceDto = menuLicenceDtos.get(0);
         }
         String alignLicenceNo = menuLicenceDto.getLicenceNo();
