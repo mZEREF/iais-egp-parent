@@ -251,23 +251,8 @@ public class AuditTrailDelegator {
             }
         }
 
-        SearchResult<AuditTrailQueryDto> trailDtoSearchResult = null;
-
-        String isFullMode = (String) ParamUtil.getSessionAttr(request, "isFullMode");
-        switch (isFullMode){
-            case "Y":
-                QueryHelp.setMainSql("systemAdmin", "queryFullModeAuditTrail", searchParam);
-                trailDtoSearchResult = auditTrailService.listAuditTrailDto(searchParam);
-                break;
-            case "N":
-                QueryHelp.setMainSql("systemAdmin", "queryDataMaskModeAuditTrail", searchParam);
-                trailDtoSearchResult = auditTrailService.listAuditTrailDto(searchParam);
-                break;
-            default:
-        }
-
-        ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCH, searchParam);
-        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, trailDtoSearchResult);
+        setQuerySql(searchParam);
+        queryResult(request, searchParam);
     }
 
     /**
@@ -277,9 +262,23 @@ public class AuditTrailDelegator {
     public void changePage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        setQuerySql(searchParam);
         CrudHelper.doPaging(searchParam,bpc.request);
+    }
+
+    private void setQuerySql(SearchParam searchParam){
+        boolean isAdmin = AccessUtil.isAdministrator();
+        if (isAdmin){
+            QueryHelp.setMainSql("systemAdmin", "queryFullModeAuditTrail", searchParam);
+        }else {
+            QueryHelp.setMainSql("systemAdmin", "queryDataMaskModeAuditTrail", searchParam);
+        }
+    }
+
+    private void queryResult(HttpServletRequest request, SearchParam searchParam){
         SearchResult<AuditTrailQueryDto> trailDtoSearchResult = auditTrailService.listAuditTrailDto(searchParam);
         ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, trailDtoSearchResult);
+        ParamUtil.setSessionAttr(request, AuditTrailConstants.PARAM_SEARCH, searchParam);
     }
 
     /**
@@ -289,9 +288,9 @@ public class AuditTrailDelegator {
     public void sortRecords(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        setQuerySql(searchParam);
         CrudHelper.doSorting(searchParam,  request);
-        SearchResult<AuditTrailQueryDto> trailDtoSearchResult = auditTrailService.listAuditTrailDto(searchParam);
-        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_SEARCHRESULT, trailDtoSearchResult);
+        queryResult(request, searchParam);
     }
 
 }

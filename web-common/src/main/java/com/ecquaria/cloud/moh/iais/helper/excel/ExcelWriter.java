@@ -15,14 +15,18 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -45,9 +49,11 @@ public final class ExcelWriter {
      */
     private static XSSFCellStyle unlockStyle = null;
 
+    private static XSSFCellStyle textStyle = null;
+
     private static XSSFWorkbook workbook;
 
-    private static String zheshigaisidemima = "password$1";
+    private static String safetyPwd = "password$1";
 
     private ExcelWriter(){}
 
@@ -155,6 +161,8 @@ public final class ExcelWriter {
         initLockStyle();
 
         initUnlockStyle();
+
+        initTextStyle();
     }
 
     private static ExcelSheetProperty getSheetPropertyByClz(Class<?> sourceClz){
@@ -197,7 +205,7 @@ public final class ExcelWriter {
 
     private static void lockSheetWorkspace(Sheet sheet, String pwd){
         if (StringUtils.isEmpty(pwd)){
-            sheet.protectSheet(zheshigaisidemima);
+            sheet.protectSheet(safetyPwd);
         }else {
             sheet.protectSheet(pwd);
         }
@@ -222,6 +230,7 @@ public final class ExcelWriter {
                     ExcelProperty annotation = field.getAnnotation(ExcelProperty.class);
                     int index = annotation.cellIndex();
                     Cell cell = sheetRow.createCell(index);
+                    Class objectType = annotation.objectType();
                     boolean readOnly = annotation.readOnly();
                     boolean hidden = annotation.hidden();
 
@@ -235,8 +244,14 @@ public final class ExcelWriter {
                         sheet.setColumnHidden(index, true);
                     }
 
-                    cell.setCellValue(setValue(sourceClz.getDeclaredMethod("get" +
-                            StringUtils.capitalize(field.getName())).invoke(t)));
+                    if (objectType == Date.class){
+                        cell.setCellStyle(textStyle);
+                    }
+
+                    Object val = sourceClz.getDeclaredMethod("get" +
+                            StringUtils.capitalize(field.getName())).invoke(t);
+
+                    cell.setCellValue(setValue(val));
                 }
             }
 
@@ -275,6 +290,15 @@ public final class ExcelWriter {
             xssfCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
             xssfCellStyle.setWrapText(true);
             unlockStyle = xssfCellStyle;
+        }
+    }
+
+    private static void initTextStyle(){
+        if (workbook != null) {
+            XSSFCellStyle xssfCellStyle = workbook.createCellStyle();
+            XSSFDataFormat format = workbook.createDataFormat();
+            xssfCellStyle.setDataFormat(format.getFormat("@"));
+            textStyle = xssfCellStyle;
         }
     }
 

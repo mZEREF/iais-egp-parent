@@ -75,14 +75,12 @@
                   <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="operation" value="Operation"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"  field="domain" value="Operation Type"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="batchJobID" value="Batch Job ID"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="directoryID" value="Active directory ID"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="corpPassId" value="Corp-Pass ID"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="corpPassNric" value="Corp-Pass NRIC"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="uenId" value="UEN"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="singPassId" value="SingPass ID"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="operationDate" value="Operation Date"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="operationTime" value="Operation Time"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"   field="action_time" value="Operation Date"></iais:sortableHeader>
+                  <iais:sortableHeader needSort="true"   field="action_time" value="Operation Time"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="client_ip" value="Source Client IP"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="user_agent" value="User Agent"></iais:sortableHeader>
                   <iais:sortableHeader needSort="true"   field="moh_user_id" value="MOH User&apos;s account ID"></iais:sortableHeader>
@@ -111,11 +109,8 @@
                       <tr>
                         <td class="row_no">${(status.index + 1) + (auditTrailSearch.pageNo - 1) * auditTrailSearch.pageSize}</td>
                           <%-- <td>${resultRow.operationType}</td>--%>
-                        <td><c:out value="${resultRow.operationByExcelColumn}"></c:out></td>
-                        <td><iais:code code="${resultRow.domain}"></iais:code></td>
-                        <td><%--<c:out value="${resultRow.batchjobId}"></c:out>--%></td>
-                        <td><%--<c:out value="${resultRow.corpPassId}"></c:out>--%></td>
-                        <td></td>
+                        <td><c:out value="${resultRow.operationDesc}"></c:out></td>
+                        <td><c:out value="${resultRow.domainDesc}"></c:out></td>
                         <td><c:out value="${resultRow.nricNumber}"></c:out></td>
                         <td><c:out value="${resultRow.uenId}"></c:out></td>
                         <td><c:out value="${resultRow.nricNumber}"></c:out></td>
