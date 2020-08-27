@@ -13,7 +13,7 @@
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."/>
                 <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises type"/>
-                <iais:sortableHeader needSort="false"  field="ADDRESS" value="Address"/>
+                <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address"/>
             </tr>
             </thead>
             <tbody>

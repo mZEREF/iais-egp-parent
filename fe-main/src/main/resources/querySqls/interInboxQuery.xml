@@ -185,7 +185,29 @@
                     p.BUILDING_NAME,
                     p.VERSION,
                     p.STATUS,
-                    p.ORGANIZATION_ID FROM
+	                ltrim(CONCAT(p.BLK_NO ,
+                       case p.STREET_NAME
+                          when null then null
+                          when '' then null
+                          else ' '+p.STREET_NAME end
+                       , case p.BUILDING_NAME
+                          when null then null
+                          when '' then null
+                          else ' '+p.BUILDING_NAME end
+                       , case p.FLOOR_NO
+                          when null then null
+                          when '' then null
+                          else ' # '+p.FLOOR_NO end
+                       , case p.UNIT_NO
+                          when null then null
+                          when '' then null
+                          else '-'+p.UNIT_NO end
+                       , case p.POSTAL_CODE
+                          when null then null
+                          when '' then null
+                          else ', '+p.POSTAL_CODE end ))
+	               as address,
+                   p.ORGANIZATION_ID FROM
                    licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
                    join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1
                    <#if licenseeId??> and li.LICENSEE_ID =:licenseeId </#if>
