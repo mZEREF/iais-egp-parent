@@ -1190,6 +1190,7 @@ public class LicenceApproveBatchjob {
                 log.info(StringUtil.changeForLog("The licence Generate appPremPhOpenPeriodDtos.size() is -->:"+appPremPhOpenPeriodDtos.size()));
                 for (AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodDtos) {
                     LicPremPhOpenPeriodDto licPremPhOpenPeriodDto = MiscUtil.transferEntityDto(appPremPhOpenPeriodDto, LicPremPhOpenPeriodDto.class);
+                    licPremPhOpenPeriodDto.setId(null);
                     licPremPhOpenPeriodDto.setPremId(null);
                     licPremPhOpenPeriodDtos.add(licPremPhOpenPeriodDto);
                 }
