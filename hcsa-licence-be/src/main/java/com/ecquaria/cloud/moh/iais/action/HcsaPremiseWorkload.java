@@ -78,8 +78,27 @@ public class HcsaPremiseWorkload {
             List<HcsaPrimiseWorkloadDto> hcsaPrimiseWorkloadDtos = hcsaConfigClient.getHcsaPremisesWorkload(type).getEntity();
             ParamUtil.setSessionAttr(bpc.request,"hcsaPrimiseWorkloadDtos",(Serializable) hcsaPrimiseWorkloadDtos);
             ParamUtil.setRequestAttr(bpc.request, SystemAdminBaseConstants.ISVALID, AppConsts.TRUE);
+            ParamUtil.setSessionAttr(bpc.request, "premiseWorkloadType", getType(type));
         }
+    }
+
+    private String getType(String type){
+        String res = "";
+        switch (type){
+            case ApplicationConsts.PREMISES_TYPE_ON_SITE:
+                res = "Onsite";
+                break;
+            case ApplicationConsts.PREMISES_TYPE_OFF_SITE:
+                res = "Offsite";
+                break;
+            case ApplicationConsts.PREMISES_TYPE_CONVEYANCE:
+                res = "Conveyance";
+                break;
+            default:
+                break;
         }
+        return res;
+    }
 
     public void goToPremise(BaseProcessClass bpc){
 
@@ -116,7 +135,7 @@ public class HcsaPremiseWorkload {
                     errMap.put(name,MessageUtil.replaceMessage("GENERAL_ERR0006","Workload Manhours","field"));
                 }else if(!StringUtils.isNumeric(manhour)){
                     item.setManhourCount(manhour);
-                    errMap.put(name,MessageUtil.getMessageDesc("GENERAL_ERR0027"));
+                    errMap.put(name,MessageUtil.getMessageDesc("SC_ERR007"));
                 }else{
                     item.setManhourCount(manhour);
                     errMap.put(name,MessageUtil.replaceMessage("GENERAL_ERR0006","Workload Manhours","field"));
