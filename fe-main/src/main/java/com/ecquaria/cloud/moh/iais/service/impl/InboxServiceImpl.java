@@ -332,7 +332,7 @@ public class InboxServiceImpl implements InboxService {
         //appeal
         Boolean appealFlag = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
         if(!appealFlag){
-            String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK016");
+            String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK010");
             errorMap.put("errorMessage2",errorMsg);
         }
         //Verify whether the new licence is generated
@@ -422,7 +422,7 @@ public class InboxServiceImpl implements InboxService {
             }
             Boolean entity = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
             if(!entity){
-                errorMap.put("errorMessage","There is already a pending application for this licence");
+                errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK010"));
             }
         }else{
             errorMap.put("errorMessage",MessageUtil.getMessageDesc("INBOX_ACK011"));
