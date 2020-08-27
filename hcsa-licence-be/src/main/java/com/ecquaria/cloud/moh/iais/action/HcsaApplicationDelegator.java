@@ -2585,6 +2585,8 @@ public class HcsaApplicationDelegator {
         }else {
             if( recomInNumber == 1){
                 recommendationOnlyShow = recomInNumber + " Month";
+            }else if(recomInNumber == 0) {
+                recommendationOnlyShow = "Reject";
             }else {
                 recommendationOnlyShow = recomInNumber + " Month(s)";
             }
