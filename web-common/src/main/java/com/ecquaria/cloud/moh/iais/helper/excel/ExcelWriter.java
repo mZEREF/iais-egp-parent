@@ -225,6 +225,7 @@ public final class ExcelWriter {
                     }
 
                     if (objectType == Date.class){
+                        //Set to text format to avoid errors caused by date modification in different systems
                         cell.setCellStyle(CellStyleHelper.getTextStyle());
                     }
 

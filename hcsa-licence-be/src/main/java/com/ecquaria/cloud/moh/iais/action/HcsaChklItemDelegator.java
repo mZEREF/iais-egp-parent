@@ -714,46 +714,41 @@ public class HcsaChklItemDelegator {
     @GetMapping(value = "checklist-item-file")
 	public @ResponseBody void fileHandler(HttpServletRequest request, HttpServletResponse response){
 	    log.debug(StringUtil.changeForLog("fileHandler start ...."));
-        String action = ParamUtil.getString(request, "action");
+
+        SearchParam  searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
+        searchParam.setPageNo(0);
+        searchParam.setPageSize(Integer.MAX_VALUE);
+        QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
+        SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
+
+        //master code to description
+        List<CheckItemQueryDto> checkItemQueryDtoList = searchResult.getRows();
+        for (CheckItemQueryDto checkItemQueryDto : checkItemQueryDtoList){
+            checkItemQueryDto.setAnswerType(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getAnswerType()));
+            String riskLvl = MasterCodeUtil.getCodeDesc(checkItemQueryDto.getRiskLevel());
+            checkItemQueryDto.setRiskLevel("".equals(riskLvl) ? "-" : riskLvl);
+            checkItemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getStatus()));
+        }
+
+        boolean blockExcel = false;
+        if (IaisCommonUtils.isEmpty(checkItemQueryDtoList)){
+            blockExcel = true;
+        }
+
         File file = null;
-        switch (action){
-            case ChecklistConstant.CHECKLIST_ITEM:
-                SearchParam  searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-                searchParam.setPageNo(0);
-                searchParam.setPageSize(Integer.MAX_VALUE);
-                QueryHelp.setMainSql("hcsaconfig", "listChklItem", searchParam);
-                SearchResult searchResult = hcsaChklService.listChklItem(searchParam);
-
-                //master code to description
-                List<CheckItemQueryDto> checkItemQueryDtoList = searchResult.getRows();
-                for (CheckItemQueryDto checkItemQueryDto : checkItemQueryDtoList){
-                    checkItemQueryDto.setAnswerType(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getAnswerType()));
-                    String riskLvl = MasterCodeUtil.getCodeDesc(checkItemQueryDto.getRiskLevel());
-                    checkItemQueryDto.setRiskLevel("".equals(riskLvl) ? "-" : riskLvl);
-                    checkItemQueryDto.setStatus(MasterCodeUtil.getCodeDesc(checkItemQueryDto.getStatus()));
-                }
-
-                boolean blockExcel = false;
-                if (IaisCommonUtils.isEmpty(checkItemQueryDtoList)){
-                    blockExcel = true;
-                }
-
-                try {
-                    file = ExcelWriter.writerToExcel(checkItemQueryDtoList, CheckItemQueryDto.class, null, "Checklist_Items_Template", blockExcel, true);
-                } catch (Exception e) {
-                    log.error("=======>fileHandler error >>>>>", e);
-                }
-
-                break;
-            default:
+        try {
+            file = ExcelWriter.writerToExcel(checkItemQueryDtoList, CheckItemQueryDto.class, null, "Checklist_Items_Template", blockExcel, false);
+        } catch (Exception e) {
+            log.error("=======>fileHandler error >>>>>", e);
         }
 
         if(file != null){
             try {
                 FileUtils.writeFileResponseContent(response, file);
-                FileUtils.deleteTempFile(file);
             } catch (IOException e) {
                 log.debug(e.getMessage());
+            }finally {
+                FileUtils.deleteTempFile(file);
             }
         }
 
