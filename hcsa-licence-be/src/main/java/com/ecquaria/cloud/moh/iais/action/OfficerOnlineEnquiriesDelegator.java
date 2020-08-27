@@ -1082,6 +1082,7 @@ public class OfficerOnlineEnquiriesDelegator {
             List<ApplicationDto> applicationDtos = new ArrayList<>(1);
             ApplicationDto applicationDto =applicationClient.getApplicationById(rfiApplicationQueryDto.getId()).getEntity();
             if(applicationDto!=null&&licenceId!=null){
+                applicationDto.setNeedInsp(true);
                 applicationDtos.add(applicationDto);
                 hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
                 hcsaRiskScoreDto.setServiceId(rfiApplicationQueryDto.getSvcId());

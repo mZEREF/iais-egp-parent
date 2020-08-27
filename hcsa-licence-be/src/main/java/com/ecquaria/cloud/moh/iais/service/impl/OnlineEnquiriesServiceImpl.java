@@ -259,6 +259,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
                 hcsaRiskScoreDto.setLicId(licenceId);
                 List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+                applicationDto.setNeedInsp(true);
                 applicationDtos.add(applicationDto);
                 hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
                 hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
@@ -371,6 +372,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             hcsaRiskScoreDto.setAppType(applicationType);
             hcsaRiskScoreDto.setLicId(licenceId);
             List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+            applicationDto.setNeedInsp(true);
             applicationDtos.add(applicationDto);
             hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
             hcsaRiskScoreDto.setServiceId(serviceId);
