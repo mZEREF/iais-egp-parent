@@ -95,8 +95,8 @@
                 lic.status,
                 lic.start_date,
                 lic.expiry_date,
-                (case lic.IS_GRP_LIC
-                    when '0' then
+                (case
+                    when p3.premCount < '2' then
                         CONCAT(p.BLK_NO ,
                            case p.STREET_NAME
                               when null then null
@@ -124,6 +124,10 @@
                 FROM LICENCE AS lic
                 JOIN lic_premises lp on lp.LICENCE_ID  = lic.ID
                 JOIN premises p on p.ID  = lp.PREMISES_ID
+                JOIN (
+                	select count(*) as premCount,lp2.LICENCE_ID from hcsal.dbo.lic_premises lp2
+                	JOIN hcsal.dbo.premises p2 on lp2.PREMISES_ID = p2.ID GROUP  by lp2.LICENCE_ID
+                )p3 on lic.id = p3.licence_id
             WHERE 1=1
             <#if id??> AND CHARINDEX(:id, lic.id) >0</#if>
             <#if serviceType??> AND lic.svc_name = :serviceType</#if>
