@@ -329,6 +329,12 @@ public class InboxServiceImpl implements InboxService {
                 }
             }
         }
+        //appeal
+        Boolean appealFlag = appInboxClient.isLiscenceAppealOrCessation(licenceId).getEntity();
+        if(!appealFlag){
+            String errorMsg = MessageUtil.getMessageDesc("INBOX_ACK016");
+            errorMap.put("errorMessage2",errorMsg);
+        }
         //Verify whether the new licence is generated
         LicenceDto entity = licenceInboxClient.getLicdtoByOrgId(licenceId).getEntity();
         if(entity != null){
