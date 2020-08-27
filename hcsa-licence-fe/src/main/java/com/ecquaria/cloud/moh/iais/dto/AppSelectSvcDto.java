@@ -27,9 +27,9 @@ public class AppSelectSvcDto implements Serializable {
 
     private boolean chooseBaseSvc;
 
-    private String alignLicPremId;
-
-    private String alignLicenceNo;
+//    private String alignLicPremId;
+//
+//    private String alignLicenceNo;
 
     //for back Position
     private boolean basePage;
@@ -39,5 +39,7 @@ public class AppSelectSvcDto implements Serializable {
     private boolean licPage;
 
     private boolean newLicensee;
+
+    private boolean initPagHandler;
 
 }

@@ -16,11 +16,12 @@
 <webui:setLayout name="iais-internet"/>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
     <%@include file="comm/comFun.jsp"%>
-    <input type="hidden" name="crud_action_type"/>
-    <input type="hidden" name="crud_action_additional"/>
-    <input type="hidden" name="crud_action_type_form"/>
+    <%--<input type="hidden" name="crud_action_type"/>--%>
+    <%--<input type="hidden" name="crud_action_additional"/>--%>
+    <%--<input type="hidden" name="crud_action_type_form"/>--%>
+    <%--<input type="hidden" name="crud_action_value">--%>
     <input type="hidden" name="draftNo"/>
-    <input type="hidden" name="crud_action_value">
+    <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <div class="container">
         <div class="component-gp">
             <br>
@@ -73,6 +74,8 @@
         //disabled
         $('.disabledPart').find('input[type="radio"]').prop('disabled',true);
         $('.disabledPart').find('input[type="checkbox"]').prop('disabled',true);
+        //default check the first
+        $('#licBodyDiv').find('input[name="licPagDivCheck"]:eq(0)').prop('checked',true);
 
         $('#licBack').click(function () {
             submit('chooseAlign',null,'back');
