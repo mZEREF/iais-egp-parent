@@ -1593,6 +1593,7 @@ public class HalpAssessmentGuideDelegator {
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
         String hiddenIndex = ParamUtil.getMaskedString(bpc.request, licId+"hiddenIndex");
         String premiseIdValue = ParamUtil.getMaskedString(bpc.request, licId+"premiseId");
+        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",licIdValue);
         if (idNoPersonnal != null){
             String id = idNoPersonnal.split(",")[1];
             if("amendLic7".equals(action)) {

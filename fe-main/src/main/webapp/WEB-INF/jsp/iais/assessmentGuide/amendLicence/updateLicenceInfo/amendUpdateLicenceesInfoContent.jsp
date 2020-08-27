@@ -29,7 +29,14 @@
                         <tr>
                             <td>
                                 <div class="form-check">
-                                    <input class="form-check-input licenceCheck" id="amendLicenseId" type="radio" <c:if test="${status.index == 0}">checked</c:if>
+                                    <input class="form-check-input licenceCheck" id="amendLicenseId" type="radio" <c:choose>
+                                        <c:when test="${fn:contains(licence_err_list, pool.licenceId)}">
+                                            checked
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:if test="${status.index == 0}">checked</c:if>
+                                        </c:otherwise>
+                                    </c:choose>
                                            name="amendLicenseId" value="amendLicenseId${status.index}" aria-invalid="false"/>
                                     <label class="form-check-label" for="amendLicenseId"><span
                                             class="check-circle"></span>
