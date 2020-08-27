@@ -181,31 +181,6 @@
                                                         </iais:value>
                                                     </iais:row>
                                                 </div>
-                                                <iais:row>
-                                                    <iais:field value="To Cease"/>
-                                                    <iais:value width="7">
-                                                        <div class="form-check-gp">
-                                                            <div class="row">
-                                                                <div class="col-xs-12 col-md-2">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input"
-                                                                               id="icon5checkboxSample" type="checkbox"
-                                                                               name="${num.count}whichTodo${uid.count}"
-                                                                               value="${appCessHci.premiseId}"
-                                                                               checked
-                                                                               aria-invalid="false"
-                                                                               disabled>
-                                                                        <label class="form-check-label"
-                                                                               for="icon5checkboxSample"><span
-                                                                                class="check-square"></span></label>
-                                                                        <span id="error_whichTodo" name="iaisErrorMsg"
-                                                                              class="error-msg"></span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </iais:value>
-                                                </iais:row>
                                             </iais:section>
                                         </div>
                                     </div>
