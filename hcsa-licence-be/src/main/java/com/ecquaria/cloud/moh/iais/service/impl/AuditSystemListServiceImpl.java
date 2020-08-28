@@ -445,13 +445,11 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         Map<String,Object> param =   IaisCommonUtils.genNewHashMap();
         String syName = AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME;
         String newDateString = Formatter.formatDate(new Date());
-        String licenceDueDateString;
-        if(auditTaskDataFillterDto.getLicenceDueDate() != null){
-            licenceDueDateString =  Formatter.formatDate(auditTaskDataFillterDto.getLicenceDueDate());
-        }else {
-            licenceDueDateString = "";
-        }
+        String  licenceDueDateString = "";
         if(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK.equalsIgnoreCase(key)){
+            if(auditTaskDataFillterDto.getLicenceDueDate() != null){
+                licenceDueDateString =  Formatter.formatDate(auditTaskDataFillterDto.getLicenceDueDate());
+            }
             param.put("DDMMYYYY",newDateString);
             param.put("appno", appNo);
             param.put("hCIName",  auditTaskDataFillterDto.getHclName());
@@ -460,6 +458,9 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             param.put("serviceName", auditTaskDataFillterDto.getSvcName());
             param.put("licenceDueDate", licenceDueDateString);
         }else if(MsgTemplateConstants. MSG_TEMPLATE_AUDIT_CANCELED_TASK .equalsIgnoreCase(key)){
+            if(auditTaskDataFillterDto.getLicenceDueDate() != null){
+                licenceDueDateString =  Formatter.formatDate(auditTaskDataFillterDto.getLicenceDueDate());
+            }
             param.put("appno", appNo);
             param.put("hCIName",  auditTaskDataFillterDto.getHclName());
             param.put("hCICode",  auditTaskDataFillterDto.getHclCode());
