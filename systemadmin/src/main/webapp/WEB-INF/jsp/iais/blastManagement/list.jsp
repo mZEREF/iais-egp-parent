@@ -212,7 +212,8 @@
                 $('#support').modal('show');
             }
         } else {
-            alert('Please select record for deletion.');
+            $('#support').find("span").eq(1).html("Please select record for deletion.");
+            $('#support').modal('show');
         }
     }
 
