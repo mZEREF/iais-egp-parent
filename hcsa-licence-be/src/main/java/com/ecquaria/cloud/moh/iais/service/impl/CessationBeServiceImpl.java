@@ -386,24 +386,6 @@ public class CessationBeServiceImpl implements CessationBeService {
     }
 
     @Override
-    public void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId, String licNo) throws IOException, TemplateException {
-        Map<String, Object> map = new HashMap<>(34);
-        String dateStr = DateUtil.formatDateTime(date, "dd/MM/yyyy");
-        map.put("date", dateStr);
-        map.put("licenceA", svcName + ": " + licNo);
-        MsgTemplateDto entity = msgTemplateClient.getMsgTemplate(msgId).getEntity();
-        String messageContent = entity.getMessageContent();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject("MOH IAIS – Cessation");
-        emailDto.setSender(mailSender);
-        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-        emailDto.setClientQueryCode(appGrpId);
-        emailClient.sendNotification(emailDto).getEntity();
-    }
-
-    @Override
     public boolean isGrpLicence(List<String> licIds) {
         LicenceDto entity = hcsaLicenceClient.getLicenceDtoById(licIds.get(0)).getEntity();
         return entity.isGrpLic();

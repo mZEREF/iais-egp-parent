@@ -30,8 +30,6 @@ public interface CessationBeService {
 
     List<AppSpecifiedLicDto> getSpecLicInfo(List<String> licIds);
 
-    void sendEmail(String msgId, Date date,String svcName,String appGrpId,String licenseeId,String licNo) throws IOException, TemplateException;
-
     List<AppCessatonConfirmDto> getConfirmDto(List<AppCessationDto> appCessationDtos, Map<String, String> appIdPremisesMap , LoginContext loginContext) throws Exception;
 
     boolean isGrpLicence(List<String> licIds);
