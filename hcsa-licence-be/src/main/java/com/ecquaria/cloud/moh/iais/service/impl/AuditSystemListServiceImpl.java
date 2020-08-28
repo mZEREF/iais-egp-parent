@@ -243,16 +243,17 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             licIds.add(temp.getLicId());
             createAuditTaskApp(licIds,submitId,auditCombinationDto);
         }
+    }
 
-       // send email
+    private void sendEmailByCreateAuditTaskDataFillterDto(AuditTaskDataFillterDto temp,String eventNo){
+        // send email
         if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
-            sendEmailToIns(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK,auditCombinationDto.getEventRefNo(),temp);
+            sendEmailToIns(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK,eventNo,temp);
             sendEmailToInsForSms(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK_SMS);
         }else {
             log.info("-----------Inspector id is null or UserIdToEmails is null");
         }
     }
-
     public void createTaskCallBack(String eventRefNum,String submissionId)throws FeignException {
         log.info("call back createTaskCallBack ===================>>>>>");
         List<Submission> submissionList = eventClient.getSubmission(submissionId).getEntity();
@@ -276,6 +277,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
                 }
                 log.info("========create TaskCall is start.");
                 createTask(auditCombinationDto.getAuditTaskDataFillterDto(), submissionId, auditCombinationDto,eventRefNum);
+                sendEmailByCreateAuditTaskDataFillterDto( auditCombinationDto.getAuditTaskDataFillterDto(),auditCombinationDto.getEventRefNo());
             }
 
         }else {
