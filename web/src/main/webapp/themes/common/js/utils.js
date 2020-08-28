@@ -156,8 +156,15 @@ function initMemoryPage(paginationDiv, checkType, pageNo) {
 
 function changeMemoryPage(paginationDiv, checkType, pageNo) {
     var ids = "NA";
-    if (checkType == 1 || checkType == 2) {
+    if (checkType == 1) {
         var elemName = "input:checkbox[name='" + paginationDiv + "Check']";
+        $(elemName).each(function() {
+            if (this.checked) {
+                ids += "," + this.value;
+            }
+        });
+    } else if (checkType == 2) {
+        var elemName = "input:radio[name='" + paginationDiv + "Check']";
         $(elemName).each(function() {
             if (this.checked) {
                 ids += "," + this.value;
