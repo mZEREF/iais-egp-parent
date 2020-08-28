@@ -356,6 +356,14 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         }
     }
 
+    public void uncheckAllData() {
+        if (allData != null && allData.size() > 0) {
+            for (PageRecords<T> pr : allData) {
+                pr.setChecked(false);
+            }
+        }
+    }
+
     public void removeAllCheckedData() {
         if (allData != null && allData.size() > 0) {
             for (int i = allData.size() - 1; i >= 0; i--) {
