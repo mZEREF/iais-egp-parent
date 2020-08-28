@@ -267,6 +267,16 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         checkAllHtml();
     }
 
+    public void setDefaultChecked(Collection<T> col) {
+        if (allData != null) {
+            for (PageRecords<T> pr : allData) {
+                if (col.contains(pr.getRecord())) {
+                    pr.setChecked(true);
+                }
+            }
+        }
+    }
+
     public String getRecordsDiv() {
         return recordsDiv;
     }
