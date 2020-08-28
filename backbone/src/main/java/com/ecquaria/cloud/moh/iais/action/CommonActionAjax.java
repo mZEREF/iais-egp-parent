@@ -59,8 +59,8 @@ public class CommonActionAjax {
         // Update Checked
         if (!StringUtil.isEmpty(checkIdStr) && handler.getDisplayData() != null && !handler.getDisplayData().isEmpty()) {
             String[] checkIds = checkIdStr.split(",");
-            if (handler.getCheckType() == PaginationHandler.CHECK_TYPE_RADIO) {
-                handler.removeAllCheckedData();
+            if (handler.getCheckType() == PaginationHandler.CHECK_TYPE_RADIO && !"NA".equals(checkIdStr)) {
+                handler.uncheckAllData();
             } else {
                 for (PageRecords cu : handler.getDisplayData()) {
                     cu.setChecked(false);
