@@ -750,13 +750,13 @@ public class RequestForChangeDelegator {
             notifyMap.put("licence",licenceDto.getLicenceNo() + " " + licenceDto.getSvcName());
             MsgTemplateDto templateDto = appSubmissionService.getMsgTemplateById(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_TRANSFER_APPLICATION);
 
-            sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfor,notifyMap,templateDto.getTemplateName());
+            //sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfor,notifyMap,templateDto.getTemplateName());
             // Send notification to transferee when licence transfer application is submitted.
-            sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfee,notifyMap,templateDto.getTemplateName());
+            //sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),emailTransfee,notifyMap,templateDto.getTemplateName());
             //RFC Application - Send notification to admin officers when amendment application is submitted.
             String orgId = loginContext.getOrgId();
             List<String> adminEmailList = requestForChangeService.getAdminEmail(orgId);
-            sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),adminEmailList,notifyMap,templateDto.getTemplateName());
+            //sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),adminEmailList,notifyMap,templateDto.getTemplateName());
             requestForChangeService.sendRfcEmailToOfficer(tranferSub);
             requestForChangeService.sendRfcLicenseeEmail(tranferSub);
         } catch (Exception e) {

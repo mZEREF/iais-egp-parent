@@ -2196,8 +2196,8 @@ public class HcsaApplicationDelegator {
             String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
             Map<String, Object> emailMap = IaisCommonUtils.genNewHashMap();
             emailMap.put("officer_name", "officer_name");
-            emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
-            emailMap.put("ApplicationNumber", applicationViewDto.getApplicationDto().getApplicationNo());
+            emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+            emailMap.put("ApplicationNumber", applicationDto.getApplicationNo());
             emailMap.put("TAT_time", Formatter.formatDate(new Date()));
             emailMap.put("details", "HCI Name :"+applicationViewDto.getHciName()+"<br>"+"HCI Address :"+applicationViewDto.getHciAddress()+"<br>"+"Licensee :"+applicationName+"<br>"+"Comment :"+internalRemarks+"<br>");
             emailMap.put("systemLink", loginUrl);
@@ -2205,14 +2205,14 @@ public class HcsaApplicationDelegator {
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION);
             emailParam.setTemplateContent(emailMap);
-            emailParam.setQueryCode(applicationViewDto.getApplicationDto().getApplicationNo());
-            emailParam.setReqRefNum(applicationViewDto.getApplicationDto().getApplicationNo());
+            emailParam.setQueryCode(applicationDto.getApplicationNo());
+            emailParam.setReqRefNum(applicationDto.getApplicationNo());
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-            emailParam.setRefId(applicationViewDto.getApplicationDto().getApplicationNo());
+            emailParam.setRefId(applicationDto.getApplicationNo());
             Map<String,Object> map=IaisCommonUtils.genNewHashMap();
             MsgTemplateDto rfiEmailTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION).getEntity();
-            map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE}).get(0).getText());
-            map.put("ApplicationNumber", applicationViewDto.getApplicationDto().getApplicationNo());
+            map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
+            map.put("ApplicationNumber", applicationDto.getApplicationNo());
             String subject= MsgUtil.getTemplateMessageByContent(rfiEmailTemplateDto.getTemplateName(),map);
             emailParam.setSubject(subject);
             //email
@@ -2220,7 +2220,7 @@ public class HcsaApplicationDelegator {
             //msg
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_MSG);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            emailParam.setRefId(applicationViewDto.getApplicationDto().getApplicationNo());
+            emailParam.setRefId(applicationDto.getApplicationNo());
             notificationHelper.sendNotification(emailParam);
             //sms
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_SMS);
