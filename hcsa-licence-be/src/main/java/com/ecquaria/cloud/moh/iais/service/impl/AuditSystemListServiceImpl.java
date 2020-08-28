@@ -339,6 +339,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             licAppCorrelationDto.setLicenceId(licId);
             licAppCorrelationDto.setApplicationId(appId);
             licAppCorrelationDto.setAuditTrailDto(auditTrailDto);
+            licAppCorrelationDto.setEventRefNo(eventRefNum);
             eventBusHelper.submitAsyncRequest(licAppCorrelationDto,submissionId, EventBusConsts.SERVICE_NAME_LICENCESAVE,EventBusConsts.OPERATION_CREATE_AUDIT_TASK_CALL_BACK,eventRefNum,null);
         }catch (Exception e){
             log.info("========================>>>>> create appLicCorrelation failed!!!!");
