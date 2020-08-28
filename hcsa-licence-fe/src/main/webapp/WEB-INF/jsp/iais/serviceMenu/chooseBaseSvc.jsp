@@ -115,6 +115,11 @@
                     console.log('remark-point start...');
                     $(this).find('div.base-svc-content:eq(0) div.exist-base-lic-content input[type="radio"]:eq(0)').prop('checked',true);
                     $(this).find('div.base-svc-content:eq(0) div.exist-base-lic-content div.existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
+                    if($(this).find('.firstStep:eq(0)').is('.existing-base')){
+                        $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]').prop('disabled',false);
+                    }else{
+
+                    }
                 });
             }else if($(this).hasClass('diff-base')){
                 console.log('diff-base');
@@ -126,6 +131,7 @@
                     console.log('remark-point start...');
                     $(this).find('div.base-svc-content:eq(0) div.new-base input[type="radio"]:eq(0)').prop('checked',true);
                     $(this).find('div.existing-base-content input[type="radio"]').prop('checked',false);
+                    $(this).find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',true);
                 });
             }
 

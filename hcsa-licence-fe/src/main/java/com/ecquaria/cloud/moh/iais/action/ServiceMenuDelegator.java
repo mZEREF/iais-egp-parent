@@ -849,6 +849,7 @@ public class ServiceMenuDelegator {
                         //pagination
                         if(!IaisCommonUtils.isEmpty(newAppLicDtos)){
                             initPaginationHandler(newAppLicDtos);
+                            appSelectSvcDto.setInitPagHandler(true);
                         }
                         if(!IaisCommonUtils.isEmpty(newAppLicDtos) && newAppLicDtos.size() <= 1){
 //                            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);

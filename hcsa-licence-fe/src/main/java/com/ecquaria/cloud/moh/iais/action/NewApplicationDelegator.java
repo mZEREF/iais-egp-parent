@@ -2804,7 +2804,7 @@ public class NewApplicationDelegator {
         }
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenseeId);
         String emailAddress = WithOutRenewalDelegator.emailAddressesToString(licenseeEmailAddrs);
-        ParamUtil.setRequestAttr(bpc.request, "emailAddress", emailAddress);
+        ParamUtil.setSessionAttr(bpc.request, "emailAddress", emailAddress);
         String ackStatus = (String) ParamUtil.getRequestAttr(bpc.request, ACKSTATUS);
         boolean isRfi = NewApplicationHelper.checkIsRfi(bpc.request);
         if(isRfi && "error".equals(ackStatus)){
