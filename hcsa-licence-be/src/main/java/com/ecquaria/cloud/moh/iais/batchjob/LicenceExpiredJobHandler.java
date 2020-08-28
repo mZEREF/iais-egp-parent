@@ -127,7 +127,7 @@ public class LicenceExpiredJobHandler extends IJobHandler {
                         notificationHelper.sendNotification(emailParam);
                         //msg
                         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_LICENCE_END_DATE_MSG);
-                        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+                        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                         List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(id).getEntity();
                         ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
                         emailParam.setRefId(applicationDto.getApplicationNo());

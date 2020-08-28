@@ -178,7 +178,7 @@ public class SendsReminderToReplyRfiBatchjob {
             emailMap.put("systemLink", url);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
             emailParam.setTemplateContent(emailMap);
-            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             emailParam.setMaskParams(mapPrem);
             emailParam.setRefId(applicationDto.getApplicationNo());
             notificationHelper.sendNotification(emailParam);
