@@ -48,6 +48,8 @@
 <script type="text/javascript">
     $("#applyLicence").attr('checked', 'true');
 
+    $("#submitService").hide();
+
     $(document).ready(function () {
         //disabled
         $('.disabledPart').find('input[type="radio"]').prop('disabled',true);

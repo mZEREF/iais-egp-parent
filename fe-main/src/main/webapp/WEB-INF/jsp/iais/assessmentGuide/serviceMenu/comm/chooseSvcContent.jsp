@@ -58,9 +58,7 @@
                 </c:forEach>
             </div>
             <div class="text-right text-center-mobile">
-                <c:if test="${baseServiceChecked == null}">
-                    <a class="btn btn-primary next" id="submitService">NEXT</a>
-                </c:if>
+                <a class="btn btn-primary next" id="submitService">NEXT</a>
             </div>
         </div>
     </div>

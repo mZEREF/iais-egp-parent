@@ -39,7 +39,7 @@
 <%@include file="../assessmentGuideServiceMenuFoot.jsp" %>
 <script type="text/javascript">
     $("#applyLicence").attr('checked', 'true');
-
+    $("#submitService").hide();
     $(document).ready(function () {
         //first enter
         var init = 0;
