@@ -6,22 +6,21 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.rest.RestApiUrlConsts;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.RedisCacheHelper;
 import com.ecquaria.cloud.submission.client.model.ServiceStatus;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.kafka.GlobalConstants;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import sop.webflow.rt.api.BaseProcessClass;
-
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * EventbusCallBackDelegate
@@ -82,11 +81,12 @@ public class EventbusCallBackDelegate {
                     }
                 }
             } else if (!pending) {
-                String flag = RedisCacheHelper.getInstance().get("IaisEventbusCbCount",
+                String flag = SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                        .get("IaisEventbusCbCount",
                         submissionId + "_" + operation + "_CallbackFlag");
                 if (StringUtil.isEmpty(flag)) {
                     log.info("<======= Do callback =======>");
-                    RedisCacheHelper.getInstance().set("IaisEventbusCbCount",
+                    SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set("IaisEventbusCbCount",
                             submissionId + "_" + operation + "_CallbackFlag", "callback", 60L * 60L * 24L);
                     callbackMethod(submissionId, operation, eventRefNum);
                 }

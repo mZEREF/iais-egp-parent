@@ -27,6 +27,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -456,11 +457,11 @@ public final class IaisEGPHelper extends EGPHelper {
 
 
     public static String genTokenForCallback(String submissionId, String serviceName) {
-        String secKey = RedisCacheHelper.getInstance().get("iaisEdToken",
+        String secKey = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get("iaisEdToken",
                 "Callback_SecKEy__SubId_" + submissionId);
         if (StringUtil.isEmpty(secKey)) {
             secKey = String.valueOf(System.currentTimeMillis());
-            RedisCacheHelper.getInstance().set("iaisEdToken",
+            SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set("iaisEdToken",
                     "Callback_SecKEy__SubId_" + submissionId, secKey, 60L * 60L * 24L);
         }
         String token = StringUtil.digestStrSha256(serviceName + secKey);
@@ -469,7 +470,7 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     public static boolean verifyCallBackToken(String submissionId, String serviceName, String token) {
-        String secKey = RedisCacheHelper.getInstance().get("iaisEdToken",
+        String secKey = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get("iaisEdToken",
                 "Callback_SecKEy__SubId_" + submissionId);
         String corrToken = StringUtil.digestStrSha256(serviceName + secKey);
 

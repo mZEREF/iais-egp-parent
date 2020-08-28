@@ -18,16 +18,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeView;
+import com.ecquaria.cloud.moh.iais.common.helper.MasterCodeHelper;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
-import lombok.extern.slf4j.Slf4j;
-
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+
 
 /**
  * MasterCodeUtil
@@ -38,9 +40,7 @@ import java.util.Map;
 @Slf4j
 public final class MasterCodeUtil {
     //Cache names
-    private static final String CACHE_NAME_CATE_MAP                = "iaisMcCateMap";
     private static final String CACHE_NAME_FILTER                  = "iaisMcFilterMap";
-    private static final String CACHE_NAME_CODE                    = "iaisMcCode";
     private static final String SEQUENCE                           = "sequence";
     private static final String WEBCOMMON                          = "webcommon";
     private static final String RETRIEVE_MASTER_CODES              = "retrieveMasterCodes";
@@ -116,8 +116,9 @@ public final class MasterCodeUtil {
         Map<String, List<MasterCodeView>> cateMap = new LinkedHashMap<>();
         Map<String, List<MasterCodeView>> filterMap = IaisCommonUtils.genNewHashMap();
         list.forEach(mc ->
-            RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue(),
-                    RedisCacheHelper.NOT_EXPIRE)
+            SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                    .set(MasterCodeHelper.CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue(),
+                            RedisCacheHelper.NOT_EXPIRE)
         );
         list.forEach(mc -> {
             String cateStr = String.valueOf(mc.getCategory());
@@ -130,7 +131,7 @@ public final class MasterCodeUtil {
                 codes.add(mc);
             }
         });
-        saveInCache(CACHE_NAME_CATE_MAP, cateMap);
+        saveInCache(MasterCodeHelper.CACHE_NAME_CATE_MAP, cateMap);
         list.forEach(mc -> {
             if (StringUtil.isEmpty(mc.getFilterValue())) {
                 //Do nothing
@@ -204,7 +205,8 @@ public final class MasterCodeUtil {
      * @return: java.lang.String
      */
     public static String getCodeDesc(String code) {
-        String desc = RedisCacheHelper.getInstance().get(CACHE_NAME_CODE, code);
+        String desc = SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                .get(MasterCodeHelper.CACHE_NAME_CODE, code);
         if (StringUtil.isEmpty(desc) && !StringUtil.isEmpty(code)) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.addFilter("codeFilter", code, true);
@@ -280,7 +282,8 @@ public final class MasterCodeUtil {
          Private methods
      ******************************************************************************************************************/
     private static List<MasterCodeView> retrieveCateSource(String cateId) {
-        List<MasterCodeView> list = RedisCacheHelper.getInstance().get(CACHE_NAME_CATE_MAP, cateId);
+        List<MasterCodeView> list = SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                .get(MasterCodeHelper.CACHE_NAME_CATE_MAP, cateId);
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
@@ -291,10 +294,13 @@ public final class MasterCodeUtil {
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
-                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getCodeValue(),
-                            RedisCacheHelper.NOT_EXPIRE)
+                        SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                                .set(MasterCodeHelper.CACHE_NAME_CODE, m.getCode(), m.getCodeValue(),
+                                RedisCacheHelper.NOT_EXPIRE)
                 );
-                RedisCacheHelper.getInstance().set(CACHE_NAME_CATE_MAP, cateId, list, RedisCacheHelper.NOT_EXPIRE);
+                SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                        .set(MasterCodeHelper.CACHE_NAME_CATE_MAP, cateId, list,
+                        RedisCacheHelper.NOT_EXPIRE);
             } else {
                 return IaisCommonUtils.genNewArrayList();
             }
@@ -304,7 +310,8 @@ public final class MasterCodeUtil {
     }
 
     private static List<MasterCodeView> retrieveFilterSource(String filter) {
-        List<MasterCodeView> list = RedisCacheHelper.getInstance().get(CACHE_NAME_FILTER, filter);
+        List<MasterCodeView> list = SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                .get(CACHE_NAME_FILTER, filter);
         if (list == null) {
             SearchParam param = new SearchParam(MasterCodeView.class.getName());
             param.setSort(SEQUENCE, SearchParam.ASCENDING);
@@ -315,10 +322,13 @@ public final class MasterCodeUtil {
             if (sr.getRowCount() > 0) {
                 list = sr.getRows();
                 list.forEach(m ->
-                    RedisCacheHelper.getInstance().set(CACHE_NAME_CODE, m.getCode(), m.getCodeValue(),
-                            RedisCacheHelper.NOT_EXPIRE)
+                        SpringContextHelper.getContext().getBean(RedisCacheHelper.class)
+                                .set(MasterCodeHelper.CACHE_NAME_CODE,
+                                m.getCode(), m.getCodeValue(),
+                                RedisCacheHelper.NOT_EXPIRE)
                 );
-                RedisCacheHelper.getInstance().set(CACHE_NAME_FILTER, filter, list, RedisCacheHelper.NOT_EXPIRE);
+                SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set(CACHE_NAME_FILTER,
+                        filter, list, RedisCacheHelper.NOT_EXPIRE);
             } else {
                 return IaisCommonUtils.genNewArrayList();
             }
@@ -328,7 +338,7 @@ public final class MasterCodeUtil {
     }
 
     private static void saveInCache(String cacheName, Map<String, List<MasterCodeView>> conMap) {
-        RedisCacheHelper rch = RedisCacheHelper.getInstance();
+        RedisCacheHelper rch = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
         rch.clear(cacheName);
         conMap.entrySet().forEach(ent ->
             rch.set(cacheName, ent.getKey(), ent.getValue())
@@ -336,15 +346,15 @@ public final class MasterCodeUtil {
     }
 
     private static void addMcToCache(MasterCodeView mc) {
-        RedisCacheHelper rch = RedisCacheHelper.getInstance();
-        rch.set(CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue());
+        RedisCacheHelper rch = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+        rch.set(MasterCodeHelper.CACHE_NAME_CODE, mc.getCode(), mc.getCodeValue());
         String cate = String.valueOf(mc.getCategory());
-        List<MasterCodeView> list = rch.get(CACHE_NAME_CATE_MAP, cate);
+        List<MasterCodeView> list = rch.get(MasterCodeHelper.CACHE_NAME_CATE_MAP, cate);
         if (list == null) {
             list = IaisCommonUtils.genNewArrayList();
         }
         list.add(mc);
-        rch.set(CACHE_NAME_CATE_MAP, cate, list);
+        rch.set(MasterCodeHelper.CACHE_NAME_CATE_MAP, cate, list);
         if (StringUtil.isEmpty(mc.getFilterValue())) {
             return;
         }

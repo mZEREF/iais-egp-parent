@@ -1,15 +1,15 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
-
-import java.util.List;
 
 /**
  * @author: yichen
@@ -45,7 +45,7 @@ public final class HcsaServiceCacheHelper {
 	}
 
 	public static HcsaServiceDto getServiceById(String id) {
-		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
+		RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
 		HcsaServiceDto hcsaServiceDto = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, id);
 
 		if (hcsaServiceDto == null){
@@ -99,7 +99,7 @@ public final class HcsaServiceCacheHelper {
 
 			if (status == HttpStatus.SC_OK){
 				List<HcsaServiceDto> serviceList = result.getEntity();
-				RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
+				RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
 				redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST, serviceList);
 				serviceList.forEach(i -> redisCacheHelper.set(CACHE_NAME_HCSA_SERVICE, i.getId(),
 						i, RedisCacheHelper.NOT_EXPIRE));
@@ -108,7 +108,7 @@ public final class HcsaServiceCacheHelper {
 	}
 
 	public static List<HcsaServiceDto> receiveAllHcsaService(){
-		RedisCacheHelper redisCacheHelper = RedisCacheHelper.getInstance();
+		RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
 		List<HcsaServiceDto> list  = redisCacheHelper.get(CACHE_NAME_HCSA_SERVICE, KEY_NAME_HCSA_SERVICE_LIST);
 		if(!IaisCommonUtils.isEmpty(list)){
 			return list;

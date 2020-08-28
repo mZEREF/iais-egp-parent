@@ -1,14 +1,15 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
+import com.ecquaria.cloud.helper.SpringContextHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.MapFormat;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import java.util.Date;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
-
-import java.util.Date;
-import java.util.Map;
 
 /**
  * MessageUtil
@@ -31,14 +32,15 @@ public class MessageUtil {
         }
 
         map.forEach((k, v) -> {
-            RedisCacheHelper.getInstance().set(CACHE_NAME_MSG, k, v, RedisCacheHelper.NOT_EXPIRE);
+            SpringContextHelper.getContext().getBean(RedisCacheHelper.class).set(CACHE_NAME_MSG,
+                    k, v, RedisCacheHelper.NOT_EXPIRE);
         });
 
         log.debug("##########################Load Iais Messages End##############################");
     }
 
     public static String getMessageDesc(String key) {
-        String msg = RedisCacheHelper.getInstance().get(CACHE_NAME_MSG, key);
+        String msg = SpringContextHelper.getContext().getBean(RedisCacheHelper.class).get(CACHE_NAME_MSG, key);
         if (StringUtil.isEmpty(msg)) {
             msg = key;
         }
@@ -87,12 +89,12 @@ public class MessageUtil {
     //only replace first or only one curly brace
     public static String replaceMessage(String codeKey,String replaceString,String replacePart){
         String msg = MessageUtil.getMessageDesc(codeKey);
-        if(StringUtil.isEmpty(msg))
-            return  codeKey;
-        else if(msg.contains("{") && msg.contains("}")){
+        if(StringUtil.isEmpty(msg)) {
+            return codeKey;
+        } else if(msg.contains("{") && msg.contains("}")){
             return msg.replace(replacePart,replaceString).replace("{","").replace("}","");
-        } else
-         return msg.replace(replacePart,replaceString);
-
+        } else {
+            return msg.replace(replacePart, replaceString);
+        }
     }
 }

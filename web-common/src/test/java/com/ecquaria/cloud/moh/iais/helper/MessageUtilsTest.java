@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.helper.RedisCacheHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -50,7 +51,7 @@ public class MessageUtilsTest {
         PowerMockito.mockStatic(SpringContextHelper.class);
         ApplicationContext context = PowerMockito.mock(ApplicationContext.class);
         when(SpringContextHelper.getContext()).thenReturn(context);
-        when(RedisCacheHelper.getInstance()).thenReturn(rch);
+        when(context.getBean(RedisCacheHelper.class)).thenReturn(rch);
         doNothing().when(rch).set(anyString(), anyString(), anyObject());
         Map<String,String> message = IaisCommonUtils.genNewHashMap();
         message.put("messageKey","messageValue");
