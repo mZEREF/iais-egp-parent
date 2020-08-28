@@ -38,7 +38,9 @@ public final class LoginHelper {
         trailDtoList.add(auditTrailDto);
         SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);
         try {
-            AuditLogUtil.callWithEventDriven(trailDtoList, client);
+            String eventRefNo = String.valueOf(System.currentTimeMillis());
+            log.info(StringUtil.changeForLog("call event bus for login , the event ref number is " + eventRefNo));
+            AuditLogUtil.callWithEventDriven(trailDtoList, client, eventRefNo);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
