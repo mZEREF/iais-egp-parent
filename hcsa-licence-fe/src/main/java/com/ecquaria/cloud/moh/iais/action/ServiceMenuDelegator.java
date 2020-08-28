@@ -379,52 +379,14 @@ public class ServiceMenuDelegator {
 
     public void preChooseLic(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("prepare choose licence start ..."));
-        AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         PaginationHandler<MenuLicenceDto> paginationHandler = (PaginationHandler<MenuLicenceDto>) ParamUtil.getSessionAttr(bpc.request,"licPagDiv__SessionAttr");
+        AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
+        if(appSelectSvcDto.isInitPagHandler()){
+            List<MenuLicenceDto> menuLicenceDtos = IaisCommonUtils.genNewArrayList();
+            menuLicenceDtos.add(paginationHandler.getDisplayData().get(0).getRecord());
+            paginationHandler.setDefaultChecked(menuLicenceDtos);
+        }
         paginationHandler.preLoadingPage();
-//        List<HcsaServiceDto> baseHcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(bpc.request, BASE_SERVICE_ATTR);
-//        //svcId
-//        List<String> excludeChkBase = IaisCommonUtils.genNewArrayList();
-//        List<String> chkBaseSvcIds = (List<String>) ParamUtil.getSessionAttr(bpc.request,BASE_SERVICE_ATTR_CHECKED);
-//        for(HcsaServiceDto hcsaServiceDto:baseHcsaServiceDtos){
-//            excludeChkBase.add(hcsaServiceDto.getId());
-//        }
-//        if(appSelectSvcDto.isChooseBaseSvc()){
-//            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST);
-//            List<String> baseSvcIds = IaisCommonUtils.genNewArrayList();
-//            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
-//                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-//                    baseSvcIds.add(appSvcRelatedInfoDto.getBaseServiceId());
-//                }
-//            }
-//            excludeChkBase.removeAll(baseSvcIds);
-//            excludeChkBase.removeAll(chkBaseSvcIds);
-//        }else{
-//            excludeChkBase.removeAll(chkBaseSvcIds);
-//        }
-//        String licenseeId = "";
-//        LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-//        if(loginContext != null){
-//            licenseeId = loginContext.getLicenseeId();
-//        }
-//        if(IaisCommonUtils.isEmpty(excludeChkBase)){
-//            excludeChkBase = IaisCommonUtils.genNewArrayList();
-//        }
-//        SearchResult<MenuLicenceDto> searchResult = getLicPremInfo(excludeChkBase,licenseeId);
-//        //filter pending and existing data
-//        List<MenuLicenceDto> newAppLicDtos = removePendAndExistPrem(excludeChkBase,searchResult.getRows(),licenseeId);
-//        //pagination
-//        if(!IaisCommonUtils.isEmpty(newAppLicDtos)){
-//            initPaginationHandler(newAppLicDtos);
-//        }
-
-//        boolean flag = true;
-//        if(StringUtil.isEmpty(appSelectSvcDto.getAlignLicPremId())){
-//            ParamUtil.setRequestAttr(bpc.request,"chooseFirst",flag);
-//        }else{
-//            flag = false;
-//            ParamUtil.setRequestAttr(bpc.request,"chooseFirst",flag);
-//        }
         log.info(StringUtil.changeForLog("prepare choose licence end ..."));
     }
 
@@ -646,7 +608,7 @@ public class ServiceMenuDelegator {
                     }
 
                     //only not align option
-                    if(!IaisCommonUtils.isEmpty(newAppLicDtos) && newAppLicDtos.size() <= 1){
+                    if(newAppLicDtos != null && newAppLicDtos.size() <= 1){
                         if(basechks.length > 1){
                             //0066206
                             nextstep = CHOOSE_ALIGN;
@@ -992,25 +954,11 @@ public class ServiceMenuDelegator {
         log.info(StringUtil.changeForLog("do choose lic start ..."));
         String additional = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
-        /*String alignLic = ParamUtil.getString(bpc.request,"alignLic");
-        String alignLicenceNo = "";
-        String licPremiseId = "";
-        if(StringUtil.isEmpty(alignLic)){
-            log.info(StringUtil.changeForLog("alignLic is null"));
-            licPremiseId = appSelectSvcDto.getAlignLicPremId();
-            alignLicenceNo = appSelectSvcDto.getAlignLicenceNo();
-        }else if("-1".equals(alignLic)){
-            licPremiseId = "-1";
-            log.info(StringUtil.changeForLog("not align"));
-        } else{
-            alignLicenceNo = ParamUtil.getMaskedString(bpc.request,"licenceNo"+alignLic);
-            licPremiseId = ParamUtil.getMaskedString(bpc.request,"premisesId"+alignLic);
-        }*/
         PaginationHandler<MenuLicenceDto> paginationHandler = (PaginationHandler<MenuLicenceDto>) ParamUtil.getSessionAttr(bpc.request,"licPagDiv__SessionAttr");
         paginationHandler.keepCurrentPageChecked();
         List<MenuLicenceDto> menuLicenceDtos = paginationHandler.getDisplayCheckedData();
         MenuLicenceDto menuLicenceDto = new MenuLicenceDto();
-        if(!StringUtil.isEmpty(menuLicenceDtos) && menuLicenceDtos.size() > 0){
+        if(menuLicenceDtos != null && menuLicenceDtos.size() > 0){
             menuLicenceDto = menuLicenceDtos.get(0);
         }
         String alignLicenceNo = menuLicenceDto.getLicenceNo();
