@@ -130,12 +130,11 @@ public class InsRepServiceImpl implements InsRepService {
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(taskDto.getRefNo()).getEntity();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
-        String appId = applicationDto.getId();
         String applicationType = applicationDto.getApplicationType();
         String appGrpId = applicationDto.getAppGrpId();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         String status = applicationDto.getStatus();
-        String appTypeCode = insRepClient.getAppType(appId).getEntity();
+        String appTypeCode = applicationDto.getApplicationType();
         ApplicationGroupDto applicationGroupDto = insRepClient.getApplicationGroupDto(appGrpId).getEntity();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(appInsRepDto.getLicenseeId()).getEntity();
         String licId = appInsRepDto.getLicenceId();
@@ -186,7 +185,7 @@ public class InsRepServiceImpl implements InsRepService {
         list.add(serviceId);
         List<HcsaServiceDto> listHcsaServices = hcsaChklClient.getHcsaServiceByIds(list).getEntity();
         String svcName = "";
-        if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
+        if (!IaisCommonUtils.isEmpty(listHcsaServices)) {
             for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
                 svcName = hcsaServiceDto.getSvcName();
             }
@@ -303,7 +302,7 @@ public class InsRepServiceImpl implements InsRepService {
         }
 
         //noted by
-        List<TaskDto> entity = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
+        List<TaskDto> entity = organizationClient.getTasksByRefNo(appPremisesCorrelationId).getEntity();
         for (TaskDto dto : entity) {
             String roleId = dto.getRoleId();
             String userId = dto.getUserId();

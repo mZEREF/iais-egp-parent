@@ -996,6 +996,8 @@ public class RequestForChangeMenuDelegator {
         if (StringUtil.isEmpty(editSelect)) {
             errMap.put("editSelect", "UC_CHKLMD001_ERR001");
         }
+        //rfc valiant
+
         if (!errMap.isEmpty()) {
             ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
             ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
