@@ -15,34 +15,34 @@
 </iais:row>
 <iais:row>
     <iais:field value="ID Type" width="11" required="true"/>
-        <%--<c:choose>--%>
-            <%--<c:when test="${'Y'.equals(canEditFlag)}">--%>
+        <c:choose>
+            <c:when test="${'Y'.equals(canEditFlag)}">
                     <iais:value width="11">
                         <iais:select name="idType" id="idType" value="${inter_user_attr.idType}"
                                      codeCategory="CATE_ID_ID_TYPE" firstOption="Please Select"/>
                         <span class="error-msg" name="errorMsg" id="error_idType"></span>
                     </iais:value>
-            <%--</c:when>--%>
-            <%--<c:otherwise>--%>
-                    <%--<iais:value width="11">--%>
-                        <%--<input name="idType" id="idType" type="text" value="<iais:code code= "${inter_user_attr.idType}"/>" readonly/>--%>
-                        <%--<span class="error-msg" name="errorMsg" id="error_idType"></span>--%>
-                    <%--</iais:value>--%>
-            <%--</c:otherwise>--%>
-        <%--</c:choose>--%>
+            </c:when>
+            <c:otherwise>
+                    <iais:value width="11">
+                        <input name="idType" id="idType" type="text" value="<iais:code code= "${inter_user_attr.idType}"/>" readonly/>
+                        <span class="error-msg" name="errorMsg" id="error_idType"></span>
+                    </iais:value>
+            </c:otherwise>
+        </c:choose>
 </iais:row>
 <iais:row>
     <iais:field value="ID No" width="11" required="true"/>
     <iais:value width="11">
-        <%--<c:choose>--%>
-            <%--<c:when test="${'Y'.equals(canEditFlag)}">--%>
+        <c:choose>
+            <c:when test="${'Y'.equals(canEditFlag)}">
                 <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9"/>
                 <span class="error-msg" name="errorMsg" id="error_idNo"></span>
-            <%--</c:when>--%>
-            <%--<c:otherwise>--%>
-                    <%--<input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9" readonly/>--%>
-            <%--</c:otherwise>--%>
-        <%--</c:choose>--%>
+            </c:when>
+            <c:otherwise>
+                    <input type="text" name="idNo" id="idNo" value="${inter_user_attr.identityNo}" maxlength="9" readonly/>
+            </c:otherwise>
+        </c:choose>
             <span class="error-msg" name="errorMsg" id="error_identityNo"></span>
     </iais:value>
 </iais:row>

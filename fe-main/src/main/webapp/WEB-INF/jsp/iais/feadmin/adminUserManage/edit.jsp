@@ -18,22 +18,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dashboard-page-title">
-                        <c:choose>
-                            <c:when test="${'Y'.equals(canEditFlag)}">
-                                <h1>Create Account</h1>
-                            </c:when>
-                            <c:otherwise>
-                                <c:choose>
-                                    <c:when test="${'1'.equals(isAdmin)}">
-                                        <h1>Edit Account</h1>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <h1>Edit Account</h1>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:otherwise>
-                        </c:choose>
-
+                        <h1>${title} Account</h1>
                     </div>
                 </div>
             </div>
