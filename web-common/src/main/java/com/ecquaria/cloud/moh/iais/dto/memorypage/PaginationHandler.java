@@ -274,6 +274,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
                     pr.setChecked(true);
                 }
             }
+            checkAllHtml();
         }
     }
 
