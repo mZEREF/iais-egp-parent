@@ -38,10 +38,12 @@ public class PrepareCessation {
         if(!IaisCommonUtils.isEmpty(applicationDtos)){
            for(ApplicationDto applicationDto : applicationDtos){
                String originLicenceId = applicationDto.getOriginLicenceId();
-               String licenceId = hcsaLicenceClient.findNewestLicId(originLicenceId).getEntity();
-               log.error(StringUtil.changeForLog("=============="+licenceId+"==============="));
-               if(!StringUtil.isEmpty(licenceId)){
-                   applicationDto.setOriginLicenceId(licenceId);
+               if(!StringUtil.isEmpty(originLicenceId)){
+                   String licenceId = hcsaLicenceClient.findNewestLicId(originLicenceId).getEntity();
+                   log.error(StringUtil.changeForLog("=============="+licenceId+"==============="));
+                   if(!StringUtil.isEmpty(licenceId)){
+                       applicationDto.setOriginLicenceId(licenceId);
+                   }
                }
            }
            applicationClient.updateCessationApplications(applicationDtos).getEntity();
