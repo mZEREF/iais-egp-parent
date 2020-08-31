@@ -171,7 +171,7 @@
 
     $("#selectedFile").change(function () {
         var configFileSize = $("#configFileSize").val();
-        var error  = validateUploadSizeMaxOrEmptyCopy(configFileSize,'selectedFile');
+        var error  = validateUploadSizeMaxOrEmpty(configFileSize,'selectedFile');
         alert(error);
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
@@ -185,22 +185,6 @@
             $("#fileName").html("");
         }
     });
-
-    function validateUploadSizeMaxOrEmptyCopy(maxSize,selectedFileId) {
-        console.log($(fileId));
-        var fileId= '#'+selectedFileId;
-        var fileV = $( fileId).val();
-        var file = $(fileId).get(0).files[0];
-        if(fileV == null || fileV == "" ||file==null|| file==undefined){
-            return "E";
-        }
-        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
-        fileSize = parseInt(fileSize);
-        if(fileSize>= maxSize){
-            return "N";
-        }
-        return "Y";
-    }
 
     function deleteWdFile() {
         // document.getElementById("withdrawFile").files[0] = null;
