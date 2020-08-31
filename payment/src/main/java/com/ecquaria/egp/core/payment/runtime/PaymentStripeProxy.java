@@ -8,11 +8,17 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.PaymentRequestDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.SrcSystemConfDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.payment.PaymentTransactionEntity;
 import com.ecquaria.egp.api.EGPCaseHelper;
 import com.ecquaria.egp.core.payment.PaymentData;
 import com.ecquaria.egp.core.payment.PaymentTransaction;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.stripe.model.checkout.Session;
+import com.stripe.net.RequestOptions;
+import com.stripe.param.checkout.SessionCreateParams;
 import ecq.commons.helper.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Base64;
@@ -39,7 +45,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
-public class PaymentBaiduriProxy extends PaymentProxy {
+public class PaymentStripeProxy extends PaymentProxy {
 
 
 	public static final String DEFAULT_ENCODING = "UTF-8";
@@ -57,9 +63,9 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		String continueToken = getContinueToken();
 		bpc.request.getSession().setAttribute(IMPL_CONTINUE_TOKEN_PREFIX + getTinyKey(), continueToken);
 
-		String bigsURL = AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+ConfigUtil.getString("baiduri.url");
+		String bigsURL = AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+ConfigUtil.getString("stripe.url");
 		if (StringHelper.isEmpty(bigsURL)) {
-			throw new PaymentException("baiduri.url is not set.");
+			throw new PaymentException("stripe.url is not set.");
 		}
 
 		Map<String, String> fields = null;
@@ -80,8 +86,39 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		String payMethod = fields.get("vpc_OrderInfo");
 		String reqNo = fields.get("vpc_MerchTxnRef");
 		String returnUrl=this.getPaymentData().getContinueUrl();
-		srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
+		try {
+			RequestOptions requestOptions=PaymentBaiduriProxyUtil.getStripeService().authentication();
+			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
 
+			SessionCreateParams createParams =
+					SessionCreateParams.builder()
+							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+//							.addPaymentMethodType(SessionCreateParams.PaymentMethodType.IDEAL)
+							.setMode(SessionCreateParams.Mode.PAYMENT)
+							.setSuccessUrl(fields.get("vpc_ReturnURL"))
+							.setCancelUrl(fields.get("vpc_ReturnURL"))
+							.addLineItem(
+									SessionCreateParams.LineItem.builder()
+											.setQuantity(1L)
+											.setPriceData(
+													SessionCreateParams.LineItem.PriceData.builder()
+															.setCurrency("sgd")
+															.setUnitAmount(Long.valueOf(amo))
+															.setProductData(
+																	SessionCreateParams.LineItem.PriceData.ProductData.builder()
+																			.setName(AppConsts.MOH_SYSTEM_NAME)
+																			.build())
+															.build())
+											.build())
+							.build();
+			Session session= PaymentBaiduriProxyUtil.getStripeService().createSession(createParams);
+			srcSystemConfDto.setClientKey(session.getId());
+			ParamUtil.setSessionAttr(bpc.request,"CHECKOUT_SESSION_ID",session.getId());
+
+		} catch (StripeException e) {
+			log.info(e.getMessage(),e);
+			srcSystemConfDto.setClientKey(UUID.randomUUID().toString());
+		}
 		if(!StringUtil.isEmpty(amo)&&!StringUtil.isEmpty(payMethod)&&!StringUtil.isEmpty(reqNo)) {
 			PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
 
@@ -129,59 +166,62 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		String transNo = this.getPaymentData().getPaymentTrans().getTransNo();
 		String refNo = this.getPaymentData().getSvcRefNo();
 		double amount = this.getPaymentData().getAmount();
-		PaymentRequestDto paymentRequestDto= PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
+		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(refNo).getEntity();
 
 		Map<String, String> fields = getResponseFieldsMap(bpc);
 
 		String gwNo = fields.get("vpc_TransactionNo");
 		setGatewayRefNo(gwNo);
 		HttpServletRequest request = bpc.request;
+		PaymentIntent paymentIntent=null;
+		try{
 
+			PaymentBaiduriProxyUtil.getStripeService().authentication();
+			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
+			Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+			paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(checkoutSession.getPaymentIntent());
+		}catch (Exception e){
+			log.info(e.getMessage(),e);
+		}
 
 		String response = "payment success";
 		setPaymentResponse(response);
-		String secureHashType = fields.remove("vpc_SecureHashType");
-		String responseSecureHash = fields.remove("vpc_SecureHash");
-		String hashValidated = null;
+//		String secureHashType = fields.remove("vpc_SecureHashType");
+//		String responseSecureHash = fields.remove("vpc_SecureHash");
+//		String hashValidated = null;
 		String status = null;//"Send";
-		try {
-			String secureHash = hashAllFields(fields, secureHashType);
-			if(secureHash.equalsIgnoreCase(responseSecureHash)){
-				hashValidated = "Correct";
-				String statusNum = fields.get("vpc_TxnResponseCode");
-				if("0".equals(statusNum)){
-					status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
-				}else{
-					status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
-				}
-
+		String invoiceNo = "1234567";//"Send";
+		//hashValidated = "Correct";
+//		String statusNum = fields.get("vpc_TxnResponseCode");
+//		if("0".equals(statusNum)){
+//			status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+//		}else{
+//			status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
+//		}
+		if(paymentIntent!=null){
+			//invoiceNo=paymentIntent.getInvoice();
+			if(paymentIntent.getStatus().equals("succeeded")){
+				status =PaymentTransactionEntity.TRANS_STATUS_SUCCESS;
+			}else {
+				status = PaymentTransactionEntity.TRANS_STATUS_FAILED;
+			}
+		}
 //				setReceiptStatus(status);
-				setPaymentTransStatus(status);
+		//setPaymentTransStatus(status);
 //				String message = fields.get("vpc_Message");
 
 
-				PaymentDto paymentDto = new PaymentDto();
-				paymentDto.setAmount(amount);
-				paymentDto.setReqRefNo(refNo);
-				paymentDto.setTxnRefNo(transNo);
-				paymentDto.setInvoiceNo(fields.get("vpc_ReceiptNo"));
+		PaymentDto paymentDto = new PaymentDto();
+		paymentDto.setAmount(amount);
+		paymentDto.setReqRefNo(refNo);
+		paymentDto.setTxnRefNo(transNo);
+		paymentDto.setInvoiceNo(invoiceNo);
 
-				paymentDto.setPmtStatus(status);
-				PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
-
-				// update the data's status and time;
-			}else{
-				hashValidated="Invalid Hash";
-				throw new PaymentException(hashValidated);
-			}
-			bpc.request.setAttribute("baiduriHash", hashValidated);
-		} catch (Exception e) {
-
-			throw new PaymentException(e);
-		}
+		paymentDto.setPmtStatus(status);
+		PaymentBaiduriProxyUtil.getPaymentClient().saveHcsaPayment(paymentDto);
 
 		try {
-			setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
+			//setPaymentTransStatus(PaymentTransaction.TRANS_STATUS_SEND);
 
 			String results="?result="+ MaskUtil.maskValue("result",status)+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",refNo)+"&txnDt="+MaskUtil.maskValue("txnDt", DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo",transNo);
 			String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
@@ -215,7 +255,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 			throw new PaymentException(e1);
 		}
 		String reqNo = fields.get("vpc_MerchTxnRef");
-		PaymentRequestDto paymentRequestDto= PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
+		PaymentRequestDto paymentRequestDto=PaymentBaiduriProxyUtil.getPaymentClient().getPaymentRequestDtoByReqRefNo(reqNo).getEntity();
 		String results="?result="+MaskUtil.maskValue("result","cancelled")+"&reqRefNo="+MaskUtil.maskValue("reqRefNo",reqNo)+"&txnDt="+MaskUtil.maskValue("txnDt",DateUtil.formatDate(new Date(), "dd/MM/yyyy"))+"&txnRefNo="+MaskUtil.maskValue("txnRefNo","");
 		String bigsUrl =AppConsts.REQUEST_TYPE_HTTPS + bpc.request.getServerName()+paymentRequestDto.getSrcSystemConfDto().getReturnUrl()+results;
 
@@ -397,5 +437,7 @@ public class PaymentBaiduriProxy extends PaymentProxy {
 		setPaymentTransStatus(PaymentTransactionEntity.TRANS_STATUS_SUCCESS);
 		return "";
 	}
+
+
 
 }
