@@ -417,6 +417,8 @@
                 </div>
             </div>
             <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
+            <input type="text" style="display: none" value="${personnelAck}" id="ackMessage" name="ackMessage">
+            <iais:confirm msg="There is a pending application for a licence " callBack="cancel()"  needCancel="false" popupOrder="ackMessageConfim"></iais:confirm>
         </div>
     </div>
 </form>
@@ -424,8 +426,15 @@
 
     $('.needDisableI').css('border-color', '#ededed');
     $('.needDisableI').css('color', '#999');
-
+    function cancel(){
+        $('#ackMessageConfim').modal('hide');
+    }
     $(document).ready(function () {
+
+        if($('#ackMessage').val()=='personnelAck'){
+            $('#ackMessageConfim').modal('show');
+        }
+
         $('#previewAndSub').click(function () {
             $("#menuListForm").submit();
         });
@@ -525,7 +534,6 @@
             var idNo = arr[1];
             loadSelectPerson(person, idType, idNo);
         }
-
 
     });
 

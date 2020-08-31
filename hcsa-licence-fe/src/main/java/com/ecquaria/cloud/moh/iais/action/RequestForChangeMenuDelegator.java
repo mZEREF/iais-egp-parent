@@ -713,12 +713,15 @@ public class RequestForChangeMenuDelegator {
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is ongoing application for the licence");
             return;
         }else {
-            for(String licId : licenceIds){
-                List<String> appFinalStatus = IaisCommonUtils.getAppFinalStatus();
-
+            Boolean allCanRfc = requestForChangeService.isAllCanRfc(licenceIds);
+            if(allCanRfc){
+                ParamUtil.setRequestAttr(bpc.request, "personnelAck", "personnelAck");
+                ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));
+                ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is ongoing application for the licence");
+                return;
             }
         }
-
         List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds);
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);

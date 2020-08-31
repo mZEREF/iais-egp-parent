@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import freemarker.template.TemplateException;
+import org.apache.kafka.common.protocol.types.Field;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,6 +25,8 @@ public interface RequestForChangeService {
     AppSubmissionDto getAppSubmissionDtoByLicenceId(String licenceId);
 
     List<ApplicationDto> getAppByLicIdAndExcludeNew(String licenceId);
+
+    Boolean isAllCanRfc(List<String> licIds);
 
     AppSubmissionDto submitChange(AppSubmissionDto appSubmissionDto);
 
