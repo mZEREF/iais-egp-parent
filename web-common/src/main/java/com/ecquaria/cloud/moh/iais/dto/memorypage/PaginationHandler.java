@@ -85,7 +85,7 @@ public class PaginationHandler<T extends Serializable> implements Serializable {
         HttpServletRequest request = MiscUtil.getCurrentRequest();
         if (request != null && !displayData.isEmpty()) {
             String[] checkedStr = ParamUtil.getStrings(request, paginationDiv + "Check");
-            if (checkType == CHECK_TYPE_RADIO && checkedStr.length > 0) {
+            if (checkType == CHECK_TYPE_RADIO && checkedStr != null && checkedStr.length > 0) {
                 for (PageRecords<T> obj : allData) {
                     obj.setChecked(false);
                 }
