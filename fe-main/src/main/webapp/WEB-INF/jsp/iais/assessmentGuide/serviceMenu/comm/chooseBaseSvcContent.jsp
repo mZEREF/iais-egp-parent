@@ -38,7 +38,7 @@
                 <c:if test="${''==baseSvcSel.licPremisesId}">
                     <c:set var="newLic" value="true"/>
                 </c:if>
-                <div class="speSvcContent disable-point">
+                <div class="speSvcContent remark-point">
                     <p class="assessment-title">Base Services for ${specSvc.svcName}</p>
                     <c:if test="${noExistBaseLic}">
                         <div class="row">
@@ -56,9 +56,10 @@
                         <c:choose>
                             <c:when test="${noExistBaseLic}">
                                 <div class="row base-svc-content">
+                                    <input type="hidden" name="svcName" value="${baseSvc.svcName}"/>
                                     <div class="col-xs-12 col-md-1">
                                     </div>
-                                    <div class="col-xs-12 col-md-11">
+                                    <div class="col-xs-12 col-md-11 exist-base-lic-content">
                                         <div class="form-check">
                                             <input type="hidden" name="${indexNo}-new" value="${baseSvc.svcCode}" />
                                             <input class="form-check-input firstStep" type="radio" name="${specSvc.svcCode}-base" value="${indexNo}-new" aria-invalid="false" <c:if test="${newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >
@@ -69,36 +70,41 @@
                             </c:when>
                             <c:otherwise>
                                 <div class="base-svc-content">
-                                    <div class="exist-base-lic-content">
-                                        <div class="row">
-                                            <div class="col-xs-12 col-md-1">
-                                            </div>
-                                            <div class="col-xs-12 col-md-11">
-                                                <div class="form-check">
-                                                    <input type="hidden" name="base${indexNo}" value="${baseSvc.svcCode}"/>
-                                                    <input class="form-check-input firstStep existing-base" type="radio" name="${specSvc.svcCode}-base" value="base${indexNo}" aria-invalid="false" <c:if test="${!newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >
-                                                    <label class="form-check-label"><span class="check-circle"></span>Existing ${baseSvc.svcName} licences</label>
+                                    <input type="hidden" name="svcName" value="${baseSvc.svcName}"/>
+                                    <c:set var="baseLics" value="${baseSvcPremisesMap.get(baseSvc.svcName)}"/>
+                                    <c:if test="${!empty baseLics}">
+                                        <div class="exist-base-lic-content">
+                                            <div class="row">
+                                                <div class="col-xs-12 col-md-1">
+                                                </div>
+                                                <div class="col-xs-12 col-md-11">
+                                                    <div class="form-check">
+                                                        <input type="hidden" name="base${indexNo}" value="${baseSvc.svcCode}"/>
+                                                        <input class="form-check-input firstStep existing-base" type="radio" name="${specSvc.svcCode}-base" value="base${indexNo}" aria-invalid="false" <c:if test="${!newLic && baseSvcSel.serviceCode == baseSvc.svcCode}">checked="checked"</c:if> >
+                                                        <label class="form-check-label"><span class="check-circle"></span>Existing ${baseSvc.svcName} licences</label>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="existing-base-content">
-                                            <c:forEach var="baseLic" items="${retainLicPremisesList}" varStatus="sts">
-                                                <!--spe svc code + base svc code + -->
-                                                <c:set var="premIndexNo" value="${specSvc.svcCode}${baseSvc.svcCode}${sts.index}"/>
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-md-2">
-                                                    </div>
-                                                    <div class="col-xs-12 col-md-10">
-                                                        <div class="form-check">
-                                                            <input type="hidden" name="${premIndexNo}-hciCode" value="<iais:mask name="${premIndexNo}-hciCode" value="${baseLic.hciCode}"/>"/>
-                                                            <input class="form-check-input" type="radio" name="${specSvc.svcCode}" value="${premIndexNo}" aria-invalid="false" <c:if test="${!newLic && baseSvcSel.serviceCode == baseSvc.svcCode && baseLic.hciCode == baseSvcSel.hciCode}">checked="checked"</c:if> >
-                                                            <label class="form-check-label"><span class="check-circle"></span>${baseLic.address}</label>
+                                            <div class="existing-base-content">
+                                                <c:forEach var="baseLic" items="${baseLics}" varStatus="sts">
+                                                    <!--spe svc code + base svc code + -->
+                                                    <c:set var="premIndexNo" value="${specSvc.svcCode}${baseSvc.svcCode}${sts.index}"/>
+                                                    <div class="row">
+                                                        <div class="col-xs-12 col-md-2">
+                                                        </div>
+                                                        <div class="col-xs-12 col-md-10">
+                                                            <div class="form-check">
+                                                                <input type="hidden" name="premHci" value="${baseLic.premisesHci}"/>
+                                                                <input type="hidden" name="${premIndexNo}-hciCode" value="<iais:mask name="${premIndexNo}-hciCode" value="${baseLic.hciCode}"/>"/>
+                                                                <input class="form-check-input secondStep" type="radio" name="${specSvc.svcCode}" value="${premIndexNo}" aria-invalid="false" <c:if test="${!newLic && baseSvcSel.serviceCode == baseSvc.svcCode && baseLic.hciCode == baseSvcSel.hciCode}">checked="checked"</c:if> >
+                                                                <label class="form-check-label"><span class="check-circle"></span>${baseLic.address}</label>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </c:forEach>
+                                                </c:forEach>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </c:if>
                                     <div class="row new-base">
                                         <div class="col-xs-12 col-md-1">
                                         </div>

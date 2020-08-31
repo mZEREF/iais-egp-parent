@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDraftDto;
@@ -12,7 +13,14 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -82,4 +90,6 @@ public interface AppInboxClient {
     FeignResponseEntity  deleteDraftByNo(@RequestParam("draftNo") String draftNo);
     @GetMapping(value = "/iais-submission/draft-app-no")
     FeignResponseEntity<ApplicationDraftDto>  getDraftInfoByAppNo(@RequestParam("appNo") String appNo);
+    @GetMapping(value = "/iais-application/pending-app-premises",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<AppGrpPremisesEntityDto>> getPendAppPremises(@RequestParam("licenseeId") String licenseeId, @RequestParam("svcIdStr") String svcIdStr);
 }

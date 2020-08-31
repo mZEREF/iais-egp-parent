@@ -38,4 +38,5 @@ public class AppSelectSvcDto implements Serializable {
 
     private boolean newLicensee;
 
+    private boolean initPagHandler;
 }

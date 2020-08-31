@@ -9,6 +9,12 @@
                     <%@include file="comm/chooseSvcContent.jsp"%>
                 </div>
                 <br/>
+                <c:if test="${appSelectSvc.chooseBaseSvc}">
+                    <div class="disabledPart">
+                        <%@include file="comm/chooseBaseSvcContent.jsp"%>
+                    </div>
+                    <br/>
+                </c:if>
                 <div>
                     <%@include file="comm/chooseBaseSvcContent.jsp"%>
                 </div>
@@ -62,96 +68,95 @@
             $('#saveDraft').modal('show');
         }
 
-
-
-        $('.assessment-service').click(function () {
-            var $currSpecContent = $(this).closest('div.speSvcContent');
-            var $baseLicContent = $(this).closest('div.exist-base-lic-content');
-
-            //the first select
-            if($(this).hasClass('firstStep')){
-                // if($(this).hasClass('firstStep')){
-                //     //disabled the second
-                //     $('div.existing-base-content input[type="radio"]').prop('disabled',true);
-                // }
-                //control curr
-                $baseLicContent.find('input[type="radio"]').prop('disabled',false);
-                $baseLicContent.find('.existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
-                if(init ==0){
-                    $currSpecContent.removeClass('disable-point');
-                }
-                //control other spec
-                //the first step
+        //
+        $('.existing-base-content input[type="radio"]').prop('disabled',true);
+        //reload default choose the first
+        if(${empty reloadBaseSvcSelected}){
+            $('.speSvcContent').each(function (v,k) {
+                $(this).find('.base-svc-content:eq(0) .exist-base-lic-content input[type="radio"]:eq(0)').prop('checked',true);
+                $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
+                // $('.form-check-input.first:checked').trigger('click');
+                $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]').prop('disabled',false);
+            });
+        }else{
+            console.log('reload ...');
+            $('.firstStep:checked').each(function () {
                 if($(this).hasClass('existing-base')){
-                    $('.disable-point .exist-base-lic-content .firstStep').prop('disabled',false);
-                    $('.disable-point .new-base .firstStep').prop('disabled',true);
-                    $('.disable-point .new-base .firstStep').prop('checked',false);
-
-                    // $('.disable-point div.existing-base-content').each(function () {
-                    //     if($(this).find('input[type="radio"]:checked') == 'false'){
-                    //         $(this).find('input[type="radio"]').prop('disabled',true);
-                    //         $(this).find('input[type="radio"]').prop('checked',false);
-                    //     }
-                    //
-                    // });
-                }else if($(this).hasClass('diff-base')){
-                    $('.disable-point .exist-base-lic-content .firstStep').prop('disabled',true);
-                    $('.disable-point .new-base .firstStep').prop('disabled',false);
-                    $('.disable-point .exist-base-lic-content .firstStep').prop('checked',false);
-                    //unChecked the second step
-                    $('div.existing-base-content').find('input[type="radio"]').prop('disabled',true);
-                    $('div.existing-base-content').find('input[type="radio"]').prop('checked',false);
-
+                    $(this).closest('div.exist-base-lic-content').find('div.existing-base-content input[type="radio"]').prop('disabled',false);
                 }
-                init = 1;
+            });
+        }
 
-                //the second step
-                // $('.disable-point div.existing-base-content').find('input[type="radio"]').prop('disabled',true);
-                // $('.disable-point div.existing-base-content').find('input[type="radio"]').prop('checked',false);
-            }else{
-                $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
+
+        $('.firstStep').change(function () {
+            var $currSpecContent = $(this).closest('div.speSvcContent');
+            var $baseSvcCount = $(this).closest('div.base-svc-content');
+            var $baseLicContent = $(this).closest('div.exist-base-lic-content');
+            $currSpecContent.removeClass('remark-point');
+            //clear select when click other base
+            if($(this).hasClass('existing-base')){
+                console.log('first step');
+                $currSpecContent.find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('checked',false);
+                $currSpecContent.find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',true);
+                $baseLicContent.find('div.existing-base-content input[type="radio"]').prop('disabled',false);
+                $baseLicContent.find('div.existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
+                //var currSvcName = $baseSvcCount.find('input[name="svcName"]').val();
+                $('.remark-point').each(function () {
+                    console.log('remark-point start...');
+                    $(this).find('div.base-svc-content:eq(0) div.exist-base-lic-content input[type="radio"]:eq(0)').prop('checked',true);
+                    $(this).find('div.base-svc-content:eq(0) div.exist-base-lic-content div.existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
+                    $(this).find('div.base-svc-content:eq(0) div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',false);
+                });
+            }else if($(this).hasClass('diff-base')){
+                console.log('diff-base');
+                $currSpecContent.find('div.exist-base-lic-content input[type="radio"]').prop('checked',false);
+                $currSpecContent.find('div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',true);
+
+                //var currSvcName = $baseSvcCount.find('input[name="svcName"]').val();
+                $('.remark-point').each(function () {
+                    console.log('remark-point start...');
+                    $(this).find('div.base-svc-content:eq(0) div.new-base input[type="radio"]:eq(0)').prop('checked',true);
+                    $(this).find('div.existing-base-content input[type="radio"]').prop('checked',false);
+                    $(this).find('div.existing-base-content input[type="radio"]').prop('disabled',true);
+                });
             }
+
+
+            $currSpecContent.addClass('remark-point');
         });
 
-        //reload
-        var defaultVal = '${appSvcRelatedInfoList == null || appSvcRelatedInfoList.size() == 0}';
-        if(${noExistBaseLic}){
-            if(defaultVal == 'true'){
-                $('.speSvcContent').each(function (k,v) {
-                    $(this).find('.base-svc-content:eq(0) input[type="radio"]:eq(0)').prop('checked',true);
-                });
-            }else{
-                $('.speSvcContent').each(function (k,v) {
-                    if( $(this).find('.assessment-service:checked').length == 0){
-                        $(this).find('.assessment-service:eq(0)').prop('checked',true);
-                    }
-                });
-            }
-        }else{
-            if(defaultVal == 'true'){
-                $('.speSvcContent').each(function (v,k) {
-                    $(this).find('.base-svc-content:eq(0) .exist-base-lic-content input[type="radio"]:eq(0)').prop('checked',true);
-                    $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
-                    $('.assessment-service:checked').trigger('click');
-                });
-                $('.existing-base-content input[type="radio"]:checked').each(function () {
-                    $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
-                });
-                //
-            }else{
-                $('.assessment-service:checked').trigger('click');
-                $('.existing-base-content input[type="radio"]:checked').each(function () {
-                    $(this).closest('div.existing-base-content').find('input[type="radio').prop('disabled',false);
-                });
+        $('.secondStep').change(function () {
+            var currHci = $(this).closest('div.form-check').find('input[name="premHci"]').val();
+            var $currSpecContent = $(this).closest('div.speSvcContent');
 
-                $('.speSvcContent').each(function (k,v) {
-                    if( $(this).find('.assessment-service:checked').length == 0){
-                        $(this).find('.assessment-service:eq(0)').prop('checked',true);
-                        $(this).find('.existing-base-content:eq(0) input[type="radio"]:eq(0)').prop('checked',true);
+            $currSpecContent.removeClass('remark-point');
+            $('.remark-point').each(function () {
+                var hadSameHci = false;
+                $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content div').each(function () {
+                    var hci = $(this).find('input[name="premHci"]').val();
+                    //can found the same hci
+                    if(currHci == hci){
+                        hadSameHci = true;
+                        $(this).find('input[type="radio"]').prop('checked',true);
+                        $(this).closest('div.exist-base-lic-content').find('.firstStep:eq(0)').prop('checked',true);
+                        //let diff disabled
+                        $(this).closest('div.base-svc-content').find('div.new-base input[type="radio"]').prop('checked',false);
+                        // $(this).closest('div.exist-base-lic-content').prop('disabled',false);
+                        return false;//break
                     }
                 });
-            }
-        }
+                if(hadSameHci){
+                    //
+                    $(this).find('.base-svc-content:eq(0) div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',false);
+                }else{
+                    $(this).find('.base-svc-content:eq(0) div.new-base input[type="radio"]').prop('checked',true);
+                    //let existing disable and uncheck
+                    $(this).find('.base-svc-content:eq(0) div.exist-base-lic-content input[type="radio"]').prop('checked',false);
+                    $(this).find('.base-svc-content:eq(0) div.exist-base-lic-content div.existing-base-content input[type="radio"]').prop('disabled',true);
+                }
+            });
+            $currSpecContent.addClass('remark-point');
+        });
 
     });
 
