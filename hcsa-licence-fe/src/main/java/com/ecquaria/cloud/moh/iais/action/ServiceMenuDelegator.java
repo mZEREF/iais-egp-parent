@@ -521,6 +521,7 @@ public class ServiceMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, (Serializable) basecheckedlist);
 
         //control switch
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = null;
         if(!currentPage.equals(nextstep)){
             //note: As long as you select the specified service, you don't go and select align
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
@@ -536,7 +537,7 @@ public class ServiceMenuDelegator {
                     //64570 (1base+1spec)
                     boolean jumpToNext = (basechks != null && basechks.length == 1) && (sepcifiedchk != null && sepcifiedchk.length ==1);
                     if(jumpToNext){
-                        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
+                        appSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
                         Set<String> svcIds = IaisCommonUtils.genNewHashSet();
                         for(String svcId:sepcifiedchk){
                             svcIds.add(svcId);
@@ -572,7 +573,6 @@ public class ServiceMenuDelegator {
                             }
                             appSvcRelatedInfoDtos.add(appSvcRelatedInfoDto);
                         }
-                        ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
                         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                     }else{
                         nextstep = CHOOSE_BASE_SVC;
@@ -624,7 +624,7 @@ public class ServiceMenuDelegator {
         log.info(StringUtil.changeForLog("do choose svc next step:"+nextstep));
         ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, nextstep);
         //reset
-        ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST,null);
+        ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
         ParamUtil.setSessionAttr(bpc.request,RELOAD_BASE_SVC_SELECTED, null);
         appSelectSvcDto.setAlign(false);
         ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
