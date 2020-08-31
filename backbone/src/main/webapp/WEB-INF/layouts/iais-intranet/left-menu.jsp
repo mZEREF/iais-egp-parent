@@ -80,11 +80,11 @@
 		String url = (String) pageContext.getAttribute("url");
 		if (url == null || "".equals(url) || "#".equals(url)) {
 	%>
-	<a href="#<c:out value="${item.name}" />" data-toggle="collapse" aria-expanded="false">
+	<a href="#<c:out value="${item.id}" />" data-toggle="collapse" aria-expanded="false">
+		<egov-smc:commonLabel><c:out value="${item.displayLabel}" /></egov-smc:commonLabel>
 		<c:if test="${currDepth > 0}">
 			<img src="<egov-core:webURL with_theme="true" source="images/general/white_arrow.gif"/>" border="0" alt="&gt;"/>
 		</c:if>
-		<egov-smc:commonLabel><c:out value="${item.displayLabel}" /></egov-smc:commonLabel>
 	</a>
 	<%
 	} else if (url.startsWith("/")) {
@@ -127,7 +127,7 @@
 		</c:when>
 		<c:otherwise>
 
-			<ul class="collapse list-unstyled" id = '<c:out value="${item.name}" />' >
+			<ul class="collapse list-unstyled" id = '<c:out value="${item.id}" />' >
 		</c:otherwise>
 	</c:choose>
 </menu:iterate>
