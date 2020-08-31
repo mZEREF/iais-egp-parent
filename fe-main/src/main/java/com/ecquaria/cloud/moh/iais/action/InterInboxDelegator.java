@@ -509,6 +509,9 @@ public class InterInboxDelegator {
         String licId = ParamUtil.getString(bpc.request, "licenceNo");
         String licIdValue = ParamUtil.getMaskedString(bpc.request, licId);
         if(licIdValue != null){
+            List<String> licIdValues = IaisCommonUtils.genNewArrayList();
+            licIdValues.add(licIdValue);
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
             Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
             List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
             if(!draftByLicAppId.isEmpty()){
@@ -529,9 +532,7 @@ public class InterInboxDelegator {
                     return;
                 }
             }
-            List<String> licIdValues = IaisCommonUtils.genNewArrayList();
-            licIdValues.add(licIdValue);
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValues);
+
             if(errorMap.isEmpty()){
                 StringBuilder url = new StringBuilder();
                 url.append(InboxConst.URL_HTTPS)

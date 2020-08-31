@@ -1205,7 +1205,7 @@ public class NewApplicationDelegator {
             //send email
             try {
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-                    requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDto);
+                 /*   requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDto);*/
                 }
 
             } catch (Exception e) {
@@ -1650,7 +1650,7 @@ public class NewApplicationDelegator {
         Map<String, AppSvcPersonAndExtDto> personMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.PERSONSELECTMAP);
         //todo chnage edit
         AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
-        appEditSelectDto.setServiceEdit(true);
+        appEditSelectDto.setServiceEdit(false);
         appEditSelectDto.setPremisesEdit(true);
         appEditSelectDto.setPremisesListEdit(false);
         appEditSelectDto.setDocEdit(true);
@@ -1675,6 +1675,7 @@ public class NewApplicationDelegator {
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC002"));
             return;
         }
+        appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         boolean isAutoRfc = compareAndSendEmail(appSubmissionDto, oldAppSubmissionDto);
         //is need to pay ?
         String appGroupNo = appSubmissionService.getGroupNo(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);

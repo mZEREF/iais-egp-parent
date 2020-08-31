@@ -53,6 +53,7 @@ import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
@@ -230,6 +231,9 @@ public class RequestForChangeMenuDelegator {
                 stringBuilder.append(licenceDto.getSvcName()).append(',');
             }
             premisesListQueryDto.setSvcId(stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf(',')));
+        }
+        if(rows.isEmpty()){
+            bpc.request.setAttribute("ACK018", MessageUtil.getMessageDesc("ACK018"));
         }
         ParamUtil.setSessionAttr(bpc.request, RfcConst.PREMISESLISTDTOS, (Serializable) rows);
         ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE, "Premises List");
@@ -1144,7 +1148,11 @@ public class RequestForChangeMenuDelegator {
                 || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(payMethod)
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
             Map<String, String> fieldMap = new HashMap<String, String>();
-            fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(appSubmissionDtos.get(0).getAmount()));
+            double a=0.0;
+            for(AppSubmissionDto appSubmissionDto : appSubmissionDtos){
+                a=a+appSubmissionDto.getAmount();
+            }
+            fieldMap.put(GatewayConstants.AMOUNT_KEY, String.valueOf(a));
             fieldMap.put(GatewayConstants.PYMT_DESCRIPTION_KEY, payMethod);
             fieldMap.put(GatewayConstants.SVCREF_NO, appSubmissionDtos.get(0).getAppGrpNo());
             try {
@@ -1215,8 +1223,8 @@ public class RequestForChangeMenuDelegator {
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 bpc.request.setAttribute("createDate", new Date());
-                requestForChangeService.sendRfcEmailToOfficer(appSubmissionDtos.get(0));
-                requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDtos.get(0));
+                /*requestForChangeService.sendRfcEmailToOfficer(appSubmissionDtos.get(0));*/
+                /*requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDtos.get(0));*/
             }
 
             bpc.request.setAttribute("pmtRefNo", pmtRefNo);

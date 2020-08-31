@@ -762,7 +762,7 @@ public class RequestForChangeDelegator {
             String orgId = loginContext.getOrgId();
             List<String> adminEmailList = requestForChangeService.getAdminEmail(orgId);
             //sendEmail(tranferSub.getAppGrpNo(),templateDto.getMessageContent(),adminEmailList,notifyMap,templateDto.getTemplateName());
-            requestForChangeService.sendRfcEmailToOfficer(tranferSub);
+          /*  requestForChangeService.sendRfcEmailToOfficer(tranferSub);*/
             requestForChangeService.sendRfcLicenseeEmail(tranferSub);
         } catch (Exception e) {
             log.error(e.getMessage(), e);

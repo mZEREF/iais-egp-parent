@@ -68,6 +68,9 @@
           <td><c:out value="${prem.svcId}"/></td>
         </tr>
       </c:forEach>
+      <c:if test="${ACK018!=null}">
+        <tr><td>${ACK018}</td></tr>
+      </c:if>
         </tbody>
         </table>
       </div>
