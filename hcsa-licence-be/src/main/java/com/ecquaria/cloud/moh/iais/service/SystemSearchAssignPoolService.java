@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service;
 
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.SystemAssignSearchQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -39,4 +40,13 @@ public interface SystemSearchAssignPoolService {
       * @Descripation: get System Group Pool By Param
       */
     SearchResult<SystemAssignSearchQueryDto> getSystemGroupPoolByParam(SearchParam searchParam);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/8/31
+      * @Param: curStage
+      * @return: List<SelectOption>
+      * @Descripation: get App Status Option
+      */
+    List<SelectOption> getAppStatusOption(String curStage);
 }
