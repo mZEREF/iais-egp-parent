@@ -7,15 +7,14 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
-import com.ecquaria.cloud.moh.iais.helper.PropertiesUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
-import lombok.extern.slf4j.Slf4j;
-import sop.webflow.rt.api.BaseProcessClass;
-
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import sop.webflow.rt.api.BaseProcessClass;
 
 /**
  * @author: yichen
@@ -26,6 +25,9 @@ import java.util.List;
 @Delegator(value = "feLandingDelegator")
 @Slf4j
 public class FELandingDelegator {
+
+	@Value("${moh.halp.login.test.mode}")
+	private String openTestMode;
 
 
 	/**
@@ -52,7 +54,6 @@ public class FELandingDelegator {
 			IaisEGPHelper.sendRedirect(bpc.request, bpc.response, url.toString());
 		}
 
-		String openTestMode = PropertiesUtil.prop("moh.halp.login.test.mode");
 		ParamUtil.setSessionAttr(bpc.request, "openTestMode", openTestMode);
 
 		List<String> mohIssueUenList = (List<String>) ParamUtil.getSessionAttr(bpc.request, "uenList");
