@@ -179,8 +179,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 interMessageDto.setSubject(item.getSubject());
                 log.info(StringUtil.changeForLog("interMessage subject is " + item.getSubject()));
                 interMessageDto.setMessageType(MessageConstants.MESSAGE_TYPE_NOTIFICATION);
-                String refNo = sysInboxMsgService.getMessageNo();
-                interMessageDto.setRefNo(refNo);
+
                 interMessageDto.setService_id(svcDto.getSvcCode()+'@');
                 log.info(StringUtil.changeForLog("interMessage ServiceId is " + svcDto.getSvcCode()+'@'));
                 interMessageDto.setMsgContent(item.getMsgContent());
@@ -188,6 +187,8 @@ public class SendMassEmailJobHandler extends IJobHandler {
                 interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 for (LicenceDto licencedto:licenceList
                      ) {
+                    String refNo = sysInboxMsgService.getMessageNo();
+                    interMessageDto.setRefNo(refNo);
                     log.info(StringUtil.changeForLog("licenceList:" + licencedto.getLicenceNo()));
                     interMessageDto.setUserId(licencedto.getLicenseeId());
                     sysInboxMsgService.saveInterMessage(interMessageDto);
