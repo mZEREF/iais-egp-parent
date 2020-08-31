@@ -68,7 +68,6 @@ public class ApptConfirmSpecificDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "apptInspFlag", null);
         ParamUtil.setSessionAttr(bpc.request, "appType", null);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
     }
 
     /**

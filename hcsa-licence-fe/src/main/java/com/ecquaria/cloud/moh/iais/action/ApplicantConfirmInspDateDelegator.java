@@ -84,7 +84,6 @@ public class ApplicantConfirmInspDateDelegator {
         ParamUtil.setSessionAttr(bpc.request, "hoursFeOption", null);
         ParamUtil.setSessionAttr(bpc.request, "amPmFeOption", null);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
     }
 
     /**

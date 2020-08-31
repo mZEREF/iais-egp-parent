@@ -74,7 +74,6 @@ public class ApptConfirmReSchDateDelegator {
         log.debug(StringUtil.changeForLog("the apptUserChooseDateInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, "processReSchedulingDto", null);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
     }
 
     /**

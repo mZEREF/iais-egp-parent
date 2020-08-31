@@ -117,7 +117,6 @@ public class InspecUserRecUploadDelegator {
         ParamUtil.setSessionAttr(bpc.request, "inspecUserRecUploadDto", null);
         ParamUtil.setSessionAttr(bpc.request, "submitButtonFlag", null);
         ParamUtil.setSessionAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
-        ParamUtil.setRequestAttr(bpc.request, HcsaLicenceFeConstant.DASHBOARDTITLE,null);
     }
 
     /**
