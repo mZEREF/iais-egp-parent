@@ -1,8 +1,42 @@
 package com.ecquaria.cloud.moh.iais.service;
 
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.SystemAssignSearchQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+
+import java.util.List;
+
 /**
  * @author Shicheng
  * @date 2020/8/26 14:27
  **/
 public interface SystemSearchAssignPoolService {
+    /**
+      * @author: shicheng
+      * @Date 2020/8/26
+      * @Param: null
+      * @return: GroupRoleFieldDto
+      * @Descripation: getSystemSearchStage
+      */
+    GroupRoleFieldDto getSystemSearchStage();
+
+    /**
+      * @author: shicheng
+      * @Date 2020/8/27
+      * @Param: 
+      * @return: 
+      * @Descripation: get System User Task Pool By User Id
+      */
+    List<TaskDto> getSystemTaskPool(String userId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/8/31
+      * @Param: 
+      * @return: 
+      * @Descripation: get System Group Pool By Param
+      */
+    SearchResult<SystemAssignSearchQueryDto> getSystemGroupPoolByParam(SearchParam searchParam);
 }

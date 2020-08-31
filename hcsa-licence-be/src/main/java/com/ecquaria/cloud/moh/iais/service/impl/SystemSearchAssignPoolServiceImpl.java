@@ -1,8 +1,33 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
+import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
+import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
+import com.ecquaria.cloud.moh.iais.common.dto.system.SystemAssignSearchQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.service.ApplicationService;
+import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
+import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.SystemSearchAssignPoolService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -11,4 +36,78 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPoolService {
+
+    @Autowired
+    private InspectionTaskClient inspectionTaskClient;
+
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
+
+    @Autowired
+    private OrganizationClient organizationClient;
+
+    @Autowired
+    private ApplicationViewService applicationViewService;
+
+    @Autowired
+    private AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
+
+    @Autowired
+    private InspectionAssignTaskService inspectionAssignTaskService;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
+
+    @Autowired
+    private ApplicationService applicationService;
+
+    @Autowired
+    private ApplicationClient applicationClient;
+
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
+
+    @Override
+    public GroupRoleFieldDto getSystemSearchStage() {
+        GroupRoleFieldDto groupRoleFieldDto = new GroupRoleFieldDto();
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtos = hcsaConfigClient.stagelist().getEntity();
+        if(IaisCommonUtils.isEmpty(hcsaSvcRoutingStageDtos)){
+            return null;
+        } else {
+            List<SelectOption> stageOptions = IaisCommonUtils.genNewArrayList();
+            Map<String, HcsaSvcRoutingStageDto> stageMap = IaisCommonUtils.genNewHashMap();
+            int index = 0;
+            for(HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto : hcsaSvcRoutingStageDtos){
+                SelectOption selectOption = new SelectOption(index + "", hcsaSvcRoutingStageDto.getStageName());
+                stageMap.put(index + "", hcsaSvcRoutingStageDto);
+                stageOptions.add(selectOption);
+            }
+            SelectOption selectOption = stageOptions.get(0);
+            if(selectOption != null){
+                groupRoleFieldDto.setCurStage(selectOption.getValue());
+            }
+            groupRoleFieldDto.setStageOption(stageOptions);
+            groupRoleFieldDto.setStageMap(stageMap);
+        }
+        return groupRoleFieldDto;
+    }
+
+    @Override
+    public List<TaskDto> getSystemTaskPool(String userId) {
+        if(!StringUtil.isEmpty(userId)) {
+            List<TaskDto> systemTasks = organizationClient.getTasksByUserId(userId).getEntity();
+            return systemTasks;
+        }
+        return null;
+    }
+
+    @Override
+    @SearchTrack(catalog = "inspectionQuery",key = "systemGroupPoolSearch")
+    public SearchResult<SystemAssignSearchQueryDto> getSystemGroupPoolByParam(SearchParam searchParam) {
+        SearchResult<SystemAssignSearchQueryDto> searchResult = inspectionTaskClient.searchSystemPoolTaskByGroup(searchParam).getEntity();
+        return searchResult;
+    }
 }
