@@ -1548,7 +1548,7 @@ public class LicenceApproveBatchjob {
             licenseeId = applicationGroupDto.getLicenseeId();
             String flag = "";
             if(applicationDto != null){
-                flag = applicationDto.getAlignFlag();
+                flag = applicationDto.getGroupLicenceFlag();
             }
             log.info(StringUtil.changeForLog("The  getLicenceDto  licenseeId is " + licenseeId));
             log.info(StringUtil.changeForLog("The  getLicenceDto  flag is " + flag));
