@@ -353,7 +353,6 @@ public class InboxServiceImpl implements InboxService {
         endCalendar.add(Calendar.MONTH,-6);
         endCalendar.add(Calendar.DATE,1);
         Date firstStartRenewTime = endCalendar.getTime();
-
         if(!(nowDate.after(firstStartRenewTime) && nowDate.before(expiryDate))){
             errorMap.put("errorMessage",licenceDto.getLicenceNo());
         }

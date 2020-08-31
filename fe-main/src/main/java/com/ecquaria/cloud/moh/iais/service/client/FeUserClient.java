@@ -65,4 +65,8 @@ public interface FeUserClient {
 
     @GetMapping(path = "/iais-internet-user/check-uen-issue-date/")
     FeignResponseEntity<IaisApiResult<Void>> checkIssueUen(@RequestParam(value = "idNo")String idNo, @RequestParam(value = "idType") String idType);
+
+    @GetMapping(path = "/iais-licensee/getLicenseeNoUen",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenseeDto>> getLicenseeNoUen();
+
 }

@@ -364,4 +364,9 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     public IaisApiResult<Void> checkIssueUen(String idNo, String idType) {
         return feUserClient.checkIssueUen(idNo, idType).getEntity();
     }
+
+    @Override
+    public List<LicenseeDto> getLicenseeNoUen(){
+        return feUserClient.getLicenseeNoUen().getEntity();
+    }
 }

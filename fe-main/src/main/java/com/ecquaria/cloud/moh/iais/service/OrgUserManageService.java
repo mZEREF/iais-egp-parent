@@ -46,4 +46,6 @@ public interface OrgUserManageService {
     List<LicenseeKeyApptPersonDto> getPersonById(String id);
 
     IaisApiResult<Void> checkIssueUen(String idNo, String idType);
+
+    List<LicenseeDto> getLicenseeNoUen();
 }
