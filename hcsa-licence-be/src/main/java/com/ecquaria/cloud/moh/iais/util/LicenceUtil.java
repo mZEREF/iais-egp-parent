@@ -51,7 +51,6 @@ public class LicenceUtil {
         log.info(StringUtil.changeForLog("The getExpiryDate start ..."));
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDate);
-        calendar.add(Calendar.DATE,-1);
         if(appPremisesRecommendationDto != null){
             log.info(StringUtil.changeForLog("The getExpiryDateappPremisesRecommendationDto.getChronoUnit() is -->:" + appPremisesRecommendationDto.getChronoUnit()));
             switch (appPremisesRecommendationDto.getChronoUnit()){
@@ -69,6 +68,7 @@ public class LicenceUtil {
             log.info(StringUtil.changeForLog("The getExpiryDate appPremisesRecommendationDto is  null"));
             calendar.add(Calendar.YEAR,1);
         }
+        calendar.add(Calendar.DATE,-1);
         log.info(StringUtil.changeForLog("The getExpiryDate calendar.getTime() is -->:"+calendar.getTime()));
         log.info(StringUtil.changeForLog("The getExpiryDate end ..."));
         return  calendar.getTime();
