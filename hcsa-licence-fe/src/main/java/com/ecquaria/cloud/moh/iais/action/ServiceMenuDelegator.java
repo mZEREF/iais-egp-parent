@@ -957,7 +957,7 @@ public class ServiceMenuDelegator {
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         PaginationHandler<MenuLicenceDto> paginationHandler = (PaginationHandler<MenuLicenceDto>) ParamUtil.getSessionAttr(bpc.request,"licPagDiv__SessionAttr");
         paginationHandler.keepCurrentPageChecked();
-        List<MenuLicenceDto> menuLicenceDtos = paginationHandler.getDisplayCheckedData();
+        List<MenuLicenceDto> menuLicenceDtos = paginationHandler.getAllCheckedData();
         MenuLicenceDto menuLicenceDto = new MenuLicenceDto();
         if(menuLicenceDtos != null && menuLicenceDtos.size() > 0){
             menuLicenceDto = menuLicenceDtos.get(0);

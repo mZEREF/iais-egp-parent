@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.ValidationUtils;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -105,6 +106,7 @@ public class RequestForChangeDelegator {
         ParamUtil.setSessionAttr(bpc.request,"AmendTypeValue", null);
         ParamUtil.setRequestAttr(bpc.request, "premisesIndexNo", null);
         ParamUtil.setSessionAttr(bpc.request, "prepareTranfer", null);
+        ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         init(bpc,licenceId);
 
         log.debug(StringUtil.changeForLog("the do doStart start ...."));

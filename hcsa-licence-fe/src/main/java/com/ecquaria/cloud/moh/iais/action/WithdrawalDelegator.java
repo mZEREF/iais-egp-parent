@@ -11,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
@@ -55,6 +56,7 @@ public class WithdrawalDelegator {
 
     public void start(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("****The Start Step****"));
+        ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         String withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
    //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
         if (!StringUtil.isEmpty(withdrawAppNo)){
