@@ -12,6 +12,7 @@
     <form method="post" id="mainForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
         <input type="hidden" name="app_action_type" value="">
         <input type="hidden" name="withdraw_app_list" value="">
+        <input type="hidden" id="configFileSize" value="${configFileSize}"/>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
         <div class="row">
             <div class="col-lg-12 col-xs-12">
@@ -62,7 +63,6 @@
                                         <a class="btn btn-primary withdraw-next" href="#">Done</a>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     <div class="row">
@@ -104,7 +104,7 @@
                                 <div class="document-upload-list">
                                     <h3>File upload for Withdrawal Reasons</h3>
                                     <div class="file-upload-gp">
-                                        <input id="withdrawFile" type="file" style="display: none;" name = "selectedFile"
+                                        <input id="selectedFile" type="file" style="display: none;" name = "selectedFile"
                                                aria-label="selectedFile"><a class="btn btn-file-upload btn-secondary"
                                                                              href="#">Upload</a>
                                         <div id="delFile" style="margin-top: 13px;color: #1F92FF;"
@@ -114,6 +114,7 @@
                                                     class="fa fa-times"></em></button>
                                         </div>
                                     </div>
+                                    <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
                                     <span id="error_withdrawalFile" name="iaisErrorMsg" class="error-msg"></span>
                                 </div>
                             </div>
@@ -166,12 +167,40 @@
         $("#mainForm").submit();
     }
 
-    $("#withdrawFile").change(function () {
-        $("#delFile").removeAttr("hidden");
-        let fileName = $("#withdrawFile").val();
-        let pos = fileName.lastIndexOf("\\");
-        $("#fileName").html(fileName.substring(pos + 1));
+
+
+    $("#selectedFile").change(function () {
+        var configFileSize = $("#configFileSize").val();
+        var error  = validateUploadSizeMaxOrEmptyCopy(configFileSize,'selectedFile');
+        alert(error);
+        if (error == "Y") {
+            $('#error_litterFile_Show').html("");
+            $("#delFile").removeAttr("hidden");
+            let fileName = $("#selectedFile").val();
+            let pos = fileName.lastIndexOf("\\");
+            $("#fileName").html(fileName.substring(pos + 1));
+        }else{
+            $("#selectedFile").val("");
+            $('#error_litterFile_Show').html('The file has exceeded the maximum upload size of '+ configFileSize + 'M.');
+            $("#fileName").html("");
+        }
     });
+
+    function validateUploadSizeMaxOrEmptyCopy(maxSize,selectedFileId) {
+        console.log($(fileId));
+        var fileId= '#'+selectedFileId;
+        var fileV = $( fileId).val();
+        var file = $(fileId).get(0).files[0];
+        if(fileV == null || fileV == "" ||file==null|| file==undefined){
+            return "E";
+        }
+        var fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString();
+        fileSize = parseInt(fileSize);
+        if(fileSize>= maxSize){
+            return "N";
+        }
+        return "Y";
+    }
 
     function deleteWdFile() {
         // document.getElementById("withdrawFile").files[0] = null;

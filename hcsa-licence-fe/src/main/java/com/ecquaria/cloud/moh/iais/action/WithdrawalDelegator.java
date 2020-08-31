@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocDto;
@@ -47,6 +48,9 @@ public class WithdrawalDelegator {
     private WithdrawalService withdrawalService;
 
     @Autowired
+    private SystemParamConfig systemParamConfig;
+
+    @Autowired
     private ServiceConfigService serviceConfigService;
 
     @Autowired
@@ -58,6 +62,9 @@ public class WithdrawalDelegator {
         log.debug(StringUtil.changeForLog("****The Start Step****"));
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         String withdrawAppNo = ParamUtil.getMaskedString(bpc.request, "withdrawAppNo");
+        int configFileSize = systemParamConfig.getUploadFileLimit();
+
+        ParamUtil.setSessionAttr(bpc.request,"configFileSize",configFileSize);
    //     String withdrawAppId = ParamUtil.getMaskedString(bpc.request, "withdrawAppId");
         if (!StringUtil.isEmpty(withdrawAppNo)){
             ParamUtil.setSessionAttr(bpc.request, "withdrawAppNo", withdrawAppNo);
