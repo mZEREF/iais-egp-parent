@@ -179,35 +179,33 @@ public class HalpAssessmentGuideDelegator {
     public void doChooseAlign(BaseProcessClass bpc){
         log.info(StringUtil.changeForLog("do choose align start ..."));
         String nextStep = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE);
+        //dont have existing base
         String isAlign = ParamUtil.getString(bpc.request,"isAlign");
         AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
         if(AppConsts.YES.equals(isAlign)){
             appSelectSvcDto.setAlign(true);
+        }else {
+            appSelectSvcDto.setAlign(false);
         }
         String additional = ParamUtil.getString(bpc.request,CRUD_ACTION_ADDITIONAL);
         if(BACK_ATTR.equals(additional)){
             return;
         }
-        if(AppConsts.YES.equals(isAlign)){
-            nextStep = CHOOSE_LICENCE;
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,nextStep);
-        }else{
-            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
-            String nextstep = ParamUtil.getString(bpc.request,"crud_action_additional");
-            if(NEXT.equals(nextstep)){
-                getDraft(bpc);
-                String crud_action_value=bpc.request.getParameter("crud_action_value");
-                String draftNo  =bpc.request.getParameter("draftNo");
-                String attribute =(String)bpc.request.getAttribute(SELECT_DRAFT_NO);
-                if("continue".equals(crud_action_value)){
-                    bpc.request.getSession().setAttribute("DraftNumber", null);
-                    bpc.request.getSession().setAttribute(SELECT_DRAFT_NO, draftNo);
-                }else if("resume".equals(crud_action_value)){
-                    bpc.request.getSession().setAttribute("DraftNumber", draftNo);
-                }else if(attribute!=null){
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"doBack");
-                    ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
-                }
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
+        String nextstep = ParamUtil.getString(bpc.request,"crud_action_additional");
+        if(NEXT.equals(nextstep)){
+            getDraft(bpc);
+            String crud_action_value=bpc.request.getParameter("crud_action_value");
+            String draftNo  =bpc.request.getParameter("draftNo");
+            String attribute =(String)bpc.request.getAttribute(SELECT_DRAFT_NO);
+            if("continue".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute("DraftNumber", null);
+                bpc.request.getSession().setAttribute(SELECT_DRAFT_NO, draftNo);
+            }else if("resume".equals(crud_action_value)){
+                bpc.request.getSession().setAttribute("DraftNumber", draftNo);
+            }else if(attribute!=null){
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,"doBack");
+                ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
             }
         }
 
@@ -1151,32 +1149,37 @@ public class HalpAssessmentGuideDelegator {
     }
 
     private static List<AppSvcRelatedInfoDto> addOtherSvcInfo(List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos,List<HcsaServiceDto> hcsaServiceDtos,boolean needSort){
-        if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && !IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+        if(!IaisCommonUtils.isEmpty(hcsaServiceDtos)){
             List<HcsaServiceDto> otherSvcDtoList = IaisCommonUtils.genNewArrayList();
-            for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
-                String svcCode = hcsaServiceDto.getSvcCode();
-                int i = 0;
-                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                    if(svcCode.equals(appSvcRelatedInfoDto.getServiceCode())){
-                        break;
-                    }
-                    String baseSvcId = appSvcRelatedInfoDto.getBaseServiceId();
-                    //specified svc
-                    if(!StringUtil.isEmpty(baseSvcId)){
-                        HcsaServiceDto baseSvcDto = HcsaServiceCacheHelper.getServiceById(baseSvcId);
-                        if(baseSvcDto == null){
-                            log.info(StringUtil.changeForLog("current svc id is dirty data ..."));
-                            continue;
-                        }
-                        if(svcCode.equals(baseSvcDto.getSvcCode())){
+            if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                //
+                for(HcsaServiceDto hcsaServiceDto:hcsaServiceDtos){
+                    String svcCode = hcsaServiceDto.getSvcCode();
+                    int i = 0;
+                    for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                        if(svcCode.equals(appSvcRelatedInfoDto.getServiceCode())){
                             break;
                         }
+                        String baseSvcId = appSvcRelatedInfoDto.getBaseServiceId();
+                        //specified svc
+                        if(!StringUtil.isEmpty(baseSvcId)){
+                            HcsaServiceDto baseSvcDto = HcsaServiceCacheHelper.getServiceById(baseSvcId);
+                            if(baseSvcDto == null){
+                                log.info(StringUtil.changeForLog("current svc id is dirty data ..."));
+                                continue;
+                            }
+                            if(svcCode.equals(baseSvcDto.getSvcCode())){
+                                break;
+                            }
+                        }
+                        if(i == appSvcRelatedInfoDtos.size()-1){
+                            otherSvcDtoList.add(hcsaServiceDto);
+                        }
+                        i++;
                     }
-                    if(i == appSvcRelatedInfoDtos.size()-1){
-                        otherSvcDtoList.add(hcsaServiceDto);
-                    }
-                    i++;
                 }
+            }else{
+                otherSvcDtoList.addAll(hcsaServiceDtos);
             }
             //create other appSvcDto
             if(!IaisCommonUtils.isEmpty(otherSvcDtoList)){
@@ -1190,7 +1193,7 @@ public class HalpAssessmentGuideDelegator {
                 }
             }
             if(needSort){
-                sortAppSvcRelatDto(appSvcRelatedInfoDtos);
+                appSvcRelatedInfoDtos = sortAppSvcRelatDto(appSvcRelatedInfoDtos);
             }
         }
         return appSvcRelatedInfoDtos;
