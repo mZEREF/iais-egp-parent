@@ -49,7 +49,8 @@ and dependencies (minified).
 	var _rjs=typeof define==="function" && define.amd, /* RequireJS */
 		_njs=typeof module !== "undefined" && module.exports, /* NodeJS */
 		_dlp=("https:"==document.location.protocol) ? "https:" : "http:", /* location protocol */
-		_url="cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js";
+		_url= window.location.hostname + "/web/themes/fe/js/jquery.mousewheel.js";
+		//_url="cdnjs.cloudflare.com/ajax/libs/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js";
 	if(!_rjs){
 		if(_njs){
 			require("jquery-mousewheel")($);
