@@ -464,16 +464,35 @@
     });
 
     function checkRecommendationDMS(){
-        var selectValue = $("[name='decisionValues']").val();
-        if(selectValue == "decisionApproval"){
-            if(${!isAppealType}){
-                $('#recommendationDropdown').removeClass('hidden');
-                checkRecommendationOtherDropdown();
+        if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
+            var selectValue = $("[name='decisionValues']").val();
+            if(${isAppealType}){
+                $('#appealRecommendation').addClass('hidden');
+                if("decisionApproval" == selectValue){
+                    var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
+                    var isLateFeeAppealType = $('#isLateFeeAppealType').val();
+                    if(isLateFeeAppealType == 'true'){
+                        $('#appealReturnFee').removeClass('hidden');
+                        $('#recommendationOtherDropdown').addClass('hidden');
+                    }else if(isChangePeriodAppealType == 'true'){
+                        $('#recommendationOtherDropdown').removeClass('hidden');
+                        $('#appealReturnFee').addClass('hidden');
+                    }
+                }else{
+                    $('#recommendationOtherDropdown').addClass('hidden');
+                    $('#appealReturnFee').addClass('hidden');
+                }
             }
-        }else{
-            if(${!isAppealType}) {
-                $('#recommendationDropdown').addClass('hidden');
-                $('#recommendationOtherDropdown').addClass('hidden');
+            if("decisionApproval" == selectValue){
+                if(${!isAppealType}){
+                    $('#recommendationDropdown').removeClass('hidden');
+                    checkRecommendationOtherDropdown();
+                }
+            }else{
+                if(${!isAppealType}) {
+                    $('#recommendationDropdown').addClass('hidden');
+                    $('#recommendationOtherDropdown').addClass('hidden');
+                }
             }
         }
     }
@@ -509,20 +528,22 @@
         var isOtherAppealType = $('#isOtherAppealType').val();
         var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
         var isLateFeeAppealType = $('#isLateFeeAppealType').val();
-        if(selectValue == "appealApprove"){
-            if(isLateFeeAppealType == 'true'){
-                $('#appealReturnFee').removeClass('hidden');
+        if ('${applicationViewDto.applicationDto.status}' != 'APST014'){
+            if(selectValue == "appealApprove"){
+                if(isLateFeeAppealType == 'true'){
+                    $('#appealReturnFee').removeClass('hidden');
+                    $('#recommendationOtherDropdown').addClass('hidden');
+                }else if(isChangePeriodAppealType == 'true'){
+                    $('#recommendationOtherDropdown').removeClass('hidden');
+                    $('#appealReturnFee').addClass('hidden');
+                }else if(isOtherAppealType == 'true'){
+                    $('#appealReturnFee').addClass('hidden');
+                    $('#recommendationOtherDropdown').addClass('hidden');
+                }
+            }else{
                 $('#recommendationOtherDropdown').addClass('hidden');
-            }else if(isChangePeriodAppealType == 'true'){
-                $('#recommendationOtherDropdown').removeClass('hidden');
                 $('#appealReturnFee').addClass('hidden');
-            }else if(isOtherAppealType == 'true'){
-                $('#appealReturnFee').addClass('hidden');
-                $('#recommendationOtherDropdown').addClass('hidden');
             }
-        }else{
-            $('#recommendationOtherDropdown').addClass('hidden');
-            $('#appealReturnFee').addClass('hidden');
         }
     }
 
@@ -607,7 +628,9 @@
         var appealRecommendation = $("[name='appealRecommendationValues']").val();
         var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
         if('other' == recommendation || (isChangePeriodAppealType == 'true' && 'appealApprove' == appealRecommendation)){
-            $('#recommendationOtherDropdown').removeClass('hidden');
+            if('${applicationViewDto.applicationDto.status}' != 'APST014'){
+                $('#recommendationOtherDropdown').removeClass('hidden');
+            }
         }else{
             $('#recommendationOtherDropdown').addClass('hidden');
         }
