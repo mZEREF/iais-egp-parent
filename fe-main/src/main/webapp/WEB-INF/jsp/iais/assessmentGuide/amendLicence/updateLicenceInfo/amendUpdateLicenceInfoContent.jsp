@@ -45,7 +45,7 @@
                                 </div>
                             </td>
                             <td><iais:code code="${pool.hciName}"/></td>
-                            <td><iais:code code="${pool.addrType}"/></td>
+                            <td>${pool.svcId}</td>
                             <td>${pool.licenceNo}</td>
                             <td>${pool.premisesType}</td>
                             <td>${pool.address}</td>
