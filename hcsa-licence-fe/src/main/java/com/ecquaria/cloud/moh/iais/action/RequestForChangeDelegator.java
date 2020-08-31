@@ -637,6 +637,9 @@ public class RequestForChangeDelegator {
         if(!StringUtil.isEmpty(draftNo)){
             log.info(StringUtil.changeForLog("draftNo is not empty"));
             AppSubmissionDto appSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
+            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                requestForChangeService.svcDocToPresmise(appSubmissionDto);
+            }
             if(appSubmissionDto.getAppGrpPremisesDtoList() != null && appSubmissionDto.getAppGrpPremisesDtoList().size() >0){
                 ParamUtil.setSessionAttr(bpc.request, RfcConst.RFCAPPSUBMISSIONDTO, appSubmissionDto);
             }else{

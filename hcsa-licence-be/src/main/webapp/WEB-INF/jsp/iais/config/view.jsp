@@ -87,19 +87,19 @@
           <div class="col-xs-12 col-md-3">
             <div class="form-check " style="left: 10%">
               <c:set var="type" value="${PremisesType}"></c:set>
-              <input class="form-check-input" readonly  id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" name="Onsite" aria-invalid="false">
+              <input class="form-check-input" disabled  id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" name="Onsite" aria-invalid="false">
               <label class="form-check-label"  for="icon3checkboxSample"><span class="check-square"></span>Onsite</label>
             </div>
           </div>
           <div class="col-xs-12 col-md-3">
             <div class="form-check ">
-              <input class="form-check-input" readonly id="icon4checkboxSample"  <c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> type="checkbox" name="Offsite" aria-invalid="false">
+              <input class="form-check-input" disabled id="icon4checkboxSample"  <c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> type="checkbox" name="Offsite" aria-invalid="false">
               <label class="form-check-label"  for="icon4checkboxSample"><span class="check-square"></span>Offsite</label>
             </div>
           </div>
           <div class="col-xs-12 col-md-3">
             <div class="form-check ">
-              <input class="form-check-input" readonly id="icon5checkboxSample"  <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" name="Conveyance" aria-invalid="false">
+              <input class="form-check-input" disabled id="icon5checkboxSample"  <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" name="Conveyance" aria-invalid="false">
               <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
             </div>
           </div>
@@ -264,10 +264,10 @@
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-6 control-label">Will the doc be duplicated for individual premises?</label>
           <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" checked value="0"><label>No</label>
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" disabled checked value="0"><label>No</label>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" value="1"><label>Yes</label>
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" disabled value="1"><label>Yes</label>
           </div>
         </div>
       </div>
@@ -470,7 +470,7 @@
           <div class="col-xs-12 col-md-4">
             <label>Page Name</label>
           </div >
-          <div  class="col-xs-12 col-md-8"><input  type="text"  style="width: 20%;" maxlength="100" value="${pageName}" ></div>
+          <div  class="col-xs-12 col-md-8"><input  type="text" disabled  style="width: 20%;" maxlength="100" value="${pageName}" ></div>
           <div >
           </div>
           <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">

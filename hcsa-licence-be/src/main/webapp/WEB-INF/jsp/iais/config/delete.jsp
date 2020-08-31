@@ -231,11 +231,11 @@
               <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="commDocId">
               <div class="col-xs-12 col-md-4">
-                <input  type="text" name="descriptionCommDoc" maxlength="255" value="${doc.docDesc}">
+                <input  type="text" name="descriptionCommDoc" disabled maxlength="255" value="${doc.docDesc}">
               </div>
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
                 <input type="hidden" name="commDocMandatory"<c:choose><c:when test="${doc.isMandatory}"> value="1"</c:when><c:otherwise> value="0"</c:otherwise></c:choose>>
-                <input class="form-check-input" <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocMandatory">
+                <input class="form-check-input" disabled <c:if test="${doc.isMandatory}">checked</c:if>  type="checkbox" onclick="checkboxOnclick(this)" name="descriptionCommDocMandatory">
                 <label class="form-check-label" ><span class="check-square"></span>Mandatory</label>
               </div>
             </div>
@@ -446,7 +446,7 @@
           <div class="col-xs-12 col-md-4">
             <label>Page Name</label>
           </div >
-          <div  class="col-xs-12 col-md-8"><input  type="text"  style="width: 20%;" maxlength="100" value="${pageName}" ></div>
+          <div  class="col-xs-12 col-md-8"><input  type="text" disabled style="width: 20%;" maxlength="100" value="${pageName}" ></div>
           <div >
           </div>
           <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">

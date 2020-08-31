@@ -1711,7 +1711,7 @@ public class NewApplicationDelegator {
         boolean eqServiceResult = eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
 
         serviceIsChange = eqServiceResult;
-        appEditSelectDto.setServiceEdit(serviceIsChange);
+        appEditSelectDto.setServiceEdit(false);
         appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         List<AppSubmissionDto> appSubmissionDtos = IaisCommonUtils.genNewArrayList();
@@ -1935,10 +1935,11 @@ public class NewApplicationDelegator {
                     appEditSelectDto1.setDocEdit(docIsChange);
                     appEditSelectDto1.setServiceEdit(serviceIsChange);
                     appSubmissionDto1.setAppEditSelectDto(appEditSelectDto1);
-                    appSubmissionDto1.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_NO_NEED_PAYMENT);
+                    appSubmissionDto1.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                     appSubmissionDto1.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                     appSubmissionDto1.setIsNeedNewLicNo(AppConsts.YES);
                     appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
+                    autoSaveAppsubmission.add(personAppsubmit);
                 }else {
                     autoSaveAppsubmission.add(personAppsubmit);
                 }
@@ -2051,6 +2052,8 @@ public class NewApplicationDelegator {
         String deputyPoFlag = n.get(0).getDeputyPoFlag();
         o.get(0).setHcsaServiceStepSchemeDtos(hcsaServiceStepSchemeDtos);
         o.get(0).setDeputyPoFlag(deputyPoFlag);
+        boolean flag=false;
+        boolean flag1=false;
         if (appSvcDisciplineAllocationDtoList != null && appSvcDisciplineAllocationDtoList1 != null) {
             for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList) {
                 String idNo = appSvcDisciplineAllocationDto.getIdNo();
@@ -2072,34 +2075,34 @@ public class NewApplicationDelegator {
                     }
                 }
             }
+           flag = appSvcDisciplineAllocationDtoList.equals(appSvcDisciplineAllocationDtoList1);
+        }else {
+            flag=true;
         }
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = n.get(0).getAppSvcLaboratoryDisciplinesDtoList();
+        List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList = o.get(0).getAppSvcLaboratoryDisciplinesDtoList();
+        if(appSvcLaboratoryDisciplinesDtoList!=null&&oldAppSvcLaboratoryDisciplinesDtoList!=null){
+            flag1=appSvcLaboratoryDisciplinesDtoList.equals(oldAppSvcLaboratoryDisciplinesDtoList);
+        }else {
+            flag1=true;
+        }
+
+
         List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = n.get(0).getAppSvcPrincipalOfficersDtoList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtoList = o.get(0).getAppSvcPrincipalOfficersDtoList();
-        if (appSvcPrincipalOfficersDtoList != null && oldAppSvcPrincipalOfficersDtoList != null) {
-            List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtos = copyAppSvcPo(appSvcPrincipalOfficersDtoList);
-            List<AppSvcPrincipalOfficersDto> oldAppSvcPrincipalOfficersDtos = copyAppSvcPo(oldAppSvcPrincipalOfficersDtoList);
-            n.get(0).setAppSvcPrincipalOfficersDtoList(appSvcPrincipalOfficersDtos);
-            o.get(0).setAppSvcPrincipalOfficersDtoList(oldAppSvcPrincipalOfficersDtos);
-        }
+        boolean eqSvcPrincipalOfficers = eqSvcPrincipalOfficers(appSvcPrincipalOfficersDtoList, oldAppSvcPrincipalOfficersDtoList);
+
         List<AppSvcCgoDto> appSvcCgoDtoList = n.get(0).getAppSvcCgoDtoList();
         List<AppSvcCgoDto> oldAppSvcCgoDtoList = o.get(0).getAppSvcCgoDtoList();
-        if (appSvcCgoDtoList != null && oldAppSvcCgoDtoList != null) {
-            List<AppSvcCgoDto> appSvcCgoDtos = copyAppSvcCgo(appSvcCgoDtoList);
-            List<AppSvcCgoDto> oldAppSvcCgoDtos = copyAppSvcCgo(oldAppSvcCgoDtoList);
-            n.get(0).setAppSvcCgoDtoList(appSvcCgoDtos);
-            o.get(0).setAppSvcCgoDtoList(oldAppSvcCgoDtos);
-        }
+        boolean eqCgo = eqCgo(appSvcCgoDtoList, oldAppSvcCgoDtoList);
+
         List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = n.get(0).getAppSvcMedAlertPersonList();
         List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList = o.get(0).getAppSvcMedAlertPersonList();
-        if (appSvcMedAlertPersonList != null && oldAppSvcMedAlertPersonList != null) {
-            List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonDtos = copyMedaler(appSvcMedAlertPersonList);
-            List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonDtos = copyMedaler(oldAppSvcMedAlertPersonList);
-            n.get(0).setAppSvcMedAlertPersonList(appSvcMedAlertPersonDtos);
-            o.get(0).setAppSvcMedAlertPersonList(oldAppSvcMedAlertPersonDtos);
-        }
-        if (!o.equals(n)) {
+        boolean eqMeadrter = eqMeadrter(appSvcMedAlertPersonList, oldAppSvcMedAlertPersonList);
 
+        if (!flag || !flag1 || eqSvcPrincipalOfficers || eqCgo || eqMeadrter) {
             return true;
+
         }
         return false;
     }
@@ -2306,18 +2309,23 @@ public class NewApplicationDelegator {
 
     private List<AppSvcCgoDto> copyAppSvcCgo(List<AppSvcCgoDto> appSvcCgoDtoList) throws Exception {
         List<AppSvcCgoDto> n = (List<AppSvcCgoDto>) CopyUtil.copyMutableObject(appSvcCgoDtoList);
+        List<AppSvcCgoDto> list=IaisCommonUtils.genNewArrayList();
         for (AppSvcCgoDto appSvcCgoDto : n) {
-            appSvcCgoDto.setLicPerson(false);
-            appSvcCgoDto.setSelectDropDown(false);
-            appSvcCgoDto.setNeedSpcOptList(false);
-            appSvcCgoDto.setPreferredMode(null);
-            appSvcCgoDto.setSpcOptList(null);
-            appSvcCgoDto.setSpecialityHtml(null);
-            appSvcCgoDto.setCgoIndexNo(null);
-            appSvcCgoDto.setAssignSelect(null);
-            appSvcCgoDto.setOfficeTelNo(null);
+            AppSvcCgoDto cgoDto=new AppSvcCgoDto();
+            cgoDto.setSalutation(appSvcCgoDto.getSalutation());
+            cgoDto.setName(appSvcCgoDto.getName());
+            cgoDto.setIdNo(appSvcCgoDto.getIdNo());
+            cgoDto.setIdType(appSvcCgoDto.getIdType());
+            cgoDto.setDesignation(appSvcCgoDto.getDesignation());
+            cgoDto.setProfessionType(appSvcCgoDto.getProfessionType());
+            cgoDto.setProfRegNo(appSvcCgoDto.getProfRegNo());
+            cgoDto.setSpeciality(appSvcCgoDto.getSpeciality());
+            cgoDto.setSubSpeciality(appSvcCgoDto.getSubSpeciality());
+            cgoDto.setMobileNo(appSvcCgoDto.getMobileNo());
+            cgoDto.setEmailAddr(appSvcCgoDto.getEmailAddr());
+            list.add(cgoDto);
         }
-        return n;
+        return list;
     }
 
     private boolean eqMeadrter(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList, List<AppSvcPrincipalOfficersDto> oldAppSvcMedAlertPersonList1) throws Exception {
@@ -2339,7 +2347,7 @@ public class NewApplicationDelegator {
             List<AppSvcPrincipalOfficersDto> n = copyAppSvcPo(appSvcPrincipalOfficersDtoList);
             List<AppSvcPrincipalOfficersDto> o = copyAppSvcPo(oldAppSvcPrincipalOfficersDtoList);
             if (!n.equals(o)) {
-                return true;
+                return false;
             }
         } else if (appSvcPrincipalOfficersDtoList == null && oldAppSvcPrincipalOfficersDtoList != null || appSvcPrincipalOfficersDtoList != null && oldAppSvcPrincipalOfficersDtoList == null) {
             return true;
@@ -2349,32 +2357,36 @@ public class NewApplicationDelegator {
 
     private List<AppSvcPrincipalOfficersDto> copyMedaler(List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList) throws Exception {
         List<AppSvcPrincipalOfficersDto> n = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(appSvcMedAlertPersonList);
+        List<AppSvcPrincipalOfficersDto> list=IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : n) {
-            appSvcPrincipalOfficersDto.setLicPerson(false);
-            appSvcPrincipalOfficersDto.setSelectDropDown(false);
-            appSvcPrincipalOfficersDto.setNeedSpcOptList(false);
-            appSvcPrincipalOfficersDto.setSpecialityHtml(null);
-            appSvcPrincipalOfficersDto.setSpcOptList(null);
-            appSvcPrincipalOfficersDto.setCgoIndexNo(null);
-            appSvcPrincipalOfficersDto.setAssignSelect(null);
-            appSvcPrincipalOfficersDto.setOfficeTelNo(null);
+            AppSvcPrincipalOfficersDto svcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
+            svcPrincipalOfficersDto.setSalutation(appSvcPrincipalOfficersDto.getSalutation());
+            svcPrincipalOfficersDto.setName(appSvcPrincipalOfficersDto.getName());
+            svcPrincipalOfficersDto.setIdType(appSvcPrincipalOfficersDto.getIdType());
+            svcPrincipalOfficersDto.setIdNo(appSvcPrincipalOfficersDto.getIdNo());
+            svcPrincipalOfficersDto.setMobileNo(appSvcPrincipalOfficersDto.getMobileNo());
+            svcPrincipalOfficersDto.setEmailAddr(appSvcPrincipalOfficersDto.getEmailAddr());
+            svcPrincipalOfficersDto.setPreferredMode(appSvcPrincipalOfficersDto.getPreferredMode());
+            list.add(svcPrincipalOfficersDto);
         }
-        return n;
+        return list;
     }
 
     private List<AppSvcPrincipalOfficersDto> copyAppSvcPo(List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList) throws Exception {
         List<AppSvcPrincipalOfficersDto> n = (List<AppSvcPrincipalOfficersDto>) CopyUtil.copyMutableObject(appSvcPrincipalOfficersDtoList);
+        List<AppSvcPrincipalOfficersDto> list=IaisCommonUtils.genNewArrayList();
         for (AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : n) {
-            appSvcPrincipalOfficersDto.setLicPerson(false);
-            appSvcPrincipalOfficersDto.setSelectDropDown(false);
-            appSvcPrincipalOfficersDto.setNeedSpcOptList(false);
-            appSvcPrincipalOfficersDto.setSpecialityHtml(null);
-            appSvcPrincipalOfficersDto.setSpcOptList(null);
-            appSvcPrincipalOfficersDto.setCgoIndexNo(null);
-            appSvcPrincipalOfficersDto.setAssignSelect(null);
-            appSvcPrincipalOfficersDto.setPreferredMode(null);
+            AppSvcPrincipalOfficersDto svcPrincipalOfficersDto=new AppSvcPrincipalOfficersDto();
+            svcPrincipalOfficersDto.setSalutation(appSvcPrincipalOfficersDto.getSalutation());
+            svcPrincipalOfficersDto.setName(appSvcPrincipalOfficersDto.getName());
+            svcPrincipalOfficersDto.setIdType(appSvcPrincipalOfficersDto.getIdType());
+            svcPrincipalOfficersDto.setIdNo(appSvcPrincipalOfficersDto.getIdNo());
+            svcPrincipalOfficersDto.setDesignation(appSvcPrincipalOfficersDto.getDesignation());
+            svcPrincipalOfficersDto.setOfficeTelNo(appSvcPrincipalOfficersDto.getOfficeTelNo());
+            svcPrincipalOfficersDto.setEmailAddr(appSvcPrincipalOfficersDto.getEmailAddr());
+            list.add(svcPrincipalOfficersDto);
         }
-        return n;
+        return list;
     }
 
     public static boolean compareHciName(AppGrpPremisesDto premisesListQueryDto, AppGrpPremisesDto appGrpPremisesDto) {
@@ -4331,6 +4343,9 @@ public class NewApplicationDelegator {
             if (appSubmissionDto != null) {
                 if (IaisCommonUtils.isEmpty(appSubmissionDto.getAppSvcRelatedInfoDtoList())) {
                     log.info(StringUtil.changeForLog("appSvcRelatedInfoDtoList is empty"));
+                }
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                    requestForChangeService.svcDocToPresmise(appSubmissionDto);
                 }
                 List<String> stepColor = appSubmissionDto.getStepColor();
                 if (stepColor != null) {
