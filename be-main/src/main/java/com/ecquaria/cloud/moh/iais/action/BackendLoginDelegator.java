@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.jwt.JwtEncoder;
 import com.ecquaria.cloud.moh.iais.common.jwt.JwtVerify;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AccessUtil;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
@@ -120,7 +121,9 @@ public class BackendLoginDelegator {
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
         trailDtoList.add(auditTrailDto);
         try {
-            AuditLogUtil.callWithEventDriven(trailDtoList, submissionClient);
+            String eventRefNo = String.valueOf(System.currentTimeMillis());
+            log.info(StringUtil.changeForLog("be call event bus for login , the event ref number is " + eventRefNo));
+            AuditLogUtil.callWithEventDriven(trailDtoList, submissionClient, eventRefNo);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
