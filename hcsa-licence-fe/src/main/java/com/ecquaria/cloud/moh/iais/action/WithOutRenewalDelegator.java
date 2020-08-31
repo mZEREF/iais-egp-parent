@@ -4,12 +4,15 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.api.config.GatewayConstants;
 import com.ecquaria.cloud.moh.iais.api.services.GatewayAPI;
+import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppFeeDetailsDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -31,6 +34,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RenewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.AmendmentFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicKeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -46,13 +50,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.RfcConst;
-import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
-import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
-import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
@@ -129,6 +131,15 @@ public class WithOutRenewalDelegator {
     private ApplicationClient applicationClient;
     @Value("${iais.email.sender}")
     private String mailSender;
+
+    @Value("${iais.system.one.address}")
+    private String systemAddressOne;
+
+    @Autowired
+    private NotificationHelper notificationHelper;
+
+    @Autowired
+    private SystemParamConfig systemParamConfig;
 
     public void start(BaseProcessClass bpc) {
         log.info("**** the non auto renwal  start ******");
@@ -420,7 +431,7 @@ public class WithOutRenewalDelegator {
                 //jump page to acknowledgement
                 //send email pay success
                 try {
-                    sendEmail(bpc.request, groupId, "successfulOnlinePayment", licenseeId, amount, "xxxx-xxxx-xxxx");
+                    sendEmail(bpc.request,appSubmissionDtos);
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
                 }
@@ -1330,59 +1341,100 @@ public class WithOutRenewalDelegator {
     //private method
     //=============================================================================
 
-    public void sendEmail(HttpServletRequest request, String applicationNumber, String type, String licenseeId, Double amount, String GIROAccountNumber) throws IOException, TemplateException {
-        List<HcsaServiceDto> hcsaServiceDtos = (List<HcsaServiceDto>) ParamUtil.getSessionAttr(request, AppServicesConsts.HCSASERVICEDTOLIST);
-        List<String> serviceNames = new ArrayList<String>();
-        for (HcsaServiceDto hcsaServiceDto : hcsaServiceDtos) {
-            String svcName = hcsaServiceDto.getSvcName();
-            if (!StringUtil.isEmpty(svcName)) {
-                serviceNames.add(svcName);
+    public void sendEmail(HttpServletRequest request, List<AppSubmissionDto> appSubmissionDtos){
+        if (!IaisCommonUtils.isEmpty(appSubmissionDtos)) {
+            String paymentMethod = appSubmissionDtos.get(0).getPaymentMethod();
+            String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
+            String MohName = AppConsts.MOH_AGENCY_NAME;
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            String paymentMethodName = "onlinePayment";
+            String groupNo = appSubmissionDtos.get(0).getAppGrpNo();
+            String applicationName = (String)ParamUtil.getSessionAttr(request, "licenseeName");
+            log.info(StringUtil.changeForLog("send renewal application notification applicationName : " + applicationName));
+            log.info(StringUtil.changeForLog("send renewal application notification paymentMethod : " + paymentMethod));
+            int index = 1;
+            String appNo = groupNo;
+            String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
+            for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+                FeeExtDto detailFeeDto = appSubmissionDto.getDetailFeeDto();
+                String amountStr = detailFeeDto.getAmountStr();
+                appNo = getAppNo(groupNo,index);
+                log.info(StringUtil.changeForLog("send renewal application notification application no : " + appNo));
+                log.info(StringUtil.changeForLog("send renewal application notification amountStr : " + amountStr));
+                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+                map.put("ApplicantName", applicationName);
+                map.put("ApplicationType", applicationTypeShow);
+                map.put("ApplicationNumber", appNo);
+                map.put("ApplicationDate", appDate);
+                map.put("paymentAmount", amountStr);
+                map.put("systemLink", loginUrl);
+                map.put("emailAddress", systemAddressOne);
+                map.put("MOH_AGENCY_NAME", MohName);
+                if (ApplicationConsts.PAYMENT_METHOD_NAME_CREDIT.equals(paymentMethod)
+                        || ApplicationConsts.PAYMENT_METHOD_NAME_NETS.equals(paymentMethod)
+                        || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(paymentMethod)) {
+                    paymentMethodName = "onlinePayment";
+                    map.put("paymentMethod", paymentMethodName);
+                    log.info(StringUtil.changeForLog("send renewal application notification paymentMethodName : " + paymentMethodName));
+                } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(paymentMethod)) {
+                    //todo GIRO payment method
+//                    paymentMethodName = "GIRO";
+                }
+                try {
+                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ appNo +" has been submitted";
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED);
+                    emailParam.setTemplateContent(map);
+                    emailParam.setQueryCode(appNo);
+                    emailParam.setReqRefNum(appNo);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                    emailParam.setRefId(appNo);
+                    emailParam.setSubject(subject);
+                    //send email
+                    log.info(StringUtil.changeForLog("send renewal application email"));
+                    notificationHelper.sendNotification(emailParam);
+                    log.info(StringUtil.changeForLog("send renewal application email end"));
+                    //send sms
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_SMS);
+                    smsParam.setSubject(subject);
+                    smsParam.setQueryCode(appNo);
+                    smsParam.setReqRefNum(appNo);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+                    smsParam.setRefId(appNo);
+                    log.info(StringUtil.changeForLog("send renewal application sms"));
+                    notificationHelper.sendNotification(smsParam);
+                    log.info(StringUtil.changeForLog("send renewal application sms end"));
+                    //send message
+                    EmailParam messageParam = new EmailParam();
+                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_SUBMITTED_MESSAGE);
+                    messageParam.setTemplateContent(map);
+                    messageParam.setQueryCode(appNo);
+                    messageParam.setReqRefNum(appNo);
+                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    messageParam.setRefId(appNo);
+                    messageParam.setSubject(subject);
+                    log.info(StringUtil.changeForLog("send renewal application message"));
+                    notificationHelper.sendNotification(messageParam);
+                    log.info(StringUtil.changeForLog("send renewal application message end"));
+                }catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }
+                index ++;
             }
+            log.info(StringUtil.changeForLog("send renewal application notification end"));
         }
+    }
 
-        MsgTemplateDto msgTemplateDto = null;
-        String mesContext;
-
-        Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-        String subject = "";
-        if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(type)) {
-            msgTemplateDto = appSubmissionService.getMsgTemplateById("10FF81AF-267D-EA11-BE7A-000C29D29DB0");
-
-            map.put("paymentAmount", Formatter.formatNumber(amount));
-            map.put("serviceLicenceName", serviceNames.toString());
-            map.put("GIROAccountNumber", GIROAccountNumber);
-            subject = "MOH IAIS – Successful Submission of Renewal " + applicationNumber;
-
-        } else if ("onlinePayment".equals(type)) {
-            msgTemplateDto = appSubmissionService.getMsgTemplateById("F77860C0-687D-EA11-BE7A-000C29D29DB0");
-
-            map.put("paymentAmount", Formatter.formatNumber(amount));
-            map.put("serviceLicenceName", serviceNames.toString());
-            subject = "MOH IAIS – Successful Submission of Renewal " + applicationNumber;
-
-        } else if ("successfulOnlinePayment".equals(type)) {
-            msgTemplateDto = appSubmissionService.getMsgTemplateById("A4CE953C-6A7D-EA11-BE7A-000C29D29DB0");
-            map.put("paymentAmount", Formatter.formatNumber(amount));
-            map.put("serviceLicenceName", serviceNames.toString());
-            subject = "MOH IAIS – Successful Submission of Auto Renewal Application " + applicationNumber;
-
-        } else if ("emailLink".equals(type)) {
-            msgTemplateDto = appSubmissionService.getMsgTemplateById("2C775ADE-6B7D-EA11-BE7A-000C29D29DB0");
-            map.put("paymentAmount", Formatter.formatNumber(amount));
-            map.put("serviceLicenceName", serviceNames);
-            map.put("GIROAccountNumber", GIROAccountNumber);
-
+    private String getAppNo(String groupNo,int index){
+        StringBuilder appNo = new StringBuilder(groupNo);
+        appNo.append("-");
+        if(index > 9){
+            appNo.append(index);
+        }else{
+            appNo.append("0").append(index);
         }
-        EmailDto emailDto = new EmailDto();
-        if (msgTemplateDto != null) {
-            mesContext = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getMessageContent(), map);
-            emailDto.setContent(mesContext);
-        }
-        emailDto.setSender(mailSender);
-        emailDto.setSubject(subject);
-        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-        emailDto.setClientQueryCode(applicationNumber);
-        appSubmissionService.feSendEmail(emailDto);
+        return appNo.toString();
     }
 
 }
