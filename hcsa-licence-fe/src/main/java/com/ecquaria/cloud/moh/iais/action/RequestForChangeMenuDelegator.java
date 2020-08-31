@@ -129,7 +129,7 @@ public class RequestForChangeMenuDelegator {
         ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.OLDAPPSUBMISSIONDTO, null);
         removeSession(bpc);
         requestForInformation(bpc, appNo);
-
+        ParamUtil.setSessionAttr(bpc.request, ACKMESSAGE, null);
 
         log.debug(StringUtil.changeForLog("the do start end ...."));
     }
@@ -148,6 +148,7 @@ public class RequestForChangeMenuDelegator {
         filterParameter.setPageSize(SysParamUtil.getDefaultPageSize());
         ParamUtil.setSessionAttr(bpc.request, RfcConst.APPSUBMISSIONDTO, null);
         ParamUtil.setSessionAttr(bpc.request, AppServicesConsts.HCSASERVICEDTOLIST, null);
+        ParamUtil.setSessionAttr(bpc.request, ACKMESSAGE, null);
         AuditTrailHelper.auditFunction("hcsa-application", "hcsa application");
         AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         log.debug(StringUtil.changeForLog("the do personnleListStart end ...."));
@@ -711,7 +712,13 @@ public class RequestForChangeMenuDelegator {
         if (IaisCommonUtils.isEmpty(licenceIds)) {
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "There is ongoing application for the licence");
             return;
+        }else {
+            for(String licId : licenceIds){
+                List<String> appFinalStatus = IaisCommonUtils.getAppFinalStatus();
+
+            }
         }
+
         List<AppSubmissionDto> appSubmissionDtos = requestForChangeService.getAppSubmissionDtoByLicenceIds(licenceIds);
         String appGroupNo = requestForChangeService.getApplicationGroupNumber(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
