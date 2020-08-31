@@ -172,7 +172,6 @@
     $("#selectedFile").change(function () {
         var configFileSize = $("#configFileSize").val();
         var error  = validateUploadSizeMaxOrEmpty(configFileSize,'selectedFile');
-        alert(error);
         if (error == "Y") {
             $('#error_litterFile_Show').html("");
             $("#delFile").removeAttr("hidden");
