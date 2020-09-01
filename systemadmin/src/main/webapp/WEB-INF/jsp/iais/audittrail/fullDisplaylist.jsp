@@ -25,8 +25,6 @@
         <div class="bg-title"><h2>Audit Trail Full Module</h2></div>
 
         <%@ include file="maincontent.jsp"%>
-
-
     </form>
 </div>
 

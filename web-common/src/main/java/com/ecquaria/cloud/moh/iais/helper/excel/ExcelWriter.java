@@ -35,7 +35,7 @@ import java.util.Map;
 public final class ExcelWriter {
     private static XSSFWorkbook workbook;
 
-    private static String safetyPwd = "password$1";
+    private static String mima = "password$1";
 
     private ExcelWriter(){}
 
@@ -185,7 +185,7 @@ public final class ExcelWriter {
 
     private static void lockSheetWorkspace(Sheet sheet, String pwd){
         if (StringUtils.isEmpty(pwd)){
-            sheet.protectSheet(safetyPwd);
+            sheet.protectSheet(mima);
         }else {
             sheet.protectSheet(pwd);
         }

@@ -7,6 +7,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
  */
 
 import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailQueryDto;
@@ -25,5 +26,10 @@ public class AuditTrailServiceImpl implements AuditTrailService {
     @Override
     public SearchResult<AuditTrailQueryDto> listAuditTrailDto(SearchParam searchParam) {
         return trailClient.listAuditTrailDto(searchParam).getEntity();
+    }
+
+    @Override
+    public AuditTrailDto getAuditTrailById(String auditId) {
+        return trailClient.getAuditTrailById(auditId).getEntity();
     }
 }

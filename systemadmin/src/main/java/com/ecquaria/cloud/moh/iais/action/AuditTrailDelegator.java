@@ -10,6 +10,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstants;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -128,6 +129,16 @@ public class AuditTrailDelegator {
         log.info("entry prepareDataMode");
     }
 
+
+    public void viewActivities(BaseProcessClass bpc){
+        HttpServletRequest request = bpc.request;
+
+        String auditId = ParamUtil.getMaskedString(request, "auditId");
+        AuditTrailDto auditTrail = auditTrailService.getAuditTrailById(auditId);
+        ParamUtil.setRequestAttr(request, "viewAuditActionData", auditTrail);
+        log.info("audit id........" + auditId);
+    }
+
     private void preSelectOption(HttpServletRequest request) {
         List<SelectOption> operationTypeList = IaisCommonUtils.genNewArrayList();
         operationTypeList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_TYPE_INTERNET), "Internet"));
@@ -188,6 +199,9 @@ public class AuditTrailDelegator {
         log.debug(StringUtil.changeForLog("fileHandler end ...."));
 
     }
+
+
+
 
     /**
     * @AutoStep: doQuery

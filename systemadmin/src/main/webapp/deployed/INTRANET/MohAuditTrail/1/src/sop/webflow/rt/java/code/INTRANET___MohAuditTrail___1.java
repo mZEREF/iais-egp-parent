@@ -47,4 +47,8 @@ public class INTRANET___MohAuditTrail___1 extends BaseProcessClass {
 	public void step1_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "startStep", this);
 	}
+
+	public void viewActivities_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "viewActivities", this);
+	}
 }

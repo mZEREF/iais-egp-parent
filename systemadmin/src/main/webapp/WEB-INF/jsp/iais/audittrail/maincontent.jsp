@@ -61,104 +61,102 @@
 
 </div>
 <br><br><br>
-<div>
-  <div class="tab-pane active" id="tabInbox" role="tabpanel">
-    <div class="tab-content">
-      <div class="row">
-        <br><br>
-        <div class="col-xs-12">
-          <div class="components">
-            <iais:pagination  param="auditTrailSearch" result="auditTrailSearchResult"/>
-              <table class="table">
-                <thead>
-                <tr>
-                  <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="operation" value="Operation"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"  field="domain" value="Operation Type"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false"   field="corpPassId" value="Corp-Pass ID"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false"   field="corpPassNric" value="Corp-Pass NRIC"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false"   field="uenId" value="UEN"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false"   field="singPassId" value="SingPass ID"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="action_time" value="Operation Date"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="action_time" value="Operation Time"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="client_ip" value="Source Client IP"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="user_agent" value="Browser name/Browser version"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="moh_user_id" value="MOH User&apos;s account ID"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="session_id" value="Session Id"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="application_number" value="Application ID"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="license_number" value="Licence Number"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="userCase" value="Function / Use Case"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="true"   field="programmeName" value="Program Name"></iais:sortableHeader>
-                  <iais:sortableHeader needSort="false"   field="dataActivities" value="Data Activities"></iais:sortableHeader>
-                </tr>
-                </thead>
-                <tbody>
-                <c:choose>
-                  <c:when test="${empty auditTrailSearchResult.rows}">
+<input type="hidden" name="auditId" id="auditId"/>
+<div class="tab-pane active" id="tabInbox" role="tabpanel">
+  <div class="tab-content">
+    <div class="row">
+      <br><br>
+      <div class="col-xs-12">
+        <div class="components">
+          <iais:pagination  param="auditTrailSearch" result="auditTrailSearchResult"/>
+            <table class="table">
+              <thead>
+              <tr>
+                <iais:sortableHeader needSort="false"  field="" value="No."></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="operation" value="Operation"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"  field="domain" value="Operation Type"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="action_time" value="Operation Date"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="action_time" value="Operation Time"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="client_ip" value="Source Client IP"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="user_agent" value="Browser name/Browser version"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="moh_user_id" value="MOH User&apos;s account ID"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="session_id" value="Session Id"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="application_number" value="Application ID"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="license_number" value="Licence Number"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="userCase" value="Function / Use Case"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="programmeName" value="Program Name"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="operation" value="Data Activities"></iais:sortableHeader>
+              </tr>
+              </thead>
+              <tbody>
+              <c:choose>
+                <c:when test="${empty auditTrailSearchResult.rows}">
+                  <tr>
+                    <td colspan="6">
+                      <iais:message key="ACK018" escape="true"></iais:message>
+                    </td>
+                  </tr>
+                </c:when>
+                <c:otherwise>
+                  <c:forEach var = "resultRow" items = "${auditTrailSearchResult.rows}" varStatus="status">
                     <tr>
-                      <td colspan="6">
-                        <iais:message key="ACK018" escape="true"></iais:message>
+                      <td class="row_no">${(status.index + 1) + (auditTrailSearch.pageNo - 1) * auditTrailSearch.pageSize}</td>
+                        <%-- <td>${resultRow.operationType}</td>--%>
+                      <td><c:out value="${resultRow.operationDesc}"></c:out></td>
+                      <td><c:out value="${resultRow.domainDesc}"></c:out></td>
+                      <td><fmt:formatDate value='${resultRow.actionTime}' pattern='dd/MM/yyyy' /></td>
+                      <td><fmt:formatDate value='${resultRow.actionTime}' pattern='HH:mm:ss' /></td>
+                      <td><c:out value="${resultRow.clientIp}"></c:out></td>
+                      <td><c:out value="${resultRow.userAgent}"></c:out></td>
+                      <td><c:out value="${resultRow.mohUserId}"></c:out></td>
+                      <td><c:out value="${resultRow.sessionId}"></c:out></td>
+                      <td><c:out value="${resultRow.appNum}"></c:out></td>
+                      <td><c:out value="${resultRow.licenseNum}"></c:out></td>
+                      <td><c:out value="${resultRow.module}"></c:out></td>
+                      <td><c:out value="${resultRow.functionName}"></c:out></td>
+                      <td><c:out value="${resultRow.programmeName}"></c:out></td>
+
+
+                      <td>
+                        <c:choose>
+                          <c:when test="${resultRow.operation == 4}">
+                            <a href="javascript:;"  style="text-decoration:underline;" onclick="viewData('<iais:mask name="auditId" value="${resultRow.auditId}"/>')">Data Read</a>
+                          </c:when>
+                          <c:when test="${resultRow.operation == 6}">
+                           <a href="javascript:;"  style="text-decoration:underline;" onclick="viewData('<iais:mask name="auditId" value="${resultRow.auditId}"/>')" >Data Added</a>
+                          </c:when>
+                          <c:when test="${resultRow.operation == 7}">
+                            <a href="javascript:;"  style="text-decoration:underline;" onclick="viewData('<iais:mask name="auditId" value="${resultRow.auditId}"/>')" >Data Updated</a>
+                          </c:when>
+                          <c:when test="${resultRow.operation == 8}">
+                           <a href="javascript:;" style="text-decoration:underline;" onclick="viewData('<iais:mask name="auditId" value="${resultRow.auditId}"/>')">Data Deleted</a>
+                          </c:when>
+                          <c:otherwise>
+                            <c:out value="-"></c:out>
+                          </c:otherwise>
+                        </c:choose>
+
                       </td>
                     </tr>
-                  </c:when>
-                  <c:otherwise>
-                    <c:forEach var = "resultRow" items = "${auditTrailSearchResult.rows}" varStatus="status">
-                      <tr>
-                        <td class="row_no">${(status.index + 1) + (auditTrailSearch.pageNo - 1) * auditTrailSearch.pageSize}</td>
-                          <%-- <td>${resultRow.operationType}</td>--%>
-                        <td><c:out value="${resultRow.operationDesc}"></c:out></td>
-                        <td><c:out value="${resultRow.domainDesc}"></c:out></td>
-                        <td><c:out value="${resultRow.nricNumber}"></c:out></td>
-                        <td><c:out value="${resultRow.uenId}"></c:out></td>
-                        <td><c:out value="${resultRow.nricNumber}"></c:out></td>
-                        <td></td>
-                        <td><fmt:formatDate value='${resultRow.actionTime}' pattern='dd/MM/yyyy' /></td>
-                        <td><fmt:formatDate value='${resultRow.actionTime}' pattern='HH:mm:ss' /></td>
-                        <td><c:out value="${resultRow.clientIp}"></c:out></td>
-                        <td><c:out value="${resultRow.userAgent}"></c:out></td>
-                        <td><c:out value="${resultRow.mohUserId}"></c:out></td>
-                        <td><c:out value="${resultRow.sessionId}"></c:out></td>
-                        <td><c:out value="${resultRow.appNum}"></c:out></td>
-                        <td><c:out value="${resultRow.licenseNum}"></c:out></td>
-                        <td><c:out value="${resultRow.module}"></c:out></td>
-                        <td><c:out value="${resultRow.functionName}"></c:out></td>
-                        <td><c:out value="${resultRow.programmeName}"></c:out></td>
-                        <td><c:out value="${resultRow.programmeName}"></c:out></td>
-                      </tr>
-                    </c:forEach>
+                  </c:forEach>
 
-                  </c:otherwise>
-                </c:choose>
-                </tbody>
-              </table>
-          </div>
-        </div>
-      </div>
-
-
-
-    </div>
-
-
-    <div class="table-footnote">
-      <div class="row">
-        <div class="col-xs-6 col-md-4">
-
-        </div>
-        <div class="col-xs-6 col-md-8 text-right">
-          <div class="nav">
-
-          </div>
-          <br><br>
-
+                </c:otherwise>
+              </c:choose>
+              </tbody>
+            </table>
         </div>
       </div>
     </div>
-
   </div>
-
-
 </div>
+
 <%@include file="/WEB-INF/jsp/include/validation.jsp"%>
 <%@include file="/WEB-INF/jsp/include/utils.jsp"%>
+<script>
+  function viewData(id) {
+    $("#auditId").val(id)
+    SOP.Crud.cfxSubmit("mainForm", "viewActivities");
+  }
+
+</script>
