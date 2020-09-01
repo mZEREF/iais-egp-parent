@@ -84,9 +84,6 @@
 	%>
 	<a href="#<c:out value="${item.id}" />" data-toggle="collapse" aria-expanded="false">
 		<egov-smc:commonLabel><c:out value="${item.displayLabel}" /></egov-smc:commonLabel>
-		<c:if test="${currDepth > 0}">
-			<img src="<egov-core:webURL with_theme="true" source="images/general/white_arrow.gif"/>" border="0" alt="&gt;"/>
-		</c:if>
 	</a>
 	<%
 	} else if (url.startsWith("/")) {
