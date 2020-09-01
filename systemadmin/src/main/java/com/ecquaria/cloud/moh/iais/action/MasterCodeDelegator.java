@@ -676,6 +676,9 @@ public class MasterCodeDelegator {
         }
         MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR);
         getEditValueFromPage(masterCodeDto, request);
+        if (StringUtil.isEmpty(masterCodeDto.getVersion())){
+            masterCodeDto.setVersion(1f);
+        }
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         ValidationResult validationEditResult = WebValidationHelper.validateProperty(masterCodeDto, "edit");
         if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
