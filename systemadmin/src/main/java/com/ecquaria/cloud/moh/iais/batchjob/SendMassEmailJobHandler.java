@@ -142,8 +142,8 @@ public class SendMassEmailJobHandler extends IJobHandler {
                     }
 
                 }catch (Exception e){
+                    log.info(StringUtil.changeForLog("email sent failed" ));
                     log.info(e.getMessage(),e);
-                    return ReturnT.FAIL;
                 }
             }else if(item.getRecipientsRole() != null){
                 List<String> mobile = blastManagementListService.getMobileByRole(item.getRecipientsRole());
