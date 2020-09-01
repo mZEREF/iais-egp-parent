@@ -384,4 +384,7 @@ public interface HcsaConfigClient {
 
     @PostMapping(value = "/hcsa-routing/hcsa-cessation-flow",consumes = MediaType.APPLICATION_JSON_VALUE,produces =MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationDto>> needToSendTask(@RequestBody List<ApplicationDto> applicationDtos);
+
+    @GetMapping(value = "/hcsa-routing/stage-work-group/{stageId}")
+    FeignResponseEntity<List<String>> getWorkGroupIdsByStageId(@PathVariable(name="stageId") String stageId);
 }
