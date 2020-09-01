@@ -136,25 +136,15 @@
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-6">
-                                          <c:if test="${appGrpPremDto.certIssuedDt!=null}">
                                              <span class="newVal " attr="${appGrpPremDto.certIssuedDt}">
                                             <fmt:formatDate value="${appGrpPremDto.certIssuedDt}" pattern="dd/MM/yyyy"/>
                                           </span>
-                                          </c:if>
-                                          <c:if test="${appGrpPremDto.certIssuedDt==null}">
-                                             <span class="newVal " attr="-">-</span>
-                                          </c:if>
                                         </div>
                                         <div class="col-md-6">
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
-                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt!=null}">
                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}"
                                                    style="display: none"><fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt}" pattern="dd/MM/yyyy"/>
                                                 </span>
-                                            </c:if>
-                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].certIssuedDt==null}">
-                                             <span class="oldVal " attr="-" style="display: none">-</span>
-                                            </c:if>
                                           </c:if>
                                         </div>
                                       </div>
@@ -487,27 +477,29 @@
                                         Public Holidays Operating Hours (Start)
                                       </div>
                                       <div class="col-md-6">
-                                        <c:if test="${appPremPhOpenPeriod.startFrom==null}">
-                                          <div class="col-md-6">
-                                             <span class="newVal " attr="-">-</span>
-                                          </div>
-                                        </c:if>
-                                        <c:if test="${appPremPhOpenPeriod.startFrom!=null}">
-                                          <div class="col-md-6">
+                                        <c:if test="${appGrpPremDto.appPremPhOpenPeriodList.size()>0}">
+                                          <c:if test="${appPremPhOpenPeriod.startFrom==null}">
+                                            <div class="col-md-6">
+                                              <span class="newVal " attr="-">-</span>
+                                            </div>
+                                          </c:if>
+                                          <c:if test="${appPremPhOpenPeriod.startFrom!=null}">
+                                            <div class="col-md-6">
                                              <span class="newVal " attr="${appPremPhOpenPeriod.startFrom}">
                                                <fmt:formatDate value="${appPremPhOpenPeriod.startFrom}" pattern="HH : mm"></fmt:formatDate></span>
-                                          </div>
-                                        </c:if>
-                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom==null}">
-                                          <div class="col-md-6">
-                                            <span class="oldVal " attr="-">-</span>
-                                          </div>
-                                        </c:if>
-                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom!=null}">
-                                          <div class="col-md-6">
+                                            </div>
+                                          </c:if>
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom==null}">
+                                            <div class="col-md-6">
+                                              <span class="oldVal " attr="-">-</span>
+                                            </div>
+                                          </c:if>
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom!=null}">
+                                            <div class="col-md-6">
                                           <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" style="display: none">
                                               <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" pattern="HH : mm"></fmt:formatDate>
-                                          </div>
+                                            </div>
+                                          </c:if>
                                         </c:if>
                                       </div>
                                     </div>
@@ -517,29 +509,32 @@
                                         Public Holidays Operating Hours (End)
                                       </div>
                                       <div class="col-md-6">
-                                        <c:if test="${appPremPhOpenPeriod.endTo==null}">
-                                          <div class="col-md-6">
-                                            <span class="newVal " attr="-">-</span>
-                                          </div>
-                                        </c:if>
-                                        <c:if test="${appPremPhOpenPeriod.endTo!=null}">
-                                          <div class="col-md-6">
+                                        <c:if test="${appGrpPremDto.appPremPhOpenPeriodList.size()>0}">
+                                          <c:if test="${appPremPhOpenPeriod.endTo==null}">
+                                            <div class="col-md-6">
+                                              <span class="newVal " attr="-">-</span>
+                                            </div>
+                                          </c:if>
+                                          <c:if test="${appPremPhOpenPeriod.endTo!=null}">
+                                            <div class="col-md-6">
                                            <span class="newVal " attr="${appPremPhOpenPeriod.endTo}"><fmt:formatDate value="${appPremPhOpenPeriod.endTo}"
                                                                                                                      pattern="HH : mm"></fmt:formatDate>
                                             </span>
-                                          </div>
-                                        </c:if>
-                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo==null}">
-                                          <div class="col-md-6">
-                                            <span class="oldVal " attr="-">-</span>
-                                          </div>
-                                        </c:if>
-                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo!=null}">
-                                          <div class="col-md-6">
+                                            </div>
+                                          </c:if>
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo==null}">
+                                            <div class="col-md-6">
+                                              <span class="oldVal " attr="-">-</span>
+                                            </div>
+                                          </c:if>
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo!=null}">
+                                            <div class="col-md-6">
                                                <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
                                                      style="display: none"><fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}" pattern="HH : mm"></fmt:formatDate></span>
-                                          </div>
+                                            </div>
+                                          </c:if>
                                         </c:if>
+
                                       </div>
                                     </div>
                                   </c:forEach>

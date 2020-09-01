@@ -571,7 +571,11 @@ public class LicenceViewServiceDelegator {
         for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
             List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
             String hciName = appGrpPremisesDto.getPremisesIndexNo();
-
+            if(!StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDt())){
+                appGrpPremisesDto.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDt().toString());
+            }else if(StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDt())){
+                appGrpPremisesDto.setCertIssuedDtStr(null);
+            }
             if (!StringUtil.isEmpty(hciName) && allocationDto != null && allocationDto.size() > 0) {
                 for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : allocationDto) {
                     List<AppSvcChckListDto> appSvcChckListDtoList = null;
@@ -688,6 +692,11 @@ public class LicenceViewServiceDelegator {
             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
                 List<AppSvcDisciplineAllocationDto> reloadDisciplineAllocation = IaisCommonUtils.genNewArrayList();
                 String hciName = appGrpPremisesDto.getPremisesIndexNo();
+                if(!StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDt())){
+                    appGrpPremisesDto.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDt().toString());
+                }else if(StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDt())){
+                    appGrpPremisesDto.setCertIssuedDtStr(null);
+                }
                 if (!StringUtil.isEmpty(hciName) && allocationDto != null && !allocationDto.isEmpty()) {
                     for (AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : allocationDto) {
                         List<AppSvcChckListDto> appSvcChckListDtoList = null;
@@ -1087,18 +1096,20 @@ public class LicenceViewServiceDelegator {
             appGrpPremisesDto.setPremisesType(oldAppGrpPremisesDtoList.get(appGrpPremisesDtoList.size()-1+i).getPremisesType());
             appGrpPremisesDto.setPostalCode("-");
             appGrpPremisesDto.setOffTelNo("-");
-            appGrpPremisesDto.setScdfRefNo("-");
+            appGrpPremisesDto.setScdfRefNo(null);
+            appGrpPremisesDto.setCertIssuedDtStr(null);
+            appGrpPremisesDto.setCertIssuedDt(oldAppGrpPremisesDtoList.get(appGrpPremisesDtoList.size()-1+i).getCertIssuedDt());
             appGrpPremisesDto.setStreetName("-");
-            appGrpPremisesDto.setBlkNo("-");
-            appGrpPremisesDto.setUnitNo("-");
-            appGrpPremisesDto.setFloorNo("-");
+            appGrpPremisesDto.setBlkNo(null);
+            appGrpPremisesDto.setUnitNo(null);
+            appGrpPremisesDto.setFloorNo(null);
             appGrpPremisesDto.setHciName("-");
             appGrpPremisesDto.setOnsiteEndHH("-");
             appGrpPremisesDto.setOnsiteStartHH("-");
             appGrpPremisesDto.setOnsiteStartMM("-");
             appGrpPremisesDto.setOnsiteEndMM("-");
             appGrpPremisesDto.setAddrType("-");
-            appGrpPremisesDto.setBuildingName("-");
+            appGrpPremisesDto.setBuildingName(null);
             appGrpPremisesDtoList.add(appGrpPremisesDto);
         }
     }
