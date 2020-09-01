@@ -47,7 +47,7 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
 						Date st = Formatter.parseDate(startDate);
 						Date ed = Formatter.parseDate(endDate);
 						if (st.after(ed)){
-							errMap.put("actionTime", "AUDIT_ERR009");
+							errMap.put("compareDateError", "AUDIT_ERR009");
 						}else {
 							int reduceDay = getReduceDay(IaisEGPHelper.parseToDate(startDate, AppConsts.DEFAULT_DATE_FORMAT),
 									IaisEGPHelper.parseToDate(endDate, AppConsts.DEFAULT_DATE_FORMAT));

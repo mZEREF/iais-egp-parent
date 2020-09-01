@@ -8,42 +8,62 @@
 
 <br><br>
 
+
 <div class="form-horizontal">
+  <div class="form-group">
+    <div class="col-xs-5 col-md-10">
+      <iais:field value="Operation Type" required="true"></iais:field>
+      <div class="col-xs-5 col-md-5">
+        <iais:select name="operationType" id="operationType" value="${param.operationType}" options="operationTypeSelect" firstOption="Please Select" ></iais:select>
+        <span id="error_domain" name="iaisErrorMsg" class="error-msg"></span>
+      </div>
+    </div>
+  </div>
 
-<iais:section title="" id="atmList">
-  <iais:row>
-    <iais:field value="Operation Type" required="true"></iais:field>
-    <iais:value width="7">
-      <iais:select name="operationType" id="operationType" value="${param.operationType}" options="operationTypeSelect" firstOption="Please Select" ></iais:select>
-      <span id="error_domain" name="iaisErrorMsg" class="error-msg"></span>
-    </iais:value>
 
-    <iais:field value="Operation" required="false"></iais:field>
-    <iais:value width="7">
-      <iais:select name="operation" id="operation" value="${param.operation}" options="operationValueTypeSelect" firstOption="Please Select"></iais:select>
-      <span id="error_operation" name="iaisErrorMsg" class="error-msg"></span>
-    </iais:value>
+  <div class="form-group">
+    <div class="col-xs-5 col-md-10">
+      <iais:field value="Operation" required="false"></iais:field>
+      <div class="col-xs-5 col-md-5">
+        <iais:select name="operation" id="operation" value="${param.operation}" options="operationValueTypeSelect" firstOption="Please Select"></iais:select>
+        <span id="error_operation" name="iaisErrorMsg" class="error-msg"></span>
+      </div>
+    </div>
+  </div>
 
-    <iais:field value="User" required="false"></iais:field>
-    <iais:value width="7">
-      <input type="text" name="user" value="${param.user}" />
-      <span id="error_user" name="iaisErrorMsg" class="error-msg"></span>
-    </iais:value>
 
-    <iais:field value="Operation Start Date Time" required="true"></iais:field>
-    <iais:value width="7">
-      <iais:datePicker id = "startDate" name = "startDate"  value="${param.startDate}"></iais:datePicker>
-     <%--// <span id="error_startDate" name="iaisErrorMsg" class="error-msg"></span>--%>
-      <span id="error_actionTime" name="iaisErrorMsg" class="error-msg"></span>
-    </iais:value>
 
-    <iais:field value="Operation End Date Time" required="true"></iais:field>
-    <iais:value width="7">
-      <iais:datePicker id = "endDate" name = "endDate"  value="${param.endDate}"></iais:datePicker>
-     <%-- <span id="error_endDate" name="iaisErrorMsg" class="error-msg"></span>--%>
-    </iais:value>
+  <div class="form-group">
+    <div class="col-xs-5 col-md-10">
+      <iais:field value="User" required="false"></iais:field>
+      <div class="col-xs-5 col-md-5">
+        <input type="text" name="user" value="${param.user}" maxlength="100"/>
+        <span id="error_user" name="iaisErrorMsg" class="error-msg"></span>
+      </div>
+    </div>
+  </div>
 
-  </iais:row>
+
+  <div class="form-group">
+    <div class="col-xs-5 col-md-10">
+      <iais:field value="Operation Start Date Time" required="true"></iais:field>
+      <div class="col-xs-5 col-md-5">
+        <iais:datePicker id = "startDate" name = "startDate"  value="${param.startDate}"></iais:datePicker>
+        <span id="error_actionTime" name="iaisErrorMsg" class="error-msg"></span>
+        <span id="error_compareDateError" name="iaisErrorMsg" class="error-msg"></span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="form-group">
+    <div class="col-xs-5 col-md-10">
+      <iais:field value="Operation End Date Time" required="true"></iais:field>
+      <div class="col-xs-5 col-md-5">
+        <iais:datePicker id = "endDate" name = "endDate"  value="${param.endDate}"></iais:datePicker>
+      </div>
+    </div>
+  </div>
 
   <iais:action style="text-align:center;">
     <div class="row">
@@ -56,9 +76,6 @@
       </div>
     </div>
   </iais:action>
-
-</iais:section>
-
 </div>
 <br><br><br>
 <input type="hidden" name="auditId" id="auditId"/>
