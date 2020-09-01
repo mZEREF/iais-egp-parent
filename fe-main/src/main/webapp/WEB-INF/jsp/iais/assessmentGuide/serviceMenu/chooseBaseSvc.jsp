@@ -67,9 +67,10 @@
         //reload default choose the first
         if(${empty reloadBaseSvcSelected}){
             $('.speSvcContent').each(function (v,k) {
-                $(this).find('.base-svc-content:eq(0) .exist-base-lic-content input[type="radio"]:eq(0)').prop('checked',true);
-                $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
-                // $('.form-check-input.first:checked').trigger('click');
+                $(this).find('.firstStep:eq(0)').prop('checked',true);
+                if($(this).find('.firstStep:eq(0)').is('.existing-base')){
+                    $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]:eq(0)').prop('checked',true);
+                }
                 $(this).find('.base-svc-content:eq(0) .exist-base-lic-content .existing-base-content input[type="radio"]').prop('disabled',false);
             });
         }else{
