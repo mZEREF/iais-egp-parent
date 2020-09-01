@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.arcaUen.GenerateUENDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
@@ -65,6 +66,7 @@ import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
 import com.ecquaria.cloud.moh.iais.service.OnlineEnquiriesService;
 import com.ecquaria.cloud.moh.iais.service.RequestForInformationService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
+import com.ecquaria.cloud.moh.iais.service.client.AcraUenBeClient;
 import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
@@ -130,7 +132,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     ApplicationViewService applicationViewService;
     @Autowired
     private LicenceViewService licenceViewService;
-
+    @Autowired
+    AcraUenBeClient acraUenBeClient;
 
     @Override
     public SearchResult<LicenseeQueryDto> searchLicenseeIdsParam(SearchParam searchParam) {
@@ -222,7 +225,8 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         }
 
         List<ComplianceHistoryDto> complianceHistoryDtos= getComplianceHistoryDtosByLicId(licenceId);
-
+        GenerateUENDto generateUENDto = acraUenBeClient.getUen(organizationLicDto.getUenNo()).getEntity();
+        ParamUtil.setSessionAttr(request,"registeredWithACRA",generateUENDto.getBasic().isRegisteredWithACRA());
         ParamUtil.setSessionAttr(request,"complianceHistoryDtos", (Serializable) complianceHistoryDtos);
         ParamUtil.setSessionAttr(request,"organizationLicDto",organizationLicDto);
         ParamUtil.setSessionAttr(request,"personnelsDto", (Serializable) personnelsDto);

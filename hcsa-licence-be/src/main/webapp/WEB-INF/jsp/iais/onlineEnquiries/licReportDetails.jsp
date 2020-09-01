@@ -58,7 +58,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td align="right">Are you registered with ACRA/ROS</td>
-                                                        <td>&nbsp;wait UEN API</td>
+                                                        <td>&nbsp;${registeredWithACRA}</td>
                                                     </tr>
 
                                                     </tbody>
