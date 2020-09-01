@@ -100,7 +100,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     public void sendMailForAuditPlanerForSms(String emailKey) {
         List<OrgUserDto> userDtoList = organizationClient. retrieveUserRoleByRoleId(RoleConsts.USER_ROLE_AUDIT_PLAN).getEntity();
         if( !IaisCommonUtils.isEmpty(userDtoList)){
-            sendEmailToInsForSms(emailKey);//NOSONAR
+            sendEmailToInsForSms(emailKey,null);//NOSONAR
         }else {
             log.info("----------no audit plan user ---------");
         }
@@ -249,7 +249,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         // send email
         if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
             sendEmailToIns(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK,eventNo,temp);
-            sendEmailToInsForSms(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK_SMS);
+            sendEmailToInsForSms(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK_SMS,eventNo);
         }else {
             log.info("-----------Inspector id is null or UserIdToEmails is null");
         }
@@ -383,7 +383,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         //send email to insp
         if(!StringUtil.isEmpty(temp.getInspector()) &&  (temp.getUserIdToEmails() != null && temp.getUserIdToEmails().size() > 0)){
             sendEmailToIns(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK,groupNo,temp);
-            sendEmailToInsForSms(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK_SMS);
+            sendEmailToInsForSms(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CANCELED_TASK_SMS,groupNo);
         }else {
             log.info("-----------Inspector id is null or UserIdToEmails is null");
         }
@@ -427,16 +427,26 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
     }
 
     @Override
-    public void sendEmailToInsForSms(String emailKey) {
+    public void sendEmailToInsForSms(String emailKey,String appGroupNo) {
+        if(!StringUtil.isEmpty(appGroupNo)){
+            appGroupNo +="-01";
+        }
         try{
             Map<String,Object> param = IaisCommonUtils.genNewHashMap();
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(emailKey);
             emailParam.setTemplateContent(param);
-            emailParam.setQueryCode(emailKey);
-            emailParam.setReqRefNum(emailKey);
-            emailParam.setRefIdType(null);
-            emailParam.setRefId(null);
+            if(!StringUtil.isEmpty(appGroupNo)){
+                emailParam.setQueryCode(appGroupNo);
+                emailParam.setReqRefNum(appGroupNo);
+                emailParam.setRefId(appGroupNo);
+                emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+            }else {
+                emailParam.setQueryCode(emailKey);
+                emailParam.setReqRefNum(emailKey);
+                emailParam.setRefId(null);
+                emailParam.setRefIdType(null);
+            }
             notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.error(e.getMessage(),e);
@@ -445,7 +455,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
 
     private Map<String,Object> getParamByMesskey(String key, String appNo, AuditTaskDataFillterDto auditTaskDataFillterDto){
         Map<String,Object> param =   IaisCommonUtils.genNewHashMap();
-        String syName = AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME;
+        String syName = "<b>"+AppConsts.MOH_AGENCY_NAM_GROUP+"<br/>"+AppConsts.MOH_AGENCY_NAME+"</b>";
         String newDateString = Formatter.formatDate(new Date());
         String  licenceDueDateString = "";
         if(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_CREATE_TASK.equalsIgnoreCase(key)){
@@ -459,6 +469,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             param.put("hCIAddress",auditTaskDataFillterDto.getAddress());
             param.put("serviceName", auditTaskDataFillterDto.getSvcName());
             param.put("licenceDueDate", licenceDueDateString);
+            param.put("officer_name","");
         }else if(MsgTemplateConstants. MSG_TEMPLATE_AUDIT_CANCELED_TASK .equalsIgnoreCase(key)){
             if(auditTaskDataFillterDto.getLicenceDueDate() != null){
                 licenceDueDateString =  Formatter.formatDate(auditTaskDataFillterDto.getLicenceDueDate());
@@ -469,6 +480,7 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             param.put("hCIAddress",auditTaskDataFillterDto.getAddress());
             param.put("serviceName", auditTaskDataFillterDto.getSvcName());
             param.put("licenceDueDate", licenceDueDateString);
+            param.put("officer_name","");
         }else if(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND.equalsIgnoreCase(key)){
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(InboxConst.URL_HTTPS).append(systemParamConfig.getIntraServerName()).append(InboxConst.URL_LICENCE_WEB_MODULE).append("MohAduitSystemList");
