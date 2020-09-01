@@ -8,7 +8,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
-import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -54,18 +53,14 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloudfeign.FeignException;
-import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -333,6 +328,7 @@ public class CessationBeServiceImpl implements CessationBeService {
                     emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
+                    emailMap.put("MOH_AGENCY_NAM_GROUP",AppConsts.MOH_AGENCY_NAM_GROUP);
                     MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
                     Map<String,Object> map=IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());

@@ -549,11 +549,12 @@ public class InspectReviseNcEmailDelegator {
             mapTemplate.put("ApplicationDate", applicationViewDto.getSubmissionDate());
             mapTemplate.put("systemLink", loginUrl);
             mapTemplate.put("HCI_CODE", applicationViewDto.getHciCode());
-            mapTemplate.put("Address", applicationViewDto.getHciAddress());
+            mapTemplate.put("HCI_NAME",StringUtil.viewHtml(applicationViewDto.getHciName()));
+            mapTemplate.put("Address", StringUtil.viewHtml(applicationViewDto.getHciAddress()));
             mapTemplate.put("HCI_Postal_Code", applicationViewDto.getHciPostalCode());
             mapTemplate.put("LicenseeName", licenseeDto.getName());
             AppPremisesRecommendationDto appPreRecommentdationDtoInspectionDate =insepctionNcCheckListService.getAppRecomDtoByAppCorrId(correlationId,InspectionConstants.RECOM_TYPE_INSEPCTION_DATE);
-            mapTemplate.put("InspectionDate", StringUtil.viewHtml(Formatter.formatDate(appPreRecommentdationDtoInspectionDate.getRecomInDate())));
+            mapTemplate.put("InspectionDate", Formatter.formatDate(appPreRecommentdationDtoInspectionDate.getRecomInDate()));
 //cancel old calendar
             AppPremisesInspecApptDto appPremisesInspecApptDto=inspectionTaskClient.getSpecificDtoByAppPremCorrId(correlationId).getEntity();
             ApptUserCalendarDto cancelCalendarDto = new ApptUserCalendarDto();
@@ -600,7 +601,7 @@ public class InspectReviseNcEmailDelegator {
 
             mapTemplate.put("NC_DETAILS_AND_Observation_Recommendation",msgTableTemplateDto.getMessageContent());
             mapTemplate.put("HALP", AppConsts.MOH_SYSTEM_NAME);
-            mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDate(new Date())));
+            mapTemplate.put("DDMMYYYY", StringUtil.viewHtml(Formatter.formatDateTime(new Date(),Formatter.DATE)));
             mapTemplate.put("Inspector_mail_Address", leadDto.getEmail());
             mapTemplate.put("InspectorDID", leadDto.getMobileNo());
             mapTemplate.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);

@@ -221,21 +221,20 @@
 </head>
 
 <body class="3PP_body">
-<center>
 
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tbody><tr class="menu_header">
     <td>
       <table cellpadding="0" cellspacing="0" border="0" class="menu_header_table">
         <tbody><tr>
-          <td align="left" valign="top" class="menu_header_left_left"><img src="./source/3PP_menu_left_left.gif" vspace="5" class="img_menu_l_l"></td>
-<%--          <td align="left" valign="top" class="menu_header_left"><img src="./source/3PP_menu_left.gif" alt="" vspace="5" class="img_menu_l"></td>--%>
-          <td align="left" valign="top" class="menu_header_centre"><img src="./source/3PP_menu_centre.gif" alt="" vspace="5" class="img_menu_c"></td>
+          <td align="left" valign="top" class="menu_header_left_left"><img alt="" src="./source/3PP_menu_left_left.gif" vspace="5" class="img_menu_l_l"></td>
+<%--          <td align="left" valign="top" class="menu_header_left"><img alt="" src="./source/3PP_menu_left.gif" alt="" vspace="5" class="img_menu_l"></td>--%>
+          <td align="left" valign="top" class="menu_header_centre"><img  src="./source/3PP_menu_centre.gif" alt="" vspace="5" class="img_menu_c"></td>
           <td align="right">
             <table align="right" cellpadding="0" cellspacing="0" border="0">
               <tbody><tr>
-                      <td align="right" valign="top" class="menu_header_right"><img src="./source/3PP_menu_right.gif" alt="" vspace="5" class="img_menu_r"></td>
-                      <td align="left" valign="top" class="menu_header_right_right"><img src="./source/3PP_menu_right_right.gif" vspace="5" class="img_menu_r_r"></td>
+                      <td align="right" valign="top" class="menu_header_right"><img  src="./source/3PP_menu_right.gif" alt="" vspace="5" class="img_menu_r"></td>
+                      <td align="left" valign="top" class="menu_header_right_right"><img alt="" src="./source/3PP_menu_right_right.gif" vspace="5" class="img_menu_r_r"></td>
               </tr>
             </tbody></table>
             </td>
@@ -243,23 +242,23 @@
       </tbody></table>
     </td>
   </tr>
-  <tr><td><img src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
+  <tr><td><img alt="" src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
 </tbody></table>
 
 <table class="bodyHeadSpace" align="center" cellpadding="0" cellspacing="0">
-    <tbody><tr><td align="right"><strong></strong><img src="./source/clearpixel.gif" class="bodyHeadSpace"></td></tr>
-  <tr><td><img src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
+    <tbody><tr><td align="right"><strong></strong><img alt="" src="./source/clearpixel.gif" class="bodyHeadSpace"></td></tr>
+  <tr><td><img alt="" src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
 </tbody></table>
 
 <table class="merchTable" align="center" cellspacing="0" cellpadding="0">
-<tbody><tr><td><img src="./source/clearpixel.gif" class="payHeadWidth"></td></tr><tr><td>
+<tbody><tr><td><img alt="" src="./source/clearpixel.gif" class="payHeadWidth"></td></tr><tr><td>
 <table class="merchTable" align="center" cellspacing="0" cellpadding="0">
   <tbody><tr>
-    <td class="merchCol1"><img src="./source/clearpixel.gif" class="merchSpace1"></td>
+    <td class="merchCol1"><img alt="" src="./source/clearpixel.gif" class="merchSpace1"></td>
     <td align="right" valign="middle" class="merchCol2" nowrap="nowrap"><span class="merchSpace2"><egov-smc:commonLabel>Merchant name</egov-smc:commonLabel>:&nbsp;</span></td>
-    <td class="merchCol3"><img src="./source/clearpixel.gif" class="merchSpace3"></td>
+    <td class="merchCol3"><img alt="" src="./source/clearpixel.gif" class="merchSpace3"></td>
     <td align="left" valign="middle" class="merchCol4" nowrap="nowrap"><span class="merchSpace4"><egov-smc:commonLabel><%=merchant %></egov-smc:commonLabel></span></td>
-    <td class="merchCol5"><img src="./source/clearpixel.gif" class="merchSpace5"></td>
+    <td class="merchCol5"><img alt="" src="./source/clearpixel.gif" class="merchSpace5"></td>
   </tr>
 </tbody></table>
 </td></tr></tbody></table>
@@ -268,19 +267,19 @@
 <tbody><tr><td>
 <table class="payHeadTable" align="center" cellspacing="0" cellpadding="0">
 	<tbody><tr class="payHeadRow">
-		<td class="payHeadImage"><img src="./source/payHead.gif"></td>
+		<td class="payHeadImage"><img alt="" src="./source/payHead.gif"></td>
 		<td class="payHeadLabel"><egov-smc:message key="selectPreferredPaymentMethod">Select your preferred payment method</egov-smc:message></td>
     </tr>
-</tbody></table></td></tr><tr><td><img src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
+</tbody></table></td></tr><tr><td><img alt="" src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
 </tbody></table>
 
 <table class="blockHeadSpace" align="center" cellspacing="0" cellpadding="0">
-    <tbody><tr><td><img src="./source/clearpixel.gif" class="blockHeadSpace"></td></tr>
-    <tr><td colspan="0"><img src="./source/clearpixel.gif" height="0" class="payHeadWidth"></td></tr>
+    <tbody><tr><td><img alt="" src="./source/clearpixel.gif" class="blockHeadSpace"></td></tr>
+    <tr><td colspan="0"><img alt="" src="./source/clearpixel.gif" height="0" class="payHeadWidth"></td></tr>
 </tbody></table>
 
 <table width="100%" align="center" cellspacing="0" cellpadding="0">
-<tbody><tr><td><img src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
+<tbody><tr><td><img alt="" src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
 <tr class="label"><td>
 <egov-smc:message key="payByClickCardBelow">Pay securely using SSL+ by clicking on the card logo below</egov-smc:message>:<br><br>
 </td></tr><tr><td>
@@ -336,44 +335,45 @@
 <tbody><tr><td>
 <table align="center" cellspacing="0" cellpadding="0">
 	<tbody><tr>
-		<td><a href="javascript:void(0);"><font size="1"><egov-smc:commonLabel>Cancel</egov-smc:commonLabel></font></a></td>
+		<td><a href="javascript:void(0);"><span
+                style="font-size: xx-small; "><egov-smc:commonLabel>Cancel</egov-smc:commonLabel></span></a></td>
 	</tr>
-</tbody></table></td></tr><tr><td><img src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
+</tbody></table></td></tr><tr><td><img alt="" src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
 </tbody></table>
 <%}else{ %>
 <%=hashValidated %>
 <%} %>
 <table class="bodyFootSpace" align="center" cellspacing="0" cellpadding="0" border="0">
-    <tbody><tr><td><img src="./source/clearpixel.gif" class="bodyFootSpace"></td></tr>
-  <tr><td><img src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
-    <tr class="bodyFootSeparator"><td><img src="./source/clearpixel.gif"></td></tr>
+    <tbody><tr><td><img alt="" src="./source/clearpixel.gif" class="bodyFootSpace"></td></tr>
+  <tr><td><img alt="" src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
+    <tr class="bodyFootSeparator"><td><img alt="" src="./source/clearpixel.gif"></td></tr>
 </tbody></table>
 <table class="Copyright" align="center" cellspacing="0" cellpadding="0" border="0">
   <tbody><tr>
     <td align="center" valign="middle" class="legal"><egov-smc:commonLabel>Copyright</egov-smc:commonLabel> &copy;<egov-smc:commonLabel>2007</egov-smc:commonLabel> <egov-smc:commonLabel>TNS Payment Technologies Pty Ltd. All Rights Reserved.</egov-smc:commonLabel></td>
   </tr>
-  <tr><td><img src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
+  <tr><td><img alt="" src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
 </tbody></table>
 <table class="pbHeadSpace" align="center" cellspacing="0" cellpadding="0" border="0">
-    <tbody><tr><td><img src="./source/clearpixel.gif" class="pbHeadSpace"></td></tr>
-  <tr><td><img src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
+    <tbody><tr><td><img alt="" src="./source/clearpixel.gif" class="pbHeadSpace"></td></tr>
+  <tr><td><img alt="" src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
 </tbody></table>
 <table class="powered_by" align="center" cellspacing="0" cellpadding="0" border="0">
     <tbody><tr><td><table class="powered_by_inner" align="center" cellspacing="0" cellpadding="0">
       <tbody><tr>
-        <td align="left" width="8"><img src="./source/powered_by_01.gif" width="8" height="16" border="0"></td>
+        <td align="left" width="8"><img alt="" src="./source/powered_by_01.gif" width="8" height="16" border="0"></td>
         <td align="left" height="0">
           <table width="100%" align="center" cellspacing="0" cellpadding="0" background="./source/powered_by_02.gif">
-            <tbody><tr><td><img src="./source/clearpixel.gif" width="8" height="16" border="0"></td></tr></tbody></table>
+            <tbody><tr><td><img alt="" src="./source/clearpixel.gif" width="8" height="16" border="0"></td></tr></tbody></table>
         </td>
-        <td align="right" width="235"><img src="./source/powered_by_03.gif" width="235" height="16" border="0"></td>
+        <td align="right" width="235"><img alt="" src="./source/powered_by_03.gif" width="235" height="16" border="0"></td>
       </tr>
     </tbody></table></td></tr>
-    <tr><td colspan="0"><img src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
+    <tr><td colspan="0"><img alt="" src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
 </tbody></table>
 <table class="pbFootSpace" align="center" cellspacing="0" cellpadding="0" border="0">
-    <tbody><tr><td><img src="./source/clearpixel.gif" class="pbFootSpace"></td></tr>
-    <tr><td><img src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
+    <tbody><tr><td><img alt="" src="./source/clearpixel.gif" class="pbFootSpace"></td></tr>
+    <tr><td><img alt="" src="./source/clearpixel.gif" class="payHeadWidth"></td></tr>
 </tbody></table>
 
 </center>
