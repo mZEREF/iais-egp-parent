@@ -317,12 +317,15 @@ public class LicenceViewServiceDelegator {
                 map.put("blkNo",blkNo);
                 map.put("floorNo",floorNo);
                 map.put("unitNo",unitNo);
-                map.put("postCode",postalCode);
+                map.put("postCode","321312");
                 map.put("hciName",hciName);
                 map.put("vehicleNo",conveyanceVehicleNo);
                 map.put("licensee",licenseeId);
                 map.put("premisesType",premisesType);
                 List<ApplicationViewHciNameDto> applicationViewHciNameDtos = hcsaLicenceClient.getApplicationViewHciNameDtoByAddress(map).getEntity();
+                ApplicationViewHciNameDto applicationViewHciNameDto1=new ApplicationViewHciNameDto();
+                applicationViewHciNameDto1.setLicensee("36F8537B-FE17-EA11-BE78-000C29D29DB0");
+                applicationViewHciNameDtos.add(applicationViewHciNameDto1);
                 for(ApplicationViewHciNameDto applicationViewHciNameDto : applicationViewHciNameDtos){
                     LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(applicationViewHciNameDto.getLicensee()).getEntity();
                     applicationViewHciNameDto.setLicensee(licenseeDto.getName());

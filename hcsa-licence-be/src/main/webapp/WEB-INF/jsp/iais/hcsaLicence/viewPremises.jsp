@@ -155,11 +155,11 @@
                                         Name of HCI
                                         <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${empty appGrpPremDto.applicationViewHciNameDtos&&empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
                                       </div>
-                                      <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #999999;display: none;" id="hciNameShowOrHidden">
+                                      <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none;" id="hciNameShowOrHidden">
                                       <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
                                           <p>The address of the premises keyed in by applicant is currently used by another licensee</p>
                                           <br>
-                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;">
+                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 1px solid #000000;border-color: black">
                                             <tr>
                                               <td  class="col-md-4">Name of Licensee</td>
                                               <td  class="col-md-4">HCI Name</td>
