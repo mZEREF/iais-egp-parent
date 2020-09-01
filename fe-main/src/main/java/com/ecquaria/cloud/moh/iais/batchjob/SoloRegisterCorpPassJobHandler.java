@@ -68,7 +68,7 @@ public class SoloRegisterCorpPassJobHandler extends IJobHandler {
         //send email
             if(licenseeDto != null){
                 String address = IaisEGPHelper.getAddress(licenseeDto.getBlkNo(), licenseeDto.getStreetName(), licenseeDto.getBuildingName(),
-                        licenseeDto.getFloorNo(), licenseeDto.getUnitNo(), Integer.toString(licenseeDto.getPostalCode()));
+                        licenseeDto.getFloorNo(), licenseeDto.getUnitNo(), licenseeDto.getPostalCode());
                 Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                 map.put("HCI_Name", licenseeDto.getName());
                 map.put("HCI_Address", address);
