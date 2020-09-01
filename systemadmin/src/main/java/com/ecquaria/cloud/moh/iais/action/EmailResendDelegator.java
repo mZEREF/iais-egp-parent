@@ -79,10 +79,13 @@ public class EmailResendDelegator {
                         item.getMessageId());
                 i ++;
             }
+            QueryHelp.setMainSql("systemAdmin", "failEmail",searchParam);
+            SearchResult<ResendListDto> searchResult = blastManagementListService.resendList(searchParam);
+            ParamUtil.setSessionAttr(bpc.request,"resendSearchResult",searchResult);
+        }else{
+            ParamUtil.setSessionAttr(bpc.request,"resendSearchResult",null);
         }
-        QueryHelp.setMainSql("systemAdmin", "failEmail",searchParam);
-        SearchResult<ResendListDto> searchResult = blastManagementListService.resendList(searchParam);
-        ParamUtil.setSessionAttr(bpc.request,"resendSearchResult",searchResult);
+
         ParamUtil.setSessionAttr(bpc.request,"resendSearchParam",searchParam);
 
     }
