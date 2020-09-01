@@ -1,5 +1,6 @@
 
 <!-- saved from url=(0109)https://migs.mastercard.com.au/vpcpay?o=pt&DOID=36549BC89B9FF524607FAE2A0ED5485E&paymentId=553304598644307772 -->
+<%@page import="com.ecquaria.egp.core.payment.api.config.GatewayConfig" %>
 <%@page import="java.security.NoSuchAlgorithmException"%>
 <%@page import="java.util.Enumeration"%>
 <%@page import="ecq.commons.helper.StringHelper"%>
@@ -12,7 +13,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Map"%>
 <%@ taglib uri="ecquaria/sop/egov-smc" prefix="egov-smc"%>
-
+<!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui"%>
@@ -381,7 +382,7 @@
 </body></html>
 <c:set var="coutSessionId" value="${CHECKOUT_SESSION_ID}"></c:set>
 <script >
-    var stripe = Stripe('pk_test_lE6XtKRhsqpwU8WLxzbGsVC100WBBn4ZIX');
+    var stripe = Stripe("${GatewayConfig.stripePKey}");
     var cSessionId="${coutSessionId}";
     function checkoutButton() {
         stripe.redirectToCheckout({

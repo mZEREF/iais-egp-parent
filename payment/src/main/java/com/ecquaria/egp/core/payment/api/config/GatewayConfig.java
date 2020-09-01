@@ -37,7 +37,9 @@ public class GatewayConfig {
 	//"http://192.168.6.80:8088/egp/commpymt/commpymt_return.jsp";
 	public static final String return_url = properties.getProperty("payment.return.url");
 
-	public static final String stripeKey = properties.getProperty("stripe.api.key");
+	public static final String stripeKey = properties.getProperty("stripe.api.skey");
+
+	public static final String stripePKey = properties.getProperty("stripe.api.pkey");
 
 	//"http://192.168.6.80:8088/egp/process/EGOV/CommPayment?";
 	public static final String common_gateway_url = properties.getProperty("payment.gateway.url");
