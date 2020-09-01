@@ -242,7 +242,7 @@ public class CessationEffectiveDateBatchjob {
                 emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
                 emailMap.put("ServiceLicenceName", svcName);
                 emailMap.put("ApplicationNumber", licenceNo);
-                emailMap.put("ApplicationDate", Formatter.formatDateTime(date));
+                emailMap.put("CessationDate", Formatter.formatDateTime(date));
                 emailMap.put("email", systemParamConfig.getSystemAddressOne());
                 emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                 EmailParam emailParam = new EmailParam();
@@ -310,7 +310,7 @@ public class CessationEffectiveDateBatchjob {
             emailMap.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{ApplicationConsts.LICENCE_STATUS_CEASED}).get(0).getText());
             emailMap.put("ServiceLicenceName", svcName);
             emailMap.put("ApplicationNumber", licenceNo);
-            emailMap.put("ApplicationDate", Formatter.formatDateTime(date));
+            emailMap.put("CessationDate", Formatter.formatDateTime(date));
             emailMap.put("email", systemParamConfig.getSystemAddressOne());
             emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
             EmailParam emailParam = new EmailParam();
