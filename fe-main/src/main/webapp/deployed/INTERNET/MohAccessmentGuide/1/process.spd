@@ -1031,9 +1031,6 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/backChooseSvc" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch19" style="rectanular">
    <position>{(3150,380)(3300,200)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/newApp1" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/backChooseSvc" style="rectanular">
-   <position>{(3300,200)(1990,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doPage" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch16" style="rectanular">
    <position>{(2840,450)(3070,150)}</position>
   </SynchronousLink>
@@ -1090,6 +1087,9 @@
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/appBeforeStart" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/jumpInstructionPage" style="rectanular">
    <position>{(3010,250)(2980,380)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch18" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/backChooseSvc" style="rectanular">
+   <position>{(3300,200)(2018,62)(1990,370)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>

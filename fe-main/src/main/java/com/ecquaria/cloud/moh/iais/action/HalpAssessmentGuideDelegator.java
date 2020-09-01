@@ -133,6 +133,8 @@ public class HalpAssessmentGuideDelegator {
 
     public void newApp1(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("prepareData start ..."));
+        ParamUtil.setSessionAttr(bpc.request, SPECIFIED_SERVICE_ATTR_CHECKED, null);
+        ParamUtil.setSessionAttr(bpc.request, BASE_SERVICE_ATTR_CHECKED, null);
         String action = (String) ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
         if(StringUtil.isEmpty(action)){
             action = "chooseSvc";
