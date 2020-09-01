@@ -608,7 +608,7 @@ public class ServiceMenuDelegator {
                     }
 
                     //only not align option
-                    if(newAppLicDtos != null && newAppLicDtos.size() <= 1){
+                    if(IaisCommonUtils.isEmpty(newAppLicDtos) || (!IaisCommonUtils.isEmpty(newAppLicDtos) && newAppLicDtos.size() <= 1)){
                         if(basechks.length > 1){
                             //0066206
                             nextstep = CHOOSE_ALIGN;
@@ -851,7 +851,7 @@ public class ServiceMenuDelegator {
                             initPaginationHandler(newAppLicDtos);
                             appSelectSvcDto.setInitPagHandler(true);
                         }
-                        if(!IaisCommonUtils.isEmpty(newAppLicDtos) && newAppLicDtos.size() <= 1){
+                        if(IaisCommonUtils.isEmpty(newAppLicDtos) || (!IaisCommonUtils.isEmpty(newAppLicDtos) && newAppLicDtos.size() <= 1)){
 //                            ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE,NEXT);
                             ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,CHOOSE_ALIGN);
                         }else{
