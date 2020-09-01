@@ -47,7 +47,7 @@
 
   <iais:action style="text-align:center;">
     <div class="row">
-      <div class="col-xs-5 col-md-10">
+      <div class="col-xs-5 col-md-12">
         <div class="text-right">
           <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
           <a class="btn btn-primary" id="crud_search_export" href="${pageContext.request.contextPath}/audit-trail-file"  onclick="$('#crud_search_export').attr('class', 'btn btn-primary disabled')" value="doQuery" href="#">Export Audit Trail</a>
@@ -65,7 +65,9 @@
 <div class="tab-pane active" id="tabInbox" role="tabpanel">
   <div class="tab-content">
     <div class="row">
-      <br><br>
+      <h3>
+        <span>Search Results</span>
+      </h3>
       <div class="col-xs-12">
         <div class="components">
           <iais:pagination  param="auditTrailSearch" result="auditTrailSearchResult"/>
