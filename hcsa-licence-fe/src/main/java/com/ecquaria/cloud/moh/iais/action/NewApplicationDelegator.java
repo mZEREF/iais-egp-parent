@@ -1207,7 +1207,7 @@ public class NewApplicationDelegator {
             //send email
             try {
                 if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
-                 /*   requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDto);*/
+                    requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDto);
                 }
 
             } catch (Exception e) {

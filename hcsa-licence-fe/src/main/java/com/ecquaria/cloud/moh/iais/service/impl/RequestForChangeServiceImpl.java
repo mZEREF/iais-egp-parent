@@ -1461,10 +1461,15 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //email
         notificationHelper.sendNotification(emailParam);
         //msg
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT_MSG);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        emailParam.setRefId(appSubmissionDto.getApplicationDtos().get(0).getApplicationNo());
-        notificationHelper.sendNotification(emailParam);
+        try {
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT_MSG);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            emailParam.setRefId(appSubmissionDto.getApplicationDtos().get(0).getApplicationNo());
+            notificationHelper.sendNotification(emailParam);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
+
         //sms
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT_SMS);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
@@ -1508,10 +1513,14 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //email
         notificationHelper.sendNotification(emailParam);
         //msg
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        emailParam.setRefId(appSubmissionDto.getApplicationDtos().get(0).getApplicationNo());
-        notificationHelper.sendNotification(emailParam);
+        try {
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            emailParam.setRefId(appSubmissionDto.getApplicationDtos().get(0).getApplicationNo());
+            notificationHelper.sendNotification(emailParam);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
         //sms
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_SMS);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
@@ -1553,10 +1562,14 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //email
         notificationHelper.sendNotification(emailParam);
         //msg
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_MSG);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        emailParam.setRefId(appSubmissionDto.getApplicationDtos().get(0).getApplicationNo());
-        notificationHelper.sendNotification(emailParam);
+        try {
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_MSG);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            emailParam.setRefId(appSubmissionDto.getApplicationDtos().get(0).getApplicationNo());
+            notificationHelper.sendNotification(emailParam);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
         //sms
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_SMS);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
@@ -1597,10 +1610,14 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //email
         notificationHelper.sendNotification(emailParam);
         //msg
-        emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_MSG);
-        emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-        emailParam.setRefId(appSubmissionDto.getApplicationDtos().get(0).getApplicationNo());
-        notificationHelper.sendNotification(emailParam);
+        try {
+            emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_MSG);
+            emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+            emailParam.setRefId(appSubmissionDto.getApplicationDtos().get(0).getApplicationNo());
+            notificationHelper.sendNotification(emailParam);
+        }catch (Exception e){
+            log.info(e.getMessage(),e);
+        }
         //sms
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_SMS);
         emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);

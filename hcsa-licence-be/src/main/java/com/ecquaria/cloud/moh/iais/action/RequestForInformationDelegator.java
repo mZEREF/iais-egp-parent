@@ -334,14 +334,15 @@ public class RequestForInformationDelegator {
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;
+        char c='a';
         if(!StringUtil.isEmpty(reqTypeInfo)&&"information".equals(reqTypeInfo)){
             for ( i=0;i<licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().size();i++) {
-                stringBuilder.append("<p>   ").append(i+1).append(". ").append("Information : ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
+                stringBuilder.append("<p>   ").append(c+i).append(") ").append("Information : ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
             }
         }
         if(licPremisesReqForInfoDto1.isNeedDocument()){
             for (int j=0;j<licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().size();j++) {
-                stringBuilder.append("<p>   ").append(j+i+1).append(". ").append("Documentations : ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
+                stringBuilder.append("<p>   ").append(c+j+i).append(") ").append("Documentations : ").append(licPremisesReqForInfoDto1.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
             }
         }
         String url = "https://" + systemParamConfig.getInterServerName() +
@@ -533,14 +534,15 @@ public class RequestForInformationDelegator {
         Map<String,Object> map=IaisCommonUtils.genNewHashMap();
         StringBuilder stringBuilder=new StringBuilder();
         int i=0;
+        char c='a';
         if(!StringUtil.isEmpty(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos())){
             for ( i=0;i<licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().size();i++) {
-                stringBuilder.append("<p>   ").append(i+1).append(". ").append("Information : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
+                stringBuilder.append("<p>   ").append(c+i).append(") ").append("Information : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoReplyDtos().get(i).getTitle()).append("</p>");
             }
         }
         if(licPremisesReqForInfoDto.isNeedDocument()){
             for (int j=0;j<licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().size();j++) {
-                stringBuilder.append("<p>   ").append(j+i+1).append(". ").append("Documentations : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
+                stringBuilder.append("<p>   ").append(c+j+i).append(") ").append("Documentations : ").append(licPremisesReqForInfoDto.getLicPremisesReqForInfoDocDto().get(j).getTitle()).append("</p>");
             }
         }
         String url = "https://" + systemParamConfig.getInterServerName() +

@@ -1223,8 +1223,8 @@ public class RequestForChangeMenuDelegator {
                 appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
                 serviceConfigService.updatePaymentStatus(appGrp);
                 bpc.request.setAttribute("createDate", new Date());
-                /*requestForChangeService.sendRfcEmailToOfficer(appSubmissionDtos.get(0));*/
-                /*requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDtos.get(0));*/
+                requestForChangeService.sendRfcEmailToOfficer(appSubmissionDtos.get(0));
+                requestForChangeService.sendRfcPaymentOnlineOrGIROSuccesedEmail(appSubmissionDtos.get(0));
             }
 
             bpc.request.setAttribute("pmtRefNo", pmtRefNo);
