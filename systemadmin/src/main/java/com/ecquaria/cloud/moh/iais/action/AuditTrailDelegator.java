@@ -113,9 +113,9 @@ public class AuditTrailDelegator {
         boolean isAdmin = AccessUtil.isAdministrator();
         preSelectOption(request);
         if (isAdmin){
-            ParamUtil.setSessionAttr(request, "isFullMode", "Y");
+            ParamUtil.setSessionAttr(request, AuditTrailConstants.IS_FULL_MODE, "Y");
         }else {
-            ParamUtil.setSessionAttr(request, "isFullMode", "N");
+            ParamUtil.setSessionAttr(request, AuditTrailConstants.IS_FULL_MODE, "N");
         }
     }
 
@@ -135,7 +135,7 @@ public class AuditTrailDelegator {
 
         String auditId = ParamUtil.getMaskedString(request, "auditId");
         AuditTrailDto auditTrail = auditTrailService.getAuditTrailById(auditId);
-        ParamUtil.setRequestAttr(request, "viewAuditActionData", auditTrail);
+        ParamUtil.setRequestAttr(request, AuditTrailConstants.PARAM_ACTION_DATA, auditTrail);
         log.info("audit id........" + auditId);
     }
 
