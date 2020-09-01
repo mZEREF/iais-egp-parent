@@ -356,13 +356,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         //TODO if from inbox , should not create task
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
-           try {
-               List<String> correlationIds = selfAssessmentList.stream().map(SelfAssessment::getCorrId).collect(Collectors.toList());
-               sendEmailToInspector(correlationIds);
-            }catch (Exception e){
-                log.error(StringUtil.changeForLog("encounter failure when self decl send notification"), e);
-            }
-
             FeSelfAssessmentSyncDataDto syncDataDto = new FeSelfAssessmentSyncDataDto();
             syncDataDto.setAppNoList(selfAssessmentList.stream().map(SelfAssessment::getApplicationNumber).collect(Collectors.toList()));
             syncDataDto.setFeSyncData(result.getEntity());
@@ -392,6 +385,12 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             }
         }
 
+        try {
+            List<String> correlationIds = selfAssessmentList.stream().map(SelfAssessment::getCorrId).collect(Collectors.toList());
+            sendEmailToInspector(correlationIds);
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("encounter failure when self decl send notification"), e);
+        }
     }
 
     @Override
