@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.ComPoolAjaxQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
@@ -184,6 +183,67 @@ public class CommonPoolAjaxController {
         return jsonMap;
     }
 
+    @RequestMapping(value = "system.do", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> systemPool(HttpServletRequest request) {
+        Map<String, Object> jsonMap = IaisCommonUtils.genNewHashMap();
+        //get session data
+        String appGroupId = MaskUtil.unMaskValue("appGroupId", request.getParameter("groupId"));
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(request, "assignMap");
+        if(!StringUtil.isEmpty(appGroupId)) {
+            //get userId
+            String userId = loginContext.getUserId();
+            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getPremCorrDtoByAppGroupId(appGroupId).getEntity();
+            //filter list
+            List<String> appCorrId_list = getRefNoList(appPremisesCorrelationDtos);
+            List<String> status = IaisCommonUtils.genNewArrayList();
+            status.add(TaskConsts.TASK_STATUS_PENDING);
+            status.add(TaskConsts.TASK_STATUS_READ);
+            //create searchParam
+            SearchParam searchParam = new SearchParam(SuperPoolTaskQueryDto.class.getName());
+            searchParam.setPageSize(10);
+            searchParam.setPageNo(1);
+            searchParam.setSort("REF_NO", SearchParam.ASCENDING);
+            //set filters
+            StringBuilder sb = new StringBuilder("(");
+            if (!IaisCommonUtils.isEmpty(appCorrId_list)) {
+                for (int i = 0; i < appCorrId_list.size(); i++) {
+                    sb.append(":appCorrId").append(i).append(',');
+                }
+                String inSq1 = sb.substring(0, sb.length() - 1) + ")";
+                searchParam.addParam("appCorrId_list", inSq1);
+                for (int i = 0; i < appCorrId_list.size(); i++) {
+                    searchParam.addFilter("appCorrId" + i, appCorrId_list.get(i));
+                }
+            }
+
+            StringBuilder sb2 = new StringBuilder("(");
+            for (int i = 0; i < status.size(); i++) {
+                sb2.append(":tStatus").append(i).append(',');
+            }
+            String inSq2 = sb2.substring(0, sb2.length() - 1) + ")";
+            searchParam.addParam("taskStatus", inSq2);
+            for (int i = 0; i < status.size(); i++) {
+                searchParam.addFilter("tStatus" + i, status.get(i));
+            }
+            if(!StringUtil.isEmpty(userId)){
+                searchParam.addFilter("userId", userId,true);
+            }
+            //do search
+            QueryHelp.setMainSql("inspectionQuery", "systemPoolDropdown", searchParam);
+            SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);
+            searchResult = inspectionService.getSecondSearchOtherData(searchResult);
+            jsonMap.put("ajaxResult", searchResult);
+            jsonMap.put("result", "Success");
+            assignMap = setTaskIdAndDataMap(assignMap, searchResult);
+        } else {
+            jsonMap.put("result", "Fail");
+        }
+        ParamUtil.setSessionAttr(request, "assignMap", (Serializable) assignMap);
+        //get other data
+        return jsonMap;
+    }
+
     @RequestMapping(value = "reassign.do", method = RequestMethod.POST)
     public @ResponseBody Map<String, Object> reassignTask(HttpServletRequest request) {
         Map<String, Object> jsonMap = IaisCommonUtils.genNewHashMap();
@@ -255,8 +315,6 @@ public class CommonPoolAjaxController {
         //get other data
         return jsonMap;
     }
-
-
 
 
 

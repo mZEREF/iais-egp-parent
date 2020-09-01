@@ -185,8 +185,7 @@ public class SystemSearchAssignPoolDelegator {
      */
     public void systemPoolAssignDoSearch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the systemPoolAssignDoSearch start ...."));
-        SearchParam searchParam = getSearchParam(bpc, true);
-        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        SearchParam searchParam = getSearchParam(bpc);
         List<TaskDto> systemPool = (List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "systemPool");
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         //get search filter
@@ -200,6 +199,7 @@ public class SystemSearchAssignPoolDelegator {
         //systemAssignStage is true and Set current stage
         boolean stageFlag = getStageBooleanAndSet(systemAssignStage, groupRoleFieldDto);
         if(stageFlag) {
+            searchParam = getSearchParam(bpc, true);
             List<TaskDto> systemFilterPool = filterPoolByStage(systemPool, groupRoleFieldDto.getCurStage());
             List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(systemFilterPool);
             StringBuilder sb = new StringBuilder("(");
