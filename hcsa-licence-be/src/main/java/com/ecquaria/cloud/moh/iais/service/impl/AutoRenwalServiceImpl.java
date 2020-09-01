@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -10,6 +11,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.FeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.fee.LicenceFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.HcsaLicenceGroupFeeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -21,8 +23,11 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
+import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AutoRenwalService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
@@ -73,8 +78,14 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     @Value("${iais.email.sender}")
     private String mailSender;
 
+    @Value("${iais.system.one.address}")
+    private String systemAddressOne;
+
     @Autowired
     private SystemParamConfig systemParamConfig;
+
+    @Autowired
+    private NotificationHelper notificationHelper;
 
     private static final String EMAIL_SUBJECT="MOH IAIS – REMINDER TO RENEW LICENCE";
     private static final String EMAIL_TO_OFFICER_SUBJECT="MOH IAIS – Licence is due to expiry";
@@ -94,7 +105,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(entity+"------entity")));
         entity.forEach((k, v) -> {
             for(int i=0;i<v.size();i++){
-
                 String licenceNo = v.get(i).getLicenceNo();
 
                 boolean autoOrNon = isAutoOrNon(licenceNo);
@@ -202,9 +212,71 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         log.info(id);
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(licenceDto)));
         boolean b = checkEmailIsSend(id, "IS_NO_AUTO" + time);
+        String lastReminderString = systemParamConfig.getSeventhLicenceReminder()+"";
         log.info(StringUtil.changeForLog(b+"-------type"));
         if(!b){
             return;
+        }
+        String serviceName = licenceDto.getSvcName();
+        LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
+        if(licenseeDto != null){
+            String licenceId = licenceDto.getId();
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
+            String applicationName = licenseeDto.getName();
+            String MohName = AppConsts.MOH_AGENCY_NAME;
+            log.info(StringUtil.changeForLog("send renewal application notification applicantName : " + applicationName));
+            Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+            map.put("ApplicantName", applicationName);
+            map.put("MOH_AGENCY_NAME", MohName);
+            map.put("serviceName", serviceName);
+            map.put("systemLink", loginUrl);
+            map.put("email", systemAddressOne);
+            if(lastReminderString.equals(time)){
+                //last
+                log.info(StringUtil.changeForLog("send renewal application last reminder"));
+                String subject = "MOH HALP - Final Reminder: Your " + serviceName + " is due for renewal";
+                try {
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_LAST_REMINDER);
+                    emailParam.setTemplateContent(map);
+                    emailParam.setQueryCode(licenceId);
+                    emailParam.setReqRefNum(licenceId);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                    emailParam.setRefId(licenceId);
+                    emailParam.setSubject(subject);
+                    //send email
+                    log.info(StringUtil.changeForLog("send renewal application email"));
+                    notificationHelper.sendNotification(emailParam);
+                    log.info(StringUtil.changeForLog("send renewal application email end"));
+                    //send sms
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_LAST_REMINDER_SMS);
+                    smsParam.setSubject(subject);
+                    smsParam.setQueryCode(licenceId);
+                    smsParam.setReqRefNum(licenceId);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                    smsParam.setRefId(licenceId);
+                    log.info(StringUtil.changeForLog("send renewal application sms"));
+                    notificationHelper.sendNotification(smsParam);
+                    log.info(StringUtil.changeForLog("send renewal application sms end"));
+                    //send message
+                    EmailParam messageParam = new EmailParam();
+                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_LAST_REMINDER_MESSAGE);
+                    messageParam.setTemplateContent(map);
+                    messageParam.setQueryCode(licenceId);
+                    messageParam.setReqRefNum(licenceId);
+                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    messageParam.setRefId(licenceId);
+                    messageParam.setSubject(subject);
+                    log.info(StringUtil.changeForLog("send renewal application message"));
+                    notificationHelper.sendNotification(messageParam);
+                    log.info(StringUtil.changeForLog("send renewal application notification end"));
+                }catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }
+            }else{
+
+            }
         }
         saveMailJob(id,"IS_NO_AUTO"+time);
         List<String> list = useLicenceIdFindHciNameAndAddress(id);
