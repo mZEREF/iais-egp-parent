@@ -59,4 +59,13 @@ public interface SystemSearchAssignPoolService {
       * @Descripation: get System Pool Second By Param
       */
     SearchResult<SuperPoolTaskQueryDto> getSystemPoolSecondByParam(SearchParam searchParam);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/9/1
+      * @Param: groupRoleFieldDto
+      * @return: GroupRoleFieldDto
+      * @Descripation: set Group Member Name
+      */
+    GroupRoleFieldDto setGroupMemberName(GroupRoleFieldDto groupRoleFieldDto);
 }

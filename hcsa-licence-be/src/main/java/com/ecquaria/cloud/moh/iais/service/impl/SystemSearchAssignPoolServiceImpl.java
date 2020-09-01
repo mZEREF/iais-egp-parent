@@ -156,4 +156,39 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
     public SearchResult<SuperPoolTaskQueryDto> getSystemPoolSecondByParam(SearchParam searchParam) {
         return organizationClient.supervisorSecondSearch(searchParam).getEntity();
     }
+
+    @Override
+    public GroupRoleFieldDto setGroupMemberName(GroupRoleFieldDto groupRoleFieldDto) {
+        String curStage = groupRoleFieldDto.getCurStage();
+        String memberName = "MOH Officer";
+        String roleId = "";
+        switch (curStage){
+            case HcsaConsts.ROUTING_STAGE_ASO:
+                roleId = RoleConsts.USER_ROLE_ASO;
+                break;
+            case HcsaConsts.ROUTING_STAGE_PSO:
+                roleId = RoleConsts.USER_ROLE_PSO;
+                break;
+            case HcsaConsts.ROUTING_STAGE_INS:
+                roleId = RoleConsts.USER_ROLE_INSPECTIOR;
+                break;
+            case HcsaConsts.ROUTING_STAGE_AO1:
+                roleId = RoleConsts.USER_ROLE_AO1;
+                break;
+            case HcsaConsts.ROUTING_STAGE_AO2:
+                roleId = RoleConsts.USER_ROLE_AO2;
+                break;
+            case HcsaConsts.ROUTING_STAGE_AO3:
+                roleId = RoleConsts.USER_ROLE_AO3;
+                break;
+            default:
+                memberName = "MOH Officer";
+                break;
+        }
+        if(!StringUtil.isEmpty(roleId)){
+            memberName = MasterCodeUtil.getCodeDesc(roleId);
+        }
+        groupRoleFieldDto.setGroupMemBerName(memberName);
+        return groupRoleFieldDto;
+    }
 }

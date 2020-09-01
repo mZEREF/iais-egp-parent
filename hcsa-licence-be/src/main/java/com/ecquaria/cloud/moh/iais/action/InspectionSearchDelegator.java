@@ -93,6 +93,7 @@ public class InspectionSearchDelegator {
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", null);
         ParamUtil.setSessionAttr(bpc.request, "poolRoleCheckDto", null);
         ParamUtil.setSessionAttr(bpc.request, "superPoolRoleIds", null);
+        ParamUtil.setSessionAttr(bpc.request, "assignMap", null);
     }
 
     /**
