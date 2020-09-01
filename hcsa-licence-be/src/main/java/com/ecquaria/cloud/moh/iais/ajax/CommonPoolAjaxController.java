@@ -20,6 +20,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.SystemSearchAssignPoolService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
@@ -56,6 +57,10 @@ public class CommonPoolAjaxController {
 
     @Autowired
     private InspectionService inspectionService;
+
+    @Autowired
+    private SystemSearchAssignPoolService systemSearchAssignPoolService;
+
     @Autowired
     private OrganizationClient organizationClient;
 
@@ -231,7 +236,7 @@ public class CommonPoolAjaxController {
             }
             //do search
             QueryHelp.setMainSql("inspectionQuery", "systemPoolDropdown", searchParam);
-            SearchResult<SuperPoolTaskQueryDto> searchResult = inspectionService.getSupPoolSecondByParam(searchParam);
+            SearchResult<SuperPoolTaskQueryDto> searchResult = systemSearchAssignPoolService.getSystemPoolSecondByParam(searchParam);
             searchResult = inspectionService.getSecondSearchOtherData(searchResult);
             jsonMap.put("ajaxResult", searchResult);
             jsonMap.put("result", "Success");

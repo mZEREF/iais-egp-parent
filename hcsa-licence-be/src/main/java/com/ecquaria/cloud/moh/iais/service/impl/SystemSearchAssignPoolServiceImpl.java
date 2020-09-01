@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.SystemAssignSearchQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -149,5 +150,10 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
             appStatusOption.add(selectOption);
         }
         return appStatusOption;
+    }
+
+    @Override
+    public SearchResult<SuperPoolTaskQueryDto> getSystemPoolSecondByParam(SearchParam searchParam) {
+        return organizationClient.supervisorSecondSearch(searchParam).getEntity();
     }
 }

@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.SystemAssignSearchQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
@@ -49,4 +50,13 @@ public interface SystemSearchAssignPoolService {
       * @Descripation: get App Status Option
       */
     List<SelectOption> getAppStatusOption(String curStage);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/9/1
+      * @Param: searchParam
+      * @return: SearchResult<SuperPoolTaskQueryDto>
+      * @Descripation: get System Pool Second By Param
+      */
+    SearchResult<SuperPoolTaskQueryDto> getSystemPoolSecondByParam(SearchParam searchParam);
 }
