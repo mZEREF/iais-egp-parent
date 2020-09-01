@@ -4,7 +4,7 @@ package com.ecquaria.cloud.moh.iais.validation;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.audit.AuditTrailConstants;
-import com.ecquaria.cloud.moh.iais.common.constant.message.MessageCodeKey;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
 
@@ -40,23 +41,33 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
 			case AuditTrailConstants.ACTION_QUERY:
 				if (StringUtils.isEmpty(startDate)
 						|| StringUtils.isEmpty(endDate)){
-					errMap.put("actionTime", MessageCodeKey.ERR0010);
+					errMap.put("actionTime", "ERR0010");
 				}else {
-					int reduceDay = getReduceDay(IaisEGPHelper.parseToDate(startDate, AppConsts.DEFAULT_DATE_FORMAT),
-							IaisEGPHelper.parseToDate(endDate, AppConsts.DEFAULT_DATE_FORMAT));
+					try {
+						Date st = Formatter.parseDate(startDate);
+						Date ed = Formatter.parseDate(endDate);
+						if (st.after(ed)){
+							errMap.put("actionTime", "AUDIT_ERR009");
+						}else {
+							int reduceDay = getReduceDay(IaisEGPHelper.parseToDate(startDate, AppConsts.DEFAULT_DATE_FORMAT),
+									IaisEGPHelper.parseToDate(endDate, AppConsts.DEFAULT_DATE_FORMAT));
 
-					int value = systemParamConfig.getAuditTrailSearchWeek();
-					value = value == 0 ? 3 : value;
-					log.info(StringUtil.changeForLog("audit trail week" + value));
-					String msg = MessageUtil.getMessageDesc("GENERAL_ERR0010");
+							int value = systemParamConfig.getAuditTrailSearchWeek();
+							value = value == 0 ? 3 : value;
+							log.info(StringUtil.changeForLog("audit trail week" + value));
+							String msg = MessageUtil.getMessageDesc("GENERAL_ERR0010");
 
-					if ((reduceDay >= (value * MONTH_DAY))){
-						errMap.put("actionTime", MessageUtil.formatMessage(msg, String.valueOf(value)));
+							if ((reduceDay >= (value * MONTH_DAY))){
+								errMap.put("actionTime", MessageUtil.formatMessage(msg, String.valueOf(value)));
+							}
+						}
+					} catch (ParseException e) {
+						log.error(e.getMessage(), e);
 					}
 				}
 				break;
 			default:
-				//nonthing
+				//nothing
 		}
 
         return errMap;
