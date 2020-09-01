@@ -1284,7 +1284,7 @@ public class HalpAssessmentGuideDelegator {
         try {
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
-                    .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication");
+                    .append("/hcsa-licence-web/eservice/INTERNET/MohNewApplication?entryType=assessment");
             String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
             bpc.response.sendRedirect(tokenUrl);
         }catch (Exception e){
@@ -1753,6 +1753,14 @@ public class HalpAssessmentGuideDelegator {
         SearchParam searchParam = (SearchParam) ParamUtil.getSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_CONTACT_SEARCH_PARAM);
         HalpSearchResultHelper.doPage(bpc.request,searchParam);
     }
+
+    public void jumpInstructionPage(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("jumpInstructionPage start..."));
+
+
+        log.info(StringUtil.changeForLog("jumpInstructionPage end..."));
+    }
+
 
     private static List<String> getAppAlignLicQueryHci(Map<String,List<AppAlignLicQueryDto>> baseSvcPremMap,String svcName){
         List<String> premHcis = IaisCommonUtils.genNewArrayList();

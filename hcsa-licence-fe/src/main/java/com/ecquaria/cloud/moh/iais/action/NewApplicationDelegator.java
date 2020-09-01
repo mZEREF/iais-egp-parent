@@ -164,6 +164,7 @@ public class NewApplicationDelegator {
     private static final String DRAFTCONFIG = "DraftConfig";
     private static final String GROUPLICENCECONFIG = "GroupLicenceConfig";
     private static final String RFI_REPLY_SVC_DTO = "rfiReplySvcDto";
+    private static final String ASSESSMENTCONFIG = "AssessMentConfig";
 
     //page name
     public static final String APPLICATION_PAGE_NAME_PREMISES = "APPPN01";
@@ -253,6 +254,7 @@ public class NewApplicationDelegator {
         ParamUtil.setSessionAttr(bpc.request, NewApplicationConstant.PREMISES_HCI_LIST, null);
         ParamUtil.setSessionAttr(bpc.request, LICPERSONSELECTMAP, null);
         ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
+        ParamUtil.setSessionAttr(bpc.request,ASSESSMENTCONFIG,null);
         HashMap<String, String> coMap = new HashMap<>(4);
         coMap.put("premises", "");
         coMap.put("document", "");
@@ -5791,6 +5793,10 @@ public class NewApplicationDelegator {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = (List<AppSvcRelatedInfoDto>) ParamUtil.getSessionAttr(bpc.request, ServiceMenuDelegator.APP_SVC_RELATED_INFO_LIST);
         AppSelectSvcDto appSelectSvcDto = (AppSelectSvcDto) ParamUtil.getSessionAttr(bpc.request, ServiceMenuDelegator.APP_SELECT_SERVICE);
         if (!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos) && appSubmissionDto == null && appSelectSvcDto != null) {
+            String entryType = ParamUtil.getString(bpc.request,"entryType");
+            if(!StringUtil.isEmpty(entryType) && entryType.equals("assessment")){
+                ParamUtil.setSessionAttr(bpc.request,ASSESSMENTCONFIG,"test");
+            }
             appSubmissionDto = new AppSubmissionDto();
             appSubmissionDto.setAppType(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
             appSubmissionDto.setAppSvcRelatedInfoDtoList(appSvcRelatedInfoDtos);

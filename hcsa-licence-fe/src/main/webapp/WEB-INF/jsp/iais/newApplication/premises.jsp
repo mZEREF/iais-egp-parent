@@ -82,6 +82,9 @@
                                     <c:when test="${DraftConfig != null || requestInformationConfig != null}">
                                       <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initApp"><em class="fa fa-angle-left"></em> Back</a>
                                     </c:when>
+                                    <c:when test="${AssessMentConfig != null}">
+                                      <a class="back" id="Back" href="/main-web/eservice/INTERNET/MohAccessmentGuide/jumpInstructionPage"><em class="fa fa-angle-left"></em> Back</a>
+                                    </c:when>
                                     <c:otherwise>
                                       <a class="back" id="Back" href="#"><em class="fa fa-angle-left"></em> Back</a>
                                     </c:otherwise>
