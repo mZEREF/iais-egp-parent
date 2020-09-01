@@ -244,7 +244,7 @@ public class CommonPoolAjaxController {
         } else {
             jsonMap.put("result", "Fail");
         }
-        ParamUtil.setSessionAttr(request, "assignMap", (Serializable) assignMap);
+        ParamUtil.setSessionAttr(request, "systemAssignMap", (Serializable) assignMap);
         //get other data
         return jsonMap;
     }
