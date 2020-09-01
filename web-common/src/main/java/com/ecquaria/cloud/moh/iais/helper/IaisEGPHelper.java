@@ -55,13 +55,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.sqlite.date.FastDateFormat;
 import sop.iwe.SessionManager;
@@ -608,8 +606,9 @@ public final class IaisEGPHelper extends EGPHelper {
     public static <T> FeignResponseEntity<T> callEicGatewayWithBody(String url, HttpMethod httpMethod, Object httpBody,
                                                 MediaType mediaType, String date, String authorization, String dateSec,
                                                 String authorizationSec, Class<T> responseCls) {
-        return callEicGatewayWithBody(url, httpMethod, httpBody, null, mediaType, date, authorization,
-                dateSec, authorizationSec, responseCls, null);
+        ResponseEntity<T> response = IaisCommonUtils.callEicGatewayWithBody(url, httpMethod, httpBody, mediaType, date, authorization,
+                dateSec, authorizationSec, responseCls);
+        return genFeignRespFromResp(response, null);
     }
 
     /**
@@ -622,8 +621,9 @@ public final class IaisEGPHelper extends EGPHelper {
     public static FeignResponseEntity<List> callEicGatewayWithBodyForList(String url, HttpMethod httpMethod, Object httpBody,
                                                                        MediaType mediaType, String date, String authorization, String dateSec,
                                                                        String authorizationSec, Class contentCls) {
-        return callEicGatewayWithBody(url, httpMethod, httpBody, null, mediaType, date, authorization,
-                dateSec, authorizationSec, List.class, contentCls);
+        ResponseEntity<List> response = IaisCommonUtils.callEicGatewayWithBodyForList(url, httpMethod, httpBody, mediaType, date, authorization,
+                dateSec, authorizationSec, contentCls);
+        return genFeignRespFromResp(response, contentCls);
     }
 
     /**
@@ -636,8 +636,9 @@ public final class IaisEGPHelper extends EGPHelper {
     public static FeignResponseEntity<SearchResult> callEicGatewayWithBodyForSearchResult(String url, HttpMethod httpMethod, Object httpBody,
                                                                           MediaType mediaType, String date, String authorization, String dateSec,
                                                                           String authorizationSec, Class contentCls) {
-        return callEicGatewayWithBody(url, httpMethod, httpBody, null, mediaType, date, authorization,
-                dateSec, authorizationSec, SearchResult.class, contentCls);
+        ResponseEntity<SearchResult> response = IaisCommonUtils.callEicGatewayWithBodyForSearchResult(url, httpMethod, httpBody, mediaType, date, authorization,
+                dateSec, authorizationSec, contentCls);
+        return genFeignRespFromResp(response, contentCls);
     }
 
     /**
@@ -650,8 +651,9 @@ public final class IaisEGPHelper extends EGPHelper {
     public static <T> FeignResponseEntity<T> callEicGatewayWithParam(String url, HttpMethod httpMethod, Map<String, Object> params,
                                                                     MediaType mediaType, String date, String authorization, String dateSec,
                                                                     String authorizationSec, Class<T> responseCls) {
-        return callEicGatewayWithBody(url, httpMethod, null, params, mediaType, date, authorization,
-                dateSec, authorizationSec, responseCls, null);
+        ResponseEntity<T> response = IaisCommonUtils.callEicGatewayWithParam(url, httpMethod, params, mediaType, date, authorization,
+                dateSec, authorizationSec, responseCls);
+        return genFeignRespFromResp(response, null);
     }
 
     /**
@@ -664,36 +666,9 @@ public final class IaisEGPHelper extends EGPHelper {
     public static FeignResponseEntity<List> callEicGatewayWithParamForList(String url, HttpMethod httpMethod, Map<String, Object> params,
                                                                              MediaType mediaType, String date, String authorization, String dateSec,
                                                                              String authorizationSec, Class contentCls) {
-        return callEicGatewayWithBody(url, httpMethod, null, params, mediaType, date, authorization,
-                dateSec, authorizationSec, List.class, contentCls);
-    }
-
-    private static <T> FeignResponseEntity<T> callEicGatewayWithBody(String url, HttpMethod httpMethod, Object httpBody, Map<String, Object> params,
-                                                                   MediaType mediaType, String date, String authorization, String dateSec,
-                                                                   String authorizationSec, Class<T> responseCls, Class contentCls) {
-        HttpHeaders header = getHttpHeadersForEic(mediaType, date, authorization,
-                dateSec, authorizationSec);
-        HttpEntity entity = null;
-        if (httpBody != null) {
-            entity = new HttpEntity<>(httpBody, header);
-        } else {
-            entity = new HttpEntity(header);
-        }
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity response = null;
-        if (params != null && !params.isEmpty()) {
-            StringBuilder sb = new StringBuilder(url);
-            sb.append('?');
-            for (String key : params.keySet()) {
-                sb.append(key).append("={").append(key).append("}&");
-            }
-            response = restTemplate.exchange(sb.substring(0, sb.length() - 1), httpMethod, entity, responseCls, params);
-        } else {
-            response = restTemplate.exchange(url, httpMethod, entity, responseCls);
-        }
-        FeignResponseEntity<T> resEnt = IaisEGPHelper.genFeignRespFromResp(response, contentCls);
-
-        return resEnt;
+        ResponseEntity<List> response = IaisCommonUtils.callEicGatewayWithParamForList(url, httpMethod, params, mediaType, date, authorization,
+                dateSec, authorizationSec, contentCls);
+        return genFeignRespFromResp(response, contentCls);
     }
 
     public static String[] getPageSizeByStrings(String pageSizeStr) throws IaisRuntimeException{
