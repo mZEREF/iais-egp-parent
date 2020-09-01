@@ -3,9 +3,12 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonAndExtDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.application.AppSvcPersonExtDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremPhOpenPeriodDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPsnEditDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPrincipalOfficersDto;
@@ -14,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcPersonne
 import com.ecquaria.cloud.moh.iais.common.dto.postcode.PostCodeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.helper.HmacHelper;
@@ -964,7 +968,29 @@ public class NewApplicationAjaxController {
         String psnKey = idType+","+idNo;
         Map<String,AppSvcPersonAndExtDto> psnMap = (Map<String, AppSvcPersonAndExtDto>) ParamUtil.getSessionAttr(request, NewApplicationDelegator.PERSONSELECTMAP);
         AppSvcPersonAndExtDto appSvcPersonAndExtDto = psnMap.get(psnKey);
-        AppSvcPrincipalOfficersDto person = NewApplicationHelper.genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,false);
+        AppSvcPrincipalOfficersDto person = null;
+        //66762
+        AppSvcPersonDto appSvcPersonDto = appSvcPersonAndExtDto.getPersonDto();
+        if(appSvcPersonDto != null){
+            person = MiscUtil.transferEntityDto(appSvcPersonDto,AppSvcPrincipalOfficersDto.class);
+        }
+        if(!person.isLicPerson()){
+            List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
+            AppSvcPersonExtDto appSvcPersonExtDto = new AppSvcPersonExtDto();
+            if(!IaisCommonUtils.isEmpty(appSvcPersonExtDtos)){
+                appSvcPersonExtDtos.sort((h1,h2)->h1.getServiceCode().compareTo(h2.getServiceCode()));
+                appSvcPersonExtDto = appSvcPersonExtDtos.get(0);
+            }
+            Map<String, String> fieldMap = IaisCommonUtils.genNewHashMap();
+            person = MiscUtil.transferEntityDto(appSvcPersonExtDto,AppSvcPrincipalOfficersDto.class,fieldMap,person);
+            //transfer
+            person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
+            AppPsnEditDto appPsnEditDto = NewApplicationHelper.setNeedEditField(person);
+            person.setPsnEditDto(appPsnEditDto);
+        }else{
+            person = NewApplicationHelper.genAppSvcPrincipalOfficersDto(appSvcPersonAndExtDto,svcCode,false);
+        }
+
         if(person == null){
             log.info(StringUtil.changeForLog("can not get data from person dropdown ..."));
             return new AppSvcPrincipalOfficersDto();
