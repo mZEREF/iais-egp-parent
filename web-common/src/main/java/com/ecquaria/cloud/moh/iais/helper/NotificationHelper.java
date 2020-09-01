@@ -500,7 +500,16 @@ public class NotificationHelper {
 	}
 
 	private String getHelperMessageNo() {
-		return masterCodeClient.messageID().getEntity();
+		if(AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)){
+			HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+			HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+			String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+			return IaisEGPHelper.callEicGatewayWithBody(gatewayUrl + "/v1/new-inbox-msg-no", HttpMethod.GET, null,
+					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+					signature2.date(), signature2.authorization(), String.class).getEntity();
+		} else {
+			return masterCodeClient.messageID().getEntity();
+		}
 	}
 
 	private void sendSms(String refIdType, String templateId, String mesContext, String refId, boolean smsOnlyOfficerHour, MsgTemplateDto msgTemplateDto) {
