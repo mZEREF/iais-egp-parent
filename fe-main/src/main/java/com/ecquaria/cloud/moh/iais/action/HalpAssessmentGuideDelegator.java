@@ -1270,7 +1270,23 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void backChooseSvc(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("back choose svc start ..."));
+        AppSelectSvcDto appSelectSvcDto = getAppSelectSvcDto(bpc);
 
+        if(appSelectSvcDto.isBasePage()){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, CHOOSE_BASE_SVC);
+        }else if(appSelectSvcDto.isAlignPage()){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, CHOOSE_ALIGN);
+        }else if(appSelectSvcDto.isLicPage()){
+            ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE, CHOOSE_LICENCE);
+        }
+        //reset
+        appSelectSvcDto.setBasePage(false);
+        appSelectSvcDto.setAlignPage(false);
+        appSelectSvcDto.setLicPage(false);
+        ParamUtil.setSessionAttr(bpc.request,APP_SELECT_SERVICE,appSelectSvcDto);
+
+        log.info(StringUtil.changeForLog("back choose svc end ..."));
     }
     public void doPage(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("doPage start ..."));

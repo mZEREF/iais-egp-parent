@@ -9,12 +9,6 @@
                     <%@include file="comm/chooseSvcContent.jsp"%>
                 </div>
                 <br/>
-                <c:if test="${appSelectSvc.chooseBaseSvc}">
-                    <div class="disabledPart">
-                        <%@include file="comm/chooseBaseSvcContent.jsp"%>
-                    </div>
-                    <br/>
-                </c:if>
                 <div>
                     <%@include file="comm/chooseBaseSvcContent.jsp"%>
                 </div>
