@@ -43,6 +43,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.dto.TaskHistoryDto;
 import com.ecquaria.cloud.moh.iais.helper.EventBusHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
@@ -650,10 +651,22 @@ public class InsRepServiceImpl implements InsRepService {
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, null, InspectionConstants.PROCESS_DECI_REVIEW_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
         } else {
             updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
-            List<TaskDto> taskDtos = prepareTaskToAo2(taskDto, serviceId, applicationDto);
-            taskService.createTasks(taskDtos);
+            List<ApplicationDto> applicationDtoList = applicationService.getApplicaitonsByAppGroupId(applicationDto.getAppGrpId());
+            boolean isAllSubmit = applicationService.isOtherApplicaitonSubmit(applicationDtoList,applicationDto.getApplicationNo(),
+                    ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+            TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,HcsaConsts.ROUTING_STAGE_AO2,RoleConsts.USER_ROLE_AO2,IaisEGPHelper.getCurrentAuditTrailDto());
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
             createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO2, groupId, null);
+            if(isAllSubmit){
+                // send the task to Ao2  or Ao3
+                List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
+                taskService.createTasks(taskDtos);
+            }
+//            updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+//            List<TaskDto> taskDtos = prepareTaskToAo2(taskDto, serviceId, applicationDto);
+//            taskService.createTasks(taskDtos);
+//            createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
+//            createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO2, groupId, null);
         }
     }
 
