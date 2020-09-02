@@ -275,6 +275,10 @@ public class INTERNET___MohAccessmentGuide___1 extends BaseProcessClass {
 	public void jumpInstructionPage_OnStepProcess_0() throws Exception {
 		EngineHelper.delegate(DELEGATOR, "jumpInstructionPage", this);
 	}
+
+	public void prepareJump_OnStepProcess_0() throws Exception {
+		EngineHelper.delegate(DELEGATOR, "prepareJump", this);
+	}
 	
 
 }
