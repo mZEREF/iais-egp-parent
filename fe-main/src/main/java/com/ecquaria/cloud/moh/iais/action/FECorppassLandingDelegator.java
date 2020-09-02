@@ -127,6 +127,7 @@ public class FECorppassLandingDelegator {
         if (organizationDto != null){
             ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "N");
         }else {
+            LoginHelper.insertAuditTrail(identityNo);
             ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "Y");
         }
 
@@ -180,18 +181,7 @@ public class FECorppassLandingDelegator {
             ParamUtil.setRequestAttr(bpc.request, "isAdminRole", "Y");
         }else {
             // Add Audit Trail -- Start
-            List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList(1);
-            AuditTrailDto auditTrailDto = new AuditTrailDto();
-            auditTrailDto.setNricNumber(nric);
-            auditTrailDto.setUenId(uen);
-            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
-            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
-            adList.add(auditTrailDto);
-            try {
-                AuditLogUtil.callWithEventDriven(adList, submissionClient);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
+            LoginHelper.insertAuditTrail(uen, nric);
             // End Audit Trail -- End
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0012"));
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "N");

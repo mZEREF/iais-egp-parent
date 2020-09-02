@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
@@ -54,5 +55,35 @@ public final class LoginHelper {
 
     private LoginHelper() {
         throw new IllegalStateException("Utility class");
+    }
+
+    public static void insertAuditTrail(String identityNo){
+        insertAuditTrail(null, identityNo);
+    }
+
+    public static void insertAuditTrail(String uen, String identityNo){
+        ApplicationContext context = SpringContextHelper.getContext();
+        if (context == null){
+            return;
+        }
+
+        SubmissionClient client = context.getBean(SubmissionClient.class);
+        if (client == null){
+            return;
+        }
+
+        log.info("insertAuditTrail.........fe");
+        List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList(1);
+        AuditTrailDto auditTrailDto = new AuditTrailDto();
+        auditTrailDto.setMohUserId(identityNo);
+        auditTrailDto.setUenId(uen);
+        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+        auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
+        adList.add(auditTrailDto);
+        try {
+            AuditLogUtil.callWithEventDriven(adList, client);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 }
