@@ -968,13 +968,25 @@ public class InterInboxDelegator {
 
     public void appToAppView(BaseProcessClass bpc) throws IOException {
         String appNo = ParamUtil.getString(bpc.request, InboxConst.ACTION_NO_VALUE);
-        StringBuilder url = new StringBuilder();
-        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication/1/InboxToPreview")
-                .append("?appNo=")
-                .append(MaskUtil.maskValue("appNo",appNo));
-        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        String appType = ParamUtil.getString(bpc.request, InboxConst.ACTION_TYPE_VALUE);
+        if (InboxConst.APP_DO_DRAFT_TYPE_APPEAL.equals(appType)){
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohAppealApplication/")
+                    .append("?appNo=")
+                    .append(MaskUtil.maskValue("appNo",appNo))
+                    .append("&crud_action_type=inbox");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }else{
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohNewApplication/1/InboxToPreview")
+                    .append("?appNo=")
+                    .append(MaskUtil.maskValue("appNo",appNo));
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }
     }
 
     private void setNumInfoToRequest(HttpServletRequest request,InterInboxUserDto interInboxUserDto){
