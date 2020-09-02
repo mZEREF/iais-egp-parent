@@ -40,6 +40,9 @@ import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.egp.api.EGPHelper;
+import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.UserAgent;
+import eu.bitwalker.useragentutils.Version;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -213,7 +216,27 @@ public final class IaisEGPHelper extends EGPHelper {
         }
         dto.setSessionId(session.getId());
         dto.setClientIp(MiscUtil.getClientIp(request));
-        dto.setUserAgent(request.getHeader("User-Agent"));
+        dto.setUserAgent(getBrowserInfo(request));
+    }
+
+    public static String getBrowserInfo(HttpServletRequest request){
+        StringBuilder uaStr = new StringBuilder();
+        UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
+        if (userAgent != null){
+            Browser browser = userAgent.getBrowser();
+            if (browser != null){
+                String browserName = browser.getName();
+                Version version = browser.getVersion(request.getHeader("User-Agent"));
+                if(version != null){
+                    uaStr.append(browserName).append("/").append(version.getVersion());
+                }else {
+                    uaStr.append(browserName).append("/").append("unbeknown");
+                }
+            }
+        }
+
+        log.info(StringUtil.changeForLog("BrowserInfo .........." + uaStr));
+        return uaStr.toString();
     }
 
     public static boolean isLogin(){

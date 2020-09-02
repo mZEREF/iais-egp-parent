@@ -97,7 +97,7 @@
                 <iais:sortableHeader needSort="true"   field="action_time" value="Operation Date"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="action_time" value="Operation Time"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="client_ip" value="Source Client IP"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="user_agent" value="Browser name/Browser version"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="user_agent" value="User Agent"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="moh_user_id" value="MOH User&apos;s account ID"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="session_id" value="Session Id"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="application_number" value="Application ID"></iais:sortableHeader>
