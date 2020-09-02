@@ -450,6 +450,13 @@
     <JavaCode defClass="" executor="" methodName="jumpInstructionPage_OnStepProcess_0" name="jumpInstructionPage_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="prepareJump" x="2280" y="-10">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="prepareJump_OnStepProcess_0" name="prepareJump_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="assessmentPage" stageIndicator="" x="460" y="100">
@@ -977,9 +984,6 @@
   <SynchronousLink destinationName="/Pages/WebPage/appBeforeStart" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch16" style="rectanular">
    <position>{(2840,450)(2980,380)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/newApp1" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch16" style="oblique">
-   <position>{(2840,450)(2737,122)(1990,120)}</position>
-  </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch19" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/appBeforeStart" style="rectanular">
    <position>{(2980,380)(3150,380)}</position>
   </SynchronousLink>
@@ -1088,8 +1092,14 @@
   <SynchronousLink destinationName="/Pages/WebPage/appBeforeStart" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/jumpInstructionPage" style="rectanular">
    <position>{(3010,250)(2980,380)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Switches/Switch/Switch18" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/backChooseSvc" style="rectanular">
-   <position>{(3300,200)(2018,62)(1990,370)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareJump" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/backChooseSvc" style="rectanular">
+   <position>{(3300,200)(2300,10)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch18" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/prepareJump" style="oblique">
+   <position>{(2300,10)(1990,370)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareJump" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch16" style="rectanular">
+   <position>{(2840,450)(2300,10)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -1220,8 +1230,8 @@
    <Description/>
    <SwitchCase component="/Pages/WebPage/appBeforeStart" value="&quot;next&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/doPage" value="&quot;doPage&quot;"/>
-   <SwitchCase component="/Steps/AutomaticStep/newApp1" value="&quot;doBack&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareSwitch" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareJump" value="&quot;doBack&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Steps/AutomaticStep/renewLic" executor="" icon="" leftOperand="guide_back_action" name="Switch17" x="1150" y="620">
    <Description/>

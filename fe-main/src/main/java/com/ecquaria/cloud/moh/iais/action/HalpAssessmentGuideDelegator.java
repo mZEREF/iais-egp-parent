@@ -1778,6 +1778,15 @@ public class HalpAssessmentGuideDelegator {
 
         log.info(StringUtil.changeForLog("jumpInstructionPage end..."));
     }
+    public void prepareJump(BaseProcessClass bpc){
+        log.info(StringUtil.changeForLog("prepareJump start..."));
+        String action = (String) ParamUtil.getRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE);
+        if(StringUtil.isEmpty(action)){
+            action = "chooseSvc";
+        }
+        ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,action);
+        log.info(StringUtil.changeForLog("prepareJump end..."));
+    }
 
 
     private static List<String> getAppAlignLicQueryHci(Map<String,List<AppAlignLicQueryDto>> baseSvcPremMap,String svcName){
