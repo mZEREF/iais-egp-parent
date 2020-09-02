@@ -788,9 +788,11 @@ public class LicenceApproveBatchjob {
                     //create LicPremisesScopeDto
                     List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos = applicationListDto.getAppSvcPremisesScopeDtos();
                     List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos = applicationListDto.getAppSvcPremisesScopeAllocationDtos();
+                    List<AppGrpPersonnelDto> appGrpPersonnelDtosE = applicationListDto.getAppGrpPersonnelDtos();
+                    List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtosE = applicationListDto.getAppSvcKeyPersonnelDtos();
 
                     List<PremisesGroupDto> premisesGroupDtos1 = getPremisesGroupDto(applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos, appSvcPremisesScopeDtos,
-                            appSvcPremisesScopeAllocationDtos, hcsaServiceDto, organizationId, isPostInspNeeded);
+                            appSvcPremisesScopeAllocationDtos,appGrpPersonnelDtosE,appSvcKeyPersonnelDtosE, hcsaServiceDto, organizationId, isPostInspNeeded);
                     if (!IaisCommonUtils.isEmpty(premisesGroupDtos1)) {
                         premisesGroupDtos.addAll(premisesGroupDtos1);
                     }
@@ -1001,9 +1003,11 @@ public class LicenceApproveBatchjob {
                 //create LicPremisesScopeDto
                 List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos = applicationListDto.getAppSvcPremisesScopeDtos();
                 List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos = applicationListDto.getAppSvcPremisesScopeAllocationDtos();
+                List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
+                List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDto.getAppSvcKeyPersonnelDtos();
 
                 List<PremisesGroupDto> premisesGroupDtos = getPremisesGroupDto(applicationLicenceDto, appGrpPremisesEntityDtos, appPremisesCorrelationDtos, appSvcPremisesScopeDtos,
-                        appSvcPremisesScopeAllocationDtos, hcsaServiceDto, organizationId, isPostInspNeeded);
+                        appSvcPremisesScopeAllocationDtos,appGrpPersonnelDtos,appSvcKeyPersonnelDtos, hcsaServiceDto, organizationId, isPostInspNeeded);
                 //String licenceNo = null;
                 //get the yearLenth.
 //                int yearLength = getYearLength(appPremisesRecommendationDto);
@@ -1046,9 +1050,7 @@ public class LicenceApproveBatchjob {
                 superLicDto.setLicDocumentRelationDto(licDocumentRelationDtos);
 
                 //create key_personnel key_personnel_ext lic_key_personnel
-                List<AppGrpPersonnelDto> appGrpPersonnelDtos = applicationListDto.getAppGrpPersonnelDtos();
                 List<AppGrpPersonnelExtDto> appGrpPersonnelExtDtos = applicationListDto.getAppGrpPersonnelExtDtos();
-                List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos = applicationListDto.getAppSvcKeyPersonnelDtos();
                 if (!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos)) {
                     List<PersonnelsDto> personnelsDtos = getPersonnelsDto(appGrpPersonnelDtos, appGrpPersonnelExtDtos, appSvcKeyPersonnelDtos, organizationId);
                     if (IaisCommonUtils.isEmpty(personnelsDtos)) {
@@ -1143,12 +1145,30 @@ public class LicenceApproveBatchjob {
 
     }
 
+    private AppSvcKeyPersonnelDto getAppSvcKeyPersonnelDtoById(List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos,String id){
+        log.info(StringUtil.changeForLog("The licence Generate getAppSvcKeyPersonnelDtoById start ..."));
+        log.info(StringUtil.changeForLog("The licence Generate getAppSvcKeyPersonnelDtoById appSvcKeyPersonnel id is -->："+id));
+        AppSvcKeyPersonnelDto result = null;
+        if(!IaisCommonUtils.isEmpty(appSvcKeyPersonnelDtos) && !StringUtil.isEmpty(id)){
+            log.info(StringUtil.changeForLog("The licence Generate getAppSvcKeyPersonnelDtoById appSvcKeyPersonnelDtos.size() is -->："+appSvcKeyPersonnelDtos.size()));
+            for (AppSvcKeyPersonnelDto appSvcKeyPersonnelDto : appSvcKeyPersonnelDtos){
+                if(id.equals(appSvcKeyPersonnelDto.getId())){
+                    result = appSvcKeyPersonnelDto;
+                    break;
+                }
+            }
+        }
+        log.info(StringUtil.changeForLog("The licence Generate getAppSvcKeyPersonnelDtoById end ..."));
+        return result;
+    }
 
     private List<PremisesGroupDto> getPremisesGroupDto(ApplicationLicenceDto applicationLicenceDto,
                                                        List<AppGrpPremisesEntityDto> appGrpPremisesEntityDtos,
                                                        List<AppPremisesCorrelationDto> appPremisesCorrelationDtos,
                                                        List<AppSvcPremisesScopeDto> appSvcPremisesScopeDtos,
                                                        List<AppSvcPremisesScopeAllocationDto> appSvcPremisesScopeAllocationDtos,
+                                                       List<AppGrpPersonnelDto> appGrpPersonnelDtos,
+                                                       List<AppSvcKeyPersonnelDto> appSvcKeyPersonnelDtos,
                                                        HcsaServiceDto hcsaServiceDto,
                                                        String organizationId,
                                                        Integer isPostInspNeeded) {
@@ -1238,11 +1258,21 @@ public class LicenceApproveBatchjob {
                     AppSvcPremisesScopeAllocationDto appSvcPremisesScopeAllocationDto = getAppSvcPremisesScopeAllocationDto(appSvcPremisesScopeAllocationDtos,
                             appSvcPremisesScopeDto.getId());
                     if (appSvcPremisesScopeAllocationDto != null) {
-                        LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = new LicPremisesScopeAllocationDto();
-                        licPremisesScopeAllocationDto.setLicCgoId(appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId());
-                        licPremisesScopeGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
+                        AppSvcKeyPersonnelDto appSvcKeyPersonnelDto = getAppSvcKeyPersonnelDtoById(appSvcKeyPersonnelDtos, appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId());
+                        if(appSvcKeyPersonnelDto != null){
+                            AppGrpPersonnelDto appGrpPersonnelDto = getAppGrpPersonnelDtoById(appGrpPersonnelDtos, appSvcKeyPersonnelDto.getAppGrpPsnId());
+                            if(appGrpPersonnelDto!= null){
+                                LicPremisesScopeAllocationDto licPremisesScopeAllocationDto = new LicPremisesScopeAllocationDto();
+                                licPremisesScopeAllocationDto.setLicCgoId(appGrpPersonnelDto.getIdNo());
+                                licPremisesScopeGroupDto.setLicPremisesScopeAllocationDto(licPremisesScopeAllocationDto);
+                            }else{
+                                log.error(StringUtil.changeForLog("this appSvcKeyPersonnelDto.getAppGrpPsnId() do not have the AppGrpPersonnelDto -->:" + appSvcKeyPersonnelDto.getAppGrpPsnId()));
+                            }
+                        }else{
+                            log.error(StringUtil.changeForLog("this appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId() do not have the AppSvcKeyPersonnelDto -->:" + appSvcPremisesScopeAllocationDto.getAppSvcKeyPsnId()));
+                        }
                     } else {
-                        log.info(StringUtil.changeForLog("this appSvcPremisesScopeDto.getId() do not have the AppSvcPremisesScopeAllocationDto -->:" + appSvcPremisesScopeDto.getId()));
+                        log.error(StringUtil.changeForLog("this appSvcPremisesScopeDto.getId() do not have the AppSvcPremisesScopeAllocationDto -->:" + appSvcPremisesScopeDto.getId()));
                     }
                     licPremisesScopeGroupDtoList.add(licPremisesScopeGroupDto);
                 }
