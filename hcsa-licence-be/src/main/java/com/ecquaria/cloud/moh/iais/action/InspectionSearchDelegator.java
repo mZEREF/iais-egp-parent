@@ -417,16 +417,18 @@ public class InspectionSearchDelegator {
             }
             ValidationResult validationResult = WebValidationHelper.validateProperty(inspectionTaskPoolListDto, propertyName);
             Map<String, String> errorMap = validationResult.retrieveAll();
+            boolean errorFlag = true;
             if("create".equals(propertyName)){
                 List<SelectOption> inspectorCheck = inspectionTaskPoolListDto.getInspectorCheck();
                 if(inspectorCheck == null){
                     if(errorMap == null){
                         errorMap = IaisCommonUtils.genNewHashMap();
                     }
+                    errorFlag = false;
                     errorMap.put("inspectorCheck", MessageUtil.replaceMessage("GENERAL_ERR0006", groupRoleFieldDto.getGroupMemBerName(),"field"));
                 }
             }
-            if (validationResult.isHasErrors()) {
+            if (validationResult.isHasErrors() && !errorFlag) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);

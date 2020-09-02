@@ -2,9 +2,11 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.SystemAssignTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
@@ -13,11 +15,15 @@ import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
+import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.CrudHelper;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SysParamUtil;
+import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
 import com.ecquaria.cloud.moh.iais.service.SystemSearchAssignPoolService;
@@ -127,7 +133,7 @@ public class SystemSearchAssignPoolDelegator {
             QueryHelp.setMainSql("inspectionQuery", "systemGroupPoolSearch",searchParam);
             searchResult = systemSearchAssignPoolService.getSystemGroupPoolByParam(searchParam);
             List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
-            List<SelectOption> appStatusOption = systemSearchAssignPoolService.getAppStatusOption(groupRoleFieldDto.getCurStage());
+            List<SelectOption> appStatusOption = systemSearchAssignPoolService.getAppStatusOption(groupRoleFieldDto);
             ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
             ParamUtil.setSessionAttr(bpc.request, "systemPool", (Serializable) systemPool);
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
@@ -231,7 +237,7 @@ public class SystemSearchAssignPoolDelegator {
                 searchParam.addFilter("hci_address", hci_address, true);
             }
         }
-        List<SelectOption> appStatusOption = systemSearchAssignPoolService.getAppStatusOption(groupRoleFieldDto.getCurStage());
+        List<SelectOption> appStatusOption = systemSearchAssignPoolService.getAppStatusOption(groupRoleFieldDto);
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
         ParamUtil.setSessionAttr(bpc.request, "systemPool", (Serializable) systemPool);
         ParamUtil.setSessionAttr(bpc.request, "systemSearchParam", searchParam);
@@ -313,11 +319,25 @@ public class SystemSearchAssignPoolDelegator {
         groupRoleFieldDto = systemSearchAssignPoolService.setGroupMemberName(groupRoleFieldDto);
         String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
         TaskDto taskDto = taskService.getTaskById(taskId);
+        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
         systemAssignTaskDto.setTaskDto(taskDto);
-        Map<String, SuperPoolTaskQueryDto> assignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(bpc.request, "assignMap");
+        Map<String, SuperPoolTaskQueryDto> systemAssignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(bpc.request, "systemAssignMap");
         //get work group
+        systemAssignTaskDto = systemSearchAssignPoolService.setWorkGroupAndOfficer(groupRoleFieldDto, systemAssignTaskDto);
+        //set session inspector options
+        Map<String, List<SelectOption>> inspectorByGroup = systemAssignTaskDto.getInspectorByGroup();
+        if(inspectorByGroup != null){
+            for(Map.Entry<String, List<SelectOption>> map : inspectorByGroup.entrySet()){
+                String groupNo = map.getKey();
+                List<SelectOption> officerOption = map.getValue();
+                ParamUtil.setSessionAttr(bpc.request, "sysMohOfficerOption" + groupNo, (Serializable) officerOption);
+            }
+        }
+        //set task other data to show
+        systemAssignTaskDto = systemSearchAssignPoolService.getDataForSystemAssignTask(systemAssignMap, systemAssignTaskDto, taskDto, applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "systemAssignTaskDto", systemAssignTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
+        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
     }
 
     /**
@@ -330,6 +350,37 @@ public class SystemSearchAssignPoolDelegator {
         log.debug(StringUtil.changeForLog("the systemPoolAssignVali start ...."));
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         SystemAssignTaskDto systemAssignTaskDto = (SystemAssignTaskDto)ParamUtil.getSessionAttr(bpc.request, "systemAssignTaskDto");
+        String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
+        String workGroupCheck = ParamUtil.getRequestString(bpc.request, "systemAssignWorkGroup");
+        String userCheck = ParamUtil.getRequestString(bpc.request, "sysMohOfficerName" + workGroupCheck);
+        if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
+            List<String> workGroupNos = systemAssignTaskDto.getWorkGroupNos();
+            if(IaisCommonUtils.isEmpty(workGroupNos) || !workGroupNos.contains(workGroupCheck)) {
+                systemAssignTaskDto.setCheckWorkGroup(null);
+            } else {
+                systemAssignTaskDto.setCheckWorkGroup(workGroupCheck);
+            }
+            ValidationResult validationResult = WebValidationHelper.validateProperty(systemAssignTaskDto, "system");
+            Map<String, String> errorMap = validationResult.retrieveAll();
+            boolean errorFlag = true;
+            if(StringUtil.isEmpty(userCheck)){
+                if(errorMap == null){
+                    errorMap = IaisCommonUtils.genNewHashMap();
+                }
+                errorFlag = false;
+                errorMap.put("systemUserCheck", MessageUtil.replaceMessage("GENERAL_ERR0006", groupRoleFieldDto.getGroupMemBerName(),"field"));
+            }
+            if (validationResult.isHasErrors() && !errorFlag) {
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
+                ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
+                ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
+            } else {
+                ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
+            }
+        } else {
+            ParamUtil.setSessionAttr(bpc.request, "systemAssignTaskDto", null);
+            ParamUtil.setRequestAttr(bpc.request,"flag",AppConsts.TRUE);
+        }
         ParamUtil.setSessionAttr(bpc.request, "systemAssignTaskDto", systemAssignTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
     }

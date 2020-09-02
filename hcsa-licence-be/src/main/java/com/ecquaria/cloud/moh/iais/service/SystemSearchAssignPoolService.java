@@ -3,12 +3,15 @@ package com.ecquaria.cloud.moh.iais.service;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
+import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.inspection.SystemAssignTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.SystemAssignSearchQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shicheng
@@ -45,11 +48,11 @@ public interface SystemSearchAssignPoolService {
     /**
       * @author: shicheng
       * @Date 2020/8/31
-      * @Param: curStage
+      * @Param: GroupRoleFieldDto groupRoleFieldDto
       * @return: List<SelectOption>
       * @Descripation: get App Status Option
       */
-    List<SelectOption> getAppStatusOption(String curStage);
+    List<SelectOption> getAppStatusOption(GroupRoleFieldDto groupRoleFieldDto);
 
     /**
       * @author: shicheng
@@ -68,4 +71,23 @@ public interface SystemSearchAssignPoolService {
       * @Descripation: set Group Member Name
       */
     GroupRoleFieldDto setGroupMemberName(GroupRoleFieldDto groupRoleFieldDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/9/1
+      * @Param: groupRoleFieldDto, systemAssignTaskDto
+      * @return: SystemAssignTaskDto
+      * @Descripation: set Work Group And Officer
+      */
+    SystemAssignTaskDto setWorkGroupAndOfficer(GroupRoleFieldDto groupRoleFieldDto, SystemAssignTaskDto systemAssignTaskDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/9/1
+      * @Param: systemAssignMap, systemAssignTaskDto, taskDto, applicationViewDto
+      * @return: SystemAssignTaskDto
+      * @Descripation: getDataForSystemAssignTask
+      */
+    SystemAssignTaskDto getDataForSystemAssignTask(Map<String, SuperPoolTaskQueryDto> systemAssignMap, SystemAssignTaskDto systemAssignTaskDto,
+                                                   TaskDto taskDto, ApplicationViewDto applicationViewDto);
 }
