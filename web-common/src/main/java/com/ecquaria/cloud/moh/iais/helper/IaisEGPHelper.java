@@ -40,19 +40,6 @@ import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.egp.api.EGPHelper;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -65,6 +52,20 @@ import org.sqlite.date.FastDateFormat;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 import sop.servlet.webflow.HttpHandler;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static com.ecquaria.sz.commons.util.StringUtil.RANDOM;
 
@@ -724,7 +725,7 @@ public final class IaisEGPHelper extends EGPHelper {
             return OrganizationConstants.ID_TYPE_FIN;
         }
 
-        return null;
+        return OrganizationConstants.ID_TYPE_NRIC;
     }
 
     public static PaginationHandler getPageHandlerFromSession(HttpServletRequest request, String pageDiv) {
