@@ -161,9 +161,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             }
         }
         if (!IaisCommonUtils.isEmpty(newApplicationDtos)) {
-            return Boolean.FALSE;
-        } else {
             return Boolean.TRUE;
+        } else {
+            return Boolean.FALSE;
         }
     }
 
