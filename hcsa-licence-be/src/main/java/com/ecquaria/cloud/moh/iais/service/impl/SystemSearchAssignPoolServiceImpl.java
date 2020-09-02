@@ -4,15 +4,20 @@ import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
+import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.SystemAssignTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -40,6 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -305,7 +311,101 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
         return systemAssignTaskDto;
     }
 
+    @Override
+    public void systemAssignTask(SystemAssignTaskDto systemAssignTaskDto) {
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        ApplicationDto applicationDto = systemAssignTaskDto.getApplicationDto();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        applicationDtos.add(applicationDto);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos,HcsaConsts.ROUTING_STAGE_INS);
+        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+        int score = hcsaSvcStageWorkingGroupDtos.get(0).getCount();
+        //task
+        TaskDto taskDto = systemAssignTaskDto.getTaskDto();
+        String checkGroup = systemAssignTaskDto.getCheckWorkGroup();
+        String checkUser = systemAssignTaskDto.getCheckUser();
+        Map<String, String> workGroupIdMap = systemAssignTaskDto.getWorkGroupIdMap();
+        Map<String, Map<String, String>> groupCheckUserIdMap = systemAssignTaskDto.getGroupCheckUserIdMap();
+        //set new task user Id and work group Id
+        TaskDto createTask = new TaskDto();
+        if(groupCheckUserIdMap != null && !StringUtil.isEmpty(checkGroup)){//NOSONAR
+            if(workGroupIdMap != null){
+                String workGroupId = workGroupIdMap.get(checkGroup);
+                createTask.setWkGrpId(workGroupId);
+            }
+            Map<String, String> groupUserMap = groupCheckUserIdMap.get(checkGroup);
+            if(groupUserMap != null){
+                String userId = groupUserMap.get(checkUser);
+                createTask.setUserId(userId);
+            }
+        } else {
+            systemAssignTaskDto.setCheckUserName("-");
+        }
+        createTask.setScore(score);
+        createTask.setAuditTrailDto(auditTrailDto);
+        createTask = setOtherDataByOldTask(createTask, taskDto);
+        //update task
+        taskDto.setSlaDateCompleted(new Date());
+        taskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+        taskDto.setAuditTrailDto(auditTrailDto);
+        taskService.updateTask(taskDto);
+        List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+        taskDtos.add(createTask);
+        taskService.createTasks(taskDtos);
+        //create history
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.getAppPremisesRoutingHistorySubStage(taskDto.getRefNo(), taskDto.getTaskKey()).getEntity();
+        createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, InspectionConstants.PROCESS_DECI_SYSTEM_ADMIN_RE_ASSIGN, taskDto.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), taskDto.getWkGrpId());
+        createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), null, null, taskDto.getRoleId(), appPremisesRoutingHistoryDto.getSubStage(), taskDto.getWkGrpId());
+    }
+
+    private TaskDto setOtherDataByOldTask(TaskDto createTask, TaskDto taskDto) {
+        createTask.setId(null);
+        createTask.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+        createTask.setApplicationNo(taskDto.getApplicationNo());
+        createTask.setProcessUrl(taskDto.getProcessUrl());
+        createTask.setTaskKey(taskDto.getTaskKey());
+        createTask.setRoleId(taskDto.getRoleId());
+        createTask.setDateAssigned(new Date());
+        createTask.setTaskType(taskDto.getTaskType());
+        createTask.setSlaAlertInDays(taskDto.getSlaAlertInDays());
+        createTask.setSlaDateCompleted(null);
+        createTask.setSlaInDays(taskDto.getSlaInDays());
+        createTask.setSlaRemainInDays(null);
+        createTask.setPriority(taskDto.getPriority());
+        createTask.setRefNo(taskDto.getRefNo());
+        return createTask;
+    }
+
+    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId){
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
+        for(ApplicationDto applicationDto : applicationDtos){
+            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
+            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
+            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
+            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
+            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
+        }
+        return hcsaSvcStageWorkingGroupDtos;
+    }
+
     public HcsaServiceDto getHcsaServiceDtoByServiceId(String serviceId){
         return hcsaConfigClient.getHcsaServiceDtoByServiceId(serviceId).getEntity();
+    }
+
+    private AppPremisesRoutingHistoryDto createAppPremisesRoutingHistory(String appNo, String appStatus, String stageId, String internalRemarks,
+                                                                         String processDec, String roleId, String subStage, String workGroupId){
+        AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
+        appPremisesRoutingHistoryDto.setApplicationNo(appNo);
+        appPremisesRoutingHistoryDto.setStageId(stageId);
+        appPremisesRoutingHistoryDto.setInternalRemarks(internalRemarks);
+        appPremisesRoutingHistoryDto.setAppStatus(appStatus);
+        appPremisesRoutingHistoryDto.setActionby(IaisEGPHelper.getCurrentAuditTrailDto().getMohUserGuid());
+        appPremisesRoutingHistoryDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        appPremisesRoutingHistoryDto.setProcessDecision(processDec);
+        appPremisesRoutingHistoryDto.setRoleId(roleId);
+        appPremisesRoutingHistoryDto.setSubStage(subStage);
+        appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
+        appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto).getEntity();
+        return appPremisesRoutingHistoryDto;
     }
 }

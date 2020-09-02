@@ -99,4 +99,13 @@ public interface SystemSearchAssignPoolService {
       * @Descripation: get Check Group Name And User Name
       */
     SystemAssignTaskDto getCheckGroupNameAndUserName(SystemAssignTaskDto systemAssignTaskDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/9/2
+      * @Param: systemAssignTaskDto
+      * @return: void
+      * @Descripation: systemAssignTask
+      */
+    void systemAssignTask(SystemAssignTaskDto systemAssignTaskDto);
 }

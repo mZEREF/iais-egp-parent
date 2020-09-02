@@ -355,26 +355,30 @@ public class SystemSearchAssignPoolDelegator {
         String userCheck = ParamUtil.getRequestString(bpc.request, "sysMohOfficerName" + workGroupCheck);
         if(!(InspectionConstants.SWITCH_ACTION_BACK.equals(actionValue))){
             List<String> workGroupNos = systemAssignTaskDto.getWorkGroupNos();
+            boolean containsFlag = false;
             if(IaisCommonUtils.isEmpty(workGroupNos) || !workGroupNos.contains(workGroupCheck)) {
                 systemAssignTaskDto.setCheckWorkGroup(null);
             } else {
-                systemAssignTaskDto.setCheckWorkGroup(workGroupCheck);
+                containsFlag = checkUserContainsFlag(userCheck, workGroupCheck, systemAssignTaskDto);
             }
             ValidationResult validationResult = WebValidationHelper.validateProperty(systemAssignTaskDto, "system");
             Map<String, String> errorMap = validationResult.retrieveAll();
             boolean errorFlag = true;
-            if(StringUtil.isEmpty(userCheck)){
+            if(StringUtil.isEmpty(userCheck) || !containsFlag){
+                systemAssignTaskDto.setCheckUser(null);
                 if(errorMap == null){
                     errorMap = IaisCommonUtils.genNewHashMap();
                 }
                 errorFlag = false;
                 errorMap.put("systemUserCheck", MessageUtil.replaceMessage("GENERAL_ERR0006", groupRoleFieldDto.getGroupMemBerName(),"field"));
             }
-            if (validationResult.isHasErrors() && !errorFlag) {
+            if (validationResult.isHasErrors() || !errorFlag) {
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ISVALID, IaisEGPConstant.NO);
                 ParamUtil.setRequestAttr(bpc.request, "flag", AppConsts.FALSE);
             } else {
+                systemAssignTaskDto.setCheckWorkGroup(workGroupCheck);
+                systemAssignTaskDto.setCheckUser(userCheck);
                 ParamUtil.setRequestAttr(bpc.request,"flag", AppConsts.TRUE);
             }
         } else {
@@ -383,6 +387,25 @@ public class SystemSearchAssignPoolDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, "systemAssignTaskDto", systemAssignTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
+    }
+
+    private boolean checkUserContainsFlag(String userCheck, String workGroupCheck, SystemAssignTaskDto systemAssignTaskDto) {
+        if(StringUtil.isEmpty(userCheck)){
+            return false;
+        } else {
+            Map<String, List<SelectOption>> inspectorByGroup = systemAssignTaskDto.getInspectorByGroup();
+            if(inspectorByGroup != null){
+                List<SelectOption> officerOption = inspectorByGroup.get(workGroupCheck);
+                if(officerOption != null){
+                    for(SelectOption so : officerOption){
+                        if(!StringUtil.isEmpty(so.getValue()) && userCheck.equals(userCheck)){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -410,6 +433,7 @@ public class SystemSearchAssignPoolDelegator {
         log.debug(StringUtil.changeForLog("the systemPoolAssignSuccess start ...."));
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         SystemAssignTaskDto systemAssignTaskDto = (SystemAssignTaskDto)ParamUtil.getSessionAttr(bpc.request, "systemAssignTaskDto");
+        systemSearchAssignPoolService.systemAssignTask(systemAssignTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "systemAssignTaskDto", systemAssignTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
     }
