@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
@@ -332,6 +333,8 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
             if(workGroupIdMap != null){
                 String workGroupId = workGroupIdMap.get(checkGroup);
                 createTask.setWkGrpId(workGroupId);
+                //set inspector leads
+                setInspLeadsInRecommendation(taskDto, workGroupId, auditTrailDto);
             }
             Map<String, String> groupUserMap = groupCheckUserIdMap.get(checkGroup);
             if(groupUserMap != null){
@@ -407,5 +410,43 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
         appPremisesRoutingHistoryDto.setWrkGrpId(workGroupId);
         appPremisesRoutingHistoryDto = appPremisesRoutingHistoryClient.createAppPremisesRoutingHistory(appPremisesRoutingHistoryDto).getEntity();
         return appPremisesRoutingHistoryDto;
+    }
+
+    private void setInspLeadsInRecommendation(TaskDto taskDto, String workGroupId, AuditTrailDto auditTrailDto) {
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
+        List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
+        List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        String nameStr = "";
+        for (String id : leadIds) {
+            for (OrgUserDto oDto : orgUserDtos) {
+                if (id.equals(oDto.getId())) {
+                    if(StringUtil.isEmpty(nameStr)){
+                        nameStr = oDto.getDisplayName();
+                    } else {
+                        nameStr = nameStr + "," + oDto.getDisplayName();
+                    }
+                }
+            }
+        }
+        if(appPremisesRecommendationDto == null){
+            appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+            appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPremisesRecommendationDto.setVersion(1);
+            appPremisesRecommendationDto.setRecomInDate(null);
+            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPECTION_LEAD);
+            appPremisesRecommendationDto.setRecomDecision(nameStr);
+            appPremisesRecommendationDto.setAuditTrailDto(auditTrailDto);
+            fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+        } else {
+            appPremisesRecommendationDto.setAppPremCorreId(taskDto.getRefNo());
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPECTION_LEAD);
+            appPremisesRecommendationDto.setRecomInDate(null);
+            appPremisesRecommendationDto.setRecomDecision(nameStr);
+            appPremisesRecommendationDto.setVersion(1);
+            appPremisesRecommendationDto.setAuditTrailDto(auditTrailDto);
+            fillUpCheckListGetAppClient.updateAppRecom(appPremisesRecommendationDto);
+        }
     }
 }

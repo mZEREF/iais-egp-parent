@@ -235,9 +235,7 @@ public class RoundRobinCommPoolBatchJob {
     private void setInspLeadsInRecommendation(TaskDto taskDto, String workGroupId, AuditTrailDto auditTrailDto) {
         AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(taskDto.getRefNo(), InspectionConstants.RECOM_TYPE_INSPECTION_LEAD).getEntity();
         if(appPremisesRecommendationDto == null){
-            WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
-            String workGroupName = workingGroupDto.getGroupName();
-            if(!StringUtil.isEmpty(workGroupName) && workGroupName.contains("Inspection")){
+            if(HcsaConsts.ROUTING_STAGE_INS.equals(taskDto.getTaskKey())){
                 List<String> leadIds = organizationClient.getInspectionLead(workGroupId).getEntity();
                 List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
                 String nameStr = "";
