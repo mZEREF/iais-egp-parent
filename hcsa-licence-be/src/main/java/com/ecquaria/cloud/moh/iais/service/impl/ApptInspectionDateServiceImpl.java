@@ -515,16 +515,17 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<String> cancelRefNo = IaisCommonUtils.genNewArrayList();
         List<String> confirmRefNo = IaisCommonUtils.genNewArrayList();
         confirmRefNo.add(apptRefNo);
-        Date inspDate = new Date();
+        Date inspDate;
+        try {
+            inspDate = Formatter.parseDateTime(apptInspectionDateDto.getSpecificApptDto().getStartDate(), AppConsts.DEFAULT_DATE_TIME_FORMAT);
+        } catch (ParseException e) {
+            inspDate = new Date();
+            log.error("Error when insp Date ==>", e);
+        }
         if(inspectionDateMap != null) {
             for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
                 String refNo = inspDateMap.getKey();
                 cancelRefNo.add(refNo);
-            }
-            for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
-                List<ApptUserCalendarDto> apptUserCalendarDtos = inspDateMap.getValue();
-                inspDate = apptUserCalendarDtos.get(0).getStartSlot().get(0);
-                break;
             }
         }
         apptCalendarStatusDto.setCancelRefNums(cancelRefNo);
