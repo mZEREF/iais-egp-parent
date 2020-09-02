@@ -278,6 +278,7 @@ public class AuditTrailDelegator {
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
         setQuerySql(searchParam);
         CrudHelper.doPaging(searchParam,bpc.request);
+        queryResult(request, searchParam);
     }
 
     private void setQuerySql(SearchParam searchParam){
