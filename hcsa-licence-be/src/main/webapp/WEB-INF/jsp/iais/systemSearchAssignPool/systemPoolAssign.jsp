@@ -94,6 +94,7 @@
                     </div>
                     <div class="col-md-6">
                       <iais:select name="systemAssignWorkGroup" options="workGroupOption" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
+                      <span class="error-msg" name="iaisErrorMsg" id="error_checkWorkGroup"></span>
                     </div>
                   </div>
                   <p></p>
@@ -107,6 +108,7 @@
                           <iais:select name="sysMohOfficerName${workGroupNo}" options="sysMohOfficerOption${workGroupNo}" firstOption="Please Select"></iais:select>
                         </div>
                       </c:forEach>
+                      <span class="error-msg" name="iaisErrorMsg" id="error_systemUserCheck"></span>
                     </div>
                   </div>
                   <p></p>
