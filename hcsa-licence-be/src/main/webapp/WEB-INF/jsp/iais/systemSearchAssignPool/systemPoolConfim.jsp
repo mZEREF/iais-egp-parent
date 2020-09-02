@@ -14,12 +14,9 @@
   String webroot=IaisEGPConstant.BE_CSS_ROOT;
 %>
 <div class="dashboard" style="background-image:url('<%=webroot%>img/Masthead-banner.jpg')">
-  <form method="post" id="mainAssignForm" action=<%=process.runtime.continueURL()%>>
+  <form method="post" id="mainConfirmForm" action=<%=process.runtime.continueURL()%>>
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="systemPoolAssignType" value="">
-    <input type="hidden" id="checkUser" name="checkUser" value="${systemAssignTaskDto.checkUser}">
-    <input type="hidden" id="checkWorkGroup" name="checkWorkGroup" value="${systemAssignTaskDto.checkWorkGroup}">
-    <input type="hidden" name="actionValue" value="">
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
@@ -37,9 +34,7 @@
                       <label style="font-size: 16px">Application Number</label>
                     </div>
                     <div class="col-md-6">
-                      <a style="font-size: 16px" href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
-                        <u><c:out value="${systemAssignTaskDto.applicationDto.applicationNo}"/></u>
-                      </a>
+                      <span style="font-size: 16px"><c:out value="${systemAssignTaskDto.applicationDto.applicationNo}"/></span>
                     </div>
                   </div>
                   <p></p>
@@ -90,29 +85,25 @@
                   <p></p>
                   <div class="row">
                     <div class="col-md-2">
-                      <label style="font-size: 16px">Work Group Name<span style="color: red"> *</span></label>
+                      <label style="font-size: 16px">Work Group Name</label>
                     </div>
                     <div class="col-md-6">
-                      <iais:select name="systemAssignWorkGroup" options="workGroupOption" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
+                      <c:out value="${systemAssignTaskDto.checkGroupName}"/>
                     </div>
                   </div>
                   <p></p>
                   <div class="row">
                     <div class="col-md-2">
-                      <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupMemBerName}"/><span style="color: red"> *</span></label>
+                      <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupMemBerName}"/></label>
                     </div>
                     <div class="col-md-6">
-                      <c:forEach var="workGroupNo" items="${workGroupNos}">
-                        <div id="workGroupNo${workGroupNo}">
-                          <iais:select name="sysMohOfficerName${workGroupNo}" options="sysMohOfficerOption${workGroupNo}" firstOption="Please Select"></iais:select>
-                        </div>
-                      </c:forEach>
+                      <c:out value="${systemAssignTaskDto.checkUserName}"/>
                     </div>
                   </div>
                   <p></p>
-                  <iais:action >
-                    <a class="back" id="Back" onclick="javascript:doSystemUserAssignBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
-                    <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSystemUserAssignNext()">Next</button>
+                  <iais:action>
+                    <a class="back" id="Back" onclick="javascript:doSystemUserSearchConfirmBack()" style="float:left"><em class="fa fa-angle-left"></em> Back</a>
+                    <button class="btn btn-primary" style="float:right" type="button" onclick="javascript:doSystemUserSearchConfirmSubmit()">Submit</button>
                   </iais:action>
                 </iais:section>
               </iais:body>
@@ -123,53 +114,19 @@
     </div>
   </form>
 </div>
-
-<%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-<script>
-    $(document).ready(function() {
-        var checkUser = $("#checkUser").val();
-        var checkWorkGroup = $("#checkWorkGroup").val();
-        var numbers = $("#sysMohOfficerName" + checkWorkGroup).find("option");
-        for (var j = 1; j < numbers.length; j++) {
-            if ($(numbers[j]).val() == checkUser) {
-                $(numbers[j]).attr("selected", "selected");
-                var inspName = $(numbers[j]).text();
-                $("#workGroupNo" + checkWorkGroup + " .current").text(inspName);
-            }
-        }
-        $("#systemAssignWorkGroup option").each(function(){
-            var value = $(this).val();
-            $("#workGroupNo" + value).addClass("hidden");
-        });
-        $("#workGroupNo" + checkWorkGroup).removeClass("hidden");
-    });
-
-    $("#systemAssignWorkGroup").change(function systemAssignWorkGroupCheck() {
-        var workGroupCheck = $("#systemAssignWorkGroup").val();
-        $("#systemAssignWorkGroup option").each(function(){
-            var value = $(this).val();
-            $("#workGroupNo" + value).addClass("hidden");
-        });
-        $("#workGroupNo" + workGroupCheck).removeClass("hidden");
-    });
-
-    function doSystemUserAssignBack() {
-        clearErrorMsg();
+<script type="text/javascript">
+    function doSystemUserSearchConfirmBack() {
         showWaiting();
-        $("[name='actionValue']").val('back');
-        systemUserAssignSubmit('back');
+        systemUserSearchConfirmSubmit('assign');
     }
 
-    function doSystemUserAssignNext() {
-        clearErrorMsg();
+    function doSystemUserSearchConfirmSubmit() {
         showWaiting();
-        $("[name='actionValue']").val('confirm');
-        systemUserAssignSubmit('confirm');
+        systemUserSearchConfirmSubmit('success');
     }
-
-    function systemUserAssignSubmit(action){
+    function systemUserSearchConfirmSubmit(action){
         $("[name='systemPoolAssignType']").val(action);
-        var mainPoolForm = document.getElementById('mainAssignForm');
+        var mainPoolForm = document.getElementById('mainConfirmForm');
         mainPoolForm.submit();
     }
 </script>
