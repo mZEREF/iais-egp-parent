@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -14,7 +15,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.KeyPersonnelDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelsDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -39,6 +39,17 @@ import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,16 +61,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 
 /**
  * @author: yichen
@@ -224,6 +225,7 @@ public class NotificationHelper {
 			return;
 		}
 
+		List<String> svcCodeList = emailParam.getSvcCodeList();
 		String templateId = emailParam.getTemplateId();
 		Map<String, Object> templateContent = emailParam.getTemplateContent();
 		String queryCode = emailParam.getQueryCode();
@@ -240,10 +242,15 @@ public class NotificationHelper {
 		log.info(StringUtil.changeForLog("sendemail start... ref type is " + StringUtil.nullToEmptyStr(refIdType)
 				+ " ref Id is " + StringUtil.nullToEmptyStr(refId)
 				+ "templateId is "+ templateId+ " thread name is " + Thread.currentThread().getName()));
+		MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
+		if(StringUtil.isEmpty(refIdType)){
+			if(MessageConstants.TEMPLETE_DELIVERY_MODE_SMS.equals(msgTemplateDto.getDeliveryMode())){
+				refIdType = "SMS";
+			}
+		}
 		if (MESSAGE_TYPE_NOTIFICATION.equals(refIdType) ||
 				MESSAGE_TYPE_ANNONUCEMENT.equals(refIdType) ||
 				MESSAGE_TYPE_ACTION_REQUIRED.equals(refIdType)) {
-			MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
 			if (AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())) {
 				return;
 			}
@@ -270,7 +277,7 @@ public class NotificationHelper {
 			if(StringUtil.isEmpty(subject)){
 				subject = msgTemplateDto.getTemplateName();
 			}
-			sendMessage(mesContext, refId, refIdType, subject, maskParams);
+			sendMessage(mesContext, refId, refIdType, subject, maskParams, svcCodeList);
 			if (jrDto != null) {
 				List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 				jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -282,7 +289,6 @@ public class NotificationHelper {
 				List<String> receiptEmail;
 				List<String> ccEmail;
 				List<String> bccEmail;
-				MsgTemplateDto msgTemplateDto = iaisSystemClient.getMsgTemplate(templateId).getEntity();
 				if (AppConsts.COMMON_STATUS_IACTIVE.equals(msgTemplateDto.getStatus())) {
 					return;
 				}
@@ -441,20 +447,35 @@ public class NotificationHelper {
 				+ templateId+"thread name is " + Thread.currentThread().getName()));
 	}
 
-	private void sendMessage(String mesContext, String appNo, String refIdType, String subject, HashMap<String, String> maskParams) {
+	private void sendMessage(String mesContext, String appNo, String refIdType, String subject, HashMap<String, String> maskParams, List<String> svcCodeList) {
+		String licenseeId;
 		ApplicationGroupDto grpDto = hcsaAppClient.getAppGrpByAppNo(appNo).getEntity();
-		ApplicationDto applicationDto = hcsaAppClient.getAppByNo(appNo).getEntity();
-		String serviceId = applicationDto.getServiceId();
-		HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
-		String serviceCode = hcsaServiceDto.getSvcCode();
+		if(grpDto != null) {
+			licenseeId = grpDto.getLicenseeId();
+		} else {
+			String licenceId = appNo;
+			LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(licenceId).getEntity();
+			licenseeId = licenceDto.getLicenseeId();
+		}
 		InterMessageDto interMessageDto = new InterMessageDto();
 		interMessageDto.setSrcSystemId(AppConsts.MOH_IAIS_SYSTEM_INBOX_CLIENT_KEY);
 		interMessageDto.setSubject(subject);
 		interMessageDto.setMessageType(refIdType);
 		String mesNO = getHelperMessageNo();
 		interMessageDto.setRefNo(mesNO);
-		interMessageDto.setService_id(serviceCode+"@");
-		interMessageDto.setUserId(grpDto.getLicenseeId());
+		if(IaisCommonUtils.isEmpty(svcCodeList)){//NOSONAR
+			interMessageDto.setService_id("");
+		} else {
+			StringBuilder svcCodeShow = new StringBuilder();
+			for(String svcCode : svcCodeList){
+				if(StringUtil.isEmpty(svcCodeShow.toString())){
+					svcCodeShow.append(svcCode);
+					svcCodeShow.append('@');
+				}
+			}
+			interMessageDto.setService_id(svcCodeShow.toString());
+		}
+		interMessageDto.setUserId(licenseeId);
 		interMessageDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
 		interMessageDto.setMsgContent(mesContext);
 		interMessageDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
@@ -530,20 +551,24 @@ public class NotificationHelper {
 			smsDto.setOnlyOfficeHour(smsOnlyOfficerHour);
 			String refNo = templateId;
 			List<String> mobile = null;
-			if (RECEIPT_TYPE_SMS_PSN.equals(refIdType)) {
-				mobile = hcsaLicenceClient.getMobileByRole(refId).getEntity();
-			} else if (RECEIPT_TYPE_SMS_APP.equals(refIdType)) {
-				mobile = getMobileAssignedOfficer(roles, refId);
-				mobile = getMobileOfficer(roles, mobile);
-			} else if (RECEIPT_TYPE_SMS_LICENCE_ID.equals(refIdType)) {
-				mobile = getMobilePersonnel(roles, refId);
-				LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(refId).getEntity();
-				if(licenceDto != null){
-					String licenseeId = licenceDto.getLicenseeId();
-					if(!StringUtil.isEmpty(licenseeId)) {
-						mobile = getMobileLicensee(roles, licenseeId, mobile);
+			if(!StringUtil.isEmpty(refId)){
+				if (RECEIPT_TYPE_SMS_PSN.equals(refIdType)) {
+					mobile = hcsaLicenceClient.getMobileByRole(refId).getEntity();
+				} else if (RECEIPT_TYPE_SMS_APP.equals(refIdType)) {
+					mobile = getMobileAssignedOfficer(roles, refId);
+					mobile = getMobileOfficer(roles, mobile);
+				} else if (RECEIPT_TYPE_SMS_LICENCE_ID.equals(refIdType)) {
+					mobile = getMobilePersonnel(roles, refId);
+					LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(refId).getEntity();
+					if(licenceDto != null){
+						String licenseeId = licenceDto.getLicenseeId();
+						if(!StringUtil.isEmpty(licenseeId)) {
+							mobile = getMobileLicensee(roles, licenseeId, mobile);
+						}
 					}
+					mobile = getMobileOfficer(roles, mobile);
 				}
+			} else {
 				mobile = getMobileOfficer(roles, mobile);
 			}
 			if (mobile != null && !mobile.isEmpty()) {
