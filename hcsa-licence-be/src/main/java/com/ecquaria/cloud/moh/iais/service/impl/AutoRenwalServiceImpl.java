@@ -193,9 +193,6 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
     *
     * */
     private void  isNoAuto(LicenceDto licenceDto ,String time) throws IOException, TemplateException {
-
-        String svcName = licenceDto.getSvcName();
-
         List<String> licenseeEmailAddrs = IaisEGPHelper.getLicenseeEmailAddrs(licenceDto.getLicenseeId());
         log.info(StringUtil.changeForLog(licenseeEmailAddrs.toString()+"----------"));
         log.info(StringUtil.changeForLog(licenceDto.getLicenseeId()+"licenseeId"));
@@ -218,6 +215,9 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
             return;
         }
         String serviceName = licenceDto.getSvcName();
+        String serviceCode = hcsaConfigClient.getServiceCodeByName(serviceName).getEntity();
+        List<String> serviceCodeList = IaisCommonUtils.genNewArrayList();
+        serviceCodeList.add(serviceCode);
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenceDto.getLicenseeId()).getEntity();
         if(licenseeDto != null){
             String licenceId = licenceDto.getId();
@@ -328,6 +328,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     messageParam.setQueryCode(licenceId);
                     messageParam.setReqRefNum(licenceId);
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+
                     messageParam.setRefId(licenceId);
                     messageParam.setSubject(subject);
                     log.info(StringUtil.changeForLog("send renewal application first - sixth message"));
