@@ -25,6 +25,16 @@ public class TemplateValidate implements CustomizeValidator {
         if(msgTemplateDto.getRecipient() == null){
             errMap.put("toRecipients", MessageUtil.replaceMessage("GENERAL_ERR0006","To Recipients","field"));
         }
+
+        if(msgTemplateDto.getTemplateName() == null){
+            errMap.put("templateName", MessageUtil.replaceMessage("GENERAL_ERR0006","Template Name","field"));
+        }
+        if(msgTemplateDto.getEffectiveFrom() == null){
+            errMap.put("effectiveFrom", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field"));
+        }
+        if(msgTemplateDto.getEffectiveTo() == null){
+            errMap.put("effectiveTo", MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field"));
+        }
         return errMap;
     }
 }
