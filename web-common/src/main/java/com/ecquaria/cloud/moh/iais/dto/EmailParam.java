@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +26,7 @@ public class EmailParam {
     private String subject;
     private String moduleType;
     private boolean smsOnlyOfficerHour = true;
+    private List<String> svcCodeList;
     private HashMap<String, String> maskParams;
     private HashMap<String, String> subjectParams;
 }
