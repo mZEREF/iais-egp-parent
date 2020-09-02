@@ -90,4 +90,13 @@ public interface SystemSearchAssignPoolService {
       */
     SystemAssignTaskDto getDataForSystemAssignTask(Map<String, SuperPoolTaskQueryDto> systemAssignMap, SystemAssignTaskDto systemAssignTaskDto,
                                                    TaskDto taskDto, ApplicationViewDto applicationViewDto);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/9/2
+      * @Param: systemAssignTaskDto
+      * @return: SystemAssignTaskDto
+      * @Descripation: get Check Group Name And User Name
+      */
+    SystemAssignTaskDto getCheckGroupNameAndUserName(SystemAssignTaskDto systemAssignTaskDto);
 }

@@ -395,6 +395,7 @@ public class SystemSearchAssignPoolDelegator {
         log.debug(StringUtil.changeForLog("the systemPoolAssignConfirm start ...."));
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         SystemAssignTaskDto systemAssignTaskDto = (SystemAssignTaskDto)ParamUtil.getSessionAttr(bpc.request, "systemAssignTaskDto");
+        systemAssignTaskDto = systemSearchAssignPoolService.getCheckGroupNameAndUserName(systemAssignTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "systemAssignTaskDto", systemAssignTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
     }

@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.SystemAssignTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.SystemAssignSearchQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -270,6 +271,37 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
         systemAssignTaskDto.setServiceName(hcsaServiceDto.getSvcName());
         systemAssignTaskDto.setHciCode(superPoolTaskQueryDto.getHciCode());
         systemAssignTaskDto.setHciName(superPoolTaskQueryDto.getHciAddress());
+        return systemAssignTaskDto;
+    }
+
+    @Override
+    public SystemAssignTaskDto getCheckGroupNameAndUserName(SystemAssignTaskDto systemAssignTaskDto) {
+        String checkGroup = systemAssignTaskDto.getCheckWorkGroup();
+        String checkUser = systemAssignTaskDto.getCheckUser();
+        Map<String, List<SelectOption>> inspectorByGroup = systemAssignTaskDto.getInspectorByGroup();
+        Map<String, String> workGroupIdMap = systemAssignTaskDto.getWorkGroupIdMap();
+        if(inspectorByGroup != null && !StringUtil.isEmpty(checkGroup)){//NOSONAR
+            if(workGroupIdMap != null){
+                String workGroupId = workGroupIdMap.get(checkGroup);
+                if(!StringUtil.isEmpty(workGroupId)) {
+                    WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
+                    systemAssignTaskDto.setCheckGroupName(workingGroupDto.getGroupName());
+                } else {
+                    systemAssignTaskDto.setCheckGroupName("-");
+                }
+            }
+            List<SelectOption> systemOfficerOption = inspectorByGroup.get(checkGroup);
+            if(systemOfficerOption != null){
+                for(SelectOption so : systemOfficerOption){
+                    String value = so.getValue();
+                    if(!StringUtil.isEmpty(value) && value.equals(checkUser)){//NOSONAR
+                        systemAssignTaskDto.setCheckUserName(so.getText());
+                    }
+                }
+            }
+        } else {
+            systemAssignTaskDto.setCheckUserName("-");
+        }
         return systemAssignTaskDto;
     }
 
