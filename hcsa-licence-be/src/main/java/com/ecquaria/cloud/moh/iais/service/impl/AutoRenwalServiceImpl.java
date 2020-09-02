@@ -19,10 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.*;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
@@ -36,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemBeLicClient;
+import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -46,11 +44,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Wenkang
@@ -213,6 +207,12 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
         log.info(StringUtil.changeForLog(JsonUtil.parseToJson(licenceDto)));
         boolean b = checkEmailIsSend(id, "IS_NO_AUTO" + time);
         String lastReminderString = systemParamConfig.getSeventhLicenceReminder()+"";
+        String firstReminderString = systemParamConfig.getLicenceIsEligible()+"";
+        String secondReminderString = systemParamConfig.getSecondLicenceReminder()+"";
+        String thirdReminderString = systemParamConfig.getThirdLicenceReminder()+"";
+        String fourthReminderString = systemParamConfig.getFourthLicenceReminder()+"";
+        String fifthReminderString = systemParamConfig.getFifthLicenceReminder()+"";
+        String sixthReminderString = systemParamConfig.getSixthLicenceReminder()+"";
         log.info(StringUtil.changeForLog(b+"-------type"));
         if(!b){
             return;
@@ -275,7 +275,67 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     log.error(e.getMessage(), e);
                 }
             }else{
+                String subject = "MOH HALP - 1st Renewal Notice: Your "+ serviceName +" is due for renewal";
+                Calendar nowCalendar = Calendar.getInstance();
+                Calendar expireCalendar = Calendar.getInstance();
+                int endDate = MiscUtil.getDaysBetween(nowCalendar,expireCalendar);
+                String expireDateString = DateUtil.formatDate(expiryDate);
+                map.put("endDate", endDate);
+                map.put("expireDate", expireDateString);
+                //first - sixth reminder
+                log.info(StringUtil.changeForLog("send renewal application first - sixth reminder"));
+                if(firstReminderString.equals(time)){
 
+                }else if(secondReminderString.equals(time)){
+                    subject = "MOH HALP - 2nd Renewal Notice: Your "+ serviceName +" is due for renewal";
+                }else if(thirdReminderString.equals(time)){
+                    subject = "MOH HALP - 3rd Renewal Notice: Your "+ serviceName +" is due for renewal";
+                }else if(fourthReminderString.equals(time)){
+                    subject = "MOH HALP - 4th Renewal Notice: Your "+ serviceName +" is due for renewal";
+                }else if(fifthReminderString.equals(time)){
+                    subject = "MOH HALP - 5th Renewal Notice: Your "+ serviceName +" is due for renewal";
+                }else if(sixthReminderString.equals(time)){
+                    subject = "MOH HALP - 6th Renewal Notice: Your "+ serviceName +" is due for renewal";
+                }
+                try {
+                    EmailParam emailParam = new EmailParam();
+                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER);
+                    emailParam.setTemplateContent(map);
+                    emailParam.setQueryCode(licenceId);
+                    emailParam.setReqRefNum(licenceId);
+                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                    emailParam.setRefId(licenceId);
+                    emailParam.setSubject(subject);
+                    //send email
+                    log.info(StringUtil.changeForLog("send renewal application first - sixth email"));
+                    notificationHelper.sendNotification(emailParam);
+                    log.info(StringUtil.changeForLog("send renewal application first - sixth email end"));
+                    //send sms
+                    EmailParam smsParam = new EmailParam();
+                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER_SMS);
+                    smsParam.setSubject(subject);
+                    smsParam.setQueryCode(licenceId);
+                    smsParam.setReqRefNum(licenceId);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                    smsParam.setRefId(licenceId);
+                    log.info(StringUtil.changeForLog("send renewal application first - sixth sms"));
+                    notificationHelper.sendNotification(smsParam);
+                    log.info(StringUtil.changeForLog("send renewal application first - sixth sms end"));
+                    //send message
+                    EmailParam messageParam = new EmailParam();
+                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REMINDER_MESSAGE);
+                    messageParam.setTemplateContent(map);
+                    messageParam.setQueryCode(licenceId);
+                    messageParam.setReqRefNum(licenceId);
+                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    messageParam.setRefId(licenceId);
+                    messageParam.setSubject(subject);
+                    log.info(StringUtil.changeForLog("send renewal application first - sixth message"));
+                    notificationHelper.sendNotification(messageParam);
+                    log.info(StringUtil.changeForLog("send renewal application notification first - sixth end"));
+                }catch (Exception e){
+                    log.error(e.getMessage(), e);
+                }
             }
         }
         saveMailJob(id,"IS_NO_AUTO"+time);
