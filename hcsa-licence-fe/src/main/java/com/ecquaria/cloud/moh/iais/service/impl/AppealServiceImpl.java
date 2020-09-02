@@ -693,6 +693,7 @@ public class AppealServiceImpl implements AppealService {
         List<AppGrpPremisesDto> premisesDtos = IaisCommonUtils.genNewArrayList();
         for (PremisesDto every : premisess) {
             AppGrpPremisesDto appGrpPremisesDto = MiscUtil.transferEntityDto(every, AppGrpPremisesDto.class);
+            appGrpPremisesDto.setOffTelNo(every.getHciContactNo());
             premisesDtos.add(appGrpPremisesDto);
         }
 
