@@ -50,6 +50,9 @@
     </div>
 </div>
 <!--Modal End-->
+<iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteRfcDraft()"></iais:confirm>
+<iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftRenewByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteRenewDraft()"></iais:confirm>
+<iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftAppealByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteAppealDraft()"></iais:confirm>
 </form>
 </div>
 
@@ -67,6 +70,34 @@
             $('#ceasedModal').modal('show');
         }
     });
+
+    $(document).ready(function () {
+        $('#draftByLicAppId').modal('hide');
+        if('1' == '${isShow}'){
+            $('#draftByLicAppId').modal('show');
+        }
+        $('#draftRenewByLicAppId').modal('hide');
+        if('1' == '${isRenewShow}'){
+            $('#draftRenewByLicAppId').modal('show');
+        }
+        $('#draftAppealByLicAppId').modal('hide');
+        if('1' == '${isAppealShow}'){
+            $('#draftAppealByLicAppId').modal('show');
+        }
+    });
+
+    function deleteAppealDraft() {
+        $('#isNeedDelete').val('delete');
+        doLicAppeal();
+    }
+    function deleteRfcDraft(){
+        $('#isNeedDelete').val('delete');
+        doLicAmend();
+    }
+    function deleteRenewDraft(){
+        $('#isNeedDelete').val('delete');
+        doLicRenew();
+    }
 
     function guideSubmit(guideAction,toWhere){
         showWaiting();
