@@ -2,7 +2,6 @@ package com.ecquaria.cloud.moh.iais.batchjob;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.SyncAuditTrailRecordsService;
 import com.ecquaria.cloud.moh.iais.service.client.AuditTrailMainClient;
@@ -33,26 +32,26 @@ public class SyncFEAuditTrailBatchjob {
     public void preDate(BaseProcessClass bpc)  {
 
         log.debug(StringUtil.changeForLog("The SyncFEAuditTrailBatchjob is start..." ));
-
-        while (true){
-            List<AuditTrailEntityDto> auditTrail = syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
-            if (IaisCommonUtils.isEmpty(auditTrail)){
-                break;
-            }
-
+        List<AuditTrailEntityDto> auditTrailDtos= syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
+        do {
             log.info("------------------- getData  start --------------");
-            String data = syncAuditTrailRecordsService.getData(auditTrail);
+            String data = syncAuditTrailRecordsService.getData(auditTrailDtos);
             log.info("------------------- getData  end --------------");
             syncAuditTrailRecordsService.saveFile(data);
             log.info("------------------- saveFile  end --------------");
             syncAuditTrailRecordsService.compressFile();
-            for (AuditTrailEntityDto a:auditTrail
+            for (AuditTrailEntityDto a:auditTrailDtos
             ) {
                 a.setMigrated(2);
             }
-            auditTrailMainClient.syucUpdateAuditTrail(auditTrail);
+            auditTrailMainClient.syucUpdateAuditTrail(auditTrailDtos);
             log.info("------------------- compressFile  end --------------");
-        }
+            auditTrailDtos= syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
+        }while (auditTrailDtos.size()>2);
+
+        log.info("------------------- End --------------");
+
+
     }
 
 
