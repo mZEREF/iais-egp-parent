@@ -6,10 +6,10 @@ import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
 import com.ecquaria.cloud.job.executor.log.JobLogger;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @JobHandler(value = "DeleteAppDraftJobHandler")
@@ -19,14 +19,17 @@ public class DeleteAppDraftJobHandler extends IJobHandler {
     @Autowired
     AppSubmissionService appSubmissionService;
 
+    @Value("${iais.system.draft.validity}")
+    private int draftValidity;
+
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         try {
             JobLogger.log(StringUtil.changeForLog("delete app draft job start ..."));
-            String draftValidity = MasterCodeUtil.getCodeDesc("MS006");
-            JobLogger.log(StringUtil.changeForLog("draft validity:"+draftValidity));
-            if(!StringUtil.isEmpty(draftValidity)){
-                appSubmissionService.deleteOverdueDraft(draftValidity);
+            String draftValidityStr = String.valueOf(draftValidity);
+            JobLogger.log(StringUtil.changeForLog("draft validity str:"+draftValidityStr));
+            if(!StringUtil.isEmpty(draftValidityStr)){
+                appSubmissionService.deleteOverdueDraft(draftValidityStr);
             }
             JobLogger.log(StringUtil.changeForLog("delete app draft job end ..."));
             return ReturnT.SUCCESS;
