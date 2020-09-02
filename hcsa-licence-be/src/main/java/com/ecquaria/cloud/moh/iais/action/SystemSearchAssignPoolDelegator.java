@@ -398,7 +398,7 @@ public class SystemSearchAssignPoolDelegator {
                 List<SelectOption> officerOption = inspectorByGroup.get(workGroupCheck);
                 if(officerOption != null){
                     for(SelectOption so : officerOption){
-                        if(!StringUtil.isEmpty(so.getValue()) && userCheck.equals(userCheck)){
+                        if(!StringUtil.isEmpty(so.getValue()) && userCheck.equals(so.getValue())){
                             return true;
                         }
                     }
