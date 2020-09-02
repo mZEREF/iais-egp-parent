@@ -317,7 +317,7 @@ public class LicenceViewServiceDelegator {
                 map.put("blkNo",blkNo);
                 map.put("floorNo",floorNo);
                 map.put("unitNo",unitNo);
-                map.put("postCode","321312");
+                map.put("postCode",postalCode);
                 map.put("hciName",hciName);
                 map.put("vehicleNo",conveyanceVehicleNo);
                 map.put("licensee",licenseeId);

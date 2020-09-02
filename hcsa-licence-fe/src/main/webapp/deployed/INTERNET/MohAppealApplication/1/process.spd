@@ -2,14 +2,14 @@
 <Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohAppealApplication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Step1" x="160" y="130">
+  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="120">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="310" y="120">
+  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="220" y="120">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -50,6 +50,13 @@
     <JavaCode defClass="" executor="" methodName="step4_OnStepProcess_0" name="step4_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step5" x="310" y="320">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step5_OnStepProcess_0" name="step5_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="appealFrom" stageIndicator="" x="430" y="120">
@@ -64,14 +71,17 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="inbox" stageIndicator="" x="500" y="400">
+   <OnPageLoad/>
+   <OnPageSubmit/>
+   <Description/>
+   <probepoint type="none"/>
+  </WebPage>
  </Pages>
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
-   <position>{(180,150)(330,140)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/appealFrom" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step2" style="oblique">
-   <position>{(330,140)(450,140)}</position>
+   <position>{(120,140)(240,140)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/appealFrom" style="oblique">
    <position>{(450,140)(600,150)}</position>
@@ -103,6 +113,18 @@
   <SynchronousLink destinationName="/Steps/InvokeStep/cancel" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
    <position>{(1060,420)(810,330)}</position>
   </SynchronousLink>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step5" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(340,140)(330,340)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/inbox" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step5" style="rectanular">
+   <position>{(330,340)(520,420)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step2" style="rectanular">
+   <position>{(240,140)(340,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/appealFrom" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(340,140)(450,140)}</position>
+  </SynchronousLink>
  </Links>
  <Conditions/>
  <Switches>
@@ -115,6 +137,11 @@
   <Switch defClass="" defaultComponent="" executor="" icon="" leftOperand="crud_action_type" name="Switch2" x="1040" y="400">
    <Description/>
    <SwitchCase component="/Steps/InvokeStep/cancel" value="&quot;cancel&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Pages/WebPage/appealFrom" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="320" y="120">
+   <Description/>
+   <SwitchCase component="/Steps/AutomaticStep/Step5" value="&quot;inbox&quot;"/>
+   <SwitchCase component="/Pages/WebPage/appealFrom" value=""/>
   </Switch>
  </Switches>
  <Branches/>

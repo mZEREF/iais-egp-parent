@@ -17,4 +17,6 @@ public interface AppealService {
     void getMessage(HttpServletRequest request);
 
     Map<String,String> validate(HttpServletRequest request);
+
+    void inbox(HttpServletRequest request, String appNo);
 }

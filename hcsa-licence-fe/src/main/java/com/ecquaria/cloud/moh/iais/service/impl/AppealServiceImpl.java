@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealPageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppliSpecialDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppInsRepDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutingHistoryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcCgoDto;
@@ -333,11 +334,12 @@ public class AppealServiceImpl implements AppealService {
 
     }
 
-    private void initRfi(HttpServletRequest request, String appealingFor) {
+    private AppPremiseMiscDto initRfi(HttpServletRequest request, String appealingFor) {
         AppPremiseMiscDto entity = applicationClient.getAppPremiseMiscDtoByAppId(appealingFor).getEntity();
         if (entity != null) {
             requetForInformationGetMessage(request, entity);
         }
+        return entity;
     }
 
     private void typeApplicationOrLicence(HttpServletRequest request, String type, String appealingFor) {
@@ -423,6 +425,22 @@ public class AppealServiceImpl implements AppealService {
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
         validae(request, errorMap);
         return errorMap;
+    }
+
+    @Override
+    public void inbox(HttpServletRequest request, String appNo) {
+        AppPremisesCorrelationDto entity1 = applicationClient.getCorrelationByAppNo(appNo).getEntity();
+        AppPremiseMiscDto entity2 = applicationClient.getAppPremisesMisc(entity1.getId()).getEntity();
+        String appealType = entity2.getAppealType();
+        requetForInformationGetMessage(request, entity2);
+        if("APPEAL001".equals(appealType)){
+            request.getSession().setAttribute(TYPE, APPLICATION);
+            typeApplicationOrLicence(request,APPLICATION,entity2.getRelateRecId());
+        }else if("APPEAL002".equals(appealType)){
+            request.getSession().setAttribute(TYPE, LICENCE);
+            typeApplicationOrLicence(request,LICENCE,entity2.getRelateRecId());
+        }
+
     }
 
 
@@ -696,7 +714,6 @@ public class AppealServiceImpl implements AppealService {
             appGrpPremisesDto.setOffTelNo(every.getHciContactNo());
             premisesDtos.add(appGrpPremisesDto);
         }
-
         List<AppSvcCgoDto> list = IaisCommonUtils.genNewArrayList();
         for (AppGrpPremisesDto every : premisesDtos) {
             AppSvcCgoDto appSvcCgoDto = MiscUtil.transferEntityDto(every, AppSvcCgoDto.class);

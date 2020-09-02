@@ -1716,9 +1716,7 @@ public class NewApplicationDelegator {
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = n.getAppSvcRelatedInfoDtoList();
         AppSubmissionDto o = (AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = o.getAppSvcRelatedInfoDtoList();
-        boolean eqServiceResult = eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-
-        serviceIsChange = eqServiceResult;
+        serviceIsChange = eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
         appEditSelectDto.setServiceEdit(false);
         appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
@@ -2092,7 +2090,17 @@ public class NewApplicationDelegator {
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = n.get(0).getAppSvcLaboratoryDisciplinesDtoList();
         List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList = o.get(0).getAppSvcLaboratoryDisciplinesDtoList();
         if(appSvcLaboratoryDisciplinesDtoList!=null&&oldAppSvcLaboratoryDisciplinesDtoList!=null){
-            flag1=appSvcLaboratoryDisciplinesDtoList.equals(oldAppSvcLaboratoryDisciplinesDtoList);
+            List<AppSvcChckListDto> list=IaisCommonUtils.genNewArrayList();
+            List<AppSvcChckListDto> list1=IaisCommonUtils.genNewArrayList();
+            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
+                List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                list.addAll(appSvcChckListDtoList);
+            }
+            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : oldAppSvcLaboratoryDisciplinesDtoList){
+                List<AppSvcChckListDto> appSvcChckListDtoList = appSvcLaboratoryDisciplinesDto.getAppSvcChckListDtoList();
+                list1.addAll(appSvcChckListDtoList);
+            }
+            flag1=list.equals(list1);
         }else {
             flag1=true;
         }
@@ -2458,10 +2466,29 @@ public class NewApplicationDelegator {
     private boolean changePersonAuto(AppSubmissionDto oldAppSubmissionDto, AppSubmissionDto appSubmissionDto) {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
         AppSvcRelatedInfoDto oldAppSvcRelatedInfoDto = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+        List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList = oldAppSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+        if(appSvcDisciplineAllocationDtoList!=null && oldAppSvcDisciplineAllocationDtoList!=null){
+            if(appSvcDisciplineAllocationDtoList.size()==oldAppSvcDisciplineAllocationDtoList.size()){
+                if(!appSvcDisciplineAllocationDtoList.equals(oldAppSvcDisciplineAllocationDtoList)){
+                 return true;
+                }
+            }else if(appSvcDisciplineAllocationDtoList.size()<oldAppSvcDisciplineAllocationDtoList.size()){
+                for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtoList){
+                    for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto1 : oldAppSvcDisciplineAllocationDtoList){
+                        if(appSvcDisciplineAllocationDto.getChkLstConfId().equals(appSvcDisciplineAllocationDto1.getChkLstConfId())){
+                            if(!appSvcDisciplineAllocationDto.getIdNo().equals(appSvcDisciplineAllocationDto1.getIdNo())){
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = appSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
         List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList = oldAppSvcRelatedInfoDto.getAppSvcLaboratoryDisciplinesDtoList();
         if(appSvcLaboratoryDisciplinesDtoList!=null&&oldAppSvcLaboratoryDisciplinesDtoList!=null){
-            if(appSvcLaboratoryDisciplinesDtoList.size() > oldAppSvcLaboratoryDisciplinesDtoList.size()){
+           if(appSvcLaboratoryDisciplinesDtoList.size() > oldAppSvcLaboratoryDisciplinesDtoList.size()){
                 return true;
             }else {
                 List<AppSvcChckListDto> newAppSvcChckListDto=IaisCommonUtils.genNewArrayList();

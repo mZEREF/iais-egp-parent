@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MaskUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -50,9 +51,14 @@ public class AppealDelegator {
         if(loginContext!=null){
             bpc.request.getSession().setAttribute("loginContext",loginContext);
         }
-
+        String crud_action_type = bpc.request.getParameter("crud_action_type");
+        if("inbox".equals(crud_action_type)){
+            bpc. request.setAttribute("crud_action_type","inbox");
+            return;
+        }
         appealService.getMessage(bpc.request);
         log.info("end**************preparetionData************");
+
     }
 
 
@@ -85,7 +91,11 @@ public class AppealDelegator {
         log.info("end**************switchProcess************");
     }
 
-
+    public void inbox(BaseProcessClass bpc) {
+        log.info("start**************inbox************");
+        String appNo = ParamUtil.getMaskedString(bpc.request, "appNo");
+        appealService.inbox(bpc.request,appNo);
+    }
     public void submit(BaseProcessClass bpc){
         log.info("start**************submit************");
         String s = appealService.submitData(bpc.request);

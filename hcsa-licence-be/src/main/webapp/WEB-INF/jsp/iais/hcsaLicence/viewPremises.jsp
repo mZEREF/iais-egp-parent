@@ -489,16 +489,18 @@
                                                <fmt:formatDate value="${appPremPhOpenPeriod.startFrom}" pattern="HH : mm"></fmt:formatDate></span>
                                             </div>
                                           </c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom==null}">
-                                            <div class="col-md-6">
-                                              <span class="oldVal " attr="-">-</span>
-                                            </div>
-                                          </c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom!=null}">
-                                            <div class="col-md-6">
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom==null}">
+                                              <div class="col-md-6">
+                                                <span class="oldVal " attr="-">-</span>
+                                              </div>
+                                            </c:if>
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom!=null}">
+                                              <div class="col-md-6">
                                           <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" style="display: none">
                                               <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" pattern="HH : mm"></fmt:formatDate>
-                                            </div>
+                                              </div>
+                                            </c:if>
                                           </c:if>
                                         </c:if>
                                       </div>
@@ -522,16 +524,19 @@
                                             </span>
                                             </div>
                                           </c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo==null}">
-                                            <div class="col-md-6">
-                                              <span class="oldVal " attr="-">-</span>
-                                            </div>
-                                          </c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo!=null}">
-                                            <div class="col-md-6">
+
+                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo==null}">
+                                              <div class="col-md-6">
+                                                <span class="oldVal " attr="-">-</span>
+                                              </div>
+                                            </c:if>
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo!=null}">
+                                              <div class="col-md-6">
                                                <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
                                                      style="display: none"><fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}" pattern="HH : mm"></fmt:formatDate></span>
-                                            </div>
+                                              </div>
+                                            </c:if>
                                           </c:if>
                                         </c:if>
 
