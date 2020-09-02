@@ -269,4 +269,17 @@ public class AuditSystemListDelegator {
         }
     }
 
+    public void actionButton(BaseProcessClass bpc) {
+        log.info(StringUtil.changeForLog("the actionButton start ...."));
+        HttpServletRequest request = bpc.request;
+        String action = ParamUtil.getString(request,"crud_action_type");
+        if(StringUtil.isEmpty(action)){
+            log.info(StringUtil.changeForLog("crud_action_type is null"));
+        }else {
+            log.info(StringUtil.changeForLog("crud_action_type is " + action));
+        }
+        ParamUtil.setRequestAttr(request,"crud_action_type",action);
+        log.info(StringUtil.changeForLog("the actionButton end ...."));
+    }
+
 }

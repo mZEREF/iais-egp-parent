@@ -68,4 +68,8 @@ public class INTRANET___MohAduitSystemList___1 extends BaseProcessClass {
 		EngineHelper.delegate(DELEGATOR, "canceltask", this);
 	}
 
+	public void actionButton_OnStepProcess_0() throws Exception {
+		// 		actionButton->OnStepProcess
+		EngineHelper.delegate(DELEGATOR, "actionButton", this);
+	}
 }
