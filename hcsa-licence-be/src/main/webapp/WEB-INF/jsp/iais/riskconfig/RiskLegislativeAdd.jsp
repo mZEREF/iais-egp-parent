@@ -125,7 +125,9 @@
                                 </div>
                             </div>
                         <div>
+                        <c:if test="${backButtonNeed == 'Y'}">
                             <div style="float:left"> <span><a href="javascript:void(0);" onclick="javascript:doBack()"><em class="fa fa-angle-left"></em> Back</a></span></div>
+                        </c:if>
                             <div style="float:right">
                                 <button class="btn btn-primary next" type="button" onclick="javascript:doNext();">Submit</button>
                             </div>

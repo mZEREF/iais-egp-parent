@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.LicenceTenShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.SubLicenceTenureDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceBeConstant;
 import com.ecquaria.cloud.moh.iais.dto.HcsaRiskLicTenValidateDto;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
@@ -54,6 +55,12 @@ public class HcsaRiskLicenceTenureConfigDelegator {
     public void prepare(BaseProcessClass bpc) {
         log.debug(StringUtil.changeForLog("the PreConfig start ...."));
         HttpServletRequest request = bpc.request;
+        String  url = request.getRequestURI();
+        if(!StringUtil.isEmpty(url) && url.contains(HcsaLicenceBeConstant.MOH_RISK_CONIG_MENU)){
+            ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.RISK_NEED_BACK_BUTTON,HcsaLicenceBeConstant.RISK_NEED_BACK_BUTTON_YES);
+        }else {
+            ParamUtil.setSessionAttr(request,HcsaLicenceBeConstant.RISK_NEED_BACK_BUTTON,HcsaLicenceBeConstant.RISK_NEED_BACK_BUTTON_NO);
+        }
         LicenceTenShowDto showDto = ( LicenceTenShowDto )ParamUtil.getSessionAttr(request, TEN_SHOW_DTO);
         ParamUtil.setSessionAttr(request,TEN_SHOW_DTO, showDto);
     }

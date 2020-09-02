@@ -27,4 +27,8 @@ public class HcsaLicenceBeConstant {
     public static final String ERROR_MESSAGE_MAX_NC_NO_SPACE = "Maximum Number of NCs";
     public static final String ERROR_MESSAGE_MIN_CASES_NO_SPACE = "Minimum Number of Cases";
     public static final String ERROR_MESSAGE_MAX_CASES_NO_SPACE = "Maximum Number of Cases";
+    public static final String MOH_RISK_CONIG_MENU  = "MohRiskConigMenu";
+    public static final String RISK_NEED_BACK_BUTTON = "backButtonNeed";
+    public static final String RISK_NEED_BACK_BUTTON_YES = "Y";
+    public static final String RISK_NEED_BACK_BUTTON_NO = "N";
 }
