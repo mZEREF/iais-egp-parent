@@ -974,7 +974,7 @@ public class NewApplicationAjaxController {
         if(appSvcPersonDto != null){
             person = MiscUtil.transferEntityDto(appSvcPersonDto,AppSvcPrincipalOfficersDto.class);
         }
-        if(!person.isLicPerson()){
+        if(person != null && !person.isLicPerson()){
             List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();
             AppSvcPersonExtDto appSvcPersonExtDto = new AppSvcPersonExtDto();
             if(!IaisCommonUtils.isEmpty(appSvcPersonExtDtos)){

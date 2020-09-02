@@ -750,9 +750,10 @@ public class ServiceMenuDelegator {
         int premHcisLength = premHcis.size();
         boolean allSpecNew = chooseDiff && !chooseExist && premHcisLength == 0;
         boolean existAndNew = chooseExist && chooseDiff;
+        String err007 = MessageUtil.getMessageDesc("NEW_ERR0007");
         if(premHcisLength > 1){
             //choose existing premises not same
-            erroMsg = MessageUtil.getMessageDesc("NEW_ERR0007");
+            erroMsg = err007;
         }else if(allSpecNew){
             //all choose new
         }else if(existAndNew && premHcisLength == 1){
@@ -766,7 +767,7 @@ public class ServiceMenuDelegator {
             for(String svcName:newSpeBaseSvcNames){
                 List<String> currSvcPremHcis = getAppAlignLicQueryHci(baseSvcPremMap,svcName);
                 if(currSvcPremHcis.contains(premHci)){
-                    erroMsg = MessageUtil.getMessageDesc("NEW_ERR0007");
+                    erroMsg = err007;
                     break;
                 }
             }

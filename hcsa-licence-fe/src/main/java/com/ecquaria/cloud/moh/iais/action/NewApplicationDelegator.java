@@ -1008,13 +1008,12 @@ public class NewApplicationDelegator {
 
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(request);
         List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtoList = appSubmissionDto.getAppGrpPrimaryDocDtos();
-
+        String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
         List<HcsaSvcDocConfigDto> commonHcsaSvcDocConfigList = (List<HcsaSvcDocConfigDto>) request.getSession().getAttribute(COMMONHCSASVCDOCCONFIGDTO);
         for (HcsaSvcDocConfigDto comm : commonHcsaSvcDocConfigList) {
             String name = "common" + comm.getId();
 
             Boolean isMandatory = comm.getIsMandatory();
-            String err006 = MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field");
             if (isMandatory && appGrpPrimaryDocDtoList == null || isMandatory && appGrpPrimaryDocDtoList.isEmpty()) {
                 errorMap.put(name, err006);
             } else if (isMandatory && !appGrpPrimaryDocDtoList.isEmpty()) {
@@ -1058,7 +1057,7 @@ public class NewApplicationDelegator {
                         }
                     }
                     if (isEmpty) {
-                        errorMap.put(errName, MessageUtil.replaceMessage("GENERAL_ERR0006", "Document", "field"));
+                        errorMap.put(errName, err006);
                     }
                 }
             }
