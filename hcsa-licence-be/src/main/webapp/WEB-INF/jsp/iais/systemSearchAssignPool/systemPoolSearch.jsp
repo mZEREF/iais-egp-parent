@@ -128,9 +128,7 @@
                             </td>
                             <td><iais:code code="${superPool.applicationType}"/></td>
                             <td>
-                              <c:forEach var="lead" items="${superPool.groupLead}">
-                                <c:out value="${lead}"/><br>
-                              </c:forEach>
+                              <c:out value="${superPool.paymentStatus}"/>
                             </td>
                           </tr>
                         </c:forEach>

@@ -38,7 +38,7 @@
                     </div>
                     <div class="col-md-6">
                       <a style="font-size: 16px" href="/hcsa-licence-web/eservice/INTRANET/LicenceBEViewService" target="_blank">
-                        <u><c:out value="${inspectionTaskPoolListDto.applicationNo}"/></u>
+                        <u><c:out value="${systemAssignTaskDto.applicationDto.applicationNo}"/></u>
                       </a>
                     </div>
                   </div>
@@ -48,7 +48,7 @@
                       <label style="font-size: 16px">Application Status</label>
                     </div>
                     <div class="col-md-6">
-                      <span style="font-size: 16px"><iais:code code="${inspectionTaskPoolListDto.applicationStatus}"/></span>
+                      <span style="font-size: 16px"><iais:code code="${systemAssignTaskDto.applicationDto.status}"/></span>
                     </div>
                   </div>
                   <p></p>
@@ -57,7 +57,7 @@
                       <label style="font-size: 16px">HCI Code</label>
                     </div>
                     <div class="col-md-6">
-                      <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.hciCode}"/></span>
+                      <span style="font-size: 16px"><c:out value="${systemAssignTaskDto.hciCode}"/></span>
                     </div>
                   </div>
                   <p></p>
@@ -66,7 +66,7 @@
                       <label style="font-size: 16px">HCI Name / Address</label>
                     </div>
                     <div class="col-md-6">
-                      <span style="font-size: 16px">${inspectionTaskPoolListDto.hciName}</span>
+                      <span style="font-size: 16px">${systemAssignTaskDto.hciName}</span>
                     </div>
                   </div>
                   <p></p>
@@ -75,7 +75,7 @@
                       <label style="font-size: 16px">Service Name</label>
                     </div>
                     <div class="col-md-6">
-                      <span style="font-size: 16px"><c:out value="${inspectionTaskPoolListDto.serviceName}"/></span>
+                      <span style="font-size: 16px"><c:out value="${systemAssignTaskDto.serviceName}"/></span>
                     </div>
                   </div>
                   <p></p>
@@ -84,7 +84,7 @@
                       <label style="font-size: 16px">Submission Date</label>
                     </div>
                     <div class="col-md-6">
-                      <span style="font-size: 16px"><fmt:formatDate value='${inspectionTaskPoolListDto.submitDt}' pattern='dd/MM/yyyy' /></span>
+                      <span style="font-size: 16px"><fmt:formatDate value='${systemAssignTaskDto.submitDt}' pattern='dd/MM/yyyy' /></span>
                     </div>
                   </div>
                   <p></p>
