@@ -656,11 +656,11 @@ public class InsRepServiceImpl implements InsRepService {
                     ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
             TaskHistoryDto taskHistoryDto = taskService.getRoutingTaskOneUserForSubmisison(applicationDtoList,HcsaConsts.ROUTING_STAGE_AO2,RoleConsts.USER_ROLE_AO2,IaisEGPHelper.getCurrentAuditTrailDto());
             createAppPremisesRoutingHistory(applicationNo, status, taskKey, historyRemarks, InspectionConstants.PROCESS_DECI_ACKNOWLEDGE_INSPECTION_REPORT, RoleConsts.USER_ROLE_AO1, groupId, subStage);
-            createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO2, groupId, null);
             if(isAllSubmit){
                 // send the task to Ao2  or Ao3
                 List<TaskDto> taskDtos = taskHistoryDto.getTaskDtoList();
                 taskService.createTasks(taskDtos);
+                createAppPremisesRoutingHistory(applicationNo, applicationDto.getStatus(), taskKey, null, null, RoleConsts.USER_ROLE_AO2, groupId, null);
             }
 //            updateApplicaitonStatus(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
 //            List<TaskDto> taskDtos = prepareTaskToAo2(taskDto, serviceId, applicationDto);
