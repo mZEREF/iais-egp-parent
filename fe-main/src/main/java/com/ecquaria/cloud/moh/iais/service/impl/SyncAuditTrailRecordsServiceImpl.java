@@ -195,11 +195,14 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
 
                     byte[] bytes = by.toByteArray();
                     String s = FileUtil.genMd5FileChecksum(bytes);
-                    File curFile =new File(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT + File.separator + s + AppServicesConsts.ZIP_NAME);
-                    boolean renameTo = file.renameTo(curFile);
+                    File curFile =new File(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT + File.separator + s + RequestForInformationConstants.ZIP_NAME);
+                    boolean renameFlag = file.renameTo(curFile);
+                    if (!renameFlag) {
+                        log.error("Rename file fail");
+                    }
                     log.info(StringUtil.changeForLog("----------- new zip file name is"
-                            + sharedPath + RequestForInformationConstants.BACKUPS_AUDIT + File.separator + fileNamesss+AppServicesConsts.ZIP_NAME + " " + renameTo));
-                    String s1 = saveFileName(fileNamesss+AppServicesConsts.ZIP_NAME,RequestForInformationConstants.BACKUPS_AUDIT + File.separator+fileNamesss+AppServicesConsts.ZIP_NAME);
+                            +sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+s+RequestForInformationConstants.ZIP_NAME));
+                    String s1 = saveFileName(s+RequestForInformationConstants.ZIP_NAME,RequestForInformationConstants.BACKUPS_AUDIT + File.separator+s+RequestForInformationConstants.ZIP_NAME);
                     if(!s1.equals("SUCCESS")){
                         MiscUtil.deleteFile(curFile);
                         break;
