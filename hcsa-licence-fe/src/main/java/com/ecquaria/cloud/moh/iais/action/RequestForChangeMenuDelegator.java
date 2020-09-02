@@ -718,7 +718,7 @@ public class RequestForChangeMenuDelegator {
             return;
         }else {
             Boolean allCanRfc = requestForChangeService.isAllCanRfc(licenceIds);
-            if(allCanRfc){
+            if(!allCanRfc){
                 ParamUtil.setRequestAttr(bpc.request, "personnelAck", "personnelAck");
                 ParamUtil.setRequestAttr(bpc.request, "action_type", "valid");
                 ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errMap));

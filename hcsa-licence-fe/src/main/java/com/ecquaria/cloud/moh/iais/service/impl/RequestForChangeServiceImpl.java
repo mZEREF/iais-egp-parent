@@ -154,6 +154,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         for (String licId : licIds) {
             List<ApplicationDto> applicationDtos = applicationClient.getAppByLicIdAndExcludeNew(licId).getEntity();
             List<String> appFinalStatus = IaisCommonUtils.getAppFinalStatus();
+            appFinalStatus.remove("APST005");
             for (ApplicationDto applicationDto : applicationDtos) {
                 if (!appFinalStatus.contains(applicationDto.getStatus())) {
                     newApplicationDtos.add(applicationDto);
@@ -161,9 +162,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
             }
         }
         if (!IaisCommonUtils.isEmpty(newApplicationDtos)) {
-            return Boolean.TRUE;
-        } else {
             return Boolean.FALSE;
+        } else {
+            return Boolean.TRUE;
         }
     }
 
