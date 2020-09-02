@@ -640,6 +640,26 @@ public class InterInboxDelegator {
                 break;
             }
         }
+        List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue.get(0));
+        String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+        if(!draftByLicAppId.isEmpty()){
+            StringBuilder stringBuilder=new StringBuilder();
+            for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
+            }
+            if("delete".equals(isNeedDelete)){
+                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                    inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                }
+            }else {
+                String ack030 = MessageUtil.getMessageDesc("ACK030");
+                String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                bpc.request.setAttribute("draftByLicAppId",replace);
+                bpc.request.setAttribute("isAppealShow","1");
+                bpc.request.setAttribute("appealApplication",licIdValue.get(0));
+                return;
+            }
+        }
         if(result) {
             ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
         }else{
