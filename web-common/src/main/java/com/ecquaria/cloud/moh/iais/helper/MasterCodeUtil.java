@@ -197,6 +197,24 @@ public final class MasterCodeUtil {
         return opts;
     }
 
+    public static List<String> getCodeKeyByCodeValue(String codeVal){
+        List<String> codeKey = IaisCommonUtils.genNewArrayList();
+        SearchParam param = new SearchParam(MasterCodeView.class.getName());
+        param.addFilter("codeValFilter", codeVal, true);
+        QueryHelp.setMainSql(WEBCOMMON, RETRIEVE_MASTER_CODES, param);
+        MasterCodeClient client = SpringContextHelper.getContext().getBean(MasterCodeClient.class);
+        SearchResult<MasterCodeView> sr = client.retrieveMasterCodes(param).getEntity();
+        if (sr.getRowCount() > 0) {
+            List<MasterCodeView> masterCodeViewList = sr.getRows();
+            for (MasterCodeView masterCodeView:masterCodeViewList
+                 ) {
+                codeKey.add(masterCodeView.getCode());
+            }
+        }
+        return codeKey;
+    }
+
+
     /**
      * @description: The method to get master code value by code
      *
