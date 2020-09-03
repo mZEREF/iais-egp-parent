@@ -183,15 +183,37 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
     }
 
     private void saveInspectionChecklist(List<ChecklistConfigDto> inspectionChecklist, String appCorrId) {
-        for(ChecklistConfigDto ccDto : inspectionChecklist){
-            AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
-            appDto.setId(null);
-            appDto.setAppPremCorrId(appCorrId);
-            appDto.setVersion(AppConsts.YES);
-            appDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
-            appDto.setChkLstConfId(ccDto.getId());
-            appDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-            fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto);
+        List<AppPremisesPreInspectChklDto> appPremisesPreInspectChklDtos = fillUpCheckListGetAppClient.getPremInsChklList(appCorrId).getEntity();
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+        if(!IaisCommonUtils.isEmpty(appPremisesPreInspectChklDtos)) {
+            int version = Integer.parseInt(appPremisesPreInspectChklDtos.get(0).getVersion());
+            int newVersion = version++;
+            for(AppPremisesPreInspectChklDto appPremisesPreInspectChklDto : appPremisesPreInspectChklDtos){
+                appPremisesPreInspectChklDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                appPremisesPreInspectChklDto.setAuditTrailDto(auditTrailDto);
+                fillUpCheckListGetAppClient.updateAppPreInspChkl(appPremisesPreInspectChklDto);
+            }
+            for (ChecklistConfigDto ccDto : inspectionChecklist) {
+                AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
+                appDto.setId(null);
+                appDto.setAppPremCorrId(appCorrId);
+                appDto.setVersion(newVersion + "");
+                appDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appDto.setChkLstConfId(ccDto.getId());
+                appDto.setAuditTrailDto(auditTrailDto);
+                fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto);
+            }
+        } else {
+            for (ChecklistConfigDto ccDto : inspectionChecklist) {
+                AppPremisesPreInspectChklDto appDto = new AppPremisesPreInspectChklDto();
+                appDto.setId(null);
+                appDto.setAppPremCorrId(appCorrId);
+                appDto.setVersion(AppConsts.YES);
+                appDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+                appDto.setChkLstConfId(ccDto.getId());
+                appDto.setAuditTrailDto(auditTrailDto);
+                fillUpCheckListGetAppClient.saveAppPreInspChkl(appDto);
+            }
         }
     }
 
