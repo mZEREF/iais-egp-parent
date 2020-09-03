@@ -562,14 +562,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             if(appEicRequestTrackingDto!=null){
                  eventApplicationGroupDto = EicUtil.getObjectApp(appEicRequestTrackingDto,EventApplicationGroupDto.class);
                 if(eventApplicationGroupDto!= null){
-                    List<ApplicationDto> applicationDto = eventApplicationGroupDto.getApplicationDto();
-                    if(!IaisCommonUtils.isEmpty(applicationDto)){
-                       for (ApplicationDto applicationDto1 : applicationDto){
-                           eicCallFeApplication(applicationDto1);
-                       }
-                    }else{
-                        log.error(StringUtil.changeForLog("This applicationDto is null "));
-                    }
+                    eicCallFeApplication(eventApplicationGroupDto);
                 }else{
                     log.error(StringUtil.changeForLog("This eventReo can not get the EventApplicationGroupDto -->:"+eventRefNum));
                 }
@@ -584,11 +577,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
 
-    public void eicCallFeApplication(ApplicationDto dto) {
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        beEicGatewayClient.updateApplication(dto, signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization()).getEntity();
+    public void eicCallFeApplication(EventApplicationGroupDto eventApplicationGroupDto) {
+        log.info(StringUtil.changeForLog("The eicCallFeApplication start ..."));
+        List<ApplicationDto> applicationDto = eventApplicationGroupDto.getApplicationDto();
+        if(!IaisCommonUtils.isEmpty(applicationDto)){
+            for (ApplicationDto applicationDto1 : applicationDto){
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+                beEicGatewayClient.updateApplication(applicationDto1, signature.date(), signature.authorization(),
+                        signature2.date(), signature2.authorization()).getEntity();
+            }
+        }else{
+            log.error(StringUtil.changeForLog("This applicationDto is null "));
+        }
+        log.info(StringUtil.changeForLog("The eicCallFeApplication end ..."));
+
     }
 
     @Override

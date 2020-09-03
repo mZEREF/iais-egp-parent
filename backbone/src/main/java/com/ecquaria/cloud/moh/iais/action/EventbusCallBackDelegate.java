@@ -122,12 +122,15 @@ public class EventbusCallBackDelegate {
                     "com.ecquaria.cloud.moh.iais.service.impl.AuditSystemListServiceImpl",
                     "createTaskCallBack");
         } else if (EventBusConsts.OPERATION_LICENCE_SAVE.equals(operation)) {
+            log.info("Licence  save start");
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.LicenceServiceImpl",
                     "createFESuperLicDto");
+        }else if(EventBusConsts.OPERATION_APPLICATION_UPDATE.equals(operation)){
+            log.info("Application update start");
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.ApplicationServiceImpl",
-                    "eicCallFeApplication");
+                    "updateFEApplicationStatus");
         } else if (EventBusConsts.OPERATION_LICENCE_SAVE_APPEAL.equals(operation)) {
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.AppealServiceImpl",
