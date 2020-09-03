@@ -164,6 +164,8 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
         taskDto.setSlaDateCompleted(new Date());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), preInspecRemarks, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_PRE);
+        //close self-checklist
+        applicationDto.setSelfAssMtFlag(4);
         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
         applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         applicationService.updateFEApplicaiton(applicationDto1);

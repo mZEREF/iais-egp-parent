@@ -60,6 +60,7 @@ import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.BeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -634,6 +635,11 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtoList, taskUserIds, applicationDto);
             boolean allInPlaceFlag = allAppFromSamePremisesIsOk(applicationDtoList);
             if(allInPlaceFlag){
+                List<ApplicationDto> applicationDtoLists = IaisCommonUtils.genNewArrayList();
+                for(String premCorrId : premCorrIds) {
+                    ApplicationDto appDto = inspectionTaskClient.getApplicationByCorreId(premCorrId).getEntity();
+                    applicationDtoLists.add(appDto);
+                }
                 saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId, inspManHours);
                 //update App
                 ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
@@ -644,7 +650,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                 taskService.updateTask(td);
                 taskService.createTasks(taskDtoList);
                 inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
-                createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address);
+                createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address, applicationDtoLists);
             } else {
                 //update App
                 ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
@@ -671,12 +677,21 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
             taskService.updateTask(td);
             taskService.createTasks(taskDtoList);
             inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
-            createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address);
+            createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address, applicationDtos);
         }
     }
 
     private void createMessage(String url, ApplicationDto applicationDto, ApplicationGroupDto applicationGroupDto, HashMap<String, String> maskParams,
-                               Date inspDate, String address) {
+                               Date inspDate, String address, List<ApplicationDto> applicationDtoLists) {
+        List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
+        for(ApplicationDto appDto : applicationDtoLists){
+            String serviceId = appDto.getServiceId();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+            String serviceCode = hcsaServiceDto.getSvcCode();
+            if(!StringUtil.isEmpty(serviceCode)){
+                serviceCodes.add(serviceCode);
+            }
+        }
         String dateStr = Formatter.formatDateTime(inspDate, "yyyy/MM/dd");
         String dateTime = Formatter.formatDateTime(inspDate, "HH:mm:ss");
         String appNo = applicationDto.getApplicationNo();
@@ -698,6 +713,7 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
         emailParam.setQueryCode(appNo);
         emailParam.setReqRefNum(appNo);
         emailParam.setRefId(appNo);
+        emailParam.setSvcCodeList(serviceCodes);
         notificationHelper.sendNotification(emailParam);
     }
 
