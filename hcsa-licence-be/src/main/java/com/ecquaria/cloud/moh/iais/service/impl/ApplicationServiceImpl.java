@@ -55,17 +55,17 @@ import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.EicUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  * ApplicationServiceImpl
@@ -264,7 +264,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
 
 
-
+            List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
             log.info(StringUtil.changeForLog("do send email licensee name" + licenseeDto.getName()));
             //pending submit self ass mt
             if (msgTrackRefNumType == 1) {
@@ -294,7 +294,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                         HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
                         if (serviceDto != null) {
                             String svcName = serviceDto.getSvcName();
+                            String svcCode = serviceDto.getSvcCode();
                             tlSvcName = svcName;
+
+                            svcCodeList.add(svcCode);
                             svcNames.add(svcName);
                         }
                     }
@@ -320,7 +323,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(app.getServiceId());
                 if (serviceDto != null) {
                     String svcName = serviceDto.getSvcName();
+                    String svcCode = serviceDto.getSvcCode();
                     tlSvcName = svcName;
+
+                    svcCodeList.add(svcCode);
                     svcNames.add(svcName);
                 }
                 templateContent.put("serviceNames", svcNames);
@@ -355,6 +361,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             emailParam.setReqRefNum(randomStr);
             emailParam.setRefIdType(refType);
             emailParam.setRefId(reqRefNum);
+            emailParam.setSvcCodeList(svcCodeList);
 
             emailParam.setJobRemindMsgTrackingDto(jobRemindMsgTrackingDto);
             notificationHelper.sendNotification(emailParam);

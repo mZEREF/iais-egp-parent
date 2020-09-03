@@ -273,10 +273,16 @@ public class NotificationHelper {
 			} else {
 				mesContext = emailTemplate;
 			}
+
 			// send message
 			if(StringUtil.isEmpty(subject)){
 				subject = msgTemplateDto.getTemplateName();
 			}
+
+			if (!IaisCommonUtils.isEmpty(subjectParams)){
+				subject = replaceText(subject, subjectParams);
+			}
+
 			sendMessage(mesContext, refId, refIdType, subject, maskParams, svcCodeList);
 			if (jrDto != null) {
 				List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
