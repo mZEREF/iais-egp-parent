@@ -30,16 +30,6 @@
                 <c:if test="${'true' != isClickEdit}">
                     <c:set var="locking" value="true"/>
                     <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-                    <div id="edit-content">
-                        <c:choose>
-                            <c:when test="${'true' == canEdit}">
-                                <p><div class="text-right app-font-size-16"><a id="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>
-                            </c:when>
-                            <c:otherwise>
-
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
                 </c:if>
             </c:if>
         </div>
@@ -65,6 +55,8 @@
                     </c:otherwise>
                 </c:choose>
                 <input type="hidden" name="existingPsn" value="0"/>
+                <input type="hidden" name="isPartEdit" value="0"/>
+                <input type="hidden" name="mapIndexNo" value="${medAlertPsn.cgoIndexNo}"/>
                 <div class="row">
                     <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -78,11 +70,23 @@
                                     <h4 class="text-danger"><em class="fa fa-times-circle mapDelBtn cursorPointer"></em></h4>
                                 </c:if>
                             </div>
+                            <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
+                                <div class="col-sm-10">
+                                    <label class="control-font-label">${medAlertPsn.name}, ${medAlertPsn.idNo} (${medAlertPsn.idType})</label>
+                                </div>
+                                <div class="col-sm-2 text-right">
+                                    <div class="edit-content">
+                                        <c:if test="${'true' == canEdit}">
+                                            <label class="control-font-label"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
+                                        </c:if>
+                                    </div>
+                                </div>
+                            </c:if>
                         </div>
                     </div>
                 </div>
                 <div class="">
-                    <div class="row">
+                    <div class="row <c:if test="${'true' == canEdit}">hidden</c:if>">
                         <div class="control control-caption-horizontal">
                             <div class=" form-group form-horizontal formgap">
                                 <div class="col-sm-6 control-label formtext col-md-5">
@@ -266,7 +270,7 @@
 
         if(${AppSubmissionDto.needEditController && !isClickEdit}){
             disabledPage();
-            $('#addMapBtn').addClass('hidden');
+            // $('#addMapBtn').addClass('hidden');
         }
         var appType = $('input[name="applicationType"]').val();
         var rfiObj = $('input[name="rfiObj"]').val();
@@ -378,6 +382,8 @@
                         if(psnLength >='${mapHcsaSvcPersonnel.maximumCount}'){
                             $('#addPsnDiv').addClass('hidden');
                         }
+                        //get data from page
+                        $('#isEditHiddenVal').val('1');
                     }else{
                         $('.mapErrorMsg').html(data.errInfo);
                     }
@@ -389,14 +395,19 @@
         });
     }
 
-    $('#edit').click(function () {
+    $('.edit').click(function () {
 
-        unDisabledPage();
+        var $contentEle = $(this).closest('div.medAlertContent');
+        $contentEle.find('input[name="isPartEdit"]').val('1');
+        $contentEle.find('.edit-content').addClass('hidden');
+        $contentEle.find('input[type="text"]').prop('disabled',false);
+        $contentEle.find('div.nice-select').removeClass('disabled');
+        $contentEle.find('input[type="text"]').css('border-color','');
+        $contentEle.find('input[type="text"]').css('color','');
+        $contentEle.find('.preferredMode').prop('disabled',false);
+        //get data from page
+        $contentEle.find('select[name="assignSel"] option[value="newOfficer"]').prop('selected',true);
         $('#isEditHiddenVal').val('1');
-        $('#edit-content').addClass('hidden');
-        $('#addMapBtn').removeClass('hidden');
-        // $('input[name="licPerson"]').val('0');
-        $('input[name="existingPsn"]').val('0');
     });
 
 

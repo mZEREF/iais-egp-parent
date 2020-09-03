@@ -90,6 +90,8 @@ public class ClinicalLaboratoryDelegator {
     public static final String DROPWOWN_IDTYPESELECT = "IdTypeSelect";
 
     private static final String CURR_STEP_NAME = "currStepName";
+    private static final String PAGE_NAME_PO = "pageNamePo";
+    private static final String PAGE_NAME_MAP = "pageNameMap";
     /**
      * StartStep: doStart
      *
@@ -1885,6 +1887,8 @@ public class ClinicalLaboratoryDelegator {
         String appType = appSubmissionDto.getAppType();
         boolean rfcOrRenew = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType);
         boolean needEdit = rfcOrRenew || isRfi;
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
         if (isGetDataFromPagePo) {
             log.info(StringUtil.changeForLog("get po data..."));
             String[] poExistingPsn = ParamUtil.getStrings(request, "poExistingPsn");
@@ -1898,18 +1902,22 @@ public class ClinicalLaboratoryDelegator {
             String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
             String[] officeTelNo = ParamUtil.getStrings(request, "officeTelNo");
             String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
+            String[] poIsPartEdit = ParamUtil.getStrings(request,"poIsPartEdit");
+            String[] poIndexNos = ParamUtil.getStrings(request,"poIndexNo");
             int length =  0;
             if(assignSelect != null){
                 length = assignSelect.length;
             }
-
+            if (needEdit) {
+                length = poIndexNos.length;
+            }
             for (int i = 0; i < length; i++) {
                 boolean chooseExisting = false;
                 boolean getPageData = false;
                 String assign = assignSelect[i];
                 String licPsn = poLicPerson[i];
                 //for rfi,rfc,renew use
-                String existingPsn = poExistingPsn[i];
+//                String existingPsn = poExistingPsn[i];
                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
                 if(!isRfi && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appType)){
                     if (assign != null) {
@@ -1921,12 +1929,37 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }else if(needEdit){
                     if (assign != null) {
-                        if(AppConsts.YES.equals(existingPsn)){
+                        String poIndexNo = poIndexNos[i];
+                        if (!StringUtil.isEmpty(poIndexNo)) {
+                            //not click edit
+                            if (AppConsts.NO.equals(poIsPartEdit[i])) {
+                                appSvcPrincipalOfficersDto = getPsnByIndexNo(appSvcRelatedInfoDto, poIndexNo,PAGE_NAME_PO);
+                                appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                                //change arr
+                                poIndexNos = removeArrIndex(poIndexNos, i);
+                                poIsPartEdit = removeArrIndex(poIsPartEdit, i);
+                                poLicPerson = removeArrIndex(poLicPerson, i);
+                                //dropdown cannot disabled
+                                assignSelect = removeArrIndex(assignSelect, i);
+                                salutation = removeArrIndex(salutation, i);
+                                idType = removeArrIndex(idType, i);
+                                designation = removeArrIndex(designation, i);
+//                                existingPsn = removeArrIndex(existingPsn, i);
+                                //change arr index
+                                --i;
+                                --length;
+                                continue;
+                            }
+                        }
+                        //isPartEdit->1.click edit button 2.add more psn
+                        if(isExistingPsn(assign,licPsn)){
+                            //add cgo and choose existing
                             chooseExisting = true;
-                        } else{
+                        }else{
                             getPageData = true;
                         }
                     }
+
                 }else{
                     log.info(StringUtil.changeForLog("The current type is not supported"));
                 }
@@ -1967,6 +2000,9 @@ public class ClinicalLaboratoryDelegator {
                     if(appPsnEditDto.isEmailAddr()){
                         emailAddress = NewApplicationHelper.setPsnValue(emailAddress,i,appSvcPrincipalOfficersDto,"emailAddr");
                     }
+                    if(StringUtil.isEmpty(appSvcPrincipalOfficersDto.getCgoIndexNo())){
+                        appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
+                    }
                     appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
                     appSvcPrincipalOfficersDto.setLicPerson(true);
                     appSvcPrincipalOfficersDto.setSelectDropDown(true);
@@ -1975,6 +2011,7 @@ public class ClinicalLaboratoryDelegator {
                     //change arr index
                     poExistingPsn = removeArrIndex(poExistingPsn,i);
                     poLicPerson = removeArrIndex(poLicPerson, i);
+                    poIndexNos = removeArrIndex(poIndexNos, i);
                     //dropdown cannot disabled
                     assignSelect = removeArrIndex(assignSelect, i);
                     salutation = removeArrIndex(salutation, i);
@@ -1983,6 +2020,12 @@ public class ClinicalLaboratoryDelegator {
                     --i;
                     --length;
                 }else if(getPageData){
+                    String poIndexNo = poIndexNos[i];
+                    if (StringUtil.isEmpty(poIndexNo)) {
+                        appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
+                    } else {
+                        appSvcPrincipalOfficersDto.setCgoIndexNo(poIndexNo);
+                    }
                     appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_PO);
                     appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
                     appSvcPrincipalOfficersDto.setSalutation(salutation[i]);
@@ -2471,7 +2514,11 @@ public class ClinicalLaboratoryDelegator {
         String[] idNo = ParamUtil.getStrings(request, "idNo");
         String[] mobileNo = ParamUtil.getStrings(request, "mobileNo");
         String[] emailAddress = ParamUtil.getStrings(request, "emailAddress");
+        String[] isPartEdit = ParamUtil.getStrings(request,"isPartEdit");
+        String[] mapIndexNos = ParamUtil.getStrings(request,"mapIndexNo");
         List<AppSvcPrincipalOfficersDto> medAlertPersons = IaisCommonUtils.genNewArrayList();
+        String currentSvcId = (String) ParamUtil.getSessionAttr(request, NewApplicationDelegator.CURRENTSERVICEID);
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(request, currentSvcId);
         int length = assignSelect.length;
         //new and not rfi
         int preferredModeLength = 0;
@@ -2493,9 +2540,34 @@ public class ClinicalLaboratoryDelegator {
                 }
             } else if (needEdit) {
                 if (assign != null) {
-                    if(AppConsts.YES.equals(existPsn)){
+                    String mapIndexNo = mapIndexNos[i];
+                    if (!StringUtil.isEmpty(mapIndexNo)) {
+                        //not click edit
+                        if (AppConsts.NO.equals(isPartEdit[i])) {
+                            appSvcPrincipalOfficersDto = getPsnByIndexNo(appSvcRelatedInfoDto, mapIndexNo,PAGE_NAME_MAP);
+                            medAlertPersons.add(appSvcPrincipalOfficersDto);
+                            //change arr
+                            mapIndexNos = removeArrIndex(mapIndexNos, i);
+                            isPartEdit = removeArrIndex(isPartEdit, i);
+                            licPerson = removeArrIndex(licPerson, i);
+                            //dropdown cannot disabled
+                            assignSelect = removeArrIndex(assignSelect, i);
+                            salutation = removeArrIndex(salutation, i);
+                            idType = removeArrIndex(idType, i);
+//                            designation = removeArrIndex(designation, i);
+//                            existingPsn = removeArrIndex(existingPsn, i);
+                            //change arr index
+                            --i;
+                            --length;
+                            ++preferredModeLength;
+                            continue;
+                        }
+                    }
+                    //isPartEdit->1.click edit button 2.add more psn
+                    if(isExistingPsn(assign,licPsn)){
+                        //add cgo and choose existing
                         chooseExisting = true;
-                    } else{
+                    }else{
                         getPageData = true;
                     }
                 }
@@ -2541,6 +2613,9 @@ public class ClinicalLaboratoryDelegator {
                         }
                     }
                 }
+                if(StringUtil.isEmpty(appSvcPrincipalOfficersDto.getCgoIndexNo())){
+                    appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
+                }
                 appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
                 appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
                 appSvcPrincipalOfficersDto.setLicPerson(true);
@@ -2557,6 +2632,12 @@ public class ClinicalLaboratoryDelegator {
                 --length;
                 ++preferredModeLength;
             }else if(getPageData){
+                String mapIndexNo = mapIndexNos[i];
+                if (StringUtil.isEmpty(mapIndexNo)) {
+                    appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
+                } else {
+                    appSvcPrincipalOfficersDto.setCgoIndexNo(mapIndexNo);
+                }
                 appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_MAP);
                 appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
                 appSvcPrincipalOfficersDto.setSalutation(salutation[i]);
@@ -2595,6 +2676,25 @@ public class ClinicalLaboratoryDelegator {
             }
         }
         return new AppSvcCgoDto();
+    }
+
+    private AppSvcPrincipalOfficersDto getPsnByIndexNo(AppSvcRelatedInfoDto appSvcRelatedInfoDto, String indexNo, String pageName){
+        if(appSvcRelatedInfoDto != null && !StringUtil.isEmpty(indexNo)){
+            List<AppSvcPrincipalOfficersDto> psnDtos = null;
+            if(PAGE_NAME_PO.equals(pageName)){
+                psnDtos = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+            }else if(PAGE_NAME_MAP.equals(pageName)){
+                psnDtos = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+            }
+            if(!IaisCommonUtils.isEmpty(psnDtos)){
+                for(AppSvcPrincipalOfficersDto psnDto:psnDtos){
+                    if (indexNo.equals(psnDto.getCgoIndexNo())) {
+                        return psnDto;
+                    }
+                }
+            }
+        }
+        return new AppSvcPrincipalOfficersDto();
     }
 
     private String[] removeArrItem(String[] arrs, String item) {

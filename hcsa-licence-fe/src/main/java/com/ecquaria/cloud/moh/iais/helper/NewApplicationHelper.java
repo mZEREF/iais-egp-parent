@@ -149,7 +149,7 @@ public class NewApplicationHelper {
                 }
                 String salutation = appSvcCgoList.get(i).getSalutation();
                 if(StringUtil.isEmpty(salutation)){
-                    errMap.put("salutation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name Type","field"));
+                    errMap.put("salutation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Salutation","field"));
                 }
                 String speciality = appSvcCgoList.get(i).getSpeciality();
                 if("-1".equals(speciality)){
@@ -343,6 +343,7 @@ public class NewApplicationHelper {
         if(IaisCommonUtils.isEmpty(poDto)){
             return oneErrorMap;
         }
+        String errSalutation = MessageUtil.replaceMessage("GENERAL_ERR0006","Salutation","field");
         for (int i=0;i< poDto.size();i++) {
             String psnType = poDto.get(i).getPsnType();
             if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(psnType)){
@@ -378,7 +379,7 @@ public class NewApplicationHelper {
 
                     }
                     if(StringUtil.isEmpty(salutation)){
-                        oneErrorMap.put("salutation"+poIndex, errName);
+                        oneErrorMap.put("salutation"+poIndex, errSalutation);
                     }
                     if(StringUtil.isEmpty(designation)){
                         oneErrorMap.put("designation"+poIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));
@@ -465,9 +466,9 @@ public class NewApplicationHelper {
                 String dpoIdTypeNoKey = "dpoIdTypeNo"+dpoIndex;
                 oneErrorMap = doPsnCommValidate(oneErrorMap,idType,idNo,licPerson,licPersonMap,dpoIdTypeNoKey,svcCode);
                 String idTypeNoErr = oneErrorMap.get(dpoIdTypeNoKey);
-                if(!StringUtil.isEmpty(idTypeNoErr)){
-                    continue;
-                }
+//                if(!StringUtil.isEmpty(idTypeNoErr)){
+//                    continue;
+//                }
                 String assignSelect = poDto.get(i).getAssignSelect();
                 if(StringUtil.isEmpty(assignSelect)||"-1".equals(assignSelect)){
                     oneErrorMap.put("deputyAssignSelect"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Assign a Deputy Principal Officer ","field"));
@@ -476,7 +477,7 @@ public class NewApplicationHelper {
                     oneErrorMap.put("deputyDesignation"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field"));
                 }
                 if(StringUtil.isEmpty(salutation)||"-1".equals(salutation)){
-                    oneErrorMap.put("deputySalutation"+dpoIndex,MessageUtil.replaceMessage("GENERAL_ERR0006","Name Type","field"));
+                    oneErrorMap.put("deputySalutation"+dpoIndex,errSalutation);
                 }
 
                 if(StringUtil.isEmpty(idType)||"-1".equals(idType)){
@@ -985,7 +986,7 @@ public class NewApplicationHelper {
                 }
                 String salutation = medAlertPsnDtos.get(i).getSalutation();
                 if(StringUtil.isEmpty(salutation)){
-                    errMap.put("salutation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Name Type","field"));
+                    errMap.put("salutation"+i,MessageUtil.replaceMessage("GENERAL_ERR0006","Salutation","field"));
                 }
                 //to do
                 if(StringUtil.isEmpty(idNo)){
@@ -1146,6 +1147,10 @@ public class NewApplicationHelper {
                                 specialityOpts.add(sp);
                             }
                         }
+                        String specialityVal = psnDto.getSpeciality();
+                        if(!StringUtil.isEmpty(specialityVal)){
+                            specialityOpts.add(getSpecialtyByValue(specialityVal));
+                        }
                         person.setSpcOptList(specialityOpts);
                     }else{
                         SelectOption sp = new SelectOption("other", "Others");
@@ -1262,6 +1267,10 @@ public class NewApplicationHelper {
                             if(!specialityOpts.contains(sp)){
                                 specialityOpts.add(sp);
                             }
+                        }
+                        String specialityVal = psnDto.getSpeciality();
+                        if(!StringUtil.isEmpty(specialityVal)){
+                            specialityOpts.add(getSpecialtyByValue(specialityVal));
                         }
                         person.setSpcOptList(specialityOpts);
                     }else{

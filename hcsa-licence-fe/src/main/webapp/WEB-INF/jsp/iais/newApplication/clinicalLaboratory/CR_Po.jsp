@@ -39,16 +39,6 @@
                   <c:if test="${!isClickEdit}">
                     <c:set var="showPreview" value="true"/>
                     <c:set var="canEdit" value="${AppSubmissionDto.appEditSelectDto.poEdit || AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-                    <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
-                      <c:choose>
-                        <c:when test="${canEdit}">
-                            <p><div class="text-right app-font-size-16"><a id="edit"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
-                        </c:when>
-                        <c:otherwise>
-
-                        </c:otherwise>
-                      </c:choose>
-                    </div>
                   </c:if>
                 </c:if>
               </div>
@@ -69,6 +59,8 @@
                       </c:otherwise>
                     </c:choose>
                     <input type="hidden" name="poExistingPsn" value="0"/>
+                    <input type="hidden" name="poIsPartEdit" value="0"/>
+                    <input type="hidden" name="poIndexNo" value="${principalOfficer.cgoIndexNo}"/>
                     <div class="row">
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -82,11 +74,24 @@
                               <h4 class="text-danger"><em class="fa fa-times-circle removePoBtn cursorPointer"></em></h4>
                             </c:if>
                           </div>
+                          <c:if test="${'APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null}">
+                            <div class="col-sm-10">
+                              <label class="control-font-label">${principalOfficer.name}, ${principalOfficer.idNo} (${principalOfficer.idType})</label>
+                            </div>
+                            <div class="col-sm-2 text-right">
+                              <div class="edit-content">
+                                <c:if test="${'true' == canEdit}">
+                                  <label class="control-font-label"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
+                                  <%--<p><div class="text-right app-font-size-16"><a class="edit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></div></p>--%>
+                                </c:if>
+                              </div>
+                            </div>
+                          </c:if>
                         </div>
                       </div>
                     </div>
                     <div class="">
-                      <div class="row">
+                      <div class="row  <c:if test="${'true' == canEdit}">hidden</c:if>">
                         <div class="control control-caption-horizontal">
                           <div class=" form-group form-horizontal formgap">
                             <div class="col-sm-6 control-label formtext col-md-4">
@@ -564,8 +569,8 @@
             $('.po-content div.nice-select').addClass('disabled');
             $('.po-content input[type="text"]').css('border-color','#ededed');
             $('.po-content input[type="text"]').css('color','#999');
-            $('#addPoBtn').addClass('hidden');
-            $('#addPoBtn').unbind('click');
+            // $('#addPoBtn').addClass('hidden');
+            // $('#addPoBtn').unbind('click');
         }
         if(${AppSubmissionDto.needEditController && !isClickEditDpo}){
             $('.deputySelect').addClass('disabled');
@@ -573,7 +578,7 @@
             $('.deputy-content div.nice-select').addClass('disabled');
             $('.deputy-content input[type="text"]').css('border-color','#ededed');
             $('.deputy-content input[type="text"]').css('color','#999');
-            $('#addDpoBtn').unbind('click');
+            // $('#addDpoBtn').unbind('click');
         }
 
         var appType = $('input[name="applicationType"]').val();
@@ -784,6 +789,8 @@
                         if(psnLength >='${poHcsaSvcPersonnelDto.maximumCount}'){
                             $('#addPsnDiv-po').addClass('hidden');
                         }
+                        //get data from page
+                        $('#isEditHiddenVal').val('1');
                     }else{
                         $('.poErrorMsg').html(data.errInfo);
                     }
@@ -841,17 +848,18 @@
 
 
     var doEdit = function () {
-        $('#edit').click(function () {
-            $('.po-content input[type="text"]').prop('disabled',false);
-            $('.po-content div.nice-select').removeClass('disabled');
-            $('.po-content input[type="text"]').css('border-color','');
-            $('.po-content input[type="text"]').css('color','');
+        $('.edit').click(function () {
+            var $contentEle = $(this).closest('div.po-content');
+            $contentEle.find('input[name="poIsPartEdit"]').val('1');
+            $contentEle.find('.edit-content').addClass('hidden');
+            $contentEle.find('input[type="text"]').prop('disabled',false);
+            $contentEle.find('div.nice-select').removeClass('disabled');
+            $contentEle.find('input[type="text"]').css('border-color','');
+            $contentEle.find('input[type="text"]').css('color','');
+            //get data from page
+            $contentEle.find('select[name="poSelect"] option[value="newOfficer"]').prop('selected',true);
             $('#isEditHiddenVal').val('1');
-            $('#addPoBtn').removeClass('hidden');
-            addPo();
-            $('#edit').addClass('hidden');
-            $('input[name="poExistingPsn"]').val('0');
-            // $('input[name="poLicPerson"]').val('0');
+
         });
     }
 
