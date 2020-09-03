@@ -34,7 +34,7 @@ public class InsRepRecValidate implements CustomizeValidator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(httpServletRequest, "applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationType = applicationDto.getApplicationType();
-        if (OTHERS.equals(periods)&&!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)&&!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)) {
+        if (!InspectionReportConstants.REJECTED.equals(recommendation)&&OTHERS.equals(periods)&&!ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)&&!ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType)) {
             if (StringUtil.isEmpty(chrono)) {
                 errorMap.put("chronoUnit", "ERR0009");
             } else if (StringUtil.isEmpty(number)) {
