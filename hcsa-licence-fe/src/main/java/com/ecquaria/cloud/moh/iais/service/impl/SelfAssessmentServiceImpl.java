@@ -242,7 +242,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         String tlAppType = "-";
         Date tlDate = null;
         String tlGroupId = null;
-        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/";
+        String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + "/main-web/";
         for (String s : correlationIds){
             ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(s).getEntity();
             if (applicationDto != null){
@@ -284,12 +284,11 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 if (serviceDto != null) {
                     String svcName = serviceDto.getSvcName();
                     svcNameList.add(svcName);
-                    templateContent.put("serviceName", svcName);
                 }
 
                 templateContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
                 templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-
+                templateContent.put("serviceNames", svcNameList);
                 EmailParam email = new EmailParam();
                 email.setTemplateId(msgTmgId);
                 email.setTemplateContent(templateContent);
