@@ -28,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -43,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -495,7 +497,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         //end hour - 1, because the function save all start hour
         AppointmentDto appointmentDtoSave = officersReSchedulingService.subtractEndHourByApptDto(apptInspectionDateDto.getSpecificApptDto());
         String apptRefNo = appointmentClient.saveManualUserCalendar(appointmentDtoSave).getEntity();
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         for(String appPremCorrId : appPremCorrIds) {
+            ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            applicationDtos.add(applicationDto);
             AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
             appPremisesInspecApptDto.setAppCorrId(appPremCorrId);
             appPremisesInspecApptDto.setApptRefNo(apptRefNo);
@@ -542,7 +547,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, licenseeId, applicationViewDto, urlId);
-        createMessage(url, applicationNo, maskParams, map);
+        createMessage(url, applicationNo, maskParams, map, applicationDtos);
         //update app Info and insp Info
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
     }
@@ -557,7 +562,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         List<String> appPremCorrIds = apptInspectionDateDto.getRefNo();
         Map<String, List<ApptUserCalendarDto>> inspectionDateMap = apptInspectionDateDto.getInspectionDateMap();
         //save AppPremisesInspecApptDto
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
         for(String appPremCorrId : appPremCorrIds) {
+            ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+            applicationDtos.add(applicationDto);
             for(Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()){
                 String apptRefNo = inspDateMap.getKey();
                 AppPremisesInspecApptDto appPremisesInspecApptDto = new AppPremisesInspecApptDto();
@@ -620,7 +628,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         //send email
         Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, licenseeId, applicationViewDto, urlId);
         //get service code to send message
-        createMessage(url, applicationNo, maskParams, map);
+        createMessage(url, applicationNo, maskParams, map, applicationDtos);
         //save data to app table
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_INSPECTION_DATE, InspectionConstants.PROCESS_DECI_ALLOW_SYSTEM_TO_PROPOSE_DATE);
     }
@@ -1048,7 +1056,16 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         return map;
     }
 
-    private void createMessage(String url, String appNo, HashMap<String, String> maskParams, Map<String, Object> map) {
+    private void createMessage(String url, String appNo, HashMap<String, String> maskParams, Map<String, Object> map, List<ApplicationDto> applicationDtos) {
+        List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
+        for(ApplicationDto applicationDto : applicationDtos){
+            String serviceId = applicationDto.getServiceId();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+            String serviceCode = hcsaServiceDto.getSvcCode();
+            if(!StringUtil.isEmpty(serviceCode)){
+                serviceCodes.add(serviceCode);
+            }
+        }
         map.put("systemLink", url);
         EmailParam emailParam = new EmailParam();
         emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_APPT_INSPECTION_DATE_FIRST);
@@ -1058,6 +1075,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
         emailParam.setRefId(appNo);
         emailParam.setMaskParams(maskParams);
+        emailParam.setSvcCodeList(serviceCodes);
         notificationHelper.sendNotification(emailParam);
     }
 
