@@ -89,24 +89,29 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
     }
 
     @Override
-    public void saveFile(String data)  {
+    public void saveFile(String data) throws IOException {
 
 
         String s = FileUtil.genMd5FileChecksum(data.getBytes(StandardCharsets.UTF_8));
-        File file = MiscUtil.generateFile(sharedPath + RequestForInformationConstants.FILE_NAME_AUDIT+File.separator, s+RequestForInformationConstants.FILE_FORMAT);
-        File groupPath=MiscUtil.generateFile(sharedPath, RequestForInformationConstants.FILE_NAME_AUDIT);
+        File file=MiscUtil.generateFile(sharedPath + RequestForInformationConstants.FILE_NAME_AUDIT+File.separator, s+RequestForInformationConstants.FILE_FORMAT);
+        if(!file.exists()){
+            boolean createFlag = file.createNewFile();
+            if (!createFlag) {
+                log.error("Create File fail");
+            }
+        }
+        File groupPath=new File(sharedPath + RequestForInformationConstants.FILE_NAME_AUDIT+File.separator);
 
-        MiscUtil.checkDirs(groupPath);
-        File backupFile = MiscUtil.generateFile(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT, file.getName());
-
-        try (OutputStream fileInputStream = Files.newOutputStream(Paths.get(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+file.getName()) );
-             OutputStream fileOutputStream = Files.newOutputStream(file.toPath()); ){
+        if(!groupPath.exists()){
+            groupPath.mkdirs();
+        }
+        try (OutputStream fileInputStream = Files.newOutputStream(Paths.get(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+file.getName()));
+             OutputStream fileOutputStream  = Files.newOutputStream(file.toPath());){
 
             fileOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
             fileInputStream.write(data.getBytes(StandardCharsets.UTF_8));
 
         } catch (Exception e) {
-
             log.error(e.getMessage(),e);
         }
     }
@@ -125,7 +130,9 @@ public class SyncAuditTrailRecordsServiceImpl implements SyncAuditTrailRecordsSe
         log.info("------------ start compress() -----------------------");
         long l=   System.currentTimeMillis();
         File c= new File(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator);
-        MiscUtil.checkDirs(c);
+        if(!c.exists()){
+            c.mkdirs();
+        }
         try (OutputStream is=Files.newOutputStream(Paths.get(sharedPath + RequestForInformationConstants.BACKUPS_AUDIT+File.separator+ l+ AppServicesConsts.ZIP_NAME));
              CheckedOutputStream cos=new CheckedOutputStream(is,new CRC32());
              ZipOutputStream zos=new ZipOutputStream(cos);){

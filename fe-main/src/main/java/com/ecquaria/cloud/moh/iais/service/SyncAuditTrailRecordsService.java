@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.audit.AuditTrailEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public interface SyncAuditTrailRecordsService {
 
     String getData(List<AuditTrailEntityDto> auditTrailDtos);
 
-    void saveFile(String data) ;
+    void saveFile(String data) throws IOException;
 
     void compressFile();
 
