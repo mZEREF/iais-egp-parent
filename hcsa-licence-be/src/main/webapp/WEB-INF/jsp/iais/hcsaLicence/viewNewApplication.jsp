@@ -16,6 +16,7 @@
 </style>
 <div class="panel-main-content">
   <input style="display: none" value="${NOT_VIEW}" id="view">
+  <input type="hidden" id="oldAppSubmissionDto" value="${appSubmissionDto.oldAppSubmissionDto}">
   <c:set var="appGrpPremisesDtoList" value="${appSubmissionDto.appGrpPremisesDtoList}"></c:set>
   <c:set var="oldAppGrpPremisesDtoList" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList}"></c:set>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST007')}">
@@ -137,10 +138,16 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                     <div class="col-xs-6">
                       <span class="newVal " attr="${cgo.idNo}"><c:out value="${cgo.idNo}"/></span>
-                    <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                      <c:if test="${cgo.idNo!=null}">
+                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                      </c:if>
+
                     </div>
                     <div class="col-xs-6">
                       <span class="oldVal" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}</span>
+                      <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo!=null}">
+                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                      </c:if>
                     </div>
                     </p>
                   </td>
@@ -186,10 +193,16 @@
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                     <div class="col-xs-6">
                       <span class="newVal " attr="${cgo.profRegNo}"><c:out value="${cgo.profRegNo}"/></span>
-                      <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                      <c:if test="${cgo.profRegNo!=null}">
+                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                      </c:if>
+
                     </div>
                     <div class="col-xs-6">
                       <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}" style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/></span>
+                      <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo!=null}">
+                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                      </c:if>
                     </div>
                     </p>
                   </td>
@@ -413,10 +426,16 @@
 
                           <div class="col-xs-6">
                             <span class="newVal " attr="${appSvcPersonnelDtoList.profRegNo}" ><c:out value="${appSvcPersonnelDtoList.profRegNo}"/></span>
-                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                            <c:if test="${appSvcPersonnelDtoList.profRegNo!=null}">
+                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                            </c:if>
+
                           </div>
                           <div class="col-xs-6">
                             <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</span>
+                            <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo!=null}">
+                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                            </c:if>
                           </div>
 
                           </p>
@@ -786,10 +805,15 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                       <div class="col-xs-6">
                         <span class="newVal " attr="${po.idNo}"><c:out value="${po.idNo}"/></span>
-                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                        <c:if test="${po.idNo!=null}">
+                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                        </c:if>
                     </div>
                       <div class="col-xs-6">
                         <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}</span>
+                        <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo!=null}">
+                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                        </c:if>
                       </div>
 
                       </p>
@@ -940,13 +964,17 @@
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                       <div class="col-xs-6">
                         <span class="newVal " attr="${appSvcMedAlertPerson.idNo}"><c:out value="${appSvcMedAlertPerson.idNo}"/></span>
+                      <c:if test="${appSvcMedAlertPerson.idNo!=null}">
                         <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                      </c:if>
+
                     </div>
                       <div class="col-xs-6">
                         <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}</span>
+                        <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo!=null}">
+
+                        </c:if>
                       </div>
-
-
                       </p>
                     </td>
                   </tr>
@@ -1010,7 +1038,6 @@
                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='1'}">Email</c:when>
                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='2'}">SMS</c:when>
                              <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode=='3'}">Email  SMS</c:when>
-                             <c:when test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].preferredMode==null}">-</c:when>
                            </c:choose>
                       </span>
                       </div>
@@ -1123,16 +1150,18 @@
             var oldVal = $(this).attr('attr');
             var newEle = $(this).parent().prev().find('.' + newValClass);
             var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
-            if (oldVal.length > 0 && newVal.length > 0) {
-                if (oldVal != newVal) {
-                    $(this).show();
-                    var newHtml=$(this).parent().prev().find('.' + newValClass).html();
-                    var oldHtml=$(this).html();
-                    $(this).html(newHtml);
-                    $(this).parent().prev().find('.' + newValClass).html(oldHtml);
-                    $(this).attr("class","newVal compareTdStyle");
-                } else {
-                    $(this).hide();
+            if($('#oldAppSubmissionDto').val()!=null){
+                if (oldVal.length > 0 || newVal.length > 0) {
+                    if (oldVal != newVal) {
+                        $(this).show();
+                        var newHtml=$(this).parent().prev().find('.' + newValClass).html();
+                        var oldHtml=$(this).html();
+                        $(this).html(newHtml);
+                        $(this).parent().prev().find('.' + newValClass).html(oldHtml);
+                        $(this).attr("class","newVal compareTdStyle");
+                    } else if(oldVal.length > 0 && newVal.length <= 0){
+                        $(this).hide();
+                    }
                 }
             }
         });

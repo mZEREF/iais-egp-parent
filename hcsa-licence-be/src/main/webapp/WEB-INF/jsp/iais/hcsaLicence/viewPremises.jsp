@@ -113,20 +113,18 @@
                                   </c:if>
 
                                   <c:if test="${'ONSITE'==appGrpPremDto.premisesType}">
-
                                     <div class="row">
                                       <div class="col-md-6">
                                         Fire Safety & Shelter Bureau Ref No.
                                       </div>
                                       <div class="col-md-6">
                                         <div class="col-md-6">
-                                             <span class="newVal "
-                                                   attr="${appGrpPremDto.scdfRefNo}"><c:out
-                                                     value="${appGrpPremDto.scdfRefNo}"/></span>
+                                          <span class="newVal " attr="${appGrpPremDto.scdfRefNo}"><c:out value="${appGrpPremDto.scdfRefNo}"/></span>
                                         </div>
                                         <div class="col-md-6">
-                                               <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}"
-                                                     style="display: none"><c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}"/></span>
+                                          <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}" style="display: none">
+                                            <c:out value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].scdfRefNo}"/>
+                                          </span>
                                         </div>
                                       </div>
                                     </div>
@@ -152,26 +150,10 @@
 
                                     <div class="row">
                                       <div class="col-md-6">
-                                        Name of HCI
-                                        <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${empty appGrpPremDto.applicationViewHciNameDtos&&empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
-                                      </div>
+                                      Name of HCI
+                                      <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${empty appGrpPremDto.applicationViewHciNameDtos&&empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
+                                    </div>
                                       <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none;" id="hciNameShowOrHidden">
-                                      <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
-                                          <p>The address of the premises keyed in by applicant is currently used by another licensee</p>
-                                          <br>
-                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 1px solid #000000;border-color: black">
-                                            <tr>
-                                              <td  class="col-md-4">Name of Licensee</td>
-                                              <td  class="col-md-4">HCI Name</td>
-                                              <td  class="col-md-4">Service Name</td>
-                                            </tr>
-                                            <tr>
-                                              <td>${applicationViewAddress.licensee}</td>
-                                              <td>${applicationViewAddress.hciName}</td>
-                                              <td>${applicationViewAddress.serviceName}</td>
-                                            </tr>
-                                          </table>
-                                        </c:forEach>
                                         <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
                                           <p>The HCI name is currently used by another licensee</p>
                                           <br>
@@ -206,16 +188,14 @@
                                   <div class="row">
                                     <div class="col-md-6">
                                       Postal Code
-                                      <c:if test="${'ONSITE'!=appGrpPremDto.premisesType}">
-                                        <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${ empty appGrpPremDto.applicationViewHciNameDtos &&  empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
-                                      </c:if>
+                                      <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${ empty appGrpPremDto.applicationViewHciNameDtos &&  empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
                                     </div>
                                     <c:if test="${'ONSITE'!=appGrpPremDto.premisesType}">
                                       <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #999999;display: none" id="hciNameShowOrHidden">
                                         <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
                                           <p>The address of the premises keyed in by applicant is currently used by another licensee</p>
                                           <br>
-                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;">
+                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;background-color: #ffffff">
                                             <tr>
                                               <td  class="col-md-4">Name of Licensee</td>
                                               <td  class="col-md-4">HCI Name</td>
@@ -231,7 +211,7 @@
                                         <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
                                           <p>The HCI name is currently used by another licensee</p>
                                           <br>
-                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;">
+                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;background-color:#ffffff">
                                             <tr>
                                               <td  class="col-md-4">Name of Licensee</td>
                                               <td  class="col-md-4">HCI Name</td>
@@ -394,7 +374,7 @@
                                     <div class="col-md-6">
                                       <div class="col-md-6">
                                         <c:if test="${appGrpPremDto.wrkTimeFrom==null}">
-                                             <span class="newVal "  attr="-">-</span>
+                                             <span class="newVal "  attr=""></span>
                                         </c:if>
                                         <c:if test="${appGrpPremDto.wrkTimeFrom!=null}">
                                           <span class="newVal "  attr="${appGrpPremDto.wrkTimeFrom}">
@@ -406,7 +386,7 @@
                                       <div class="col-md-6">
                                         <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom==null}">
-                                            <span class=" oldVal" attr="-" style="display: none">-</span>
+                                            <span class=" oldVal" attr="" style="display: none"></span>
                                           </c:if>
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom!=null}">
                                           <span class=" oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeFrom}" style="display: none">
@@ -425,7 +405,7 @@
                                     <div class="col-md-6">
                                       <div class="col-md-6">
                                         <c:if test="${appGrpPremDto.wrkTimeTo==null}">
-                                           <span class="newVal " attr="-">-</span>
+                                           <span class="newVal " attr=""></span>
                                         </c:if>
                                         <c:if test="${appGrpPremDto.wrkTimeTo!=null}">
                                            <span class="newVal " attr="${appGrpPremDto.wrkTimeTo}"><fmt:formatDate value="${appGrpPremDto.wrkTimeTo}" pattern="HH : mm"></fmt:formatDate></span>
@@ -435,7 +415,7 @@
                                       <div class="col-md-6">
                                         <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo==null}">
-                                            <span class="oldVal " attr="-" style="display: none"> -</span>
+                                            <span class="oldVal " attr="" style="display: none"></span>
                                           </c:if>
                                           <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo!=null}">
                                            <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].wrkTimeTo}"
@@ -477,32 +457,14 @@
                                         Public Holidays Operating Hours (Start)
                                       </div>
                                       <div class="col-md-6">
-                                        <c:if test="${appGrpPremDto.appPremPhOpenPeriodList.size()>0}">
-                                          <c:if test="${appPremPhOpenPeriod.startFrom==null}">
-                                            <div class="col-md-6">
-                                              <span class="newVal " attr="-">-</span>
-                                            </div>
-                                          </c:if>
-                                          <c:if test="${appPremPhOpenPeriod.startFrom!=null}">
-                                            <div class="col-md-6">
+                                          <div class="col-md-6">
                                              <span class="newVal " attr="${appPremPhOpenPeriod.startFrom}">
                                                <fmt:formatDate value="${appPremPhOpenPeriod.startFrom}" pattern="HH : mm"></fmt:formatDate></span>
-                                            </div>
-                                          </c:if>
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
-                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom==null}">
-                                              <div class="col-md-6">
-                                                <span class="oldVal " attr="-">-</span>
-                                              </div>
-                                            </c:if>
-                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom!=null}">
-                                              <div class="col-md-6">
-                                          <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" style="display: none">
+                                          </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" style="display: none">
                                               <fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].startFrom}" pattern="HH : mm"></fmt:formatDate>
-                                              </div>
-                                            </c:if>
-                                          </c:if>
-                                        </c:if>
+                                            </div>
                                       </div>
                                     </div>
 
@@ -511,35 +473,15 @@
                                         Public Holidays Operating Hours (End)
                                       </div>
                                       <div class="col-md-6">
-                                        <c:if test="${appGrpPremDto.appPremPhOpenPeriodList.size()>0}">
-                                          <c:if test="${appPremPhOpenPeriod.endTo==null}">
-                                            <div class="col-md-6">
-                                              <span class="newVal " attr="-">-</span>
-                                            </div>
-                                          </c:if>
-                                          <c:if test="${appPremPhOpenPeriod.endTo!=null}">
-                                            <div class="col-md-6">
-                                           <span class="newVal " attr="${appPremPhOpenPeriod.endTo}"><fmt:formatDate value="${appPremPhOpenPeriod.endTo}"
-                                                                                                                     pattern="HH : mm"></fmt:formatDate>
-                                            </span>
-                                            </div>
-                                          </c:if>
-
-                                          <c:if test="${appSubmissionDto.oldAppSubmissionDto!=null}">
-                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo==null}">
-                                              <div class="col-md-6">
-                                                <span class="oldVal " attr="-">-</span>
-                                              </div>
-                                            </c:if>
-                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo!=null}">
-                                              <div class="col-md-6">
+                                          <div class="col-md-6">
+                                              <span class="newVal " attr="${appPremPhOpenPeriod.endTo}"><fmt:formatDate value="${appPremPhOpenPeriod.endTo}"
+                                                                                                                        pattern="HH : mm"></fmt:formatDate>
+                                              </span>
+                                          </div>
+                                          <div class="col-md-6">
                                                <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}"
                                                      style="display: none"><fmt:formatDate value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList[status.index].appPremPhOpenPeriodList[statu.index].endTo}" pattern="HH : mm"></fmt:formatDate></span>
-                                              </div>
-                                            </c:if>
-                                          </c:if>
-                                        </c:if>
-
+                                          </div>
                                       </div>
                                     </div>
                                   </c:forEach>

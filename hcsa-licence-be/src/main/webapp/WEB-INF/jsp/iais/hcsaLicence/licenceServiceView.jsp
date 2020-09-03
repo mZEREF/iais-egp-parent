@@ -15,6 +15,7 @@
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
+  <input type="hidden" id="oldAppSubmissionDto" value="${appSubmissionDto.oldAppSubmissionDto}">
   <c:set value="${applicationViewDto.applicationDto}" var="applicationDto"/>
   <c:choose>
     <c:when test="${applicationDto.applicationType == 'APTY001'}">
@@ -95,18 +96,21 @@
             var oldVal = $(this).attr('attr');
             var newEle = $(this).parent().prev().find('.' + newValClass);
             var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
-            if (oldVal.length > 0 && newVal.length > 0) {
-                if (oldVal != newVal) {
-                    $(this).show();
-                    var newHtml=$(this).parent().prev().find('.' + newValClass).html();
-                    var oldHtml=$(this).html();
-                    $(this).html(newHtml);
-                    $(this).parent().prev().find('.' + newValClass).html(oldHtml);
-                    $(this).attr("class","newVal compareTdStyle");
-                } else if(oldVal.length > 0 && newVal.length <= 0){
-                    $(this).hide();
+            if($('#oldAppSubmissionDto').val()!=null){
+                if (oldVal.length > 0 || newVal.length > 0) {
+                    if (oldVal != newVal) {
+                        $(this).show();
+                        var newHtml=$(this).parent().prev().find('.' + newValClass).html();
+                        var oldHtml=$(this).html();
+                        $(this).html(newHtml);
+                        $(this).parent().prev().find('.' + newValClass).html(oldHtml);
+                        $(this).attr("class","newVal compareTdStyle");
+                    } else if(oldVal.length > 0 && newVal.length <= 0){
+                        $(this).hide();
+                    }
                 }
             }
+
         });
     }
 
