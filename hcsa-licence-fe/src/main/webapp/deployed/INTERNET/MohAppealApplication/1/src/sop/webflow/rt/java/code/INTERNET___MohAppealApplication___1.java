@@ -51,4 +51,9 @@ public class INTERNET___MohAppealApplication___1 extends BaseProcessClass {
         EngineHelper.delegate(DELEGATOR, "inbox", this);
     }
 
+    public void step6_OnStepProcess_0() throws Exception {
+    // 		Step6->OnStepProcess
+        EngineHelper.delegate(DELEGATOR, "appealFrom", this);
+    }
+
 }

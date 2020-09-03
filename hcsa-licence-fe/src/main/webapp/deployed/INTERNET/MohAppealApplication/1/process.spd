@@ -2,14 +2,14 @@
 <Application defaultStart="/Steps/StartStep/Step1" dtdVersion="6.0" executable="true" majorVersion="1" minorVersion="0" name="MohAppealApplication" packageName="sop.webflow.rt.java.code" processType="normal" representingCitizen="false" transaction="enable">
  <WebServices/>
  <Steps>
-  <StartStep defClass="" executor="" icon="" name="Step1" x="100" y="120">
+  <StartStep defClass="" executor="" icon="" name="Step1" x="0" y="120">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="step1_OnStepProcess_0" name="step1_OnStepProcess_0"/>
    </OnStepProcess>
   </StartStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="220" y="120">
+  <AutomaticStep defClass="" executor="" icon="" name="Step2" x="110" y="120">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -50,16 +50,23 @@
     <JavaCode defClass="" executor="" methodName="step4_OnStepProcess_0" name="step4_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="Step5" x="310" y="320">
+  <AutomaticStep defClass="" executor="" icon="" name="Step5" x="220" y="350">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
     <JavaCode defClass="" executor="" methodName="step5_OnStepProcess_0" name="step5_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
+  <AutomaticStep defClass="" executor="" icon="" name="Step6" x="360" y="120">
+   <Description/>
+   <probepoint type="none"/>
+   <OnStepProcess>
+    <JavaCode defClass="" executor="" methodName="step6_OnStepProcess_0" name="step6_OnStepProcess_0"/>
+   </OnStepProcess>
+  </AutomaticStep>
  </Steps>
  <Pages>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="appealFrom" stageIndicator="" x="430" y="120">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="appealFrom" stageIndicator="" x="480" y="120">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -71,7 +78,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="inbox" stageIndicator="" x="500" y="400">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="inbox" stageIndicator="" x="430" y="350">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -81,10 +88,10 @@
  <Forms/>
  <Links>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step2" linkstyle="Direct" name="" sourceName="/Steps/StartStep/Step1" style="oblique">
-   <position>{(120,140)(240,140)}</position>
+   <position>{(20,140)(130,140)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step3" linkstyle="Direct" name="" sourceName="/Pages/WebPage/appealFrom" style="oblique">
-   <position>{(450,140)(600,150)}</position>
+   <position>{(500,140)(600,150)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/Step3" style="oblique">
    <position>{(600,150)(740,150)}</position>
@@ -102,7 +109,7 @@
    <position>{(740,150)(882,171)(810,330)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/appealFrom" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/save" style="oblique">
-   <position>{(630,280)(436,308)(450,140)}</position>
+   <position>{(630,280)(436,308)(500,140)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step4" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/appealSuccess" style="rectanular">
    <position>{(1100,220)(1140,330)}</position>
@@ -114,16 +121,19 @@
    <position>{(1060,420)(810,330)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/Step5" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(340,140)(330,340)}</position>
+   <position>{(240,140)(240,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/inbox" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step5" style="rectanular">
-   <position>{(330,340)(520,420)}</position>
+   <position>{(240,370)(450,370)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch3" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step2" style="rectanular">
-   <position>{(240,140)(340,140)}</position>
+   <position>{(130,140)(240,140)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/appealFrom" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
-   <position>{(340,140)(450,140)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/Step6" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch3" style="rectanular">
+   <position>{(240,140)(380,140)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Pages/WebPage/appealFrom" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/Step6" style="rectanular">
+   <position>{(380,140)(500,140)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -138,10 +148,10 @@
    <Description/>
    <SwitchCase component="/Steps/InvokeStep/cancel" value="&quot;cancel&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Pages/WebPage/appealFrom" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="320" y="120">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/Step6" executor="" icon="" leftOperand="crud_action_type" name="Switch3" x="220" y="120">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/Step5" value="&quot;inbox&quot;"/>
-   <SwitchCase component="/Pages/WebPage/appealFrom" value=""/>
+   <SwitchCase component="/Steps/AutomaticStep/Step6" value=""/>
   </Switch>
  </Switches>
  <Branches/>

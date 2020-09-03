@@ -58,10 +58,12 @@ public class AppealDelegator {
         }
         appealService.getMessage(bpc.request);
         log.info("end**************preparetionData************");
-
+        bpc. request.setAttribute("crud_action_type","");
     }
 
+    public void appealFrom(BaseProcessClass bpc){
 
+    }
     public void switchProcess(BaseProcessClass bpc ){
         log.info("start**************switchProcess************");
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);

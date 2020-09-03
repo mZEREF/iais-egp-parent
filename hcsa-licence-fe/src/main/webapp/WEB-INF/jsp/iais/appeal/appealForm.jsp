@@ -16,6 +16,7 @@
     <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
+    <input type="hidden" name="crud_action_type" value="">
     <input type="hidden" id="configFileSize" value="${configFileSize}"/>
 
   <div class="form-group">
