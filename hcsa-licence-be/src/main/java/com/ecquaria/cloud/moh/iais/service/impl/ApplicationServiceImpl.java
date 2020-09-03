@@ -60,6 +60,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -297,7 +299,7 @@ public class ApplicationServiceImpl implements ApplicationService {
                         }
                     }
 
-                    templateContent.put("serviceNames", svcNames);
+                    templateContent.put("serviceNames", svcNames.stream().distinct().collect(Collectors.toList()));
                 }
             } else {
                 // uncompleted self ass mt
@@ -324,13 +326,15 @@ public class ApplicationServiceImpl implements ApplicationService {
                 templateContent.put("serviceNames", svcNames);
             }
 
-            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + "/main-web/";
+            String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + "/main-web/";
             //EN-NAP-008
+            String today = Formatter.formatDate(new Date());
             String applicantName = licenseeDto.getName();
             templateContent.put("ApplicantName", StringUtil.viewHtml(applicantName));
             templateContent.put("MOH_AGENCY_NAME", "-");
             templateContent.put("emailAddress", systemParamConfig.getSystemAddressOne());
-            templateContent.put("tatTime", Formatter.formatDate(new Date()));
+            templateContent.put("tatTime", today);
+            templateContent.put("reminderDate", today);
             templateContent.put("systemLink", loginUrl);
             JobRemindMsgTrackingDto jobRemindMsgTrackingDto = new JobRemindMsgTrackingDto();
             jobRemindMsgTrackingDto.setMsgKey(i.getMsgTrackKey());
@@ -369,14 +373,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public void alertSelfDeclNotification() {
         log.info("===>>>>alertSelfDeclNotification start");
-        List<SelfAssMtEmailDto> email008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY).getEntity();
-        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, email008);
+        List<SelfAssMtEmailDto> email_008 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY).getEntity();
+        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY, MsgTemplateConstants.MSG_TEMPLATE_REMINDER_SELF_ASS_MT, email_008);
 
-        List<SelfAssMtEmailDto> email001 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR).getEntity();
-        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR, email001);
+        List<SelfAssMtEmailDto> email_001 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR).getEntity();
+        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_FIR, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_FIR, email_001);
 
-        List<SelfAssMtEmailDto> email002 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC).getEntity();
-        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC, email002);
+        List<SelfAssMtEmailDto> email_002 = applicationClient.getPendingSubmitSelfAss(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC).getEntity();
+        sendSelfDecl(HcsaChecklistConstants.SELF_ASS_MT_REMINDER__MSG_KEY_SEC, MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_REMINDER_SEC, email_002);
     }
 
     @Override
