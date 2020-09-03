@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class SyncFEAuditTrailBatchjob {
         log.info("-------------------   start --------------");
     }
 
-    public void preDate(BaseProcessClass bpc)  {
+    public void preDate(BaseProcessClass bpc) throws IOException {
 
         log.debug(StringUtil.changeForLog("The SyncFEAuditTrailBatchjob is start..." ));
         List<AuditTrailEntityDto> auditTrailDtos= syncAuditTrailRecordsService.getAuditTrailsByMigrated1();
