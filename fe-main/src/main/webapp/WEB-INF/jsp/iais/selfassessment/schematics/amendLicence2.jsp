@@ -6,12 +6,12 @@
     <div class="table-gp">
         <table class="table">
             <thead>
-            <tr align="center">
+            <tr >
                 <iais:sortableHeader needSort="true"  field="NAME" value="Name"/>
-                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises type"/>
-                <iais:sortableHeader needSort="false"  field="ADDRESS" value="Adderss"/>
+                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises Type"/>
+                <iais:sortableHeader needSort="false"  field="ADDRESS" value="Address"/>
                 <iais:sortableHeader needSort="true"  field="HCI_CONTACT_NO" value="Contact"/>
-                <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Actice Licence"/>
+                <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Active Licence"/>
             </tr>
             </thead>
             <tbody>
@@ -31,7 +31,17 @@
                                     <input id="licence${status.index + 1}" type="checkbox" name="rfc2LicIds" value="${pool.licenceId}"   >${pool.hciName}
                                 </label>
                             </td>
-                            <td>${pool.premisesType}</td>
+                            <td>
+                                <c:if test="${'ONSITE'==pool.premisesType}">
+                                    <c:out value="On-site"/>
+                                </c:if>
+                                <c:if test="${'CONVEYANCE'==pool.premisesType}">
+                                    <c:out value="Conveyance"/>
+                                </c:if>
+                                <c:if test="${'OFFSITE'==pool.premisesType}">
+                                    <c:out value="Off-site"/>
+                                </c:if>
+                            </td>
                             <td>${pool.address}</td>
                             <td>${pool.hciContactNo}</td>
                             <td>${pool.svcId}</td>

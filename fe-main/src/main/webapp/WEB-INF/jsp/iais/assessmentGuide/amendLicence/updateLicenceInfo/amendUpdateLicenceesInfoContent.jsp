@@ -6,12 +6,12 @@
     <div class="table-gp">
         <table class="table">
             <thead>
-            <tr align="center">
+            <tr >
                 <th></th>
                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name"/>
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."/>
-                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises type"/>
+                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises Type"/>
                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address"/>
             </tr>
             </thead>
@@ -47,7 +47,17 @@
                             <td><iais:code code="${pool.hciName}"/></td>
                             <td>${pool.svcId}</td>
                             <td>${pool.licenceNo}</td>
-                            <td>${pool.premisesType}</td>
+                            <td>
+                                <c:if test="${'ONSITE'==pool.premisesType}">
+                                    <c:out value="On-site"/>
+                                </c:if>
+                                <c:if test="${'CONVEYANCE'==pool.premisesType}">
+                                    <c:out value="Conveyance"/>
+                                </c:if>
+                                <c:if test="${'OFFSITE'==pool.premisesType}">
+                                    <c:out value="Off-site"/>
+                                </c:if>
+                            </td>
                             <td>${pool.address}</td>
                         </tr>
                     </c:forEach>

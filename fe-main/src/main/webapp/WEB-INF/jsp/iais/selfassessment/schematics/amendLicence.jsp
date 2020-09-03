@@ -21,7 +21,7 @@
                aria-invalid="false">
         <label class="form-check-label" for="amendLicence2">
             <span class="check-circle"></span>
-            <span class="left-content">Update Healthcare Institution(HCI) Information<a
+            <span class="left-content">Update Healthcare Institution (HCI) Information<a
                     class="btn-tooltip styleguide-tooltip"
                     data-toggle="tooltip" data-html="true"
                     title="" data-original-title='"Licensed Premises" means the premises specified in a licence as premises at which a licensable healthcare service may be provided. "Conveyance" means a Singapore registered vehicle that is used to provide a healthcare service in Singapore. "Non-premises based licensable healthcare service" means a licensable healthcare service that is provided outside of a licensed premises or a remote setting.'

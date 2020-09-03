@@ -15,7 +15,7 @@
     <div class="table-gp">
         <table class="table">
             <thead>
-            <tr align="center">
+            <tr >
                 <iais:sortableHeader needSort="true"  field="SVC_NAME" value="Type"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No."/>
                 <iais:sortableHeader needSort="true"  field="ROLE" value="Role"/>

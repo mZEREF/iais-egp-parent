@@ -3,7 +3,7 @@
 <div class="table-gp">
     <table class="table">
         <thead>
-        <tr align="center">
+        <tr >
             <th></th>
             <iais:sortableHeader needSort="true" field="APPLICATION_NO" value="Application Number"/>
             <iais:sortableHeader needSort="true" field="app_type" value="Type"/>

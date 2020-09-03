@@ -4,12 +4,12 @@
     <div class="table-gp">
         <table class="table">
             <thead>
-            <tr align="center">
+            <tr >
                 <th></th>
                 <iais:sortableHeader needSort="true"  field="HCI_NAME" value="HCI Name" style="width:15%"/>
                 <iais:sortableHeader needSort="true"  field="ADDR_TYPE" value="Type" style="width:15%"/>
                 <iais:sortableHeader needSort="true"  field="LICENCE_NO" value="Licence No." style="width:20%"/>
-                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises type" style="width:15%"/>
+                <iais:sortableHeader needSort="true"  field="PREMISES_TYPE" value="Premises Type" style="width:15%"/>
                 <iais:sortableHeader needSort="true"  field="ADDRESS" value="Address" style="width:30%"/>
             </tr>
             </thead>
@@ -44,10 +44,20 @@
                                     <input type="hidden" name="renew1LicenId${status.index}" value="<iais:mask name= "renew1LicenId${status.index}" value="${pool.licenceId}"/>"/>
                                 </div>
                             </td>
-                            <td>${pool.hciName}</td>
+                            <td>${pool.hciName}<c:if test="${empty pool.hciName}">N/A</c:if></td>
                             <td>${pool.svcId}</td>
                             <td>${pool.licenceNo}</td>
-                            <td>${pool.premisesType}</td>
+                            <td>
+                                <c:if test="${'ONSITE'==pool.premisesType}">
+                                    <c:out value="On-site"/>
+                                </c:if>
+                                <c:if test="${'CONVEYANCE'==pool.premisesType}">
+                                    <c:out value="Conveyance"/>
+                                </c:if>
+                                <c:if test="${'OFFSITE'==pool.premisesType}">
+                                    <c:out value="Off-site"/>
+                                </c:if>
+                            </td>
                             <td>${pool.address}</td>
                         </tr>
                     </c:forEach>
