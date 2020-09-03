@@ -114,24 +114,73 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
         if( appViewDto != null){
             LicPremisesAuditDto licPremisesAuditDto =  appViewDto.getLicPremisesAuditDto();
             if(licPremisesAuditDto != null){
+                boolean isFirstHaveIncRiskType = saveAuditIncRiskType(appViewDto.getAppPremisesCorrelationId(),licPremisesAuditDto.getLgrRemarks(),licPremisesAuditDto.getIncludeRiskType());
                 hcsaLicenceClient.createLicPremAudit(licPremisesAuditDto);
-                if(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY.equalsIgnoreCase(licPremisesAuditDto.getIncludeRiskType())){
-                    ApplicationGroupDto applicationGroupDto = appViewDto.getApplicationGroupDto();
-                    if(applicationGroupDto != null ){
-                        saveRimRiskCountByLicenseeId(applicationGroupDto.getLicenseeId());
+                ApplicationGroupDto applicationGroupDto = appViewDto.getApplicationGroupDto();
+                if(isFirstHaveIncRiskType){
+                    if(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY.equalsIgnoreCase(licPremisesAuditDto.getIncludeRiskType())){
+                        if(applicationGroupDto != null ){
+                            saveRimRiskCountByLicenseeId(applicationGroupDto.getLicenseeId(),true);
+                        }
+                    }
+                }else {
+                    if(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY.equalsIgnoreCase(licPremisesAuditDto.getIncludeRiskTypeOld())){
+                        //Bonus points were awarded last time.
+                        if( !ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY.equalsIgnoreCase(licPremisesAuditDto.getIncludeRiskType())){
+                            //need - 1
+                            if(applicationGroupDto != null ) {
+                                saveRimRiskCountByLicenseeId(applicationGroupDto.getLicenseeId(), false);
+                            }
+                        }
+                    }else {
+                        if(ApplicationConsts.INCLUDE_RISK_TYPE_LEADERSHIP_KEY.equalsIgnoreCase(licPremisesAuditDto.getIncludeRiskType())){
+                            if(applicationGroupDto != null ){
+                                saveRimRiskCountByLicenseeId(applicationGroupDto.getLicenseeId(),true);
+                            }
+                        }
                     }
                 }
+                licPremisesAuditDto.setIncludeRiskTypeOld(licPremisesAuditDto.getIncludeRiskType());
             }
         }
     }
 
+    private boolean saveAuditIncRiskType(String corrId,String remark,String incRiskType){
+        boolean isFirstHaveIncRiskType = false;
+        AppPremisesRecommendationDto appPremisesRecommendationDto =  fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(corrId,InspectionConstants.RECOM_TYPE_INSP_RISK_TYPE).getEntity();
+        if(appPremisesRecommendationDto != null){
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            fillUpCheckListGetAppClient.updateAppRecom(appPremisesRecommendationDto);
+            appPremisesRecommendationDto.setVersion( appPremisesRecommendationDto.getVersion()+1);
+        }else {
+            if(!StringUtil.isEmpty(incRiskType)){
+              return isFirstHaveIncRiskType;
+            }
+            appPremisesRecommendationDto = new AppPremisesRecommendationDto();
+            appPremisesRecommendationDto.setVersion(1);
+            isFirstHaveIncRiskType = true;
+        }
+        appPremisesRecommendationDto.setId(null);
+        appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+        appPremisesRecommendationDto.setRecomDecision(incRiskType);
+        appPremisesRecommendationDto.setRemarks(remark);
+        appPremisesRecommendationDto.setAppPremCorreId(corrId);
+        appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSP_RISK_TYPE);
+        appPremisesRecommendationDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        fillUpCheckListGetAppClient.saveAppRecom(appPremisesRecommendationDto);
+        return isFirstHaveIncRiskType;
+    }
     @Override
-    public void saveRimRiskCountByLicenseeId(String licenseeId) {
+    public void saveRimRiskCountByLicenseeId(String licenseeId,boolean isAdd) {
         RimRiskCountDto rimRiskCountDto = organizationClient.getUenRimRiskCountDtoByLicenseeId(licenseeId).getEntity();
         if( rimRiskCountDto == null){
          log.info(StringUtil.changeForLog("----------getUenRimRiskCountDtoByLicenseeId : " + licenseeId + " have no licensee."));
         }else {
-            rimRiskCountDto.setLeadshipGovAuditCount(rimRiskCountDto.getLeadshipGovAuditCount()+1);
+            if(isAdd){
+                rimRiskCountDto.setLeadshipGovAuditCount(rimRiskCountDto.getLeadshipGovAuditCount()+1);
+            }else {
+                rimRiskCountDto.setLeadshipGovAuditCount(rimRiskCountDto.getLeadshipGovAuditCount()-1);
+            }
             rimRiskCountDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             organizationClient.doRimRiskCountSave(rimRiskCountDto);
         }

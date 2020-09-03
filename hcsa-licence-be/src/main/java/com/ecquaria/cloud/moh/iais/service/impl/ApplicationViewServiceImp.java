@@ -223,6 +223,9 @@ public class ApplicationViewServiceImp implements ApplicationViewService {
             AppGrpPremisesDto appGrpPremisesDto =   inspectionTaskClient.getAppGrpPremisesDtoByAppGroId(appCorId).getEntity();
             if( appGrpPremisesDto != null){
                 LicPremisesAuditDto licPremisesAuditDto = hcsaLicenceClient.getLicPremisesAuditDtoByLicIdAndHCICode(applicationViewDto.getApplicationDto().getOriginLicenceId(),appGrpPremisesDto.getHciCode()).getEntity();
+                if(licPremisesAuditDto != null){
+                    licPremisesAuditDto.setIncludeRiskTypeOld(licPremisesAuditDto.getIncludeRiskType());
+                }
                 applicationViewDto.setLicPremisesAuditDto(licPremisesAuditDto);
             }
         }
