@@ -37,11 +37,9 @@
                 self_assmt_flag,
                 created_dt,
                 version
-            FROM APPLICATION AS app ) AS wapp
-            WHERE 1=1
-            <#if appTypes??> AND ${appTypes} </#if>
+            FROM APPLICATION AS app where app.app_type in ('APTY005','APTY002')) AS wapp
+            WHERE wapp.status in ('APST013','APST011','APST010','APST014','APST062')
             <#if licenseeId??> AND wapp.licensee_id = :licenseeId</#if>
-            <#if appStatus??> AND wapp.status = :appStatus</#if>
             <#if createDtStart??> AND wapp.created_dt > :createDtStart</#if>
         ]]>
     </sql>
@@ -79,7 +77,7 @@
             <#if licenseeId??> AND B.licensee_id = :licenseeId</#if>
             <#if serviceType??> AND B.service_id = :serviceType</#if>
             <#if appNo??> AND B.application_no like :appNo</#if>
-            <#if appStatus??> AND B.status = :appStatus</#if>
+            <#if appStatus??> AND ${appStatus}</#if>
             <#if createDtStart??> AND B.created_dt > :createDtStart</#if>
             <#if createDtEnd??> AND B.created_dt < :createDtEnd</#if>
         ]]>
@@ -163,29 +161,11 @@
     </sql>
     <sql remarks="Query" key="queryPremises">
         <![CDATA[
-                SELECT
-                    li.ID as LICENCE_ID,
-                    li.LICENCE_NO as LICENCE_NO,
-                    li.STATUS as LICENCE_STATUS,
-                    li.SVC_NAME as SVC_NAME,
-                    p.ID as PREMISES_ID,
-                    p.HCI_CODE ,
-                    p.HCI_NAME,
-                    p.HCI_CONTACT_NO,
-                    p.SCDF_REF_NO,
-                    p.CERT_ISSUED_DT,
-                    p.VEHICLE_NO,
-                    p.PREMISES_TYPE,
-                    p.POSTAL_CODE,
-                    p.ADDR_TYPE,
-                    p.BLK_NO,
-                    p.FLOOR_NO,
-                    p.UNIT_NO,
-                    p.STREET_NAME,
-                    p.BUILDING_NAME,
-                    p.VERSION,
-                    p.STATUS,
-	                ltrim(CONCAT(p.BLK_NO ,
+         SELECT li.ID as LICENCE_ID,li.LICENCE_NO as LICENCE_NO,li.STATUS as LICENCE_STATUS, li.SVC_NAME as SVC_NAME,
+                p.ID as PREMISES_ID, p.HCI_CODE , p.HCI_NAME, p.HCI_CONTACT_NO, p.SCDF_REF_NO,
+                 p.CERT_ISSUED_DT, p.VEHICLE_NO, p.PREMISES_TYPE, p.POSTAL_CODE, p.ADDR_TYPE,
+                  p.BLK_NO, p.FLOOR_NO, p.UNIT_NO, p.STREET_NAME, p.BUILDING_NAME, p.VERSION,
+                   p.STATUS, ltrim(CONCAT(p.BLK_NO ,
                        case p.STREET_NAME
                           when null then null
                           when '' then null
@@ -206,13 +186,17 @@
                           when null then null
                           when '' then null
                           else ', '+p.POSTAL_CODE end ))
-	               as address,
-                   p.ORGANIZATION_ID FROM
+	               as address,p.ORGANIZATION_ID FROM
                    licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
                    join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1
                    <#if licenseeId??> and li.LICENSEE_ID =:licenseeId </#if>
                    <#if type??> and p.PREMISES_TYPE=:type </#if> and
-                   li.STATUS ='LICEST001'
+                   li.STATUS ='LICEST001' and p.ID in (
+                   SELECT  max (p.ID) as PREMISES_ID FROM
+                   licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
+                   join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1
+                  <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>and
+                   li.STATUS ='LICEST001' group by p.HCI_CODE)
             ]]>
     </sql>
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
