@@ -281,6 +281,9 @@ public class InspRemindRecNcMesgBatchJob {
 
     private InspEmailFieldDto setFieldByItem(InspEmailFieldDto inspEmailFieldDto, ChecklistConfigDto checklistConfigDto, List<ChecklistItemDto> checklistItemDtos,
                                              String itemId, String beRemark) {
+        if(inspEmailFieldDto == null){
+            inspEmailFieldDto = new InspEmailFieldDto();
+        }
         boolean containFlag = false;
         for(ChecklistItemDto checklistItemDto : checklistItemDtos){
             if(itemId.equals(checklistItemDto.getItemId())){

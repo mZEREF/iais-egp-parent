@@ -192,9 +192,10 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         for(Map.Entry<String, List<ApptUserCalendarDto>> apptInspDateMap : apptFeConfirmDateDto.getApptInspDateMap().entrySet()){
             String apptRefNo = apptInspDateMap.getKey();
             List<ApptUserCalendarDto> apptUserCalendarDtoList = apptInspDateMap.getValue();
-            int timeSize = apptUserCalendarDtoList.get(0).getEndSlot().size();
-            Date startDate = apptUserCalendarDtoList.get(0).getStartSlot().get(0);
-            Date endDate = apptUserCalendarDtoList.get(0).getEndSlot().get(timeSize - 1);
+            ApptUserCalendarDto apptUserCalendarDto = getMaxDto(apptUserCalendarDtoList);
+            int timeSize = apptUserCalendarDto.getEndSlot().size();
+            Date startDate = apptUserCalendarDto.getStartSlot().get(0);
+            Date endDate = apptUserCalendarDto.getEndSlot().get(timeSize - 1);
             String inspStartDate = apptDateToStringShow(startDate);
             String inspEndDate = apptDateToStringShow(endDate);
             String dateStr = inspStartDate + " - " + inspEndDate;
@@ -210,6 +211,27 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
 
         apptFeConfirmDateDto.setInspectionDate(inspectionDate);
         apptFeConfirmDateDto.setInspectionDateMap(inspectionDateMap);
+    }
+
+    private ApptUserCalendarDto getMaxDto(List<ApptUserCalendarDto> apptUserCalendarDtoList) {
+        ApptUserCalendarDto apptUserCalendarDto = null;
+        int maxSize = 0;
+        for(int i = 0; i < apptUserCalendarDtoList.size(); i++){
+            if(apptUserCalendarDto == null){
+                apptUserCalendarDto = apptUserCalendarDtoList.get(i);
+                List<Date> startSlot = apptUserCalendarDto.getStartSlot();
+                maxSize = startSlot.size();
+            } else {
+                ApptUserCalendarDto aucDto = apptUserCalendarDtoList.get(i);
+                List<Date> startSlot = aucDto.getStartSlot();
+                int curSize = startSlot.size();
+                if(curSize > maxSize){
+                    maxSize = curSize;
+                    apptUserCalendarDto = aucDto;
+                }
+            }
+        }
+        return apptUserCalendarDto;
     }
 
     @Override
