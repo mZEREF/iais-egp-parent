@@ -87,6 +87,10 @@
         forwordMain("amendLic3_2");
     });
 
+    $("#amendLicence3_3").click(function(){
+        forwordMain("amendLic3_3");
+    });
+
     $("#amendLicence4_1").click(function(){
         forwordMain("amendLic4_1");
     });

@@ -14,7 +14,7 @@
             </div>
             <a class="btn-tooltip styleguide-tooltip" data-toggle="tooltip" data-html="true"
                title='<p>"Base Licence" is a licence that a licensee must have to provide a special licensable healthcare service. "Special Licensable Healthcare Services" are services where the licensee will require the relevant base licence in order to provide the service.</p>'
-               style="position: absolute;left: 330px; top: 55px;z-index: 10"
+               style="position: absolute;left: 340px; top: 55px;z-index: 10"
                data-original-title=""
                >i</a>
             <%--
@@ -45,7 +45,7 @@
                         <a class="btn-tooltip styleguide-tooltip"
                             data-toggle="tooltip" data-html="true"
                             title="" data-original-title='"Subsumed Service" is a service that does not have its own licence, but has regulatory requirements that will be issued under the relevant licensable healthcare service.'
-                            style="position: absolute;left: 189px; top: 12px;z-index: 10">i</a></span>
+                            style="position: absolute;left: 200px; top: 12px;z-index: 10">i</a></span>
                     <span class="right-content">For changes in address, personnel, or subsumed services</span>
                 </label>
             </div>
