@@ -19,6 +19,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistSectionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspEmailFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -27,6 +28,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
@@ -119,7 +121,7 @@ public class InspRemindRecNcMesgBatchJob {
                 if(jobRemindMsgTrackingDto2 == null) {
                     log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 null"));
                     JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 null"));
-                    inspectionDateSendEmail(licenseeId, applicationDto.getId(), applicationDto.getApplicationNo());
+                    inspectionDateSendEmail(licenseeId, applicationDto);
                     createJobRemindMsgTrackingDto(intranet, applicationDto.getApplicationNo());
                 } else {
                     Date createDate = jobRemindMsgTrackingDto2.getCreateTime();
@@ -130,7 +132,7 @@ public class InspRemindRecNcMesgBatchJob {
                     log.info(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
                     JobLogger.log(StringUtil.changeForLog("jobRemindMsgTrackingDto2 not null, nowDays = " + nowDays));
                     if(nowDays > days){
-                        inspectionDateSendEmail(licenseeId, applicationDto.getId(), applicationDto.getApplicationNo());
+                        inspectionDateSendEmail(licenseeId, applicationDto);
                         jobRemindMsgTrackingDto2.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                         jobRemindMsgTrackingDto2.setAuditTrailDto(intranet);
                         systemBeLicClient.updateJobRemindMsgTrackingDto(jobRemindMsgTrackingDto2);
@@ -157,7 +159,9 @@ public class InspRemindRecNcMesgBatchJob {
         systemBeLicClient.createJobRemindMsgTrackingDtos(jobRemindMsgTrackingDtos);
     }
 
-    private void inspectionDateSendEmail(String licenseeId, String appId, String appNo) {
+    private void inspectionDateSendEmail(String licenseeId, ApplicationDto applicationDto) {
+        String appId = applicationDto.getId();
+        String appNo = applicationDto.getApplicationNo();
         List<InspEmailFieldDto> inspEmailFieldDtos = getEmailFieldByAppId(appId);
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
         String licName = licenseeDto.getName();
@@ -190,6 +194,13 @@ public class InspRemindRecNcMesgBatchJob {
         msgParam.setReqRefNum(appNo);
         msgParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
         msgParam.setRefId(appNo);
+        //set svc code
+        List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
+        String serviceId = applicationDto.getServiceId();
+        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+        String serviceCode = hcsaServiceDto.getSvcCode();
+        serviceCodes.add(serviceCode);
+        msgParam.setSvcCodeList(serviceCodes);
         notificationHelper.sendNotification(msgParam);
     }
 
