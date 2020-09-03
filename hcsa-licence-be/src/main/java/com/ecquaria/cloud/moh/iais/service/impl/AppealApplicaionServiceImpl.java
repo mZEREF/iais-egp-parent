@@ -2,13 +2,12 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppealApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
-import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.AppealApplicaionService;
 import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import com.ecquaria.cloud.moh.iais.util.EicUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +42,7 @@ public class AppealApplicaionServiceImpl implements AppealApplicaionService {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         AppEicRequestTrackingDto appEicRequestTrackingDto = getAppEicRequestTrackingDtoByRefNo(eventRefNum);
-        AppealApplicationDto appealApplicationDto = getObjectApp(appEicRequestTrackingDto,AppealApplicationDto.class);
+        AppealApplicationDto appealApplicationDto = EicUtil.getObjectApp(appEicRequestTrackingDto,AppealApplicationDto.class);
         if(appealApplicationDto!=null){
             appealApplicationDto = beEicGatewayClient.updateAppealApplication(appealApplicationDto, signature.date(), signature.authorization(),
                     signature2.date(), signature2.authorization()).getEntity();
@@ -57,16 +56,5 @@ public class AppealApplicaionServiceImpl implements AppealApplicaionService {
     public AppEicRequestTrackingDto getAppEicRequestTrackingDtoByRefNo(String refNo) {
         return appealClient.getAppEicRequestTrackingDto(refNo).getEntity();
     }
-    private <T> T getObjectApp(AppEicRequestTrackingDto appEicRequestTrackingDto, Class<T> cls){
-        T result = null;
-        if(appEicRequestTrackingDto!=null){
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                result = mapper.readValue(appEicRequestTrackingDto.getDtoObj(), cls);
-            } catch (IOException e) {
-                log.error(StringUtil.changeForLog(e.getMessage()),e);
-            }
-        }
-        return  result;
-    }
+
 }

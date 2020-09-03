@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -25,5 +26,8 @@ public interface AppealClient {
 
     @RequestMapping(path = "/app-eic-request-tracking/{eventRefNo}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppEicRequestTrackingDto> getAppEicRequestTrackingDto(@PathVariable(name = "eventRefNo") String eventRefNo);
+
+    @RequestMapping(path = "/app-eic-request-tracking/app-eic-request-tracking",method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<AppEicRequestTrackingDto> updateAppEicRequestTracking(@RequestBody AppEicRequestTrackingDto appEicRequestTrackingDto);
 
 }

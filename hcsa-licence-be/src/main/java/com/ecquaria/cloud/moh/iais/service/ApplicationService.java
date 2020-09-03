@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
@@ -61,4 +62,6 @@ public interface ApplicationService {
     List<AppEditSelectDto>  getAppEditSelectDtosByAppIds( List<String> applicationIds);
 
     boolean closeTaskWhenWhAppApprove(String appId);
+
+    EventApplicationGroupDto updateFEApplicationStatus(String eventRefNum, String submissionId);
 }

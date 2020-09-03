@@ -14,8 +14,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremiseMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEditSelectDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppEicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.EventApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.SelfAssMtEmailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -24,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.JobRemindMsgTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -33,14 +36,15 @@ import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
+import com.ecquaria.cloud.moh.iais.service.AppealApplicaionService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
+import com.ecquaria.cloud.moh.iais.service.client.AppealClient;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import com.ecquaria.cloud.moh.iais.service.client.BeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
@@ -48,18 +52,18 @@ import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.TaskOrganizationClient;
+import com.ecquaria.cloud.moh.iais.util.EicUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * ApplicationServiceImpl
@@ -102,6 +106,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private EicClient eicClient;
+
+    @Autowired
+    private AppealApplicaionService appealApplicaionService;
+    @Autowired
+    private AppealClient appealClient;
 
     @Value("${spring.application.name}")
     private String currentApp;
@@ -541,6 +550,45 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
         return result;
+    }
+
+    @Override
+    public EventApplicationGroupDto updateFEApplicationStatus(String eventRefNum, String submissionId) {
+        log.info(StringUtil.changeForLog("The updateFEApplicationStatus start ..."));
+        log.info(StringUtil.changeForLog("The updateFEApplicationStatus eventRefNum is -->:"+eventRefNum));
+        EventApplicationGroupDto eventApplicationGroupDto = null;
+        if(!StringUtil.isEmpty(eventRefNum)){
+            AppEicRequestTrackingDto appEicRequestTrackingDto = appealApplicaionService.getAppEicRequestTrackingDtoByRefNo(eventRefNum);
+            if(appEicRequestTrackingDto!=null){
+                 eventApplicationGroupDto = EicUtil.getObjectApp(appEicRequestTrackingDto,EventApplicationGroupDto.class);
+                if(eventApplicationGroupDto!= null){
+                    List<ApplicationDto> applicationDto = eventApplicationGroupDto.getApplicationDto();
+                    if(!IaisCommonUtils.isEmpty(applicationDto)){
+                       for (ApplicationDto applicationDto1 : applicationDto){
+                           eicCallFeApplication(applicationDto1);
+                       }
+                    }else{
+                        log.error(StringUtil.changeForLog("This applicationDto is null "));
+                    }
+                }else{
+                    log.error(StringUtil.changeForLog("This eventReo can not get the EventApplicationGroupDto -->:"+eventRefNum));
+                }
+                appEicRequestTrackingDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
+                appealClient.updateAppEicRequestTracking(appEicRequestTrackingDto);
+            }else{
+                log.error(StringUtil.changeForLog("This eventReo can not get the AppEicRequestTrackingDto -->:"+eventRefNum));
+            }
+        }
+        log.info(StringUtil.changeForLog("The updateFEApplicationStatus end ..."));
+        return eventApplicationGroupDto;
+    }
+
+
+    public void eicCallFeApplication(ApplicationDto dto) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        beEicGatewayClient.updateApplication(dto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
     }
 
     @Override

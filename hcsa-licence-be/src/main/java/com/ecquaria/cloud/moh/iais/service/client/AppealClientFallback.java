@@ -26,4 +26,10 @@ public class AppealClientFallback {
         entity.setHeaders(headers);
         return entity;
     }
+    FeignResponseEntity<AppEicRequestTrackingDto> updateAppEicRequestTracking(AppEicRequestTrackingDto appEicRequestTrackingDto){
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
 }

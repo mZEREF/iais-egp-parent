@@ -125,6 +125,9 @@ public class EventbusCallBackDelegate {
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.LicenceServiceImpl",
                     "createFESuperLicDto");
+            invokeMethod(submissionId, eventRefNum,
+                    "com.ecquaria.cloud.moh.iais.service.impl.ApplicationServiceImpl",
+                    "eicCallFeApplication");
         } else if (EventBusConsts.OPERATION_LICENCE_SAVE_APPEAL.equals(operation)) {
             invokeMethod(submissionId, eventRefNum,
                     "com.ecquaria.cloud.moh.iais.service.impl.AppealServiceImpl",
