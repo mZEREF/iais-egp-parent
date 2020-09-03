@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
@@ -41,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -291,6 +293,12 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             map.put("EDITSELECT","");
             map.put("A_HREF",url);
             map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
+            //set svc code
+            List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
+            String serviceId = applicationDto.getServiceId();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+            String serviceCode = hcsaServiceDto.getSvcCode();
+            serviceCodes.add(serviceCode);
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RFI);
             emailParam.setTemplateContent(map);
@@ -299,6 +307,7 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
             emailParam.setQueryCode(applicationNo);
             emailParam.setReqRefNum(applicationNo);
             emailParam.setRefId(applicationNo);
+            emailParam.setSvcCodeList(serviceCodes);
             emailParam.setSubject("MOH HALP - Request for information for Application Number " + applicationNo);
             notificationHelper.sendNotification(emailParam);
 
