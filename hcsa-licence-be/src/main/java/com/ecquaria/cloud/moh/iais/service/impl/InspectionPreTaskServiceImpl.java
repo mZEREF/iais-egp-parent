@@ -44,6 +44,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -310,6 +311,11 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             map.put("EDITSELECT","");
             map.put("A_HREF",url);
             map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
+            List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
+            String serviceId = applicationDto.getServiceId();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+            String serviceCode = hcsaServiceDto.getSvcCode();
+            serviceCodes.add(serviceCode);
             EmailParam emailParam = new EmailParam();
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RFI);
             emailParam.setMaskParams(maskParams);
@@ -318,6 +324,7 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
             emailParam.setReqRefNum(applicationNo);
             emailParam.setTemplateContent(map);
             emailParam.setRefId(applicationNo);
+            emailParam.setSvcCodeList(serviceCodes);
             emailParam.setSubject("MOH HALP - Request for information for Application Number " + applicationNo);
             notificationHelper.sendNotification(emailParam);
         }
