@@ -92,7 +92,6 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
 
                     ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
-                        //check file is changed
                         try (InputStream is= Files.newInputStream(fil.toPath());
                              ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                             int count;
@@ -113,10 +112,15 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                             log.error(e.getMessage(),e);
                             continue;
                         }
+                        String refId = processFileTrackDto.getRefId();
+                        CheckedInputStream cos=null;
+                        BufferedInputStream bis=null;
+                        BufferedOutputStream bos=null;
+                        OutputStream os=null;
                         try (ZipFile zipFile=new ZipFile(path);)  {
                             for(Enumeration<? extends ZipEntry> entries = zipFile.entries(); entries.hasMoreElements();){
                                 ZipEntry zipEntry = entries.nextElement();
-                                zipFile(zipEntry,zipFile,name);
+                                zipFile(zipEntry,os,bos,zipFile,bis,cos,name,refId);
                             }
 
                         } catch (IOException e) {
@@ -124,7 +128,6 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                         }
 
                         try {
-                            String refId = processFileTrackDto.getRefId();
                             String submissionId = generateIdClient.getSeqId().getEntity();
                             this.download(processFileTrackDto,name,refId,submissionId);
                             //save success
@@ -137,24 +140,22 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
             }
         }
     }
-    private void zipFile( ZipEntry zipEntry, ZipFile zipFile, String fileName)  {
-        OutputStream os = null;
-        BufferedOutputStream bos = null;
-        BufferedInputStream bis = null;
-        CheckedInputStream cos = null;
+    private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName,String refId)  {
+
+
         try {
             if(!zipEntry.getName().endsWith(File.separator)){
 
                 String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+substring);
+                File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+substring);
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os = Files.newOutputStream(Paths.get(sharedPath + File.separator + RequestForInformationConstants.COMPRESS + File.separator + fileName + File.separator + zipEntry.getName()));
-                bos = new BufferedOutputStream(os);
-                InputStream is = zipFile.getInputStream(zipEntry);
-                bis = new BufferedInputStream(is);
-                cos = new CheckedInputStream(bis,new CRC32());
+                os= Files.newOutputStream(Paths.get(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+zipEntry.getName()));
+                bos=new BufferedOutputStream(os);
+                InputStream is=zipFile.getInputStream(zipEntry);
+                bis=new BufferedInputStream(is);
+                cos=new CheckedInputStream(bis,new CRC32());
                 byte []b=new byte[1024];
                 int count =0;
                 count=cos.read(b);
@@ -165,7 +166,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
 
             }else {
 
-                new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
+                new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+zipEntry.getName()).mkdirs();
             }
         }catch (IOException e){
 
