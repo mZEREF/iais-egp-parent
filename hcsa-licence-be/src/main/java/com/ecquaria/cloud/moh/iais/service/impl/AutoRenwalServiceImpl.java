@@ -268,6 +268,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(licenceId);
                     messageParam.setSubject(subject);
+                    messageParam.setSvcCodeList(serviceCodeList);
                     log.info(StringUtil.changeForLog("send renewal application message"));
                     notificationHelper.sendNotification(messageParam);
                     log.info(StringUtil.changeForLog("send renewal application notification end"));
@@ -328,6 +329,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     messageParam.setQueryCode(licenceId);
                     messageParam.setReqRefNum(licenceId);
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+                    messageParam.setSvcCodeList(serviceCodeList);
 
                     messageParam.setRefId(licenceId);
                     messageParam.setSubject(subject);
