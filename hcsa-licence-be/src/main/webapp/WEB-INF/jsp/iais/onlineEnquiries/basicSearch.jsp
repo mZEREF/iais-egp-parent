@@ -38,7 +38,7 @@
                                 <div class="panel-main-content">
                                     <iais:section title="" id = "supPoolList">
                                         <iais:row>
-                                            <iais:field value="Search No"/>
+                                            <iais:field value="Keyword search or part of"/>
                                             <iais:value width="18">
                                                 <label>
                                                     <input type="text"  style="width:180%; font-weight:normal;" name="searchNo" maxlength="100" value="${searchNo}" />
