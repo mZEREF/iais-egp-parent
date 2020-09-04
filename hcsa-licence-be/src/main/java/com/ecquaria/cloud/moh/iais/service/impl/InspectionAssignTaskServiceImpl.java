@@ -510,6 +510,10 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                     if (inspectorCheckList != null && inspectorCheckList.size() > 0) {
                         for (int i = 0; i < inspectorCheckList.size(); i++) {
                             if (ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(applicationDto.getStatus())) {
+                                String fastTrack = inspecTaskCreAndAssDto.getFastTrackCheck();
+                                if(!StringUtil.isEmpty(fastTrack)){
+                                    applicationDto.setFastTracking(true);
+                                }
                                 ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                                 applicationService.updateFEApplicaiton(applicationDto1);
                                 inspecTaskCreAndAssDto.setApplicationStatus(applicationDto1.getStatus());
