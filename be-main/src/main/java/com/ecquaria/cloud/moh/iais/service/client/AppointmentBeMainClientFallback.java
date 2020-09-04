@@ -5,11 +5,11 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonAvailabilityDat
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptNonWorkingDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.PublicHolidayDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import org.springframework.http.HttpHeaders;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * @Author: Hc
@@ -75,6 +75,14 @@ public class AppointmentBeMainClientFallback implements AppointmentBeMainClient 
 
     @Override
     public FeignResponseEntity<Map<Integer, Integer>> getWorkAndNonMap(List<Date> dates) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<Void> cancelTemp(@PathVariable("hours") int hours) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
