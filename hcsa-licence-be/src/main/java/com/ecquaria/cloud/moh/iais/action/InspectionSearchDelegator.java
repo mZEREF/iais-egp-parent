@@ -4,6 +4,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -29,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InspectionAssignTaskService;
 import com.ecquaria.cloud.moh.iais.service.InspectionService;
+import com.ecquaria.cloud.moh.iais.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
@@ -57,10 +59,15 @@ public class InspectionSearchDelegator {
     private ApplicationViewService applicationViewService;
 
     @Autowired
-    private InspectionSearchDelegator(InspectionService inspectionService, ApplicationViewService applicationViewService, InspectionAssignTaskService inspectionAssignTaskService){
+    private TaskService taskService;
+
+    @Autowired
+    private InspectionSearchDelegator(InspectionService inspectionService, ApplicationViewService applicationViewService,
+                                      InspectionAssignTaskService inspectionAssignTaskService, TaskService taskService){
         this.inspectionService = inspectionService;
         this.applicationViewService = applicationViewService;
         this.inspectionAssignTaskService = inspectionAssignTaskService;
+        this.taskService = taskService;
     }
 
     /**
@@ -493,7 +500,13 @@ public class InspectionSearchDelegator {
         InspectionTaskPoolListDto inspectionTaskPoolListDto = (InspectionTaskPoolListDto)ParamUtil.getSessionAttr(bpc.request, "inspectionTaskPoolListDto");
         List<TaskDto> superPool =(List<TaskDto>)ParamUtil.getSessionAttr(bpc.request, "superPool");
         String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
-        inspectionService.routingTaskByPool(inspectionTaskPoolListDto, superPool, internalRemarks);
+        String taskId = inspectionTaskPoolListDto.getTaskId();
+        TaskDto taskDto = taskService.getTaskById(taskId);
+        if(TaskConsts.TASK_STATUS_COMPLETED.equals(taskDto.getTaskStatus()) || TaskConsts.TASK_STATUS_REMOVE.equals(taskDto.getTaskStatus())){
+            ParamUtil.setRequestAttr(bpc.request,"taskHasBeenAssigned", AppConsts.TRUE);
+        } else {
+            inspectionService.routingTaskByPool(inspectionTaskPoolListDto, superPool, internalRemarks);
+        }
         ParamUtil.setSessionAttr(bpc.request,"inspectionTaskPoolListDto", inspectionTaskPoolListDto);
         ParamUtil.setSessionAttr(bpc.request, "superPool", (Serializable) superPool);
     }
