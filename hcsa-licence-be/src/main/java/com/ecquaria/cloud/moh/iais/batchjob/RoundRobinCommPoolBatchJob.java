@@ -71,6 +71,7 @@ import com.ecquaria.cloudfeign.FeignResponseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import sop.util.CopyUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import java.text.ParseException;
@@ -178,6 +179,12 @@ public class RoundRobinCommPoolBatchJob {
           for (TaskDto taskDto : taskDtoList){
               if(!RoleConsts.USER_ROLE_BROADCAST.equals(taskDto.getRoleId())){
                   try{
+                      //completed the old task
+                      TaskDto oldTaskDto = (TaskDto) CopyUtil.copyMutableObject(taskDto);
+                      oldTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_REMOVE);
+                      oldTaskDto = taskService.updateTask(oldTaskDto);
+                      log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob update old task status"));
+
                       String workGroupId = taskDto.getWkGrpId();
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
