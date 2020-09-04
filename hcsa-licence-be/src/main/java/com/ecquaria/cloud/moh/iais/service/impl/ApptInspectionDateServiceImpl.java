@@ -801,6 +801,8 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                         }
                     }
                     appPremInspApptDto.setAuditTrailDto(auditTrailDto);
+                    appPremInspApptDto.setReschedulingCount(appPremInspApptDto1.getReschedulingCount());
+
                     appPremisesInspecApptDtoCreateList.add(appPremInspApptDto);
                 }
             }
