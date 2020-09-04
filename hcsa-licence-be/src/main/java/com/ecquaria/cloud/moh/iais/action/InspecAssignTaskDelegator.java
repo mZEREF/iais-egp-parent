@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
@@ -9,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.PoolRoleCheckDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
@@ -190,6 +192,9 @@ public class InspecAssignTaskDelegator {
             String taskId = map.get(appCorrelationId);
             inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
             inspecTaskCreAndAssDto.setTaskId(taskId);
+            ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            //set fastTrackFlag
+            inspecTaskCreAndAssDto = setFastTrackFlag(inspecTaskCreAndAssDto, applicationDto);
             inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(appCorrelationId, commPools, loginContext, inspecTaskCreAndAssDto);
             ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
             ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
@@ -197,6 +202,16 @@ public class InspecAssignTaskDelegator {
 
         ParamUtil.setSessionAttr(bpc.request,"inspecTaskCreAndAssDto", inspecTaskCreAndAssDto);
         ParamUtil.setSessionAttr(bpc.request,"cPoolSearchResult", searchResult);
+    }
+
+    private InspecTaskCreAndAssDto setFastTrackFlag(InspecTaskCreAndAssDto inspecTaskCreAndAssDto, ApplicationDto applicationDto) {
+        boolean fastTrackFlag = false;
+        String appStatus = applicationDto.getStatus();
+        if(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT.equals(appStatus)){
+            fastTrackFlag = true;
+        }
+        inspecTaskCreAndAssDto.setFastTrackFlag(fastTrackFlag);
+        return inspecTaskCreAndAssDto;
     }
 
     /**
@@ -241,6 +256,12 @@ public class InspecAssignTaskDelegator {
         if(RoleConsts.USER_ROLE_INSPECTION_LEAD.equals(loginContext.getCurRoleId()) || RoleConsts.USER_ROLE_INSPECTIOR.equals(loginContext.getCurRoleId())){
             String inspManHours = ParamUtil.getRequestString(bpc.request, "inspManHours");
             inspecTaskCreAndAssDto.setInspManHours(inspManHours);
+        }
+        String[] fastTrackCommon = ParamUtil.getStrings(bpc.request, "fastTrackCommon");
+        if(fastTrackCommon != null && fastTrackCommon.length > 0){
+            inspecTaskCreAndAssDto.setFastTrackCheck(AppConsts.TRUE);
+        } else {
+            inspecTaskCreAndAssDto.setFastTrackCheck(null);
         }
         SelectOption so = new SelectOption(loginContext.getUserId(), "text");
         List<SelectOption> inspectorCheckList = IaisCommonUtils.genNewArrayList();

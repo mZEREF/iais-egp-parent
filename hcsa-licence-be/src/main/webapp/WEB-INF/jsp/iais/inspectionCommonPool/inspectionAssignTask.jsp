@@ -88,6 +88,17 @@
                     </div>
                   </div>
                   <p></p>
+                  <c:if test="${inspecTaskCreAndAssDto.fastTrackFlag}">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <label style="font-size: 16px">Fast Tracking?</label>
+                      </div>
+                      <div class="col-md-6">
+                        <input type="checkbox" value="true" name="fastTrackCommon" <c:if test="${'true' eq inspecTaskCreAndAssDto.fastTrackCheck}">checked="checked"</c:if>/>
+                      </div>
+                    </div>
+                    <p></p>
+                  </c:if>
                   <c:if test="${'INSPECTOR' eq iais_Login_User_Info_Attr.curRoleId || 'INSPECTOR_LEAD' eq iais_Login_User_Info_Attr.curRoleId}">
                     <div class="row">
                       <div class="col-md-2">
