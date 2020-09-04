@@ -6,6 +6,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.interfaces.CustomizeValidator;
 import com.ecquaria.cloud.moh.iais.helper.FileUtils;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -50,17 +51,20 @@ public class WithdrawnValidate implements CustomizeValidator {
                     }
                 }
                 if (!result){
+
                     errorMap.put("withdrawalFile", "The file type is incorrect.");
                 }
             }
         }
         if (StringUtil.isEmpty(withdrawnReason)) {
-            errorMap.put("withdrawnReason", "ERR0009");
+            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks for Withdrawal","field");
+            errorMap.put("withdrawnReason", errMsg);
         }
         if ("WDR005".equals(withdrawnReason)) {
             String withdrawnRemarks = ParamUtil.getRequestString(mulReq, "withdrawnRemarks");
             if (StringUtil.isEmpty(withdrawnRemarks)) {
-                errorMap.put("withdrawnRemarks", "ERR0009");
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks for Withdrawal", "field");
+                errorMap.put("withdrawnRemarks", errMsg);
             }
         }
         return errorMap;

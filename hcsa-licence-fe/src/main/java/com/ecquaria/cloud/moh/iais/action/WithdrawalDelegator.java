@@ -166,7 +166,7 @@ public class WithdrawalDelegator {
                 }
                 ValidationResult validationResult = WebValidationHelper.validateProperty(withdrawnDto,"save");
                 if(!remarkEmpty){
-                    validationResult.addMessage("withdrawnRemarks",MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks","field"));
+                    validationResult.addMessage("withdrawnRemarks",MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks for Withdrawal","field"));
                 }
                 if(validationResult != null && validationResult.isHasErrors()){
                     Map<String, String> errorMap = validationResult.retrieveAll();
