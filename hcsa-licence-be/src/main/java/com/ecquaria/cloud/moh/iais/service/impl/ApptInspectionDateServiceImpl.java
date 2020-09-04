@@ -546,7 +546,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         //send email
-        Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, licenseeId, applicationViewDto, urlId);
+        Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, licenseeId, applicationViewDto, urlId, applicationDtos);
         createMessage(url, applicationNo, maskParams, map, applicationDtos);
         //update app Info and insp Info
         updateStatusAndCreateHistory(apptInspectionDateDto.getTaskDtos(), InspectionConstants.INSPECTION_STATUS_PENDING_APPLICANT_CHECK_SPECIFIC_INSP_DATE, InspectionConstants.PROCESS_DECI_ASSIGN_SPECIFIC_DATE);
@@ -626,7 +626,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         //send email
-        Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, licenseeId, applicationViewDto, urlId);
+        Map<String, Object> map = inspectionDateSendEmail(inspDate, loginUrl, licenseeId, applicationViewDto, urlId, applicationDtos);
         //get service code to send message
         createMessage(url, applicationNo, maskParams, map, applicationDtos);
         //save data to app table
@@ -1001,7 +1001,17 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         appInspectionStatusClient.update(appInspectionStatusDto);
     }
 
-    private Map<String, Object> inspectionDateSendEmail(Date inspecDate, String url, String licenseeId, ApplicationViewDto applicationViewDto, String appPremCorrId) {
+    private Map<String, Object> inspectionDateSendEmail(Date inspecDate, String url, String licenseeId, ApplicationViewDto applicationViewDto,
+                                                        String appPremCorrId, List<ApplicationDto> applicationDtos) {
+        StringBuilder appNoShow = new StringBuilder();
+        for(ApplicationDto applicationDto : applicationDtos){
+            if(StringUtil.isEmpty(appNoShow.toString())){
+                appNoShow.append(applicationDto.getApplicationNo());
+            } else {
+                appNoShow.append(" and ");
+                appNoShow.append(applicationDto.getApplicationNo());
+            }
+        }
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
         String licName = licenseeDto.getName();
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
@@ -1029,7 +1039,7 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
         map.put("applicant", licName);
         String appTypeShow = MasterCodeUtil.getCodeDesc(appType);
         map.put("applicationType", appTypeShow);
-        map.put("applicationNo", appNo);
+        map.put("applicationNo", appNoShow.toString());
         map.put("submitDate", strSubmitDt);
         map.put("hciName", hciName);
         map.put("hciCode", hciCode);
