@@ -115,14 +115,10 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                             continue;
                         }
                         String refId = processFileTrackDto.getRefId();
-                        CheckedInputStream cos=null;
-                        BufferedInputStream bis=null;
-                        BufferedOutputStream bos=null;
-                        OutputStream os=null;
                         try (ZipFile zipFile=new ZipFile(path);)  {
                             for(Enumeration<? extends ZipEntry> entries = zipFile.entries(); entries.hasMoreElements();){
                                 ZipEntry zipEntry = entries.nextElement();
-                                zipFile(zipEntry,os,bos,zipFile,bis,cos,name,refId);
+                                zipFile(zipEntry,zipFile,name);
                             }
 
                         } catch (IOException e) {
@@ -141,22 +137,24 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
             }
         }
     }
-    private void zipFile( ZipEntry zipEntry, OutputStream os,BufferedOutputStream bos,ZipFile zipFile ,BufferedInputStream bis,CheckedInputStream cos,String fileName,String refId)  {
-
-
+    private void zipFile( ZipEntry zipEntry, ZipFile zipFile, String fileName)  {
+        OutputStream os = null;
+        BufferedOutputStream bos = null;
+        BufferedInputStream bis = null;
+        CheckedInputStream cos = null;
         try {
             if(!zipEntry.getName().endsWith(File.separator)){
 
                 String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+substring);
+                File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+substring);
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os= Files.newOutputStream(Paths.get(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+zipEntry.getName()));
-                bos=new BufferedOutputStream(os);
-                InputStream is=zipFile.getInputStream(zipEntry);
-                bis=new BufferedInputStream(is);
-                cos=new CheckedInputStream(bis,new CRC32());
+                os = Files.newOutputStream(Paths.get(sharedPath + File.separator + RequestForInformationConstants.COMPRESS + File.separator + fileName + File.separator + zipEntry.getName()));
+                bos = new BufferedOutputStream(os);
+                InputStream is = zipFile.getInputStream(zipEntry);
+                bis = new BufferedInputStream(is);
+                cos = new CheckedInputStream(bis,new CRC32());
                 byte []b=new byte[1024];
                 int count =0;
                 count=cos.read(b);
@@ -167,7 +165,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
 
             }else {
 
-                new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+zipEntry.getName()).mkdirs();
+                new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
             }
         }catch (IOException e){
             log.error(e.getMessage(),e);
