@@ -801,8 +801,13 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
                         }
                     }
                     appPremInspApptDto.setAuditTrailDto(auditTrailDto);
-                    appPremInspApptDto.setReschedulingCount(appPremInspApptDto1.getReschedulingCount());
-
+                    //get Max Rescheduling Version
+                    Integer integer = applicationClient.getMaxReschedulingVersion(appPremCorrId).getEntity();
+                    if(integer == null) {
+                        appPremInspApptDto.setReschedulingCount(0);
+                    } else {
+                        appPremInspApptDto.setReschedulingCount(integer);
+                    }
                     appPremisesInspecApptDtoCreateList.add(appPremInspApptDto);
                 }
             }

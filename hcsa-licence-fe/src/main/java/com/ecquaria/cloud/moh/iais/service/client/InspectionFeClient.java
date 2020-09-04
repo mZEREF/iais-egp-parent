@@ -40,6 +40,9 @@ public interface InspectionFeClient {
     @GetMapping(value = "/iais-appt-inspec-fe/appt-systemdate-dto/{appPremCorrId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppPremisesInspecApptDto>> getSystemDtosByAppPremCorrId(@PathVariable(name = "appPremCorrId")String appPremCorrId);
 
+    @GetMapping(value = "/iais-appt-inspec-fe/rescheduling-max-version/{appPremCorrId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<Integer> getMaxReschedulingVersion(@PathVariable(name = "appPremCorrId")String appPremCorrId);
+
     @DeleteMapping(value = "/iais-inspection-fe/file-report-did/{fileId}",produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<String> deleteByFileReportId(@PathVariable(name = "fileId") String fileId);

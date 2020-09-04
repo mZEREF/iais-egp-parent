@@ -55,6 +55,14 @@ public class InspectionFeClientFallback implements InspectionFeClient {
     }
 
     @Override
+    public FeignResponseEntity<Integer> getMaxReschedulingVersion(String appPremCorrId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<String> deleteByFileReportId(String fileId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
