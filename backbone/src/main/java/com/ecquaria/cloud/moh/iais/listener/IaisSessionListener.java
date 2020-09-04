@@ -23,16 +23,15 @@ public class IaisSessionListener {
     @EventListener(SessionCreatedEvent.class)
     @Async
     public void sessionCreatedEvent(SessionCreatedEvent sessionEvent) {
-        LoginContext loginContext = sessionEvent.getSession().getAttribute(AppConsts.SESSION_ATTR_LOGIN_USER);
         log.info(StringUtil.changeForLog("<==== Session created ====> "
-                + (loginContext == null ? "N.A." : loginContext.getLoginId())));
+                + sessionEvent.getSession().getId()));
     }
 
     @EventListener(SessionExpiredEvent.class)
     public void sessionExpiredEvent(SessionExpiredEvent sessionEvent) {
         LoginContext loginContext = sessionEvent.getSession().getAttribute(AppConsts.SESSION_ATTR_LOGIN_USER);
         log.info(StringUtil.changeForLog("<==== Session timeout ====> "
-                + (loginContext == null ? "N.A." : loginContext.getLoginId())));
+                + sessionEvent.getSession().getId()));
     }
 
     @EventListener(SessionDeletedEvent.class)
