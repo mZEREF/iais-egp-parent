@@ -170,7 +170,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                 new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+refId+File.separator+zipEntry.getName()).mkdirs();
             }
         }catch (IOException e){
-
+            log.error(e.getMessage(),e);
         }finally {
             if(cos!=null){
                 try {
