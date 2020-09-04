@@ -43,7 +43,7 @@ public class WithdrawnValidate implements CustomizeValidator {
                 String fileTypeStr = systemParamConfig.getUploadFileType();
                 String[] fileArray = FileUtils.fileTypeToArray(fileTypeStr);
                 String[] fileSplit = fileName .split("\\.");
-                String fileType = fileSplit[fileSplit.length - 1].toLowerCase();
+                String fileType = fileSplit[fileSplit.length - 1].toUpperCase();
                 for (int i=0;i<fileArray.length;i++){
                     if (fileType.equals(fileArray[i])){
                         result = true;
