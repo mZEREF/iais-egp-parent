@@ -2,22 +2,24 @@
 <sqls catalog="onlineEnquiry">
     <sql key = "searchByProfessionalInfo" remarks="search by professional information">
         <![CDATA[
-            select DISTINCT a.id, a.name, a.prof_reg_no, b.practice_location, b.licence_no, b.service_name, a.designation, a.psn_type
+            select distinct a.id, a.name, a.prof_reg_no, b.practice_location, b.licence_no, b.service_name, a.designation, a.psn_type
             from
             (
             select
-            t2.id,
+            t3.id,
             t1.licence_id as licence_id,
             t2.name as name,
             t3.prof_reg_no as prof_reg_no,
             t2.designation as designation,
-            t1.psn_type as psn_type
+            t1.psn_type as psn_type,
+            t4.licence_no,
+            t4.svc_name
             from lic_key_personnel t1
             join  key_personnel t2 on t1.person_id = t2.id
             join key_personnel_ext t3 on t1.psn_ext_id = t3.id and t3.person_id = t2.id
             join licence t4 on t1.licence_id = t4.id) a,
             (
-            select
+            select distinct
             t3.id,
             t3.licence_no,
             t3.svc_name as service_name,
@@ -27,7 +29,10 @@
             t2.blk_no + '/' + t2.street_name + ',' + t2.building_name + '-' + t2.floor_no as practice_location
             from lic_premises t1
             join premises t2 on t1.premises_id = t2.id
-            join licence t3 on t1.licence_id = t3.id) b
+            join licence t3 on t1.licence_id = t3.id
+            join (select licence_no,
+            max(version) as version from licence group by licence_no) inner_lic on inner_lic.licence_no = t3.licence_no and inner_lic.version = t3.version
+            ) b
             where a.licence_id = b.id
             <#if id??> AND a.id = :id >0 </#if>
             <#if filterIdList??> and ${filterIdList} </#if>
