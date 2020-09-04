@@ -177,6 +177,7 @@ public class FECorppassLandingDelegator {
             user.setDisplayName(feUserDto.getDisplayName());
             user.setUserDomain(feUserDto.getUserDomain());
             user.setId(feUserDto.getUserId());
+            user.setIdentityNo(nric);
             LoginHelper.initUserInfo(bpc.request, bpc.response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
             ParamUtil.setRequestAttr(bpc.request, "isAdminRole", "Y");
         }else {
