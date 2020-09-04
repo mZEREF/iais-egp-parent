@@ -1216,6 +1216,7 @@ public class HcsaApplicationDelegator {
                     //send email
                     log.info(StringUtil.changeForLog("send renewal application email"));
                     notificationHelper.sendNotification(emailParam);
+                    log.info(StringUtil.changeForLog("send renewal application email end"));
                     //send sms
                     EmailParam smsParam = new EmailParam();
                     smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_SMS);
@@ -1226,6 +1227,7 @@ public class HcsaApplicationDelegator {
                     smsParam.setRefId(applicationNo);
                     log.info(StringUtil.changeForLog("send renewal application sms"));
                     notificationHelper.sendNotification(smsParam);
+                    log.info(StringUtil.changeForLog("send renewal application sms end"));
                     //send message
                     EmailParam messageParam = new EmailParam();
                     messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_REJECT_MESSAGE);
