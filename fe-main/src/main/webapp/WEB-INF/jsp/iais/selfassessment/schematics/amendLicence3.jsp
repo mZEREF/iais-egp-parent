@@ -27,7 +27,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <input class="form-check-input" id="amendLicence3_2"
-                   type="radio" name="amendLicenceType3"
+                   type="radio"
                    aria-invalid="false">
             <label class="form-check-label" for="amendLicence3_2">
                 <span class="check-circle"></span>
@@ -35,7 +35,7 @@
             </label>
             <br>
             <input class="form-check-input" id="amendLicence3_3"
-                   type="radio" name="amendLicenceType3"
+                   type="radio"
                    aria-invalid="false">
             <label class="form-check-label" for="amendLicence3_3">
                 <span class="check-circle"></span>
