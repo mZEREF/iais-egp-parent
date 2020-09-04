@@ -45,7 +45,6 @@
         var appNo = $(this).closest("tr").find(".appdraftNo").html();
         var appType = $(this).closest("tr").find(".apptype").html();
         var appStatus = $(this).closest("tr").find(".appStatus").html();
-        alert("appStatus"+appStatus);
         showWaiting();
         $("[name='action_no_value']").val(appNo);
         $("[name='action_type_value']").val(appType);
