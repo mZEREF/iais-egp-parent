@@ -13,7 +13,14 @@
       <div class="center-content">
         <div class="intranet-content">
           <div class="bg-title">
-            <h2><iais:message key="LOLEV_ACK030" escape="true"></iais:message></h2>
+            <c:choose>
+              <c:when test="${'true' eq taskHasBeenAssigned}">
+                <h2><iais:message key="LOLEV_ACK039" escape="true"></iais:message></h2>
+              </c:when>
+              <c:otherwise>
+                <h2><iais:message key="LOLEV_ACK030" escape="true"></iais:message></h2>
+              </c:otherwise>
+            </c:choose>
           </div>
         </div>
         <div align="left"><span><a href="/main-web/eservice/INTRANET/MohBackendInbox"><em class="fa fa-angle-left"></em> Back</a></span></div>
