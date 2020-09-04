@@ -87,7 +87,7 @@
                   <p></p>
                   <c:if test="${inspecTaskCreAndAssDto.fastTrackFlag}">
                     <div class="row">
-                      <div class="col-md-4">
+                      <div class="col-md-2">
                         <label style="font-size: 16px">Fast Tracking?</label>
                       </div>
                       <div class="col-md-6">
