@@ -80,8 +80,8 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public List<PersonnelListDto> getPersonnelListAssessment(List<String> idNos) {
-        return licenceClient.getPersonnelListAssessment(idNos).getEntity();
+    public List<PersonnelListDto> getPersonnelListAssessment(List<String> idNos,String orgId) {
+        return licenceClient.getPersonnelListAssessment(idNos,orgId).getEntity();
     }
 
 }

@@ -31,5 +31,5 @@ public interface RequestForChangeService {
 
     List<PersonnelListQueryDto> getLicencePersonnelListQueryDto(String licenseeId);
 
-    List<PersonnelListDto> getPersonnelListAssessment(List<String> idNos);
+    List<PersonnelListDto> getPersonnelListAssessment(List<String> idNos,String orgId);
 }

@@ -12,11 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
@@ -116,6 +112,7 @@ public class HalpAssessmentGuideDelegator {
     AssessmentGuideService assessmentGuideService;
 
     private String licenseeId;
+    private String orgId;
 
     public void start(BaseProcessClass bpc) {
         log.info("****start ******");
@@ -129,6 +126,7 @@ public class HalpAssessmentGuideDelegator {
     public void perDate(BaseProcessClass bpc) {
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         licenseeId = loginContext.getLicenseeId();
+        orgId = loginContext.getOrgId();
 
     }
 
@@ -1661,6 +1659,10 @@ public class HalpAssessmentGuideDelegator {
         ParamUtil.setSessionAttr(bpc.request,"licence_err_list",licIdValue);
         if (idNoPersonnal != null){
             String id = idNoPersonnal.split(",")[1];
+            List<String> idNos = IaisCommonUtils.genNewArrayList();
+            idNos.add(id);
+            List<PersonnelListDto> personnelListDtoList = requestForChangeService.getPersonnelListAssessment(idNos,orgId);
+            ParamUtil.setSessionAttr(bpc.request, "personnelListDtos", (Serializable) personnelListDtoList);
             if("amendLic7".equals(action)) {
                 StringBuilder url2 = new StringBuilder();
                 url2.append(InboxConst.URL_HTTPS)

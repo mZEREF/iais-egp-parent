@@ -147,7 +147,7 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     }
 
     @Override
-    public FeignResponseEntity<List<PersonnelListDto>> getPersonnelListAssessment(List<String> idNos) {
+    public FeignResponseEntity<List<PersonnelListDto>> getPersonnelListAssessment(List<String> idNos,String orgId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
