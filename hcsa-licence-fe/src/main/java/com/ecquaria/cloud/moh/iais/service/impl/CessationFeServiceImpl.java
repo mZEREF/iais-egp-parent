@@ -395,11 +395,6 @@ public class CessationFeServiceImpl implements CessationFeService {
         Date date2 = DateUtil.parseDate(todayStr);
         for(ApplicationDto applicationDto : applicationDtos){
             String appId = applicationDto.getId();
-            String serviceId = applicationDto.getServiceId();
-            boolean configService = isConfigService(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
-            if(configService){
-                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-            }
             List<AppPremiseMiscDto> appPremiseMiscDtos = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
             if(!IaisCommonUtils.isEmpty(appPremiseMiscDtos)){
                 Date effectiveDate = appPremiseMiscDtos.get(0).getEffectiveDate();
@@ -408,6 +403,11 @@ public class CessationFeServiceImpl implements CessationFeService {
                 if(date1.after(date2)){
                     applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
                 }
+            }
+            String serviceId = applicationDto.getServiceId();
+            boolean configService = isConfigService(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            if(configService){
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
             }
         }
         applicationClient.updateApplicationList(applicationDtos);

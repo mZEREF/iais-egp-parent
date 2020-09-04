@@ -1715,16 +1715,23 @@ public class HcsaApplicationDelegator {
                 AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 String oldAppId = premiseMiscDto.getRelateRecId();
+                String appGrpId = applicationDto.getAppGrpId();
+                List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
+                for(ApplicationDto applicationDto1 : applicationDtos){
+                    if(applicationDto1.getApplicationNo().equals(applicationDto.getApplicationNo())){
+                        applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                    }
+                }
                 ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
                 if (oldApplication != null){
                     String oldAppNo = oldApplication.getApplicationNo();
                     if (!StringUtil.isEmpty(oldAppNo)){
-                        AppFeeDetailsDto appFeeDetailsDto = applicationService.getAppFeeDetailsDtoByApplicationNo(oldAppNo);
-                        if (appFeeDetailsDto != null){
-                            Double fee = appFeeDetailsDto.getLaterFee();
-                            if (fee != null && fee >0d){
+                        List<ApplicationDto> applicationReturnFeeDtos = hcsaConfigClient.returnFee(applicationDtos).getEntity();
+                        if (applicationReturnFeeDtos != null){
+                            Double returnFee = applicationReturnFeeDtos.get(0).getReturnFee();
+                            if (returnFee != null && returnFee >0d){
                                 appReturnFeeDto.setApplicationNo(oldAppNo);
-                                appReturnFeeDto.setReturnAmount(fee);
+                                appReturnFeeDto.setReturnAmount(returnFee);
                                 appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
                                 List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
                                 saveReturnFeeDtos.add(appReturnFeeDto);
