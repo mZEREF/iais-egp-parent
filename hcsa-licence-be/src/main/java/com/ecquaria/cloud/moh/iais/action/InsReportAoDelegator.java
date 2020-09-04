@@ -119,7 +119,7 @@ public class InsReportAoDelegator {
     public void back(BaseProcessClass bpc) throws Exception {
         log.debug(StringUtil.changeForLog("the back start ...."));
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) ParamUtil.getSessionAttr(bpc.request, APPLICATIONVIEWDTO);
-        TaskDto taskDto =  (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
+        TaskDto taskDto = (TaskDto)ParamUtil.getSessionAttr(bpc.request, TASKDTO);
         String historyRemarks = ParamUtil.getRequestString(bpc.request, "processRemarks");
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();

@@ -1556,7 +1556,7 @@ public class NewApplicationDelegator {
         if (!IaisCommonUtils.isEmpty(applicationDtos)) {
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
-            ParamUtil.setRequestAttr(bpc.request, "content", MessageUtil.getMessageDesc("ERRRFC001"));
+            ParamUtil.setRequestAttr(bpc.request, "content", MessageUtil.getMessageDesc("RFC_ERR001"));
             return;
         }
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
@@ -1576,7 +1576,7 @@ public class NewApplicationDelegator {
                         if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)) {
                             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
                             ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "error");
-                            ParamUtil.setRequestAttr(bpc.request, "content", MessageUtil.getMessageDesc("ERRRFC001"));
+                            ParamUtil.setRequestAttr(bpc.request, "content", MessageUtil.getMessageDesc("RFC_ERR001"));
                             return;
                         }
                     }
@@ -1687,7 +1687,7 @@ public class NewApplicationDelegator {
         if (!IaisCommonUtils.isEmpty(applicationDtos)) {
             ParamUtil.setRequestAttr(bpc.request, "isrfiSuccess", "Y");
             ParamUtil.setRequestAttr(bpc.request, ACKSTATUS, "error");
-            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("ERRRFC001"));
+            ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, MessageUtil.getMessageDesc("RFC_ERR001"));
             return;
         }
 

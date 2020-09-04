@@ -332,7 +332,7 @@ public class CessationApplicationFeDelegator {
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && !StringUtil.isEmpty(patHciName)) {
                 List<String> hciName = cessationFeService.listHciName();
                 if (!hciName.contains(patHciName)) {
-                    errorMap.put(i + "patHciName" + j, "HCI Name cannot be found.");
+                    errorMap.put(i + "patHciName" + j, "CESS_ERR004");
                 }
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && StringUtil.isEmpty(patRegNo)) {
