@@ -153,7 +153,7 @@ public class InsepctionNcCheckListImpl implements InsepctionNcCheckListService {
             fillUpCheckListGetAppClient.updateAppRecom(appPremisesRecommendationDto);
             appPremisesRecommendationDto.setVersion( appPremisesRecommendationDto.getVersion()+1);
         }else {
-            if(!StringUtil.isEmpty(incRiskType)){
+            if(StringUtil.isEmpty(incRiskType)){
               return isFirstHaveIncRiskType;
             }
             appPremisesRecommendationDto = new AppPremisesRecommendationDto();

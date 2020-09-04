@@ -485,7 +485,6 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             param.put("hCIAddress",auditTaskDataFillterDto.getAddress());
             param.put("serviceName", auditTaskDataFillterDto.getSvcName());
             param.put("licenceDueDate", licenceDueDateString);
-            param.put("officer_name","");
         }else if(MsgTemplateConstants. MSG_TEMPLATE_AUDIT_CANCELED_TASK .equalsIgnoreCase(key)){
             if(auditTaskDataFillterDto.getLicenceDueDate() != null){
                 licenceDueDateString =  Formatter.formatDate(auditTaskDataFillterDto.getLicenceDueDate());
@@ -496,17 +495,19 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             param.put("hCIAddress",auditTaskDataFillterDto.getAddress());
             param.put("serviceName", auditTaskDataFillterDto.getSvcName());
             param.put("licenceDueDate", licenceDueDateString);
-            param.put("officer_name","");
         }else if(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_LIST_REMIND.equalsIgnoreCase(key)){
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(InboxConst.URL_HTTPS).append(systemParamConfig.getIntraServerName()).append(InboxConst.URL_LICENCE_WEB_MODULE).append("MohAduitSystemList");
+            stringBuilder.append(InboxConst.URL_HTTPS).append(systemParamConfig.getIntraServerName()).append("/hcsa-licence-web/eservice/INTRANET/").append("MohAduitSystemList");
             String url = stringBuilder.toString();
-            param.put("url", url);
+            stringBuilder.delete(0,url.length());
+            stringBuilder.append("<a href = '").append(url).append("'>").append(url).append("</a>");
+            param.put("url", stringBuilder.toString());
         }else if(MsgTemplateConstants.MSG_TEMPLATE_AUDIT_TCU_REMIND.equalsIgnoreCase(key)){
-            param.put("List No","");//todo
+            param.put("ListNo","");//todo
             param.put("generatedDate",newDateString);
             param.put("byDate",newDateString);
         }
+        param.put("officer_name","");
         param.put("syName",syName);
         return param;
     }
