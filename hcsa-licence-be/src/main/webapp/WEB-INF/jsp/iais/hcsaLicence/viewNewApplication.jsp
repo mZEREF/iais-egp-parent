@@ -16,7 +16,7 @@
 </style>
 <div class="panel-main-content">
   <input style="display: none" value="${NOT_VIEW}" id="view">
-  <input type="hidden" id="oldAppSubmissionDto" value="${appSubmissionDto.oldAppSubmissionDto}">
+  <input type="hidden" id="oldAppSubmissionDto" value="${appSubmissionDto.oldAppSubmissionDto==null}">
   <c:set var="appGrpPremisesDtoList" value="${appSubmissionDto.appGrpPremisesDtoList}"></c:set>
   <c:set var="oldAppGrpPremisesDtoList" value="${appSubmissionDto.oldAppSubmissionDto.appGrpPremisesDtoList}"></c:set>
   <c:if test="${fn:contains(hcsaServiceStepSchemeDtoList, 'SVST007')}">
@@ -1150,7 +1150,7 @@
             var oldVal = $(this).attr('attr');
             var newEle = $(this).parent().prev().find('.' + newValClass);
             var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
-            if($('#oldAppSubmissionDto').val()!=null){
+            if($('#oldAppSubmissionDto').val()=='false'){
                 if (oldVal.length > 0 || newVal.length > 0) {
                     if (oldVal != newVal) {
                         $(this).show();

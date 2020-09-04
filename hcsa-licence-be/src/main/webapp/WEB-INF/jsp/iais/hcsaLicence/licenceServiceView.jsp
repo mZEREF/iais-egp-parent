@@ -15,7 +15,7 @@
 </style>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
   <input type="hidden" name="sopEngineTabRef" value="<%=process.rtStatus.getTabRef()%>">
-  <input type="hidden" id="oldAppSubmissionDto" value="${appSubmissionDto.oldAppSubmissionDto}">
+  <input type="hidden" id="oldAppSubmissionDto" value="${appSubmissionDto.oldAppSubmissionDto==null}">
   <c:set value="${applicationViewDto.applicationDto}" var="applicationDto"/>
   <c:choose>
     <c:when test="${applicationDto.applicationType == 'APTY001'}">
@@ -96,7 +96,7 @@
             var oldVal = $(this).attr('attr');
             var newEle = $(this).parent().prev().find('.' + newValClass);
             var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
-            if($('#oldAppSubmissionDto').val()!=null){
+            if($('#oldAppSubmissionDto').val()=='false'){
                 if (oldVal.length > 0 || newVal.length > 0) {
                     if (oldVal != newVal) {
                         $(this).show();

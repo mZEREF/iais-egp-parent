@@ -605,13 +605,17 @@ public class NewApplicationDelegator {
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("appSubmissionDtos");
         HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         List<String> strList = new ArrayList<>(5);
-        coMap.forEach((k, v) -> {
-            if (!StringUtil.isEmpty(v)) {
-                strList.add(v);
-            }
-        });
+        if(coMap!=null){
+            coMap.forEach((k, v) -> {
+                if (!StringUtil.isEmpty(v)) {
+                    strList.add(v);
+                }
+            });
+        }
         String serviceConfig = (String) bpc.request.getSession().getAttribute("serviceConfig");
-        strList.add(serviceConfig);
+        if(serviceConfig!=null){
+            strList.add(serviceConfig);
+        }
         appSubmissionDto.setStepColor(strList);
         AppSubmissionDto tranferSub = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, "app-rfc-tranfer");
         if (tranferSub != null) {
