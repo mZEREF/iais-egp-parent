@@ -208,16 +208,16 @@ public class ServiceMenuDelegator {
         if(BACK_ATTR.equals(action)){
             ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, BACK_ATTR);
         }else {
+            String err010 = MessageUtil.getMessageDesc("NEW_ERR0010");
             if(licenceJudge == null){
                 ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
-                String err = MessageUtil.getMessageDesc("NEW_ERR0010");
-                ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+
+                ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err010);
                 ParamUtil.setRequestAttr(bpc.request, "action","err");
             }else if("1".equals(licenceJudge)) {
                 if(licence == null){
                     ParamUtil.setRequestAttr(bpc.request, VALIDATION_ATTR, ERROR_ATTR);
-                    String err = MessageUtil.getMessageDesc("NEW_ERR0010");
-                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err);
+                    ParamUtil.setRequestAttr(bpc.request, ERROR_ATTR, err010);
                     ParamUtil.setRequestAttr(bpc.request, "action","err");
                 }else{
                     List<String> licenceList = IaisCommonUtils.genNewArrayList();
