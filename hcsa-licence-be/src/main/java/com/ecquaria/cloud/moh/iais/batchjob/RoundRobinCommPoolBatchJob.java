@@ -29,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRoutin
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcStageWorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.AppInspectionStatusDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
@@ -44,6 +45,7 @@ import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
@@ -352,6 +354,11 @@ public class RoundRobinCommPoolBatchJob {
             Map<String, String> apptUserIdSvrIdMap = getSchedulingUsersByAppList(applicationDtoList, Collections.singletonList(userId), applicationDto);
             boolean allInPlaceFlag = allAppFromSamePremisesIsOk(applicationDtoList);
             if(allInPlaceFlag){
+                List<ApplicationDto> applicationDtoLists = IaisCommonUtils.genNewArrayList();
+                for(String premCorrId : premCorrIds) {
+                    ApplicationDto appDto = inspectionTaskClient.getApplicationByCorreId(premCorrId).getEntity();
+                    applicationDtoLists.add(appDto);
+                }
                 saveInspectionDate(appPremCorrId, taskDtoList, applicationDto, apptUserIdSvrIdMap, premCorrIds, auditTrailDto, appHistoryId);
                 //update App
                 ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
@@ -362,7 +369,7 @@ public class RoundRobinCommPoolBatchJob {
                 taskService.updateTask(td);
                 taskService.createTasks(taskDtoList);
                 inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
-                createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address);
+                createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address, applicationDtoLists);
             } else {
                 //update App
                 ApplicationDto applicationDto1 = updateApplication(applicationDto, appStatus);
@@ -389,7 +396,7 @@ public class RoundRobinCommPoolBatchJob {
             taskService.updateTask(td);
             taskService.createTasks(taskDtoList);
             inspectionTaskClient.createAppPremInspCorrelationDto(appPremInspCorrelationDtoList);
-            createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address);
+            createMessage(url, applicationDto, applicationGroupDto, maskParams, inspDate, address, applicationDtos);
         }
     }
 
@@ -431,7 +438,16 @@ public class RoundRobinCommPoolBatchJob {
     }
 
     private void createMessage(String url, ApplicationDto applicationDto, ApplicationGroupDto applicationGroupDto, HashMap<String, String> maskParams,
-                               Date inspDate, String address) {
+                               Date inspDate, String address, List<ApplicationDto> applicationDtoLists) {
+        List<String> serviceCodes = IaisCommonUtils.genNewArrayList();
+        for(ApplicationDto appDto : applicationDtoLists){
+            String serviceId = appDto.getServiceId();
+            HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceId);
+            String serviceCode = hcsaServiceDto.getSvcCode();
+            if(!StringUtil.isEmpty(serviceCode)){
+                serviceCodes.add(serviceCode);
+            }
+        }
         String dateStr = Formatter.formatDateTime(inspDate, "yyyy/MM/dd");
         String dateTime = Formatter.formatDateTime(inspDate, "HH:mm:ss");
         String appNo = applicationDto.getApplicationNo();
@@ -453,6 +469,7 @@ public class RoundRobinCommPoolBatchJob {
         emailParam.setQueryCode(appNo);
         emailParam.setReqRefNum(appNo);
         emailParam.setRefId(appNo);
+        emailParam.setSvcCodeList(serviceCodes);
         notificationHelper.sendNotification(emailParam);
     }
 
