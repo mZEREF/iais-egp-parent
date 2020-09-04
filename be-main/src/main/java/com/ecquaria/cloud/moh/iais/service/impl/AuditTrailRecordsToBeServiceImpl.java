@@ -47,7 +47,10 @@ import java.util.zip.ZipFile;
 @Slf4j
 public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeService {
     @Value("${iais.syncFileTracking.shared.path}")
-    private     String sharedPath;
+    private String sharedPath;
+
+    private String basePath = sharedPath + File.separator + RequestForInformationConstants.BACKUPS_AUDIT +File.separator;
+    private String compressPath = sharedPath + File.separator+RequestForInformationConstants.COMPRESS;
 
     @Autowired
     private GenerateIdClient generateIdClient;
@@ -59,11 +62,9 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
 
     @Override
     public void info() {
-
-
-        File file =new File(sharedPath+File.separator+File.separator+"folder");
-        File b=new File(sharedPath+File.separator+ RequestForInformationConstants.BACKUPS_AUDIT +File.separator);
-        File c=new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS);
+        File file =new File(sharedPath + File.separator + File.separator + "folder");
+        File b = new File(basePath);
+        File c = new File(compressPath);
         if(!c.exists()){
             c.mkdirs();
         }
@@ -79,21 +80,23 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
     @Override
     public void compress(){
         log.info("-------------compress start ---------");
-        if(new File(sharedPath+File.separator+ RequestForInformationConstants.BACKUPS_AUDIT +File.separator).isDirectory()){
-            File[] files = new File(sharedPath+File.separator+ RequestForInformationConstants.BACKUPS_AUDIT +File.separator).listFiles();
-            for(File fil:files){
-                if(fil.getName().endsWith(RequestForInformationConstants.ZIP_NAME)){
-                    String name = fil.getName();
-                    String path = fil.getPath();
-                    String relPath=RequestForInformationConstants.BACKUPS_AUDIT+File.separator+name;
-                    HashMap<String,String> map= IaisCommonUtils.genNewHashMap();
+
+        File folder = new File(basePath);
+        if(folder.isDirectory()){
+            File[] files = folder.listFiles();
+            for(File file : files){
+                if(file.getName().endsWith(RequestForInformationConstants.ZIP_NAME)){
+                    String name = file.getName();
+                    String path = file.getPath();
+                    String relPath = RequestForInformationConstants.BACKUPS_AUDIT + File.separator + name;
+                    HashMap<String,String> map=  IaisCommonUtils.genNewHashMap();
                     map.put("fileName",name);
                     map.put("filePath",relPath);
                     log.info(relPath);
 
                     ProcessFileTrackDto processFileTrackDto = systemClient.isFileExistence(map).getEntity();
                     if(processFileTrackDto!=null){
-                        try (InputStream is= Files.newInputStream(fil.toPath());
+                        try (InputStream is= Files.newInputStream(file.toPath());
                              ByteArrayOutputStream by=new ByteArrayOutputStream();) {
                             int count;
                             byte [] size=new byte[1024];
@@ -106,13 +109,16 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                             byte[] bytes = by.toByteArray();
                             String s = FileUtil.genMd5FileChecksum(bytes);
                             s = s + AppServicesConsts.ZIP_NAME;
+
                             if( !s.equals(name)){
                                 continue;
                             }
+
                         }catch (Exception e){
                             log.error(e.getMessage(),e);
                             continue;
                         }
+
                         String refId = processFileTrackDto.getRefId();
                         CheckedInputStream cos=null;
                         BufferedInputStream bis=null;
@@ -133,8 +139,7 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                             this.download(processFileTrackDto,name,refId,submissionId);
                             //save success
                         }catch (Exception e){
-                            //save bad
-
+                            log.error(e.getMessage(), e);
                         }
                     }
                 }
