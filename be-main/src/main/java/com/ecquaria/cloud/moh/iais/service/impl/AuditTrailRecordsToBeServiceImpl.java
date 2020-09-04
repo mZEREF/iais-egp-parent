@@ -143,10 +143,13 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
         BufferedInputStream bis = null;
         CheckedInputStream cos = null;
         try {
-            if(!zipEntry.getName().endsWith(File.separator)){
-
-                String substring = zipEntry.getName().substring(0, zipEntry.getName().lastIndexOf(File.separator));
-                File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+substring);
+            String zipName = zipEntry.getName();
+            String toCompressPath =  sharedPath + RequestForInformationConstants.COMPRESS  + File.separator + fileName  + File.separator + zipName;
+            toCompressPath = toCompressPath.replace(".zip", "");
+            if (zipName.endsWith(File.separator)){
+                new File(toCompressPath).mkdirs();
+            }else {
+                File file =new File(toCompressPath);
                 if(!file.exists()){
                     file.mkdirs();
                 }
@@ -162,10 +165,6 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                     bos.write(b,0,count);
                     count=cos.read(b);
                 }
-
-            }else {
-
-                new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
             }
         }catch (IOException e){
             log.error(e.getMessage(),e);
