@@ -5,8 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.Date;
-import java.util.List;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -31,8 +32,7 @@ public interface InsRepClient {
     @RequestMapping(path = "/application-number-grp-premiese/{appPremCorreId}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<AppInsRepDto> getAppInsRepDto(@PathVariable("appPremCorreId") String appPremCorreId);
 
-    @GetMapping(value = "/iais-inspection-report/app-type/{appId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    FeignResponseEntity<String> getAppType (@PathVariable("appId") String appId);
+
 
     @GetMapping(value = "/iais-inspection-report/is-pre/{appGrpId}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<ApplicationGroupDto>getApplicationGroupDto (@PathVariable("appGrpId") String appId);

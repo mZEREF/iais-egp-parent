@@ -314,7 +314,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         String appId = applicationDto.getId();
         String appGrpId = applicationDto.getAppGrpId();
         String status = applicationDto.getStatus();
-        String appTypeCode = insRepClient.getAppType(appId).getEntity();
+        String appTypeCode = applicationDto.getApplicationType();
         ApplicationGroupDto applicationGroupDto = insRepClient.getApplicationGroupDto(appGrpId).getEntity();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(appInsRepDto.getLicenseeId()).getEntity();
         if(StringUtil.isEmpty(licenceId)){
