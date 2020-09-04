@@ -180,7 +180,11 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
                 licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
                 licenceFeeDto.setPremises(premisessTypes);
-                licenceFeeDto.setOnlyNewSpecified(true);
+                if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
+                    licenceFeeDto.setOnlyNewSpecified(true);
+                }else{
+                    licenceFeeDto.setIncludeBase(true);
+                }
                 linenceFeeQuaryDtos.add(licenceFeeDto);
             }
         }else{
