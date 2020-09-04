@@ -343,12 +343,11 @@ public class MohIntranetUserDelegator {
     public void prepareImportAck(BaseProcessClass bpc) {
         List<OrgUserDto> orgUserDtos = (List<OrgUserDto>) ParamUtil.getSessionAttr(bpc.request, "orgUserDtos");
         //do valiant
-        //2. ge shi shi fou fu he
         List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
-        List<String> userIds = IaisCommonUtils.genNewArrayList();
-        String dup = "Duplication of record(s)";
-        List<String> msgDup = IaisCommonUtils.genNewArrayList();
-        msgDup.add(dup);
+//        List<String> userIds = IaisCommonUtils.genNewArrayList();
+//        String dup = "Duplication of record(s)";
+//        List<String> msgDup = IaisCommonUtils.genNewArrayList();
+//        msgDup.add(dup);
 //        for (OrgUserDto orgUserDto : orgUserDtos) {
 //            OrgUserUpLoadDto orgUserUpLoadDto = new OrgUserUpLoadDto();
 //            List<String> valiant = valiantDto(orgUserDto);

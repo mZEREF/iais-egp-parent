@@ -25,7 +25,7 @@
                                             <p></p>
                                         </div>
                                         <div class="col-xs-12 col-md-2 text-right">
-                                            <p class="print"><div style="font-size: 16px;"><a href="/hcsa-licence-web/eservice/INTERNET/PrintLicenceFe"> <em class="fa fa-print"></em>Print</a></div></p>
+                                            <p class="print"><div style="font-size: 16px;"><a href="/hcsa-licence-web/eservice/INTERNET/PrintLicenceFe?licId=123123"> <em class="fa fa-print"></em>Print</a></div></p>
                                         </div>
                                     </div>
                                     <div class="row">
