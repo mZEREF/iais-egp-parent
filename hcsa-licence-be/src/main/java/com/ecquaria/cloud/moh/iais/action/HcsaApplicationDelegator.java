@@ -38,6 +38,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessHciDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessLicDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
@@ -86,18 +87,7 @@ import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesCorrClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
-import com.ecquaria.cloud.moh.iais.service.client.FileRepoClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.GenerateIdClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationProcessUploadFileValidate;
 import com.ecquaria.cloud.moh.iais.validation.HcsaApplicationViewValidate;
 import com.ecquaria.cloudfeign.FeignException;
@@ -193,12 +183,16 @@ public class HcsaApplicationDelegator {
     private SystemParamConfig systemParamConfig;
     @Autowired
     private CessationBeService cessationBeService;
+    @Autowired
+    private HcsaLicenceClient hcsaLicenceClient;
 
     @Value("${iais.email.sender}")
     private String mailSender;
 
     @Value("${iais.system.one.address}")
     private String systemAddressOne;
+
+
 
     @Autowired
     private NotificationHelper notificationHelper;
@@ -1688,6 +1682,13 @@ public class HcsaApplicationDelegator {
                 rejectSendNotification(applicationViewDto);
             }catch (Exception e){
                 log.error(StringUtil.changeForLog("send reject notification error"),e);
+            }
+            String originLicenceId = applicationDto.getOriginLicenceId();
+            if(!StringUtil.isEmpty(originLicenceId)){
+                LicAppCorrelationDto licAppCorrelationDto = new LicAppCorrelationDto();
+                licAppCorrelationDto.setLicenceId(originLicenceId);
+                licAppCorrelationDto.setApplicationId(applicationDto.getId());
+                hcsaLicenceClient.saveLicenceAppCorrelation(licAppCorrelationDto);
             }
         }
         //appeal save return fee

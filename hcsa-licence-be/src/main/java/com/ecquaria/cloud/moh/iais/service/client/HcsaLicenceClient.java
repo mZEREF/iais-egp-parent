@@ -218,4 +218,7 @@ public interface HcsaLicenceClient {
     FeignResponseEntity<List<LicenceDto>> getLicByEffDate();
     @GetMapping(path= "/hcsa-licence/lice-app-correlation-by-id/{appId}", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicAppCorrelationDto> getOneLicAppCorrelationByApplicationId(@PathVariable("appId") String appId);
+
+    @PostMapping(value = "/hcsa-licence/save-licence-app-correlation",produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicAppCorrelationDto> saveLicenceAppCorrelation(@RequestBody LicAppCorrelationDto licAppCorrelationDto);
 }
