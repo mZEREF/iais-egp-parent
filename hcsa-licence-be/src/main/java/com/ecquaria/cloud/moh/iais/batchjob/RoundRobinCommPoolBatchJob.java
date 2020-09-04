@@ -189,6 +189,7 @@ public class RoundRobinCommPoolBatchJob {
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskId -- >:" +taskDto.getId()));
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob workGroupId -- >:" +workGroupId));
                       TaskDto taskScoreDto = taskService.getUserIdForWorkGroup(workGroupId);
+                      taskDto.setId(null);
                       taskDto.setUserId(taskScoreDto.getUserId());
                       taskDto.setDateAssigned(new Date());
                       taskDto.setAuditTrailDto(auditTrailDto);
