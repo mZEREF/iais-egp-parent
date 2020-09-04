@@ -3,7 +3,9 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -405,8 +407,8 @@ public class CessationFeServiceImpl implements CessationFeService {
                 }
             }
             String serviceId = applicationDto.getServiceId();
-            boolean configService = isConfigService(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
-            if(configService){
+            String stageId = getStageId(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            if(!StringUtil.isEmpty(stageId)){
                 applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
             }
         }
@@ -438,16 +440,37 @@ public class CessationFeServiceImpl implements CessationFeService {
     }
 
     @Override
-    public boolean isConfigService(String serviceId, String appType) {
+    public String getStageId(String serviceId, String appType) {
+        String appStatus ;
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<HcsaSvcRoutingStageDto> serviceConfig = feEicGatewayClient.getServiceConfig(serviceId, appType, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
         if(IaisCommonUtils.isEmpty(serviceConfig)){
-            return false;
+            return null;
         }else {
-            return true;
+            String stageId = serviceConfig.get(0).getId();
+            switch (stageId){
+                case HcsaConsts.ROUTING_STAGE_ASO :
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
+                    break;
+                case HcsaConsts.ROUTING_STAGE_PSO :
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;
+                    break;
+                case HcsaConsts.ROUTING_STAGE_INS :
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION;
+                    break;
+                case HcsaConsts.ROUTING_STAGE_AO1 :
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;
+                    break;
+                case HcsaConsts.ROUTING_STAGE_AO2 :
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+                    break;
+                default :
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+            }
         }
+        return appStatus ;
     }
 
 

@@ -153,9 +153,6 @@ public class CessationBeServiceImpl implements CessationBeService {
 
     @Override
     public Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos, String licenseeId) {
-        if (StringUtil.isEmpty(licenseeId)) {
-            licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
-        }
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
         Map<String, List<String>> licPremiseIdMap = IaisCommonUtils.genNewHashMap();
@@ -238,7 +235,6 @@ public class CessationBeServiceImpl implements CessationBeService {
                 }
             }
         }
-
         return appSpecifiedLicDtos;
     }
 
@@ -366,7 +362,6 @@ public class CessationBeServiceImpl implements CessationBeService {
                 e.getMessage();
                 log.info("======send email error");
             }
-
             AppCessatonConfirmDto appCessatonConfirmDto = new AppCessatonConfirmDto();
             appCessatonConfirmDto.setAppNo(applicationNo);
             appCessatonConfirmDto.setEffectiveDate(effectiveDate);
@@ -397,8 +392,6 @@ public class CessationBeServiceImpl implements CessationBeService {
 
     private void routingTaskToAo3(List<ApplicationDto> applicationDtos, LoginContext loginContext) throws FeignException {
         String curRoleId = loginContext.getCurRoleId();
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_ASO);
-        List<HcsaSvcStageWorkingGroupDto> taskConfig = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         for(ApplicationDto applicationDto :applicationDtos) {
             AppPremisesRoutingHistoryDto appPremisesRoutingHistoryDto = new AppPremisesRoutingHistoryDto();
             appPremisesRoutingHistoryDto.setRoleId(curRoleId);
@@ -408,7 +401,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             appPremisesRoutingHistoryDto.setActionby(loginContext.getUserId());
             appPremisesRoutingHistoryDto.setAppStatus(applicationDto.getStatus());
             appPremisesRoutingHistoryDto.setAuditTrailDto(AuditTrailDto.getThreadDto());
-            appPremisesRoutingHistoryDto.setWrkGrpId(taskConfig.get(0).getGroupId());
+            appPremisesRoutingHistoryDto.setWrkGrpId("4C43D448-F90C-EA11-BE7D-000C29F371DC");
             List<AppPremisesRoutingHistoryDto> asoHistory = IaisCommonUtils.genNewArrayList();
             asoHistory.add(appPremisesRoutingHistoryDto);
             taskService.createHistorys(asoHistory);
@@ -418,21 +411,9 @@ public class CessationBeServiceImpl implements CessationBeService {
             taskService.createTasks(taskDtos);
             List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtos = taskHistoryDto.getAppPremisesRoutingHistoryDtos();
             appPremisesRoutingHistoryDtos.get(0).setActionby(loginContext.getUserId());
-            appPremisesRoutingHistoryDtos.get(0).setWrkGrpId(taskConfig.get(0).getGroupId());
+            appPremisesRoutingHistoryDtos.get(0).setWrkGrpId("4C43D448-F90C-EA11-BE7D-000C29F371DC");
             taskService.createHistorys(appPremisesRoutingHistoryDtos);
         }
-
-    private List<HcsaSvcStageWorkingGroupDto> generateHcsaSvcStageWorkingGroupDtos(List<ApplicationDto> applicationDtos, String stageId) {
-        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = IaisCommonUtils.genNewArrayList();
-        for (ApplicationDto applicationDto : applicationDtos) {
-            HcsaSvcStageWorkingGroupDto hcsaSvcStageWorkingGroupDto = new HcsaSvcStageWorkingGroupDto();
-            hcsaSvcStageWorkingGroupDto.setStageId(stageId);
-            hcsaSvcStageWorkingGroupDto.setServiceId(applicationDto.getServiceId());
-            hcsaSvcStageWorkingGroupDto.setType(applicationDto.getApplicationType());
-            hcsaSvcStageWorkingGroupDtos.add(hcsaSvcStageWorkingGroupDto);
-        }
-        return hcsaSvcStageWorkingGroupDtos;
-    }
 
     private Map<String, String> transform(AppSubmissionDto appSubmissionDto, String licenseeId, List<String> premiseIds) {
         Map<String, String> map = IaisCommonUtils.genNewHashMap();

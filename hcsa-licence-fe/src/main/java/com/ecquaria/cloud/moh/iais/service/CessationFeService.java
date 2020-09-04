@@ -37,5 +37,5 @@ public interface CessationFeService {
 
     boolean isGrpLicence(List<String> licIds);
 
-    boolean isConfigService(String serviceId,String appType);
+    String getStageId(String serviceId,String appType);
 }
