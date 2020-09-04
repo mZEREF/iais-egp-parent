@@ -1950,7 +1950,10 @@ public class LicenceApproveBatchjob {
         }
         String licenseeId = licenceDto.getLicenseeId();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
-        AppPremisesRecommendationDto inspectionRecommendation = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(recommendationDto.getAppPremCorreId(), InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
+        AppPremisesRecommendationDto inspectionRecommendation = null;
+        if(recommendationDto != null){
+            inspectionRecommendation = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(recommendationDto.getAppPremCorreId(), InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
+        }
         String msgId = "";
         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
         LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
