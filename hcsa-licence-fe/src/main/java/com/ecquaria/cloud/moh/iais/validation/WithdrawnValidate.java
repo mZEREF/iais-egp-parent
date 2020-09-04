@@ -45,14 +45,15 @@ public class WithdrawnValidate implements CustomizeValidator {
                 String[] fileArray = FileUtils.fileTypeToArray(fileTypeStr);
                 String[] fileSplit = fileName .split("\\.");
                 String fileType = fileSplit[fileSplit.length - 1].toUpperCase();
-                for (int i=0;i<fileArray.length;i++){
-                    if (fileType.equals(fileArray[i])){
-                        result = true;
+                if (fileArray!=null && fileArray.length >0){
+                    for (int i=0;i<fileArray.length;i++){
+                        if (fileType.equals(fileArray[i])){
+                            result = true;
+                        }
                     }
                 }
                 if (!result){
-
-                    errorMap.put("withdrawalFile", "The file type is incorrect.");
+                    errorMap.put("withdrawalFile", MessageUtil.replaceMessage("GENERAL_ERR0018", fileTypeStr, "fileType"));
                 }
             }
         }
