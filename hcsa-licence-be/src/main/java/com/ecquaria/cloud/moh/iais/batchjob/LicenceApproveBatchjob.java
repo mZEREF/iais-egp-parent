@@ -1945,6 +1945,9 @@ public class LicenceApproveBatchjob {
         String applicationNo = applicationDto.getApplicationNo();
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getInterServerName() + MessageConstants.MESSAGE_INBOX_URL_INTER_INBOX;
         String licenceNo = licenceDto.getLicenceNo();
+        if(originLicenceDto != null){
+            licenceNo = originLicenceDto.getLicenceNo();
+        }
         String licenseeId = licenceDto.getLicenseeId();
         String applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_RENEWAL);
         AppPremisesRecommendationDto inspectionRecommendation = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(recommendationDto.getAppPremCorreId(), InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
