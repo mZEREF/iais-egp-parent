@@ -24,7 +24,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -39,13 +41,7 @@ import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.CessationFeService;
-import com.ecquaria.cloud.moh.iais.service.client.AppConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.CessationClient;
-import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationLienceseeClient;
-import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.sz.commons.util.DateUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -92,6 +88,20 @@ public class CessationFeServiceImpl implements CessationFeService {
     AppSubmissionService appSubmissionService;
     @Autowired
     MsgTemplateClient msgTemplateClient;
+    @Autowired
+    private FeEicGatewayClient feEicGatewayClient;
+    private LicEicClient licEicClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
+
+
+
     private final static String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
     private final static String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
@@ -166,7 +176,7 @@ public class CessationFeServiceImpl implements CessationFeService {
     }
 
     @Override
-    public Map<String, String>  saveCessations(List<AppCessationDto> appCessationDtos, LoginContext loginContext) {
+    public Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos, LoginContext loginContext) {
         String licenseeId = loginContext.getLicenseeId();
         List<AppCessMiscDto> appCessMiscDtos = IaisCommonUtils.genNewArrayList();
         List<String> appIds = IaisCommonUtils.genNewArrayList();
@@ -245,25 +255,6 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
         }
         return appSpecifiedLicDtos;
-    }
-
-
-    @Override
-    public void sendEmail(String msgId, Date date, String svcName, String appGrpId, String licenseeId, String licNo) throws IOException, TemplateException {
-        Map<String, Object> map = new HashMap<>(34);
-        String dateStr = DateUtil.formatDateTime(date, "dd/MM/yyyy");
-        map.put("date", dateStr);
-        map.put("licenceA", svcName + ": " + licNo);
-        MsgTemplateDto entity = appSubmissionService.getMsgTemplateById(msgId);
-        String messageContent = entity.getMessageContent();
-        String templateMessageByContent = MsgUtil.getTemplateMessageByContent(messageContent, map);
-        EmailDto emailDto = new EmailDto();
-        emailDto.setContent(templateMessageByContent);
-        emailDto.setSubject("MOH IAIS – Cessation");
-        emailDto.setSender(mailSender);
-        emailDto.setReceipts(IaisEGPHelper.getLicenseeEmailAddrs(licenseeId));
-        emailDto.setClientQueryCode(appGrpId);
-        appSubmissionService.feSendEmail(emailDto);
     }
 
     @Override
@@ -404,6 +395,11 @@ public class CessationFeServiceImpl implements CessationFeService {
         Date date2 = DateUtil.parseDate(todayStr);
         for(ApplicationDto applicationDto : applicationDtos){
             String appId = applicationDto.getId();
+            String serviceId = applicationDto.getServiceId();
+            boolean configService = isConfigService(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            if(configService){
+                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+            }
             List<AppPremiseMiscDto> appPremiseMiscDtos = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
             if(!IaisCommonUtils.isEmpty(appPremiseMiscDtos)){
                 Date effectiveDate = appPremiseMiscDtos.get(0).getEffectiveDate();
@@ -441,11 +437,17 @@ public class CessationFeServiceImpl implements CessationFeService {
         return entity.isGrpLic();
     }
 
-
-    public static void main(String[] args) {
-        String appNo = "AC2008170091465-03";
-        String[] split = appNo.split("-0");
-        System.out.println(split[1]);
+    @Override
+    public boolean isConfigService(String serviceId, String appType) {
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<HcsaSvcRoutingStageDto> serviceConfig = feEicGatewayClient.getServiceConfig(serviceId, appType, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+        if(IaisCommonUtils.isEmpty(serviceConfig)){
+            return false;
+        }else {
+            return true;
+        }
     }
 
 

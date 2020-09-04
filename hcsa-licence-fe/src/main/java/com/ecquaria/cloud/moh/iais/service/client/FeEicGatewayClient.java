@@ -17,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -194,5 +195,15 @@ public class FeEicGatewayClient {
                                                      String date, String authorization, String dateSec, String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBodyForSearchResult(gateWayUrl + "/v1/hcsa-query-appointment", HttpMethod.POST, rescheduleParam,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ReschApptGrpPremsQueryDto.class);
+    }
+
+    public FeignResponseEntity<List> getServiceConfig(String serviceId,String applicationType,
+                                                String date, String authorization, String dateSec,
+                                                String authorizationSec) {
+        Map<String, Object> param = IaisCommonUtils.genNewHashMap(2);
+        param.put("service", serviceId);
+        param.put("type", applicationType);
+        return IaisEGPHelper.callEicGatewayWithParamForList(gateWayUrl + "/v1/svc-routing-stage", HttpMethod.GET, param,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, HcsaSvcRoutingStageDto.class);
     }
 }
