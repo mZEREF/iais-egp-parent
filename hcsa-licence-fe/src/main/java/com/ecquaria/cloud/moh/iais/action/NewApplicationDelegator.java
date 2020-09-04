@@ -1456,6 +1456,27 @@ public class NewApplicationDelegator {
                 HcsaServiceDto hcsaServiceDto = serviceConfigService.getHcsaServiceDtoById(svcId);
                 ParamUtil.setRequestAttr(bpc.request, HCSASERVICEDTO, hcsaServiceDto);
                 ParamUtil.setSessionAttr(bpc.request, "currentPreviewSvcInfo", appSvcRelatedInfoDto);
+                List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
+                List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
+                if(appGrpPremisesDtoList!=null){
+                    for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+                        List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodList = appGrpPremisesDto.getAppPremPhOpenPeriodList();
+                        if(appPremPhOpenPeriodList!=null){
+                            for(AppPremPhOpenPeriodDto appPremPhOpenPeriodDto : appPremPhOpenPeriodList){
+                                String phDateStr = appPremPhOpenPeriodDto.getPhDateStr();
+                                for(SelectOption selectOption : publicHolidayList){
+                                    if(selectOption.getValue().equals(phDateStr)){
+                                        appPremPhOpenPeriodDto.setDayName(selectOption.getText());
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())||ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())){
+                    requestForChangeService.svcDocToPresmise(appSubmissionDto);
+                }
             }
             ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         }

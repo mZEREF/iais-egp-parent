@@ -29,11 +29,11 @@
       <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
           <p><span class="preview-title col-xs-2 col-md-2" style="padding-right: 0%">Premises ${status.index+1}</span>
-          <div class="col-xs-6">
+          <div class="col-xs-10">
             <span class="newVal " attr="${appGrpPremisesDtoList[status.index].address}" ><c:out value="${appGrpPremisesDtoList[status.index].address}"/></span>
 
           </div>
-          <div class="col-xs-6">
+          <div class="col-xs-12">
             <span class="oldVal " attr="${oldAppGrpPremisesDtoList[status.index].address}" style="display: none" ><c:out value="${oldAppGrpPremisesDtoList[status.index].address}"/></span>
 
           </div>
@@ -145,9 +145,9 @@
                     </div>
                     <div class="col-xs-6">
                       <span class="oldVal" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}</span>
-                      <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo!=null}">
+                      <%--<c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo!=null}">
                         <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                      </c:if>
+                      </c:if>--%>
                     </div>
                     </p>
                   </td>
@@ -200,9 +200,9 @@
                     </div>
                     <div class="col-xs-6">
                       <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}" style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/></span>
-                      <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo!=null}">
+                     <%-- <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo!=null}">
                         <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                      </c:if>
+                      </c:if>--%>
                     </div>
                     </p>
                   </td>
@@ -433,9 +433,9 @@
                           </div>
                           <div class="col-xs-6">
                             <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</span>
-                            <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo!=null}">
+                           <%-- <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo!=null}">
                               <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                            </c:if>
+                            </c:if>--%>
                           </div>
 
                           </p>
@@ -811,9 +811,9 @@
                     </div>
                       <div class="col-xs-6">
                         <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}</span>
-                        <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo!=null}">
+                       <%-- <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo!=null}">
                           <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                        </c:if>
+                        </c:if>--%>
                       </div>
 
                       </p>
@@ -971,9 +971,9 @@
                     </div>
                       <div class="col-xs-6">
                         <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}</span>
-                        <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo!=null}">
-
-                        </c:if>
+                        <%--<c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo!=null}">
+                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                        </c:if>--%>
                       </div>
                       </p>
                     </td>
