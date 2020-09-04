@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.listener;
 
+import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
+import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -21,14 +23,16 @@ public class IaisSessionListener {
     @EventListener(SessionCreatedEvent.class)
     @Async
     public void sessionCreatedEvent(SessionCreatedEvent sessionEvent) {
+        LoginContext loginContext = sessionEvent.getSession().getAttribute(AppConsts.SESSION_ATTR_LOGIN_USER);
         log.info(StringUtil.changeForLog("<==== Session created ====> "
-                + sessionEvent.getSession().getId()));
+                + (loginContext == null ? "N.A." : loginContext.getLoginId())));
     }
 
     @EventListener(SessionExpiredEvent.class)
     public void sessionExpiredEvent(SessionExpiredEvent sessionEvent) {
+        LoginContext loginContext = sessionEvent.getSession().getAttribute(AppConsts.SESSION_ATTR_LOGIN_USER);
         log.info(StringUtil.changeForLog("<==== Session timeout ====> "
-                + sessionEvent.getSession().getId()));
+                + (loginContext == null ? "N.A." : loginContext.getLoginId())));
     }
 
     @EventListener(SessionDeletedEvent.class)
