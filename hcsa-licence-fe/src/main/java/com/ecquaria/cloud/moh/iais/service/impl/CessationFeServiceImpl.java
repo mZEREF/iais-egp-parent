@@ -333,6 +333,10 @@ public class CessationFeServiceImpl implements CessationFeService {
                     //email
                     notificationHelper.sendNotification(emailParam);
                     //msg
+                    HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+                    List<String> svcCode=IaisCommonUtils.genNewArrayList();
+                    svcCode.add(svcDto.getSvcCode());
+                    emailParam.setSvcCodeList(svcCode);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     notificationHelper.sendNotification(emailParam);
@@ -369,6 +373,10 @@ public class CessationFeServiceImpl implements CessationFeService {
                     //email
                     notificationHelper.sendNotification(emailParam);
                     //msg
+                    HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+                    List<String> svcCode=IaisCommonUtils.genNewArrayList();
+                    svcCode.add(svcDto.getSvcCode());
+                    emailParam.setSvcCodeList(svcCode);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG);
                     emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     notificationHelper.sendNotification(emailParam);

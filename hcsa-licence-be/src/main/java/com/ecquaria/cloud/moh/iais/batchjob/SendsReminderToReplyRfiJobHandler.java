@@ -15,6 +15,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -179,12 +180,16 @@ public class SendsReminderToReplyRfiJobHandler extends IJobHandler {
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
             notificationHelper.sendNotification(emailParam);
             //msg
+            HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
+            List<String> svcCode=IaisCommonUtils.genNewArrayList();
+            svcCode.add(svcDto.getSvcCode());
             emailMap.put("systemLink", url);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_REMINDER_MSG);
             emailParam.setTemplateContent(emailMap);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             emailParam.setMaskParams(mapPrem);
-            emailParam.setRefId(applicationDto.getApplicationNo());
+            emailParam.setSvcCodeList(svcCode);
+            emailParam.setRefId(licenceViewDto.getLicenceDto().getId());
             notificationHelper.sendNotification(emailParam);
 
         }catch (Exception e){

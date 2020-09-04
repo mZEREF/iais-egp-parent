@@ -1101,6 +1101,10 @@ public class HcsaApplicationDelegator {
                 //email
                 notificationHelper.sendNotification(emailParam);
                 //msg
+                HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+                List<String> svcCode=IaisCommonUtils.genNewArrayList();
+                svcCode.add(svcDto.getSvcCode());
+                emailParam.setSvcCodeList(svcCode);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
                 emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                 emailParam.setRefId(applicationNo);
@@ -2218,6 +2222,10 @@ public class HcsaApplicationDelegator {
             //email
             notificationHelper.sendNotification(emailParam);
             //msg
+            HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+            List<String> svcCode=IaisCommonUtils.genNewArrayList();
+            svcCode.add(svcDto.getSvcCode());
+            emailParam.setSvcCodeList(svcCode);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_005_CLARIFICATION_MSG);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
             emailParam.setRefId(applicationDto.getApplicationNo());

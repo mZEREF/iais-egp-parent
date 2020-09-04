@@ -10,8 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConsta
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.SystemAdminBaseConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDocDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfoDto;
@@ -19,6 +17,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionEmailTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.onlinenquiry.NewRfiPageListDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
@@ -408,8 +407,6 @@ public class RequestForInformationDelegator {
             emailParam.setQueryCode(licenceNo);
             emailParam.setReqRefNum(licenceNo);
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
-            List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
-            ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
             emailParam.setRefId(licenceViewDto.getLicenceDto().getId());
             emailParam.setSubject(subject);
             //email
@@ -419,12 +416,16 @@ public class RequestForInformationDelegator {
             emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
             notificationHelper.sendNotification(emailParam);
             //msg
+            HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
+            List<String> svcCode=IaisCommonUtils.genNewArrayList();
+            svcCode.add(svcDto.getSvcCode());
             emailMap.put("systemLink", url);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
             emailParam.setTemplateContent(emailMap);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
             emailParam.setMaskParams(mapPrem);
-            emailParam.setRefId(applicationDto.getApplicationNo());
+            emailParam.setSvcCodeList(svcCode);
+            emailParam.setRefId(licenceViewDto.getLicenceDto().getId());
             notificationHelper.sendNotification(emailParam);
 
         }catch (Exception e){
@@ -591,8 +592,6 @@ public class RequestForInformationDelegator {
                 emailParam.setReqRefNum(licPremisesReqForInfoDto.getLicenceNo());
                 emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
                 LicenceViewDto licenceViewDto= hcsaLicenceClient.getLicenceViewDtoByLicPremCorrId(licPremisesReqForInfoDto.getLicPremId()).getEntity();
-                List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceViewDto.getLicenceDto().getId()).getEntity();
-                ApplicationDto applicationDto=applicationClient.getApplicationById(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
                 emailParam.setRefId(licenceViewDto.getLicenceDto().getId());
                 emailParam.setSubject(subject);
                 //email
@@ -602,12 +601,16 @@ public class RequestForInformationDelegator {
                 emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                 notificationHelper.sendNotification(emailParam);
                 //msg
+                HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(licenceViewDto.getLicenceDto().getSvcName()).getEntity();
+                List<String> svcCode=IaisCommonUtils.genNewArrayList();
+                svcCode.add(svcDto.getSvcCode());
                 emailMap.put("systemLink", url);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI_MSG);
                 emailParam.setTemplateContent(emailMap);
                 emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_ACTION_REQUIRED);
                 emailParam.setMaskParams(mapPrem);
-                emailParam.setRefId(applicationDto.getApplicationNo());
+                emailParam.setSvcCodeList(svcCode);
+                emailParam.setRefId(licenceViewDto.getLicenceDto().getId());
                 notificationHelper.sendNotification(emailParam);
 
             }catch (Exception e){
