@@ -575,6 +575,7 @@ public class NotificationHelper {
 					mobile = getMobileOfficer(roles, mobile);
 				}
 			} else {
+				mobile = IaisCommonUtils.genNewArrayList();
 				mobile = getMobileOfficer(roles, mobile);
 			}
 			if (mobile != null && !mobile.isEmpty()) {
