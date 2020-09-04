@@ -825,26 +825,27 @@ public class LicenceApproveBatchjob {
                     //do not need create in the Dto
                     //todo:lic_base_specified_correlation
                     //
-                    //part premises
-                    boolean isPartPremises = applicationDto.isPartPremises();
-                    log.info(StringUtil.changeForLog("The generateGroupLicence isPartPremises is -->:" + isPartPremises));
-                    boolean rfcTypeFlag = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType);
-                    if (rfcTypeFlag && isPartPremises) {
-                        String everyOriginLicenceId = applicationDto.getOriginLicenceId();
-                        log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is -->:" + everyOriginLicenceId));
-                        if (!StringUtil.isEmpty(everyOriginLicenceId)) {
-                            List<PremisesGroupDto> premisesGroupDtoList = licenceService.getPremisesGroupDtoByOriginLicenceId(everyOriginLicenceId);
-                            String msg = addPremisesGroupDtos(premisesGroupDtos, premisesGroupDtoList, applicationListDto);
-                            if (!StringUtil.isEmpty(msg)) {
-                                errorMessage = msg;
-                                break;
-                            }
-                            // addDocumentToList(premisesGroupDtoList,licDocumentRelationDtos);
-                        } else {
-                            log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" + applicationDto.getApplicationNo()));
-                        }
-                    }
+
                         sendEmailAndSms(applicationDto, licenceDto, oldLicenseeDto, originLicenceDto, serviceId,applicationListDto.getAppPremisesRecommendationDto());
+                }
+                //part premises
+                boolean isPartPremises = firstApplicationDto.isPartPremises();
+                log.info(StringUtil.changeForLog("The generateGroupLicence isPartPremises is -->:" + isPartPremises));
+                boolean rfcTypeFlag = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(firstApplicationDto.getApplicationType());
+                if (rfcTypeFlag && isPartPremises) {
+                    String everyOriginLicenceId = firstApplicationDto.getOriginLicenceId();
+                    log.info(StringUtil.changeForLog("The generateGroupLicence everyOriginLicenceId is -->:" + everyOriginLicenceId));
+                    if (!StringUtil.isEmpty(everyOriginLicenceId)) {
+                        List<PremisesGroupDto> premisesGroupDtoList = licenceService.getPremisesGroupDtoByOriginLicenceId(everyOriginLicenceId);
+                        String msg = addPremisesGroupDtos(premisesGroupDtos, premisesGroupDtoList, applicationListDtos.get(0));
+                        if (!StringUtil.isEmpty(msg)) {
+                            errorMessage = msg;
+                            break;
+                        }
+                        // addDocumentToList(premisesGroupDtoList,licDocumentRelationDtos);
+                    } else {
+                        log.error(StringUtil.changeForLog("This Appno do not have the OriginLicenceId -- >" + firstApplicationDto.getApplicationNo()));
+                    }
                 }
 
                 //create LicSvcSpecificPersonnelDto
