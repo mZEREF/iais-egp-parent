@@ -22,24 +22,8 @@
 <div class="row">
     <div class="col-xs-12 col-md-7">
         <div class="self-assessment-checkbox-gp gradient-light-grey">
-            <div class="form-check-gp" style="width: 50%;float: right">
-                <p class="assessment-title">Special Licensable Healthcare Services</p>
-                <c:forEach var="specified" items="${specifiedService}">
-                    <div class="form-check">
-                        <input class="form-check-input assessment-service"
-                        <c:if test="${specifiedServiceChecked != null}">
-                        <c:forEach var="specifiedchecked" items="${specifiedServiceChecked}">
-                               <c:if test="${specified.getId().equals(specifiedchecked)}">checked="checked"</c:if>
-                        </c:forEach>
-                        </c:if>
-                               name="sepcifiedchk"  type="checkbox"
-                               aria-invalid="false" value="${specified.getId()}">
-                        <label class="form-check-label" ><span
-                                class="check-square"></span>${specified.getSvcName()}</label>
-                    </div>
-                </c:forEach>
-            </div>
-            <div class="form-check-gp" style="width: 50%;">
+
+            <div class="form-check-gp " >
                 <p class="assessment-title">Base Services</p>
                 <c:forEach var="base" items="${baseService}">
                     <div class="form-check">
@@ -54,6 +38,23 @@
 
                         <label class="form-check-label"><span
                                 class="check-square"></span>${base.getSvcName()}</label>
+                    </div>
+                </c:forEach>
+            </div>
+            <div class="form-check-gp " >
+                <p class="assessment-title">Special Licensable Healthcare Services</p>
+                <c:forEach var="specified" items="${specifiedService}">
+                    <div class="form-check">
+                        <input class="form-check-input assessment-service"
+                        <c:if test="${specifiedServiceChecked != null}">
+                        <c:forEach var="specifiedchecked" items="${specifiedServiceChecked}">
+                               <c:if test="${specified.getId().equals(specifiedchecked)}">checked="checked"</c:if>
+                        </c:forEach>
+                        </c:if>
+                               name="sepcifiedchk"  type="checkbox"
+                               aria-invalid="false" value="${specified.getId()}">
+                        <label class="form-check-label" ><span
+                                class="check-square"></span>${specified.getSvcName()}</label>
                     </div>
                 </c:forEach>
             </div>
