@@ -115,9 +115,12 @@ public class LicenceViewServiceDelegator {
         appEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
         if(appEditSelectDto==null){
             appEditSelectDto = applicationViewDto.getAppEditSelectDto();
-            bpc.request.getSession().setAttribute("pageAppEditSelectDto",null);
-        }else {
+        }
+        String  isSaveRfiSelect = (String)bpc.request.getSession().getAttribute("isSaveRfiSelect");
+        if(AppConsts.YES.equals(isSaveRfiSelect)){
             bpc.request.getSession().setAttribute("pageAppEditSelectDto",applicationViewDto.getAppEditSelectDto());
+        }else {
+            bpc.request.getSession().setAttribute("pageAppEditSelectDto",null);
         }
         log.info(StringUtil.changeForLog(appEditSelectDto+"appEditSelectDto"));
         bpc.request.getSession().setAttribute("appEditSelectDto",appEditSelectDto);

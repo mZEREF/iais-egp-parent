@@ -603,7 +603,8 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do preparePayment start ...."));
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         List<AppSubmissionDto> appSubmissionDtos = (List<AppSubmissionDto>) bpc.request.getSession().getAttribute("appSubmissionDtos");
-        HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
+        HashMap<String, String> coMap  = bpc.request.getSession().getAttribute("coMap")==null ?
+                null : (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
         List<String> strList = new ArrayList<>(5);
         if(coMap!=null){
             coMap.forEach((k, v) -> {
