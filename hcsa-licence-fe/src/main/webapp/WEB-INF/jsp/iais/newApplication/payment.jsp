@@ -88,8 +88,45 @@
 
                                         <c:when test="${'APTY002' == AppSubmissionDto.appType && onlySpec}">
                                             <c:forEach items="${AppSubmissionDto.feeInfoDtos}" var="feeInfoDto">
+                                                <c:set var="baseSvcFeeExt" value="${feeInfoDto.baseSvcFeeExt}"/>
                                                 <c:set var="complexSpecifiedFeeExt" value="${feeInfoDto.complexSpecifiedFeeExt}"/>
                                                 <c:set var="simpleSpecifiedFeeExt" value="${feeInfoDto.simpleSpecifiedFeeExt}"/>
+                                                <c:if test="${!empty baseSvcFeeExt}">
+                                                    <tr>
+                                                        <td>
+                                                            <c:forEach var="svcName" items="${baseSvcFeeExt.svcNames}">
+                                                                <p>
+                                                                    <c:out value="${svcName}"></c:out>
+                                                                    <c:if test="${multiplePrem}">
+                                                                        &nbsp;(Premises #${stat.index+1})
+                                                                    </c:if>
+                                                                </p>
+                                                            </c:forEach>
+                                                        </td>
+                                                        <td>
+                                                            <p>
+                                                                New Licence
+                                                            </p>
+                                                        </td>
+                                                        <td>
+                                                            <p>
+                                                                <c:out value="${AppSubmissionDto.appGrpNo}"></c:out>
+                                                            </p>
+                                                        </td>
+                                                        <td>
+                                                            <p>
+                                                                <c:choose>
+                                                                    <c:when test="${'OFFSITE' == premises.premisesType && !onlyOffsite}">
+                                                                        <c:out value="$0"></c:out>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <c:out value="${baseSvcFeeExt.amountStr}"></c:out>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </p>
+                                                        </td>
+                                                    </tr>
+                                                </c:if>
                                                 <tr>
                                                     <td>
                                                         <p><em>Complex Specified Services <c:if test="${complexSpecifiedFeeExt.svcNames.size()>1}">(${complexSpecifiedFeeExt.svcNames.size()})</c:if></em></p>
