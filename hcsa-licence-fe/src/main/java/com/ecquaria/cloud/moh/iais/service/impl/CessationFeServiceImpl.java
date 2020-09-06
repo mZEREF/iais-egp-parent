@@ -407,9 +407,9 @@ public class CessationFeServiceImpl implements CessationFeService {
                 }
             }
             String serviceId = applicationDto.getServiceId();
-            String stageId = getStageId(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
-            if(!StringUtil.isEmpty(stageId)){
-                applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+            String appType = getStageId(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
+            if(!StringUtil.isEmpty(appType)){
+                applicationDto.setStatus(appType);
             }
         }
         applicationClient.updateApplicationList(applicationDtos);
