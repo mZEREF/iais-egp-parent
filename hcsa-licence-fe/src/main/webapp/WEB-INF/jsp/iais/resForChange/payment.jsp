@@ -99,6 +99,9 @@
 
 
 <script>
+    $(document).ready(function () {
+        $('#comDashboard div.navigation-gp').css('margin-left','6.5%');
+    });
     $('#proceed').click(function () {var flag=false;
         $("input[name='payMethod']").each(function () {
 
