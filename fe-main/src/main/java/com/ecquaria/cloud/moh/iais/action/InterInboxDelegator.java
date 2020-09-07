@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
+import com.ecquaria.cloud.helper.CacheHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
@@ -17,6 +18,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDra
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.recall.RecallApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxLicenceQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxMsgMaskDto;
@@ -29,13 +31,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
-import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
-import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
-import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
-import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
-import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
-import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
@@ -758,7 +754,17 @@ public class InterInboxDelegator {
         if(applicationStatus == null || applicationStatus.equals(InboxConst.SEARCH_ALL)){
             inboxParam.removeFilter("appStatus");
         }else{
-            inboxParam.addFilter("appStatus", applicationStatus,true);
+            List<String> inParams = IaisCommonUtils.genNewArrayList();
+            if (ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION.equals(applicationStatus)){
+                inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Inspection");
+            }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationStatus)){
+                inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Screening");
+            }
+            else{
+                inParams.add(applicationStatus);
+            }
+            SqlHelper.builderInSql(inboxParam, "status", "appStatus", inParams);
+//            inboxParam.addFilter("appStatus", applicationStatus,true);
         }
         if(applicationNo != null){
             if(applicationNo.indexOf('%') != -1){
@@ -773,7 +779,15 @@ public class InterInboxDelegator {
         if(serviceType == null || serviceType.equals(InboxConst.SEARCH_ALL)){
             inboxParam.removeFilter("serviceType");
         }else{
-            inboxParam.addFilter("serviceType", serviceType,true);
+            if (!StringUtil.isEmpty(applicationStatus) && ApplicationConsts.APPLICATION_STATUS_DRAFT.equals(applicationStatus)){
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(serviceType);
+                String svcCode = hcsaServiceDto.getSvcCode();
+                if (!StringUtil.isEmpty(svcCode)){
+                    inboxParam.addFilter("serviceCode", "%" + svcCode + "%",true);
+                }
+            }else{
+                inboxParam.addFilter("serviceType", serviceType,true);
+            }
         }
         if (startAppDate != null && endAppDate != null){
             if(startAppDate.compareTo(endAppDate)<=0){
@@ -1052,14 +1066,6 @@ public class InterInboxDelegator {
         applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE)));
         applicationTypeSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)));
         ParamUtil.setRequestAttr(request, "appTypeSelect", applicationTypeSelectList);
-
-        List<SelectOption> applicationStatusSelectList = IaisCommonUtils.genNewArrayList();
-        applicationStatusSelectList.add(new SelectOption("All", "All"));
-        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_DRAFT, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_DRAFT)));
-        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_ROUTE_BACK)));
-        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_APPROVED, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_APPROVED)));
-        applicationStatusSelectList.add(new SelectOption(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING, MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)));
-        ParamUtil.setRequestAttr(request, "appStatusSelect", applicationStatusSelectList);
 
         List<SelectOption> appServiceStatusSelectList = IaisCommonUtils.genNewArrayList();
         appServiceStatusSelectList.add(new SelectOption("All", "All"));
