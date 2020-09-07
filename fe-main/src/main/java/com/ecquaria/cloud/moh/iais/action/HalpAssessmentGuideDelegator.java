@@ -6,13 +6,20 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.assessmentGuide.GuideConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
+import com.ecquaria.cloud.moh.iais.common.constant.organization.OrganizationConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
@@ -34,9 +41,9 @@ import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
-import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
+import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +53,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -107,7 +113,8 @@ public class HalpAssessmentGuideDelegator {
 
     @Autowired
     RequestForChangeService requestForChangeService;
-
+    @Autowired
+    OrgUserManageService orgUserManageService;
     @Autowired
     AssessmentGuideService assessmentGuideService;
 
@@ -1374,28 +1381,16 @@ public class HalpAssessmentGuideDelegator {
 
     public void amendLic3_2(BaseProcessClass bpc) {
         log.info("****start ******");
-//        SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEES_SEARCH_PARAM,PremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
-//        amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
-//        QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
-//        SearchResult<PremisesListQueryDto> amendDetailsSearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
-//        if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
-//            ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEES_SEARCH_PARAM, amendDetailsSearchParam);
-//            ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEES_SEARCH_RESULT, amendDetailsSearchResult);
-//        }
+        LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
+        if(OrganizationConstants.LICENSEE_TYPE_CORPPASS.equals(licenseeDto.getLicenseeType())){
+            ParamUtil.setRequestAttr(bpc.request, "login_action_type","company");
+        }else{
+            ParamUtil.setRequestAttr(bpc.request, "login_action_type","solo");
+        }
         log.info("****end ******");
     }
-    public void amendLic3_3(BaseProcessClass bpc) {
-        log.info("****start ******");
-//        SearchParam amendDetailsSearchParam = HalpSearchResultHelper.gainSearchParam(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEES_SEARCH_PARAM,PremisesListQueryDto.class.getName(),"PREMISES_TYPE",SearchParam.DESCENDING,false);
-//        amendDetailsSearchParam.addFilter("licenseeId", licenseeId, true);
-//        QueryHelp.setMainSql("interInboxQuery", "queryPremises", amendDetailsSearchParam);
-//        SearchResult<PremisesListQueryDto> amendDetailsSearchResult = requestForChangeService.searchPreInfo(amendDetailsSearchParam);
-//        if (!StringUtil.isEmpty(amendDetailsSearchResult)) {
-//            ParamUtil.setSessionAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEES_SEARCH_PARAM, amendDetailsSearchParam);
-//            ParamUtil.setRequestAttr(bpc.request, GuideConsts.AMEND_UPDATE_LICENSEES_SEARCH_RESULT, amendDetailsSearchResult);
-//        }
-        log.info("****end ******");
-    }
+
 
     public void amendLic4_1(BaseProcessClass bpc) {
         log.info("****start ******");

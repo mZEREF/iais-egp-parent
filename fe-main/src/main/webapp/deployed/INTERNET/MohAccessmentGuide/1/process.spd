@@ -457,13 +457,6 @@
     <JavaCode defClass="" executor="" methodName="prepareJump_OnStepProcess_0" name="prepareJump_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="amendLic3_3" x="1580" y="100">
-   <Description/>
-   <probepoint type="none"/>
-   <OnStepProcess>
-    <JavaCode defClass="" executor="" methodName="amendLic3_3_OnStepProcess_0" name="amendLic3_3_OnStepProcess_0"/>
-   </OnStepProcess>
-  </AutomaticStep>
  </Steps>
  <Pages>
   <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="assessmentPage" stageIndicator="" x="460" y="100">
@@ -664,8 +657,8 @@
   <SynchronousLink destinationName="/Pages/WebPage/amendLic4_1Page" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/amendLic4_1" style="oblique">
    <position>{(1440,120)(1480,-40)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/amendLic3_2Page" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/amendLic3_2" style="oblique">
-   <position>{(1630,120)(1630,-50)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/amendLic3_2Page" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch21" style="oblique">
+   <position>{(1665,70)(1630,-50)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/amendLic3_1Page" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/amendLic3_1" style="oblique">
    <position>{(1140,120)(1140,-130)}</position>
@@ -1114,14 +1107,14 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareJump" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch16" style="rectanular">
    <position>{(2840,450)(2300,10)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic3_3" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch1" style="oblique">
-   <position>{(720,120)(1600,120)}</position>
-  </SynchronousLink>
-  <SynchronousLink destinationName="/Pages/WebPage/amendLic3_3Page" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/amendLic3_3" style="oblique">
-   <position>{(1600,120)(1600,-50)}</position>
+  <SynchronousLink destinationName="/Pages/WebPage/amendLic3_3Page" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch21" style="oblique">
+   <position>{(1665,70)(1600,-50)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch9" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/amendLic3_3Page" style="rectanular">
    <position>{(1600,-50)(1630,-480)}</position>
+  </SynchronousLink>
+  <SynchronousLink destinationName="/Switches/Switch/Switch21" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/amendLic3_2" style="oblique">
+   <position>{(1630,120)(1665,70)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -1144,7 +1137,6 @@
    <SwitchCase component="/Steps/AutomaticStep/updateAdminPers" value="&quot;upAdmin&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/newApp1" value="&quot;new1&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/prepareDate" value=""/>
-   <SwitchCase component="/Steps/AutomaticStep/amendLic3_3" value="&quot;amend3_3&quot;"/>
   </Switch>
   <Switch defClass="" defaultComponent="/Merges/Merge/Merge2" executor="" icon="" leftOperand="guide_action_type" name="Switch2" x="1870" y="-510">
    <Description/>
@@ -1276,6 +1268,11 @@
    <SwitchCase component="/Steps/AutomaticStep/amendLic3_1" value="&quot;toamend3_1&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/amendLic2" value="&quot;toamend2&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/amendLic1_2" value="&quot;toamend1_2&quot;"/>
+  </Switch>
+  <Switch defClass="" defaultComponent="/Pages/WebPage/amendLic3_2Page" executor="" icon="" leftOperand="login_action_type" name="Switch21" x="1620" y="20">
+   <Description/>
+   <SwitchCase component="/Pages/WebPage/amendLic3_2Page" value=""/>
+   <SwitchCase component="/Pages/WebPage/amendLic3_3Page" value="&quot;company&quot;"/>
   </Switch>
  </Switches>
  <Branches/>
