@@ -266,6 +266,9 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
             systemAssignTaskDto.setInspectorByGroup(inspectorByGroup);
             systemAssignTaskDto.setWorkGroupNos(workGroupNos);
             systemAssignTaskDto.setWorkGroupOptions(workGroupOptions);
+            if(StringUtil.isEmpty(systemAssignTaskDto.getCheckWorkGroup())){
+                systemAssignTaskDto.setCheckWorkGroup(workGroupNos.get(0));
+            }
         }
         return systemAssignTaskDto;
     }

@@ -103,7 +103,7 @@
                       <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupMemBerName}"/><span style="color: red"> *</span></label>
                     </div>
                     <div class="col-md-3">
-                      <c:forEach var="workGroupNo" items="${workGroupNos}">
+                      <c:forEach var="workGroupNo" items="${systemAssignTaskDto.workGroupNos}">
                         <div id="workGroupNo${workGroupNo}">
                           <iais:select name="sysMohOfficerName${workGroupNo}" options="sysMohOfficerOption${workGroupNo}" firstOption="Please Select"></iais:select>
                         </div>
