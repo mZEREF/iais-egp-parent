@@ -52,37 +52,37 @@
                     <iais:row>
                       <iais:field value="Application No."/>
                       <iais:value width="18">
-                        <input type="text" name="application_no" value="${supTaskSearchParam.filters['application_no']}" />
+                        <input type="text" name="application_no" value="${systemSearchParam.filters['application_no']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Application Type"/>
                       <iais:value width="18">
-                        <iais:select cssClass="application_type" name="application_type" options="appTypeOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_type']}" ></iais:select>
+                        <iais:select cssClass="application_type" name="application_type" options="appTypeOption" firstOption="Please Select" value="${systemSearchParam.filters['application_type']}" ></iais:select>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="Application Status"/>
                       <iais:value width="18">
-                        <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${supTaskSearchParam.filters['application_status']}" ></iais:select>
+                        <iais:select name="application_status" options="appStatusOption" firstOption="Please Select" value="${systemSearchParam.filters['application_status']}" ></iais:select>
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Code"/>
                       <iais:value width="18">
-                        <input type="text" name="hci_code" value="${supTaskSearchParam.filters['hci_code']}" />
+                        <input type="text" name="hci_code" value="${systemSearchParam.filters['hci_code']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Name"/>
                       <iais:value width="18">
-                        <input type="text" name="hci_name" value="${supTaskSearchParam.filters['hci_name']}" />
+                        <input type="text" name="hci_name" value="${systemSearchParam.filters['hci_name']}" />
                       </iais:value>
                     </iais:row>
                     <iais:row>
                       <iais:field value="HCI Address"/>
                       <iais:value width="18">
-                        <input type="text" name="hci_address" value="${supTaskSearchParam.filters['hci_address']}" />
+                        <input type="text" name="hci_address" value="${systemSearchParam.filters['hci_address']}" />
                       </iais:value>
                     </iais:row>
                     <iais:action style="text-align:right;">
