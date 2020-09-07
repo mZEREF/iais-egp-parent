@@ -243,8 +243,12 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
 
     @Override
     public List<ComplianceHistoryDto> getComplianceHistoryDtosByLicId(String licenceId){
-        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
         List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
+        return complianceHistoryDtosByLicId(complianceHistoryDtos,licenceId);
+    }
+
+    private List<ComplianceHistoryDto> complianceHistoryDtosByLicId(List<ComplianceHistoryDto> complianceHistoryDtos,String licenceId){
+        List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
         for(LicAppCorrelationDto appCorrelationDto:licAppCorrelationDtos){
             ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
             AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appCorrelationDto.getApplicationId()).getEntity();
@@ -264,7 +268,9 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             } else {
                 complianceHistoryDto.setComplianceTag("Full Compliance");
             }
-
+            if(applicationDto.getOriginLicenceId()!=null){
+                complianceHistoryDtosByLicId(complianceHistoryDtos,applicationDto.getOriginLicenceId());
+            }
             AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
             try {
                 complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
