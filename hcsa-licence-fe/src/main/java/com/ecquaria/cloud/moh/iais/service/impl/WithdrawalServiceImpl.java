@@ -1,6 +1,8 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
@@ -244,5 +246,38 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             }
         }
         return result;
+    }
+
+    private String getAppStatus(String serviceId,String appType) {
+        String appStatus;
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<HcsaSvcRoutingStageDto> serviceConfig = feEicGatewayClient.getServiceConfig(serviceId, appType, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+        if (IaisCommonUtils.isEmpty(serviceConfig)) {
+            return null;
+        } else {
+            String stageId = serviceConfig.get(0).getId();
+            switch (stageId) {
+                case HcsaConsts.ROUTING_STAGE_ASO:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
+                    break;
+                case HcsaConsts.ROUTING_STAGE_INS:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION;
+                    break;
+                case HcsaConsts.ROUTING_STAGE_PSO:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;
+                    break;
+                case HcsaConsts.ROUTING_STAGE_AO1:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;
+                    break;
+                case HcsaConsts.ROUTING_STAGE_AO2:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
+                    break;
+                default:
+                    appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
+            }
+        }
+        return appStatus;
     }
 }
