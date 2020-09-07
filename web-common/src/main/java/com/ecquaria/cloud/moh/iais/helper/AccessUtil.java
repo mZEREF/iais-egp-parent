@@ -19,12 +19,18 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.UserAgent;
+import eu.bitwalker.useragentutils.Version;
+import lombok.extern.slf4j.Slf4j;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * AccessUtil
@@ -33,6 +39,7 @@ import sop.rbac.user.User;
  * @date 7/23/2019
  */
 
+@Slf4j
 public class AccessUtil {
     /**
      * @description: judge is the Backend .
@@ -142,6 +149,26 @@ public class AccessUtil {
             loginId = loginContext.getLoginId();
         }
         return loginId;
+    }
+
+    public static String getBrowserInfo(HttpServletRequest request){
+        StringBuilder uaStr = new StringBuilder();
+        UserAgent userAgent = UserAgent.parseUserAgentString(request.getHeader("User-Agent"));
+        if (userAgent != null){
+            Browser browser = userAgent.getBrowser();
+            if (browser != null){
+                String browserName = browser.getName();
+                Version version = browser.getVersion(request.getHeader("User-Agent"));
+                if(version != null){
+                    uaStr.append(browserName).append("/").append(version.getVersion());
+                }else {
+                    uaStr.append(browserName).append("/").append("unbeknown");
+                }
+            }
+        }
+
+        log.info(StringUtil.changeForLog("BrowserInfo .........." + uaStr));
+        return uaStr.toString();
     }
 
 }

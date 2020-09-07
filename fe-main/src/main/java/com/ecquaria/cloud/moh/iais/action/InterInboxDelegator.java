@@ -4,7 +4,6 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
-import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
@@ -951,27 +950,7 @@ public class InterInboxDelegator {
         String draft = ParamUtil.getString(bpc.request,InboxConst.ACTION_NO_VALUE);
         if(!StringUtil.isEmpty(draft)){
             log.debug(StringUtil.changeForLog("draft no. is not null"));
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-
             List<AuditTrailDto> adDtos = IaisCommonUtils.genNewArrayList(1);
-            AuditTrailDto auditTrailDto = new AuditTrailDto();
-            if(loginContext != null){
-                auditTrailDto.setMohUserId(loginContext.getUserId());
-                auditTrailDto.setUenId(loginContext.getLicenseeId());
-            }
-            auditTrailDto.setActionTime("");
-            auditTrailDto.setAfterAction("");
-            auditTrailDto.setFunctionName("");
-            auditTrailDto.setApplicationNum("");
-            auditTrailDto.setNricNumber("");
-            auditTrailDto.setMohUserGuid("");
-            auditTrailDto.setClientIp("");
-            auditTrailDto.setSessionId("");
-            auditTrailDto.setUserAgent("");
-            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_DELETE);
-            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
-            adDtos.add(auditTrailDto);
-
             inboxService.deleteDraftByNo(draft);
             String delDraftAckMsg = MessageUtil.getMessageDesc("NEW_ACK003");
             ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
