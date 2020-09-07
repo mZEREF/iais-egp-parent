@@ -192,8 +192,8 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
         for(Map.Entry<String, List<ApptUserCalendarDto>> apptInspDateMap : apptFeConfirmDateDto.getApptInspDateMap().entrySet()){
             String apptRefNo = apptInspDateMap.getKey();
             List<ApptUserCalendarDto> apptUserCalendarDtoList = apptInspDateMap.getValue();
-            ApptUserCalendarDto apptUserCalendarDto = getMaxDto(apptUserCalendarDtoList);
-            int timeSize = apptUserCalendarDto.getEndSlot().size();
+            ApptUserCalendarDto apptUserCalendarDto = getMaxDto(apptUserCalendarDtoList);//NOSONAR
+            int timeSize = apptUserCalendarDto.getEndSlot().size();//NOSONAR
             Date startDate = apptUserCalendarDto.getStartSlot().get(0);
             Date endDate = apptUserCalendarDto.getEndSlot().get(timeSize - 1);
             String inspStartDate = apptDateToStringShow(startDate);
@@ -214,7 +214,7 @@ public class ApplicantConfirmInspDateServiceImpl implements ApplicantConfirmInsp
     }
 
     private ApptUserCalendarDto getMaxDto(List<ApptUserCalendarDto> apptUserCalendarDtoList) {
-        ApptUserCalendarDto apptUserCalendarDto = null;
+        ApptUserCalendarDto apptUserCalendarDto = null;//NOSONAR
         int maxSize = 0;
         for(int i = 0; i < apptUserCalendarDtoList.size(); i++){
             if(apptUserCalendarDto == null){
