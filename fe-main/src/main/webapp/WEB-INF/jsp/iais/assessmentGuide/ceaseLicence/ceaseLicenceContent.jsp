@@ -56,7 +56,24 @@
     </div>
     <c:choose>
         <c:when test="${!empty ceaseLicenceSearchResult.rows}">
-            <a class="btn btn-primary " onclick="guideSubmit('ceaseLic','second')">NEXT</a>
+            <a class="btn btn-primary " onclick="ceaseSubmit()">NEXT</a>
         </c:when>
     </c:choose>
 </div>
+<script type="text/javascript">
+    function ceaseSubmit() {
+        var checkOne = false;
+        var checkBox = $("input[name='ceaseLicIds']");
+        for (var i = 0; i < checkBox.length; i++) {
+            if (checkBox[i].checked) {
+                checkOne = true;
+            }
+            ;
+        }
+        ;
+
+        if (checkOne) {
+            guideSubmit('ceaseLic','second')
+        }
+    }
+</script>
