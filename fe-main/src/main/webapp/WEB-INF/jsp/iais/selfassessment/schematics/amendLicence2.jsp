@@ -53,5 +53,5 @@
         </table>
     </div>
 
-    <a class="btn btn-primary "  onclick="Utils.submit('mainForm','amend2')" style="background: #1F92FF; color: white"  >NEXT</a>
+    <a class="btn btn-primary "  onclick="Utils.submit('mainForm','amend2')"  >NEXT</a>
 </div>

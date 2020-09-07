@@ -14,6 +14,6 @@
         </label>
     </div>
 
-    <a class="btn btn-primary "  onclick="Utils.submit('mainForm','subDate')" style="background: #1F92FF; color: white"  >NEXT</a>
+    <a class="btn btn-primary "  onclick="Utils.submit('mainForm','subDate')"   >NEXT</a>
 
 </div>
