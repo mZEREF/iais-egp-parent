@@ -237,7 +237,8 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
             int workGroupNo = 0;
             List<SelectOption> workGroupOptions = IaisCommonUtils.genNewArrayList();
             for(String workGroupId : workGroupIds){
-                SelectOption workGroupOption = new SelectOption(workGroupNo + "", workGroupId);
+                WorkingGroupDto workingGroupDto = organizationClient.getWrkGrpById(workGroupId).getEntity();
+                SelectOption workGroupOption = new SelectOption(workGroupNo + "", workingGroupDto.getGroupName());
                 workGroupOptions.add(workGroupOption);
                 workGroupIdMap.put(workGroupNo + "", workGroupId);
                 List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();

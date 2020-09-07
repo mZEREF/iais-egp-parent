@@ -92,7 +92,7 @@
                     <div class="col-md-2">
                       <label style="font-size: 16px">Work Group Name<span style="color: red"> *</span></label>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                       <iais:select name="systemAssignWorkGroup" options="workGroupOptions" value="${systemAssignTaskDto.checkWorkGroup}" ></iais:select>
                       <span class="error-msg" name="iaisErrorMsg" id="error_checkWorkGroup"></span>
                     </div>
@@ -102,7 +102,7 @@
                     <div class="col-md-2">
                       <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupMemBerName}"/><span style="color: red"> *</span></label>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                       <c:forEach var="workGroupNo" items="${workGroupNos}">
                         <div id="workGroupNo${workGroupNo}">
                           <iais:select name="sysMohOfficerName${workGroupNo}" options="sysMohOfficerOption${workGroupNo}" firstOption="Please Select"></iais:select>
