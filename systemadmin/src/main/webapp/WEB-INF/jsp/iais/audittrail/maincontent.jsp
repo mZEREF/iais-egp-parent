@@ -103,8 +103,8 @@
                 <iais:sortableHeader needSort="true"   field="application_number" value="Application ID"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="license_number" value="Licence Number"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="module" value="Module"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="userCase" value="Function / Use Case"></iais:sortableHeader>
-                <iais:sortableHeader needSort="true"   field="programmeName" value="Program Name"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="function_name" value="Function / Use Case"></iais:sortableHeader>
+                <iais:sortableHeader needSort="true"   field="programme_name" value="Program Name"></iais:sortableHeader>
                 <iais:sortableHeader needSort="true"   field="operation" value="Data Activities"></iais:sortableHeader>
               </tr>
               </thead>
