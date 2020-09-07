@@ -37,6 +37,7 @@ import com.ecquaria.cloud.moh.iais.service.client.FeEicGatewayClient;
 import com.ecquaria.cloud.moh.iais.service.client.FeMessageClient;
 import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
+import com.ecquaria.cloud.submission.client.App;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
@@ -104,6 +105,17 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             appSubmissionDto.setAppGrpNo(grpNo);
             AppSubmissionDto newAppSubmissionDto = applicationClient.saveSubmision(appSubmissionDto).getEntity();
             List<ApplicationDto> applicationDtoList = newAppSubmissionDto.getApplicationDtos();
+            for (ApplicationDto applicationDto:applicationDtoList
+                 ) {
+                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
+                if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() >0){
+                    String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
+                    String appStatus = getAppStatus(serviceId,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
+                    if (!StringUtil.isEmpty(appStatus)){
+                        applicationDto.setStatus(appStatus);
+                    }
+                }
+            }
             h.setNewApplicationId(applicationDtoList.get(0).getId());
             applicationClient.saveApps(newAppSubmissionDto).getEntity();
         });
