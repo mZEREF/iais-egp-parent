@@ -3429,6 +3429,7 @@ public class NewApplicationDelegator {
             count = premisesType.length;
         }
         String[] premisesIndexNo = ParamUtil.getStrings(request, "premisesIndexNo");
+        String[] rfiCanEdit = ParamUtil.getStrings(request,"rfiCanEdit");
         //onsite
         String[] premisesSelect = ParamUtil.getStrings(request, "onSiteSelect");
         String[] postalCode = ParamUtil.getStrings(request, "onSitePostalCode");
@@ -3560,6 +3561,11 @@ public class NewApplicationDelegator {
                 length = Integer.parseInt(phLength[i]);
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("length can not parse to int"));
+            }
+            if(AppConsts.TRUE.equals(rfiCanEdit[i])){
+                appGrpPremisesDto.setRfiCanEdit(true);
+            }else{
+                appGrpPremisesDto.setRfiCanEdit(false);
             }
             if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(premisesType[i])) {
                 appGrpPremisesDto.setOnsiteStartHH(onsiteStartHH[i]);

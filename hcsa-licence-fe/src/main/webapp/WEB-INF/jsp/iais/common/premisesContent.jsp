@@ -39,6 +39,7 @@
                 <input type="hidden" name="isPartEdit" value="0"/>
             </c:otherwise>
         </c:choose>
+        <input type="hidden" name="rfiCanEdit" value="${appGrpPremisesDto.rfiCanEdit}"/>
         <!--for ph -->
         <input class="premValue" type="hidden" name="premValue" value="${status.index}"/>
         <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value="${appGrpPremisesDto.premisesIndexNo}"/>
