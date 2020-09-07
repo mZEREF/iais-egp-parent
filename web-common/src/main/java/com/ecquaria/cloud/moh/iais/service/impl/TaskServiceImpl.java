@@ -122,7 +122,7 @@ public class TaskServiceImpl implements TaskService {
                         //0066643
                         List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                         if(!IaisCommonUtils.isEmpty(orgUserDtos)){
-                            userId = orgUserDtos.get(0).getUserId();
+                            userId = orgUserDtos.get(0).getId();
                         }
                     }
                     break;
@@ -203,7 +203,7 @@ public class TaskServiceImpl implements TaskService {
                             //0066643
                             List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
                             if(!IaisCommonUtils.isEmpty(orgUserDtos)){
-                                userId = orgUserDtos.get(0).getUserId();
+                                userId = orgUserDtos.get(0).getId();
                             }
                         }
                         break;
