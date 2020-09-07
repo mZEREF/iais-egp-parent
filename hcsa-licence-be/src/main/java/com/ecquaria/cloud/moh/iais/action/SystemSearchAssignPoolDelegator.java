@@ -94,6 +94,7 @@ public class SystemSearchAssignPoolDelegator {
         ParamUtil.setSessionAttr(bpc.request, "systemSearchResult", null);
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", null);
         ParamUtil.setSessionAttr(bpc.request, "systemAssignMap", null);
+        ParamUtil.setSessionAttr(bpc.request, "stageOption", null);
     }
 
     /**
@@ -133,11 +134,13 @@ public class SystemSearchAssignPoolDelegator {
             QueryHelp.setMainSql("inspectionQuery", "systemGroupPoolSearch",searchParam);
             searchResult = systemSearchAssignPoolService.getSystemGroupPoolByParam(searchParam);
             List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
+            List<SelectOption> stageOption = groupRoleFieldDto.getStageOption();
             List<SelectOption> appStatusOption = systemSearchAssignPoolService.getAppStatusOption(groupRoleFieldDto);
             ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
             ParamUtil.setSessionAttr(bpc.request, "systemPool", (Serializable) systemPool);
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
             ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
+            ParamUtil.setSessionAttr(bpc.request, "stageOption", (Serializable) stageOption);
         }
         ParamUtil.setSessionAttr(bpc.request, "systemSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "systemSearchResult", searchResult);

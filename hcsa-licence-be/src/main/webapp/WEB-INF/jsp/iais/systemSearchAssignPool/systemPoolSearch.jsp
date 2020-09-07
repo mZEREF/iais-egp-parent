@@ -35,7 +35,7 @@
                     <div class="form-group">
                       <label class="col-xs-12 col-md-4 control-label">Stage</label>
                       <div class="col-xs-8 col-sm-6 col-md-5">
-                        <iais:select name="systemAssignStage" options="superPoolRoleIds" id="systemAssignStage" value="${poolRoleCheckDto.checkCurRole}"></iais:select>
+                        <iais:select name="systemAssignStage" options="superPoolRoleIds" id="systemAssignStage" value="${groupRoleFieldDto.curStage}"></iais:select>
                       </div>
                     </div>
                   </div>
@@ -43,7 +43,7 @@
                     <div class="col-xs-10 col-md-12">
                       <div class="components">
                         <a name="filterBtn" class="btn btn-secondary" data-toggle="collapse"
-                           data-target="#superPoolSearch">Filter</a>
+                           data-target="#systemPoolSearch">Filter</a>
                       </div>
                     </div>
                   </div>
