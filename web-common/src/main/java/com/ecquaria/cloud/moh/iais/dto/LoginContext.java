@@ -29,6 +29,7 @@ public class LoginContext implements Serializable {
     // FE User Info
     @Setter private String licenseeId;
     @Setter private String orgId;
+    @Setter private String licenseeType;
 
     public LoginContext() {
         wrkGrpIds = IaisCommonUtils.genNewHashSet();
