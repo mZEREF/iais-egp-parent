@@ -322,34 +322,36 @@ public class SystemSearchAssignPoolDelegator {
         log.debug(StringUtil.changeForLog("the systemPoolAssignAssign start ...."));
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         SystemAssignTaskDto systemAssignTaskDto = (SystemAssignTaskDto)ParamUtil.getSessionAttr(bpc.request, "systemAssignTaskDto");
-        if(systemAssignTaskDto == null){
-            systemAssignTaskDto = new SystemAssignTaskDto();
-        }
-        //set MOH Officer Field Name
-        groupRoleFieldDto = systemSearchAssignPoolService.setGroupMemberName(groupRoleFieldDto);
         String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
-        TaskDto taskDto = taskService.getTaskById(taskId);
-        ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
-        systemAssignTaskDto.setTaskDto(taskDto);
-        Map<String, SuperPoolTaskQueryDto> systemAssignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(bpc.request, "systemAssignMap");
-        //get work group
-        systemAssignTaskDto = systemSearchAssignPoolService.setWorkGroupAndOfficer(groupRoleFieldDto, systemAssignTaskDto);
-        //set session inspector options
-        Map<String, List<SelectOption>> inspectorByGroup = systemAssignTaskDto.getInspectorByGroup();
-        List<SelectOption> workGroupOptions = systemAssignTaskDto.getWorkGroupOptions();
-        if(inspectorByGroup != null){
-            for(Map.Entry<String, List<SelectOption>> map : inspectorByGroup.entrySet()){
-                String groupNo = map.getKey();
-                List<SelectOption> officerOption = map.getValue();
-                ParamUtil.setSessionAttr(bpc.request, "sysMohOfficerOption" + groupNo, (Serializable) officerOption);
+        if(!StringUtil.isEmpty(taskId)) {
+            if(systemAssignTaskDto == null){
+                systemAssignTaskDto = new SystemAssignTaskDto();
             }
+            //set MOH Officer Field Name
+            groupRoleFieldDto = systemSearchAssignPoolService.setGroupMemberName(groupRoleFieldDto);
+            TaskDto taskDto = taskService.getTaskById(taskId);
+            ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(taskDto.getRefNo());
+            systemAssignTaskDto.setTaskDto(taskDto);
+            Map<String, SuperPoolTaskQueryDto> systemAssignMap = (Map<String, SuperPoolTaskQueryDto>) ParamUtil.getSessionAttr(bpc.request, "systemAssignMap");
+            //get work group
+            systemAssignTaskDto = systemSearchAssignPoolService.setWorkGroupAndOfficer(groupRoleFieldDto, systemAssignTaskDto);
+            //set session inspector options
+            Map<String, List<SelectOption>> inspectorByGroup = systemAssignTaskDto.getInspectorByGroup();
+            List<SelectOption> workGroupOptions = systemAssignTaskDto.getWorkGroupOptions();
+            if (inspectorByGroup != null) {
+                for (Map.Entry<String, List<SelectOption>> map : inspectorByGroup.entrySet()) {
+                    String groupNo = map.getKey();
+                    List<SelectOption> officerOption = map.getValue();
+                    ParamUtil.setSessionAttr(bpc.request, "sysMohOfficerOption" + groupNo, (Serializable) officerOption);
+                }
+            }
+            //set task other data to show
+            systemAssignTaskDto = systemSearchAssignPoolService.getDataForSystemAssignTask(systemAssignMap, systemAssignTaskDto, taskDto, applicationViewDto);
+            ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+            ParamUtil.setSessionAttr(bpc.request, "workGroupOptions", (Serializable) workGroupOptions);
         }
-        //set task other data to show
-        systemAssignTaskDto = systemSearchAssignPoolService.getDataForSystemAssignTask(systemAssignMap, systemAssignTaskDto, taskDto, applicationViewDto);
         ParamUtil.setSessionAttr(bpc.request, "systemAssignTaskDto", systemAssignTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
-        ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
-        ParamUtil.setSessionAttr(bpc.request, "workGroupOptions", (Serializable) workGroupOptions);
     }
 
     /**

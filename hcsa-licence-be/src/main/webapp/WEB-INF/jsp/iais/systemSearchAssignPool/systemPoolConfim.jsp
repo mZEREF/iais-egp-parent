@@ -88,7 +88,7 @@
                       <label style="font-size: 16px">Work Group Name</label>
                     </div>
                     <div class="col-md-6">
-                      <c:out value="${systemAssignTaskDto.checkGroupName}"/>
+                      <span style="font-size: 16px"><c:out value="${systemAssignTaskDto.checkGroupName}"/></span>
                     </div>
                   </div>
                   <p></p>
@@ -97,7 +97,7 @@
                       <label style="font-size: 16px"><c:out value="${groupRoleFieldDto.groupMemBerName}"/></label>
                     </div>
                     <div class="col-md-6">
-                      <c:out value="${systemAssignTaskDto.checkUserName}"/>
+                      <span style="font-size: 16px"><c:out value="${systemAssignTaskDto.checkUserName}"/></span>
                     </div>
                   </div>
                   <p></p>
