@@ -39,10 +39,8 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
 		String endDate = ParamUtil.getRequestString(request, AuditTrailConstants.PARAM_ENDDATE);
 		switch (currentAction){
 			case AuditTrailConstants.ACTION_QUERY:
-				if (StringUtils.isEmpty(startDate)
-						|| StringUtils.isEmpty(endDate)){
-					errMap.put("actionTime", "ERR0010");
-				}else {
+				if (!StringUtils.isEmpty(startDate)
+						&& !StringUtils.isEmpty(endDate)){
 					try {
 						Date st = Formatter.parseDate(startDate);
 						Date ed = Formatter.parseDate(endDate);
@@ -65,6 +63,7 @@ public class AuditTrailDtoValidate implements CustomizeValidator {
 						log.error(e.getMessage(), e);
 					}
 				}
+
 				break;
 			default:
 				//nothing

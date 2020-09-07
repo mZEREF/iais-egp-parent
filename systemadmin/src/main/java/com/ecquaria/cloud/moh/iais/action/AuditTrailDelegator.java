@@ -232,6 +232,8 @@ public class AuditTrailDelegator {
 		    queryDto.setDomain(Integer.valueOf(operationType));
 	    }
 
+        queryDto.setDateStart(startDate);
+        queryDto.setDateEnd(endDate);
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, true, filterParameter);
         ValidationResult validationResult = WebValidationHelper.validateProperty(queryDto, "query");
         if(validationResult != null && validationResult.isHasErrors()) {
