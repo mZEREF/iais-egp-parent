@@ -296,15 +296,15 @@ public class CessationApplicationFeDelegator {
         Map<String, String> errorMap = new HashMap<>(34);
         String effectiveDateStr = ParamUtil.getRequestString(httpServletRequest, i + EFFECTIVEDATE + j);
         if (StringUtil.isEmpty(effectiveDateStr)) {
-            errorMap.put(i + EFFECTIVEDATE + j, ERROR);
+            errorMap.put(i + EFFECTIVEDATE + j, MessageUtil.replaceMessage(ERROR, "Effective Date", "field"));
         }
         String reason = ParamUtil.getRequestString(httpServletRequest, i + "reason" + j);
         if (StringUtil.isEmpty(reason)) {
-            errorMap.put(i + REASON + j, ERROR);
+            errorMap.put(i + REASON + j, MessageUtil.replaceMessage(ERROR, "Cessation Reasons", "field"));
         }
         String patRadio = ParamUtil.getRequestString(httpServletRequest, i + PATRADIO + j);
         if (StringUtil.isEmpty(patRadio)) {
-            errorMap.put(i + PATRADIO + j, ERROR);
+            errorMap.put(i + PATRADIO + j, MessageUtil.replaceMessage(ERROR, "Patients' Record will be transferred", "field"));
         }
         String readInfo = ParamUtil.getRequestString(httpServletRequest, READINFO);
         if (StringUtil.isEmpty(readInfo)) {
@@ -319,31 +319,31 @@ public class CessationApplicationFeDelegator {
         String patOthers = ParamUtil.getRequestString(httpServletRequest, i + PATOTHERS + j);
         if (ApplicationConsts.CESSATION_REASON_OTHER.equals(cessationReason)) {
             if (StringUtil.isEmpty(otherReason)) {
-                errorMap.put(i + OTHERREASON + j, ERROR);
+                errorMap.put(i + OTHERREASON + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));
             }
         }
         if ("yes".equals(patRadio) && StringUtil.isEmpty(patientSelect)) {
-            errorMap.put(i + PATIENTSELECT + j, ERROR);
+            errorMap.put(i + PATIENTSELECT + j, MessageUtil.replaceMessage(ERROR, "Who will take over your patients' case records", "field"));
         }
         if ("yes".equals(patRadio) && !StringUtil.isEmpty(patientSelect)) {
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && StringUtil.isEmpty(patHciName)) {
-                errorMap.put(i + PATHCINAME + j, ERROR);
+                errorMap.put(i + PATHCINAME + j, MessageUtil.replaceMessage(ERROR, "HCI Name", "field"));
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patientSelect) && !StringUtil.isEmpty(patHciName)) {
                 List<String> hciName = cessationFeService.listHciName();
                 if (!hciName.contains(patHciName)) {
-                    errorMap.put(i + "patHciName" + j, "CESS_ERR004");
+                    errorMap.put(i + "patHciName" + j,"CESS_ERR004");
                 }
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patientSelect) && StringUtil.isEmpty(patRegNo)) {
-                errorMap.put(i + PATREGNO + j, ERROR);
+                errorMap.put(i + PATREGNO + j, MessageUtil.replaceMessage(ERROR, "Professional Regn No.", "field"));
             }
             if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patientSelect) && StringUtil.isEmpty(patOthers)) {
-                errorMap.put(i + PATOTHERS + j, ERROR);
+                errorMap.put(i + PATOTHERS + j, MessageUtil.replaceMessage(ERROR, "Others", "field"));
             }
         }
         if ("no".equals(patRadio) && StringUtil.isEmpty(patNoRemarks)) {
-            errorMap.put(i + PATNOREMARKS + j, ERROR);
+            errorMap.put(i + PATNOREMARKS + j, MessageUtil.replaceMessage(ERROR, "Reason for no patients' records transfer", "field"));
         }
         return errorMap;
     }

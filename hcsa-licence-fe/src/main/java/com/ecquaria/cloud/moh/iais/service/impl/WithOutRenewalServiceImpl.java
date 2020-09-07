@@ -283,21 +283,21 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                     AppSvcCgoDto oldAppSvcCgoDto = oldCgoList.get(j);
                     newAppSvcCgoDtoE.setName(newAppSvcCgoDto.getName());
                     newAppSvcCgoDtoE.setDesignation(newAppSvcCgoDto.getDesignation());
-                    newAppSvcCgoDtoE.setProfessionType(newAppSvcCgoDto.getProfessionType());
-                    newAppSvcCgoDtoE.setProfRegNo(newAppSvcCgoDto.getProfRegNo());
-                    newAppSvcCgoDtoE.setSpeciality(newAppSvcCgoDto.getSpeciality());
-                    newAppSvcCgoDtoE.setSpecialityOther(newAppSvcCgoDto.getSpecialityOther());
-                    newAppSvcCgoDtoE.setSubSpeciality(newAppSvcCgoDto.getSubSpeciality());
+//                    newAppSvcCgoDtoE.setProfessionType(newAppSvcCgoDto.getProfessionType());
+//                    newAppSvcCgoDtoE.setProfRegNo(newAppSvcCgoDto.getProfRegNo());
+//                    newAppSvcCgoDtoE.setSpeciality(newAppSvcCgoDto.getSpeciality());
+//                    newAppSvcCgoDtoE.setSpecialityOther(newAppSvcCgoDto.getSpecialityOther());
+//                    newAppSvcCgoDtoE.setSubSpeciality(newAppSvcCgoDto.getSubSpeciality());
                     newAppSvcCgoDtoE.setMobileNo(newAppSvcCgoDto.getMobileNo());
                     newAppSvcCgoDtoE.setEmailAddr(newAppSvcCgoDto.getEmailAddr());
 
                     oldAppSvcCgoDtoE.setName(oldAppSvcCgoDto.getName());
                     oldAppSvcCgoDtoE.setDesignation(oldAppSvcCgoDto.getDesignation());
-                    oldAppSvcCgoDtoE.setProfessionType(oldAppSvcCgoDto.getProfessionType());
-                    oldAppSvcCgoDtoE.setProfRegNo(oldAppSvcCgoDto.getProfRegNo());
-                    oldAppSvcCgoDtoE.setSpeciality(oldAppSvcCgoDto.getSpeciality());
-                    oldAppSvcCgoDtoE.setSpecialityOther(oldAppSvcCgoDto.getSpecialityOther());
-                    oldAppSvcCgoDtoE.setSubSpeciality(oldAppSvcCgoDto.getSubSpeciality());
+//                    oldAppSvcCgoDtoE.setProfessionType(oldAppSvcCgoDto.getProfessionType());
+//                    oldAppSvcCgoDtoE.setProfRegNo(oldAppSvcCgoDto.getProfRegNo());
+//                    oldAppSvcCgoDtoE.setSpeciality(oldAppSvcCgoDto.getSpeciality());
+//                    oldAppSvcCgoDtoE.setSpecialityOther(oldAppSvcCgoDto.getSpecialityOther());
+//                    oldAppSvcCgoDtoE.setSubSpeciality(oldAppSvcCgoDto.getSubSpeciality());
                     oldAppSvcCgoDtoE.setMobileNo(oldAppSvcCgoDto.getMobileNo());
                     oldAppSvcCgoDtoE.setEmailAddr(oldAppSvcCgoDto.getEmailAddr());
 
