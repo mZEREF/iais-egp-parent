@@ -73,17 +73,7 @@ public class SyncFEAuditTrailBatchjob {
         BlockingQueue<Runnable> blockingQueue = new ArrayBlockingQueue<>(5);
         ThreadPoolExecutor executor = new ThreadPoolExecutor(5,
                 10, 5000, TimeUnit.MILLISECONDS, blockingQueue);
-        executor.setRejectedExecutionHandler((r, executor1) -> {
-            log.info("Waiting for a second !!");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-               log.error(e.getMessage(), e);
-            }
-
-            executor1.execute(r);
-        });
-
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         executor.prestartAllCoreThreads();
 
         while (true){
