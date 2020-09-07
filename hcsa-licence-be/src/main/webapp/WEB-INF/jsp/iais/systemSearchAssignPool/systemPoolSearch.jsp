@@ -127,7 +127,7 @@
                             </td>
                             <td><iais:code code="${superPool.applicationType}"/></td>
                             <td>
-                              <c:out value="${superPool.paymentStatus}"/>
+                              <iais:code code="${superPool.paymentStatus}"/>
                             </td>
                           </tr>
                         </c:forEach>
