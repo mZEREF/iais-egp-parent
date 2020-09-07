@@ -96,6 +96,7 @@ public class SystemSearchAssignPoolDelegator {
         ParamUtil.setSessionAttr(bpc.request, "appStatusOption", null);
         ParamUtil.setSessionAttr(bpc.request, "systemAssignMap", null);
         ParamUtil.setSessionAttr(bpc.request, "stageOption", null);
+        ParamUtil.setSessionAttr(bpc.request, "systemAssignTaskDto", null);
     }
 
     /**
