@@ -973,6 +973,7 @@ public class NewApplicationAjaxController {
         AppSvcPersonDto appSvcPersonDto = appSvcPersonAndExtDto.getPersonDto();
         if(appSvcPersonDto != null){
             person = MiscUtil.transferEntityDto(appSvcPersonDto,AppSvcPrincipalOfficersDto.class);
+            person.setLicPerson(appSvcPersonAndExtDto.isLicPerson());
         }
         if(person != null && !person.isLicPerson()){
             List<AppSvcPersonExtDto> appSvcPersonExtDtos = appSvcPersonAndExtDto.getPersonExtDtoList();

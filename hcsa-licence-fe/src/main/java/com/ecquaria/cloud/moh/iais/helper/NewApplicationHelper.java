@@ -1145,7 +1145,7 @@ public class NewApplicationHelper {
                     List<SelectOption> specialityOpts = genSpecialtySelectList(svcCode,false);
                     if(!IaisCommonUtils.isEmpty(spcOpts)){
                         for(SelectOption sp:spcOpts){
-                            if(!specialityOpts.contains(sp)){
+                            if(!specialityOpts.contains(sp) && !"other".equals(sp.getValue())){
                                 specialityOpts.add(sp);
                             }
                         }
@@ -1153,12 +1153,12 @@ public class NewApplicationHelper {
                         if(!StringUtil.isEmpty(specialityVal)){
                             specialityOpts.add(getSpecialtyByValue(specialityVal));
                         }
-                        person.setSpcOptList(specialityOpts);
                     }else{
-                        SelectOption sp = new SelectOption("other", "Others");
-                        specialityOpts.add(sp);
-                        person.setSpcOptList(specialityOpts);
+                        log.info(StringUtil.changeForLog("person spcOpts is empty"));
                     }
+                    SelectOption sp = new SelectOption("other", "Others");
+                    specialityOpts.add(sp);
+                    person.setSpcOptList(specialityOpts);
                     String specialtySelectStr = NewApplicationHelper.generateDropDownHtml(specialtyAttr, specialityOpts, null, person.getSpeciality());
                     person.setSpecialityHtml(specialtySelectStr);
                     psnDto.setSpcOptList(specialityOpts);
