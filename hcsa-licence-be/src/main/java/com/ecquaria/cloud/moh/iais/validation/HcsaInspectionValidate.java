@@ -384,8 +384,9 @@ public class HcsaInspectionValidate implements CustomizeValidator {
     }
 
     public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,String level,HcsaRiskInspectionMatrixDto fdto){
-        String maxMesMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC;
-        String minMesMes =  MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC;
+        String mess = MessageUtil.getMessageDesc("GENERAL_ERR0027");
+        String maxMesMes = mess + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_NC;
+        String minMesMes =  mess + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_NC;
         Integer inLeftModNum = 0;
         Integer inRightModNum = 0;
         int numberFlag = 0;

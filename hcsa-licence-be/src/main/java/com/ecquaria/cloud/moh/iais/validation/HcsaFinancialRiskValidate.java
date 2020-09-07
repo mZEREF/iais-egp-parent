@@ -132,8 +132,9 @@ public class HcsaFinancialRiskValidate implements CustomizeValidator {
     public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,boolean isIn,HcsaRiskFinanceMatrixDto fdto){
         Integer inLeftModNum = 0;
         Integer inRightModNum = 0;
-        String maxMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
-        String minMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
+        String mess = MessageUtil.getMessageDesc("GENERAL_ERR0027");
+        String maxMes =  mess+ HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
+        String minMes = mess + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
         int numberFlag = 0;
         if(!StringUtil.isEmpty(inLeftMod)){
             try {

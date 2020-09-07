@@ -115,8 +115,9 @@ public class HcsaLeadershipValidate implements CustomizeValidator {
 
     }
     public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,boolean isIn,HcsaRiskLeadershipMatrixDto fdto){
-        String maxCaseMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
-        String minCaseMes = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
+        String mess = MessageUtil.getMessageDesc("GENERAL_ERR0027");
+        String maxCaseMes = mess + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
+        String minCaseMes = mess + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
         Integer inLeftModNum = 0;
         Integer inRightModNum = 0;
         int numberFlag = 0;

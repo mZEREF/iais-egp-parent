@@ -249,8 +249,9 @@ public class HcsaLegislativeValidate implements CustomizeValidator {
     }
 
     public void inLeftModVadAndinRightModVad(Map<String, String> errMap,String inLeftMod,String inRightMod,String serviceCode,HcsaRiskLegislativeMatrixDto fdto){
-        String GENERAL_ERR0027Max = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
-        String GENERAL_ERR0027Min = MessageUtil.getMessageDesc("GENERAL_ERR0027") + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
+        String mess = MessageUtil.getMessageDesc("GENERAL_ERR0027");
+        String GENERAL_ERR0027Max =  mess + HcsaLicenceBeConstant.ERROR_MESSAGE_MAX_CASES;
+        String GENERAL_ERR0027Min =  mess + HcsaLicenceBeConstant.ERROR_MESSAGE_MIN_CASES;
         Integer inLeftModNum = 0;
         Integer inRightModNum = 0;
         int numberFlag = 0;
