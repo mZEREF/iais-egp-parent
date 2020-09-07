@@ -15,12 +15,12 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.client.EicGatewayFeMainClient;
@@ -190,14 +190,14 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public FeUserDto createCropUser(OrganizationDto organizationDto) {
         FeignResponseEntity<OrganizationDto> result = feUserClient.createCropUser(organizationDto);
-        int status = result.getStatusCode();
+        OrganizationDto postCreate = result.getEntity();
 
-        if (status != HttpStatus.SC_OK){
-            return null;
-        }else {
-            OrganizationDto postCreate = result.getEntity();
-            return saveAccountInfotmation(postCreate);
-        }
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        eicGatewayFeMainClient.getUen(postCreate.getUenNo(), signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+
+        return saveAccountInfotmation(postCreate);
     }
 
     @Override
