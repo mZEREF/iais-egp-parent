@@ -20,17 +20,21 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceConf
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServicePrefInspPeriodDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspRectificationSaveDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
-import java.util.List;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * EicGatewayClient
@@ -49,8 +53,20 @@ public class BeEicGatewayClient {
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, EventBusLicenceGroupDtos.class);
     }
 
+    public FeignResponseEntity<List> getProfessionalDetail(ProfessionalParameterDto professionalParameterDto,
+                                                           String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/prs-server/getProfessionalDetail", HttpMethod.POST, professionalParameterDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ProfessionalResponseDto.class);
+    }
+
+    public FeignResponseEntity<List> getDisciplinaryRecord(ProfessionalParameterDto professionalParameterDto,
+                                                           String date, String authorization, String dateSec, String authorizationSec) {
+        return IaisEGPHelper.callEicGatewayWithBodyForList(gateWayUrl + "/v1/prs-server/getDisciplinaryRecord", HttpMethod.POST, professionalParameterDto,
+                MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, DisciplinaryRecordResponseDto.class);
+    }
+
     public FeignResponseEntity<ApplicationDto> updateApplication(ApplicationDto applicationDto,
-                            String date, String authorization, String dateSec, String authorizationSec) {
+                                                                 String date, String authorization, String dateSec, String authorizationSec) {
         return IaisEGPHelper.callEicGatewayWithBody(gateWayUrl + "/v1/iais-application", HttpMethod.PUT, applicationDto,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, ApplicationDto.class);
     }
