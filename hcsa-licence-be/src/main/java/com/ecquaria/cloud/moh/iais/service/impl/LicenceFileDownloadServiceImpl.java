@@ -492,13 +492,6 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         }
         applicationListDto.setAuditTrailDto(intranet);
         List<ApplicationDto> updateTaskList=IaisCommonUtils.genNewArrayList();
-        for(ApplicationGroupDto applicationGroupDto : applicationGroup){
-            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationGroupDto.getAppType())){
-                application = hcsaConfigClient.needToSendTask(application).getEntity();
-                log.info(StringUtil.changeForLog(JsonUtil.parseToJson(application)+"application APPLICATION_TYPE_CESSATION"));
-                applicationListDto.setApplication(application);
-            }
-        }
         List<ApplicationDto> cessionOrwith=IaisCommonUtils.genNewArrayList();
         requeOrNew(requestForInfList,applicationGroup,application,updateTaskList);
         update(cessionOrwith,listApplicationDto,applicationGroup,application);
