@@ -943,7 +943,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
             if(appPremisesCorrelationDto!=null){
-                TaskDto taskDto= taskService.getRoutingTask(applicationDto,entity.get(0).getId(),entity.get(0).getStageCode(),appPremisesCorrelationDto.getId());
+                TaskDto taskDto= taskService.getRoutingTask(applicationDto,entity.get(0).getStageId(),entity.get(0).getStageCode(),appPremisesCorrelationDto.getId());
                 list.add(taskDto);
             }
         }

@@ -277,7 +277,7 @@ public class LicenceViewServiceDelegator {
         String appType = appSubmissionDto.getAppType();
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
              svcDocToPresmise(appSubmissionDto);
-             oldAppSubmission(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
+          /*   oldAppSubmission(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());*/
             AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
             if(oldAppSubmissionDto!=null){
                 svcDocToPresmise(oldAppSubmissionDto);
