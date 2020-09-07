@@ -325,9 +325,7 @@ public class SystemSearchAssignPoolDelegator {
         SystemAssignTaskDto systemAssignTaskDto = (SystemAssignTaskDto)ParamUtil.getSessionAttr(bpc.request, "systemAssignTaskDto");
         String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
         if(!StringUtil.isEmpty(taskId)) {
-            if(systemAssignTaskDto == null){
-                systemAssignTaskDto = new SystemAssignTaskDto();
-            }
+            systemAssignTaskDto = new SystemAssignTaskDto();
             //set MOH Officer Field Name
             groupRoleFieldDto = systemSearchAssignPoolService.setGroupMemberName(groupRoleFieldDto);
             TaskDto taskDto = taskService.getTaskById(taskId);
