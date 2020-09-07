@@ -32,6 +32,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicat
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.RequestInformationSubmitDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.GobalRiskAccpetDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.HcsaRiskScoreDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.BroadcastOrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.system.ProcessFileTrackDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
@@ -498,8 +499,9 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 applicationListDto.setApplication(application);
             }
         }
+        List<ApplicationDto> cessionOrwith=IaisCommonUtils.genNewArrayList();
         requeOrNew(requestForInfList,applicationGroup,application,updateTaskList);
-        update(listApplicationDto,applicationGroup,application);
+        update(cessionOrwith,listApplicationDto,applicationGroup,application);
         log.info(StringUtil.changeForLog(listApplicationDto.toString()+"listApplicationDto size "+listApplicationDto.size()));
         String requestForInfListString = requestForInfList.toString();
         log.info(StringUtil.changeForLog(requestForInfListString +"requestForInfList size" +requestForInfList .size()));
@@ -508,6 +510,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         applicationNewAndRequstDto.setListNewApplicationDto(listApplicationDto);
         applicationNewAndRequstDto.setRequestForInfList(requestForInfList);
         applicationNewAndRequstDto.setUpdateTaskList(updateTaskList);
+        applicationNewAndRequstDto.setCessionOrWith(cessionOrwith);
         applicationListDto.setApplicationNewAndRequstDto(applicationNewAndRequstDto);
         processFileTrackDto.setStatus("PFT003");
         applicationListDto.setProcessFileTrackDto(processFileTrackDto);
@@ -663,6 +666,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         List<ApplicationDto> listNewApplicationDto =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> requestForInfList  =IaisCommonUtils.genNewArrayList();
         List<ApplicationDto> updateTaskList  =IaisCommonUtils.genNewArrayList();
+        List<ApplicationDto> cessionOrwith=IaisCommonUtils.genNewArrayList();
             List<Submission> submissionList = eventClient.getSubmission(submissionId).getEntity();
             ApplicationListFileDto dto = null;
             log.info(StringUtil.changeForLog(submissionList .size() +"submissionList .size()"));
@@ -677,6 +681,8 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 if(applicationNewAndRequstDto!=null){
                   listNewApplicationDto = applicationNewAndRequstDto.getListNewApplicationDto();
                   requestForInfList = applicationNewAndRequstDto.getRequestForInfList();
+                  cessionOrwith=applicationNewAndRequstDto.getCessionOrWith();
+                  log.info(StringUtil.changeForLog("cessionOrwith "+cessionOrwith.size()));
                   log.info(StringUtil.changeForLog("listNewApplicationDto size"+listNewApplicationDto.size()));
                   log.info(StringUtil.changeForLog("requestForInfList size"+requestForInfList.size()));
                   log.info("update requeste Application status");
@@ -720,6 +726,14 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                 broadcastApplicationDto.setApplicationDtos(requestTaskHistoryDto.getApplicationDtos());
                 broadcastApplicationDto.setRollBackApplicationDtos(requestTaskHistoryDto.getRollBackApplicationDtos());
             }
+            try {
+                List<TaskDto> taskDtos = sendCessionOrWithdrawal(cessionOrwith);
+                log.info(StringUtil.changeForLog("cession task"+JsonUtil.parseToJson(taskDtos)));
+                onSubmitTaskList.addAll(taskDtos);
+            }catch (Exception e){
+                log.info(StringUtil.changeForLog("cession error"+e.getMessage()));
+            }
+
             broadcastOrganizationDto.setOneSubmitTaskList(onSubmitTaskList);
             broadcastApplicationDto.setOneSubmitTaskHistoryList(appPremisesRoutingHistoryDtos);
             broadcastOrganizationDto = broadcastService.svaeBroadcastOrganization(broadcastOrganizationDto,null,submissionId);
@@ -797,7 +811,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
         updateTaskList.removeAll(requestForInforList);
     }
 
-    private void update(List<ApplicationDto> list,List<ApplicationGroupDto> applicationGroup,List<ApplicationDto>  applicationList){
+    private void update( List<ApplicationDto> cessionOrwith,List<ApplicationDto> list,List<ApplicationGroupDto> applicationGroup,List<ApplicationDto>  applicationList){
 
         Map<ApplicationGroupDto,List<ApplicationDto>> map=IaisCommonUtils.genNewHashMap();
         for (ApplicationGroupDto every : applicationGroup) {
@@ -816,7 +830,18 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             int reNew=0;
             Boolean autoRfc = k.isAutoApprove();
             String appType = k.getAppType();
-            if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
+            if(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(appType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(appType)){
+                if(autoRfc){
+                    k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
+                }
+                for(ApplicationDto application :v){
+                    if (autoRfc) {
+                        application.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                    }else {
+                        cessionOrwith.add(application);
+                    }
+                }
+            } else if(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
                 if(autoRfc) {
                     k.setStatus(ApplicationConsts.APPLICATION_GROUP_STATUS_APPROVED);
                 }else {
@@ -892,30 +917,7 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
                     if(j==i){ list.addAll(applicationDtoList); }
                 }
             }
-
         });
-
-
-    }
-
-    private void updateTask(List<ApplicationDto>  updateTaskList){
-        log.info("update task");
-        if(updateTaskList==null){
-            return;
-        }
-        log.info(StringUtil.changeForLog(JsonUtil.parseToJson(updateTaskList)+"updateTaskList"));
-        for(ApplicationDto applicationDto : updateTaskList){
-            List<AppPremisesCorrelationDto> appPremisesCorrelationDtos = applicationClient.getAppPremisesCorrelationsByAppId(applicationDto.getId()).getEntity();
-            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(appPremisesCorrelationDtos)+"appPremisesCorrelationDtos"));
-            List<TaskDto> taskbyApplicationNo = taskService.getTaskbyApplicationNo(applicationDto.getApplicationNo());
-            log.info(StringUtil.changeForLog(JsonUtil.parseToJson(taskbyApplicationNo)+"taskbyApplicationNo"));
-            for(TaskDto taskDto : taskbyApplicationNo){
-                for(AppPremisesCorrelationDto appPremisesCorrelationDto : appPremisesCorrelationDtos){
-                    taskDto.setRefNo(appPremisesCorrelationDto.getId());
-                }
-            }
-            taskService.createTasks(taskbyApplicationNo);
-        }
     }
 
     private void updateRfiTask(List<ApplicationDto>  updateTaskList){
@@ -936,5 +938,22 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
             }
             taskService.createTasks(taskbyApplicationNo);
         }
+    }
+
+    private List<TaskDto> sendCessionOrWithdrawal(List<ApplicationDto> applicationDtos) throws Exception {
+        List<TaskDto> list=IaisCommonUtils.genNewArrayList();
+        for(ApplicationDto applicationDto : applicationDtos){
+            List<HcsaSvcRoutingStageDto> entity =
+                    hcsaConfigClient.getHcsaSvcRoutingStageDtoByServiceAndType(applicationDto.getServiceId(), applicationDto.getApplicationType()).getEntity();
+            if(entity.isEmpty()){
+                return list;
+            }
+            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
+            if(appPremisesCorrelationDto!=null){
+                TaskDto taskDto= taskService.getRoutingTask(applicationDto,entity.get(0).getId(),entity.get(0).getStageCode(),appPremisesCorrelationDto.getId());
+                list.add(taskDto);
+            }
+        }
+        return list;
     }
 }

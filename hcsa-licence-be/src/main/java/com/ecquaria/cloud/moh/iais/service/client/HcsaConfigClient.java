@@ -387,4 +387,6 @@ public interface HcsaConfigClient {
 
     @GetMapping(value = "/hcsa-routing/stage-work-group/{stageId}")
     FeignResponseEntity<List<String>> getWorkGroupIdsByStageId(@PathVariable(name="stageId") String stageId);
+    @GetMapping(value = "/hcsa-routing/list-routing-stage-service-type",produces =MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<HcsaSvcRoutingStageDto>> getHcsaSvcRoutingStageDtoByServiceAndType(@RequestParam("service") String service,@RequestParam("type") String type);
 }
