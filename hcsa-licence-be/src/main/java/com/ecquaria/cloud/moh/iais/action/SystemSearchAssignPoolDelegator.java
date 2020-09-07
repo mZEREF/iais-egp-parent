@@ -109,14 +109,15 @@ public class SystemSearchAssignPoolDelegator {
         SearchParam searchParam = getSearchParam(bpc);
         SearchResult<SystemAssignSearchQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "systemSearchResult");
         GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
+        LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+        //get userId
+        String userId = loginContext.getUserId();
+        List<TaskDto> systemPool = systemSearchAssignPoolService.getSystemTaskPool(userId);
         //First search
         if(searchResult == null && groupRoleFieldDto == null) {
-            LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            //get userId
-            String userId = loginContext.getUserId();
+
             //get stage
             groupRoleFieldDto = systemSearchAssignPoolService.getSystemSearchStage();
-            List<TaskDto> systemPool = systemSearchAssignPoolService.getSystemTaskPool(userId);
             List<TaskDto> systemFilterPool = filterPoolByStage(systemPool, groupRoleFieldDto);
             List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(systemFilterPool);
             StringBuilder sb = new StringBuilder("(");
@@ -136,11 +137,11 @@ public class SystemSearchAssignPoolDelegator {
             List<SelectOption> stageOption = groupRoleFieldDto.getStageOption();
             List<SelectOption> appStatusOption = systemSearchAssignPoolService.getAppStatusOption(groupRoleFieldDto);
             ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
-            ParamUtil.setSessionAttr(bpc.request, "systemPool", (Serializable) systemPool);
             ParamUtil.setSessionAttr(bpc.request, "appTypeOption", (Serializable) appTypeOption);
             ParamUtil.setSessionAttr(bpc.request, "appStatusOption", (Serializable) appStatusOption);
             ParamUtil.setSessionAttr(bpc.request, "stageOption", (Serializable) stageOption);
         }
+        ParamUtil.setSessionAttr(bpc.request, "systemPool", (Serializable) systemPool);
         ParamUtil.setSessionAttr(bpc.request, "systemSearchParam", searchParam);
         ParamUtil.setSessionAttr(bpc.request, "systemSearchResult", searchResult);
     }
