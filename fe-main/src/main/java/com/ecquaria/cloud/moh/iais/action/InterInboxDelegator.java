@@ -557,7 +557,7 @@ public class InterInboxDelegator {
      * @param bpc
      *
      */
-    public void licDoRenew(BaseProcessClass bpc) throws IOException {
+    public void licDoRenew(BaseProcessClass bpc) throws IOException  {
         boolean result = true;
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -630,12 +630,23 @@ public class InterInboxDelegator {
     }
 
     public void licDoCease(BaseProcessClass bpc) throws IOException {
+        String cessationError = null ;
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
         List<String> licIdValue = IaisCommonUtils.genNewArrayList();
         boolean result= false;
         for (String item : licIds) {
             licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
         }
+        for(String licId : licIdValue){
+            LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+            if(licenceDto==null){
+                cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
+                bpc.request.setAttribute("cessationError",cessationError);
+                return ;
+            }
+        }
+
         Map<String,Boolean> resultMap = inboxService.listResultCeased(licIdValue);
         for(Map.Entry<String,Boolean> entry : resultMap.entrySet()){
             if (!entry.getValue()){
@@ -664,6 +675,8 @@ public class InterInboxDelegator {
             }
         }
         if(result) {
+            cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
+            bpc.request.setAttribute("cessationError",cessationError);
             ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
         }else{
             ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
