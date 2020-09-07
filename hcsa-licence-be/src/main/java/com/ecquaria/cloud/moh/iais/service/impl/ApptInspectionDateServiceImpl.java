@@ -609,8 +609,10 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             }
             for (Map.Entry<String, List<ApptUserCalendarDto>> inspDateMap : inspectionDateMap.entrySet()) {
                 List<ApptUserCalendarDto> apptUserCalendarDtos = inspDateMap.getValue();
-                inspDate = apptUserCalendarDtos.get(0).getStartSlot().get(0);
-                break;
+                if(apptUserCalendarDtos.get(0).getStartSlot().get(0) != null){
+                    inspDate = apptUserCalendarDtos.get(0).getStartSlot().get(0);
+                    break;
+                }
             }
         }
         apptCalendarStatusDto.setConfirmRefNums(confirmRefNo);
