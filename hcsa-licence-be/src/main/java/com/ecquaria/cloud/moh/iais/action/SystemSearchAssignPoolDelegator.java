@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.SystemAssignTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.SuperPoolTaskQueryDto;
@@ -106,19 +107,17 @@ public class SystemSearchAssignPoolDelegator {
     public void systemPoolAssignPre(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the systemPoolAssignPre start ...."));
         SearchParam searchParam = getSearchParam(bpc);
-        SearchResult<SystemAssignSearchQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "systemSearchParam");
+        SearchResult<SystemAssignSearchQueryDto> searchResult = (SearchResult) ParamUtil.getSessionAttr(bpc.request, "systemSearchResult");
+        GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
         //First search
-        if(searchResult == null) {
+        if(searchResult == null && groupRoleFieldDto == null) {
             LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             //get userId
             String userId = loginContext.getUserId();
             //get stage
-            GroupRoleFieldDto groupRoleFieldDto = (GroupRoleFieldDto)ParamUtil.getSessionAttr(bpc.request, "groupRoleFieldDto");
-            if(groupRoleFieldDto == null) {
-                groupRoleFieldDto = systemSearchAssignPoolService.getSystemSearchStage();
-            }
+            groupRoleFieldDto = systemSearchAssignPoolService.getSystemSearchStage();
             List<TaskDto> systemPool = systemSearchAssignPoolService.getSystemTaskPool(userId);
-            List<TaskDto> systemFilterPool = filterPoolByStage(systemPool, groupRoleFieldDto.getCurStage());
+            List<TaskDto> systemFilterPool = filterPoolByStage(systemPool, groupRoleFieldDto);
             List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(systemFilterPool);
             StringBuilder sb = new StringBuilder("(");
             for (int i = 0; i < appCorrId_list.size(); i++) {
@@ -146,13 +145,21 @@ public class SystemSearchAssignPoolDelegator {
         ParamUtil.setSessionAttr(bpc.request, "systemSearchResult", searchResult);
     }
 
-    private List<TaskDto> filterPoolByStage(List<TaskDto> systemPool, String curStage) {
+    private List<TaskDto> filterPoolByStage(List<TaskDto> systemPool, GroupRoleFieldDto groupRoleFieldDto) {
+        String curStage = groupRoleFieldDto.getCurStage();
         List<TaskDto> systemFilterPool = IaisCommonUtils.genNewArrayList();
-        if(!IaisCommonUtils.isEmpty(systemPool)){
-            for(TaskDto taskDto : systemPool){
-                String stage = taskDto.getTaskKey();
-                if(!StringUtil.isEmpty(stage) && stage.equals(curStage)){
-                    systemFilterPool.add(taskDto);
+        if(!IaisCommonUtils.isEmpty(systemPool) && !StringUtil.isEmpty(curStage)){
+            Map<String, HcsaSvcRoutingStageDto> stageMap = groupRoleFieldDto.getStageMap();
+            if(stageMap != null) {
+                HcsaSvcRoutingStageDto hcsaSvcRoutingStageDto = stageMap.get(curStage);
+                if(hcsaSvcRoutingStageDto != null) {
+                    String curStageId = hcsaSvcRoutingStageDto.getId();
+                    for (TaskDto taskDto : systemPool) {
+                        String stage = taskDto.getTaskKey();
+                        if (!StringUtil.isEmpty(stage) && stage.equals(curStageId)) {
+                            systemFilterPool.add(taskDto);
+                        }
+                    }
                 }
             }
         }
@@ -208,7 +215,7 @@ public class SystemSearchAssignPoolDelegator {
         boolean stageFlag = getStageBooleanAndSet(systemAssignStage, groupRoleFieldDto);
         if(stageFlag) {
             searchParam = getSearchParam(bpc, true);
-            List<TaskDto> systemFilterPool = filterPoolByStage(systemPool, groupRoleFieldDto.getCurStage());
+            List<TaskDto> systemFilterPool = filterPoolByStage(systemPool, groupRoleFieldDto);
             List<String> appCorrId_list = inspectionService.getApplicationNoListByPool(systemFilterPool);
             StringBuilder sb = new StringBuilder("(");
             for (int i = 0; i < appCorrId_list.size(); i++) {

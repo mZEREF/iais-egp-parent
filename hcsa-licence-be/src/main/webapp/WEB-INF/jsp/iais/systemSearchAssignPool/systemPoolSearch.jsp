@@ -18,7 +18,6 @@
     <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
     <input type="hidden" name="systemPoolAssignType" value="">
     <input type="hidden" id="taskId" name="taskId" value="">
-    <input type="hidden" id="inspector_name" name="inspector_name" value="">
     <div class="main-content">
       <div class="row">
         <div class="col-lg-12 col-xs-12">
