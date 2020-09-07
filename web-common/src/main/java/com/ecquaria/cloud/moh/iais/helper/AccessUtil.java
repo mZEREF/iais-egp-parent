@@ -106,7 +106,7 @@ public class AccessUtil {
                 LicenseeDto lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
                 if (lDto != null) {
                     loginContext.setLicenseeId(lDto.getId());
-                    loginContext.setLicenseeType(lDto.getLicenseeType());
+                    loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
                 }
             }
         }
