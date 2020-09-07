@@ -582,17 +582,6 @@ public final class IaisEGPHelper extends EGPHelper {
     public static <T> FeignResponseEntity<T> genFeignRespFromResp(ResponseEntity<T> response, Class contentCls) {
         FeignResponseEntity resEnt = new FeignResponseEntity();
         resEnt.setEntity(response.getBody());
-        Object body = response.getBody();
-        if ((body instanceof List)) {
-            String json = JsonUtil.parseToJson(body);
-            List list = JsonUtil.parseToList(json, contentCls);
-            resEnt.setEntity(list);
-        } else if (body instanceof SearchResult) {
-            SearchResult sr = (SearchResult) body;
-            List resultList = sr.getRows();
-            String json = JsonUtil.parseToJson(resultList);
-            sr.setRows(JsonUtil.parseToList(json, contentCls));
-        }
         resEnt.setHeaders(response.getHeaders());
         resEnt.setStatusCode(response.getStatusCodeValue());
 
