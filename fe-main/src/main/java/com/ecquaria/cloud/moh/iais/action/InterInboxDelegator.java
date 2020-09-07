@@ -2,9 +2,9 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
-import com.ecquaria.cloud.helper.CacheHelper;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
@@ -31,7 +31,15 @@ import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.FilterParameter;
+import com.ecquaria.cloud.moh.iais.helper.HalpSearchResultHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
+import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
+import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
@@ -943,6 +951,27 @@ public class InterInboxDelegator {
         String draft = ParamUtil.getString(bpc.request,InboxConst.ACTION_NO_VALUE);
         if(!StringUtil.isEmpty(draft)){
             log.debug(StringUtil.changeForLog("draft no. is not null"));
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
+
+            List<AuditTrailDto> adDtos = IaisCommonUtils.genNewArrayList(1);
+            AuditTrailDto auditTrailDto = new AuditTrailDto();
+            if(loginContext != null){
+                auditTrailDto.setMohUserId(loginContext.getUserId());
+                auditTrailDto.setUenId(loginContext.getLicenseeId());
+            }
+            auditTrailDto.setActionTime("");
+            auditTrailDto.setAfterAction("");
+            auditTrailDto.setFunctionName("");
+            auditTrailDto.setApplicationNum("");
+            auditTrailDto.setNricNumber("");
+            auditTrailDto.setMohUserGuid("");
+            auditTrailDto.setClientIp("");
+            auditTrailDto.setSessionId("");
+            auditTrailDto.setUserAgent("");
+            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_DELETE);
+            auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+            adDtos.add(auditTrailDto);
+
             inboxService.deleteDraftByNo(draft);
             String delDraftAckMsg = MessageUtil.getMessageDesc("NEW_ACK003");
             ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
