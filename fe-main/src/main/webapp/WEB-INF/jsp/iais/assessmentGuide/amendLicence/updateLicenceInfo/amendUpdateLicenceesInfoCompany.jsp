@@ -49,7 +49,7 @@
     </div>
 </div>
 <div class="self-assessment-item assessment-level-3">
-    <div class="amendLicence3_3">
+    <div class="amendLicence3_2">
         <div class="form-check-gp">
             <%@include file="/WEB-INF/jsp/iais/assessmentGuide/amendLicence/updateLicenceInfo/amendUpdateLicenceesInfoCompanyContent.jsp" %>
         </div>
