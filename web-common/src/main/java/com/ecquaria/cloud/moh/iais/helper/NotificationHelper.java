@@ -885,6 +885,16 @@ public class NotificationHelper {
 				signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
 
 		if (IaisCommonUtils.isEmpty(orgUserList)) {
+			processUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
+			taskStatus = new ArrayList<>(Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_STATUS_REMOVE));
+			params.put("processUrl", processUrl);
+			params.put("taskStatus", taskStatus);
+			orgUserList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/inspector-by-task", HttpMethod.POST, params,
+					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+					signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
+		}
+
+		if (IaisCommonUtils.isEmpty(orgUserList)){
 			return inspectionEmailTemplateDto;
 		}
 

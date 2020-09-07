@@ -5,7 +5,6 @@ import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.checklist.HcsaChecklistConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
-import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.IaisApiResult;
 import com.ecquaria.cloud.moh.iais.common.dto.application.FeSelfAssessmentSyncDataDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.PremCheckItem;
@@ -14,24 +13,21 @@ import com.ecquaria.cloud.moh.iais.common.dto.application.SelfAssessmentConfig;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppGrpPremisesEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesSelfDeclChklDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcPremisesScopeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceSubTypeDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
-import com.ecquaria.cloud.moh.iais.constant.EicClientConstant;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
 import com.ecquaria.cloud.moh.iais.helper.FeSelfChecklistHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
@@ -48,7 +44,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -233,30 +228,24 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
      * @param correlationIds
      */
     private void sendEmailToInspector(List<String> correlationIds){
-        String msgTmgId = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_EMAIL_INSPECTOR;
-        String msgTmgId2 = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_EMAIL_INSPECTOR_EMAIL_CHM;
+        String email_003_template = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_EMAIL_INSPECTOR_EMAIL_CHM;
+        String email_004_template = MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_EMAIL_INSPECTOR;
 
         List<String> svcNameList = IaisCommonUtils.genNewArrayList();
-        Map<String, Object> tlContent = IaisCommonUtils.genNewHashMap();
+        Map<String, Object> emailContent_003 = IaisCommonUtils.genNewHashMap();
         String tlGroupNumber = "-";
         String tlAppType = "-";
         Date tlDate = null;
-        String tlGroupId = null;
+        String emailGroupId_003 = null;
         String loginUrl = HmacConstants.HTTPS +"://" + systemParamConfig.getIntraServerName() + "/main-web/";
+        Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
         for (String s : correlationIds){
-            ApplicationDto applicationDto = applicationClient.getApplicationByCorreId(s).getEntity();
+            ApplicationDto applicationDto = applicationClient.getApplicationByCorrId(s).getEntity();
             if (applicationDto != null){
-                Map<String, Object> templateContent = IaisCommonUtils.genNewHashMap();
-                String randomStr = IaisEGPHelper.generateRandomString(26);
-
                 String appNo = applicationDto.getApplicationNo();
-
-                tlGroupId = applicationDto.getAppGrpId();
-
+                emailGroupId_003 = applicationDto.getAppGrpId();
                 tlGroupNumber = appNo.substring(0, appNo.length() - 3);
-
                 List<AppGrpPremisesDto> appGrpPremisesList = appSubmissionService.getAppGrpPremisesDto(appNo);
-
                 if (!IaisCommonUtils.isEmpty(appGrpPremisesList)){
                     AppGrpPremisesDto appGrpPremises = appGrpPremisesList.get(0);
                     if (appGrpPremises != null){
@@ -270,7 +259,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
                 String svcId = applicationDto.getServiceId();
                 String appType = MasterCodeUtil.getCodeDesc(applicationDto.getApplicationType());
-                Date appDate = applicationDto.getStartDate();
+                Date appDate = applicationDto.getEffectiveDate();
 
                 tlAppType = appType;
                 tlDate = appDate;
@@ -279,53 +268,55 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
                 templateContent.put("applicationType", appType);
                 templateContent.put("applicationDate", Formatter.formatDateTime(appDate));
                 templateContent.put("officer_name", "");
+                templateContent.put("inspectionDate", Formatter.formatDateTime(appDate));
                 HcsaServiceDto serviceDto = HcsaServiceCacheHelper.getServiceById(svcId);
 
                 if (serviceDto != null) {
                     String svcName = serviceDto.getSvcName();
+                    templateContent.put("serviceName", svcName);
+
                     svcNameList.add(svcName);
                 }
 
+                String randomStr = IaisEGPHelper.generateRandomString(26);
                 templateContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
                 templateContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                templateContent.put("serviceNames", svcNameList);
-                EmailParam email = new EmailParam();
-                email.setTemplateId(msgTmgId);
-                email.setTemplateContent(templateContent);
-                email.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
-                email.setReqRefNum(randomStr);
-                email.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                email.setRefId(appNo);
-                email.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
-                email.setSmsOnlyOfficerHour(false);
-                notificationHelper.sendNotification(email);
+
+                EmailParam email_004 = new EmailParam();
+                email_004.setTemplateId(email_004_template);
+                email_004.setTemplateContent(templateContent);
+                email_004.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
+                email_004.setReqRefNum(randomStr);
+                email_004.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+                email_004.setRefId(appNo);
+                email_004.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
+                email_004.setSmsOnlyOfficerHour(false);
+                notificationHelper.sendNotification(email_004);
             }
         }
 
-        String randomStr = IaisEGPHelper.generateRandomString(26);
-        tlContent.put("applicationNo", tlGroupNumber);
-        tlContent.put("applicationType", tlAppType);
-        tlContent.put("applicationDate", Formatter.formatDateTime(tlDate));
-        tlContent.put("systemLink", loginUrl);
-        tlContent.put("officer_name", "");
-        tlContent.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
-        tlContent.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
-        EmailParam email = new EmailParam();
-        email.setTemplateId(msgTmgId2);
+        String emailRandomStr_003 = IaisEGPHelper.generateRandomString(26);
+        emailContent_003.put("applicationNo", tlGroupNumber);
+        emailContent_003.put("applicationType", tlAppType);
+        emailContent_003.put("applicationDate", Formatter.formatDateTime(tlDate));
+        emailContent_003.put("serviceNames", svcNameList);
+        emailContent_003.put("systemLink", loginUrl);
+        emailContent_003.put("officer_name", "");
+        emailContent_003.put("MOH_GROUP_NAME", AppConsts.MOH_AGENCY_NAM_GROUP);
+        emailContent_003.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
-        HashMap<String, String> subjectMap = IaisCommonUtils.genNewHashMap();
-        subjectMap.put("[appType]", tlAppType);
-        subjectMap.put("[applicationNo]", tlGroupNumber);
-        email.setSubjectParams(subjectMap);
-        email.setTemplateContent(tlContent);
-        email.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
-        email.setReqRefNum(randomStr);
-        email.setRefId(tlGroupId);
-        email.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP_GRP);
-        email.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
-        email.setSmsOnlyOfficerHour(false);
-        notificationHelper.sendNotification(email);
+        EmailParam email_003 = new EmailParam();
+        email_003.setTemplateId(email_003_template);
+        email_003.setTemplateContent(emailContent_003);
+        email_003.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
+        email_003.setReqRefNum(emailRandomStr_003);
+        email_003.setRefId(emailGroupId_003);
+        email_003.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP_GRP);
+        email_003.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
+        email_003.setSmsOnlyOfficerHour(false);
+        notificationHelper.sendNotification(email_003);
+
     }
 
 
@@ -352,7 +343,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
 
     @Override
     public void saveAllSelfAssessment(List<SelfAssessment> selfAssessmentList) {
-        //TODO if from inbox , should not create task
+        /*//TODO if from inbox , should not create task
         FeignResponseEntity<List<AppPremisesSelfDeclChklDto>> result =  applicationClient.saveAllSelfAssessment(selfAssessmentList);
         if (result.getStatusCode() == HttpStatus.SC_OK){
             FeSelfAssessmentSyncDataDto syncDataDto = new FeSelfAssessmentSyncDataDto();
@@ -382,7 +373,7 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
             }catch (Exception e){
                 log.error(StringUtil.changeForLog("encounter failure when sync self assessment to be"), e);
             }
-        }
+        }*/
 
         try {
             List<String> correlationIds = selfAssessmentList.stream().map(SelfAssessment::getCorrId).collect(Collectors.toList());
