@@ -105,6 +105,7 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
                 SelectOption selectOption = new SelectOption(index + "", hcsaSvcRoutingStageDto.getStageName());
                 stageMap.put(index + "", hcsaSvcRoutingStageDto);
                 stageOptions.add(selectOption);
+                index++;
             }
             SelectOption selectOption = stageOptions.get(0);
             if(selectOption != null){
