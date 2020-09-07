@@ -58,13 +58,13 @@ public class WithdrawnValidate implements CustomizeValidator {
             }
         }
         if (StringUtil.isEmpty(withdrawnReason)) {
-            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks for Withdrawal","field");
+            String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Reason for Withdrawal","field");
             errorMap.put("withdrawnReason", errMsg);
         }
         if ("WDR005".equals(withdrawnReason)) {
             String withdrawnRemarks = ParamUtil.getRequestString(mulReq, "withdrawnRemarks");
             if (StringUtil.isEmpty(withdrawnRemarks)) {
-                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks for Withdrawal", "field");
+                String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Remarks", "field");
                 errorMap.put("withdrawnRemarks", errMsg);
             }
         }
