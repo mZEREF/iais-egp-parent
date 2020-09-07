@@ -31,7 +31,8 @@ public interface AppSubmissionService {
 
     public String getDraftNo(String appType);
     public String getGroupNo(String appType);
-    public FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto);
+//    public FeeDto getNewAppAmount(AppSubmissionDto appSubmissionDto);
+    public FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto,boolean isCharity);
     public PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto);
     public void setRiskToDto(AppSubmissionDto appSubmissionDto);
     public AppSubmissionDto getAppSubmissionDtoByAppNo(String appNo);

@@ -151,8 +151,9 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
-    public FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto) {
+    public FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto,boolean isCharity) {
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount start ...."));
+        log.info(StringUtil.changeForLog("current account is charity:"+isCharity));
         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
         List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
         List<LicenceFeeDto> linenceFeeQuaryDtos = IaisCommonUtils.genNewArrayList();
@@ -185,6 +186,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 }else{
                     licenceFeeDto.setIncludeBase(true);
                 }
+                licenceFeeDto.setCharity(isCharity);
                 linenceFeeQuaryDtos.add(licenceFeeDto);
             }
         }else{
@@ -227,7 +229,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 licenceFeeDto.setServiceCode(hcsaServiceDto.getSvcCode());
                 licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
                 licenceFeeDto.setPremises(premisessTypes);
-
+                licenceFeeDto.setCharity(isCharity);
                 if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
                     String licenceId = appSubmissionDto.getLicenceId();
                     Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
