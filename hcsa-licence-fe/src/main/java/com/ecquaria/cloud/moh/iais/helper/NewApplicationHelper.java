@@ -1485,7 +1485,7 @@ public class NewApplicationHelper {
                     currSvcPsnExtDto.setPsnEditDto(appPsnEditDto);
                     currSvcPsnExtDto.setServiceCode(svcCode);
                     appSvcPersonExtDtos.add(currSvcPsnExtDto);
-                    AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(person,AppSvcPersonDto.class);
+                    AppSvcPersonDto appSvcPersonDto = MiscUtil.transferEntityDto(psnDto,AppSvcPersonDto.class);
                     appSvcPersonAndExtDto.setPersonDto(appSvcPersonDto);
                     appSvcPersonAndExtDto.setPersonExtDtoList(appSvcPersonExtDtos);
                     appSvcPersonAndExtDto.setLicPerson(true);
