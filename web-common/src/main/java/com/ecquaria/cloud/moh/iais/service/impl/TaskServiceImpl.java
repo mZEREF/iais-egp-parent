@@ -101,7 +101,10 @@ public class TaskServiceImpl implements TaskService {
             String scheme = taskHcsaConfigClient.getSendTaskType(sendTaskTypeDto).getEntity();
             log.info(StringUtil.changeForLog("The getRoutingTask scheme is -->:"+scheme));
             String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
-            String userId = taskScoreDto.getUserId();
+            String userId = null;
+            if(taskScoreDto != null){
+                taskScoreDto.getUserId();
+            }
             Date  assignDate = new Date();
             log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:"+userId));
             switch (scheme){
@@ -179,7 +182,10 @@ public class TaskServiceImpl implements TaskService {
                 String scheme = taskHcsaConfigClient.getSendTaskType(sendTaskTypeDto).getEntity();
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison scheme is -->:"+scheme));
                 String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
-                String userId = taskScoreDto.getUserId();
+                String userId = null;
+                if(taskScoreDto != null){
+                    taskScoreDto.getUserId();
+                }
                 Date  assignDate = new Date();
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
                 switch (scheme){
