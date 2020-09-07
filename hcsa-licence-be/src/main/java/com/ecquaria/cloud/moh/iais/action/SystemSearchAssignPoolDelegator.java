@@ -336,6 +336,7 @@ public class SystemSearchAssignPoolDelegator {
         systemAssignTaskDto = systemSearchAssignPoolService.setWorkGroupAndOfficer(groupRoleFieldDto, systemAssignTaskDto);
         //set session inspector options
         Map<String, List<SelectOption>> inspectorByGroup = systemAssignTaskDto.getInspectorByGroup();
+        List<SelectOption> workGroupOptions = systemAssignTaskDto.getWorkGroupOptions();
         if(inspectorByGroup != null){
             for(Map.Entry<String, List<SelectOption>> map : inspectorByGroup.entrySet()){
                 String groupNo = map.getKey();
@@ -348,6 +349,7 @@ public class SystemSearchAssignPoolDelegator {
         ParamUtil.setSessionAttr(bpc.request, "systemAssignTaskDto", systemAssignTaskDto);
         ParamUtil.setSessionAttr(bpc.request, "groupRoleFieldDto", groupRoleFieldDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, "workGroupOptions", (Serializable) workGroupOptions);
     }
 
     /**

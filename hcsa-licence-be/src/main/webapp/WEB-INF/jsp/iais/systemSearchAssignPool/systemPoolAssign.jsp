@@ -93,7 +93,7 @@
                       <label style="font-size: 16px">Work Group Name<span style="color: red"> *</span></label>
                     </div>
                     <div class="col-md-6">
-                      <iais:select name="systemAssignWorkGroup" options="workGroupOption" value="${reschedulingOfficerDto.workGroupCheck}" ></iais:select>
+                      <iais:select name="systemAssignWorkGroup" options="workGroupOptions" value="${systemAssignTaskDto.checkWorkGroup}" ></iais:select>
                       <span class="error-msg" name="iaisErrorMsg" id="error_checkWorkGroup"></span>
                     </div>
                   </div>

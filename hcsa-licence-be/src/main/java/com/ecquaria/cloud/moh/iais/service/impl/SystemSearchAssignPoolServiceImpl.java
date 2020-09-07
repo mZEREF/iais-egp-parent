@@ -235,7 +235,10 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
             Map<String, List<SelectOption>> inspectorByGroup = IaisCommonUtils.genNewHashMap();
             List<String> workGroupNos = IaisCommonUtils.genNewArrayList();
             int workGroupNo = 0;
+            List<SelectOption> workGroupOptions = IaisCommonUtils.genNewArrayList();
             for(String workGroupId : workGroupIds){
+                SelectOption workGroupOption = new SelectOption(workGroupNo + "", workGroupId);
+                workGroupOptions.add(workGroupOption);
                 workGroupIdMap.put(workGroupNo + "", workGroupId);
                 List<OrgUserDto> orgUserDtoList = organizationClient.getUsersByWorkGroupName(workGroupId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
                 if(!IaisCommonUtils.isEmpty(orgUserDtoList)){
@@ -261,6 +264,7 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
             systemAssignTaskDto.setGroupCheckUserIdMap(groupCheckUserIdMap);
             systemAssignTaskDto.setInspectorByGroup(inspectorByGroup);
             systemAssignTaskDto.setWorkGroupNos(workGroupNos);
+            systemAssignTaskDto.setWorkGroupOptions(workGroupOptions);
         }
         return systemAssignTaskDto;
     }
