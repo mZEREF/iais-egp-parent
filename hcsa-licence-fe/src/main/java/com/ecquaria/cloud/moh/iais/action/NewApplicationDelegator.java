@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -698,7 +699,11 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("isGetDataFromPage:" + isGetDataFromPage));
 //        if(isGetDataFromPage && !appSubmissionDto.isOnlySpecifiedSvc() ){
         if (isGetDataFromPage) {
+            List<AppGrpPremisesDto> oldAppGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
             List<AppGrpPremisesDto> appGrpPremisesDtoList = genAppGrpPremisesDtoList(bpc.request);
+            for(int i=0 ;i < oldAppGrpPremisesDtoList.size();i++){
+                appGrpPremisesDtoList.get(i).setOldPremisesCode(oldAppGrpPremisesDtoList.get(i).getOldPremisesCode());
+            }
             appSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtoList);
             if (appSubmissionDto.isNeedEditController()) {
                 Set<String> clickEditPages = appSubmissionDto.getClickEditPage() == null ? IaisCommonUtils.genNewHashSet() : appSubmissionDto.getClickEditPage();

@@ -90,6 +90,8 @@ public class TaskServiceImpl implements TaskService {
         hcsaSvcStageWorkingGroupDtos = this.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
         if(hcsaSvcStageWorkingGroupDtos!= null && hcsaSvcStageWorkingGroupDtos.size() > 0){
             String workGroupId = hcsaSvcStageWorkingGroupDtos.get(0).getGroupId();
+            log.info(StringUtil.changeForLog("work group id is [ "+workGroupId+" ]"));
+            log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(hcsaSvcStageWorkingGroupDtos)));
             TaskDto taskScoreDto =new TaskDto();
             if(SystemParameterConstants.ROUND_ROBIN.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
                 taskScoreDto = getUserIdForWorkGroup(workGroupId);
