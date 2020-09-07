@@ -12,7 +12,7 @@
           <c:forEach items="${currentPreviewSvcInfo.appSvcMedAlertPersonList}" var="appSvcMedAlertPerson" varStatus="status">
 
             <div  class="col-xs-12" style="margin-bottom: 1%;margin-top: 1%">
-              <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>Medalert Person ${status.index+1}: </strong></p>
+              <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span><strong>MedAlert Person ${status.index+1}: </strong></p>
             </div>
             <table class="col-xs-8">
 

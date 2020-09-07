@@ -243,7 +243,7 @@
       </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" >Medalert Person<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-6 control-label" >MedAlert Person<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${MAP.id}" name="svcpsnId" style="display:none;" type="text" maxlength="2">
             <input  type="text" name="man-MedalertPerson" value="${MAP.pageMandatoryCount}" maxlength="2" placeholder="minimum count">

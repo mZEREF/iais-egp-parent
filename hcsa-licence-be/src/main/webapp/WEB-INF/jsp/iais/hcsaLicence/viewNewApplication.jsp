@@ -902,7 +902,7 @@
           <div class="row">
             <div class="col-xs-12">
               <c:forEach items="${currentPreviewSvcInfo.appSvcMedAlertPersonList}" var="appSvcMedAlertPerson" varStatus="status">
-                <p><strong class="col-xs-6">Medalert Person ${status.index+1}:</strong></p>
+                <p><strong class="col-xs-6">MedAlert Person ${status.index+1}:</strong></p>
                 <span class="col-xs-6"></span>
                 <table class="col-xs-12">
 
