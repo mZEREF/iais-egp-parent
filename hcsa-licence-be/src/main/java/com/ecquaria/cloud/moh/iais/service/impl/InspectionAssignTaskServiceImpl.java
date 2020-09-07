@@ -513,6 +513,8 @@ public class InspectionAssignTaskServiceImpl implements InspectionAssignTaskServ
                                 String fastTrack = inspecTaskCreAndAssDto.getFastTrackCheck();
                                 if(!StringUtil.isEmpty(fastTrack)){
                                     applicationDto.setFastTracking(true);
+                                } else {
+                                    applicationDto.setFastTracking(false);
                                 }
                                 ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
                                 applicationService.updateFEApplicaiton(applicationDto1);
