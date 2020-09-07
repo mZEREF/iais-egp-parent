@@ -115,7 +115,6 @@ public class SystemSearchAssignPoolDelegator {
         List<TaskDto> systemPool = systemSearchAssignPoolService.getSystemTaskPool(userId);
         //First search
         if(searchResult == null && groupRoleFieldDto == null) {
-
             //get stage
             groupRoleFieldDto = systemSearchAssignPoolService.getSystemSearchStage();
             List<TaskDto> systemFilterPool = filterPoolByStage(systemPool, groupRoleFieldDto);
