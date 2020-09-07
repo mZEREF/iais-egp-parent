@@ -193,6 +193,9 @@ public class InspecAssignTaskDelegator {
             inspecTaskCreAndAssDto = new InspecTaskCreAndAssDto();
             inspecTaskCreAndAssDto.setTaskId(taskId);
             ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+            if(applicationDto.isFastTracking()){
+                inspecTaskCreAndAssDto.setFastTrackCheck(AppConsts.TRUE);
+            }
             //set fastTrackFlag
             inspecTaskCreAndAssDto = setFastTrackFlag(inspecTaskCreAndAssDto, applicationDto);
             inspecTaskCreAndAssDto = inspectionAssignTaskService.getInspecTaskCreAndAssDto(appCorrelationId, commPools, loginContext, inspecTaskCreAndAssDto);
