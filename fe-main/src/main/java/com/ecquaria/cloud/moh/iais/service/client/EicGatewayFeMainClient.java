@@ -63,7 +63,7 @@ public class EicGatewayFeMainClient {
                                                 String authorizationSec) {
         Map<String, Object> params = IaisCommonUtils.genNewHashMap();
         params.put("uen", uen);
-        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/v1/svc-sync-acra/{uen}", HttpMethod.GET, params,
+        return IaisEGPHelper.callEicGatewayWithParam(gateWayUrl + "/v1/svc-sync-acra/{uen}", HttpMethod.POST, params,
                 MediaType.APPLICATION_JSON, date, authorization, dateSec, authorizationSec, GenerateUENDto.class);
     }
 }
