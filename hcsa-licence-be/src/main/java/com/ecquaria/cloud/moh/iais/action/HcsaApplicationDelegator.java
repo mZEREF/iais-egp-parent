@@ -321,6 +321,7 @@ public class HcsaApplicationDelegator {
         //appeal
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
+        boolean isWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType);
         boolean isChangePeriodAppealType = false;
         boolean isLateFeeAppealType = false;
         if(isAppealType){
@@ -349,26 +350,14 @@ public class HcsaApplicationDelegator {
             //save recommendation
             String recommendationStr = ParamUtil.getString(bpc.request,"recommendation");
             boolean isDMS = ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(applicationViewDto.getApplicationDto().getStatus());
-            boolean isWithdrwal = false;
-            if (applicationViewDto.getApplicationDto().getStatus().equals(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING)
-                    && applicationViewDto.getApplicationDto().getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
-                isWithdrwal = true;
-            }
             String decisionValues = ParamUtil.getString(bpc.request, "decisionValues");
-            String withdrawalDecisionValue = ParamUtil.getString(bpc.request, "withdrawalDecisionValues");
             boolean isRejectDMS = "decisionReject".equals(decisionValues);
             boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType);
-            boolean isRejectWithdrawal = "decisionReject".equals(withdrawalDecisionValue);
-            if (isWithdrwal){
-                if(isRejectWithdrawal){
-                    recommendationStr = "reject";
-                }
-            }
             if(isDMS){
                 if(isRejectDMS){
                     recommendationStr = "reject";
                 }
-            }else if(isAppealType && isAsoPso){
+            }else if((isAppealType || isWithdrawal) && isAsoPso){
                 String appealRecommendationValues = ParamUtil.getString(bpc.request,"appealRecommendationValues");
                 if("appealReject".equals(appealRecommendationValues)){
                     recommendationStr = "reject";
@@ -401,7 +390,7 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomInNumber(0);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-                if(isAppealType){
+                if(isAppealType || isWithdrawal){
                     appPremisesRecommendationDto.setRecomDecision("reject");
                 }
                 appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -419,7 +408,7 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                 appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
-                if(isAppealType){
+                if(isAppealType || isWithdrawal){
                     appPremisesRecommendationDto.setRecomDecision("approve");
                 }
                 if("other".equals(recommendationStr)){
@@ -494,14 +483,6 @@ public class HcsaApplicationDelegator {
             //DMS to end
             if(isDMS){
                 if(isRejectDMS){
-                    nextStage = "PROCREJ";
-                }else{
-                    nextStage = "PROCAP";
-                }
-            }
-
-            if(isWithdrwal){
-                if(isRejectWithdrawal){
                     nextStage = "PROCREJ";
                 }else{
                     nextStage = "PROCAP";
@@ -1666,7 +1647,7 @@ public class HcsaApplicationDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
         String applicationType = applicationDto.getApplicationType();
         if(appPremisesRecommendationDto!= null && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
-                if(!ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                if(!(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType))){
                     Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
                     if(null != recomInNumber && recomInNumber == 0){
                         appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
@@ -2652,7 +2633,7 @@ public class HcsaApplicationDelegator {
         boolean isLateFeeAppealType = false;
         String applicationType = applicationDto.getApplicationType();
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
-        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)) {
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
             ParamUtil.setSessionAttr(request,"isAppeal","Y");
             //get appeal type
             String appId = applicationDto.getId();
@@ -2813,7 +2794,8 @@ public class HcsaApplicationDelegator {
     private void setAppealRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationType = applicationDto.getApplicationType();
-        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+        //add withdrawal
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
             //appealRecommendationValues
             List<SelectOption> appealRecommendationValues = IaisCommonUtils.genNewArrayList();
             appealRecommendationValues.add(new SelectOption("appealApprove", "Approve"));
@@ -2832,9 +2814,7 @@ public class HcsaApplicationDelegator {
             //62875
             //role is ao3 && status is 'Pending AO3 Approval'  have no verified
             if(!(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))){
-                if (!ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())) {
-                    nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
-                }
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
             }
         }
         List<String> status=new ArrayList<>(3);
@@ -2859,13 +2839,6 @@ public class HcsaApplicationDelegator {
                     nextStageList.add(new SelectOption("PROCRFI", "Request For Information"));
                 }
             }
-        }
-
-        if (RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())
-                && ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationViewDto.getApplicationDto().getStatus())
-                && ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, "Reject"));
         }
 
         //62875

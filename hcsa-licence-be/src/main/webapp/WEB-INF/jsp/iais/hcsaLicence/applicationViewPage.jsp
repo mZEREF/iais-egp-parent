@@ -33,10 +33,13 @@
             <c:set var="isBroacastAsoPso" value="${broadcastAsoPso}"/>
             <c:set var="isBroacastAso" value="${broadcastAso}"/>
             <c:set var="isAppealType" value="${applicationViewDto.applicationDto.applicationType == 'APTY001'}"/>
+            <c:set var="isWithDrawal" value="${applicationViewDto.applicationDto.applicationType == 'APTY006'}"/>
             <c:set var="isAso" value="${taskDto.taskKey == '12848A70-820B-EA11-BE7D-000C29F371DC'}"/>
             <c:set var="isPso" value="${taskDto.taskKey == '13848A70-820B-EA11-BE7D-000C29F371DC'}"/>
             <c:set var="isCessation" value="${applicationViewDto.applicationDto.applicationType == 'APTY008'}"/>
             <input type="hidden" id="isAppealType" value="${isAppealType}"/>
+            <input type="hidden" id="isWithDrawal" value="${isWithDrawal}"/>
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="tab-gp dashboard-tab">
@@ -145,19 +148,6 @@
                                                             </iais:row>
                                                         </div>
                                                     </c:if>
-                                                    <c:if test="${applicationViewDto.applicationDto.applicationType == 'APTY006' && applicationViewDto.applicationDto.status == 'APST007'}">
-                                                        <div id="withdrawalDecision">
-                                                            <iais:row>
-                                                                <iais:field value="Processing Decision" required="true"/>
-                                                                <iais:value width="10">
-                                                                    <iais:select cssClass="withdrawalDecisionValues" name="withdrawalDecisionValues" id="withdrawalDecisionValues"
-                                                                                 firstOption="Please Select"
-                                                                                 options="decisionValues"
-                                                                                 value="${selectDecisionValue}"></iais:select>
-                                                                </iais:value>
-                                                            </iais:row>
-                                                        </div>
-                                                    </c:if>
                                                     <div id="rollBackDropdown" class="hidden">
                                                         <iais:row>
                                                             <iais:field value="Route Back To" required="true"/>
@@ -230,7 +220,7 @@
                                                     </c:if>
 
                                                     <%--application type == appeal --%>
-                                                    <c:if test="${isAppealType}">
+                                                    <c:if test="${isAppealType || isWithDrawal}">
                                                         <div id="appealRecommendation">
                                                             <iais:row>
                                                                 <div id="appealRecommendationTrue"><iais:field value="Recommendation" required="true"/></div>
@@ -439,11 +429,9 @@
         checkInspectionShow();
         //route back
         routeBackCheck();
-        if('APTY006' == '${applicationViewDto.applicationDto.applicationType}' && 'APST007' == '${applicationViewDto.applicationDto.status}'){
+        if('APTY006' == '${applicationViewDto.applicationDto.applicationType}'){
             $('#recommendationDropdown').addClass('hidden');
-            $('#replytr').removeClass('hidden');
             $('#licenceStartDate').addClass('hidden');
-            $('#processingDecision').addClass('hidden');
             $('.fastTrack').addClass('hidden');
         }
         appealAoFillBack();
@@ -466,7 +454,7 @@
     function checkRecommendationDMS(){
         if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
             var selectValue = $("[name='decisionValues']").val();
-            if(${isAppealType}){
+            if(${isAppealType || isWithDrawal}){
                 $('#appealRecommendation').addClass('hidden');
                 if("decisionApproval" == selectValue){
                     var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
@@ -484,12 +472,12 @@
                 }
             }
             if("decisionApproval" == selectValue){
-                if(${!isAppealType}){
+                if(${!(isAppealType || isWithDrawal)}){
                     $('#recommendationDropdown').removeClass('hidden');
                     checkRecommendationOtherDropdown();
                 }
             }else{
-                if(${!isAppealType}) {
+                if(${!(isAppealType || isWithDrawal)}){
                     $('#recommendationDropdown').addClass('hidden');
                     $('#recommendationOtherDropdown').addClass('hidden');
                 }
