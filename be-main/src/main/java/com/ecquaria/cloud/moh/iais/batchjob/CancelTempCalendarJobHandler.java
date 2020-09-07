@@ -26,9 +26,9 @@ public class CancelTempCalendarJobHandler extends IJobHandler {
     @Override
     public ReturnT<String> execute(String s) {
         try{
-            logInfo("<====== Start to refresh error msg ======>");
+            logInfo("<====== Start to cancel temp calendar ======>");
             appointmentBeMainClient.cancelTemp(2);
-            logInfo("<====== End to refresh error msg ======>");
+            logInfo("<====== End to cancel temp calendar ======>");
         }catch (Exception e){
             log.error(e.getMessage(), e);
             JobLogger.log(e);
