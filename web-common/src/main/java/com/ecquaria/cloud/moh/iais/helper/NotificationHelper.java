@@ -474,10 +474,8 @@ public class NotificationHelper {
 		} else {
 			StringBuilder svcCodeShow = new StringBuilder();
 			for(String svcCode : svcCodeList){
-				if(StringUtil.isEmpty(svcCodeShow.toString())){
-					svcCodeShow.append(svcCode);
-					svcCodeShow.append('@');
-				}
+				svcCodeShow.append(svcCode);
+				svcCodeShow.append('@');
 			}
 			interMessageDto.setService_id(svcCodeShow.toString());
 		}
