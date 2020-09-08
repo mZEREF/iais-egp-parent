@@ -643,6 +643,7 @@ public class InterInboxDelegator {
                 cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
                 bpc.request.setAttribute("cessationError",cessationError);
+                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                 return ;
             }
         }
@@ -678,6 +679,7 @@ public class InterInboxDelegator {
             cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
             bpc.request.setAttribute("cessationError",cessationError);
             ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
         }else{
             ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
             StringBuilder url = new StringBuilder();
@@ -706,6 +708,7 @@ public class InterInboxDelegator {
      * >>>>>>>>Application Inbox<<<<<<<<
      */
     public void toAppPage(BaseProcessClass bpc){
+        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",null);
         log.debug(StringUtil.changeForLog("Step ---> toAppPage"));
         HttpServletRequest request = bpc.request;
         prepareAppSelectOption(request);
@@ -743,10 +746,12 @@ public class InterInboxDelegator {
             });
             ParamUtil.setSessionAttr(request,InboxConst.APP_PARAM, appParam);
             ParamUtil.setRequestAttr(request,InboxConst.APP_RESULT, appResult);
+
         }
         setNumInfoToRequest(request,interInboxUserDto);
         String delDraftConfMsg = MessageUtil.getMessageDesc("NEW_ACK002");
         ParamUtil.setRequestAttr(bpc.request,"delDraftConfMsg",delDraftConfMsg);
+
     }
 
     public void appSwitch(BaseProcessClass bpc){

@@ -53,24 +53,13 @@ import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
 import com.ecquaria.cloud.moh.iais.service.InsRepService;
 import com.ecquaria.cloud.moh.iais.service.InsepctionNcCheckListService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
-import com.ecquaria.cloud.moh.iais.service.client.AppInspectionStatusClient;
-import com.ecquaria.cloud.moh.iais.service.client.AppPremisesRoutingHistoryClient;
-import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
-import com.ecquaria.cloud.moh.iais.service.client.ComSystemAdminClient;
-import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
-import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
+import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.ecquaria.cloudfeign.FeignException;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sop.webflow.rt.api.BaseProcessClass;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -120,6 +109,8 @@ public class InsRepServiceImpl implements InsRepService {
     private ApplicationGroupService applicationGroupService;
     @Autowired
     private HcsaApplicationDelegator hcsaApplicationDelegator;
+    @Autowired
+    private TaskOrganizationClient taskOrganizationClient;
 
     private final String APPROVAL = "Approval";
     private final String REJECT = "Reject";
@@ -1040,7 +1031,16 @@ public class InsRepServiceImpl implements InsRepService {
         String groupId = dto.getGroupId();
         if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(schemeType)) {
             TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
-            taskDto.setUserId(taskDto1.getUserId());
+            if(taskDto1!=null){
+                userId = taskDto1.getUserId();
+            }
+            if(StringUtil.isEmpty(userId)){
+                List<OrgUserDto> orgUserDtos = taskOrganizationClient.retrieveOrgUserAccountByRoleId(RoleConsts.USER_ROLE_SYSTEM_USER_ADMIN).getEntity();
+                if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+                    userId = orgUserDtos.get(0).getId();
+                }
+            }
+            taskDto.setUserId(userId);
         } else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_COMMON.equals(schemeType)) {
             taskDto.setUserId(null);
         }else if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ASSIGN.equals(schemeType)) {
@@ -1081,7 +1081,6 @@ public class InsRepServiceImpl implements InsRepService {
             userId = ao2.iterator().next();
             taskDto.setUserId(userId);
         }
-
         if (StringUtil.isEmpty(userId) && TaskConsts.TASK_SCHEME_TYPE_ROUND.equals(schemeType)) {
             TaskDto taskDto1 = taskService.getUserIdForWorkGroup(groupId);
             taskDto.setUserId(taskDto1.getUserId());

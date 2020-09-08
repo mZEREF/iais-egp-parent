@@ -38,7 +38,7 @@
             <div class="modal-body" style="text-align: center">
                 <div class="row">
                     <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">
-                                        There is a pending application for this licence, please withdraw the application before proceeding with cessation
+                                        ${cessationError}
                                         </span>
                     </div>
                 </div>

@@ -13,13 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationSubDraftDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnlAssessQueryDto;
-import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InboxAppQueryDto;
@@ -39,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.submission.client.App;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +101,8 @@ public class HalpAssessmentGuideDelegator {
     @Autowired
     private InboxService inboxService;
 
+    @Autowired
+    private LicenceInboxClient licenceInboxClient;
     @Autowired
     RequestForChangeService requestForChangeService;
     @Autowired
@@ -1474,11 +1471,22 @@ public class HalpAssessmentGuideDelegator {
     }
 
     public void doCeasLicStep(BaseProcessClass bpc) throws IOException {
+        String cessationError = null ;
         List<String> licIdValue = IaisCommonUtils.genNewArrayList();
         String[] licIds = ParamUtil.getStrings(bpc.request, "ceaseLicIds");
         boolean result = false;
         for (String item : licIds) {
             licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
+        }
+        for(String licId : licIdValue){
+            LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+            if(licenceDto==null){
+                cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
+                bpc.request.setAttribute("cessationError",cessationError);
+                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                return ;
+            }
         }
         Map<String, Boolean> resultMap = inboxService.listResultCeased(licIdValue);
         for (Map.Entry<String, Boolean> entry : resultMap.entrySet()) {
@@ -1504,11 +1512,15 @@ public class HalpAssessmentGuideDelegator {
                 bpc.request.setAttribute("draftByLicAppId",replace);
                 bpc.request.setAttribute("isAppealShow","1");
                 bpc.request.setAttribute("appealApplication",licIdValue.get(0));
+                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                 return;
             }
         }
         if (result) {
             ParamUtil.setRequestAttr(bpc.request, InboxConst.LIC_CEASED_ERR_RESULT, Boolean.TRUE);
+            cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
+            bpc.request.setAttribute("cessationError",cessationError);
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
             StringBuilder url = new StringBuilder();
