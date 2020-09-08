@@ -6,6 +6,7 @@
         <input class="premValue" type="hidden" name="premValue" value="(0)"/>
         <input class="premisesIndexNo" type="hidden" name="premisesIndexNo" value=""/>
         <input class="phLength" type="hidden" name="phLength" value="1"/>
+        <input type="hidden" name="rfiCanEdit" value="true"/>
         <div class="col-xs-12">
           <div class="form-horizontal">
             <div class="form-group">
