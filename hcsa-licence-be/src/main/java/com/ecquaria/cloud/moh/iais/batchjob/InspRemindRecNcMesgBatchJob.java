@@ -246,6 +246,9 @@ public class InspRemindRecNcMesgBatchJob {
         InspEmailFieldDto inspEmailFieldDto = new InspEmailFieldDto();
         String itemId = appPremisesPreInspectionNcItemDto.getItemId();
         String beRemark = appPremisesPreInspectionNcItemDto.getBeRemarks();
+        if(StringUtil.isEmpty(beRemark)){
+            beRemark = "";
+        }
         if(!IaisCommonUtils.isEmpty(checklistConfigDtos)) {
             for (ChecklistConfigDto checklistConfigDto : checklistConfigDtos) {
                 List<ChecklistItemDto> checklistItemDtos = getCurrentSvcAllItems(checklistConfigDto);
