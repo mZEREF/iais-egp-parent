@@ -1420,7 +1420,7 @@ public class NewApplicationHelper {
                     continue;
                 }
                 String svcCode = hcsaServiceDto.getSvcCode();
-                String personMapKey = psnDto.getIdType() + "," + psnDto.getIdNo();
+                String personMapKey = getPersonKey(psnDto.getIdType(),psnDto.getIdNo());
                 AppSvcPersonAndExtDto appSvcPersonAndExtDto = personMap.get(personMapKey);
                 String speciality = psnDto.getSpeciality();
                 if (appSvcPersonAndExtDto == null) {

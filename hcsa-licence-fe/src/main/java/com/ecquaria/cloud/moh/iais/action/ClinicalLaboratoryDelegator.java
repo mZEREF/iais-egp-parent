@@ -1868,6 +1868,10 @@ public class ClinicalLaboratoryDelegator {
                 appSvcCgoDto.setEmailAddr(emailAddress[i]);
                 if (needEdit && AppConsts.YES.equals(licPerson[i])) {
                     appSvcCgoDto.setLicPerson(true);
+                    AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcCgoDto.getIdType(),appSvcCgoDto.getIdNo()));
+                    if(appSvcPrincipalOfficersDto != null){
+                        appSvcCgoDto.setCurPersonelId(appSvcPrincipalOfficersDto.getCurPersonelId());
+                    }
                 }
                 appSvcCgoDtoList.add(appSvcCgoDto);
             }
@@ -2038,6 +2042,10 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setEmailAddr(emailAddress[i]);
                     if (needEdit && AppConsts.YES.equals(licPsn)) {
                         appSvcPrincipalOfficersDto.setLicPerson(true);
+                        AppSvcPrincipalOfficersDto licPerson = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getIdType(),appSvcPrincipalOfficersDto.getIdNo()));
+                        if(licPerson != null){
+                            appSvcPrincipalOfficersDto.setCurPersonelId(licPerson.getCurPersonelId());
+                        }
                     }
                     appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
                 }
@@ -2153,6 +2161,10 @@ public class ClinicalLaboratoryDelegator {
                     appSvcPrincipalOfficersDto.setEmailAddr(deputyEmailAddr[i]);
                     if (needEdit && AppConsts.YES.equals(licPsn)) {
                         appSvcPrincipalOfficersDto.setLicPerson(true);
+                        AppSvcPrincipalOfficersDto licPerson = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getIdType(),appSvcPrincipalOfficersDto.getIdNo()));
+                        if(licPerson != null){
+                            appSvcPrincipalOfficersDto.setCurPersonelId(licPerson.getCurPersonelId());
+                        }
                     }
                     appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
                 }
@@ -2656,6 +2668,10 @@ public class ClinicalLaboratoryDelegator {
                 ++preferredModeLength;
                 if (needEdit && AppConsts.YES.equals(licPsn)) {
                     appSvcPrincipalOfficersDto.setLicPerson(true);
+                    AppSvcPrincipalOfficersDto licsPerson = NewApplicationHelper.getPsnInfoFromLic(request, NewApplicationHelper.getPersonKey(appSvcPrincipalOfficersDto.getIdType(),appSvcPrincipalOfficersDto.getIdNo()));
+                    if(licsPerson != null){
+                        appSvcPrincipalOfficersDto.setCurPersonelId(licsPerson.getCurPersonelId());
+                    }
                 }
                 medAlertPersons.add(appSvcPrincipalOfficersDto);
             }

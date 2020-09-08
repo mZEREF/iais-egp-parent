@@ -151,6 +151,51 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
     }
 
     @Override
+    public FeeDto getNewAppAmount(AppSubmissionDto appSubmissionDto,boolean isCharity) {
+        log.debug(StringUtil.changeForLog("the getNewAppAmount start ...."));
+        List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+        List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+        List<String> premisesTypes = IaisCommonUtils.genNewArrayList();
+        List<LicenceFeeDto> licenceFeeQuaryDtos = IaisCommonUtils.genNewArrayList();
+        if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                String premType = appGrpPremisesDto.getPremisesType();
+                if(!StringUtil.isEmpty(premType)){
+                    premisesTypes.add(premType);
+                }
+            }
+            /*boolean onlySpecifiedSvc = false;
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
+                    onlySpecifiedSvc = true;
+                }
+            }*/
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
+                if(hcsaServiceDto != null){
+                    licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
+                }else{
+                    log.info(StringUtil.changeForLog("current svc"+appSvcRelatedInfoDto.getServiceCode()+"'s baseSvcInfo is empty"));
+                }
+                licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
+                licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
+                licenceFeeDto.setPremises(premisesTypes);
+//                licenceFeeDto.setOnlyNewSpecified(onlySpecifiedSvc);
+                if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
+                    licenceFeeDto.setOnlyNewSpecified(true);
+                }else{
+                    licenceFeeDto.setIncludeBase(true);
+                }
+                licenceFeeDto.setCharity(isCharity);
+                licenceFeeQuaryDtos.add(licenceFeeDto);
+            }
+        }
+        log.debug(StringUtil.changeForLog("the getNewAppAmount end ...."));
+        return appConfigClient.newFee(licenceFeeQuaryDtos).getEntity();
+    }
+
+    @Override
     public FeeDto getGroupAmount(AppSubmissionDto appSubmissionDto,boolean isCharity) {
         log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount start ...."));
         log.info(StringUtil.changeForLog("current account is charity:"+isCharity));
