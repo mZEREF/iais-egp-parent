@@ -384,6 +384,10 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
         AuditCombinationDto auditCombinationDto = new AuditCombinationDto();
         auditCombinationDto.setAuditTaskDataFillterDto(temp);
         String  RefNo = applicationClient.getRefNoByLicId(temp.getLicId(),temp.getHclCode()).getEntity();
+       if(StringUtil.isEmpty( RefNo)){
+           log.info(StringUtil.changeForLog("It is a dirty data : licid" +  temp.getLicId()+ " hcicode :" + temp.getHclCode()));
+           return;
+       }
         auditCombinationDto.setEventRefNo(RefNo);
         updateLicenceSaveCancelTask(auditCombinationDto,status,submitId);
         updateAppCancelTaskByEventBus(auditCombinationDto,submitId);
