@@ -199,22 +199,26 @@
             $(this).find('input[name="onSiteFireSafetyCertIssuedDate"]').addClass('disabled-placeHolder');
         });
         </c:if>
-        if($("#errorMapIs").val()=='error'){
-            var premContent =$('#mainPrem');
-            <!--hidden edit btn -->
-            premContent.find('.premises-summary-preview').addClass('hidden');
-            <!--unDisabled -->
-            unDisabledPartPage(premContent);
-            unreadonlyPartPage(premContent);
-            premContent.find('.retrieveAddr').removeClass('hidden');
-            $('#isEditHiddenVal').val('1');
-            premContent.find('input[name="isPartEdit"]').val('1');
-            <!--replace fire issued date -->
-            var fireIssueDate = premContent.find('.fireIssuedDate').val();
-            replaceFireIssueDateHtml(premContent,fireIssueDate);
-            <!--remove ph hidden-->
-            premContent.find('.addPubHolDay').removeClass('hidden');
-        }
+
+        <c:if test="${'APTY002' !=AppSubmissionDto.appType || requestInformationConfig != null}">
+          if($("#errorMapIs").val()=='error'){
+              var premContent =$('#mainPrem');
+              <!--hidden edit btn -->
+              premContent.find('.premises-summary-preview').addClass('hidden');
+              <!--unDisabled -->
+              unDisabledPartPage(premContent);
+              unreadonlyPartPage(premContent);
+              premContent.find('.retrieveAddr').removeClass('hidden');
+              $('#isEditHiddenVal').val('1');
+              premContent.find('input[name="isPartEdit"]').val('1');
+              <!--replace fire issued date -->
+              var fireIssueDate = premContent.find('.fireIssuedDate').val();
+              replaceFireIssueDateHtml(premContent,fireIssueDate);
+              <!--remove ph hidden-->
+              premContent.find('.addPubHolDay').removeClass('hidden');
+              premContent.find('div.other-lic-content .check-circle').removeClass('radio-disabled');
+          }
+        </c:if>
 
 
         <%--<c:if test="${PageCanEdit}">--%>
