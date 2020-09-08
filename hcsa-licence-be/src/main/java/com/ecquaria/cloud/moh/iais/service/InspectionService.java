@@ -194,4 +194,13 @@ public interface InspectionService {
       * @Descripation: 
       */
     InspectionTaskPoolListDto getDataForAssignTask(Map<String, SuperPoolTaskQueryDto> assignMap, InspectionTaskPoolListDto inspectionTaskPoolListDto, String taskId);
+
+    /**
+      * @author: shicheng
+      * @Date 2020/9/8
+      * @Param: workGrpId
+      * @return: List<String>
+      * @Descripation: getUserIdByWorkGrpId
+      */
+    List<String> getUserIdByWorkGrpId(String workGrpId);
 }

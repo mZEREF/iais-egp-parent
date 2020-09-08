@@ -311,12 +311,15 @@ public class InspectionSearchDelegator {
         } else {
             memberRole = curRole;
         }
-        for(String workGrpId:workGroupIds){
-            List<TaskDto> taskDtos = inspectionService.getSupervisorPoolByGroupWordId(workGrpId);
-            for(TaskDto tDto : taskDtos){
-                if(!StringUtil.isEmpty(tDto.getRoleId())) {
-                    if (tDto.getRoleId().equals(curRole) || tDto.getRoleId().equals(memberRole)) {
-                        taskDtoList.add(tDto);
+        for(String workGrpId : workGroupIds){
+            List<String> userIdsByGroup = inspectionService.getUserIdByWorkGrpId(workGrpId);
+            if(userIdsByGroup != null) {
+                List<TaskDto> taskDtos = inspectionService.getSupervisorPoolByGroupWordId(workGrpId);
+                for (TaskDto tDto : taskDtos) {
+                    if (!StringUtil.isEmpty(tDto.getRoleId()) && userIdsByGroup.contains(tDto.getUserId())) {
+                        if (tDto.getRoleId().equals(curRole) || tDto.getRoleId().equals(memberRole)) {
+                            taskDtoList.add(tDto);
+                        }
                     }
                 }
             }

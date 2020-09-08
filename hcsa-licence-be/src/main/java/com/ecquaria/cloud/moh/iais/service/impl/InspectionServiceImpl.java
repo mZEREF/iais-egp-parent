@@ -355,6 +355,22 @@ public class InspectionServiceImpl implements InspectionService {
         return inspectionTaskPoolListDto;
     }
 
+    @Override
+    public List<String> getUserIdByWorkGrpId(String workGrpId) {
+        List<String> userIds = IaisCommonUtils.genNewArrayList();
+        List<OrgUserDto> orgUserDtos = organizationClient.getUsersByWorkGroupName(workGrpId, AppConsts.COMMON_STATUS_ACTIVE).getEntity();
+        if(!IaisCommonUtils.isEmpty(orgUserDtos)) {//NOSONAR
+            for (OrgUserDto orgUserDto : orgUserDtos) {
+                if(orgUserDto != null){
+                    if(!StringUtil.isEmpty(orgUserDto.getId())){
+                        userIds.add(orgUserDto.getId());
+                    }
+                }
+            }
+        }
+        return userIds;
+    }
+
     private String getMemberNameByUserId(String userId) {
         String memberName = HcsaConsts.HCSA_PREMISES_HCI_NULL;
         if(!StringUtil.isEmpty(userId)) {
