@@ -449,7 +449,7 @@ public class CessationFeServiceImpl implements CessationFeService {
         if(IaisCommonUtils.isEmpty(serviceConfig)){
             return null;
         }else {
-            String stageId = serviceConfig.get(0).getId();
+            String stageId = serviceConfig.get(0).getStageCode();
             switch (stageId){
                 case HcsaConsts.ROUTING_STAGE_ASO :
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
