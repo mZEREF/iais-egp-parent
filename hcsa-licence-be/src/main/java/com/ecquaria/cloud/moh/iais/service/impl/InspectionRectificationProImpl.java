@@ -120,9 +120,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
     private FileRepoClient fileRepoClient;
 
     @Autowired
-    private InboxMsgService inboxMsgService;
-
-    @Autowired
     private SystemParamConfig systemParamConfig;
 
     @Autowired
@@ -139,9 +136,6 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Autowired
     private BeEicGatewayClient beEicGatewayClient;
-
-    @Autowired
-    private MsgTemplateClient msgTemplateClient;
 
     @Autowired
     private LicenseeService licenseeService;
