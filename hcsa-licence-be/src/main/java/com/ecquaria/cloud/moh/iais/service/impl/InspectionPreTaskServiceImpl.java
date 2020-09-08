@@ -161,27 +161,60 @@ public class InspectionPreTaskServiceImpl implements InspectionPreTaskService {
 
     @Override
     public void routingTask(TaskDto taskDto, String preInspecRemarks, List<ChecklistConfigDto> inspectionChecklist) {
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         ApplicationViewDto applicationViewDto = inspectionAssignTaskService.searchByAppCorrId(taskDto.getRefNo());
         taskDto.setSlaDateCompleted(new Date());
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         createAppPremisesRoutingHistory(applicationDto.getApplicationNo(), applicationDto.getStatus(), taskDto.getTaskKey(), preInspecRemarks, InspectionConstants.PROCESS_DECI_MARK_INSPE_TASK_READY, RoleConsts.USER_ROLE_INSPECTIOR, taskDto.getWkGrpId(), HcsaConsts.ROUTING_STAGE_PRE);
         //close self-checklist
         applicationDto.setSelfAssMtFlag(4);
-        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION);
-        applicationDto1.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
+        ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION);
+        applicationDto1.setAuditTrailDto(auditTrailDto);
         applicationService.updateFEApplicaiton(applicationDto1);
         applicationViewDto.setApplicationDto(applicationDto1);
-        List<TaskDto> taskDtoList = organizationClient.getTasksByRefNo(taskDto.getRefNo()).getEntity();
-        for(TaskDto tDto : taskDtoList){
-            if(tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_PENDING) || tDto.getTaskStatus().equals(TaskConsts.TASK_STATUS_READ)) {
-                tDto.setSlaDateCompleted(new Date());
-                tDto.setSlaRemainInDays(0);
-                tDto.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
-                tDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
-                taskService.updateTask(tDto);
-            }
+        List<TaskDto> taskDtoList = organizationClient.getCurrTaskByRefNo(taskDto.getRefNo()).getEntity();
+        List<TaskDto> createTaskList = IaisCommonUtils.genNewArrayList();
+        //CREATE / UPDATE TASK
+        List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
+        applicationDtos.add(applicationDto);
+        List<HcsaSvcStageWorkingGroupDto> hcsaSvcStageWorkingGroupDtos = generateHcsaSvcStageWorkingGroupDtos(applicationDtos, HcsaConsts.ROUTING_STAGE_INS);
+        hcsaSvcStageWorkingGroupDtos = taskService.getTaskConfig(hcsaSvcStageWorkingGroupDtos);
+        //get score
+        int score = hcsaSvcStageWorkingGroupDtos.get(0).getCount();
+        for(TaskDto td : taskDtoList){
+            td.setSlaDateCompleted(new Date());
+            td.setSlaRemainInDays(0);
+            td.setTaskStatus(TaskConsts.TASK_STATUS_COMPLETED);
+            td.setAuditTrailDto(auditTrailDto);
+            taskService.updateTask(td);
+            TaskDto createTaskDto = new TaskDto();
+            createTaskDto.setId(null);
+            createTaskDto.setTaskStatus(TaskConsts.TASK_STATUS_PENDING);
+            createTaskDto.setPriority(td.getPriority());
+            createTaskDto.setRefNo(td.getRefNo());
+            createTaskDto.setSlaAlertInDays(td.getSlaAlertInDays());
+            createTaskDto.setSlaDateCompleted(null);
+            createTaskDto.setSlaInDays(td.getSlaInDays());
+            createTaskDto.setSlaRemainInDays(null);
+            createTaskDto.setTaskKey(td.getTaskKey());
+            createTaskDto.setTaskType(td.getTaskType());
+            createTaskDto.setWkGrpId(td.getWkGrpId());
+            createTaskDto.setUserId(td.getUserId());
+            createTaskDto.setDateAssigned(new Date());
+            createTaskDto.setRoleId(RoleConsts.USER_ROLE_INSPECTIOR);
+            createTaskDto.setAuditTrailDto(auditTrailDto);
+            createTaskDto.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_CHECKLIST_VERIFY);
+            createTaskDto.setScore(score);
+            createTaskDto.setApplicationNo(td.getApplicationNo());
+            createTaskList.add(createTaskDto);
         }
+        taskService.createTasks(createTaskList);
+        //create history
+        createAppPremisesRoutingHistory(applicationDto.getApplicationNo(),ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION,taskDto.getTaskKey(),null,
+                InspectionConstants.PROCESS_DECI_PENDING_INSPECTION, RoleConsts.USER_ROLE_INSPECTIOR, HcsaConsts.ROUTING_STAGE_INP, taskDto.getWkGrpId());
+        //save checklist
         saveInspectionChecklist(inspectionChecklist, taskDto.getRefNo());
+        //update insp status
         updateInspectionStatus(taskDto.getRefNo(), InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION);
     }
 
