@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.WithOutRenewalDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.WithOutRenewalService;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemAdminClient;
@@ -26,6 +27,8 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
 
     @Autowired
     private SystemAdminClient systemAdminClient;
+    @Autowired
+    private RequestForChangeService requestForChangeService;
 
     @Override
     public WithOutRenewalDto getRenewalViewByLicNo(String licenceNo) {
@@ -224,6 +227,7 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
     public boolean isEditDoc(AppSubmissionDto newAppSubmissionDto, AppSubmissionDto oldAppSubmissionDto) {
         List<String> newFileReportIds = IaisCommonUtils.genNewArrayList();
         List<String> oldFileReportIds = IaisCommonUtils.genNewArrayList();
+        requestForChangeService.svcDocToPresmise(oldAppSubmissionDto);
 
         List<AppGrpPrimaryDocDto> newAppGrpPrimaryDocDtos = newAppSubmissionDto.getAppGrpPrimaryDocDtos();
         List<AppSvcDocDto> NewAppSvcDocDtoLit = newAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDocDtoLit();
@@ -255,16 +259,16 @@ public class WithOutRenewalServiceImpl implements WithOutRenewalService {
                 oldFileReportIds.add(fileRepoId);
             }
         }
-        if (newFileReportIds.size()==oldFileReportIds.size()) {
+        if (newFileReportIds.size() == oldFileReportIds.size()) {
             //qu bing ji
             newFileReportIds.removeAll(oldFileReportIds);
             newFileReportIds.addAll(oldFileReportIds);
-            if(newFileReportIds.size()!=oldFileReportIds.size()){
+            if (newFileReportIds.size() != oldFileReportIds.size()) {
                 return true;
-            }else {
+            } else {
                 return false;
             }
-        }else {
+        } else {
             return true;
         }
     }
