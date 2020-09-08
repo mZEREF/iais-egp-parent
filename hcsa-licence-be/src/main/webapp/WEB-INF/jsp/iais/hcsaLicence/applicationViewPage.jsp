@@ -39,6 +39,7 @@
             <c:set var="isCessation" value="${applicationViewDto.applicationDto.applicationType == 'APTY008'}"/>
             <input type="hidden" id="isAppealType" value="${isAppealType}"/>
             <input type="hidden" id="isWithDrawal" value="${isWithDrawal}"/>
+            <input type="hidden" id="isCessation" value="${isCessation}"/>
 
             <div class="row">
                 <div class="col-xs-12">
@@ -220,7 +221,7 @@
                                                     </c:if>
 
                                                     <%--application type == appeal --%>
-                                                    <c:if test="${isAppealType || isWithDrawal}">
+                                                    <c:if test="${isAppealType || isWithDrawal || isCessation}">
                                                         <div id="appealRecommendation">
                                                             <iais:row>
                                                                 <div id="appealRecommendationTrue"><iais:field value="Recommendation" required="true"/></div>
@@ -300,7 +301,7 @@
                                                     </div>
 
                                                     <%--application type != appeal --%>
-                                                    <c:if test="${!isAppealType && !isCessation}">
+                                                    <c:if test="${!isAppealType && !isCessation && !isWithDrawal}">
                                                         <div class="fastTrack">
                                                             <iais:row>
                                                                 <iais:field value="Fast Tracking?" required="false"/>
@@ -454,7 +455,7 @@
     function checkRecommendationDMS(){
         if ('${applicationViewDto.applicationDto.status}' == 'APST014'){
             var selectValue = $("[name='decisionValues']").val();
-            if(${isAppealType || isWithDrawal}){
+            if(${isAppealType || isWithDrawal || isCessation}){
                 $('#appealRecommendation').addClass('hidden');
                 if("decisionApproval" == selectValue){
                     var isChangePeriodAppealType = $('#isChangePeriodAppealType').val();
@@ -472,12 +473,12 @@
                 }
             }
             if("decisionApproval" == selectValue){
-                if(${!(isAppealType || isWithDrawal)}){
+                if(${!(isAppealType || isWithDrawal || isCessation)}){
                     $('#recommendationDropdown').removeClass('hidden');
                     checkRecommendationOtherDropdown();
                 }
             }else{
-                if(${!(isAppealType || isWithDrawal)}){
+                if(${!(isAppealType || isWithDrawal || isCessation)}){
                     $('#recommendationDropdown').addClass('hidden');
                     $('#recommendationOtherDropdown').addClass('hidden');
                 }

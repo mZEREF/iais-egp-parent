@@ -43,12 +43,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         String status = applicationViewDto.getApplicationDto().getStatus();
         TaskDto taskDto = (TaskDto) ParamUtil.getSessionAttr(request,"taskDto");
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
-        boolean isCessation = ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
         boolean isAudit = ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType);
         boolean isRequestForChange = ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType);
         String roleId = "";
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
         boolean isWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType);
+        boolean isCessation = ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
         if(taskDto != null){
             roleId = taskDto.getRoleId();
         }
@@ -131,12 +131,12 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 //appeal if route back to ASO or PSO
                 boolean rbStatusFlag = isRouteBackStatus(status);
                 //appeal broadcast
-                boolean appealBroadcastStatus = (isAppealType || isWithdrawal) && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status);
-                if(rbStatusFlag && (isAppealType || isWithdrawal) || appealBroadcastStatus){
+                boolean appealBroadcastStatus = (isAppealType || isWithdrawal || isCessation) && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status);
+                if(rbStatusFlag && (isAppealType || isWithdrawal || isCessation) || appealBroadcastStatus){
                     appealTypeValidate(errMap,request,applicationType,roleId,taskDto.getTaskKey());
                 }
                 //ASO PSO broadcast
-                if (!(isAppealType || isWithdrawal) && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status) ) {
+                if (!(isAppealType || isWithdrawal || isCessation) && ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status) ) {
                     checkBroadcast(roleId, errMap, status, recommendationStr, request);
                 }
             } else {
@@ -208,8 +208,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
     }
 
     private void appealTypeValidate(Map<String, String> errMap, HttpServletRequest request, String applicationType, String roleId, String taskKey){
-        // withdrawal same as appeal logic
-        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+        // withdrawal and cessation same as appeal logic
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
             boolean isAso = HcsaConsts.ROUTING_STAGE_ASO.equals(taskKey) || RoleConsts.USER_ROLE_ASO.equals(roleId);
             boolean isPso = HcsaConsts.ROUTING_STAGE_PSO.equals(taskKey) || RoleConsts.USER_ROLE_PSO.equals(roleId);
             boolean isLateFeeAppealType = (boolean)ParamUtil.getSessionAttr(request,"isLateFeeAppealType");

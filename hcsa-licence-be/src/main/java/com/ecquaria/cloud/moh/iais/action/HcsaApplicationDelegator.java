@@ -5,6 +5,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
@@ -41,6 +42,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.cessation.AppCessMiscDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskAcceptiionDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.risksm.RiskResultDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -161,6 +163,9 @@ public class HcsaApplicationDelegator {
     private InboxMsgService inboxMsgService;
 
     @Autowired
+    private OrganizationClient organizationClient;
+
+    @Autowired
     FileRepoClient fileRepoClient;
 
     @Autowired
@@ -171,8 +176,6 @@ public class HcsaApplicationDelegator {
     ApplicationClient applicationClient;
     @Autowired
     AppPremisesRoutingHistoryClient appPremisesRoutingHistoryClient;
-    @Autowired
-    OrganizationClient organizationClient;
     @Autowired
     private AppInspectionStatusClient appInspectionStatusClient;
     @Autowired
@@ -322,6 +325,7 @@ public class HcsaApplicationDelegator {
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
         boolean isWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType);
+        boolean isCessation = ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
         boolean isChangePeriodAppealType = false;
         boolean isLateFeeAppealType = false;
         if(isAppealType){
@@ -357,7 +361,7 @@ public class HcsaApplicationDelegator {
                 if(isRejectDMS){
                     recommendationStr = "reject";
                 }
-            }else if((isAppealType || isWithdrawal) && isAsoPso){
+            }else if((isAppealType || isWithdrawal || isCessation) && isAsoPso){
                 String appealRecommendationValues = ParamUtil.getString(bpc.request,"appealRecommendationValues");
                 if("appealReject".equals(appealRecommendationValues)){
                     recommendationStr = "reject";
@@ -390,7 +394,7 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomInNumber(0);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
-                if(isAppealType || isWithdrawal){
+                if(isAppealType || isWithdrawal || isCessation){
                     appPremisesRecommendationDto.setRecomDecision("reject");
                 }
                 appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -408,7 +412,7 @@ public class HcsaApplicationDelegator {
                 appPremisesRecommendationDto.setAppPremCorreId(appPremCorreId);
                 appPremisesRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT);
                 appPremisesRecommendationDto.setRecomDecision(InspectionReportConstants.APPROVED);
-                if(isAppealType || isWithdrawal){
+                if(isAppealType || isWithdrawal || isCessation){
                     appPremisesRecommendationDto.setRecomDecision("approve");
                 }
                 if("other".equals(recommendationStr)){
@@ -1639,6 +1643,7 @@ public class HcsaApplicationDelegator {
         String externalRemarks = ParamUtil.getString(bpc.request,"comments");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         if(!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)){
             processDecision = nextStageReplys;
         }
@@ -1647,7 +1652,7 @@ public class HcsaApplicationDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
         String applicationType = applicationDto.getApplicationType();
         if(appPremisesRecommendationDto!= null && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
-                if(!(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType))){
+                if(!(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType))){
                     Integer recomInNumber =  appPremisesRecommendationDto.getRecomInNumber();
                     if(null != recomInNumber && recomInNumber == 0){
                         appStatus =  ApplicationConsts.APPLICATION_STATUS_REJECTED;
@@ -1700,6 +1705,18 @@ public class HcsaApplicationDelegator {
                 String oldAppId = premiseMiscDto.getRelateRecId();
                 String appGrpId = applicationDto.getAppGrpId();
                 List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
+                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                if(licenseeDto != null) {
+                    LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+                    if (licenseeEntityDto != null) {
+                        String entityType = licenseeEntityDto.getEntityType();
+                        if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
+                            applicationDto.setIsCharity(Boolean.TRUE);
+                        } else {
+                            applicationDto.setIsCharity(Boolean.FALSE);
+                        }
+                    }
+                }
                 for(ApplicationDto applicationDto1 : applicationDtos){
                     if(applicationDto1.getApplicationNo().equals(applicationDto.getApplicationNo())){
                         applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
@@ -1838,7 +1855,7 @@ public class HcsaApplicationDelegator {
                     broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
                     if(isAllSubmit){
                         //update current application status in db search result
-                        updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus);
+                        updateCurrentApplicationStatus(saveApplicationDtoList,applicationDto.getId(),appStatus,licenseeId);
                         //get and set return fee
                         saveApplicationDtoList = hcsaConfigClient.returnFee(saveApplicationDtoList).getEntity();
                         //save return fee
@@ -1868,6 +1885,7 @@ public class HcsaApplicationDelegator {
         broadcastApplicationDto  = broadcastService.svaeBroadcastApplicationDto(broadcastApplicationDto,bpc.process,submissionId);
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
+        ParamUtil.setSessionAttr(bpc.request,"applicationViewDto",applicationViewDto);
 
         //appeal save return fee
 
@@ -1878,7 +1896,6 @@ public class HcsaApplicationDelegator {
                  * Send Withdrawal Application Email
                  */
                 if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(withdrawApplicationDto.getApplicationType())){
-                    String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
                     String serviceId = applicationViewDto.getApplicationDto().getServiceId();
                     String applicationNo = applicationViewDto.getApplicationDto().getApplicationNo();
                     String serviceName = HcsaServiceCacheHelper.getServiceById(serviceId).getSvcName();
@@ -2057,10 +2074,25 @@ public class HcsaApplicationDelegator {
         return  result;
     }
 
-    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos,String applicationId,String status){
+    private void updateCurrentApplicationStatus(List<ApplicationDto> applicationDtos,String applicationId,String status,String licenseeId){
         if(!IaisCommonUtils.isEmpty(applicationDtos) && !StringUtil.isEmpty(applicationId)){
+            String entityType = "";
+            LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+            if(licenseeDto != null){
+                LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+                if(licenseeEntityDto != null){
+                    entityType = licenseeEntityDto.getEntityType();
+                }
+            }
+            boolean isCharity = false;
+            if(AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)){
+                isCharity = true;
+            }else{
+                isCharity = false;
+            }
             for (ApplicationDto applicationDto : applicationDtos){
                 if(applicationId.equals(applicationDto.getId())){
+                    applicationDto.setIsCharity(isCharity);
                     applicationDto.setStatus(status);
                 }
             }
@@ -2633,13 +2665,13 @@ public class HcsaApplicationDelegator {
         boolean isLateFeeAppealType = false;
         String applicationType = applicationDto.getApplicationType();
         AppPremisesRecommendationDto appPremisesRecommendationDto = applicationViewDto.getAppPremisesRecommendationDto();
-        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)) {
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)) {
             ParamUtil.setSessionAttr(request,"isAppeal","Y");
             //get appeal type
             String appId = applicationDto.getId();
 //            AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(appId).getEntity();
             List<AppPremiseMiscDto> premiseMiscDtoList = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
-            if(premiseMiscDtoList != null){
+            if(premiseMiscDtoList != null && ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                 AppPremiseMiscDto premiseMiscDto = premiseMiscDtoList.get(0);
                 String appealNo = "";
                 String reason = premiseMiscDto.getReason();
@@ -2794,8 +2826,8 @@ public class HcsaApplicationDelegator {
     private void setAppealRecommendationDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto){
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         String applicationType = applicationDto.getApplicationType();
-        //add withdrawal
-        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+        //add withdrawal cessation
+        if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
             //appealRecommendationValues
             List<SelectOption> appealRecommendationValues = IaisCommonUtils.genNewArrayList();
             appealRecommendationValues.add(new SelectOption("appealApprove", "Approve"));
@@ -2844,12 +2876,8 @@ public class HcsaApplicationDelegator {
         //62875
         if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
-            if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationViewDto.getApplicationDto().getApplicationType())){
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT, "Reject"));
-            }else{
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));
-                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
-            }
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
         }
 
         ParamUtil.setSessionAttr(request, "nextStages", (Serializable)nextStageList);

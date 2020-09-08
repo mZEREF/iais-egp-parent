@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
@@ -25,6 +26,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.BroadcastApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeEntityDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inbox.InterMessageDto;
@@ -688,6 +690,7 @@ public class BackendInboxDelegator {
         AppPremisesCorrelationDto newAppPremisesCorrelationDto = applicationViewDto.getNewAppPremisesCorrelationDto();
         String newCorrelationId = newAppPremisesCorrelationDto.getId();
         BroadcastOrganizationDto broadcastOrganizationDto = new BroadcastOrganizationDto();
+        String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         BroadcastApplicationDto broadcastApplicationDto = new BroadcastApplicationDto();
         List<String> applicationDtoIds = (List<String>) ParamUtil.getSessionAttr(bpc.request,"BackendInboxApprove");
 
@@ -862,7 +865,7 @@ public class BackendInboxDelegator {
                 broadcastApplicationDto.setApplicationGroupDto(applicationGroupDto);
                 if(isAllSubmit){
                     //update current application status in db search result
-                    updateCurrentApplicationStatus(bpc,saveApplicationDtoList);
+                    updateCurrentApplicationStatus(bpc,saveApplicationDtoList,licenseeId);
 
                     for (ApplicationDto viewitem:saveApplicationDtoList
                          ) {
@@ -941,16 +944,31 @@ public class BackendInboxDelegator {
         return  result;
     }
 
-    private void updateCurrentApplicationStatus(BaseProcessClass bpc,List<ApplicationDto> applicationDtos){
-        Map<String, String> returnFee = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request,"BackendInboxReturnFee");
-        if(!IaisCommonUtils.isEmpty(returnFee) && !IaisCommonUtils.isEmpty(applicationDtos)){
-            for (ApplicationDto applicationDto : applicationDtos){
+    private void updateCurrentApplicationStatus(BaseProcessClass bpc,List<ApplicationDto> applicationDtos,String licenseeId) {
+        Map<String, String> returnFee = (Map<String, String>) ParamUtil.getSessionAttr(bpc.request, "BackendInboxReturnFee");
+        if (!IaisCommonUtils.isEmpty(returnFee) && !IaisCommonUtils.isEmpty(applicationDtos)) {
+            String entityType = "";
+            LicenseeDto licenseeDto = organizationMainClient.getLicenseeDtoById(licenseeId).getEntity();
+            if (licenseeDto != null) {
+                LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+                if (licenseeEntityDto != null) {
+                    entityType = licenseeEntityDto.getEntityType();
+                }
+            }
+            boolean isCharity = false;
+            if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
+                isCharity = true;
+            } else {
+                isCharity = false;
+            }
+            for (ApplicationDto applicationDto : applicationDtos) {
                 log.info(StringUtil.changeForLog("****application return fee applicationDto***** " + applicationDto.getApplicationNo()));
-                for(Map.Entry<String, String> entry : returnFee.entrySet()) {
+                for (Map.Entry<String, String> entry : returnFee.entrySet()) {
                     log.info(StringUtil.changeForLog("****application return fee returnFee***** " + entry.getKey()));
                     if (entry.getKey().equals(applicationDto.getApplicationNo())) {
-                        log.info(StringUtil.changeForLog("****application return fee***** " + entry.getKey() +" *****" + entry.getValue()));
+                        log.info(StringUtil.changeForLog("****application return fee***** " + entry.getKey() + " *****" + entry.getValue()));
                         applicationDto.setStatus(entry.getValue());
+                        applicationDto.setIsCharity(isCharity);
                     }
                 }
             }
