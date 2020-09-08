@@ -93,6 +93,7 @@ public class TaskServiceImpl implements TaskService {
             log.info(StringUtil.changeForLog("work group id is [ "+workGroupId+" ]"));
             log.info(StringUtil.changeForLog("------"+JsonUtil.parseToJson(hcsaSvcStageWorkingGroupDtos)));
             TaskDto taskScoreDto =new TaskDto();
+            log.info(StringUtil.changeForLog("The getRoutingTask getSchemeType() is -->:"+hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType()));
             if(SystemParameterConstants.ROUND_ROBIN.equals(hcsaSvcStageWorkingGroupDtos.get(0).getSchemeType())){
                 taskScoreDto = getUserIdForWorkGroup(workGroupId);
             }
@@ -105,7 +106,9 @@ public class TaskServiceImpl implements TaskService {
             String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
             String userId = null;
             if(taskScoreDto != null){
-                taskScoreDto.getUserId();
+                userId = taskScoreDto.getUserId();
+            }else{
+                log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison taskScoreDto is null"));
             }
             Date  assignDate = new Date();
             log.info(StringUtil.changeForLog("The getRoutingTask userId is -->:"+userId));
@@ -186,7 +189,9 @@ public class TaskServiceImpl implements TaskService {
                 String taskType = TaskConsts.TASK_TYPE_MAIN_FLOW;
                 String userId = null;
                 if(taskScoreDto != null){
-                    taskScoreDto.getUserId();
+                    userId = taskScoreDto.getUserId();
+                }else{
+                    log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison taskScoreDto is null"));
                 }
                 Date  assignDate = new Date();
                 log.info(StringUtil.changeForLog("The getRoutingTaskOneUserForSubmisison userId is -->:"+userId));
@@ -275,10 +280,13 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskDto getLowestTaskScore(List<TaskDto> taskScoreDtos, List<OrgUserDto> users) {
+        log.debug(StringUtil.changeForLog("the do getLowestTaskScore start ...."));
         TaskDto result = null;
         //There is not user in this workgroup return null
         if(IaisCommonUtils.isEmpty(users)){
             return  result;
+        }else{
+            log.debug(StringUtil.changeForLog("the do getLowestTaskScore users.size() is-->:"+users.size()));
         }
         //There is not taskScoreDtos ,return the users first.
         if(IaisCommonUtils.isEmpty(taskScoreDtos)){
@@ -286,6 +294,7 @@ public class TaskServiceImpl implements TaskService {
             result.setUserId(users.get(0).getId());
             result.setScore(0);
         }else{
+            log.debug(StringUtil.changeForLog("the do getLowestTaskScore taskScoreDtos.size() is-->:"+taskScoreDtos.size()));
             //if user do not Exist in the taskScoreDtos, return this user
             for(OrgUserDto user : users){
                 if(!StringUtil.isEmpty(user.getId())){
@@ -311,6 +320,7 @@ public class TaskServiceImpl implements TaskService {
             }
            // result.setScore(0);
         }
+        log.debug(StringUtil.changeForLog("the do getLowestTaskScore end ...."));
         return result;
     }
 
@@ -356,6 +366,7 @@ public class TaskServiceImpl implements TaskService {
         if(StringUtil.isEmpty(workGroupId)){
             return result;
         }
+        log.debug(StringUtil.changeForLog("the do getUserIdForWorkGroup workGroupId is -->:"+workGroupId));
         List<OrgUserDto> orgUserDtos = getUsersByWorkGroupId(workGroupId,AppConsts.COMMON_STATUS_ACTIVE);
         orgUserDtos = removeUnavailableUser(orgUserDtos);
         List<TaskDto> taskScoreDtos = this.getTaskDtoScoresByWorkGroupId(workGroupId);
@@ -466,14 +477,21 @@ public class TaskServiceImpl implements TaskService {
         return appPremisesRoutingHistoryDto;
     }
     private  List<OrgUserDto> removeUnavailableUser(List<OrgUserDto> orgUserDtos){
+        log.debug(StringUtil.changeForLog("the do removeUnavailableUser start ...."));
         List<OrgUserDto> result = IaisCommonUtils.genNewArrayList();
         if(!IaisCommonUtils.isEmpty(orgUserDtos)){
+            log.debug(StringUtil.changeForLog("the do removeUnavailableUser orgUserDtos.size() -->:"+orgUserDtos.size()));
             for (OrgUserDto orgUserDto : orgUserDtos){
                 if(orgUserDto.getAvailable()){
                     result.add(orgUserDto);
+                }else{
+                    log.debug(StringUtil.changeForLog("the do removeUnavailableUser is not Available-->:"+orgUserDto.getUserId()));
                 }
             }
+        }else{
+            log.debug(StringUtil.changeForLog("the do removeUnavailableUser orgUserDtos is null"));
         }
+        log.debug(StringUtil.changeForLog("the do removeUnavailableUser end ...."));
         return result;
     }
 }
