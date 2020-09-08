@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.WithdrawApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcRoutingStageDto;
 import com.ecquaria.cloud.moh.iais.service.client.LicEicClient;
@@ -116,6 +117,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
                     }
                 }
             }
+            applicationClient.updateApplicationList(applicationDtoList);
             h.setNewApplicationId(applicationDtoList.get(0).getId());
             applicationClient.saveApps(newAppSubmissionDto).getEntity();
         });
@@ -269,21 +271,21 @@ public class WithdrawalServiceImpl implements WithdrawalService {
         if (IaisCommonUtils.isEmpty(serviceConfig)) {
             return null;
         } else {
-            String stageId = serviceConfig.get(0).getId();
-            switch (stageId) {
-                case HcsaConsts.ROUTING_STAGE_ASO:
+            String stageCode = serviceConfig.get(0).getStageCode();
+            switch (stageCode) {
+                case RoleConsts.USER_ROLE_ASO:
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
                     break;
-                case HcsaConsts.ROUTING_STAGE_INS:
+                case RoleConsts.USER_ROLE_INSPECTIOR:
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION;
                     break;
-                case HcsaConsts.ROUTING_STAGE_PSO:
+                case RoleConsts.USER_ROLE_PSO:
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;
                     break;
-                case HcsaConsts.ROUTING_STAGE_AO1:
+                case RoleConsts.USER_ROLE_AO1:
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;
                     break;
-                case HcsaConsts.ROUTING_STAGE_AO2:
+                case RoleConsts.USER_ROLE_AO2:
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
                     break;
                 default:
