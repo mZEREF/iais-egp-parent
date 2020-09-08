@@ -27,10 +27,11 @@
             t2.postal_code as postal_code,
             t2.hci_name as hci_name,
             concat(t2.blk_no ,
+                '/',
                 case t2.street_name
                   when null then null
                   when '' then null
-              else ' '+ t2.street_name end
+              else ''+ t2.street_name end
                , case t2.building_name
                   when null then null
                   when '' then null

@@ -5,10 +5,8 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
-import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
-import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -20,7 +18,6 @@ import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
-import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ncs.secureconnect.sim.common.LoginInfo;
 import com.ncs.secureconnect.sim.lite.SIMUtil4Corpass;
@@ -33,7 +30,6 @@ import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Map;
 
 @Delegator(value = "corpassLandingDelegator")
@@ -108,6 +104,7 @@ public class FECorppassLandingDelegator {
 
         if (StringUtil.isEmpty(identityNo)){
             log.info(StringUtil.changeForLog("identityNo ====>>>>>>>>>" + identityNo));
+            LoginHelper.insertLoginFailreAuditTrail(uen, identityNo);
             return;
         }
 
@@ -127,7 +124,6 @@ public class FECorppassLandingDelegator {
         if (organizationDto != null){
             ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "N");
         }else {
-            LoginHelper.insertAuditTrail(identityNo);
             ParamUtil.setRequestAttr(request, UserConstants.ACCOUNT_EXIST, "Y");
         }
 
@@ -167,22 +163,22 @@ public class FECorppassLandingDelegator {
      */
     public void loginUser(BaseProcessClass bpc){
         String uen = ParamUtil.getRequestString(bpc.request, UserConstants.ENTITY_ID);
-        String nric =  ParamUtil.getRequestString(bpc.request, UserConstants.CORPPASS_ID);
+        String identityNo =  ParamUtil.getRequestString(bpc.request, UserConstants.CORPPASS_ID);
 
         log.info("corppassCallBack=====loginUser======>>>Start");
 
-        FeUserDto feUserDto =  orgUserManageService.getUserByNricAndUen(uen, nric);
+        FeUserDto feUserDto =  orgUserManageService.getUserByNricAndUen(uen, identityNo);
         if (feUserDto != null){
             User user = new User();
             user.setDisplayName(feUserDto.getDisplayName());
             user.setUserDomain(feUserDto.getUserDomain());
             user.setId(feUserDto.getUserId());
-            user.setIdentityNo(nric);
+            user.setIdentityNo(identityNo);
             LoginHelper.initUserInfo(bpc.request, bpc.response, user, AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
             ParamUtil.setRequestAttr(bpc.request, "isAdminRole", "Y");
         }else {
             // Add Audit Trail -- Start
-            LoginHelper.insertAuditTrail(uen, nric);
+            LoginHelper.insertLoginFailreAuditTrail(uen, identityNo);
             // End Audit Trail -- End
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0012"));
             ParamUtil.setRequestAttr(bpc.request, UserConstants.IS_ADMIN, "N");

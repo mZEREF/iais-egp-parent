@@ -36,6 +36,8 @@ public final class LoginHelper {
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
         auditTrailDto.setLoginType(loginType);
         auditTrailDto.setNricNumber(user.getIdentityNo());
+        auditTrailDto.setModule("main-web");
+        auditTrailDto.setFunctionName("Fe Login");
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
         trailDtoList.add(auditTrailDto);
         SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);
@@ -58,11 +60,7 @@ public final class LoginHelper {
         throw new IllegalStateException("Utility class");
     }
 
-    public static void insertAuditTrail(String identityNo){
-        insertAuditTrail(null, identityNo);
-    }
-
-    public static void insertAuditTrail(String uen, String identityNo){
+    public static void insertAuditTrail(AuditTrailDto auditTrailDto){
         ApplicationContext context = SpringContextHelper.getContext();
         if (context == null){
             return;
@@ -75,16 +73,29 @@ public final class LoginHelper {
 
         log.info("insertAuditTrail.........fe");
         List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList(1);
-        AuditTrailDto auditTrailDto = new AuditTrailDto();
-        auditTrailDto.setMohUserId(identityNo);
-        auditTrailDto.setUenId(uen);
-        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
-        auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
+        IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
         adList.add(auditTrailDto);
         try {
             AuditLogUtil.callWithEventDriven(adList, client);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    public static void insertLoginFailreAuditTrail(String identityNo){
+        insertLoginFailreAuditTrail(null, identityNo);
+    }
+
+    public static void insertLoginFailreAuditTrail(String uen, String identityNo){
+        AuditTrailDto auditTrailDto = new AuditTrailDto();
+        auditTrailDto.setMohUserId(identityNo);
+        auditTrailDto.setNricNumber(identityNo);
+        auditTrailDto.setModule("main-web");
+        auditTrailDto.setFunctionName("Fe login failre");
+        auditTrailDto.setUenId(uen);
+        auditTrailDto.setLoginType(StringUtil.isEmpty(uen) ? AuditTrailConsts.LOGIN_TYPE_SING_PASS : AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
+        auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
+        auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
+        insertAuditTrail(auditTrailDto);
     }
 }

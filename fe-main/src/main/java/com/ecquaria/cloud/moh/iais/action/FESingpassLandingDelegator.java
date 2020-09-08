@@ -105,7 +105,7 @@ public class FESingpassLandingDelegator {
         if (iaisApiResult.isHasError()){
             ParamUtil.setRequestAttr(bpc.request, "errorMsg", MessageUtil.getMessageDesc("GENERAL_ERR0013"));
             ParamUtil.setRequestAttr(request, "hasMohIssueUen", "Y");
-            LoginHelper.insertAuditTrail(identityNo);
+            LoginHelper.insertLoginFailreAuditTrail(identityNo);
         }else {
             ParamUtil.setRequestAttr(request, "hasMohIssueUen", IaisEGPConstant.NO);
         }
