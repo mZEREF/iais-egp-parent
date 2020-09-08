@@ -312,6 +312,7 @@ public class InspectionSearchDelegator {
             memberRole = curRole;
         }
         for(String workGrpId : workGroupIds){
+            //filter System admin task and other role task
             List<String> userIdsByGroup = inspectionService.getUserIdByWorkGrpId(workGrpId);
             if(userIdsByGroup != null) {
                 List<TaskDto> taskDtos = inspectionService.getSupervisorPoolByGroupWordId(workGrpId);
