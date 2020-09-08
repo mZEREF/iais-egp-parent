@@ -164,6 +164,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
             if (HttpStatus.SC_OK == fetchResult.getStatusCode()) {
                 EicRequestTrackingDto entity = fetchResult.getEntity();
                 if (AppConsts.EIC_STATUS_PENDING_PROCESSING.equals(entity.getStatus())){
+                    postCreate.setLicenseeDto(new LicenseeDto());
                     callFeEicCreateAccount(postCreate);
                     entity.setProcessNum(1);
                     Date now = new Date();
