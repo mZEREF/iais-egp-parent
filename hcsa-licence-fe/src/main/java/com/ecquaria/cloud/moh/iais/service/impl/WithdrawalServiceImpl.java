@@ -104,11 +104,11 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             AppSubmissionDto appSubmissionDto = applicationClient.gainSubmissionDto(h.getApplicationNo()).getEntity();
             transform(appSubmissionDto,licenseeId);
             appSubmissionDto.setAppGrpNo(grpNo);
-            AppSubmissionDto newAppSubmissionDto = applicationClient.saveSubmision(appSubmissionDto).getEntity();
-            List<ApplicationDto> applicationDtoList = newAppSubmissionDto.getApplicationDtos();
+//            AppSubmissionDto newAppSubmissionDto = applicationClient.saveSubmision(appSubmissionDto).getEntity();
+            List<ApplicationDto> applicationDtoList = appSubmissionDto.getApplicationDtos();
             for (ApplicationDto applicationDto:applicationDtoList
                  ) {
-                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = newAppSubmissionDto.getAppSvcRelatedInfoDtoList();
+                List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                 if (appSvcRelatedInfoDtoList != null && appSvcRelatedInfoDtoList.size() >0){
                     String serviceId = appSvcRelatedInfoDtoList.get(0).getServiceId();
                     String appStatus = getAppStatus(serviceId,ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL);
@@ -119,7 +119,7 @@ public class WithdrawalServiceImpl implements WithdrawalService {
             }
             applicationClient.updateApplicationList(applicationDtoList);
             h.setNewApplicationId(applicationDtoList.get(0).getId());
-            applicationClient.saveApps(newAppSubmissionDto).getEntity();
+            applicationClient.saveApps(appSubmissionDto).getEntity();
         });
         List<String> withdrawnList = cessationClient.saveWithdrawn(withdrawnDtoList).getEntity();
         if (!IaisCommonUtils.isEmpty(withdrawnList)){
