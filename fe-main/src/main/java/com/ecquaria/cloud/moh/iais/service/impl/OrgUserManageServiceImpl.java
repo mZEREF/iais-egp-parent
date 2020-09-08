@@ -183,6 +183,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
 
         createClientUser(postCreateUser);
 
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        eicGatewayFeMainClient.getUen(postCreate.getUenNo(), signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+
         return postCreateUser;
     }
 
@@ -192,10 +197,6 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         FeignResponseEntity<OrganizationDto> result = feUserClient.createCropUser(organizationDto);
         OrganizationDto postCreate = result.getEntity();
 
-        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-        eicGatewayFeMainClient.getUen(postCreate.getUenNo(), signature.date(), signature.authorization(),
-                signature2.date(), signature2.authorization());
 
         return saveAccountInfotmation(postCreate);
     }
