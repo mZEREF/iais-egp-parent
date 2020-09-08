@@ -553,7 +553,6 @@ public class NotificationHelper {
 			smsDto.setSender(mailSender);
 			smsDto.setContent(mesContext);
 			smsDto.setOnlyOfficeHour(smsOnlyOfficerHour);
-			String refNo = templateId;
 			List<String> mobile = null;
 			if(!StringUtil.isEmpty(refId)){
 				if (RECEIPT_TYPE_SMS_PSN.equals(refIdType)) {
@@ -579,7 +578,7 @@ public class NotificationHelper {
 			if (mobile != null && !mobile.isEmpty()) {
 				if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 					smsDto.setReceipts(mobile);
-					smsDto.setReqRefNum(refNo);
+					smsDto.setReqRefNum(refId);
 					HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 					HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 					String gatewayUrl = env.getProperty("iais.inter.gateway.url");
@@ -587,7 +586,7 @@ public class NotificationHelper {
 							MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
 							signature2.date(), signature2.authorization(), InterMessageDto.class);
 				} else {
-					emailHistoryCommonClient.sendSMS(mobile, smsDto, refNo);
+					emailHistoryCommonClient.sendSMS(mobile, smsDto, refId);
 				}
 			}
 		}catch (Exception e){
