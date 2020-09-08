@@ -14,7 +14,7 @@ import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.client.BlastManagementListClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.service.client.SystemClient;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +45,7 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     @Autowired
     private OrganizationClient organizationClient;
     @Autowired
-    private HcsaLicenceClient hcsaLicenceClient;
+    private HcsaLicenceCommonClient hcsaLicenceClient;
     @Override
     public SearchResult<BlastManagementListDto> blastList(SearchParam searchParam) {
         return blastManagementListClient.getBlastManagementList(searchParam).getEntity();

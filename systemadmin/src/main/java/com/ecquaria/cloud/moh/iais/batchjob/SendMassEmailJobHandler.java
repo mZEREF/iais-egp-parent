@@ -20,7 +20,7 @@ import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.service.BlastManagementListService;
 import com.ecquaria.cloud.moh.iais.service.DistributionListService;
 import com.ecquaria.cloud.moh.iais.service.SysInboxMsgService;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceCommonClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -59,7 +59,7 @@ public class SendMassEmailJobHandler extends IJobHandler {
     SysInboxMsgService sysInboxMsgService;
 
     @Autowired
-    HcsaLicenceClient hcsaLicenceClient;
+    HcsaLicenceCommonClient hcsaLicenceClient;
     @Value("${iais.email.sender}")
     private String mailSender;
     private static final String EMAIL = "Email";

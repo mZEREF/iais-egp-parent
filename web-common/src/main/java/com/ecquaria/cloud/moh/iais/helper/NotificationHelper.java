@@ -31,8 +31,7 @@ import com.ecquaria.cloud.moh.iais.service.client.EicClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailHistoryCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.EmailSmsClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaAppClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceClient;
-import com.ecquaria.cloud.moh.iais.service.client.HcsaServiceClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaLicenceCommonClient;
 import com.ecquaria.cloud.moh.iais.service.client.IaisSystemClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenseeClient;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
@@ -131,9 +130,7 @@ public class NotificationHelper {
 	@Autowired
 	private MasterCodeClient masterCodeClient;
 	@Autowired
-	private HcsaServiceClient hcsaServiceClient;
-	@Autowired
-	private HcsaLicenceClient hcsaLicenceClient;
+	private HcsaLicenceCommonClient hcsaLicenceClient;
 	@Autowired
 	private EmailHistoryCommonClient emailHistoryCommonClient;
 	@Value("${iais.current.domain}")

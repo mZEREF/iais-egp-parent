@@ -13,7 +13,7 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
-public class HcsaLicenceClientFallback implements HcsaLicenceClient {
+public class HcsaLicenceCommonClientFallback implements HcsaLicenceCommonClient {
 
     @Override
     public FeignResponseEntity<List<PersonnelsDto>> getPersonnelDtoByLicId(String licId) {
@@ -65,6 +65,22 @@ public class HcsaLicenceClientFallback implements HcsaLicenceClient {
 
     @Override
     public FeignResponseEntity<LicenceDto> getLicDtoByIdCommon(String licenceId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<String>> getEmailByRole(String role) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<LicenceDto>> getLicenceDtosBySvcName(String svcName) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
