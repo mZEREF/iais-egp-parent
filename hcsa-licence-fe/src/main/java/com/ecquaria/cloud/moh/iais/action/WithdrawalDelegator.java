@@ -130,7 +130,6 @@ public class WithdrawalDelegator {
 
         List<WithdrawApplicationDto> withdrawAppList =  withdrawalService.getCanWithdrawAppList(applicationTandS);
         PaginationHandler<WithdrawApplicationDto> handler = new PaginationHandler<>("withdrawPagDiv", "withdrawBodyDiv");
-        handler.setPageSize(5);
         handler.setAllData(withdrawAppList);
         handler.preLoadingPage();
     }
