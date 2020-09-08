@@ -484,7 +484,8 @@ public class AuditSystemListServiceImpl implements AuditSystemListService {
             }
             param.put("DDMMYYYY",newDateString);
             param.put("appno", appNo);
-            param.put("hCIName",  auditTaskDataFillterDto.getHclName());
+            String hclName =  auditTaskDataFillterDto.getHclName();
+            param.put("hCIName", StringUtil.isEmpty(hclName) ? "N/A" : hclName);
             param.put("hCICode",  auditTaskDataFillterDto.getHclCode());
             param.put("hCIAddress",auditTaskDataFillterDto.getAddress());
             param.put("serviceName", auditTaskDataFillterDto.getSvcName());
