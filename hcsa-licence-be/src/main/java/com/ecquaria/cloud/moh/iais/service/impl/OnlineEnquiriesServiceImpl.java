@@ -228,7 +228,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         ParamUtil.setSessionAttr(request,"registeredWithACRA","Not Registered");
         try {
             GenerateUENDto generateUENDto = acraUenBeClient.getUen(organizationLicDto.getUenNo()).getEntity();
-            if(!generateUENDto.getBasic().isRegisteredWithACRA()){
+            if(AppConsts.TRUE.equals(generateUENDto.getBasic().getIsRegisteredWithACRA())){
                 ParamUtil.setSessionAttr(request,"registeredWithACRA","Registered");
             }else {
                 ParamUtil.setSessionAttr(request,"registeredWithACRA","Registered");
