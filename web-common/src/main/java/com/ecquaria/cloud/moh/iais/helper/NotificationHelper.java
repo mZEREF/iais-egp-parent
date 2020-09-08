@@ -576,6 +576,7 @@ public class NotificationHelper {
 				mobile = getMobileOfficer(roles, mobile);
 			}
 			if (mobile != null && !mobile.isEmpty()) {
+				log.info(StringUtil.changeForLog("SMS-Mobile-Send"));
 				if (AppConsts.DOMAIN_INTERNET.equalsIgnoreCase(currentDomain)) {
 					smsDto.setReceipts(mobile);
 					smsDto.setReqRefNum(refId);
