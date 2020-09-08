@@ -482,12 +482,9 @@ public class WithOutRenewalDelegator {
             List<AppSvcRelatedInfoDto> newAppSvcRelatedInfoDtoList = newAppSubmissionDtos.get(0).getAppSvcRelatedInfoDtoList();
             List<AppGrpPremisesDto> newAppGrpPremisesDtoList = newAppSubmissionDtos.get(0).getAppGrpPremisesDtoList();
             boolean replacePerson = outRenewalService.isReplace(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-            log.error("replacePerson"+replacePerson);
             boolean updatePerson = outRenewalService.isUpdate(newAppSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
-            log.error("updatePerson"+updatePerson);
             boolean editDoc = outRenewalService.isEditDoc(newAppSubmissionDtos.get(0), oldSubmissionDtos.get(0));
             List<AppSvcPrincipalOfficersDto> poAndDpo = newAppSvcRelatedInfoDtoList.get(0).getAppSvcPrincipalOfficersDtoList();
-            log.error("editDoc"+editDoc);
             if(!IaisCommonUtils.isEmpty(poAndDpo)){
                 poAndDpo.sort((h1,h2)->h2.getPsnType().compareTo(h1.getPsnType()));
                 newAppSvcRelatedInfoDtoList.get(0).setAppSvcPrincipalOfficersDtoList(poAndDpo);
@@ -591,6 +588,7 @@ public class WithOutRenewalDelegator {
                                         }
                                     }
                                 }
+
                                 appSubmissionDtoByLicenceId.setGroupLic(groupLic);
                                 appSubmissionDtoByLicenceId.setPartPremise(groupLic);
                                 appSubmissionDtoByLicenceId.setAmount(0.0);
