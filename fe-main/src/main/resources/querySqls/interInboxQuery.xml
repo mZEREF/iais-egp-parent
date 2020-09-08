@@ -34,6 +34,7 @@
                 app_type,
                 status,
                 service_id,
+                null as code,
                 self_assmt_flag,
                 created_dt,
                 version
