@@ -74,7 +74,6 @@ public class InspectionCreTaskByInspDateDelegator {
         List<ApplicationDto> applicationDtoList = applicationClient.getApplicationByStatus(ApplicationConsts.APPLICATION_STATUS_BEFORE_INSP_DATE_PENDING_INSPECTION).getEntity();
         if(!IaisCommonUtils.isEmpty(applicationDtoList)){
             for(ApplicationDto applicationDto : applicationDtoList){
-                log.debug(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
                 AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(applicationDto.getId()).getEntity();
                 AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                 if(appPremisesRecommendationDto != null) {
@@ -95,6 +94,7 @@ public class InspectionCreTaskByInspDateDelegator {
                     ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(aRecoDto.getAppPremCorreId()).getEntity();
                     AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(aRecoDto.getAppPremCorreId()).getEntity();
                     if(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION.equals(appInspectionStatusDto.getStatus())) {
+                        log.debug(StringUtil.changeForLog("Current Application No. = " + applicationDto.getApplicationNo()));
                         ApplicationDto applicationDto1 = updateApplication(applicationDto, ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION, intranet);
                         applicationDto1.setAuditTrailDto(intranet);
                         applicationService.updateFEApplicaiton(applicationDto1);
