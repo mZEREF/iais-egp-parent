@@ -451,19 +451,19 @@ public class CessationFeServiceImpl implements CessationFeService {
         }else {
             String stageId = serviceConfig.get(0).getStageCode();
             switch (stageId){
-                case HcsaConsts.ROUTING_STAGE_ASO :
+                case RoleConsts.USER_ROLE_ASO :
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
                     break;
-                case HcsaConsts.ROUTING_STAGE_PSO :
+                case RoleConsts.USER_ROLE_PSO :
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;
                     break;
-                case HcsaConsts.ROUTING_STAGE_INS :
+                case RoleConsts.PROCESS_TYPE_INS :
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION;
                     break;
-                case HcsaConsts.ROUTING_STAGE_AO1 :
+                case RoleConsts.USER_ROLE_AO1 :
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;
                     break;
-                case HcsaConsts.ROUTING_STAGE_AO2 :
+                case RoleConsts.USER_ROLE_AO2 :
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
                     break;
                 default :
