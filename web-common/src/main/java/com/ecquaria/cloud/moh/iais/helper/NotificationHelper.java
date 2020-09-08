@@ -326,7 +326,7 @@ public class NotificationHelper {
 					if (0 == smsFlag) {
 						return;
 					}
-					sendSms(refIdType, templateId, subject, refId, smsOnlyOfficerHour, msgTemplateDto);
+					sendSms(refIdType, subject, refId, smsOnlyOfficerHour, msgTemplateDto);
 					if (jrDto != null) {
 						List<JobRemindMsgTrackingDto> jobList = IaisCommonUtils.genNewArrayList(1);
 						jrDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
@@ -537,7 +537,7 @@ public class NotificationHelper {
 		}
 	}
 
-	private void sendSms(String refIdType, String templateId, String mesContext, String refId, boolean smsOnlyOfficerHour, MsgTemplateDto msgTemplateDto) {
+	private void sendSms(String refIdType, String mesContext, String refId, boolean smsOnlyOfficerHour, MsgTemplateDto msgTemplateDto) {
 		try{
 			List<String> roles = null;
 			if (msgTemplateDto.getRecipient() != null && msgTemplateDto.getRecipient().size() > 0) {
