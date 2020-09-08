@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -41,14 +42,12 @@ import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.helper.EicRequestTrackingHelper;
-import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
 import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationService;
 import com.ecquaria.cloud.moh.iais.service.ApplicationViewService;
-import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspectionRectificationProService;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
 import com.ecquaria.cloud.moh.iais.service.TaskService;
@@ -63,14 +62,11 @@ import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaChklClient;
 import com.ecquaria.cloud.moh.iais.service.client.InsRepClient;
 import com.ecquaria.cloud.moh.iais.service.client.InspectionTaskClient;
-import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
 import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
-import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -173,14 +169,13 @@ public class InspectionRectificationProImpl implements InspectionRectificationPr
 
     @Override
     public void routingTaskToReport(TaskDto taskDto, InspectionPreTaskDto inspectionPreTaskDto, ApplicationViewDto applicationViewDto,
-                                    LoginContext loginContext) throws IOException, TemplateException {
+                                    LoginContext loginContext) {
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         InspRectificationSaveDto inspRectificationSaveDto = new InspRectificationSaveDto();
 
         //get licenseeId
         ApplicationGroupDto applicationGroupDto = applicationViewDto.getApplicationGroupDto();
-        String licenseeId = applicationGroupDto.getLicenseeId();
         //get application, task score
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
         List<ApplicationDto> applicationDtos = IaisCommonUtils.genNewArrayList();
