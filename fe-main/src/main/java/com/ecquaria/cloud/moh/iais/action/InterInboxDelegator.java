@@ -500,6 +500,8 @@ public class InterInboxDelegator {
                 .append("?licenceId=")
                 .append(licId);
         String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+        //65741
+        request.getSession().removeAttribute("AppSubmissionDto");
         bpc.response.sendRedirect(tokenUrl);
     }
 

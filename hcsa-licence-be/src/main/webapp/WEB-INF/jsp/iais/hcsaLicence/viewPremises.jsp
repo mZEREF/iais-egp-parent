@@ -601,11 +601,10 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6 ">
-                                                <span class="newVal " attr="${newLicenceDto.name}"><c:out value="${newLicenceDto.name}"/></span>
-                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                            <span class="newVal " attr="${newLicenceDto.name}"><c:out value="${newLicenceDto.name}"/></span>
                                           </div>
                                           <div class="col-md-6">
-                                                  <span class="oldVal " attr="${oldLicenceDto.name}" style="display: none"><c:out value="${oldLicenceDto.name}"/></span>
+                                            <span class="oldVal " attr="${oldLicenceDto.name}" style="display: none"><c:out value="${oldLicenceDto.name}"/></span>
                                           </div>
                                         </div>
                                       </div>
@@ -744,281 +743,190 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <div class="row" style="margin-top: 1%;margin-bottom: 1%">
-                                        <div class="col-md-6">
-                                          <label>Board Member 1</label>
+                                      <c:forEach items="${BoardMember}" var="Board" varStatus="status">
+                                        <div class="row" style="margin-top: 1%;margin-bottom: 1%">
+                                          <div class="col-md-6">
+                                            <label>Board Member ${status.index+1}</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                          </div>
                                         </div>
-                                        <div class="col-md-6">
-                                        </div>
-                                      </div>
 
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Salutation
-                                        </div>
-                                        <div class="col-md-6">
+                                        <div class="row">
                                           <div class="col-md-6">
-                                            <span class="newVal " attr="Mr">Mr</span>
+                                            Salutation
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="col-md-6">
+                                              <span class="newVal " attr="${Board.salutation}"><c:out value="${Board.salutation}"/></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Name
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="col-md-6">
+                                              <span class="newVal " attr="${Board.name}">${Board.name}</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            ID No.
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="col-md-6">
+                                              <span class="newVal " attr="${Board.idNo}">${Board.idNo}</span>
+                                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Designation
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="col-md-6">
+                                              <span  class="newVal " attr="${Board.designation}"><iais:code code="${Board.designation}"/></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Designation Cessation Date
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="col-md-6">
+                                              <span  class="newVal " attr="${Board.cessationDt}"><fmt:formatDate value="${Board.cessationDt}" pattern="dd/MM/yyyy"/></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Designation Cessation Reason
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="col-md-6">
+                                              <span  class="newVal " attr="${Board.cessationReason}">${Board.cessationReason}</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </c:forEach>
+
+                                      <c:forEach items="${AuthorisedPerson}" var="Authorised" varStatus="status">
+                                        <div class="row" style="margin-top: 1%;margin-bottom: 1%">
+                                          <div class="col-md-6">
+                                            <label>Authorised Person ${status.index+1}</label>
+                                          </div>
+                                          <div class="col-md-6">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Name
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="col-md-6">
+                                              <span  class="newVal " attr="${Authorised.displayName}">${Authorised.displayName}</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            ID No.
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div  class="col-md-6">
+                                              <span  class="newVal " attr="${Authorised.idNumber}">${Authorised.idNumber}</span>
+                                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Designation
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="col-md-6">
+                                              <span  class="newVal " attr="${Authorised.designation}"><iais:code code="${Authorised.designation}"/></span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Office Telephone
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div  class="col-md-6">
+                                              <span  class="newVal " attr="${Authorised.officeTelNo}">${Authorised.officeTelNo}</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Mobile No.
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="col-md-6">
+                                              <span class="newVal" attr="${Authorised.mobileNo}">${Authorised.mobileNo}</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-6">
+                                            Email Address
+                                          </div>
+                                          <div class="col-md-6">
+                                            <div class="col-md-6">
+                                              <span class="newVal " attr="${Authorised.email}">${Authorised.email}</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                              <span class="oldVal "></span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </c:forEach>
 
 
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Name
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span class="newVal ">Mo Delan</span>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          ID No.
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span class="newVal ">S8299230H</span>
-                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Designation
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span  class="newVal ">CEO</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Designation Cessation Date
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span  class="newVal ">-</span>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Designation Cessation Reason
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span  class="newVal ">-</span>
-                                          </div>
-
-                                        </div>
-                                      </div>
-
-                                      <div class="row" style="margin-top: 1%;margin-bottom: 1%">
-                                        <div class="col-md-6">
-                                          <label>Board Member 2</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Salutation
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div  class="col-md-6">
-                                            <span  class="newVal ">Mrs</span>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Name
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div  class="col-md-6">
-                                            <span  class="newVal ">Linda Tan</span>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Designation
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span  class="newVal ">CFO</span>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Designation Cessation Date
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span  class="newVal ">-</span>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Designation Cessation Reason
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div  class="col-md-6">
-                                            <span  class="newVal ">-</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row" style="margin-top: 1%;margin-bottom: 1%">
-                                        <div class="col-md-6">
-                                          <label>Authorised Person 1</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Name
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span  class="newVal ">Mo Delan</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          ID No.
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div  class="col-md-6">
-                                            <span  class="newVal ">S8299230H</span>
-                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Designation
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span  class="newVal ">CEO</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Office Telephone
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div  class="col-md-6">
-                                            <span  class="newVal ">64593810</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Mobile No.
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span >92338899</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Email Address
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span >modelan@gmail.com</span>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div class="row" style="margin-top: 1%;margin-bottom: 1%">
-                                        <div class="col-md-6">
-                                          <label>Authorised Person 2</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                        </div>
-                                      </div>
-
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Name
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span>Linda Tan</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          ID No.
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span >S4285224D</span>
-                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Designation
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span >CFO</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Office Telephone
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span >64593815</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Mobile No.
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span >82331122</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="row">
-                                        <div class="col-md-6">
-                                          Email Address
-                                        </div>
-                                        <div class="col-md-6">
-                                          <div class="col-md-6">
-                                            <span>lindatan@gmail.com</span>
-                                          </div>
-                                        </div>
-                                      </div>
                                     </div>
                                   </div>
                                 </div>

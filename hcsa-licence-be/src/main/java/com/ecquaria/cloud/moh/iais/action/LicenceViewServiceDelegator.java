@@ -11,11 +11,13 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocD
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.*;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceStepSchemeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -90,6 +92,8 @@ public class LicenceViewServiceDelegator {
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator cleanSession start ...."));
         AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence View Service");
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, null);
+        bpc.request.getSession().removeAttribute("AuthorisedPerson");
+        bpc.request.getSession().removeAttribute("BoardMember");
         log.debug(StringUtil.changeForLog("the do LicenceViewServiceDelegator cleanSession end ...."));
     }
 
@@ -110,6 +114,10 @@ public class LicenceViewServiceDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto) bpc.request.getSession().getAttribute("applicationViewDto");
         if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationViewDto.getApplicationDto().getApplicationType())){
             return;
+        }
+        ApplicationGroupDto groupDto = applicationViewDto.getApplicationGroupDto();
+        if(groupDto!=null){
+            authorisedPerson(bpc.request,groupDto.getLicenseeId());
         }
         AppEditSelectDto appEditSelectDto;
         appEditSelectDto=(AppEditSelectDto) bpc.request.getSession().getAttribute("appEditSelectDto");
@@ -277,7 +285,7 @@ public class LicenceViewServiceDelegator {
         String appType = appSubmissionDto.getAppType();
         if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appType)||ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appType)){
              svcDocToPresmise(appSubmissionDto);
-          /*   oldAppSubmission(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());*/
+             oldAppSubmission(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
             AppSubmissionDto oldAppSubmissionDto = appSubmissionDto.getOldAppSubmissionDto();
             if(oldAppSubmissionDto!=null){
                 svcDocToPresmise(oldAppSubmissionDto);
@@ -347,6 +355,33 @@ public class LicenceViewServiceDelegator {
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
     }
+    private void authorisedPerson( HttpServletRequest request,String licenseeId){
+        if(licenseeId==null){
+            return;
+        }
+        LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+        if(oldLicenceDto!=null){
+            String organizationId = oldLicenceDto.getOrganizationId();
+            List<OrgUserDto> orgUserDtos = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(organizationId).getEntity();
+            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtos = organizationClient.getLicenseeKeyApptPersonByLiceseeId(licenseeId).getEntity();
+            request.getSession().setAttribute("AuthorisedPerson",orgUserDtos);
+            request.getSession().setAttribute("BoardMember",licenseeKeyApptPersonDtos);
+        }
+    }
+    private void oldAuthorisedPerson( HttpServletRequest request,String licenseeId){
+        if(licenseeId==null){
+            return;
+        }
+        LicenseeDto oldLicenceDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+        if(oldLicenceDto!=null){
+            String organizationId = oldLicenceDto.getOrganizationId();
+            List<OrgUserDto> orgUserDtos = organizationClient.getOrgUserAccountSampleDtoByOrganizationId(organizationId).getEntity();
+            List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDtos = organizationClient.getLicenseeKeyApptPersonByLiceseeId(licenseeId).getEntity();
+            request.getSession().setAttribute("oldAuthorisedPerson",orgUserDtos);
+            request.getSession().setAttribute("oldBoardMember",licenseeKeyApptPersonDtos);
+        }
+    }
+
     public void svcDocToPresmise(AppSubmissionDto appSubmissionDto) {
         if(appSubmissionDto==null){
             return;
@@ -1094,7 +1129,9 @@ public class LicenceViewServiceDelegator {
         if(appSvcDisciplineAllocationDtoList==null && oldAppSvcDisciplineAllocationDtoList==null){
             return;
         }
+        if(appSvcDisciplineAllocationDtoList.size() != oldAppSvcDisciplineAllocationDtoList.size()){
 
+        }
     }
     private void creatAppsvcLaboratory(List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList , List<AppSvcLaboratoryDisciplinesDto> oldAppSvcLaboratoryDisciplinesDtoList){
        if(appSvcLaboratoryDisciplinesDtoList==null && oldAppSvcLaboratoryDisciplinesDtoList==null){
@@ -1388,7 +1425,21 @@ public class LicenceViewServiceDelegator {
             }
         }
         oldAppSubmissionDto.setAppGrpPremisesDtoList(appGrpPremisesDtos);
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtos=new ArrayList<>(1);
+        List<AppSvcLaboratoryDisciplinesDto> appSvcLaboratoryDisciplinesDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcLaboratoryDisciplinesDtoList();
+        if(appSvcLaboratoryDisciplinesDtoList!=null){
+            for(AppSvcLaboratoryDisciplinesDto appSvcLaboratoryDisciplinesDto : appSvcLaboratoryDisciplinesDtoList){
+                for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos){
+                    String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                    if(premisesIndexNo.equals(appSvcLaboratoryDisciplinesDto.getPremiseVal())){
+                        appSvcLaboratoryDisciplinesDtos.add(appSvcLaboratoryDisciplinesDto);
+                        break;
+                    }
+                }
 
+            }
+        }
+        oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).setAppSvcLaboratoryDisciplinesDtoList(appSvcLaboratoryDisciplinesDtos);
     }
 
     private void publicPH(List<AppGrpPremisesDto> appGrpPremisesDtoList,List<AppGrpPremisesDto> oldAppGrpPremisesDtoList){

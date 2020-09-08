@@ -164,4 +164,8 @@ public interface OrganizationClient {
 
     @PostMapping(value = "/iais-rimriskcount/saveRimRiskCount",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<RimRiskCountDto> doRimRiskCountSave(@RequestBody RimRiskCountDto rimRiskCountDto);
+    @GetMapping(value = "/iais-orguser-be/org-user-account-sample-by-organization-id",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<OrgUserDto>> getOrgUserAccountSampleDtoByOrganizationId(@RequestParam("organizationId") String organizationId);
+    @GetMapping(value = "/iais-orguser-be/licensee-ke-appt-person-by-liceseeId",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonByLiceseeId(@RequestParam("liceseeId") String liceseeId);
 }

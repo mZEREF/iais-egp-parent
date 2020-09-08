@@ -1938,6 +1938,7 @@ public class NewApplicationDelegator {
             List<AppSubmissionDto> personAppSubmissionList = personContact(bpc, appSubmissionDto, oldAppSubmissionDto);
             AppSubmissionDto personAppsubmit = getPersonAppsubmit(oldAppSubmissionDto, appSubmissionDto, bpc);
             personAppsubmit.setPartPremise(personAppsubmit.isGroupLic());
+            personAppsubmit.setOneLicDoRenew(Boolean.TRUE);
             // true is auto
             boolean autoRfc = personAppsubmit.isAutoRfc();
             if (!autoRfc) {
@@ -2854,10 +2855,12 @@ public class NewApplicationDelegator {
         if (!StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
             List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
             for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
-                String draftJson = applicationSubDraftDto.getDraftJson();
-                AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
-                appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
-                applicationClient.saveDraft(appSubmissionDto1);
+                if(!applicationSubDraftDto.getDraftNo().equals(draftNo)){
+                    String draftJson = applicationSubDraftDto.getDraftJson();
+                    AppSubmissionDto appSubmissionDto1 = JsonUtil.parseToObject(draftJson, AppSubmissionDto.class);
+                    appSubmissionDto1.setDraftStatus(AppConsts.COMMON_STATUS_IACTIVE);
+                    applicationClient.saveDraft(appSubmissionDto1);
+                }
             }
         }
         if (StringUtil.isEmpty(txnRefNo)) {
