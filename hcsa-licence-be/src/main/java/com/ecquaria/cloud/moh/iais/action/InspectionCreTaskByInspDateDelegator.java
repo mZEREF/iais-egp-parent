@@ -90,7 +90,7 @@ public class InspectionCreTaskByInspDateDelegator {
                 Date today = new Date();
                 String inspecDateStr = Formatter.formatDateTime(aRecoDto.getRecomInDate(), Formatter.DATE);
                 String todayStr = Formatter.formatDateTime(today, Formatter.DATE);
-                if(todayStr.equals(inspecDateStr)) {
+                if(todayStr.equals(inspecDateStr) || today.after(aRecoDto.getRecomInDate())) {
                     ApplicationDto applicationDto = inspectionTaskClient.getApplicationByCorreId(aRecoDto.getAppPremCorreId()).getEntity();
                     AppInspectionStatusDto appInspectionStatusDto = appInspectionStatusClient.getAppInspectionStatusByPremId(aRecoDto.getAppPremCorreId()).getEntity();
                     if(InspectionConstants.INSPECTION_STATUS_PENDING_INSPECTION.equals(appInspectionStatusDto.getStatus())) {
