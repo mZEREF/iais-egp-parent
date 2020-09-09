@@ -70,15 +70,7 @@
         if ('${ceasedErrResult}') {
             $('#ceasedModal').modal('show');
         }
-    });
 
-    function cancel() {
-        $('#draftByLicAppId').modal('hide');
-        $('#draftRenewByLicAppId').modal('hide');
-        $('#draftAppealByLicAppId').modal('hide');
-    }
-
-    $(document).ready(function () {
         $('#draftByLicAppId').modal('hide');
         if('1' == '${isShow}'){
             $('#draftByLicAppId').modal('show');
@@ -92,6 +84,16 @@
             $('#draftAppealByLicAppId').modal('show');
         }
     });
+
+    function cancel() {
+        $('#draftByLicAppId').modal('hide');
+        $('#draftRenewByLicAppId').modal('hide');
+        $('#draftAppealByLicAppId').modal('hide');
+    }
+
+    // $(document).ready(function () {
+    //
+    // });
 
     function deleteAppealDraft() {
         $('#isNeedDelete').val('delete');

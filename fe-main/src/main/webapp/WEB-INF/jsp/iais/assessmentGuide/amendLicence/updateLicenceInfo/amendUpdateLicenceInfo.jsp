@@ -56,10 +56,13 @@
     </div>
 </div>
 <%@include file="../../assessmentGuideMenuFoot.jsp" %>
-<script type="application/javascript">
-    $("#amendLicence").attr('checked', 'true');
-    $("#amendLicence3").attr('checked', 'true');
-    $("#amendLicence3_1").attr('checked', 'true');
+<script>
+    $(function () {
+        $("#amendLicence").attr('checked', 'true');
+        $("#amendLicence3").attr('checked', 'true');
+        $("#amendLicence3_1").attr('checked', 'true');
+
+    })
 
     function jumpToPagechangePage() {
         $("[name='guide_action_type']").val("updateLicencePage");

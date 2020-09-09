@@ -1225,6 +1225,28 @@ public class HalpAssessmentGuideDelegator {
                     result = false;
                 }
             }
+            List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue.get(0));
+            String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+            if(!draftByLicAppId.isEmpty()){
+                StringBuilder stringBuilder=new StringBuilder();
+                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                    stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
+                }
+                if("delete".equals(isNeedDelete)){
+                    for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                        inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                    }
+                }else {
+                    String ack030 = MessageUtil.getMessageDesc("ACK030");
+                    String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                    bpc.request.setAttribute("draftByLicAppId",replace);
+                    bpc.request.setAttribute("isAppealShow","1");
+                    bpc.request.setAttribute("appealApplication",licIdValue.get(0));
+                    ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                    ParamUtil.setRequestAttr(bpc.request,"guide_back_action","backRenew");
+                    return;
+                }
+            }
             if (result){
                 StringBuilder url = new StringBuilder();
                 url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
@@ -1382,7 +1404,6 @@ public class HalpAssessmentGuideDelegator {
         }
         log.info("****end ******");
     }
-
 
     public void amendLic4_1(BaseProcessClass bpc) {
         log.info("****start ******");
@@ -1660,6 +1681,8 @@ public class HalpAssessmentGuideDelegator {
         String hiddenIndex = ParamUtil.getMaskedString(bpc.request, licId+"hiddenIndex");
         String premiseIdValue = ParamUtil.getMaskedString(bpc.request, licId+"premiseId");
         ParamUtil.setSessionAttr(bpc.request,"licence_err_list",licIdValue);
+        Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
+        boolean flag = false;
         if (idNoPersonnal != null){
             String id = idNoPersonnal.split(",")[1];
             List<String> idNos = IaisCommonUtils.genNewArrayList();
@@ -1675,11 +1698,30 @@ public class HalpAssessmentGuideDelegator {
                         .append(MaskUtil.maskValue("personnelNo", id));
                 String tokenUrl2 = RedirectUtil.appendCsrfGuardToken(url2.toString(), bpc.request);
                 bpc.response.sendRedirect(tokenUrl2);
-                return;
             }
         }
         if(licIdValue != null){
-            Map<String, String> errorMap = inboxService.checkRfcStatus(licIdValue);
+            List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue);
+            String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+                StringBuilder stringBuilder=new StringBuilder();
+            if(!draftByLicAppId.isEmpty()){
+                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                    stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
+                }
+                if("delete".equals(isNeedDelete)){
+                    for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                        inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                    }
+                }else {
+                    String ack030 = MessageUtil.getMessageDesc("ACK030");
+                    String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                    bpc.request.setAttribute("draftByLicAppId",replace);
+                    bpc.request.setAttribute("isAppealShow","1");
+                    bpc.request.setAttribute("appealApplication",licIdValue);
+                }
+                flag = true;
+                errorMap.put("err","amend do draft");
+            }
             if(errorMap.isEmpty()){
                 if ("amendLic2".equals(action)){
                     StringBuilder url3 = new StringBuilder();
@@ -1731,8 +1773,10 @@ public class HalpAssessmentGuideDelegator {
                 else if("amendLic7".equals(action)){
                     ParamUtil.setRequestAttr(bpc.request,"amend_action_type","toamend4_2");
                 }
-                ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
+                if (!flag){
+                    ParamUtil.setRequestAttr(bpc.request,"licIsAmend",Boolean.TRUE);
+                    ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_ACTION_ERR_MSG,errorMap.get("errorMessage"));
+                }
             }
         }
     }
