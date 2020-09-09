@@ -143,21 +143,17 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
         BufferedInputStream bis = null;
         CheckedInputStream cos = null;
         try {
-            String zipName = zipEntry.getName();
-            String toCompressPath =  sharedPath + RequestForInformationConstants.COMPRESS  + File.separator + fileName  + File.separator + zipName;
-            toCompressPath = toCompressPath.replace(".zip", "");
-            if (zipName.endsWith(File.separator)){
-                new File(toCompressPath).mkdirs();
-            }else {
-                File file =new File(toCompressPath);
+            if(!zipEntry.getName().endsWith(File.separator)){
+                String substring = zipEntry.getName().substring(0, zipEntry.getName().length()-1);
+                File file =new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+substring);
                 if(!file.exists()){
                     file.mkdirs();
                 }
-                os = Files.newOutputStream(Paths.get(sharedPath + File.separator + RequestForInformationConstants.COMPRESS + File.separator + fileName + File.separator + zipEntry.getName()));
-                bos = new BufferedOutputStream(os);
-                InputStream is = zipFile.getInputStream(zipEntry);
-                bis = new BufferedInputStream(is);
-                cos = new CheckedInputStream(bis,new CRC32());
+                os= Files.newOutputStream(Paths.get(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+zipEntry.getName()));
+                bos=new BufferedOutputStream(os);
+                InputStream is=zipFile.getInputStream(zipEntry);
+                bis=new BufferedInputStream(is);
+                cos=new CheckedInputStream(bis,new CRC32());
                 byte []b=new byte[1024];
                 int count =0;
                 count=cos.read(b);
@@ -165,6 +161,10 @@ public class AuditTrailRecordsToBeServiceImpl implements AuditTrailRecordsToBeSe
                     bos.write(b,0,count);
                     count=cos.read(b);
                 }
+
+            }else {
+
+                new File(sharedPath+File.separator+RequestForInformationConstants.COMPRESS+File.separator+fileName+File.separator+zipEntry.getName()).mkdirs();
             }
         }catch (IOException e){
             log.error(e.getMessage(),e);
