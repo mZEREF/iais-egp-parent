@@ -46,8 +46,8 @@
                                         <tr>
                                             <c:set var="id" value="${status.index}"></c:set>
                                             <td><c:out value="${item.hclCode}"/></td>
-                                            <td><c:out value="${item.hclName}"/></td>
-                                            <td><c:out value="${item.address}"/></td>
+                                            <td><c:out value="${empty item.hclName ? 'N/A' :item.hclName}"/></td>
+                                            <td><c:out value="${empty item.address ? 'N/A' : item.address}"/></td>
                                             <td><c:out value="${item.svcName}"/></td>
                                             <td><iais:code code="${item.auditType}"/></td>
                                             <c:if test="${ISTUC}">
