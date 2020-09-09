@@ -2838,13 +2838,14 @@ public class NewApplicationDelegator {
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenceId = "";
+        String draftNo = "";
         if(appSubmissionDto != null){
             licenceId = appSubmissionDto.getLicenseeId();
             if(StringUtil.isEmpty(licenceId) && loginContext != null){
                 licenceId = loginContext.getLicenseeId();
             }
+            draftNo = appSubmissionDto.getDraftNo();
         }
-        String draftNo = appSubmissionDto.getDraftNo();
         if(draftNo!=null){
             AppSubmissionDto draftAppSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
             if(draftAppSubmissionDto!=null){
@@ -2852,7 +2853,7 @@ public class NewApplicationDelegator {
                 applicationClient.saveDraft(draftAppSubmissionDto);
             }
         }
-        if (!StringUtil.isEmpty(appSubmissionDto.getLicenceId())) {
+        if (!StringUtil.isEmpty(licenceId)) {
             List<ApplicationSubDraftDto> entity = applicationClient.getDraftByLicAppId(appSubmissionDto.getLicenceId()).getEntity();
             for (ApplicationSubDraftDto applicationSubDraftDto : entity) {
                 if(!applicationSubDraftDto.getDraftNo().equals(draftNo)){
