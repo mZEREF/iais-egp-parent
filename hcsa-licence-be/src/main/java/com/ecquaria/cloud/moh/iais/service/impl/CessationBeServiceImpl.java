@@ -519,9 +519,7 @@ public class CessationBeServiceImpl implements CessationBeService {
             riskAcceptiionDto.setApptype(appSubmissionDto.getAppType());
             riskAcceptiionDtoList.add(riskAcceptiionDto);
         }
-
         List<RiskResultDto> riskResultDtoList = hcsaConfigClient.getRiskResult(riskAcceptiionDtoList).getEntity();
-
         for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
             String serviceCode = appSvcRelatedInfoDto.getServiceCode();
             RiskResultDto riskResultDto = getRiskResultDtoByServiceCode(riskResultDtoList, serviceCode);
@@ -535,7 +533,7 @@ public class CessationBeServiceImpl implements CessationBeService {
     private RiskResultDto getRiskResultDtoByServiceCode(List<RiskResultDto> riskResultDtoList, String serviceCode) {
         RiskResultDto result = null;
         if (riskResultDtoList == null || StringUtil.isEmpty(serviceCode)) {
-            return result;
+            return null;
         }
         for (RiskResultDto riskResultDto : riskResultDtoList) {
             if (serviceCode.equals(riskResultDto.getSvcCode())) {

@@ -271,7 +271,7 @@ public class CessationEffectiveDateBatchjob {
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_JOB_CEASE_EFFECTIVE_DATE_MSG);
                 emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                 emailParam.setRefId(licenceDto.getId());
-                notificationHelper.sendNotification(emailParam);
+                //notificationHelper.sendNotification(emailParam);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 continue;

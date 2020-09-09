@@ -455,6 +455,28 @@ public class InsRepServiceImpl implements InsRepService {
     }
 
     @Override
+    public void updateRiskLevelRecommendation(AppPremisesRecommendationDto appPremisesRecommendationDto) {
+        String appPremCorreId = appPremisesRecommendationDto.getAppPremCorreId();
+        Integer version = 1;
+        AppPremisesRecommendationDto oldAppPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremCorreId, InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL).getEntity();
+        if (oldAppPremisesRecommendationDto == null) {
+            appPremisesRecommendationDto.setVersion(version);
+            appPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            insRepClient.saveRecommendationData(appPremisesRecommendationDto);
+        } else  {
+            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
+            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+            version = oldAppPremisesRecommendationDto.getVersion() + 1;
+            oldAppPremisesRecommendationDto.setVersion(version);
+            oldAppPremisesRecommendationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
+            oldAppPremisesRecommendationDto.setRemarks(appPremisesRecommendationDto.getRemarks());
+            oldAppPremisesRecommendationDto.setId(null);
+            insRepClient.saveRecommendationData(oldAppPremisesRecommendationDto);
+        }
+        return;
+    }
+
+    @Override
     public List<SelectOption> getRiskOption(ApplicationViewDto applicationViewDto) {
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
         List<String> list = IaisCommonUtils.genNewArrayList();

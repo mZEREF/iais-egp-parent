@@ -107,6 +107,7 @@ public class InsReportDelegator {
             String periodDefault = insRepService.getPeriodDefault(applicationViewDto,taskDto);
             appPremisesRecommendationDto.setPeriod(periodDefault);
         }
+        String riskLevelForSave = appPremisesRecommendationDto.getRiskLevel();
         List<SelectOption> riskOption = insRepService.getRiskOption(applicationViewDto);
         List<SelectOption> chronoOption = getChronoOption();
         List<SelectOption> recommendationOption = getRecommendationOption(applicationType);
@@ -126,6 +127,7 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request, "riskOption", (Serializable) riskOption);
         ParamUtil.setSessionAttr(bpc.request, "insRepDto", insRepDto);
         ParamUtil.setSessionAttr(bpc.request, "applicationViewDto", applicationViewDto);
+        ParamUtil.setSessionAttr(bpc.request, "riskLevelForSave", riskLevelForSave);
     }
 
     public void inspectionReportPre(BaseProcessClass bpc) {
@@ -292,9 +294,16 @@ public class InsReportDelegator {
         followAppPremisesRecommendationDto.setRemarks(followUpAction);
         followAppPremisesRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
 
+        String riskLevelForSave = (String)ParamUtil.getSessionAttr(bpc.request, "riskLevelForSave");
+        AppPremisesRecommendationDto riskLevelRecommendationDto = new AppPremisesRecommendationDto();
+        riskLevelRecommendationDto.setRecomType(InspectionConstants.RECOM_TYPE_INSPCTION_RISK_LEVEL);
+        riskLevelRecommendationDto.setRemarks(riskLevelForSave);
+        riskLevelRecommendationDto.setAppPremCorreId(appPremisesCorrelationId);
+
         appPremisesRecommendationDtos.add(appPremisesRecommendationDto);
         appPremisesRecommendationDtos.add(engageEnforcementAppPremisesRecommendationDto);
         appPremisesRecommendationDtos.add(followAppPremisesRecommendationDto);
+        appPremisesRecommendationDtos.add(riskLevelRecommendationDto);
         return appPremisesRecommendationDtos;
     }
 
@@ -345,6 +354,7 @@ public class InsReportDelegator {
         AppPremisesRecommendationDto appPremisesRecommendationDto1 = appPremisesRecommendationDtoList.get(0);
         AppPremisesRecommendationDto appPremisesRecommendationDto2 = appPremisesRecommendationDtoList.get(1);
         AppPremisesRecommendationDto appPremisesRecommendationDto3 = appPremisesRecommendationDtoList.get(2);
+        AppPremisesRecommendationDto appPremisesRecommendationDto4 = appPremisesRecommendationDtoList.get(3);
 
         if (!StringUtil.isEmpty(appPremisesRecommendationDto1.getRecommendation())) {
             insRepService.updateRecommendation(appPremisesRecommendationDto1);
@@ -363,6 +373,11 @@ public class InsReportDelegator {
             appPremisesRecommendationDto3.setRemarks(null);
         }
         insRepService.updateFollowRecommendation(appPremisesRecommendationDto3);
+        String remarks = appPremisesRecommendationDto4.getRemarks();
+        if(!StringUtil.isEmpty(remarks)) {
+            insRepService.updateRiskLevelRecommendation(appPremisesRecommendationDto4);
+        }
+
     }
 
     private List<SelectOption> getChronoOption() {
