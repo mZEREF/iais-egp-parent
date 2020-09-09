@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.action;
 
+import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -77,6 +78,10 @@ public class BackendAjaxController {
         String hastaskList = (String)ParamUtil.getSessionAttr(request, "hastaskList");
         Map<String, TaskDto> taskMap = (Map<String, TaskDto>) ParamUtil.getSessionAttr(request, "taskMap");
 
+        for (Map.Entry<String, String> entry:appNoUrl.entrySet()
+             ) {
+            appNoUrl.replace(entry.getKey(),generateProcessUrl(taskMap.get(entry.getKey()), request, taskList.get(entry.getKey())));
+        }
         Map<String, Object> map = IaisCommonUtils.genNewHashMap();
         if (groupNo != null) {
             searchParamAjax.addFilter("groupNo", groupNo, true);
@@ -214,4 +219,20 @@ public class BackendAjaxController {
         return map;
     }
 
+    private String generateProcessUrl(TaskDto dto, HttpServletRequest request,String taskId) {
+        StringBuilder sb = new StringBuilder("https://");
+        String url = dto.getProcessUrl();
+        sb.append(request.getServerName());
+        if (!url.startsWith("/")) {
+            sb.append('/');
+        }
+        sb.append(url);
+        if (url.indexOf('?') >= 0) {
+            sb.append('&');
+        } else {
+            sb.append('?');
+        }
+        sb.append("taskId=").append(taskId);
+        return RedirectUtil.appendCsrfGuardToken(sb.toString(), request);
+    }
 }
