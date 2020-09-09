@@ -25,6 +25,7 @@ import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.dto.EmailParam;
 import com.ecquaria.cloud.moh.iais.service.client.CommonFeMessageClient;
@@ -256,7 +257,7 @@ public class NotificationHelper {
 			String mesContext;
 			String emailTemplate = msgTemplateDto.getMessageContent();
 			//replace num
-			emailTemplate = replaceNum(emailTemplate);
+			emailTemplate = MessageTemplateUtil.replaceNum(emailTemplate);
 			if (templateContent != null && !templateContent.isEmpty()) {
 				if (templateContent.get("msgContent") != null) {
 					mesContext = (String) templateContent.get("msgContent");
@@ -300,7 +301,7 @@ public class NotificationHelper {
 				String mesContext;
 				String emailTemplate = msgTemplateDto.getMessageContent();
 				//replace num
-				emailTemplate = replaceNum(emailTemplate);
+				emailTemplate = MessageTemplateUtil.replaceNum(emailTemplate);
 				if (templateContent != null && !templateContent.isEmpty()) {
 					if (templateContent.get("msgContent") != null) {
 						mesContext = (String) templateContent.get("msgContent");
@@ -744,16 +745,6 @@ public class NotificationHelper {
 			}
 		}
 		return mobile;
-	}
-
-	private String replaceNum(String emailTemplate) {
-		int index = 1;
-		String replaceStr = "num_rep";
-		while(emailTemplate.contains(replaceStr)){
-			emailTemplate = emailTemplate.replaceFirst(replaceStr,  index + ".");
-			index++;
-		}
-		return emailTemplate;
 	}
 
 	public InspectionEmailTemplateDto getRecript(List<String> role, String refType, String refId, String moduleType, InspectionEmailTemplateDto inspectionEmailTemplateDto) {
