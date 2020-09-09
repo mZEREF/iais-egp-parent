@@ -62,8 +62,7 @@ public class LicenceViewDelegator {
     public void doStart(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart start ..."));
         ParamUtil.setSessionAttr(bpc.request,RfcConst.APPSUBMISSIONDTO,null);
-        ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
-        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
+        ParamUtil.setSessionAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,null);
         log.info(StringUtil.changeForLog("The LicenceViewDelegator doStart end ..."));
 
     }
@@ -76,6 +75,7 @@ public class LicenceViewDelegator {
      */
     public void prepareData(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("The LicenceViewDelegator prepareData start ..."));
+        ParamUtil.setRequestAttr(bpc.request,HcsaLicenceFeConstant.DASHBOARDTITLE,"empty");
         String licencId= ParamUtil.getRequestString(bpc.request,LICENCE_ID);
         if(StringUtil.isEmpty(licencId)){
             licencId = (String)ParamUtil.getSessionAttr(bpc.request,LICENCE_ID);
