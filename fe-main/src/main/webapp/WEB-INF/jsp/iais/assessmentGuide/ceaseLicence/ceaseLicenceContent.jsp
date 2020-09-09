@@ -25,7 +25,7 @@
                 <c:otherwise>
                     <c:forEach var="pool" items="${ceaseLicenceSearchResult.rows}" varStatus="status">
                         <tr>
-                            <td>
+                            <td onclick="javascript:controlCease()">
                                 <div class="form-check hover">
                                     <input class="form-check-input" id="ceaseLicence" type="checkbox" name="ceaseLicIds" aria-invalid="false" <c:if test="${fn:contains(licence_err_list, pool.licenceId)}">checked</c:if> value="ceaseLicence${status.index}">
                                     <label class="form-check-label" for="ceaseLicence"><span class="check-square"></span></label>
@@ -56,7 +56,7 @@
     </div>
     <c:choose>
         <c:when test="${!empty ceaseLicenceSearchResult.rows}">
-            <a class="btn btn-primary " onclick="ceaseSubmit()">NEXT</a>
+            <button type="button" class="btn btn-primary CeaseBtn " disabled onclick="ceaseSubmit()">NEXT</button>
         </c:when>
     </c:choose>
 </div>
@@ -74,6 +74,23 @@
 
         if (checkOne) {
             guideSubmit('ceaseLic','second')
+        }
+    }
+    function controlCease() {
+        var checkOne = false;
+        var checkBox = $("input[name='ceaseLicIds']");
+        for (var i = 0; i < checkBox.length; i++) {
+            if (checkBox[i].checked) {
+                checkOne = true;
+            }
+            ;
+        }
+        ;
+
+        if (checkOne) {
+            $('.CeaseBtn').prop('disabled',false);
+        } else {
+            $('.CeaseBtn').prop('disabled',true);
         }
     }
 </script>
