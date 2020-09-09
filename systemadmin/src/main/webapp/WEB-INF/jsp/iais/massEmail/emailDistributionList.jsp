@@ -148,6 +148,7 @@
         </div>
         <input hidden id="editDistribution" name="editDistribution" value="">
         <iais:confirm msg="The distribution list cannot be amended as it is still in used by other mass email or sms blast."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+        <iais:confirm msg="Are you sure you want to delete this item?"  needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
     </form>
 </div>
 <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
@@ -164,6 +165,9 @@ function cancel() {
 }
 function tagConfirmCallbacksupport() {
     $('#support').modal('hide');
+}
+function deleteDis(){
+    SOP.Crud.cfxSubmit("mainForm", "delete");
 }
 function checkUse() {
     var deleteDis=new Array();
@@ -187,9 +191,8 @@ function checkUse() {
                 $('#support').modal('show');
             }else{
                 if ($("input:checkbox:checked").length > 0) {
-                    if(confirm('Are you sure you want to delete this item?')){
-                        SOP.Crud.cfxSubmit("mainForm", "delete")
-                    }
+                    $('#deleteSupport').modal('show');
+
                 } else {
                     $('#support').find("span").eq(1).html("Please select record for deletion.");
                     $('#support').modal('show');

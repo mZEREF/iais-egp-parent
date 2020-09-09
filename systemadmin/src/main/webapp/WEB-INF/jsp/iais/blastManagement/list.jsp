@@ -177,6 +177,7 @@
             </div>
         </div>
         <iais:confirm msg="The message cannot be amended as it has been sent out to recipients."  needCancel="false" callBack="cancel()" popupOrder="support" ></iais:confirm>
+        <iais:confirm msg="Are you sure you want to delete this item?"  needCancel="true" callBack="deleteDis()" popupOrder="deleteSupport" ></iais:confirm>
         <input hidden id="editBlast" name="editBlast" value="">
         <input hidden id="mode" name="mode" value="">
     </form>
@@ -186,6 +187,9 @@
     function addList() {
         showWaiting();
         SOP.Crud.cfxSubmit("mainForm", "create");
+    }
+    function deleteDis() {
+        SOP.Crud.cfxSubmit("mainForm", "delete");
     }
     function cancel() {
         $('#support').modal('hide');
@@ -204,9 +208,7 @@
             })
 
             if(canedit == 1 ){
-                if(confirm('Are you sure you want to delete this item?')){
-                    SOP.Crud.cfxSubmit("mainForm", "delete")
-                }
+                $('#deleteSupport').modal('show');
             }else{
                 $('#support').find("span").eq(1).html("The message cannot be deleted as it has been sent out to recipients.");
                 $('#support').modal('show');
