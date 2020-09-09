@@ -50,6 +50,12 @@
           }else{
             $('#errorMessage').removeClass("hidden");
           }
+          //withdrawal and cessation
+          if(${applicationDto.applicationType == 'APTY006' || applicationDto.applicationType == 'APTY008'}){
+            window.opener=null;
+            window.open('','_self');
+            window.close();
+          }
         });
 
         $('.svc-pannel-collapse').click(function () {
