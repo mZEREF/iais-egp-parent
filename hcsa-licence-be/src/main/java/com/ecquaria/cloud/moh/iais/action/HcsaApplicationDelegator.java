@@ -1026,10 +1026,13 @@ public class HcsaApplicationDelegator {
         String emailAddress = "ecquaria@ecquaria.com";
         String msgId = "";
         Map<String, Object> msgInfoMap = IaisCommonUtils.genNewHashMap();
+        HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
+        List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+        svcCodeList.add(svcDto.getSvcCode());
         if(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType)){
-            newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto);
+            newAppSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType)){
-            renewalSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto);
+            renewalSendNotification(applicationTypeShow,applicationNo,appDate,MohName,applicationDto,svcCodeList);
         }else if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
             //send email Appeal - Send SMS to licensee when appeal application is approved
             Map<String,Object> notifyMap=IaisCommonUtils.genNewHashMap();
@@ -1080,10 +1083,7 @@ public class HcsaApplicationDelegator {
                 //email
                 notificationHelper.sendNotification(emailParam);
                 //msg
-                HcsaServiceDto svcDto = hcsaConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-                List<String> svcCode=IaisCommonUtils.genNewArrayList();
-                svcCode.add(svcDto.getSvcCode());
-                emailParam.setSvcCodeList(svcCode);
+                emailParam.setSvcCodeList(svcCodeList);
                 emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_004_REJECTED_MSG);
                 emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                 emailParam.setRefId(applicationNo);
@@ -1110,7 +1110,7 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto){
+    private void newAppSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
         log.info(StringUtil.changeForLog("send new application notification start"));
         //send email
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
@@ -1160,6 +1160,7 @@ public class HcsaApplicationDelegator {
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(applicationNo);
                     messageParam.setSubject(subject);
+                    messageParam.setSvcCodeList(svcCodeList);
                     log.info(StringUtil.changeForLog("send new application message"));
                     notificationHelper.sendNotification(messageParam);
                     log.info(StringUtil.changeForLog("send new application notification end"));
@@ -1170,7 +1171,7 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void renewalSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto){
+    private void renewalSendNotification(String applicationTypeShow,String applicationNo,String appDate,String MohName,ApplicationDto applicationDto,List<String> svcCodeList){
         log.info(StringUtil.changeForLog("send renewal application notification start"));
         //send email
         ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
@@ -1222,6 +1223,7 @@ public class HcsaApplicationDelegator {
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(applicationNo);
                     messageParam.setSubject(subject);
+                    messageParam.setSvcCodeList(svcCodeList);
                     log.info(StringUtil.changeForLog("send renewal application message"));
                     notificationHelper.sendNotification(messageParam);
                     log.info(StringUtil.changeForLog("send renewal application notification end"));
