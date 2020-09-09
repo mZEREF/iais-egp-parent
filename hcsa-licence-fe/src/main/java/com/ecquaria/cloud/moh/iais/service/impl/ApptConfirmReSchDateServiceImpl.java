@@ -561,7 +561,8 @@ public class ApptConfirmReSchDateServiceImpl implements ApptConfirmReSchDateServ
             apptDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
             apptDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         }
-        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.updateAppPremisesInspecApptDtoList(processReSchedulingDto.getAppPremisesInspecApptDtoList()).getEntity();
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList1=processReSchedulingDto.getAppPremisesInspecApptDtoList();
+        List<AppPremisesInspecApptDto> appPremisesInspecApptDtoList = inspectionFeClient.updateAppPremisesInspecApptDtoList(appPremisesInspecApptDtoList1).getEntity();
         if(!IaisCommonUtils.isEmpty(appPremisesInspecApptDtoList)){
             for(AppPremisesInspecApptDto appPremisesInspecApptDto : appPremisesInspecApptDtoList){
                 appPremisesInspecApptDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
