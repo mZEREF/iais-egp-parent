@@ -354,7 +354,7 @@ public class NewApplicationDelegator {
                         List<AppGrpPremisesDto> appGrpPremisesDtos = oldAppSubmissionDto.getAppGrpPremisesDtoList();
                         if (!IaisCommonUtils.isEmpty(appGrpPremisesDtos)) {
                             for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
-                                currPremHci.add(NewApplicationHelper.genPremHci(appGrpPremisesDto));
+                                currPremHci.add(NewApplicationHelper.getPremHci(appGrpPremisesDto));
                             }
                         }
                     }
@@ -362,16 +362,7 @@ public class NewApplicationDelegator {
                 }
                 Map<String, AppGrpPremisesDto> newLicAppGrpPremisesDtoMap = IaisCommonUtils.genNewHashMap();
                 licAppGrpPremisesDtoMap.forEach((k, v) -> {
-                    String premisesKey = NewApplicationHelper.getPremKey(v);
-                    String premisesHci = "";
-                    if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(v.getPremisesType())) {
-                        premisesHci = v.getHciName() + premisesKey;
-                    } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(v.getPremisesType())) {
-                        premisesHci = v.getConveyanceVehicleNo() + premisesKey;
-                    } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(v.getPremisesType())) {
-                        premisesHci = premisesKey;
-                    }
-                    if (!pendAndLicPremHci.contains(premisesHci)) {
+                    if (!pendAndLicPremHci.contains(NewApplicationHelper.getPremHci(v))) {
                         newLicAppGrpPremisesDtoMap.put(k, v);
                     }
                 });
@@ -1412,7 +1403,7 @@ public class NewApplicationDelegator {
                     List<AppGrpPremisesDto> newPremisesDtos = IaisCommonUtils.genNewArrayList();
                     List<SelectOption> publicHolidayList = serviceConfigService.getPubHolidaySelect();
                     for(AppGrpPremisesDto appGrpPremisesDto:appSubmissionDto.getAppGrpPremisesDtoList()){
-                        if(premHci.equals(NewApplicationHelper.genPremHci(appGrpPremisesDto))){
+                        if(premHci.equals(NewApplicationHelper.getPremHci(appGrpPremisesDto))){
                             NewApplicationHelper.setWrkTime(appGrpPremisesDto);
                             List<AppPremPhOpenPeriodDto> appPremPhOpenPeriodDtos = appGrpPremisesDto.getAppPremPhOpenPeriodList();
                             //set ph name
@@ -4654,7 +4645,7 @@ public class NewApplicationDelegator {
                 }
                 if(!IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
                     for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
-                        String premHci = NewApplicationHelper.genPremHci(appGrpPremisesDto);
+                        String premHci = NewApplicationHelper.getPremHci(appGrpPremisesDto);
                         if(rfiPremHci.equals(premHci)){
                             appGrpPremisesDto.setRfiCanEdit(true);
                         }

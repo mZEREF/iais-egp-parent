@@ -1767,19 +1767,19 @@ public class NewApplicationHelper {
             premKey = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getConveyancePostalCode(),appGrpPremisesDto.getConveyanceBlockNo(),appGrpPremisesDto.getConveyanceFloorNo(),appGrpPremisesDto.getConveyanceUnitNo());
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
             premKey = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getOffSitePostalCode(),appGrpPremisesDto.getOffSiteBlockNo(),appGrpPremisesDto.getOffSiteFloorNo(),appGrpPremisesDto.getOffSiteUnitNo());
-
         }
         return premKey;
     }
 
-    public static String genPremHci(AppGrpPremisesDto appGrpPremisesDto){
+    public static String getPremHci(AppGrpPremisesDto appGrpPremisesDto){
         String premHci = "";
+        String premKey = getPremKey(appGrpPremisesDto);
         if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
-            premHci = appGrpPremisesDto.getHciName()+ IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getPostalCode(),appGrpPremisesDto.getBlkNo(),appGrpPremisesDto.getFloorNo(),appGrpPremisesDto.getUnitNo());
+            premHci = appGrpPremisesDto.getHciName()+ premKey;
         }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
-            premHci = appGrpPremisesDto.getConveyanceVehicleNo() + IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getConveyancePostalCode(),appGrpPremisesDto.getConveyanceBlockNo(),appGrpPremisesDto.getConveyanceFloorNo(),appGrpPremisesDto.getConveyanceUnitNo());
+            premHci = appGrpPremisesDto.getConveyanceVehicleNo() + premKey;
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
-            premHci = IaisCommonUtils.genPremisesKey(appGrpPremisesDto.getOffSitePostalCode(),appGrpPremisesDto.getOffSiteBlockNo(),appGrpPremisesDto.getOffSiteFloorNo(),appGrpPremisesDto.getOffSiteUnitNo());
+            premHci = premKey;
 
         }
         return premHci;

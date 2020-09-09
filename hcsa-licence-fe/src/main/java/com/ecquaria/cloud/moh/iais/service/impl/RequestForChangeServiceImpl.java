@@ -481,13 +481,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         if ((appTypeFlag && rfi) && (oldAppSubmissionDto != null)) {
             AppGrpPremisesDto oldAppGrpPremisesDto = oldAppSubmissionDto.getAppGrpPremisesDtoList().get(0);
             String premiseKey = NewApplicationHelper.getPremKey(oldAppGrpPremisesDto);
-            if (ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(oldAppGrpPremisesDto.getPremisesType())) {
-                oldPremiseHci = oldAppGrpPremisesDto.getHciName() + premiseKey;
-            } else if (ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(oldAppGrpPremisesDto.getPremisesType())) {
-                oldPremiseHci = oldAppGrpPremisesDto.getConveyanceVehicleNo() + premiseKey;
-            } else if (ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(oldAppGrpPremisesDto.getPremisesType())) {
-                oldPremiseHci = premiseKey;
-            }
+            oldPremiseHci = NewApplicationHelper.getPremHci(oldAppGrpPremisesDto);
         }
         boolean needAppendMsg = false;
         String licenseeId = appSubmissionDto.getLicenseeId();
