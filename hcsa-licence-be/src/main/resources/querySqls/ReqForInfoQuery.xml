@@ -37,8 +37,9 @@
             <#if personnelId??> AND charindex(:personnelId, appGrpPer.ID_NO )>0</#if>
             <#if personnelRegnNo??> AND charindex( :personnelRegnNo, appSvcPer.PROF_REG_NO )>0</#if>
             <#if personnelRole??> AND  appKeyPsn.PSN_TYPE = :personnelRole</#if>
+            <#if svc_id??> AND app.SERVICE_ID = :svc_id</#if>
+            <#if hciCode??> AND  (T3.HCI_CODE IS NULL OR T3.HCI_CODE = :hciCode)</#if>
 
-            <#if hciCode??> AND  :hciCode = :hciCode</#if>
             <#if licence_status??>AND :licence_status = :licence_status</#if>
             <#if start_date??>AND :start_date = :start_date</#if>
             <#if start_to_date??>AND :start_to_date = :start_to_date</#if>
@@ -108,6 +109,7 @@
             <#if personnelId??> AND :personnelId = :personnelId</#if>
             <#if personnelRegnNo??> AND :personnelRegnNo = :personnelRegnNo</#if>
             <#if personnelRole??> AND  :personnelRole = :personnelRole</#if>
+            <#if svc_id??> AND :svc_id = :svc_id</#if>
 
         ]]>
     </sql>
@@ -154,6 +156,7 @@
             <#if personnelRole??> AND :personnelRole = :personnelRole</#if>
             <#if svc_name??> AND :svc_name = :svc_name</#if>
             <#if serviceSubTypeName??>AND :serviceSubTypeName = :serviceSubTypeName</#if>
+            <#if svc_id??> AND :svc_id = :svc_id</#if>
         ]]>
     </sql>
 
@@ -196,6 +199,7 @@
             <#if personnelRegnNo??> AND :personnelRegnNo = :personnelRegnNo</#if>
             <#if personnelRole??> AND :personnelRole = :personnelRole</#if>
             <#if svc_name??> AND :svc_name = :svc_name</#if>
+            <#if svc_id??> AND :svc_id = :svc_id</#if>
         ]]>
     </sql>
 

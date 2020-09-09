@@ -27,7 +27,7 @@
                             Search By Application
                             <strong>&nbsp;
                                 <input  id="applicationChk" type="radio"
-                                       <c:if test="${count=='3'||count=='2'}">checked</c:if>   value="2"   name="searchChk"  />
+                                       <c:if test="${count=='3'||count=='2'}">checked</c:if>   value="3"   name="searchChk"  />
                             </strong>
                         </span>
                     </h4>

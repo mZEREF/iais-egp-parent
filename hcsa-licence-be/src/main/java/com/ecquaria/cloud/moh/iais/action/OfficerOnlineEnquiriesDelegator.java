@@ -86,8 +86,8 @@ import java.util.Set;
 @Delegator(value = "onlineEnquiriesDelegator")
 @Slf4j
 public class OfficerOnlineEnquiriesDelegator {
-    private static final Set<String> COUNTS = ImmutableSet.of( "2", "5");
-    private static final Set<String> COUNTS1 = ImmutableSet.of("1","3", "4");
+    private static final Set<String> COUNTS = ImmutableSet.of( "1","2", "5");
+    private static final Set<String> COUNTS1 = ImmutableSet.of("3", "4");
     @Autowired
     RequestForInformationService requestForInformationService;
     @Autowired
@@ -536,7 +536,7 @@ public class OfficerOnlineEnquiriesDelegator {
         }
         Map<String,Object> filters=IaisCommonUtils.genNewHashMap();
         switch (count) {
-            case "2":
+            case "3":
                 if(!StringUtil.isEmpty(applicationNo)){
                     filters.put("appNo", applicationNo);
                 }
@@ -691,12 +691,12 @@ public class OfficerOnlineEnquiriesDelegator {
         }
         ParamUtil.setSessionAttr(request,"count",count);
         switch (count) {
-            case "2":
+            case "3":
                 if(!StringUtil.isEmpty(applicationNo)){
-                    filters.put("appNo", applicationNo);
+                    filters.put("appNo", applicationNo);count="2";
                 }
                 if(!StringUtil.isEmpty(applicationType)){
-                    filters.put("appType", applicationType);
+                    filters.put("appType", applicationType);count="2";
                 }
                 if(!StringUtil.isEmpty(status)){
                     if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
@@ -705,36 +705,39 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
                             filters.put("appStatus", status);
                         }
+                    count="2";
                 }
                 if(!StringUtil.isEmpty(appSubDate)){
-                    filters.put("subDate", appSubDate);
+                    filters.put("subDate", appSubDate);count="2";
                 }
                 if(!StringUtil.isEmpty(appSubToDate)){
-                    filters.put("toDate",appSubToDate);
+                    filters.put("toDate",appSubToDate);count="2";
                 }
                 if(!StringUtil.isEmpty(licStaDate)){
-                    filters.put("start_date", licStaDate);count="3";
+                    filters.put("start_date", licStaDate);
                 }
                 if(!StringUtil.isEmpty(licStaToDate)){
-                    filters.put("start_to_date",licStaToDate);count="3";
+                    filters.put("start_to_date",licStaToDate);
                 }
                 if(!StringUtil.isEmpty(licExpDate)){
-                    filters.put("expiry_start_date", licExpDate);count="3";
+                    filters.put("expiry_start_date", licExpDate);
                 }
                 if(!StringUtil.isEmpty(licExpToDate)){
-                    filters.put("expiry_date",licExpToDate);count="3";
+                    filters.put("expiry_date",licExpToDate);
                 }
                 if(!StringUtil.isEmpty(licenceNo)){
-                    filters.put("licence_no", licenceNo);count="3";
+                    filters.put("licence_no", licenceNo);
                 }
                 if(!StringUtil.isEmpty(licenceStatus)){
-                    filters.put("licence_status", licenceStatus);count="3";
+                    filters.put("licence_status", licenceStatus);
                 }
                 if(!StringUtil.isEmpty(serviceLicenceType)){
-                    filters.put("svc_name", serviceLicenceType);count="3";
+                    filters.put("svc_name", serviceLicenceType);
+                    HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName(serviceLicenceType).getEntity();
+                    filters.put("svc_id",svcDto.getId());
                 }
                 if(!StringUtil.isEmpty(svcSubType)){
-                    filters.put("serviceSubTypeName", svcSubType);count="3";
+                    filters.put("serviceSubTypeName", svcSubType);
                     serviceParameter.setFilters(filters);
                     SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
                     QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
@@ -749,7 +752,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
                 }
                 if(!StringUtil.isEmpty(uenNo)){
-                    count="3";
+                    
                     List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen(uenNo).getEntity();
                     if(licenseeDtos!=null) {
                         for (LicenseeDto licensee:licenseeDtos
@@ -1162,17 +1165,20 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             if(applicationDto!=null&&applicationDto.getOriginLicenceId()!=null){
                 List<LicAppCorrelationDto> licAppCorrelationDtos1=hcsaLicenceClient.getLicCorrBylicId(applicationDto.getOriginLicenceId()).getEntity();
-
-                AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDtos1.get(0).getApplicationId()).getEntity();
-                AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
-                if (appPremPreInspectionNcDto1 != null) {
-                    String ncId = appPremPreInspectionNcDto1.getId();
-                    List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-                    if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-                        reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
+                try {
+                    AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDtos1.get(0).getApplicationId()).getEntity();
+                    AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
+                    if (appPremPreInspectionNcDto1 != null) {
+                        String ncId = appPremPreInspectionNcDto1.getId();
+                        List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
+                        if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
+                            reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
+                        }
+                    } else {
+                        reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
                     }
-                } else {
-                    reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
+                }catch (Exception e){
+                    log.info(e.getMessage(),e);
                 }
             }
         }
@@ -1317,12 +1323,12 @@ public class OfficerOnlineEnquiriesDelegator {
         String count=(String) ParamUtil.getSessionAttr(request,"count");
         SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,"SearchParam");
         switch (count) {
-            case "2":
+            case "3":
                 if(!StringUtil.isEmpty(parm.getFilters().get("appNo"))){
-                    filters.put("appNo", parm.getFilters().get("appNo"));
+                    filters.put("appNo", parm.getFilters().get("appNo"));count="2";
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appType"))){
-                    filters.put("appType", parm.getFilters().get("appType"));
+                    filters.put("appType", parm.getFilters().get("appType"));count="2";
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
                     if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
@@ -1331,42 +1337,45 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
+                    count="2";
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("subDate"))){
                     filters.put("subDate", Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("subDate")),
-                            SystemAdminBaseConstants.DATE_FORMAT));
+                            SystemAdminBaseConstants.DATE_FORMAT));count="2";
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("toDate"))){
                     filters.put("toDate",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("toDate")),
-                            SystemAdminBaseConstants.DATE_FORMAT));
+                            SystemAdminBaseConstants.DATE_FORMAT));count="2";
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("start_date"))){
                     filters.put("start_date", Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("start_date")),
-                            SystemAdminBaseConstants.DATE_FORMAT));count="3";
+                            SystemAdminBaseConstants.DATE_FORMAT));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("start_to_date"))){
                     filters.put("start_to_date",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("start_to_date")),
-                            SystemAdminBaseConstants.DATE_FORMAT));count="3";
+                            SystemAdminBaseConstants.DATE_FORMAT));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("expiry_start_date"))){
                     filters.put("expiry_start_date", Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("expiry_start_date")),
-                            SystemAdminBaseConstants.DATE_FORMAT));count="3";
+                            SystemAdminBaseConstants.DATE_FORMAT));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("expiry_date"))){
                     filters.put("expiry_date",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("expiry_date")),
-                            SystemAdminBaseConstants.DATE_FORMAT));count="3";
+                            SystemAdminBaseConstants.DATE_FORMAT));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("licence_no"))){
-                    filters.put("licence_no", parm.getFilters().get("licence_no"));count="3";
+                    filters.put("licence_no", parm.getFilters().get("licence_no"));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("licence_status"))){
-                    filters.put("licence_status", parm.getFilters().get("licence_status"));count="3";
+                    filters.put("licence_status", parm.getFilters().get("licence_status"));
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("svc_name"))){
-                    filters.put("svc_name", parm.getFilters().get("svc_name"));count="3";
+                    filters.put("svc_name", parm.getFilters().get("svc_name"));
+                    HcsaServiceDto svcDto = hcsaConfigClient.getServiceDtoByName((String) parm.getFilters().get("svc_name")).getEntity();
+                    filters.put("svc_id",svcDto.getId());
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("serviceSubTypeName"))){
-                    filters.put("serviceSubTypeName", parm.getFilters().get("serviceSubTypeName"));count="3";
+                    filters.put("serviceSubTypeName", parm.getFilters().get("serviceSubTypeName"));
                     serviceParameter.setFilters(filters);
                     SearchParam serviceParam = SearchResultHelper.getSearchParam(request, serviceParameter,true);
                     QueryHelp.setMainSql(RFI_QUERY,"serviceQuery",serviceParam);
@@ -1381,7 +1390,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
-                    count="3";
+                    
                     List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen((String) parm.getFilters().get("uen_no")).getEntity();
                     if(licenseeDtos!=null) {
                         for (LicenseeDto licensee:licenseeDtos

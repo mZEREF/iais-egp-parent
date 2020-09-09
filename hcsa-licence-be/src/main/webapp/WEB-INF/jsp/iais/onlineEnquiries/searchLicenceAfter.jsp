@@ -41,7 +41,7 @@
                                     Search By Application&nbsp;
                                     <strong>&nbsp;
                                         <input  id="applicationChk" type="radio"
-                                               checked name="searchChk"  value="2"/>
+                                               checked name="searchChk"  value="3"/>
                                     </strong>
                                 </span>
                             </h4>
