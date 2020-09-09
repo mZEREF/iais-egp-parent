@@ -256,21 +256,21 @@
                                                     </c:if>
                                                 </select>
                                             </c:if>
-                                            <c:if test="${app.status == 'APST005' || app.status == 'APST006' || app.status == 'APST045'}">
+                                            <c:if test="${app.status == 'APST005' || app.status == 'APST006' || app.status == 'APST045' || app.status == 'APST050'}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
                                             </c:if>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY006'}">
-                                            <c:if test="${app.status == 'APST007' || app.status == 'APST005' || app.status == 'APST006'}">
+                                            <c:if test="${app.status == 'APST007' || app.status == 'APST005' || app.status == 'APST006' || app.status == 'APST050'}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
                                             </c:if>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY008'}">
-                                            <c:if test="${app.status == 'APST005'||app.status == 'APST075' || app.status == 'APST076'}">
+                                            <c:if test="${app.status == 'APST005'||app.status == 'APST075' || app.status == 'APST076' || app.status == 'APST050'}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
