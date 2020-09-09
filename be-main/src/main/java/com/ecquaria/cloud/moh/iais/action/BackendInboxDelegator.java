@@ -1165,8 +1165,9 @@ public class BackendInboxDelegator {
         if(commPools != null && commPools.size() >0){
             for (TaskDto item:commPools
             ) {
-                appNoUrl.put(item.getRefNo(), generateProcessUrl(item, bpc.request));
-                taskList.put(item.getRefNo(), MaskUtil.maskValue("taskId", item.getId()));
+                String taskId = MaskUtil.maskValue("taskId", item.getId());
+                appNoUrl.put(item.getRefNo(), generateProcessUrl(item, bpc.request, taskId));
+                taskList.put(item.getRefNo(), taskId);
                 taskMap.put(item.getRefNo(), item);
             }
         }
@@ -1183,7 +1184,7 @@ public class BackendInboxDelegator {
 
     }
 
-    private String generateProcessUrl(TaskDto dto, HttpServletRequest request) {
+    private String generateProcessUrl(TaskDto dto, HttpServletRequest request,String taskId) {
         StringBuilder sb = new StringBuilder("https://");
         String url = dto.getProcessUrl();
         sb.append(request.getServerName());
@@ -1196,7 +1197,7 @@ public class BackendInboxDelegator {
         } else {
             sb.append('?');
         }
-        sb.append("taskId=").append(MaskUtil.maskValue("taskId", dto.getId()));
+        sb.append("taskId=").append(taskId);
         return RedirectUtil.appendCsrfGuardToken(sb.toString(), request);
     }
 
