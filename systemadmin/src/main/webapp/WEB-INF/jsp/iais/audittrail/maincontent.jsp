@@ -1,4 +1,4 @@
-<%@ page import="com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: yichen
   Date: 2/6/2020
@@ -50,6 +50,7 @@
       <div class="col-xs-5 col-md-5">
         <iais:datePicker id = "startDate" name = "startDate"  value="${param.startDate}"></iais:datePicker>
         <span id="error_dateStart" name="iaisErrorMsg" class="error-msg"></span>
+        <span id="error_compareDateError" name="iaisErrorMsg" class="error-msg"></span>
       </div>
     </div>
   </div>

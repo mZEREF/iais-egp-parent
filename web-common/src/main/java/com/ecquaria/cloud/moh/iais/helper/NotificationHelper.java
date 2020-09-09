@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.config.SystemParamConfig;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailDto;
@@ -339,6 +340,7 @@ public class NotificationHelper {
 					EmailDto emailDto = new EmailDto();
 					//get assign officer address and other address
 					InspectionEmailTemplateDto inspectionEmailTemplateDto = new InspectionEmailTemplateDto();
+					inspectionEmailTemplateDto.setEmailTemplateId(templateId);
 					if (msgTemplateDto.getRecipient() != null && msgTemplateDto.getRecipient().size() > 0) {
 						inspectionEmailTemplateDto = getRecript(msgTemplateDto.getRecipient(), refIdType, refId, moduleType, inspectionEmailTemplateDto);
 						receiptEmail = inspectionEmailTemplateDto.getReceiptEmails();
@@ -862,33 +864,43 @@ public class NotificationHelper {
 		return inspectionEmailTemplateDto;
 	}
 
+	private List<OrgUserDto> receiveOrgUserByTaskInfo(String appNo, String processUrl, List<String> taskStatus){
+		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+		String gatewayUrl = env.getProperty("iais.inter.gateway.url");
+
+		Map<String, Object> params = IaisCommonUtils.genNewHashMap();
+		params.put("appNo", appNo);
+		params.put("processUrl", processUrl);
+		params.put("taskStatus", taskStatus);
+
+		return IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/inspector-by-task", HttpMethod.POST, params,
+				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
+				signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
+	}
+
 	private InspectionEmailTemplateDto getCurrentTaskAssignedInspector(InspectionEmailTemplateDto inspectionEmailTemplateDto, String appNo) {
 		if (StringUtil.isEmpty(appNo) || inspectionEmailTemplateDto == null) {
 			return inspectionEmailTemplateDto;
 		}
 
-		String processUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
-		List<String> taskStatus = new ArrayList<>(Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ));
-		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
-		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
-
-		Map<String, Object> params = IaisCommonUtils.genNewHashMap();
-		params.put("processUrl", processUrl);
-		params.put("taskStatus", taskStatus);
-		params.put("appNo", appNo);
-		String gatewayUrl = env.getProperty("iais.inter.gateway.url");
-		List<OrgUserDto> orgUserList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/inspector-by-task", HttpMethod.POST, params,
-				MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-				signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
-
-		if (IaisCommonUtils.isEmpty(orgUserList)) {
-			processUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
-			taskStatus = new ArrayList<>(Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_STATUS_REMOVE));
-			params.put("processUrl", processUrl);
-			params.put("taskStatus", taskStatus);
-			orgUserList = IaisEGPHelper.callEicGatewayWithBodyForList(gatewayUrl + "/v1/inspector-by-task", HttpMethod.POST, params,
-					MediaType.APPLICATION_JSON, signature.date(), signature.authorization(),
-					signature2.date(), signature2.authorization(), OrgUserDto.class).getEntity();
+		String emtpId = inspectionEmailTemplateDto.getEmailTemplateId();
+		List<OrgUserDto> orgUserList;
+		String processUrl;
+		List<String> taskStatus;
+		if (MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_EMAIL_INSPECTOR_EMAIL_CHM.equals(emtpId)){
+			processUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+			taskStatus = new ArrayList<>(Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ));
+			orgUserList = receiveOrgUserByTaskInfo(appNo, processUrl, taskStatus);
+		}else {
+			processUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
+			taskStatus = new ArrayList<>(Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ));
+			orgUserList = receiveOrgUserByTaskInfo(appNo, processUrl, taskStatus);
+			if (IaisCommonUtils.isEmpty(orgUserList)) {
+				processUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
+				taskStatus = new ArrayList<>(Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_STATUS_REMOVE));
+				orgUserList = receiveOrgUserByTaskInfo(appNo, processUrl, taskStatus);
+			}
 		}
 
 		if (IaisCommonUtils.isEmpty(orgUserList)){

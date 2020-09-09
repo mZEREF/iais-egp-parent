@@ -48,6 +48,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -311,6 +312,11 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         emailContent_003.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
 
         EmailParam email_003 = new EmailParam();
+        HashMap<String, String> subjectMap = IaisCommonUtils.genNewHashMap();
+        subjectMap.put("[appType]", tlAppType);
+        subjectMap.put("[applicationNo]", tlGroupNumber);
+        email_003.setSubjectParams(subjectMap);
+
         email_003.setTemplateId(email_003_template);
         email_003.setTemplateContent(emailContent_003);
         email_003.setQueryCode(HcsaChecklistConstants.SELF_ASS_MT_EMAIL_TO_CURRENT_INSPECTOR);
@@ -320,7 +326,6 @@ public class SelfAssessmentServiceImpl implements SelfAssessmentService {
         email_003.setModuleType(NotificationHelper.OFFICER_MODULE_TYPE_INSPECTOR_BY_CURRENT_TASK);
         email_003.setSmsOnlyOfficerHour(false);
         notificationHelper.sendNotification(email_003);
-
     }
 
 
