@@ -1636,6 +1636,11 @@ public class OfficerOnlineEnquiriesDelegator {
         for (ReqForInfoSearchListDto info:searchListDtoSearchResult.getRows()
         ) {
             info.setServiceName(HcsaServiceCacheHelper.getServiceNameById(info.getServiceName()));
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < info.getAddress().size(); i++) {
+                sb.append(info.getAddress().get(i)).append(',');
+            }
+            info.setAddresses(sb.toString().substring(0,sb.toString().length()-1));
         }
 
         queryList = searchListDtoSearchResult.getRows();
