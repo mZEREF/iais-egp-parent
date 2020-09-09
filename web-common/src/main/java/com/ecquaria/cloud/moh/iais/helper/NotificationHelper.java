@@ -855,7 +855,7 @@ public class NotificationHelper {
 		return inspectionEmailTemplateDto;
 	}
 
-	private List<OrgUserDto> receiveOrgUserByTaskInfo(String appNo, String processUrl, List<String> taskStatus){
+	private List<OrgUserDto> receiveOrgUserByTaskInfo(String appNo, List<String> processUrl, List<String> taskStatus){
 		HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
 		HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
 		String gatewayUrl = env.getProperty("iais.inter.gateway.url");
@@ -877,21 +877,16 @@ public class NotificationHelper {
 
 		String emtpId = inspectionEmailTemplateDto.getEmailTemplateId();
 		List<OrgUserDto> orgUserList;
-		String processUrl;
+		List<String> processUrl;
 		List<String> taskStatus;
 		if (MsgTemplateConstants.MSG_TEMPLATE_SELF_ASS_MT_EMAIL_INSPECTOR_EMAIL_CHM.equals(emtpId)){
-			processUrl = TaskConsts.TASK_PROCESS_URL_MAIN_FLOW;
+			processUrl = new ArrayList<>(Arrays.asList(TaskConsts.TASK_PROCESS_URL_MAIN_FLOW, TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE));
 			taskStatus = new ArrayList<>(Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ));
 			orgUserList = receiveOrgUserByTaskInfo(appNo, processUrl, taskStatus);
 		}else {
-			processUrl = TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION;
+			processUrl = new ArrayList<>(Arrays.asList(TaskConsts.TASK_PROCESS_URL_PRE_INSPECTION, TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE));
 			taskStatus = new ArrayList<>(Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ));
 			orgUserList = receiveOrgUserByTaskInfo(appNo, processUrl, taskStatus);
-			if (IaisCommonUtils.isEmpty(orgUserList)) {
-				processUrl = TaskConsts.TASK_PROCESS_URL_APPT_INSPECTION_DATE;
-				taskStatus = new ArrayList<>(Arrays.asList(TaskConsts.TASK_STATUS_PENDING, TaskConsts.TASK_STATUS_READ, TaskConsts.TASK_STATUS_COMPLETED, TaskConsts.TASK_STATUS_REMOVE));
-				orgUserList = receiveOrgUserByTaskInfo(appNo, processUrl, taskStatus);
-			}
 		}
 
 		if (IaisCommonUtils.isEmpty(orgUserList)){
