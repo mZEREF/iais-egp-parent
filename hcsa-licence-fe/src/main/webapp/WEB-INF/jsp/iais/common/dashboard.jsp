@@ -11,6 +11,9 @@
             </div>
             <div class="row">
                 <c:choose>
+                    <c:when test="${'empty' == DashboardTitle }">
+                        <div class="col-xs-12"></div>
+                    </c:when>
                     <c:when test="${DashboardTitle != null && DashboardTitle !=''}">
                         <div class="col-xs-12"><h1>${DashboardTitle}</h1></div>
                     </c:when>

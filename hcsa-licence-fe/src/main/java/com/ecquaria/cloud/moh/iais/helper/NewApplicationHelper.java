@@ -712,6 +712,9 @@ public class NewApplicationHelper {
         List<AppSvcDisciplineAllocationDto> allocationDto = null;
         if(appSvcRelatedInfoDto != null){
             allocationDto = appSvcRelatedInfoDto.getAppSvcDisciplineAllocationDtoList();
+        }else{
+            log.info(StringUtil.changeForLog("can not found the match appSvcRelatedInfoDto ..."));
+            return null;
         }
         List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
         Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap = IaisCommonUtils.genNewHashMap();
@@ -1633,20 +1636,9 @@ public class NewApplicationHelper {
                 Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
                 ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
                 //PO/DPO
-                List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
-                List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
-                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos.get(0).getAppSvcPrincipalOfficersDtoList())){
-                    for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcRelatedInfoDtos.get(0).getAppSvcPrincipalOfficersDtoList()){
-                        if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())){
-                            principalOfficersDtos.add(appSvcPrincipalOfficersDto);
-                        }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())){
-                            deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
-                        }
-                    }
+                if(!IaisCommonUtils.isEmpty(appSvcRelatedInfoDtos)){
+                    setPreviewPo(appSvcRelatedInfoDtos.get(0),bpc.request);
                 }
-                ParamUtil.setRequestAttr(bpc.request, "ReloadPrincipalOfficers", principalOfficersDtos);
-                ParamUtil.setRequestAttr(bpc.request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
-
             }
             AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
             appEditSelectDto.setPremisesEdit(true);
@@ -1654,6 +1646,23 @@ public class NewApplicationHelper {
             appEditSelectDto.setServiceEdit(true);
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
         }
+
+    }
+
+    public static void setPreviewPo(AppSvcRelatedInfoDto appSvcRelatedInfoDto,HttpServletRequest request){
+        List<AppSvcPrincipalOfficersDto> principalOfficersDtos = IaisCommonUtils.genNewArrayList();
+        List<AppSvcPrincipalOfficersDto> deputyPrincipalOfficersDtos = IaisCommonUtils.genNewArrayList();
+        if(appSvcRelatedInfoDto != null){
+            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto:appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList()){
+                if(ApplicationConsts.PERSONNEL_PSN_TYPE_PO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                    principalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                }else if(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO.equals(appSvcPrincipalOfficersDto.getPsnType())){
+                    deputyPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                }
+            }
+        }
+        ParamUtil.setRequestAttr(request, "ReloadPrincipalOfficers", principalOfficersDtos);
+        ParamUtil.setRequestAttr(request, "ReloadDeputyPrincipalOfficers", deputyPrincipalOfficersDtos);
 
     }
 

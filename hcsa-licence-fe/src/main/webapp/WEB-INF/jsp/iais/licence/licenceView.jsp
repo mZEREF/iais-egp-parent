@@ -1,4 +1,6 @@
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<%@ taglib uri="http://www.ecq.com/iais" prefix="iais" %>
 <%
   //handle to the Engine APIs
   sop.webflow.rt.api.BaseProcessClass process =
@@ -18,57 +20,63 @@
   <div class="container">
     <div class="row">
       <div class="col-xs-12">
-        <div class="instruction-content center-content">
-          <h3>Licence detail</h3>
-          <!--startpoint-->
-          <div id = "printDev">
-            <p>This is a dummy licence with Licence Number ${licenceViewDto.licenceDto.licenceNo}</p>
-            <ul class="info-content">
-              <li>
-                <p>Name of Licensee:  ${licenceViewDto.licenseeDto.name}</p>
-              </li>
-              <li>
-                <p>Service Licence: ${licenceViewDto.licenceDto.svcName}</p>
-              </li>
-              <li>
-              <p>Licence Start and End Date: ${licenceViewDto.startDate} to ${licenceViewDto.endDate} </p>
-              </li>
-              <li>
-                <p>Licensed Premises: ${licenceViewDto.hciName} </p>
-              </li>
-            </ul>
-            <p>Premises Address: ${licenceViewDto.address}</p>
-          </div>
-          <!--endpoint-->
-          <div class="application-tab-footer">
-            <div class="row">
-              <div class="col-xs-12 col-sm-6">
-                <p></p>
+
+        <div class="tab-gp steps-tab">
+          <div class="tab-content">
+            <div class="tab-pane active" id="previewTab" role="tabpanel">
+              <div class="preview-gp">
+                <div class="row">
+                  <br/><br/><br/>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                      <%@include file="../common/previewPremises.jsp"%>
+                      <%@include file="../common/previewPrimary.jsp"%>
+                      <div class="panel panel-default svc-content">
+                        <div class="panel-heading"  id="headingServiceInfo" role="tab">
+                          <h4 class="panel-title"><a class="svc-pannel-collapse collapsed"  role="button" data-toggle="collapse" href="#collapseServiceInfo${status.index}" aria-expanded="true" aria-controls="collapseServiceInfo">Service Related Information </a></h4>
+                        </div>
+
+                        <div class=" panel-collapse collapse" id="collapseServiceInfo" role="tabpanel" aria-labelledby="headingServiceInfo">
+                          <div class="panel-body">
+                            <p class="mb-0">
+                            <div class="text-right app-font-size-16">
+                              <a href="#" id="doSvcEdit"><em class="fa fa-pencil-square-o"></em>Edit</a>
+                            </div>
+                            </p>
+                            <div class="panel-main-content">
+                              <%@include file="../common/previewSvcInfo.jsp"%>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
               </div>
-              <div class="col-xs-12 col-sm-6">
-                <div class="text-right text-center-mobile"><a class="btn btn-primary next" onclick="preview();" href="">Print</a></div>
+              <div class="application-tab-footer">
+                <div class="row">
+                  <div class="col-xs-12 col-sm-3">
+                      <a id = "Back" class="back" href="/main-web/eservice/INTERNET/MohInternetInbox?initPage=initLic" ><em class="fa fa-angle-left"></em> Back</a>
+                  </div>
+                  <div class="col-xs-12 col-sm-3">
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
   </div>
   <%@ include file="/WEB-INF/jsp/include/validation.jsp" %>
-  <input type="hidden" name="pageCon" value="valPremiseList" >
 </form>
 <script>
-    function preview() {
-        body = window.document.body.innerHTML;
-        startpoint= "<!--startpoint-->";
-        endpoint= "<!--endpoint-->";
-        printdb= body.substring(body.indexOf(startpoint) + 17);
-        printdb = printdb.substring(0, printdb.indexOf(endpoint));
-        window.document.body.innerHTML = printdb ;
-        window.print();
-        window.document.body.innerHTML = body ;
-    }
+
 
 </script>
 

@@ -1339,6 +1339,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                         appGrpPrimaryDocDto.setAppGrpId(appSubmissionDto.getAppGrpId());
                         appGrpPrimaryDocDto.setDocSize(appSvcDocDto.getDocSize());
                         appGrpPrimaryDocDto.setFileRepoId(appSvcDocDto.getFileRepoId());
+                        appGrpPrimaryDocDto.setPassValidate(appSvcDocDto.isPassValidate());
                         appGrpPrimaryDocDtos.add(appGrpPrimaryDocDto);
                         appSvcDocDtos.add(appSvcDocDto);
                     }
