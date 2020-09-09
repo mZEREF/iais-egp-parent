@@ -152,7 +152,7 @@ public class EmailResendDelegator {
             String schedule = Formatter.formatDate(blastManagementDtoById.getSchedule());
             Calendar cal = Calendar.getInstance();
             cal.setTime(blastManagementDtoById.getSchedule());
-            int hour = cal.get(Calendar.HOUR);
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
             int minute = cal.get(Calendar.MINUTE);
             ParamUtil.setSessionAttr(bpc.request,"hour",hour);
             ParamUtil.setSessionAttr(bpc.request,"minutes",minute);
@@ -166,7 +166,7 @@ public class EmailResendDelegator {
         }else{
             blastManagementDtoById.setStatus("inacitve");
         }
-
+        setTimeSelection(bpc);
         ParamUtil.setSessionAttr(bpc.request,"resendBlastedit",blastManagementDtoById);
         ParamUtil.setSessionAttr(bpc.request,"blastResendEmailId",id);
     }
@@ -245,5 +245,18 @@ public class EmailResendDelegator {
      */
     public void backToResend(BaseProcessClass bpc){
 
+    }
+
+    private void setTimeSelection(BaseProcessClass bpc){
+        List<SelectOption> timeHourList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 24;i++){
+            timeHourList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        List<SelectOption> timeMinList = IaisCommonUtils.genNewArrayList();
+        for (int i = 0; i< 60;i++){
+            timeMinList.add(new SelectOption(String.valueOf(i), i<10?"0"+String.valueOf(i):String.valueOf(i)));
+        }
+        ParamUtil.setRequestAttr(bpc.request, "HHselect",  timeHourList);
+        ParamUtil.setRequestAttr(bpc.request, "MMselect",  timeMinList);
     }
 }
