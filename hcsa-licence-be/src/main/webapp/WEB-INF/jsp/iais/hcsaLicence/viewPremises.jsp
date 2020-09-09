@@ -516,22 +516,34 @@
                                       <div class="content-body fileUploadContainer">
                                         <div class="field col-sm-4 control-label formtext"><label>${appGrpPrimaryDocDto.svcComDocName}:</label></div>
                                         <div class="control col-sm-12">
-                                          <div class="fileList">
-                                              <span class="filename server-site col-xs-12 col-md-12" id="130">
-                                                <div class="col-xs-6 col-md-6">
-                                                  <span class="newVal" attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}">
-                                                     <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
+                                          <div class="col-xs-6 col-md-6">
+                                            <c:if test="${appGrpPrimaryDocDto.docSize!=null}">
+                                              <span class="newVal " attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}">
+                                              <a style="margin-left: 10%" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
                                                      value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a><c:out value="(${appGrpPrimaryDocDto.docSize})KB"/>
-                                                  </span>
-                                                </div>
-                                                <div class="col-xs-6 col-md-6">
-                                                  <span class="oldVal" attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
-                                                     <a href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
-                                                     value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].fileRepoId}"/>&fileRepoName=${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}" title="Download" class="downloadFile">${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}</a><c:out value="(${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize})KB"/>
-                                                  </span>
-                                                </div>
-                                              </span>
+                                            </span>
+                                            </c:if>
+                                            <c:if test="${appGrpPrimaryDocDto.docSize==null}">
+                                              <span class="newVal " attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}">
+
+                                            </span>
+                                            </c:if>
                                           </div>
+                                          <div class="col-xs-6 col-md-6">
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize!=null}">
+                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
+                                                <a style="margin-left: 10%" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
+                                                    value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].fileRepoId}"/>&fileRepoName=${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}" title="Download" class="downloadFile">${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}</a><c:out value="(${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize})KB"/>
+                                              </span>
+                                            </c:if>
+                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize==null}">
+                                              <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
+                                              </span>
+                                            </c:if>
+
+                                          </div>
+
+
                                         </div>
                                       </div>
                                     </c:forEach>
@@ -601,7 +613,9 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6 ">
-                                                <span class="newVal " attr="${newLicenceDto.name}"><c:out value="${newLicenceDto.name}"/></span>
+                                                <span class="newVal " attr="${newLicenceDto.name}">
+                                                  <c:out value="${newLicenceDto.name}"/>
+                                                </span>
                                             <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                           </div>
                                           <div class="col-md-6">

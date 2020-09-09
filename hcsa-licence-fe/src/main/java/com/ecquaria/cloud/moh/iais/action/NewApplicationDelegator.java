@@ -1824,8 +1824,14 @@ public class NewApplicationDelegator {
                             }
                             if (isAutoRfc) {
                                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
+                                for(AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()){
+                                    appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
+                                }
                             } else {
                                 appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.YES);
+                                for(AppGrpPremisesDto appGrpPremisesDto1 : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()){
+                                    appGrpPremisesDto1.setNeedNewLicNo(Boolean.FALSE);
+                                }
                             }
                             appSubmissionDtoByLicenceId.setAutoRfc(isAutoRfc);
 
@@ -1902,10 +1908,16 @@ public class NewApplicationDelegator {
             appSubmissionDtos.add(appSubmissionDto);
             if (isAutoRfc) {
                 appSubmissionDto.setIsNeedNewLicNo(AppConsts.NO);
+                for(AppGrpPremisesDto appGrpPremisesDto :  appSubmissionDto.getAppGrpPremisesDtoList()){
+                    appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                }
                 autoSaveAppsubmission.addAll(appSubmissionDtos);
             } else {
-                notAutoSaveAppsubmission.addAll(appSubmissionDtos);
                 appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
+                for(AppGrpPremisesDto appGrpPremisesDto :  appSubmissionDto.getAppGrpPremisesDtoList()){
+                    appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+                }
+                notAutoSaveAppsubmission.addAll(appSubmissionDtos);
             }
 
         }
@@ -1966,6 +1978,9 @@ public class NewApplicationDelegator {
                     appSubmissionDto1.setCreateAuditPayStatus(ApplicationConsts.PAYMENT_STATUS_PENDING_PAYMENT);
                     appSubmissionDto1.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
                     appSubmissionDto1.setIsNeedNewLicNo(AppConsts.YES);
+                    for(AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto1.getAppGrpPremisesDtoList()){
+                        appGrpPremisesDto.setNeedNewLicNo(Boolean.TRUE);
+                    }
                     appSubmissionDto1.setAppSvcRelatedInfoDtoList(personAppsubmit.getAppSvcRelatedInfoDtoList());
                     autoSaveAppsubmission.add(personAppsubmit);
                 }else {
@@ -2006,6 +2021,9 @@ public class NewApplicationDelegator {
                 String s = Formatter.formatterMoney(amount1);
                 appSubmissionDto1.setAmountStr(s);
             }
+            for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos1){
+                appSubmissionDto1.setAppGrpNo(appSubmissionDtos1.get(0).getAppGrpNo());
+            }
             AppSubmissionDto o1 = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDtos1.get(0));
             o1.setAmount(ackPageAmount);
             String s = Formatter.formatterMoney(ackPageAmount);
@@ -2042,6 +2060,9 @@ public class NewApplicationDelegator {
                 t=t+appSubmissionDto1.getAmount();
                 String s = Formatter.formatterMoney(appSubmissionDto1.getAmount());
                 appSubmissionDto1.setAmountStr(s);
+                appSubmissionDto1.setAppGrpNo(appSubmissionDtos1.get(0).getAppGrpNo());
+            }
+            for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos1){
                 appSubmissionDto1.setAppGrpNo(appSubmissionDtos1.get(0).getAppGrpNo());
             }
             AppSubmissionDto o1 = (AppSubmissionDto)CopyUtil.copyMutableObject(appSubmissionDtos1.get(0));
@@ -2230,6 +2251,9 @@ public class NewApplicationDelegator {
             appSubmissionDtoByLicenceId.setAutoRfc(true);
             appSubmissionDtoByLicenceId.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             appSubmissionDtoByLicenceId.setIsNeedNewLicNo(AppConsts.NO);
+            for(AppGrpPremisesDto appGrpPremisesDto : appSubmissionDtoByLicenceId.getAppGrpPremisesDtoList()){
+                appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+            }
             appSubmissionDto.setCreatAuditAppStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
             appSubmissionDtoList.add(appSubmissionDtoByLicenceId);
         }
@@ -2414,6 +2438,7 @@ public class NewApplicationDelegator {
             svcPrincipalOfficersDto.setDesignation(appSvcPrincipalOfficersDto.getDesignation());
             svcPrincipalOfficersDto.setOfficeTelNo(appSvcPrincipalOfficersDto.getOfficeTelNo());
             svcPrincipalOfficersDto.setEmailAddr(appSvcPrincipalOfficersDto.getEmailAddr());
+            svcPrincipalOfficersDto.setMobileNo(appSvcPrincipalOfficersDto.getMobileNo());
             list.add(svcPrincipalOfficersDto);
         }
         return list;
@@ -2466,6 +2491,10 @@ public class NewApplicationDelegator {
         changePerson.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         changePerson.setStatus(ApplicationConsts.APPLICATION_STATUS_REQUEST_FOR_CHANGE_SUBMIT);
         changePerson.setIsNeedNewLicNo(AppConsts.NO);
+        List<AppGrpPremisesDto> appGrpPremisesDtoList = changePerson.getAppGrpPremisesDtoList();
+        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+            appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
+        }
         changePerson.setAppType(ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE);
         appSubmissionService.transform(changePerson, appSubmissionDto.getLicenseeId());
         PreOrPostInspectionResultDto preOrPostInspectionResultDto1 = appSubmissionService.judgeIsPreInspection(changePerson);
