@@ -39,6 +39,9 @@ public interface FeAdminClient {
     @GetMapping(value = "/iais-licensee/licensee/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeDto> getLicenseeById(@PathVariable(name = "id") String id);
 
+    @GetMapping(value = "/iais-licensee/licenseesByOrgId/{orgId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<LicenseeDto>> getLicenseeByOrgId(@PathVariable(name = "orgId") String orgId);
+
     @GetMapping(value = "/iais-licensee/getPersonByid/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getPersonByid(@PathVariable(name = "id") String id);
 

@@ -55,6 +55,14 @@ public class FeAdminClientFallback implements FeAdminClient{
     }
 
     @Override
+    public FeignResponseEntity<List<LicenseeDto>> getLicenseeByOrgId(String orgId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getPersonByid(String id) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

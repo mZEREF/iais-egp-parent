@@ -358,6 +358,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     }
 
     @Override
+    public List<LicenseeDto> getLicenseeByOrgId(String orgId){
+        return feAdminClient.getLicenseeByOrgId(orgId).getEntity();
+    }
+
+    @Override
     public List<LicenseeKeyApptPersonDto> getPersonById(String id){
         return feAdminClient.getPersonByid(id).getEntity();
     }

@@ -43,6 +43,7 @@ public interface OrgUserManageService {
 
     void updateUserBe(OrganizationDto organizationDto);
     LicenseeDto getLicenseeById(String id);
+    List<LicenseeDto> getLicenseeByOrgId(String orgId);
     List<LicenseeKeyApptPersonDto> getPersonById(String id);
 
     IaisApiResult<Void> checkIssueUen(String idNo, String idType);
