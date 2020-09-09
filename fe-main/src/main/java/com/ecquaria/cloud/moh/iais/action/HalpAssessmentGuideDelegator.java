@@ -1531,7 +1531,7 @@ public class HalpAssessmentGuideDelegator {
                 String ack030 = MessageUtil.getMessageDesc("ACK030");
                 String replace = ack030.replace("<draft application no>", stringBuilder.toString());
                 bpc.request.setAttribute("draftByLicAppId",replace);
-                bpc.request.setAttribute("isAppealShow","1");
+                bpc.request.setAttribute("isCeasedShow","1");
                 bpc.request.setAttribute("appealApplication",licIdValue.get(0));
                 ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
                 return;
@@ -1716,7 +1716,7 @@ public class HalpAssessmentGuideDelegator {
                     String ack030 = MessageUtil.getMessageDesc("ACK030");
                     String replace = ack030.replace("<draft application no>", stringBuilder.toString());
                     bpc.request.setAttribute("draftByLicAppId",replace);
-                    bpc.request.setAttribute("isAppealShow","1");
+                    bpc.request.setAttribute("isAmendShow","1");
                     bpc.request.setAttribute("appealApplication",licIdValue);
                 }
                 flag = true;

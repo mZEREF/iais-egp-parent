@@ -635,60 +635,63 @@ public class InterInboxDelegator {
         String cessationError = null ;
         String [] licIds = ParamUtil.getStrings(bpc.request, "licenceNo");
         List<String> licIdValue = IaisCommonUtils.genNewArrayList();
+        ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
         boolean result= false;
-        for (String item : licIds) {
-            licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
-        }
-        for(String licId : licIdValue){
-            LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
-            if(licenceDto==null){
-                cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
-                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-                bpc.request.setAttribute("cessationError",cessationError);
-                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
-                return ;
+        if(licIds != null){
+            for (String item : licIds) {
+                licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
             }
-        }
-
-        Map<String,Boolean> resultMap = inboxService.listResultCeased(licIdValue);
-        for(Map.Entry<String,Boolean> entry : resultMap.entrySet()){
-            if (!entry.getValue()){
-                result = true;
-                break;
-            }
-        }
-        List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue.get(0));
-        String isNeedDelete = bpc.request.getParameter("isNeedDelete");
-        if(!draftByLicAppId.isEmpty()){
-            StringBuilder stringBuilder=new StringBuilder();
-            for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
-                stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
-            }
-            if("delete".equals(isNeedDelete)){
-                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
-                    inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+            for(String licId : licIdValue){
+                LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
+                if(licenceDto==null){
+                    cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
+                    ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
+                    bpc.request.setAttribute("cessationError",cessationError);
+                    ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                    return ;
                 }
-            }else {
-                String ack030 = MessageUtil.getMessageDesc("ACK030");
-                String replace = ack030.replace("<draft application no>", stringBuilder.toString());
-                bpc.request.setAttribute("draftByLicAppId",replace);
-                bpc.request.setAttribute("isAppealShow","1");
-                bpc.request.setAttribute("appealApplication",licIdValue.get(0));
-                return;
             }
-        }
-        if(result) {
-            cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
-            bpc.request.setAttribute("cessationError",cessationError);
-            ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
-        }else{
-            ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
-            StringBuilder url = new StringBuilder();
-            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                    .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohCessationApplication");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
+
+            Map<String,Boolean> resultMap = inboxService.listResultCeased(licIdValue);
+            for(Map.Entry<String,Boolean> entry : resultMap.entrySet()){
+                if (!entry.getValue()){
+                    result = true;
+                    break;
+                }
+            }
+            List<ApplicationSubDraftDto> draftByLicAppId = inboxService.getDraftByLicAppId(licIdValue.get(0));
+            String isNeedDelete = bpc.request.getParameter("isNeedDelete");
+            if(!draftByLicAppId.isEmpty()){
+                StringBuilder stringBuilder=new StringBuilder();
+                for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                    stringBuilder.append(applicationSubDraftDto.getDraftNo()).append(' ');
+                }
+                if("delete".equals(isNeedDelete)){
+                    for(ApplicationSubDraftDto applicationSubDraftDto : draftByLicAppId){
+                        inboxService.deleteDraftByNo(applicationSubDraftDto.getDraftNo());
+                    }
+                }else {
+                    String ack030 = MessageUtil.getMessageDesc("ACK030");
+                    String replace = ack030.replace("<draft application no>", stringBuilder.toString());
+                    bpc.request.setAttribute("draftByLicAppId",replace);
+                    bpc.request.setAttribute("isCeaseShow","1");
+                    bpc.request.setAttribute("appealApplication",licIdValue.get(0));
+                    return;
+                }
+            }
+            if(result) {
+                cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
+                bpc.request.setAttribute("cessationError",cessationError);
+                ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
+                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+            }else{
+                ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
+                StringBuilder url = new StringBuilder();
+                url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                        .append(InboxConst.URL_LICENCE_WEB_MODULE+"MohCessationApplication");
+                String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+                bpc.response.sendRedirect(tokenUrl);
+            }
         }
     }
 

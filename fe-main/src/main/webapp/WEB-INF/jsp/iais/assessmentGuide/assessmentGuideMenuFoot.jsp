@@ -54,6 +54,9 @@
 <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteRfcDraft()"></iais:confirm>
 <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftRenewByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteRenewDraft()"></iais:confirm>
 <iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftAppealByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteAppealDraft()"></iais:confirm>
+<iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftCeasdByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteCeasedDraft()"></iais:confirm>
+<iais:confirm msg="${draftByLicAppId}" callBack="cancel()" popupOrder="draftAmendByLicAppId" yesBtnDesc="cancel" cancelBtnDesc="delete" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="deleteAmendDraft()"></iais:confirm>
+
 </form>
 </div>
 
@@ -83,12 +86,22 @@
         if('1' == '${isAppealShow}'){
             $('#draftAppealByLicAppId').modal('show');
         }
+        $('#draftAmendByLicAppId').modal('hide');
+        if('1' == '${isAmendShow}'){
+            $('#draftAmendByLicAppId').modal('show');
+        }
+        $('#draftCeasdByLicAppId').modal('hide');
+        if('1' == '${isCeasedShow}'){
+            $('#draftCeasdByLicAppId').modal('show');
+        }
     });
 
     function cancel() {
         $('#draftByLicAppId').modal('hide');
         $('#draftRenewByLicAppId').modal('hide');
         $('#draftAppealByLicAppId').modal('hide');
+        $('#draftAmendByLicAppId').modal('hide');
+        $('#draftCeasdByLicAppId').modal('hide');
     }
 
     // $(document).ready(function () {
@@ -106,6 +119,14 @@
     function deleteRenewDraft(){
         $('#isNeedDelete').val('delete');
         doLicRenew();
+    }
+    function deleteCeasedDraft() {
+        $('#isNeedDelete').val('delete');
+        doLicCease();
+    }
+    function deleteAmendDraft() {
+        $('#isNeedDelete').val('delete');
+        doLicAmend();
     }
 
     function guideSubmit(guideAction,toWhere){
