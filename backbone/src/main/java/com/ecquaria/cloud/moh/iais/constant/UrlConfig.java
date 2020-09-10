@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UrlConfig {
-    @Value("${moh.internet.websit}")
+    @Value("${moh.internet.web}")
     private String internetWebSite;
     @Value("${moh.internet.inbox}")
     private String internetInbox;
-    @Value("${moh.intranet.websit}")
+    @Value("${moh.intranet.web}")
     private String intranetWebSite;
     @Value("${moh.intranet.inbox}")
     private String intranetInbox;
