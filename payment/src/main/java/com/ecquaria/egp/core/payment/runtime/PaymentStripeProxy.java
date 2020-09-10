@@ -189,7 +189,7 @@ public class PaymentStripeProxy extends PaymentProxy {
 //		String secureHashType = fields.remove("vpc_SecureHashType");
 //		String responseSecureHash = fields.remove("vpc_SecureHash");
 //		String hashValidated = null;
-		String status = null;//"Send";
+		String status = PaymentTransactionEntity.TRANS_STATUS_FAILED;//"Send";
 		String invoiceNo = "1234567";//"Send";
 		//hashValidated = "Correct";
 //		String statusNum = fields.get("vpc_TxnResponseCode");
