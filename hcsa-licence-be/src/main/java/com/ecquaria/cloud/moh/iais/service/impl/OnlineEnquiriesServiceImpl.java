@@ -524,7 +524,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         List<OrgUserDto> leadList = organizationClient.retrieveOrgUserAccount(iteraterAo1s).getEntity();
         try{
             String leadName = leadList.get(0).getDisplayName();
-            inspectionReportDto.setReportedBy(leadName);
+            inspectionReportDto.setReportNoteBy(leadName);
         }catch (Exception e){
             log.info(e.getMessage(),e);
         }
