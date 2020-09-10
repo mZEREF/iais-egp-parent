@@ -1,10 +1,11 @@
 package com.ecquaria.cloud.moh.iais.dto;
 
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
-import java.io.Serializable;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.Set;
 
 /**
  * LoginContext
@@ -29,6 +30,7 @@ public class LoginContext implements Serializable {
     // FE User Info
     @Setter private String licenseeId;
     @Setter private String orgId;
+    @Setter private String uenNo;
     @Setter private String licenseeEntityType;
 
     public LoginContext() {

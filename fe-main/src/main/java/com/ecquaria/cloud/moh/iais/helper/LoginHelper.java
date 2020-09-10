@@ -35,7 +35,6 @@ public final class LoginHelper {
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
         auditTrailDto.setLoginType(loginType);
-        auditTrailDto.setNricNumber(user.getIdentityNo());
         auditTrailDto.setModule("main-web");
         auditTrailDto.setFunctionName("Fe Login");
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);

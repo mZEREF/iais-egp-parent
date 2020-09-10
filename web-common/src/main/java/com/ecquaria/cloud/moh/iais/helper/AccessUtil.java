@@ -99,13 +99,14 @@ public class AccessUtil {
             loginContext.setUserName(user.getDisplayName());
             List<String> userRoles = client.retrieveUserRoles(orgUser.getId()).getEntity();
             loginContext.setOrgId(orgUser.getOrgId());
+
             if (userRoles != null && !userRoles.isEmpty()) {
                 loginContext.getRoleIds().addAll(userRoles);
                 loginContext.setCurRoleId(userRoles.get(0));
             }
+
             if (AppConsts.USER_DOMAIN_INTRANET.equals(orgUser.getUserDomain())) {
                 List<String> wrkGrps = client.getWorkGrpsByUserId(orgUser.getId()).getEntity();
-                loginContext.setNricNum(orgUser.getIdentityNo());
                 if (wrkGrps != null && !wrkGrps.isEmpty()) {
                     loginContext.getWrkGrpIds().addAll(wrkGrps);
                 }
@@ -113,10 +114,13 @@ public class AccessUtil {
                 LicenseeDto lDto = client.getLicenseeByOrgId(orgUser.getOrgId()).getEntity();
                 if (lDto != null) {
                     loginContext.setLicenseeId(lDto.getId());
+                    loginContext.setUenNo(lDto.getUenNo());
                     loginContext.setLicenseeEntityType(lDto.getLicenseeEntityDto().getEntityType());
                 }
             }
         }
+
+        loginContext.setNricNum(user.getIdentityNo());
         ParamUtil.setSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER, loginContext);
     }
     /**

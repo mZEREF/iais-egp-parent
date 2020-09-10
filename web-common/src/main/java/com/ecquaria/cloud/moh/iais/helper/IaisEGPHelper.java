@@ -199,12 +199,13 @@ public final class IaisEGPHelper extends EGPHelper {
         User user = SessionManager.getInstance(request).getCurrentUser();
         HttpSession session = request.getSession();
         if (user != null) {
-            dto.setMohUserId(user.getId());
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if (loginContext != null) {
                 if (AppConsts.USER_DOMAIN_INTERNET.equals(loginContext.getUserDomain())) {
-                    dto.setNricNumber(user.getId());
+                    dto.setNricNumber(loginContext.getNricNum());
+                    dto.setUenId(loginContext.getUenNo());
                 }
+                dto.setMohUserId(loginContext.getNricNum());
                 dto.setMohUserGuid(loginContext.getUserId());
                 dto.setOperationType(AppConsts.USER_DOMAIN_INTRANET.equals(loginContext.getUserDomain()) ?
                         AuditTrailConsts.OPERATION_TYPE_INTRANET : AuditTrailConsts.OPERATION_TYPE_INTERNET);

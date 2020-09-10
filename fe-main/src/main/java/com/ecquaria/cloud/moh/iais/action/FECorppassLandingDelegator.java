@@ -12,7 +12,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.constant.UserConstants;
-import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
 import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
 import com.ecquaria.cloud.moh.iais.helper.LoginHelper;
 import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
@@ -74,7 +73,6 @@ public class FECorppassLandingDelegator {
     public void corppassCallBack(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         HttpServletResponse response = bpc.response;
-        AuditTrailHelper.auditFunction("FE Corppass", "Login");
         log.info("corppassCallBack===========>>>Start");
         ParamUtil.setSessionAttr(request, UserConstants.SESSION_USER_DTO, null);
         String uen;
