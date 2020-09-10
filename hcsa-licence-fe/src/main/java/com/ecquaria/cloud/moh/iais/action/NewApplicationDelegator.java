@@ -2785,7 +2785,7 @@ public class NewApplicationDelegator {
                 || ApplicationConsts.PAYMENT_METHOD_NAME_PAYNOW.equals(payMethod)) {
             //send email
             try {
-                inspectionDateSendNewApplicationPaymentOnlineEmail(appSubmissionDto, bpc);
+                //inspectionDateSendNewApplicationPaymentOnlineEmail(appSubmissionDto, bpc);
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send email error ...."));
             }
@@ -2805,7 +2805,7 @@ public class NewApplicationDelegator {
         } else if (ApplicationConsts.PAYMENT_METHOD_NAME_GIRO.equals(payMethod)) {
             //send email
             try {
-                sendNewApplicationPaymentGIROEmail(appSubmissionDto, bpc);
+                //sendNewApplicationPaymentGIROEmail(appSubmissionDto, bpc);
             } catch (Exception e) {
                 log.error(StringUtil.changeForLog("send email error ...."));
             }

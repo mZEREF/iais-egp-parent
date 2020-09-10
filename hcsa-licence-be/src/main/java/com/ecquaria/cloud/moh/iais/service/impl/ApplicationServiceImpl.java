@@ -440,7 +440,8 @@ public class ApplicationServiceImpl implements ApplicationService {
         map.put("MOH_NAME",AppConsts.MOH_AGENCY_NAME);
         String templateMessageByContent = MsgUtil.getTemplateMessageByContent(autoEntity.getMessageContent(), map);
         HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(applicationDto.getServiceId());
-        if(hcsaServiceDto!=null && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+        boolean isSend = !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType) && !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) && !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
+        if(hcsaServiceDto!=null && isSend){
             InterMessageDto interMessageDto = MessageTemplateUtil.getInterMessageDto(MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION+applicationNo,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED,
                     messageNo,hcsaServiceDto.getSvcCode()+"@",templateMessageByContent, applicationViewDto.getApplicationGroupDto().getLicenseeId(),IaisEGPHelper.getCurrentAuditTrailDto());
             HashMap<String,String> mapParam = IaisCommonUtils.genNewHashMap();

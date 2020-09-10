@@ -325,7 +325,7 @@ public class AutoRenwalServiceImpl implements AutoRenwalService {
                     smsParam.setSubject(subject);
                     smsParam.setQueryCode(licenceId);
                     smsParam.setReqRefNum(licenceId);
-                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_LICENCE_ID);
+                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_LICENCE_ID);
                     smsParam.setRefId(licenceId);
                     log.info(StringUtil.changeForLog("send renewal application first - sixth sms"));
                     notificationHelper.sendNotification(smsParam);

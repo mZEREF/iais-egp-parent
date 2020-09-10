@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.HcsaConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.acra.AcraConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.application.AppServicesConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
+import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionReportConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
@@ -369,6 +370,16 @@ public class HcsaApplicationDelegator {
                     recommendationStr = "other";
                 }
             }
+            boolean isFinalStage = (boolean)ParamUtil.getSessionAttr(bpc.request,"finalStage");
+            boolean isCessationOrWithdrawalFinalStage = (isCessation || isWithdrawal) && isFinalStage;
+            // cessation and withdrawal fina
+            if(isCessationOrWithdrawalFinalStage){
+                if(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(approveSelect)){
+                    recommendationStr = "approve";
+                }else if(ApplicationConsts.PROCESSING_DECISION_REJECT.equals(approveSelect)){
+                    recommendationStr = "reject";
+                }
+            }
 
             String dateStr = ParamUtil.getDate(bpc.request, "tuc");
             String dateTimeShow = ParamUtil.getString(bpc.request,"dateTimeShow");
@@ -437,7 +448,7 @@ public class HcsaApplicationDelegator {
                         }
                     }
                 }else{
-                    if(isRequestForChange){
+                    if(isRequestForChange || isCessationOrWithdrawalFinalStage){
                         recommendationStr = "6 DTPE002";
                     }
                     String[] strs=recommendationStr.split("\\s+");
@@ -493,6 +504,14 @@ public class HcsaApplicationDelegator {
                 }
             }
 
+            //withdrawal and cessation final stage
+            if(isFinalStage && (isCessation || isWithdrawal)){
+                if(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL.equals(approveSelect)){
+                    nextStage = "PROCAP";
+                }else if(ApplicationConsts.PROCESSING_DECISION_REJECT.equals(approveSelect)){
+                    nextStage = "PROCREJ";
+                }
+            }
 
             log.debug(StringUtil.changeForLog("the nextStage is -->:"+nextStage));
             ParamUtil.setRequestAttr(bpc.request, "crud_action_type", nextStage);
@@ -551,7 +570,12 @@ public class HcsaApplicationDelegator {
         String decisionValue = ParamUtil.getString(bpc.request,"decisionValues");
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        boolean isWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType());
+        boolean isCessation = ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType());
+        boolean isFinalStage = (boolean)ParamUtil.getSessionAttr(bpc.request,"finalStage");
         String status = applicationDto.getStatus();
+        //cessation and withdrawal final stage
+        boolean isCessationOrWithdrawalFinalStage = (isCessation || isWithdrawal) && isFinalStage;
         String crud_action_type = (String) ParamUtil.getRequestAttr(bpc.request, "crud_action_type");
         //isDMS
         String isDMS = (String) ParamUtil.getSessionAttr(bpc.request, "isDMS");
@@ -568,14 +592,14 @@ public class HcsaApplicationDelegator {
             }
         }else{
             //ASO PSO
-            if(RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)){
+            if((RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) && !isCessationOrWithdrawalFinalStage){
                 successInfo = "LOLEV_ACK018";
             }
             //ao3 approve and reject
-            if(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status)){
+            if((RoleConsts.USER_ROLE_AO3.equals(roleId) || isCessationOrWithdrawalFinalStage) && ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(status)){
                 //AO3 APPROVAL
                 successInfo = "LOLEV_ACK020";
-            }else if(RoleConsts.USER_ROLE_AO3.equals(roleId) && ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status)){
+            }else if((RoleConsts.USER_ROLE_AO3.equals(roleId) || isCessationOrWithdrawalFinalStage) && ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(status)){
                 //AO3 REJECT
                 successInfo = "LOLEV_ACK022";
             }
@@ -1246,10 +1270,12 @@ public class HcsaApplicationDelegator {
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        String applicationNo = applicationDto.getApplicationNo();
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         LicenseeDto licenseeDto = licenseeService.getLicenseeDtoById(licenseeId);
         String externalRemarks = ParamUtil.getString(bpc.request,"comments");
         String applicationType = applicationDto.getApplicationType();
+        String serviceId = applicationDto.getServiceId();
         try{
             if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                 AppPremiseMiscDto premiseMiscDto = (AppPremiseMiscDto)ParamUtil.getSessionAttr(bpc.request, "premiseMiscDto");
@@ -1258,8 +1284,13 @@ public class HcsaApplicationDelegator {
                     HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
                     maskParams.put("appealingFor",appealingFor);
                     String appealType = (String)ParamUtil.getSessionAttr(bpc.request, "type");
-                    sendAppealMessage(appealingFor,licenseeId,maskParams,applicationDto.getServiceId(),appealType,applicationDto.getApplicationNo());
+                    sendAppealMessage(appealingFor,licenseeId,maskParams,serviceId,appealType,applicationDto.getApplicationNo());
                 }
+            }else if(ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType)){
+                String licenceId = applicationDto.getOriginLicenceId();
+                HashMap<String, String> maskParams = IaisCommonUtils.genNewHashMap();
+                maskParams.put("licenceId",licenceId);
+                sendCessationMessage(licenceId,applicationNo,licenseeId,maskParams,serviceId);
             }
             applicationService.applicationRfiAndEmail(applicationViewDto, applicationDto, licenseeId, licenseeDto, loginContext, externalRemarks);
         }catch (Exception e){
@@ -1369,6 +1400,19 @@ public class HcsaApplicationDelegator {
         String subject = MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + appNo;
         String mesContext = "Please click the link <a href='" + url + "'>here</a> for submission.";
         //send message
+        sendMessage(subject,licenseeId,mesContext,maskParams,serviceId,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
+    }
+
+    private void sendCessationMessage(String licenceId,String appNo, String licenseeId,HashMap<String, String> maskParams,String serviceId){
+        if(StringUtil.isEmpty(licenceId)
+                || StringUtil.isEmpty(licenseeId)
+                || StringUtil.isEmpty(serviceId)
+                || StringUtil.isEmpty(appNo)){
+            return;
+        }
+        String url = HmacConstants.HTTPS +"://"+systemParamConfig.getInterServerName()+ InboxConst.URL_LICENCE_WEB_MODULE+"MohCessationApplication&licenceId=" + licenceId;
+        String subject = MessageConstants.MESSAGE_SUBJECT_REQUEST_FOR_INFORMATION + appNo;
+        String mesContext = "Please click the link <a href='" + url + "'>here</a> for submission.";
         sendMessage(subject,licenseeId,mesContext,maskParams,serviceId,MessageConstants.MESSAGE_TYPE_ACTION_REQUIRED);
     }
 
@@ -1682,68 +1726,72 @@ public class HcsaApplicationDelegator {
             }
         }
         //appeal save return fee
-        if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
-            if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
-                String returnFee = appPremisesRecommendationDto.getRemarks();
-                log.info(StringUtil.changeForLog("appeal return fee remarks in recommendation db : " + returnFee));
-                if(!StringUtil.isEmpty(returnFee)){
-                    String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
-                    log.info(StringUtil.changeForLog("appeal return fee old application no : " + oldApplicationNo));
-                    if(!StringUtil.isEmpty(oldApplicationNo)){
-                        log.info(StringUtil.changeForLog("save appeal return fee"));
-                        AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
-                        appReturnFeeDto.setApplicationNo(oldApplicationNo);
-                        appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
-                        appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
-                        List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
-                        saveReturnFeeDtos.add(appReturnFeeDto);
-                        broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
-                        broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
-                    }
-                }
-            }else if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
-                AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
-                AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
-                String oldAppId = premiseMiscDto.getRelateRecId();
-                String appGrpId = applicationDto.getAppGrpId();
-                List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
-                LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
-                if(licenseeDto != null) {
-                    LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
-                    if (licenseeEntityDto != null) {
-                        String entityType = licenseeEntityDto.getEntityType();
-                        if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
-                            applicationDto.setIsCharity(Boolean.TRUE);
-                        } else {
-                            applicationDto.setIsCharity(Boolean.FALSE);
+        try{
+            if(ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(appStatus)){
+                if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                    String returnFee = appPremisesRecommendationDto.getRemarks();
+                    log.info(StringUtil.changeForLog("appeal return fee remarks in recommendation db : " + returnFee));
+                    if(!StringUtil.isEmpty(returnFee)){
+                        String oldApplicationNo = (String)ParamUtil.getSessionAttr(bpc.request, "oldApplicationNo");
+                        log.info(StringUtil.changeForLog("appeal return fee old application no : " + oldApplicationNo));
+                        if(!StringUtil.isEmpty(oldApplicationNo)){
+                            log.info(StringUtil.changeForLog("save appeal return fee"));
+                            AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                            appReturnFeeDto.setApplicationNo(oldApplicationNo);
+                            appReturnFeeDto.setReturnAmount(Double.parseDouble(returnFee));
+                            appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_APPEAL);
+                            List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
+                            saveReturnFeeDtos.add(appReturnFeeDto);
+                            broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+                            broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
                         }
                     }
-                }
-                for(ApplicationDto applicationDto1 : applicationDtos){
-                    if(applicationDto1.getApplicationNo().equals(applicationDto.getApplicationNo())){
-                        applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                }else if (ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType)){
+                    AppPremiseMiscDto premiseMiscDto = cessationClient.getAppPremiseMiscDtoByAppId(applicationDto.getId()).getEntity();
+                    AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
+                    String oldAppId = premiseMiscDto.getRelateRecId();
+                    String appGrpId = applicationDto.getAppGrpId();
+                    List<ApplicationDto> applicationDtos = applicationClient.getAppDtosByAppGrpId(appGrpId).getEntity();
+                    LicenseeDto licenseeDto = organizationClient.getLicenseeDtoById(licenseeId).getEntity();
+                    if(licenseeDto != null) {
+                        LicenseeEntityDto licenseeEntityDto = licenseeDto.getLicenseeEntityDto();
+                        if (licenseeEntityDto != null) {
+                            String entityType = licenseeEntityDto.getEntityType();
+                            if (AcraConsts.ENTITY_TYPE_CHARITIES.equals(entityType)) {
+                                applicationDto.setIsCharity(Boolean.TRUE);
+                            } else {
+                                applicationDto.setIsCharity(Boolean.FALSE);
+                            }
+                        }
                     }
-                }
-                ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
-                if (oldApplication != null){
-                    String oldAppNo = oldApplication.getApplicationNo();
-                    if (!StringUtil.isEmpty(oldAppNo)){
-                        List<ApplicationDto> applicationReturnFeeDtos = hcsaConfigClient.returnFee(applicationDtos).getEntity();
-                        if (applicationReturnFeeDtos != null){
-                            Double returnFee = applicationReturnFeeDtos.get(0).getReturnFee();
-                            if (returnFee != null && returnFee >0d){
-                                appReturnFeeDto.setApplicationNo(oldAppNo);
-                                appReturnFeeDto.setReturnAmount(returnFee);
-                                appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
-                                List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
-                                saveReturnFeeDtos.add(appReturnFeeDto);
-                                broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
-                                broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
+                    for(ApplicationDto applicationDto1 : applicationDtos){
+                        if(applicationDto1.getApplicationNo().equals(applicationDto.getApplicationNo())){
+                            applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                        }
+                    }
+                    ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();
+                    if (oldApplication != null){
+                        String oldAppNo = oldApplication.getApplicationNo();
+                        if (!StringUtil.isEmpty(oldAppNo)){
+                            List<ApplicationDto> applicationReturnFeeDtos = hcsaConfigClient.returnFee(applicationDtos).getEntity();
+                            if (applicationReturnFeeDtos != null){
+                                Double returnFee = applicationReturnFeeDtos.get(0).getReturnFee();
+                                if (returnFee != null && returnFee >0d){
+                                    appReturnFeeDto.setApplicationNo(oldAppNo);
+                                    appReturnFeeDto.setReturnAmount(returnFee);
+                                    appReturnFeeDto.setReturnType(ApplicationConsts.APPLICATION_RETURN_FEE_TYPE_WITHDRAW);
+                                    List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
+                                    saveReturnFeeDtos.add(appReturnFeeDto);
+                                    broadcastApplicationDto.setReturnFeeDtos(saveReturnFeeDtos);
+                                    broadcastApplicationDto.setRollBackReturnFeeDtos(saveReturnFeeDtos);
+                                }
                             }
                         }
                     }
                 }
             }
+        }catch (Exception e){
+            log.error(StringUtil.changeForLog("save return fee error"),e);
         }
 
         //completed this task and create the history
@@ -2001,7 +2049,7 @@ public class HcsaApplicationDelegator {
         List<AppReturnFeeDto> saveReturnFeeDtos = IaisCommonUtils.genNewArrayList();
         //save return fee
         for(ApplicationDto applicationDto : applicationDtos){
-            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus()) && !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(applicationDto.getStatus())){
+            if(ApplicationConsts.APPLICATION_STATUS_REJECTED.equals(applicationDto.getStatus()) && !ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationDto.getApplicationType()) && !ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationDto.getApplicationType())){
                 AppReturnFeeDto appReturnFeeDto = new AppReturnFeeDto();
                 Double returnFee = applicationDto.getReturnFee();
                 if(returnFee==null || returnFee == 0d){
@@ -2840,14 +2888,15 @@ public class HcsaApplicationDelegator {
 
     public void setNormalProcessingDecisionDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){
         List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
+        boolean finalStage = isFinalStage(taskDto, applicationViewDto);
         nextStageList.add(new SelectOption("", "Please Select"));
-        if(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId())){
+        if(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) && !finalStage){
 //            nextStageList.add(new SelectOption("VERIFIED", "Support"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Support"));
         }else{
             //62875
             //role is ao3 && status is 'Pending AO3 Approval'  have no verified
-            if(!(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus()))){
+            if(!(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())) && !finalStage){
                 nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_VERIFIED, "Verified"));
             }
         }
@@ -2878,7 +2927,12 @@ public class HcsaApplicationDelegator {
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
         }
-
+        //if final stage
+        if(finalStage){
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
+            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject"));
+        }
+        ParamUtil.setSessionAttr(request, "finalStage", finalStage);
         ParamUtil.setSessionAttr(request, "nextStages", (Serializable)nextStageList);
     }
 
@@ -2933,6 +2987,26 @@ public class HcsaApplicationDelegator {
         }
         applicationViewDto.setRollBack(rollBackMap);
         ParamUtil.setSessionAttr(request, "routeBackValues", (Serializable)rollBackStage);
+    }
+
+    private boolean isFinalStage(TaskDto taskDto, ApplicationViewDto applicationViewDto){
+        boolean flag = true;
+        if(taskDto == null || applicationViewDto == null){
+            return flag;
+        }
+        ApplicationDto applicationDto = applicationViewDto.getApplicationDto();
+        ApplicationGroupDto applicationGroupDto = applicationGroupService.getApplicationGroupDtoById(applicationDto.getAppGrpId());
+        List<HcsaSvcRoutingStageDto> hcsaSvcRoutingStageDtoList = applicationViewService.getStage(applicationDto.getServiceId(),
+                taskDto.getTaskKey(),applicationViewDto.getApplicationDto().getApplicationType(),applicationGroupDto.getIsPreInspection());
+        if(hcsaSvcRoutingStageDtoList!=null) {
+            if (hcsaSvcRoutingStageDtoList.size() > 0) {
+                flag = false;
+            }else{
+                flag = true;
+            }
+        }
+
+        return flag;
     }
 
     public void setVerifiedDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){

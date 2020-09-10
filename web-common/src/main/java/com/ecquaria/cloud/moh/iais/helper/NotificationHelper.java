@@ -562,7 +562,7 @@ public class NotificationHelper {
 					mobile = getMobileOfficer(roles, mobile);
 				} else if (RECEIPT_TYPE_SMS_LICENCE_ID.equals(refIdType)) {
 					mobile = getMobilePersonnel(roles, refId);
-					LicenceDto licenceDto = hcsaLicenceClient.getLicDtoById(refId).getEntity();
+					LicenceDto licenceDto = hcsaLicenceClient.getLicDtoByIdCommon(refId).getEntity();
 					if(licenceDto != null){
 						String licenseeId = licenceDto.getLicenseeId();
 						if(!StringUtil.isEmpty(licenseeId)) {

@@ -49,6 +49,7 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
         boolean isAppealType = ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType);
         boolean isWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType);
         boolean isCessation = ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
+        boolean isFinalStage = (boolean)ParamUtil.getSessionAttr(request,"finalStage");
         if(taskDto != null){
             roleId = taskDto.getRoleId();
         }
@@ -108,11 +109,6 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 ParamUtil.setRequestAttr(request,"selectDecisionValue",decisionValue);
             }
         }
-
-        if (ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(status) &&
-                applicationViewDto.getApplicationDto().getApplicationType().equals(ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL)){
-
-        }else {
             //special status
             if (isRouteBackStatus(status) || ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(status) || ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST.equals(status)) {
                 String nextStageReplys = ParamUtil.getRequestString(request, "nextStageReplys");
@@ -150,36 +146,40 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
                 if (StringUtil.isEmpty(nextStage)) {
                     errMap.put("nextStage", "GENERAL_ERR0024");
                 } else {
-                    if (VERIFIED.equals(nextStage)) {
-                        String verified = ParamUtil.getRequestString(request, "verified");
-                        ParamUtil.setRequestAttr(request, "selectVerified", verified);
-                        if (StringUtil.isEmpty(verified)) {
-                            errMap.put("verified", "GENERAL_ERR0024");
-                        }
-                        // if role is AOS or PSO ,check verified's value
-                        if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {
-                            if ((RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)) && !isAppealType) {
-                                if (StringUtil.isEmpty(recommendationStr)) {
-                                    errMap.put("recommendation", "GENERAL_ERR0024");
+                    if(isFinalStage){
+                        // final stage
+                    }else{
+                        if (VERIFIED.equals(nextStage)) {
+                            String verified = ParamUtil.getRequestString(request, "verified");
+                            ParamUtil.setRequestAttr(request, "selectVerified", verified);
+                            if (StringUtil.isEmpty(verified)) {
+                                errMap.put("verified", "GENERAL_ERR0024");
+                            }
+                            // if role is AOS or PSO ,check verified's value
+                            if (RoleConsts.USER_ROLE_ASO.equals(roleId) || RoleConsts.USER_ROLE_PSO.equals(roleId)) {
+                                if ((RoleConsts.USER_ROLE_AO1.equals(verified) || RoleConsts.USER_ROLE_AO2.equals(verified) || RoleConsts.USER_ROLE_AO3.equals(verified)) && !isAppealType) {
+                                    if (StringUtil.isEmpty(recommendationStr)) {
+                                        errMap.put("recommendation", "GENERAL_ERR0024");
+                                    }
                                 }
                             }
-                        }
-                    } else if (ROLLBACK.equals(nextStage)) {
-                        String rollBack = ParamUtil.getRequestString(request, "rollBack");
-                        ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
-                        if (StringUtil.isEmpty(rollBack)) {
-                            errMap.put("rollBack", "GENERAL_ERR0024");
-                        }
-                    } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
-                        //rfiSelectValue
-                        String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
-                        if(StringUtil.isEmpty(rfiSelectValue)){
-                            errMap.put("nextStage", "RFI_ERR001");
+                        } else if (ROLLBACK.equals(nextStage)) {
+                            String rollBack = ParamUtil.getRequestString(request, "rollBack");
+                            ParamUtil.setRequestAttr(request, "selectRollBack", rollBack);
+                            if (StringUtil.isEmpty(rollBack)) {
+                                errMap.put("rollBack", "GENERAL_ERR0024");
+                            }
+                        } else if(ApplicationConsts.PROCESSING_DECISION_REQUEST_FOR_INFORMATION.equals(nextStage) && !ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
+                            //rfiSelectValue
+                            String rfiSelectValue = ParamUtil.getRequestString(request, "rfiSelectValue");
+                            if(StringUtil.isEmpty(rfiSelectValue)){
+                                errMap.put("nextStage", "RFI_ERR001");
+                            }
                         }
                     }
+
                 }
             }
-        }
         return errMap;
     }
 
@@ -213,7 +213,8 @@ public class HcsaApplicationViewValidate implements CustomizeValidator {
             boolean isAso = HcsaConsts.ROUTING_STAGE_ASO.equals(taskKey) || RoleConsts.USER_ROLE_ASO.equals(roleId);
             boolean isPso = HcsaConsts.ROUTING_STAGE_PSO.equals(taskKey) || RoleConsts.USER_ROLE_PSO.equals(roleId);
             boolean isLateFeeAppealType = (boolean)ParamUtil.getSessionAttr(request,"isLateFeeAppealType");
-            if(isAso || isPso){
+            boolean isFinalStage = (boolean)ParamUtil.getSessionAttr(request,"finalStage");
+            if((isAso || isPso) && !isFinalStage){
                 String appealRecommendationValues = ParamUtil.getString(request, "appealRecommendationValues");
                 if(StringUtil.isEmpty(appealRecommendationValues)){
                     errMap.put("appealRecommendationValues","GENERAL_ERR0024");

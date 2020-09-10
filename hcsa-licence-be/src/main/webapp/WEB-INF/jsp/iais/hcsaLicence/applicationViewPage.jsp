@@ -221,7 +221,7 @@
                                                     </c:if>
 
                                                     <%--application type == appeal --%>
-                                                    <c:if test="${isAppealType || isWithDrawal || isCessation}">
+                                                    <c:if test="${(isAppealType || isWithDrawal || isCessation) && !finalStage}">
                                                         <div id="appealRecommendation">
                                                             <iais:row>
                                                                 <div id="appealRecommendationTrue"><iais:field value="Recommendation" required="true"/></div>
