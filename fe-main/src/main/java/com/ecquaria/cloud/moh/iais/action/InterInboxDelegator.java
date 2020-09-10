@@ -776,7 +776,7 @@ public class InterInboxDelegator {
        for(HcsaServiceDto hcsaServiceDto :hcsaServiceDtos){
            stringBuilder.append(" WHEN '").append(hcsaServiceDto.getId()).append("' Then '").append(hcsaServiceDto.getSvcCode()).append("'  ");
        }
-       stringBuilder.append("ELSE  null END )");
+       stringBuilder.append("ELSE  'N/A' END )");
        return  stringBuilder.toString();
    }
     public void appSwitch(BaseProcessClass bpc){
