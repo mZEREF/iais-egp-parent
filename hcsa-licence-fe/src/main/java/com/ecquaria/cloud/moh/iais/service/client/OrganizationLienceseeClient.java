@@ -44,6 +44,9 @@ public interface OrganizationLienceseeClient {
     @GetMapping(path = "/iais-licensee/licenseeDto/{uenNo}",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<LicenseeDto> getLicenseeByUenNo(@PathVariable(name = "uenNo") String uenNo);
 
+    @GetMapping(value = "/iais-licensee/licensee-by-org-id/{orgId}")
+    FeignResponseEntity<LicenseeDto> getLicenseeByOrgId(@PathVariable("orgId") String orgId);
+
     @RequestMapping(value = "/iais-orguser-be/users-by-ids",method = RequestMethod.POST,produces = { MediaType.APPLICATION_JSON_VALUE },
             consumes = {MediaType.APPLICATION_JSON_VALUE})
     FeignResponseEntity<List<OrgUserDto>> retrieveOrgUserAccount(@RequestBody List<String> ids);

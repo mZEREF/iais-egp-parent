@@ -202,6 +202,10 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         return organizationLienceseeClient.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeId).getEntity();
     }
 
+    @Override
+    public LicenseeDto getLicenseeByOrgId(String orgId){
+        return organizationLienceseeClient.getLicenseeByOrgId(orgId).getEntity();
+    }
 
     @Override
     public List<PersonnelListQueryDto> getLicencePersonnelListQueryDto(String licenseeId) {

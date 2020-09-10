@@ -52,30 +52,27 @@
             <p>The following details are common to all services in your healthcare organisation. To make any changes, please contact your company administrator.</p>
           </div>
           <div class="license-info-gp">
+
             <div class="license-info-row">
               <div class="licnese-info">
-                <p>Licensee: <strong>Greenwood Clinic</strong> </p>
+                <p>Licensee: <strong>${licensee.name}</strong> </p>
               </div>
               <div class="license-edit">
-                <p><a class="license-view">View</a></p>
+                <p><a class="license-view" href="${licenseeurl}">View</a></p>
               </div>
             </div>
-            <div class="license-info-row">
-              <div class="licnese-info">
-                <p>Authorised User 1: <strong>Mo Delan</strong> </p>
-              </div>
-              <div class="license-edit">
-                <p><a class="authorise-view">View</a></p>
-              </div>
-            </div>
-            <div class="license-info-row">
-              <div class="licnese-info">
-                <p>Authorised User 2: <strong>Linda Tan</strong> </p>
-              </div>
-              <div class="license-edit">
-                <p><a class="authorise-view">View</a></p>
-              </div>
-            </div>
+            <c:if test="${!empty keyperson}">
+              <c:forEach var="item" items="${keyperson}" varStatus="status">
+                <div class="license-info-row">
+                  <div class="licnese-info">
+                    <p>Authorised User ${(status.index + 1)}: <strong>${item.getName()}</strong> </p>
+                  </div>
+                  <div class="license-edit">
+                    <p><a class="authorise-view" href="${authorisedUrl}">View</a></p>
+                  </div>
+                </div>
+              </c:forEach>
+            </c:if>
 
           </div>
         </div>

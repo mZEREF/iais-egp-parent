@@ -8,6 +8,8 @@ import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSvcRelatedInfoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.AppAlignLicQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -27,6 +29,7 @@ import com.ecquaria.cloud.moh.iais.helper.NewApplicationHelper;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.service.AppSubmissionService;
 import com.ecquaria.cloud.moh.iais.service.LicenceViewService;
+import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
 import com.ecquaria.cloud.moh.iais.service.ServiceConfigService;
 import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
 import lombok.extern.slf4j.Slf4j;
@@ -102,6 +105,8 @@ public class ServiceMenuDelegator {
     private ApplicationClient applicationClient;
     @Autowired
     private AppSubmissionService appSubmissionService;
+    @Autowired
+    private RequestForChangeService requestForChangeService;
     public void doStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the  doStart start 1...."));
         ParamUtil.setSessionAttr(bpc.request, "licence", null);
@@ -265,6 +270,7 @@ public class ServiceMenuDelegator {
                 action = CHOOSE_SERVICE;
             }
         }
+
         ParamUtil.setRequestAttr(bpc.request,IaisEGPConstant.CRUD_ACTION_TYPE_VALUE,action);
         log.info(StringUtil.changeForLog("prepareData end ..."));
     }
@@ -1086,6 +1092,24 @@ public class ServiceMenuDelegator {
                     }
                 }
             }
+            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
+            LicenseeDto licenseeDto = requestForChangeService.getLicenseeByOrgId(loginContext.getOrgId());
+            List<LicenseeKeyApptPersonDto> keyApptPersonDtos =  requestForChangeService.getLicenseeKeyApptPersonDtoListByLicenseeId(licenseeDto.getId());
+
+            StringBuilder url = new StringBuilder();
+            url.append("https://").append(bpc.request.getServerName())
+                    .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail");
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            String licenseeurl = tokenUrl + "&licenseView=Licensee";
+            String authorisedUrl = tokenUrl + "&licenseView=Authorised";
+            String medAlertUrl= tokenUrl + "&licenseView=MedAlert";
+
+            ParamUtil.setRequestAttr(bpc.request,"licenseeurl",licenseeurl);
+            ParamUtil.setRequestAttr(bpc.request,"authorisedUrl",authorisedUrl);
+            ParamUtil.setRequestAttr(bpc.request,"medAlertUrl",medAlertUrl);
+            ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
+            ParamUtil.setRequestAttr(bpc.request,"keyperson",keyApptPersonDtos);
+
             ParamUtil.setSessionAttr(bpc.request, "baseSvcIdList", (Serializable) baseSvcIds);
             ParamUtil.setSessionAttr(bpc.request, "speSvcIdList", (Serializable) speSvcIds);
             ParamUtil.setSessionAttr(bpc.request,APP_SVC_RELATED_INFO_LIST, (Serializable) appSvcRelatedInfoDtos);
@@ -1100,7 +1124,7 @@ public class ServiceMenuDelegator {
         url.append(URL_HTTPS)
                 .append(bpc.request.getServerName())
                 .append("/main-web/eservice/INTERNET/MohInternetInbox");
-        String tokenUrl = RedirectUtil. changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
+        String tokenUrl = RedirectUtil.changeUrlToCsrfGuardUrlUrl(url.toString(), bpc.request);
         bpc.response.sendRedirect(tokenUrl);
 
         log.info(StringUtil.changeForLog("back inbox end ..."));
@@ -1209,17 +1233,16 @@ public class ServiceMenuDelegator {
     }
 
     public void showLicensee(BaseProcessClass bpc) {
-        String type = ParamUtil.getRequestString(bpc.request,"crud_action_additional");
-        try {
-            StringBuilder url = new StringBuilder();
-            url.append("https://").append(bpc.request.getServerName())
-                    .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail")
-                    .append("?licenseView=").append(type);
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            bpc.response.sendRedirect(tokenUrl);
-        }catch (Exception e){
-            log.info(e.getMessage());
-        }
+//        String type = ParamUtil.getRequestString(bpc.request,"crud_action_additional");
+//        try {
+//            StringBuilder url = new StringBuilder();
+//            url.append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail");
+//            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+//            tokenUrl = tokenUrl + "&licenseView="+type;
+//            bpc.response.sendRedirect(tokenUrl);
+//        }catch (Exception e){
+//            log.info(e.getMessage());
+//        }
     }
 
     private SearchResult getLicense(BaseProcessClass bpc,List<String> baselist){

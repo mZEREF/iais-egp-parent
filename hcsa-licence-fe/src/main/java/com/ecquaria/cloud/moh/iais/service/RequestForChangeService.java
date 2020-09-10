@@ -49,6 +49,8 @@ public interface RequestForChangeService {
 
     List<LicenseeKeyApptPersonDto> getLicenseeKeyApptPersonDtoListByLicenseeId(String licenseeId);
 
+    LicenseeDto getLicenseeByOrgId(String orgId);
+
     List<PersonnelListQueryDto> getLicencePersonnelListQueryDto(String licenseeId);
 
     List<AppSubmissionDto> getAppSubmissionDtoByLicenceIds(List<String> licenceIds);
