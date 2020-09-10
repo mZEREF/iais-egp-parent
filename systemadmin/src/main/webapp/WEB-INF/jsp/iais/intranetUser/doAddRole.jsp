@@ -43,8 +43,9 @@
                 <iais:value width="4">
                     <c:forEach items="${alreadyAssignRoles}" var="role" varStatus="status">
                         <div class="form-check">
-                            <input class="form-check-input" id="removeRoleId" type="checkbox" name="removeRole" value="${alreadyAssignRoleIds[status.index]}"><c:out value="${role}"/>
+                            <input class="form-check-input" id="removeRoleId" type="checkbox" name="removeRole" value="${alreadyAssignRoleIds[status.index]}">
                             <label class="form-check-label" for="removeRoleId"><span class="check-square"></span></label>
+                            <c:out value="${role}"/>
                         </div>
                     </c:forEach>
                 </iais:value>

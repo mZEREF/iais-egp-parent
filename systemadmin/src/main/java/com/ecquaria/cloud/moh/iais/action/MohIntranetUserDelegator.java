@@ -39,10 +39,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
@@ -236,16 +233,18 @@ public class MohIntranetUserDelegator {
         List<Role> rolesByDomain = intranetUserService.getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
         List<String> assignRoleOption = IaisCommonUtils.genNewArrayList();
         Map<String, String> roleMap = IaisCommonUtils.genNewHashMap();
+        Map<String, String> roleMap1 = IaisCommonUtils.genNewHashMap();
         if (!IaisCommonUtils.isEmpty(rolesByDomain)) {
             for (Role role : rolesByDomain) {
                 String name = role.getName();
                 String assignRoleId = role.getId();
                 assignRoleOption.add(name);
                 roleMap.put(name, assignRoleId);
+                roleMap1.put(assignRoleId, name);
             }
         }
         List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.retrieveRolesByuserAccId(userAccId);
-        List<String> roleNames = IaisCommonUtils.genNewArrayList();
+        Set<String> roleNames = IaisCommonUtils.genNewHashSet();
         List<String> assignRoleIds = IaisCommonUtils.genNewArrayList();
         if (orgUserRoleDtos != null && !userAccId.isEmpty()) {
             for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
@@ -253,9 +252,15 @@ public class MohIntranetUserDelegator {
                 String assignRoleId = orgUserRoleDto.getId();
                 roleNames.add(roleName);
                 assignRoleIds.add(assignRoleId);
+
             }
         }
-        assignRoleOption.removeAll(roleNames);
+        List<String> roleIds = IaisCommonUtils.genNewArrayList();
+        for(String roleName : roleNames){
+            String s = roleMap1.get(roleName);
+            roleIds.add(s);
+        }
+        assignRoleOption.removeAll(roleIds);
         ParamUtil.setRequestAttr(bpc.request, "assignRoleOption", assignRoleOption);
         ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoles", roleNames);
         ParamUtil.setRequestAttr(bpc.request, "alreadyAssignRoleIds", assignRoleIds);
