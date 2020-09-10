@@ -77,7 +77,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-10">
-          <label class="col-xs-12 col-md-10 control-label" >Premises Type&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-10 control-label" style="margin-bottom: 10px;">Premises Type&nbsp;<span class="mandatory">*</span></label>
         </div>
       </div>
       <div class="form-group">
