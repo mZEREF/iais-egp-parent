@@ -278,9 +278,12 @@ public class AuditTrailDelegator {
     public void changePage(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        setQuerySql(searchParam);
-        CrudHelper.doPaging(searchParam,bpc.request);
-        queryResult(request, searchParam);
+
+        if (!IaisCommonUtils.isEmpty(searchParam.getFilters())){
+            setQuerySql(searchParam);
+            CrudHelper.doPaging(searchParam,bpc.request);
+            queryResult(request, searchParam);
+        }
     }
 
     private void setQuerySql(SearchParam searchParam){
@@ -305,9 +308,11 @@ public class AuditTrailDelegator {
     public void sortRecords(BaseProcessClass bpc){
         HttpServletRequest request = bpc.request;
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-        setQuerySql(searchParam);
-        CrudHelper.doSorting(searchParam,  request);
-        queryResult(request, searchParam);
+        if (!IaisCommonUtils.isEmpty(searchParam.getFilters())){
+            setQuerySql(searchParam);
+            CrudHelper.doSorting(searchParam,  request);
+            queryResult(request, searchParam);
+        }
     }
 
 }

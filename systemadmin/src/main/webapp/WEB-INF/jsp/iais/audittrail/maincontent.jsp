@@ -12,83 +12,98 @@
 <div class="form-horizontal">
   <div class="form-group">
     <div class="col-xs-5 col-md-10">
-      <iais:field value="Operation Type" required="true"></iais:field>
-      <div class="col-xs-5 col-md-5">
-        <iais:select name="operationType" id="operationType" value="${param.operationType}" options="operationTypeSelect" firstOption="Please Select" ></iais:select>
-        <span id="error_domain" name="iaisErrorMsg" class="error-msg"></span>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="form-group">
-    <div class="col-xs-5 col-md-10">
-      <iais:field value="Operation" required="false"></iais:field>
-      <div class="col-xs-5 col-md-5">
-        <iais:select name="operation" id="operation" value="${param.operation}" options="operationValueTypeSelect" firstOption="Please Select"></iais:select>
-        <span id="error_operation" name="iaisErrorMsg" class="error-msg"></span>
-      </div>
-    </div>
-  </div>
-
-
-
-  <div class="form-group">
-    <div class="col-xs-5 col-md-10">
-      <iais:field value="User" required="false"></iais:field>
-      <div class="col-xs-5 col-md-5">
-        <input type="text" name="user" value="${param.user}" maxlength="100"/>
-        <span id="error_user" name="iaisErrorMsg" class="error-msg"></span>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="form-group">
-    <div class="col-xs-5 col-md-10">
-      <iais:field value="Operation Start Date Time" required="true"></iais:field>
-      <div class="col-xs-5 col-md-5">
-        <iais:datePicker id = "startDate" name = "startDate"  value="${param.startDate}"></iais:datePicker>
-        <span id="error_dateStart" name="iaisErrorMsg" class="error-msg"></span>
-        <span id="error_compareDateError" name="iaisErrorMsg" class="error-msg"></span>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="form-group">
-    <div class="col-xs-5 col-md-10">
-      <iais:field value="Operation End Date Time" required="true"></iais:field>
-      <div class="col-xs-5 col-md-5">
-        <iais:datePicker id = "endDate" name = "endDate"  value="${param.endDate}"></iais:datePicker>
-        <span id="error_dateEnd" name="iaisErrorMsg" class="error-msg"></span>
-      </div>
-    </div>
-  </div>
-
-  <iais:action style="text-align:center;">
-    <div class="row">
-      <div class="col-xs-5 col-md-12">
-        <div class="text-right">
-          <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
-          <a class="btn btn-primary" id="crud_search_export" href="${pageContext.request.contextPath}/audit-trail-file"  onclick="$('#crud_search_export').attr('class', 'btn btn-primary disabled')" value="doQuery" href="#">Export Audit Trail</a>
-          <a class="btn btn-primary" id="crud_search_button" value="doQuery" href="#">Search</a>
+      <div class="col-xs-10 col-md-12">
+        <div class="components">
+          <a class="btn btn-secondary" data-toggle="collapse" name="filterBtn" data-target="#searchCondition" aria-expanded="true">Filter</a>
         </div>
       </div>
     </div>
-  </iais:action>
+  </div>
+
+  <div id="searchCondition" class="collapse" aria-expanded="true" style="">
+
+    <div class="form-group">
+      <div class="col-xs-5 col-md-10">
+        <iais:field value="Operation Type" required="true"></iais:field>
+        <div class="col-xs-5 col-md-5">
+          <iais:select name="operationType" id="operationType" value="${param.operationType}" options="operationTypeSelect" firstOption="Please Select" ></iais:select>
+          <span id="error_domain" name="iaisErrorMsg" class="error-msg"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-xs-5 col-md-10">
+        <iais:field value="Operation" required="false"></iais:field>
+        <div class="col-xs-5 col-md-5">
+          <iais:select name="operation" id="operation" value="${param.operation}" options="operationValueTypeSelect" firstOption="Please Select"></iais:select>
+          <span id="error_operation" name="iaisErrorMsg" class="error-msg"></span>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="form-group">
+      <div class="col-xs-5 col-md-10">
+        <iais:field value="User" required="false"></iais:field>
+        <div class="col-xs-5 col-md-5">
+          <input type="text" name="user" value="${param.user}" maxlength="100"/>
+          <span id="error_user" name="iaisErrorMsg" class="error-msg"></span>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <div class="col-xs-5 col-md-10">
+        <iais:field value="Operation Start Date Time" required="true"></iais:field>
+        <div class="col-xs-5 col-md-5">
+          <iais:datePicker id = "startDate" name = "startDate"  value="${param.startDate}"></iais:datePicker>
+          <span id="error_dateStart" name="iaisErrorMsg" class="error-msg"></span>
+          <span id="error_compareDateError" name="iaisErrorMsg" class="error-msg"></span>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <div class="col-xs-5 col-md-10">
+        <iais:field value="Operation End Date Time" required="true"></iais:field>
+        <div class="col-xs-5 col-md-5">
+          <iais:datePicker id = "endDate" name = "endDate"  value="${param.endDate}"></iais:datePicker>
+          <span id="error_dateEnd" name="iaisErrorMsg" class="error-msg"></span>
+        </div>
+      </div>
+    </div>
+
+    <iais:action style="text-align:center;">
+      <div class="row">
+        <div class="col-xs-5 col-md-12">
+          <div class="text-right">
+            <a class="btn btn-secondary" id="crud_clear_button"  href="#">Clear</a>
+            <a class="btn btn-primary" id="crud_search_export" href="${pageContext.request.contextPath}/audit-trail-file"  onclick="$('#crud_search_export').attr('class', 'btn btn-primary disabled')" value="doQuery" href="#">Export Audit Trail</a>
+            <a class="btn btn-primary" id="crud_search_button" value="doQuery" href="#">Search</a>
+          </div>
+        </div>
+      </div>
+    </iais:action>
+  </div>
+
+
 </div>
 <br><br><br>
 <input type="hidden" name="auditId" id="auditId"/>
 <div class="tab-pane active" id="tabInbox" role="tabpanel">
   <div class="tab-content">
     <div class="row">
-      <h3>
-        <span>Search Results</span>
-      </h3>
+      <iais:pagination  param="auditTrailSearch" result="auditTrailSearchResult"/>
+      <br>
       <div class="col-xs-12">
         <div class="components">
-          <iais:pagination  param="auditTrailSearch" result="auditTrailSearchResult"/>
+          <h3>
+            <span>Search Results</span>
+          </h3>
             <table class="table">
               <thead>
               <tr>
