@@ -216,7 +216,7 @@
                                                     </c:if>
                                                 </select>
                                             </c:if>
-                                            <c:if test="${app.status == 'APST045'}">
+                                            <c:if test="${app.status == 'APST045' || app.status == 'APST050' }">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
