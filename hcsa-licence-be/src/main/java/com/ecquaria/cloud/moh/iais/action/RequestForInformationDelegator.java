@@ -325,7 +325,7 @@ public class RequestForInformationDelegator {
         licPremisesReqForInfoDto.setLicPremisesReqForInfoReplyDtos(licPremisesReqForInfoReplyDtos);
         LicPremisesReqForInfoDto licPremisesReqForInfoDto1 = requestForInformationService.createLicPremisesReqForInfo(licPremisesReqForInfoDto);
 
-        String inBoxTemplateId= MsgTemplateConstants.MSG_TEMPLATE_RFI;
+        String inBoxTemplateId= MsgTemplateConstants.MSG_TEMPLATE_ADHOC_RFI;
         InspectionEmailTemplateDto rfiEmailTemplateDto = inspEmailService.loadingEmailTemplate(inBoxTemplateId);
         String licenseeId=requestForInformationService.getLicPreReqForInfo(licPremisesReqForInfoDto1.getId()).getLicenseeId();
         LicenseeDto licenseeDto=inspEmailService.getLicenseeDtoById(licenseeId);
