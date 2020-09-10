@@ -56,7 +56,7 @@
                     app.app_type,
                     app.status,
                     app.service_id,
-                    null as code,
+                    <#if repalceService??> :repalceService </#if>  as code,
                     app.self_assmt_flag,
                     app.created_dt,
                     app.version

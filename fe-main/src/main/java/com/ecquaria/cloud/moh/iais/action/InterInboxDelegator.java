@@ -40,6 +40,7 @@ import com.ecquaria.cloud.moh.iais.helper.MessageUtil;
 import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SqlHelper;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -62,7 +63,8 @@ import java.util.Map;
 @Slf4j
 @Delegator("interInboxDelegator")
 public class InterInboxDelegator {
-
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private InboxService inboxService;
     @Autowired
@@ -722,6 +724,12 @@ public class InterInboxDelegator {
          */
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
         SearchParam appParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp");
+        String repalceService = getRepalceService();
+        if(StringUtil.isEmpty(repalceService)){
+            appParam.addFilter("repalceService", "null",true);
+        }else {
+            appParam.addFilter("repalceService", repalceService,true);
+        }
         appParam.addFilter("licenseeId", interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
         List<SelectOption> appTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_TYPE);
@@ -758,7 +766,19 @@ public class InterInboxDelegator {
         ParamUtil.setRequestAttr(bpc.request,"delDraftConfMsg",delDraftConfMsg);
 
     }
-
+   public  String getRepalceService(){
+       List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
+       if(IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+           return null;
+       }
+       StringBuilder stringBuilder = new StringBuilder();
+       stringBuilder.append(" ( CASE app.service_id ");
+       for(HcsaServiceDto hcsaServiceDto :hcsaServiceDtos){
+           stringBuilder.append(" WHEN ").append(hcsaServiceDto.getId()).append(" Then ").append(hcsaServiceDto.getSvcCode()).append("  ");
+       }
+       stringBuilder.append("ELSE  null END )");
+       return  stringBuilder.toString();
+   }
     public void appSwitch(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("Step ---> appSwitch"));
 //        ParamUtil.setRequestAttr(bpc.request,"appCannotRecall", false);
