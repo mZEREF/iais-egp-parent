@@ -71,9 +71,7 @@ public class AuditTrailDelegator {
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>PARAM_SEARCH");
-        AuditTrailHelper.auditFunction("AuditTrail",
-                "Implement logging mechanisms to enable the timely detection and investigation" +
-                        " of events that can lead to ICT security violations or incidents.");
+        AuditTrailHelper.auditFunction("AuditTrail","AuditTrail View");
 
         HttpServletRequest request = bpc.request;
 

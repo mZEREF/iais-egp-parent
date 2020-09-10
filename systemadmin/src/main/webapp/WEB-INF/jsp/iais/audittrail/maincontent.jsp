@@ -6,9 +6,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<br><br>
-
-
 <div class="form-horizontal">
   <div class="form-group">
     <div class="col-xs-5 col-md-10">
@@ -92,7 +89,7 @@
 
 
 </div>
-<br><br><br>
+
 <input type="hidden" name="auditId" id="auditId"/>
 <div class="tab-pane active" id="tabInbox" role="tabpanel">
   <div class="tab-content">

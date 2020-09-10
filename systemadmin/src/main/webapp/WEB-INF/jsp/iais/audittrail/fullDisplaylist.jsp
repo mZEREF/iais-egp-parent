@@ -5,8 +5,6 @@
   Time: 3:26 PM
   To change this template use File | Settings | File Templates.
 --%>
---%>
---%>
 <%@ taglib uri="http://www.ecquaria.com/webui" prefix="webui" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@ taglib uri="http://www.ecq.com/iais" prefix="iais"%>
@@ -21,9 +19,18 @@
 <div class="main-content">
     <form id="mainForm" method="post" action=<%=process.runtime.continueURL()%>>
         <%@ include file="/WEB-INF/jsp/include/formHidden.jsp" %>
-        <br><br>
-        <div class="bg-title"><h2>Audit Trail View</h2></div>
-        <%@ include file="maincontent.jsp"%>
+
+        <div class="row">
+            <div class="col-lg-12 col-xs-12">
+                <div class="center-content">
+                    <div class="intranet-content">
+                            <h2>Audit Trail View</h2>
+                        <%@ include file="maincontent.jsp"%>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </form>
 </div>
 
