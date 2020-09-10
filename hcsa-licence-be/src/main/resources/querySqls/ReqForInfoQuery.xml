@@ -33,9 +33,9 @@
             <#if hciName??> AND charindex(:hciName, T3.HCI_NAME )>0</#if>
             <#if hciStreetName??> AND charindex(:hciStreetName, T3.STREET_NAME )>0</#if>
             <#if hciPostalCode??> AND charindex(:hciPostalCode, T3.POSTAL_CODE )>0</#if>
-            <#if personnelName??> AND  charindex(:personnelName, appSvcPer.NAME )>0</#if>
+            <#if personnelName??> AND ( charindex(:personnelName, appSvcPer.NAME )>0 OR charindex(:personnelName, appGrpPer.NAME )>0)</#if>
             <#if personnelId??> AND charindex(:personnelId, appGrpPer.ID_NO )>0</#if>
-            <#if personnelRegnNo??> AND charindex( :personnelRegnNo, appSvcPer.PROF_REG_NO )>0</#if>
+            <#if personnelRegnNo??> AND (charindex( :personnelRegnNo, appSvcPer.PROF_REG_NO )>0 OR charindex( :personnelRegnNo, appGrpPerExt.PROF_REG_NO )>0)</#if>
             <#if personnelRole??> AND  appKeyPsn.PSN_TYPE = :personnelRole</#if>
             <#if svc_id??> AND app.SERVICE_ID = :svc_id</#if>
             <#if hciCode??> AND  (T3.HCI_CODE IS NULL OR T3.HCI_CODE = :hciCode)</#if>
