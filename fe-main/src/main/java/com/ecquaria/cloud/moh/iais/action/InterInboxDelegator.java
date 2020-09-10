@@ -774,7 +774,7 @@ public class InterInboxDelegator {
        StringBuilder stringBuilder = new StringBuilder();
        stringBuilder.append(" ( CASE app.service_id ");
        for(HcsaServiceDto hcsaServiceDto :hcsaServiceDtos){
-           stringBuilder.append(" WHEN ").append(hcsaServiceDto.getId()).append(" Then ").append(hcsaServiceDto.getSvcCode()).append("  ");
+           stringBuilder.append(" WHEN '").append(hcsaServiceDto.getId()).append("' Then '").append(hcsaServiceDto.getSvcCode()).append("'  ");
        }
        stringBuilder.append("ELSE  null END )");
        return  stringBuilder.toString();
