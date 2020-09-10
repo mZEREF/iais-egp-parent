@@ -27,7 +27,7 @@ public interface CessationFeService {
 
     void updateLicenceFe(List<String> licNos);
 
-    Map<String, String>  saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext);
+    Map<String, String> saveCessations(List<AppCessationDto> appCessationDtos,LoginContext loginContext);
 
     List<String> listHciName();
 

@@ -416,6 +416,9 @@ public class CessationBeServiceImpl implements CessationBeService {
         }
 
     private Map<String, String> transform(AppSubmissionDto appSubmissionDto, String licenseeId, List<String> premiseIds) {
+        if(StringUtil.isEmpty(licenseeId)){
+            licenseeId = "52538312-EBE8-EA11-BE7B-000C29D29DB0" ;
+        }
         Map<String, String> map = IaisCommonUtils.genNewHashMap();
         Double amount = 0.0;
         AuditTrailDto internet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
