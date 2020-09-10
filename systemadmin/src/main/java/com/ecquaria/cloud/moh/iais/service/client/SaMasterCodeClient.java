@@ -70,4 +70,6 @@ public interface SaMasterCodeClient {
     @PostMapping(value = "/iais-mastercode/master-code/master-code-excel",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<Boolean> saveMasterCodeExcel(@RequestBody List<MasterCodeToExcelDto> masterCodeToExcelDtoList);
 
+    @PutMapping(value = "/iais-mastercode/master-code/expired-or-not-effect")
+    FeignResponseEntity<Void> inactiveMasterCode();
 }

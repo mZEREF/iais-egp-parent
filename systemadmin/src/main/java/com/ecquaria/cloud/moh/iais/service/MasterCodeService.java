@@ -22,4 +22,5 @@ public interface MasterCodeService {
     List<MasterCodeCategoryDto> getAllCodeCategory();
     boolean masterCodeKeyIsExist(String masterCodekey);
     Boolean saveMasterCodeList(List<MasterCodeToExcelDto> masterCodeToExcelDtoList);
+    void inactiveMasterCode();
 }

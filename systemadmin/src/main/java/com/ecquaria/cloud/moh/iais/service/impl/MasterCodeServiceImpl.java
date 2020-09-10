@@ -85,4 +85,8 @@ public class MasterCodeServiceImpl implements MasterCodeService {
         return saMasterCodeClient.getCodeKeyByDescription(description).getEntity();
     }
 
+    @Override
+    public void inactiveMasterCode() {
+        saMasterCodeClient.inactiveMasterCode();
+    }
 }
