@@ -199,7 +199,7 @@ public class RoundRobinCommPoolBatchJob {
                       String appNo = taskDto.getApplicationNo();
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob taskType -- >:" + taskType));
                       log.info(StringUtil.changeForLog("the RoundRobinCommPoolBatchJob appNo -- >:" + appNo));
-                      if(TaskConsts.TASK_TYPE_INSPECTION.equals(taskType)){
+                      if(TaskConsts.TASK_TYPE_INSPECTION.equals(taskType)||TaskConsts.TASK_TYPE_MAIN_FLOW.equals(taskType)){
                           List<ApplicationDto> applicationDtos = applicationService.getApplicationDtosByApplicationNo(appNo);
                           if(!IaisCommonUtils.isEmpty(applicationDtos)){
                               ApplicationDto applicationDto = applicationDtos.get(0);
