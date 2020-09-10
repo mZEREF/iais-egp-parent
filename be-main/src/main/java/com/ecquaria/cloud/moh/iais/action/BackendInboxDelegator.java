@@ -162,7 +162,7 @@ public class BackendInboxDelegator {
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         AuditTrailHelper.auditFunction("BE-inbox", "Backend Inbox");
         List<String> workGroupIds = inspectionService.getWorkGroupIdsByLogin(loginContext);
-        List<SelectOption> appTypeOption = inspectionService.getAppTypeOption();
+        List<SelectOption> appTypeOption = inspectionService.getAppTypeOption(loginContext.getCurRoleId());
         List<SelectOption> appStatusOption = inspectionService.getAppStatusOption(loginContext.getCurRoleId());
         SearchParam searchParamGroup = getSearchParam(bpc.request,false);
         ParamUtil.setSessionAttr(bpc.request, "backendinboxSearchParam", searchParamGroup);

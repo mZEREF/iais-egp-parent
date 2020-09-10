@@ -137,15 +137,47 @@ public class InspectionMainServiceImpl implements InspectionMainService {
     private BeInspectionStatusClient beInspectionStatusClient;
 
     @Override
-    public List<SelectOption> getAppTypeOption() {
-        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(new String[]{
-                ApplicationConsts.APPLICATION_TYPE_APPEAL,
-                ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
-                ApplicationConsts.APPLICATION_TYPE_CESSATION,
-                ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
-                ApplicationConsts.APPLICATION_TYPE_RENEWAL,
-                ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
-                ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL});
+    public List<SelectOption> getAppTypeOption(String role) {
+        String[] statusType;
+        switch (role){
+            case RoleConsts.USER_ROLE_AO3_LEAD:
+            case RoleConsts.USER_ROLE_AO3:
+                statusType = new String[]{
+                        ApplicationConsts.APPLICATION_TYPE_APPEAL,
+                        ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
+                        ApplicationConsts.APPLICATION_TYPE_CESSATION,
+                        ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
+                        ApplicationConsts.APPLICATION_TYPE_RENEWAL,
+                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE};
+                break;
+            case RoleConsts.USER_ROLE_INSPECTION_LEAD:
+            case RoleConsts.USER_ROLE_INSPECTIOR:
+                statusType = new String[]{
+                        ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
+                        ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
+                        ApplicationConsts.APPLICATION_TYPE_RENEWAL,
+                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE};
+                break;
+            case RoleConsts.USER_ROLE_ASO_LEAD:
+            case RoleConsts.USER_ROLE_ASO:
+                statusType = new String[]{
+                        ApplicationConsts.APPLICATION_TYPE_APPEAL,
+                        ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
+                        ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
+                        ApplicationConsts.APPLICATION_TYPE_RENEWAL,
+                        ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE,
+                        ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL};
+                break;
+                default:
+                    statusType = new String[]{
+                            ApplicationConsts.APPLICATION_TYPE_APPEAL,
+                            ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
+                            ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION,
+                            ApplicationConsts.APPLICATION_TYPE_RENEWAL,
+                            ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE};
+                    break;
+        }
+        List<SelectOption> appTypeOption = MasterCodeUtil.retrieveOptionsByCodes(statusType);
         return appTypeOption;
     }
 
