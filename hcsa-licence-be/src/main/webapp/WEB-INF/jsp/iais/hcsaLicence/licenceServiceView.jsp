@@ -93,7 +93,21 @@
       }
       return flag;
     }
-
+    hideImg('newVal', 'oldVal');
+    function hideImg(newValClass, oldValClass) {
+        $('.' + oldValClass).each(function () {
+            var oldVal = $(this).attr('attr');
+            var newEle = $(this).parent().prev().find('.' + newValClass);
+            var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
+            if(oldVal.length>0 && newVal.length<=0){
+                newEle.children('img').attr("style","display: none");
+            }else if(oldVal.length<=0 && newVal.length >0){
+                $(this).children('img').attr("style","display: none");
+            }else {
+                newEle.children('img').removeAttr("style");
+            }
+        });
+    }
 
     hightLightChangeVal('newVal', 'oldVal');
 

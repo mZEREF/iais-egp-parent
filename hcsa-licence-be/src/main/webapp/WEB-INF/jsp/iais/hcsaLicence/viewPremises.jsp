@@ -510,45 +510,44 @@
                                 <div class="control-set-font control-font-header section-header">
                                   <label style="font-size: 2.2rem">Uploaded Documents</label>
                                 </div>
-                                <div class="pop-up">
-                                  <div class="pop-up-body">
-                                    <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
-                                      <div class="content-body fileUploadContainer">
-                                        <div class="field col-sm-4 control-label formtext"><label>${appGrpPrimaryDocDto.svcComDocName}:</label></div>
-                                        <div class="control col-sm-12">
-                                          <div class="col-xs-6 col-md-6">
-                                            <c:if test="${appGrpPrimaryDocDto.docSize!=null}">
+                                <table class="col-xs-12 col-md-12">
+                                <c:forEach var="appGrpPrimaryDocDto" items="${appSubmissionDto.appGrpPrimaryDocDtos}" varStatus="status">
+                                  <tr>
+                                    <td>
+                                      <div class="field col-sm-12 control-label formtext"><label>${appGrpPrimaryDocDto.svcComDocName}:</label></div>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <div class="col-xs-6 col-md-6">
+                                        <c:if test="${appGrpPrimaryDocDto.docSize!=null}">
                                               <span class="newVal " attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}">
-                                              <a style="margin-left: 10%" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
+                                              <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
                                                      value="${appGrpPrimaryDocDto.fileRepoId}"/>&fileRepoName=${appGrpPrimaryDocDto.docName}" title="Download" class="downloadFile">${appGrpPrimaryDocDto.docName}</a><c:out value="(${appGrpPrimaryDocDto.docSize})KB"/>
                                             </span>
-                                            </c:if>
-                                            <c:if test="${appGrpPrimaryDocDto.docSize==null}">
+                                        </c:if>
+                                        <c:if test="${appGrpPrimaryDocDto.docSize==null}">
                                               <span class="newVal " attr="${appGrpPrimaryDocDto.docSize}${appGrpPrimaryDocDto.docName}">
-
                                             </span>
-                                            </c:if>
-                                          </div>
-                                          <div class="col-xs-6 col-md-6">
-                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize!=null}">
+                                        </c:if>
+                                      </div>
+                                      <div class="col-xs-6 col-md-6">
+                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize!=null}">
                                               <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
-                                                <a style="margin-left: 10%" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
+                                                <a  href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}"
                                                     value="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].fileRepoId}"/>&fileRepoName=${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}" title="Download" class="downloadFile">${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}</a><c:out value="(${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize})KB"/>
                                               </span>
-                                            </c:if>
-                                            <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize==null}">
+                                        </c:if>
+                                        <c:if test="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize==null}">
                                               <span class="oldVal " attr="${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docSize}${appSubmissionDto.oldAppSubmissionDto.appGrpPrimaryDocDtos[status.index].docName}"  style="display: none">
                                               </span>
-                                            </c:if>
+                                        </c:if>
 
-                                          </div>
-
-
-                                        </div>
                                       </div>
-                                    </c:forEach>
-                                  </div>
-                                </div>
+                                    </td>
+                                  </tr>
+                                  </c:forEach>
+                                </table>
                               </div>
                             </div>
                           </div>
@@ -601,8 +600,9 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div class="col-md-6">
-                                            <span>${newLicenceDto.uenNo}</span>
+                                            <span>${newLicenceDto.uenNo}
                                             <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                            </span>
                                           </div>
                                         </div>
                                       </div>
@@ -615,8 +615,8 @@
                                           <div class="col-md-6 ">
                                                 <span class="newVal " attr="${newLicenceDto.name}">
                                                   <c:out value="${newLicenceDto.name}"/>
+                                                     <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                                 </span>
-                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                           </div>
                                           <div class="col-md-6">
                                                   <span class="oldVal " attr="${oldLicenceDto.name}" style="display: none"><c:out value="${oldLicenceDto.name}"/></span>
@@ -789,8 +789,9 @@
                                           </div>
                                           <div class="col-md-6">
                                             <div class="col-md-6">
-                                              <span class="newVal " attr="${Board.idNo}">${Board.idNo}</span>
+                                              <span class="newVal " attr="${Board.idNo}">${Board.idNo}
                                               <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                              </span>
                                             </div>
                                           </div>
                                         </div>
@@ -833,8 +834,9 @@
                                         </div>
                                         <div class="col-md-6">
                                           <div  class="col-md-6">
-                                            <span  class="newVal " attr="${Authorised.idNumber}">${Authorised.idNumber}</span>
-                                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                            <span  class="newVal " attr="${Authorised.idNumber}">${Authorised.idNumber}
+                                             <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                                            </span>
                                           </div>
                                         </div>
                                       </div>

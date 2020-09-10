@@ -29,11 +29,11 @@
       <c:forEach var="appSvcLaboratoryDisciplinesDto" items="${currentPreviewSvcInfo.appSvcLaboratoryDisciplinesDtoList}" varStatus="status">
         <div class="amend-preview-info">
           <p><span class="preview-title col-xs-2 col-md-2" style="padding-right: 0%">Premises ${status.index+1}</span>
-          <div class="col-xs-10">
+          <div class="col-xs-5">
             <span class="newVal " attr="${appGrpPremisesDtoList[status.index].address}" ><c:out value="${appGrpPremisesDtoList[status.index].address}"/></span>
 
           </div>
-          <div class="col-xs-12">
+          <div class="col-xs-5">
             <span class="oldVal " attr="${oldAppGrpPremisesDtoList[status.index].address}" style="display: none" ><c:out value="${oldAppGrpPremisesDtoList[status.index].address}"/></span>
 
           </div>
@@ -44,16 +44,20 @@
             <div class="row">
               <div class="col-xs-12" style="margin-left: 2%">
                 <c:forEach var="checkList" items="${appSvcLaboratoryDisciplinesDto.appSvcChckListDtoList}" varStatus="statuss">
-                  <div class="form-check active">
+                  <div class="form-check ">
                     <p class="form-check-label " aria-label="premise-1-cytology">
-                        <span class="check-square " style="margin-top: 2%;">
                          <div class="col-xs-6 col-md-6">
-                           <span class="newVal " style="margin-left: 3%" attr="${checkList.chkName}${checkList.check}" ><c:out value="${checkList.chkName}"/></span>
+                           <span class="newVal " style="margin-left: 3%" attr="${checkList.chkName}${checkList.check}" >
+                             <input style="cursor: default" class="form-check-input" <c:if test="${checkList.check}">checked</c:if>  type="checkbox"  disabled >
+                              <label class="form-check-label" ><span class="check-square"></span>${checkList.chkName}</label>
+                           </span>
                           </div>
                           <div class="col-xs-6 col-md-6">
-                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].check}"  style="display: none"><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}"/></span>
+                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].check}"  style="display: none">
+                              <input style="cursor: default" class="form-check-input" <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].check}">checked</c:if>  type="checkbox" disabled>
+                              <label class="form-check-label" ><span class="check-square"></span>${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcLaboratoryDisciplinesDtoList[status.index].appSvcChckListDtoList[statuss.index].chkName}</label>
+                            </span>
                           </div>
-                         </span>
                     </p>
                   </div>
                 </c:forEach>
@@ -137,17 +141,19 @@
                   <td>
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                     <div class="col-xs-6">
-                      <span class="newVal " attr="${cgo.idNo}"><c:out value="${cgo.idNo}"/></span>
-                      <c:if test="${cgo.idNo!=null}">
+                      <span class="newVal " attr="${cgo.idNo}">
+                        <c:out value="${cgo.idNo}"/>
                         <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                      </c:if>
+                      </span>
+
 
                     </div>
                     <div class="col-xs-6">
-                      <span class="oldVal" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}</span>
-                      <%--<c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo!=null}">
-                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                      </c:if>--%>
+                      <span class="oldVal" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}"  style="display: none">
+                          ${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].idNo}
+                         <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                      </span>
+
                     </div>
                     </p>
                   </td>
@@ -192,17 +198,17 @@
                   <td>
                     <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                     <div class="col-xs-6">
-                      <span class="newVal " attr="${cgo.profRegNo}"><c:out value="${cgo.profRegNo}"/></span>
-                      <c:if test="${cgo.profRegNo!=null}">
-                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                      </c:if>
+                      <span class="newVal " attr="${cgo.profRegNo}"><c:out value="${cgo.profRegNo}"/>
+                      <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                      </span>
 
                     </div>
                     <div class="col-xs-6">
-                      <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}" style="display: none"><iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/></span>
-                     <%-- <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo!=null}">
-                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                      </c:if>--%>
+                      <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}" style="display: none">
+                        <iais:code code="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].profRegNo}"/>
+                       <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                      </span>
+
                     </div>
                     </p>
                   </td>
@@ -226,9 +232,10 @@
                         </span>
                     </div>
                     <div class="col-xs-6">
-                      <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}</span>
+                      <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}" style="display: none">
+                        <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}"/>
+                      </span>
                     </div>
-
                     </p>
                   </td>
                 </tr>
@@ -241,8 +248,37 @@
                       <div class="col-xs-6">
                         <span class="newVal " attr="${cgo.specialityOther}"><c:out value="${cgo.specialityOther}"/></span>
                       </div>
+                      <c:if test="${'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                        <div class="col-xs-6">
+                          <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"/></span>
+                        </div>
+                      </c:if>
+                      <c:if test="${'other' != currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                        <div class="col-xs-6">
+                          <span class="oldVal" attr="" style="display: none"></span>
+                        </div>
+                      </c:if>
+                    </td>
+                  </tr>
+                </c:if>
+                <c:if test="${'other' == currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].speciality}">
+                  <tr>
+                    <td class="col-xs-6">
+                      <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span></p>
+                    </td>
+                    <td>
+                      <c:if test="${'other' == cgo.speciality}">
+                        <div class="col-xs-6">
+                          <span class="newVal " attr="${cgo.specialityOther}"><c:out value="${cgo.specialityOther}"/></span>
+                        </div>
+                      </c:if>
+                      <c:if test="${'other' != cgo.speciality}">
+                        <div class="col-xs-6">
+                          <span class="newVal " attr=""><c:out value=""/></span>
+                        </div>
+                      </c:if>
                       <div class="col-xs-6">
-                        <span class="newVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"/></span>
+                        <span class="oldVal " style="display: none" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"><c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcCgoDtoList[status.index].specialityOther}"/></span>
                       </div>
                     </td>
                   </tr>
@@ -345,10 +381,12 @@
                       <td style="text-align: center">
                         <p>
                         <div  class="col-xs-6">
-                          <span class="newVal " attr="${disciplineAllocation.chkLstName}"><c:out value="${disciplineAllocation.chkLstName}"/></span>
+                          <span class="newVal " attr="${disciplineAllocation.chkLstName}${disciplineAllocation.check}">
+                            <c:out value="${disciplineAllocation.chkLstName}"/>
+                          </span>
                         </div>
                         <div  class="col-xs-6">
-                          <span class="oldVal " attr="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"  style="display: none"><c:out value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/></span>
+                          <span class="oldVal " attr="${reloadOld[oldReloadMapValue][stat.index].chkLstName}${reloadOld[oldReloadMapValue][stat.index].check}"  style="display: none"><c:out value="${reloadOld[oldReloadMapValue][stat.index].chkLstName}"/></span>
                         </div>
                         </p>
 
@@ -356,10 +394,10 @@
                       <td style="text-align: center">
                         <p>
                         <div class="col-xs-6">
-                          <span class="newVal " attr="${disciplineAllocation.cgoSelName}" ><c:out value="${disciplineAllocation.cgoSelName}"/></span>
+                          <span class="newVal " attr="${disciplineAllocation.cgoSelName}${disciplineAllocation.check}" ><c:out value="${disciplineAllocation.cgoSelName}"/></span>
                         </div>
                         <div class="col-xs-6">
-                          <span class="oldVal " attr="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}"  style="display: none"><c:out value="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}"/></span>
+                          <span class="oldVal " attr="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}${reloadOld[oldReloadMapValue][stat.index].check}"  style="display: none"><c:out value="${reloadOld[oldReloadMapValue][stat.index].cgoSelName}"/></span>
                         </div>
                         </p>
                       </td>
@@ -428,17 +466,16 @@
                         <td>
 
                           <div class="col-xs-6">
-                            <span class="newVal " attr="${appSvcPersonnelDtoList.profRegNo}" ><c:out value="${appSvcPersonnelDtoList.profRegNo}"/></span>
-                            <c:if test="${appSvcPersonnelDtoList.profRegNo!=null}">
-                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                            </c:if>
+                            <span class="newVal " attr="${appSvcPersonnelDtoList.profRegNo}" ><c:out value="${appSvcPersonnelDtoList.profRegNo}"/>
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                            </span>
 
                           </div>
                           <div class="col-xs-6">
-                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}</span>
-                           <%-- <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo!=null}">
-                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                            </c:if>--%>
+                            <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPersonnelDtoList[status.index].profRegNo}
+                            <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                            </span>
+
                           </div>
 
                           </p>
@@ -748,8 +785,17 @@
         <div class="form-check-gp">
           <div class="row">
             <div class="col-xs-12">
+              <c:set value="1" var="poIndex"></c:set>
+              <c:set value="1" var="dpoIndex"></c:set>
               <c:forEach items="${currentPreviewSvcInfo.appSvcPrincipalOfficersDtoList}" var="po" varStatus="status">
-                <p><strong class="col-xs-6">Principal Officers ${status.index+1}:</strong></p>
+                <c:if test="${po.psnType =='PO'}">
+                  <p><strong class="col-xs-6">Principal Officers ${poIndex}:</strong></p>
+                  <c:set var="poIndex" value="${poIndex+1}"></c:set>
+                </c:if>
+                <c:if test="${po.psnType =='DPO'}">
+                  <p><strong class="col-xs-6">Deputy Principal Officer ${dpoIndex}:</strong></p>
+                  <c:set var="dpoIndex" value="${dpoIndex+1}"></c:set>
+                </c:if>
                 <table class="col-xs-12">
                   <tr>
                     <td class="col-xs-6">
@@ -807,16 +853,14 @@
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                       <div class="col-xs-6">
-                        <span class="newVal " attr="${po.idNo}"><c:out value="${po.idNo}"/></span>
-                        <c:if test="${po.idNo!=null}">
-                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                        </c:if>
+                        <span class="newVal "  attr="${po.idNo}"><c:out value="${po.idNo}"/>
+                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
+
                     </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"  style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}</span>
-                       <%-- <c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo!=null}">
-                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                        </c:if>--%>
+                        <span class="oldVal " id="ponewVal${status.index}" attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"  style="display: none">
+                           <c:out value="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcPrincipalOfficersDtoList[status.index].idNo}"/>
+                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS"></span>
                       </div>
 
                       </p>
@@ -966,17 +1010,16 @@
                     <td>
                       <p class="form-check-label" aria-label="premise-1-cytology"><span class="check-square"></span>
                       <div class="col-xs-6">
-                        <span class="newVal " attr="${appSvcMedAlertPerson.idNo}"><c:out value="${appSvcMedAlertPerson.idNo}"/></span>
-                      <c:if test="${appSvcMedAlertPerson.idNo!=null}">
+                        <span class="newVal " attr="${appSvcMedAlertPerson.idNo}"><c:out value="${appSvcMedAlertPerson.idNo}"/>
                         <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                      </c:if>
+                        </span>
 
                     </div>
                       <div class="col-xs-6">
-                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}</span>
-                        <%--<c:if test="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo!=null}">
-                          <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
-                        </c:if>--%>
+                        <span class="oldVal " attr="${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}" style="display: none">${currentPreviewSvcInfo.oldAppSvcRelatedInfoDto.appSvcMedAlertPersonList[status.index].idNo}
+                        <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
+                        </span>
+
                       </div>
                       </p>
                     </td>
@@ -1164,6 +1207,21 @@
             jQuery.attr("style","");
         }
     });
+    hideImg('newVal', 'oldVal');
+    function hideImg(newValClass, oldValClass) {
+        $('.' + oldValClass).each(function () {
+            var oldVal = $(this).attr('attr');
+            var newEle = $(this).parent().prev().find('.' + newValClass);
+            var newVal = newEle.length > 0 ? newEle.attr('attr') : '';
+            if(oldVal.length>0 && newVal.length<=0){
+                newEle.children('img').attr("style","display: none");
+            }else if(oldVal.length<=0 && newVal.length >0){
+                $(this).children('img').attr("style","display: none");
+            }else {
+                newEle.children('img').removeAttr("style");
+            }
+        });
+    }
     hightLightChangeVal('newVal', 'oldVal');
     function hightLightChangeVal(newValClass, oldValClass) {
         $('.' + oldValClass).each(function () {
@@ -1186,4 +1244,5 @@
             }
         });
     }
+
 </script>
