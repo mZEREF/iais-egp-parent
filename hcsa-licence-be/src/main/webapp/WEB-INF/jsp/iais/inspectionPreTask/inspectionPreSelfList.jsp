@@ -77,7 +77,7 @@
                           <th width="36%">Item</th>
                           <th width="6%">Yes</th>
                           <th width="6%">No</th>
-                          <th width="6%">Na</th>
+                          <th width="6%">N/A</th>
                         </tr>
                         </thead>
                         <tbody>
