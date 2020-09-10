@@ -244,59 +244,64 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     @Override
     public List<ComplianceHistoryDto> getComplianceHistoryDtosByLicId(String licenceId){
         List<ComplianceHistoryDto> complianceHistoryDtos= IaisCommonUtils.genNewArrayList();
-        return complianceHistoryDtosByLicId(complianceHistoryDtos,licenceId);
+        Set<String> appIds=IaisCommonUtils.genNewHashSet();
+        return complianceHistoryDtosByLicId(complianceHistoryDtos,licenceId,appIds);
     }
 
-    private List<ComplianceHistoryDto> complianceHistoryDtosByLicId(List<ComplianceHistoryDto> complianceHistoryDtos,String licenceId){
+    private List<ComplianceHistoryDto> complianceHistoryDtosByLicId(List<ComplianceHistoryDto> complianceHistoryDtos,String licenceId,Set<String> appIds){
         List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
         for(LicAppCorrelationDto appCorrelationDto:licAppCorrelationDtos){
-            ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
-            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appCorrelationDto.getApplicationId()).getEntity();
-            ApplicationDto applicationDto=applicationClient.getApplicationById(appCorrelationDto.getApplicationId()).getEntity();
-            ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
-            complianceHistoryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Off-Site Inspection":InspectionConstants.INSPECTION_TYPE_ONSITE);
-            complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
+            if(!appIds.contains(appCorrelationDto.getApplicationId())){
+                ComplianceHistoryDto complianceHistoryDto=new ComplianceHistoryDto();
+                AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(appCorrelationDto.getApplicationId()).getEntity();
+                ApplicationDto applicationDto=applicationClient.getApplicationById(appCorrelationDto.getApplicationId()).getEntity();
+                appIds.add(appCorrelationDto.getApplicationId());
+                ApplicationGroupDto applicationGroupDto=applicationClient.getAppById(applicationDto.getAppGrpId()).getEntity();
+                complianceHistoryDto.setInspectionTypeName(applicationGroupDto.getIsPreInspection() == 0? "Off-Site Inspection":InspectionConstants.INSPECTION_TYPE_ONSITE);
+                complianceHistoryDto.setAppPremCorrId(appPremisesCorrelationDto.getId());
 
-            //add listReportNcRectifiedDto and add ncItemId
-            AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto.getId()).getEntity();
-            if (appPremPreInspectionNcDto != null) {
-                String ncId = appPremPreInspectionNcDto.getId();
-                List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-                if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-                    complianceHistoryDto.setComplianceTag("Partial Compliance");
+                //add listReportNcRectifiedDto and add ncItemId
+                AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto.getId()).getEntity();
+                if (appPremPreInspectionNcDto != null) {
+                    String ncId = appPremPreInspectionNcDto.getId();
+                    List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
+                    if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
+                        complianceHistoryDto.setComplianceTag("Partial Compliance");
+                    }
+                } else {
+                    complianceHistoryDto.setComplianceTag("Full Compliance");
                 }
-            } else {
-                complianceHistoryDto.setComplianceTag("Full Compliance");
+                if(applicationDto.getOriginLicenceId()!=null){
+                    complianceHistoryDtosByLicId(complianceHistoryDtos,applicationDto.getOriginLicenceId(),appIds);
+                }
+                AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                try {
+                    complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
+                    HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
+                    hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
+                    hcsaRiskScoreDto.setLicId(licenceId);
+                    List<ApplicationDto> applicationDtos = new ArrayList<>(1);
+                    applicationDto.setNeedInsp(true);
+                    applicationDtos.add(applicationDto);
+                    hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
+                    hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
+                    HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
+                    String riskLevel = entity.getRiskLevel();
+                    complianceHistoryDto.setRiskTag(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
+                }catch (NullPointerException e){
+                    log.error(e.getMessage(), e);
+                    complianceHistoryDto.setRiskTag("-");
+                }
+                AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                try {
+                    complianceHistoryDto.setInspectionDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), AppConsts.DEFAULT_DATE_FORMAT));
+                    complianceHistoryDtos.add(complianceHistoryDto);
+                }catch (Exception e){
+                    log.error(e.getMessage(), e);
+                    complianceHistoryDto.setInspectionDate("-");
+                }
             }
-            if(applicationDto.getOriginLicenceId()!=null){
-                complianceHistoryDtosByLicId(complianceHistoryDtos,applicationDto.getOriginLicenceId());
-            }
-            AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-            try {
-                complianceHistoryDto.setRemarks(appPremisesRecommendationDto.getRemarks());
-                HcsaRiskScoreDto hcsaRiskScoreDto = new HcsaRiskScoreDto();
-                hcsaRiskScoreDto.setAppType(applicationDto.getApplicationType());
-                hcsaRiskScoreDto.setLicId(licenceId);
-                List<ApplicationDto> applicationDtos = new ArrayList<>(1);
-                applicationDto.setNeedInsp(true);
-                applicationDtos.add(applicationDto);
-                hcsaRiskScoreDto.setApplicationDtos(applicationDtos);
-                hcsaRiskScoreDto.setServiceId(applicationDto.getServiceId());
-                HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
-                String riskLevel = entity.getRiskLevel();
-                complianceHistoryDto.setRiskTag(MasterCodeUtil.retrieveOptionsByCodes(new String[]{riskLevel}).get(0).getText());
-            }catch (NullPointerException e){
-                log.error(e.getMessage(), e);
-                complianceHistoryDto.setRiskTag("-");
-            }
-            AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-            try {
-                complianceHistoryDto.setInspectionDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), AppConsts.DEFAULT_DATE_FORMAT));
-                complianceHistoryDtos.add(complianceHistoryDto);
-            }catch (Exception e){
-                log.error(e.getMessage(), e);
-                complianceHistoryDto.setInspectionDate("-");
-            }
+
         }
         return complianceHistoryDtos;
     }

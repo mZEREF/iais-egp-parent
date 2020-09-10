@@ -458,7 +458,7 @@ public class OfficerOnlineEnquiriesDelegator {
             }
         }
         searchListDtoSearchResult.setRows(reqForInfoSearchListDtos);
-        if(reqForInfoSearchListDtos.size()<1){
+        if(reqForInfoSearchListDtos.size()<1 &&searchListDtoSearchResult.getRowCount()<=10){
             searchListDtoSearchResult.setRowCount(reqForInfoSearchListDtos.size());
         }
         ParamUtil.setSessionAttr(request,"SearchResult", searchListDtoSearchResult);
@@ -692,11 +692,13 @@ public class OfficerOnlineEnquiriesDelegator {
         ParamUtil.setSessionAttr(request,"count",count);
         switch (count) {
             case "3":
+                int appCount=0;
+                int licCount=0;
                 if(!StringUtil.isEmpty(applicationNo)){
-                    filters.put("appNo", applicationNo);count="2";
+                    filters.put("appNo", applicationNo);appCount++;
                 }
                 if(!StringUtil.isEmpty(applicationType)){
-                    filters.put("appType", applicationType);count="2";
+                    filters.put("appType", applicationType);appCount++;
                 }
                 if(!StringUtil.isEmpty(status)){
                     if(status.equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
@@ -705,31 +707,31 @@ public class OfficerOnlineEnquiriesDelegator {
                         if(!status.equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
                             filters.put("appStatus", status);
                         }
-                    count="2";
+                    appCount++;
                 }
                 if(!StringUtil.isEmpty(appSubDate)){
-                    filters.put("subDate", appSubDate);count="2";
+                    filters.put("subDate", appSubDate);appCount++;
                 }
                 if(!StringUtil.isEmpty(appSubToDate)){
-                    filters.put("toDate",appSubToDate);count="2";
+                    filters.put("toDate",appSubToDate);appCount++;
                 }
                 if(!StringUtil.isEmpty(licStaDate)){
-                    filters.put("start_date", licStaDate);
+                    filters.put("start_date", licStaDate);licCount++;
                 }
                 if(!StringUtil.isEmpty(licStaToDate)){
-                    filters.put("start_to_date",licStaToDate);
+                    filters.put("start_to_date",licStaToDate);licCount++;
                 }
                 if(!StringUtil.isEmpty(licExpDate)){
-                    filters.put("expiry_start_date", licExpDate);
+                    filters.put("expiry_start_date", licExpDate);licCount++;
                 }
                 if(!StringUtil.isEmpty(licExpToDate)){
-                    filters.put("expiry_date",licExpToDate);
+                    filters.put("expiry_date",licExpToDate);licCount++;
                 }
                 if(!StringUtil.isEmpty(licenceNo)){
-                    filters.put("licence_no", licenceNo);
+                    filters.put("licence_no", licenceNo);licCount++;
                 }
                 if(!StringUtil.isEmpty(licenceStatus)){
-                    filters.put("licence_status", licenceStatus);
+                    filters.put("licence_status", licenceStatus);licCount++;
                 }
                 if(!StringUtil.isEmpty(serviceLicenceType)){
                     filters.put("svc_name", serviceLicenceType);
@@ -760,6 +762,11 @@ public class OfficerOnlineEnquiriesDelegator {
                             licenseeIds.add(licensee.getId());
                         }
                     }
+                }
+                if(appCount>=licCount){
+                    count="2";
+                }else {
+                    count="3";
                 }
                 ParamUtil.setSessionAttr(request,"count",count);
                 break;
@@ -1108,10 +1115,8 @@ public class OfficerOnlineEnquiriesDelegator {
 
         //add listReportNcRectifiedDto and add ncItemId
         if(licenceId!=null){
-            List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
 
-            AppPremisesCorrelationDto appPremisesCorrelationDto = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDtos.get(0).getApplicationId()).getEntity();
-            AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto.getId()).getEntity();
+            AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(rfiApplicationQueryDto.getAppCorrId()).getEntity();
             if (appPremPreInspectionNcDto != null) {
                 String ncId = appPremPreInspectionNcDto.getId();
                 List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
@@ -1122,22 +1127,15 @@ public class OfficerOnlineEnquiriesDelegator {
                 reqForInfoSearchListDto.setLastComplianceHistory("Full");
             }
             if(applicationDto!=null&&applicationDto.getOriginLicenceId()!=null){
-                List<LicAppCorrelationDto> licAppCorrelationDtos1=hcsaLicenceClient.getLicCorrBylicId(applicationDto.getOriginLicenceId()).getEntity();
-
-                AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDtos1.get(0).getApplicationId()).getEntity();
-                AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
-                if (appPremPreInspectionNcDto1 != null) {
-                    String ncId = appPremPreInspectionNcDto1.getId();
-                    List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-                    if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-                        reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
+                List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(applicationDto.getOriginLicenceId()).getEntity();
+                AppPremisesCorrelationDto appPremisesCorrelationDto1=null;
+                for(LicAppCorrelationDto licAppCorrelationDto :licAppCorrelationDtos){
+                    if(!licAppCorrelationDto.getApplicationId().equals(rfiApplicationQueryDto.getId())){
+                        appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDto.getApplicationId()).getEntity();
                     }
-                } else {
-                    reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
                 }
-            }else {
-                try {
-                    AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDtos.get(1).getApplicationId()).getEntity();
+                reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
+                if(appPremisesCorrelationDto1!=null){
                     AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
                     if (appPremPreInspectionNcDto1 != null) {
                         String ncId = appPremPreInspectionNcDto1.getId();
@@ -1145,8 +1143,32 @@ public class OfficerOnlineEnquiriesDelegator {
                         if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
                             reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
                         }
-                    } else {
-                        reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
+                    }
+                }else {
+                    reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
+                }
+
+            }else {
+                try {
+                    List<LicAppCorrelationDto> licAppCorrelationDtos=hcsaLicenceClient.getLicCorrBylicId(licenceId).getEntity();
+                    AppPremisesCorrelationDto appPremisesCorrelationDto1=null;
+                    for(LicAppCorrelationDto licAppCorrelationDto :licAppCorrelationDtos){
+                        if(!licAppCorrelationDto.getApplicationId().equals(rfiApplicationQueryDto.getId())){
+                            appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDto.getApplicationId()).getEntity();
+                        }
+                    }
+                    reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
+                    if(appPremisesCorrelationDto1!=null){
+                        AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
+                        if (appPremPreInspectionNcDto1 != null) {
+                            String ncId = appPremPreInspectionNcDto1.getId();
+                            List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
+                            if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
+                                reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
+                            }
+                        }
+                    }else {
+                        reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
                     }
                 }catch (Exception e){
                     reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
@@ -1324,11 +1346,13 @@ public class OfficerOnlineEnquiriesDelegator {
         SearchParam parm = (SearchParam) ParamUtil.getSessionAttr(request,"SearchParam");
         switch (count) {
             case "3":
+                int appCount=0;
+                int licCount=0;
                 if(!StringUtil.isEmpty(parm.getFilters().get("appNo"))){
-                    filters.put("appNo", parm.getFilters().get("appNo"));count="2";
+                    filters.put("appNo", parm.getFilters().get("appNo"));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appType"))){
-                    filters.put("appType", parm.getFilters().get("appType"));count="2";
+                    filters.put("appType", parm.getFilters().get("appType"));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("appStatus"))){
                     if(parm.getFilters().get("appStatus").equals(ApplicationConsts.PAYMENT_STATUS_GIRO_PAY_SUCCESS)){
@@ -1337,37 +1361,37 @@ public class OfficerOnlineEnquiriesDelegator {
                     if(!parm.getFilters().get("appStatus").equals(ApplicationConsts.APPLICATION_STATUS_APPROVED)){
                         filters.put("appStatus", parm.getFilters().get("appStatus"));
                     }
-                    count="2";
+                    appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("subDate"))){
                     filters.put("subDate", Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("subDate")),
-                            SystemAdminBaseConstants.DATE_FORMAT));count="2";
+                            SystemAdminBaseConstants.DATE_FORMAT));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("toDate"))){
                     filters.put("toDate",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("toDate")),
-                            SystemAdminBaseConstants.DATE_FORMAT));count="2";
+                            SystemAdminBaseConstants.DATE_FORMAT));appCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("start_date"))){
                     filters.put("start_date", Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("start_date")),
-                            SystemAdminBaseConstants.DATE_FORMAT));
+                            SystemAdminBaseConstants.DATE_FORMAT));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("start_to_date"))){
                     filters.put("start_to_date",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("start_to_date")),
-                            SystemAdminBaseConstants.DATE_FORMAT));
+                            SystemAdminBaseConstants.DATE_FORMAT));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("expiry_start_date"))){
                     filters.put("expiry_start_date", Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("expiry_start_date")),
-                            SystemAdminBaseConstants.DATE_FORMAT));
+                            SystemAdminBaseConstants.DATE_FORMAT));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("expiry_date"))){
                     filters.put("expiry_date",Formatter.formatDateTime(Formatter.parseDate((String) parm.getFilters().get("expiry_date")),
-                            SystemAdminBaseConstants.DATE_FORMAT));
+                            SystemAdminBaseConstants.DATE_FORMAT));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("licence_no"))){
-                    filters.put("licence_no", parm.getFilters().get("licence_no"));
+                    filters.put("licence_no", parm.getFilters().get("licence_no"));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("licence_status"))){
-                    filters.put("licence_status", parm.getFilters().get("licence_status"));
+                    filters.put("licence_status", parm.getFilters().get("licence_status"));licCount++;
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("svc_name"))){
                     filters.put("svc_name", parm.getFilters().get("svc_name"));
@@ -1390,7 +1414,7 @@ public class OfficerOnlineEnquiriesDelegator {
 
                 }
                 if(!StringUtil.isEmpty(parm.getFilters().get("uen_no"))){
-                    
+
                     List<LicenseeDto> licenseeDtos= organizationClient.getLicenseeDtoByUen((String) parm.getFilters().get("uen_no")).getEntity();
                     if(licenseeDtos!=null) {
                         for (LicenseeDto licensee:licenseeDtos
@@ -1398,6 +1422,11 @@ public class OfficerOnlineEnquiriesDelegator {
                             licenseeIds.add(licensee.getId());
                         }
                     }
+                }
+                if(appCount>=licCount){
+                    count="2";
+                }else {
+                    count="3";
                 }
                 break;
             case "1":
