@@ -33,6 +33,7 @@ import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import com.ecquaria.cloud.submission.client.App;
 import lombok.extern.slf4j.Slf4j;
@@ -98,6 +99,8 @@ public class HalpAssessmentGuideDelegator {
     private static final String LIC_ALIGN_SEARCH_RESULT= "licAlignSearchResult";
     private static final String BASE_SVC_PREMISES_MAP = "baseSvcPremisesMap";
 
+    @Autowired
+    private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private InboxService inboxService;
 
@@ -1598,12 +1601,28 @@ public class HalpAssessmentGuideDelegator {
         inParams.add(ApplicationConsts.APPLICATION_STATUS_DRAFT);
         SqlHelper.builderInSql(draftAppSearchParam, "status", "appStatus", inParams);
         QueryHelp.setMainSql("interInboxQuery", "applicationQuery", draftAppSearchParam);
+        String repalceService = getRepalceService();
+        draftAppSearchParam.setMainSql(draftAppSearchParam.getMainSql().replace("repalceService",repalceService));
         SearchResult<InboxAppQueryDto> draftAppSearchResult = inboxService.appDoQuery(draftAppSearchParam);
 
         if (!StringUtil.isEmpty(draftAppSearchResult)) {
             ParamUtil.setSessionAttr(bpc.request, GuideConsts.DRAFT_APPLICATION_SEARCH_PARAM, draftAppSearchParam);
             ParamUtil.setRequestAttr(bpc.request, GuideConsts.DRAFT_APPLICATION_SEARCH_RESULT, draftAppSearchResult);
         }
+    }
+
+    public  String getRepalceService(){
+        List<HcsaServiceDto> hcsaServiceDtos = hcsaConfigClient.getActiveServices().getEntity();
+        if(IaisCommonUtils.isEmpty(hcsaServiceDtos)){
+            return null;
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(" ( CASE app.service_id ");
+        for(HcsaServiceDto hcsaServiceDto :hcsaServiceDtos){
+            stringBuilder.append(" WHEN '").append(hcsaServiceDto.getId()).append("' Then '").append(hcsaServiceDto.getSvcCode()).append("'  ");
+        }
+        stringBuilder.append("ELSE  'N/A' END )");
+        return  stringBuilder.toString();
     }
 
     public void resumeDraftAppStep(BaseProcessClass bpc) throws IOException {

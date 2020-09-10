@@ -731,7 +731,6 @@ public class InterInboxDelegator {
         List<SelectOption> appTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_TYPE);
         List<SelectOption> appStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_STATUS);
         MasterCodePair mcp = new MasterCodePair("app_type", "app_type_desc", appTypes);
-        MasterCodePair mcp_service = new MasterCodePair("app_type", "app_type_desc", appTypes);
         MasterCodePair mcp_status = new MasterCodePair("status", "status_desc", appStatus);
         appParam.addMasterCode(mcp);
         appParam.addMasterCode(mcp_status);
