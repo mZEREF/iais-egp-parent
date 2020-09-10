@@ -172,18 +172,11 @@ public class AuditTrailDelegator {
         log.debug(StringUtil.changeForLog("fileHandler start ...."));
 
         SearchParam searchParam = IaisEGPHelper.getSearchParam(request, filterParameter);
-
-        if (searchParam.getFilters().isEmpty()){
-            log.info("don't have filter params");
-            return;
-        }
-
-        searchParam.setPageNo(0);
-        searchParam.setPageSize(Integer.MAX_VALUE);
-        SearchResult<AuditTrailQueryDto> searchResult = auditTrailService.listAuditTrailDto(searchParam);
-        if (searchResult == null){
-            log.info("==export audit trail log , the record is empty>>>>");
-            return;
+        SearchResult<AuditTrailQueryDto> searchResult = new SearchResult<>();
+        if (!searchParam.getFilters().isEmpty()){
+            searchParam.setPageNo(0);
+            searchParam.setPageSize(Integer.MAX_VALUE);
+            searchResult = auditTrailService.listAuditTrailDto(searchParam);
         }
 
         try {
