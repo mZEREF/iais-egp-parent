@@ -102,13 +102,6 @@ public class SystemParameterServiceImpl implements SystemParameterService {
             log.error(StringUtil.changeForLog("encounter failure when sync parameter to fe " + e.getMessage()), e);
         }
 
-        try {
-            //refresh spring config
-            configClient.refreshConfig();
-        }catch (Exception e){
-            log.error(StringUtil.changeForLog("encounter failure when refresh spring config  " + e.getMessage()), e);
-        }
-
         log.info("save system parameter end....");
     }
 
