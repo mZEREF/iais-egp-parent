@@ -140,7 +140,6 @@ public class InspectionMainServiceImpl implements InspectionMainService {
     public List<SelectOption> getAppTypeOption(String role) {
         String[] statusType;
         switch (role){
-            case RoleConsts.USER_ROLE_AO3_LEAD:
             case RoleConsts.USER_ROLE_AO3:
                 statusType = new String[]{
                         ApplicationConsts.APPLICATION_TYPE_APPEAL,
@@ -150,7 +149,6 @@ public class InspectionMainServiceImpl implements InspectionMainService {
                         ApplicationConsts.APPLICATION_TYPE_RENEWAL,
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE};
                 break;
-            case RoleConsts.USER_ROLE_INSPECTION_LEAD:
             case RoleConsts.USER_ROLE_INSPECTIOR:
                 statusType = new String[]{
                         ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK,
@@ -158,7 +156,6 @@ public class InspectionMainServiceImpl implements InspectionMainService {
                         ApplicationConsts.APPLICATION_TYPE_RENEWAL,
                         ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE};
                 break;
-            case RoleConsts.USER_ROLE_ASO_LEAD:
             case RoleConsts.USER_ROLE_ASO:
                 statusType = new String[]{
                         ApplicationConsts.APPLICATION_TYPE_APPEAL,
