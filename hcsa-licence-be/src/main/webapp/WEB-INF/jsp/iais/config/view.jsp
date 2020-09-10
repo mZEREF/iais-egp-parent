@@ -29,39 +29,33 @@
       </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name&nbsp;<span class="mandatory" >*</span></label>
+          <label class="col-xs-0 col-md-8 control-label" for="serviceName">Service Name&nbsp;<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="serviceName" name="serviceName" maxlength="100" type="text" readonly value="${hcsaServiceDto.svcName}">
           </div>
         </div>
-      </div>
-      <div class="form-group">
+
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="description">Service Description&nbsp;<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="description" name="description" maxlength="255" readonly type="text" value="${hcsaServiceDto.svcDesc}">
           </div>
         </div>
-      </div>
-      <div class="form-group">
+
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="displayDescription">Service Display Description&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="displayDescription" name="displayDescription" maxlength="255" readonly type="text" value="${hcsaServiceDto.svcDisplayDesc}">
           </div>
         </div>
-      </div>
 
-      <div class="form-group">
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="serviceCode">Service Code&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="serviceCode" type="text" name="serviceCode" maxlength="3" readonly value="${hcsaServiceDto.svcCode}">
           </div>
         </div>
-      </div>
 
-      <div class="form-group">
         <div class="col-xs-12 col-md-8">
           <label class="col-xs-12 col-md-8 control-label" for="ServiceType">Service Type&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
@@ -73,39 +67,35 @@
             </select>
           </div>
         </div>
-      </div>
 
-      <div class="form-group">
         <div class="col-xs-12 col-md-10">
           <label class="col-xs-12 col-md-10 control-label" style="margin-bottom: 10px;">Premises Type&nbsp;<span class="mandatory">*</span></label>
         </div>
-      </div>
-      <div class="form-group">
-      <div class="form-check-gp">
-        <div class="row">
-          <div class="col-xs-12 col-md-3">
-            <div class="form-check " style="left: 10%">
-              <c:set var="type" value="${PremisesType}"></c:set>
-              <input class="form-check-input" disabled  id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" name="Onsite" aria-invalid="false">
-              <label class="form-check-label"  for="icon3checkboxSample"><span class="check-square"></span>Onsite</label>
+
+        <div class="form-check-gp">
+          <div class="row">
+            <div class="col-xs-12 col-md-3">
+              <div class="form-check " style="left: 10%">
+                <c:set var="type" value="${PremisesType}"></c:set>
+                <input class="form-check-input" disabled  id="icon3checkboxSample" <c:if test="${fn:contains(type,'ONSITE')}">checked="checked"</c:if> type="checkbox" name="Onsite" aria-invalid="false">
+                <label class="form-check-label"  for="icon3checkboxSample"><span class="check-square"></span>Onsite</label>
+              </div>
             </div>
-          </div>
-          <div class="col-xs-12 col-md-3">
-            <div class="form-check ">
-              <input class="form-check-input" disabled id="icon4checkboxSample"  <c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> type="checkbox" name="Offsite" aria-invalid="false">
-              <label class="form-check-label"  for="icon4checkboxSample"><span class="check-square"></span>Offsite</label>
+            <div class="col-xs-12 col-md-3">
+              <div class="form-check ">
+                <input class="form-check-input" disabled id="icon4checkboxSample"  <c:if test="${fn:contains(type,'OFFSITE')}">checked="checked"</c:if> type="checkbox" name="Offsite" aria-invalid="false">
+                <label class="form-check-label"  for="icon4checkboxSample"><span class="check-square"></span>Offsite</label>
+              </div>
             </div>
-          </div>
-          <div class="col-xs-12 col-md-3">
-            <div class="form-check ">
-              <input class="form-check-input" disabled id="icon5checkboxSample"  <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" name="Conveyance" aria-invalid="false">
-              <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
+            <div class="col-xs-12 col-md-3">
+              <div class="form-check ">
+                <input class="form-check-input" disabled id="icon5checkboxSample"  <c:if test="${fn:contains(type,'CONVEYANCE')}">checked="checked"</c:if> type="checkbox" name="Conveyance" aria-invalid="false">
+                <label class="form-check-label" for="icon5checkboxSample"><span class="check-square"></span>Conveyance</label>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      </div>
-
 
       <div class="form-group" style="display: none" id="Subsumption">
         <div class="col-xs-12 col-md-8"  style="margin-bottom: 10px">
@@ -115,8 +105,6 @@
           </div>
         </div>
       </div>
-
-
 
       <div class="form-group" style="display: none" id="Pre-requisite">
         <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
@@ -129,9 +117,9 @@
 
       <div class="form-group" >
         <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
-
-          <div class="col-xs-12 col-md-4" style="margin-left: 50%">
-            <label class="col-xs-12 col-md-6 control-label"  style="text-align: center">MINIMUM COUNT</label>
+          <label class="col-xs-12 col-md-8 control-label"></label>
+          <div class="col-xs-12 col-md-4">
+            <label class="col-xs-12 col-md-6 control-label"  style="padding-left: 0px;">MINIMUM COUNT</label>
             <label class="col-xs-12 col-md-6 control-label" style="text-align: center" >MAXIMUM COUNT</label>
           </div>
         </div>
@@ -140,7 +128,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-8 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input type="text" name="man-principalOfficer" maxlength="2" readonly value="${PO.mandatoryCount}" placeholder="mandatory count">
           </div>
@@ -153,7 +141,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label">Deputy Principal Officer (DPO)&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-8 control-label">Deputy Principal Officer (DPO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="man-DeputyPrincipalOfficer" maxlength="2" readonly value="${DPO.mandatoryCount}" placeholder="mandatory count">
           </div>
@@ -163,10 +151,9 @@
         </div>
       </div>
 
-
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-8 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2"  readonly value="${CGO.mandatoryCount}" placeholder="mandatory count">
           </div>
@@ -176,10 +163,9 @@
         </div>
       </div>
 
-
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-8 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  type="text" name="man-ServicePersonnel" maxlength="2" readonly value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
           </div>
@@ -190,20 +176,20 @@
       </div>
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" >MedAlert Person&nbsp;<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-8 control-label" >MedAlert Person&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
-            <input value="${MAP.id}" name="svcpsnId" maxlength="2" style="display:none;" type="text">
-            <input  type="text" name="man-MedalertPerson" maxlength="2" value="${MAP.mandatoryCount}" placeholder="minimum count">
+            <input disabled value="${MAP.id}" name="svcpsnId" maxlength="2" style="display:none;" type="text">
+            <input disabled type="text" name="man-MedalertPerson" maxlength="2" value="${MAP.mandatoryCount}" placeholder="minimum count">
           </div>
           <div class="col-xs-12 col-md-2">
-            <input  type="text" name="mix-MedalertPerson" maxlength="2" value="${MAP.maximumCount}"  placeholder="maximum count">
+            <input disabled type="text" name="mix-MedalertPerson" maxlength="2" value="${MAP.maximumCount}"  placeholder="maximum count">
           </div>
         </div>
       </div>
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
+          <label class="col-xs-12 col-md-8 control-label" for="NumberDocument">Number of Service-Related Document to be
             uploaded&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument"  readonly  type="text" maxlength="2" value="${serviceDocSize}">
@@ -215,7 +201,7 @@
         <c:forEach items="${serviceDoc}" var="doc">
           <div class="form-group">
             <div class="col-xs-12 col-md-8">
-              <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
+              <label class="col-xs-12 col-md-8 control-label">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="serviceDocId">
               <div class="col-xs-12 col-md-4">
                 <input  type="text" name="descriptionServiceDoc" disabled maxlength="255" value="${doc.docTitle}">
@@ -232,7 +218,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to
+          <label class="col-xs-12 col-md-8 control-label" for="Numberfields">Number of Service-Related General Info fields to
             be captured&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="Numberfields" readonly type="text" maxlength="2" value="${comDocSize}">
@@ -244,7 +230,7 @@
         <c:forEach items="${comDoc}" var="doc">
           <div class="form-group">
             <div class="col-xs-12 col-md-8">
-              <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
+              <label class="col-xs-12 col-md-8 control-label">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="commDocId">
               <div class="col-xs-12 col-md-4">
                 <input  type="text" name="descriptionCommDoc" disabled maxlength="255" value="${doc.docTitle}">
@@ -261,7 +247,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label">Will the doc be duplicated for individual premises?</label>
+          <label class="col-xs-12 col-md-8 control-label">Will the doc be duplicated for individual premises?</label>
           <div class="col-xs-12 col-md-2">
             <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" disabled checked value="0"><label>No</label>
           </div>
@@ -454,14 +440,12 @@
       </div>
     </c:forEach>
 
-
       <div class="form-group">
         <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
           <label class="col-xs-12 col-md-10 control-label" >Service step&nbsp;<span class="mandatory">*</span></label>
           <span name="iaisErrorMsg" class="error-msg" id="error_serviceStep" style="display: block"></span>
         </div>
       </div>
-
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
@@ -546,13 +530,7 @@
             <a  class="btn  btn-secondary "   style="margin-right: 10px" id="addAsItem" > + </a><label for="addAsItem"> Add Item</label>
           </div>
         </div>
-
       </div>
-
-
-
-
-
 
       <div class="col-xs-12 col-md-8">
         <div class="form-group">
@@ -571,7 +549,6 @@
           </div>
           <div class="clear"></div></div>
       </div>
-
 
       <div class="col-xs-12 col-md-8" style="left: 10%">
         <div class="row">
@@ -629,9 +606,7 @@
         a();
     });
     function kpi() {
-
         location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohKPIAndReminder",request)%>';
-
     }
 
 
@@ -641,7 +616,6 @@
 
     function riskScore(){
         location.href='https://${pageContext.request.serverName}/${pageContext.request.contextPath}<%=RedirectUtil.appendCsrfGuardToken("/eservice/INTRANET/MohRiskConigMenu",request)%>';
-
     }
 
     $(document).ready(function(){
@@ -656,9 +630,8 @@
             $('#Subsumption').attr("style","display:none");
             $('#Pre-requisite').attr("style","display:none");
         }
-
-
     });
+
     function displays() {
         $('#cancel').modal('hide');
     }
