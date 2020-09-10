@@ -2888,6 +2888,10 @@ public class HcsaApplicationDelegator {
 
     public void setNormalProcessingDecisionDropdownValue(HttpServletRequest request, ApplicationViewDto applicationViewDto, TaskDto taskDto){
         List<SelectOption> nextStageList = IaisCommonUtils.genNewArrayList();
+        String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
+        List<AppPremisesRoutingHistoryDto> rollBackHistroyList = applicationViewDto.getRollBackHistroyList();
+        boolean hasRollBackHistoryList = rollBackHistroyList != null && rollBackHistroyList.size() > 0;
+        boolean isCessationOrWithdrawal = ApplicationConsts.APPLICATION_TYPE_WITHDRAWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CESSATION.equals(applicationType);
         boolean finalStage = isFinalStage(taskDto, applicationViewDto);
         nextStageList.add(new SelectOption("", "Please Select"));
         if(RoleConsts.USER_ROLE_AO1.equals(taskDto.getRoleId()) || RoleConsts.USER_ROLE_AO2.equals(taskDto.getRoleId()) && !finalStage){
@@ -2909,7 +2913,9 @@ public class HcsaApplicationDelegator {
                 && RoleConsts.USER_ROLE_ASO.equals(taskDto.getRoleId())){
 
         }else{
-            nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK, "Internal Route Back"));
+            if(hasRollBackHistoryList){
+                nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROLLBACK, "Internal Route Back"));
+            }
         }
         //62761
         Integer rfiCount =  applicationService.getAppBYGroupIdAndStatus(applicationViewDto.getApplicationDto().getAppGrpId(),
@@ -2922,17 +2928,18 @@ public class HcsaApplicationDelegator {
         }
 
         //62875
-        if(RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
+        if(hasRollBackHistoryList && RoleConsts.USER_ROLE_AO3.equals(taskDto.getRoleId()) && ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03.equals(applicationViewDto.getApplicationDto().getStatus())){
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_BROADCAST_QUERY,"Broadcast"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_ROUTE_TO_DMS,"Trigger to DMS"));
         }
         //if final stage
-        if(finalStage){
+        if(finalStage && isCessationOrWithdrawal && !hasRollBackHistoryList){
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_PENDING_APPROVAL,"Approve"));
             nextStageList.add(new SelectOption(ApplicationConsts.PROCESSING_DECISION_REJECT,"Reject"));
         }
         ParamUtil.setSessionAttr(request, "finalStage", finalStage);
+        ParamUtil.setRequestAttr(request,"hasRollBackHistoryList", hasRollBackHistoryList);
         ParamUtil.setSessionAttr(request, "nextStages", (Serializable)nextStageList);
     }
 
