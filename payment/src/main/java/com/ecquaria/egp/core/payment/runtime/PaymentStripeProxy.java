@@ -176,12 +176,19 @@ public class PaymentStripeProxy extends PaymentProxy {
 		PaymentIntent paymentIntent=null;
 		try{
 
-			PaymentBaiduriProxyUtil.getStripeService().authentication();
-			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
+//			PaymentBaiduriProxyUtil.getStripeService().authentication();
+//			PaymentBaiduriProxyUtil.getStripeService().connectedAccounts("acct_1Gnz03BQeqajk1lG");
 			Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
 			paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(checkoutSession.getPaymentIntent());
+			log.info(StringUtil.changeForLog("Payment Intent: "+paymentIntent.getStatus()) );
 		}catch (Exception e){
 			log.info(e.getMessage(),e);
+			try {
+				Session checkoutSession=PaymentBaiduriProxyUtil.getStripeService().retrieveSession(paymentRequestDto.getSrcSystemConfDto().getClientKey());
+				paymentIntent=PaymentBaiduriProxyUtil.getStripeService().retrievePaymentIntent(checkoutSession.getPaymentIntent());
+			}catch (Exception e1){
+				log.info(e.getMessage(),e1);
+			}
 		}
 
 		String response = "payment success";
