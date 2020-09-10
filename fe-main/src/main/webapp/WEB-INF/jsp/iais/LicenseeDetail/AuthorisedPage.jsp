@@ -24,28 +24,28 @@
             <strong>Authorised User</strong>
             <p>The Authorised Person is responsible for liaising with MOH on all licensing matters and for the administration and management of the healthcare organisation. </p>
 
-            <strong>${licensee.name},${nric}</strong>
+            <strong>${feuser.displayName},${nric}</strong>
 
             <div class="form-horizontal">
                 <iais:row>
                     <iais:field value="Name of the Company" width="11"/>
                     <label class="col-xs-11 col-md-4 control-label">
-                        <iais:code  code="${licensee.name}"/>
+                        <iais:code  code="${feuser.displayName}"/>
                     </label>
                 </iais:row>
                 <iais:row>
                     <iais:field value="UEN (ACRA / ROS) No." width="11"/>
-                    <iais:field value="${licensee.idNo}" width="11"/>
+                    <iais:field value="${feuser.identityNo}" width="11"/>
                 </iais:row>
 
                 <iais:row>
                     <iais:field value="Designation" width="11"/>
                     <label class="col-xs-11 col-md-4 control-label">
-                        <iais:code code="${licensee.designation}"/>
+                        <iais:code code="${feuser.designation}"/>
                     </label>
                 </iais:row>
                 <iais:row>
-                    <iais:field value="Professional  Regn Type" width="11"/>
+                    <iais:field value="Professional Regn Type" width="11"/>
                     <iais:field value="-" width="11"/>
                 </iais:row>
                 <iais:row>
@@ -58,7 +58,7 @@
                 </iais:row>
                 <iais:row>
                     <iais:field value="Email Address" width="11"/>
-                    <iais:field value="${emailAddr}" width="11"/>
+                    <iais:field value="${feuser.email}" width="11"/>
                 </iais:row>
             </div>
 

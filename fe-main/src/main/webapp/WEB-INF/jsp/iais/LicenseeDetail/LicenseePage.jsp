@@ -24,7 +24,7 @@
             <strong>Licensee</strong>
             <p>The Licensee is accountable for the healthcare organisation's overall compliance with the HCS Bill and the appointment of key leadership roles.</p>
 
-            <strong>Greenwood Clinic</strong>
+            <strong>${licensee.name}</strong>
             <p>Your company information is retrieved from ACRA.</p>
 
             <div class="form-horizontal">

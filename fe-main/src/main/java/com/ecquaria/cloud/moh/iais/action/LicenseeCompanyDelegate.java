@@ -5,6 +5,7 @@ import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
@@ -52,11 +53,11 @@ public class LicenseeCompanyDelegate {
         log.debug("****preparePage Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         LicenseeDto licenseeDto = orgUserManageService.getLicenseeById(loginContext.getLicenseeId());
-
-        if(ParamUtil.getRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_VALUE).equals("refresh")){
+        String curdType = ParamUtil.getString(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE);
+        if("refresh".equals(curdType)){
             String organizationId = loginContext.getOrgId();
             OrganizationDto organizationDto = orgUserManageService.getOrganizationById(organizationId);
-            orgUserManageService.createCropUser(organizationDto);
+            orgUserManageService.refreshLicensee(organizationDto.getUenNo());
         }
         String type = ParamUtil.getString(bpc.request,"licenseView");
         if(type != null && !StringUtils.isEmpty(type) ){
@@ -70,9 +71,13 @@ public class LicenseeCompanyDelegate {
 
     public void company(BaseProcessClass bpc) {
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        List<LicenseeDto> licenseeDto = orgUserManageService.getLicenseeByOrgId(loginContext.getOrgId());
 
+        List<LicenseeDto> licenseesDto = orgUserManageService.getLicenseeByOrgId(loginContext.getOrgId());
+        LicenseeDto licenseeDto = licenseesDto.get(0);
+        licenseeDto.setLicenseeType(MasterCodeUtil.getCodeDesc(licenseeDto.getLicenseeType()));
+        OrganizationDto organizationDto= orgUserManageService.getOrganizationById(loginContext.getOrgId());
         List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDto = orgUserManageService.getPersonById(loginContext.getLicenseeId());
+        ParamUtil.setRequestAttr(bpc.request,"organization",organizationDto);
         ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
         ParamUtil.setRequestAttr(bpc.request,"person",licenseeKeyApptPersonDto);
 
@@ -98,12 +103,13 @@ public class LicenseeCompanyDelegate {
     public void authorised(BaseProcessClass bpc) {
         log.debug("****preparePage Process ****");
         LoginContext loginContext= (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        List<LicenseeKeyApptPersonDto> licenseeKeyApptPersonDto = orgUserManageService.getPersonById(loginContext.getLicenseeId());
-        if(licenseeKeyApptPersonDto!= null && licenseeKeyApptPersonDto.size() > 0){
-            LicenseeKeyApptPersonDto licenseeper = licenseeKeyApptPersonDto.get(0);
-            String nric = "XXXX"+licenseeper.getIdNo().substring(3) + "(NRIC)";
+        List<FeUserDto> feUserDtos = orgUserManageService.getAccountByOrgId(loginContext.getOrgId());
+        if(feUserDtos!= null && feUserDtos.size() > 0){
+            FeUserDto feUserDto = feUserDtos.get(0);
+            String nric = "XXXX"+((FeUserDto) feUserDto).getIdentityNo().substring(3) + "(NRIC)";
+            feUserDto.setDesignation(MasterCodeUtil.getCodeDesc(feUserDto.getDesignation()));
             ParamUtil.setRequestAttr(bpc.request,"nric",nric);
-            ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeper);
+            ParamUtil.setRequestAttr(bpc.request,"feuser",feUserDto);
         }
 
 

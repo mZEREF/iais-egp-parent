@@ -72,6 +72,14 @@ public class FeUserClientFallback implements FeUserClient{
     }
 
     @Override
+    public FeignResponseEntity<List<FeUserDto>> getAccountByOrgId(String orgId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
     public FeignResponseEntity<OrganizationDto> createSingpassAccount(OrganizationDto organizationDto) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();

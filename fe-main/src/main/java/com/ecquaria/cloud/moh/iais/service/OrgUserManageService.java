@@ -32,6 +32,10 @@ public interface OrgUserManageService {
 
     FeUserDto createCropUser(OrganizationDto organizationDto);
 
+    void refreshLicensee(String uen);
+
+    List<FeUserDto> getAccountByOrgId(String orgId);
+
     FeUserDto getUserByNricAndUen(String uen, String nric);
 
     FeUserDto getFeUserAccountByNricAndType(String nric, String idType);

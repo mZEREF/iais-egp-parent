@@ -27,7 +27,7 @@
     </div>
 </div>
 <form method="post" id="mainForm" action=<%=process.runtime.continueURL()%>>
-    <input type="hidden" name="crud_action_type" value="">
+    <input type="hidden" name="crud_action_type" id="crud_action_type" value="refresh">
     <div class="main-content">
         <div class="tab-gp steps-tab">
             <div class="tab-content">
@@ -43,7 +43,7 @@
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="UEN No." width="11"/>
-                                        <iais:field value="${licensee.getUenNo()}" width="11"/>
+                                        <iais:field value="${organization.getUenNo()}" width="11"/>
                                     </iais:row>
                                     <iais:row>
                                         <iais:field value="Name of the licensee" width="11"/>
@@ -155,6 +155,7 @@
     })
 
     $("#refresh").click(function () {
+        $("#crud_action_type").val("refresh");
         SOP.Crud.cfxSubmit("mainForm","refresh");
     })
 </script>

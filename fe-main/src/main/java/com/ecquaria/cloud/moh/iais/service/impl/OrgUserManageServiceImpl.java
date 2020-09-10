@@ -192,6 +192,14 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
         return postCreateUser;
     }
 
+    @Override
+    public void refreshLicensee(String uen){
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        eicGatewayFeMainClient.getUen(uen, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization());
+
+    }
 
     @Override
     public FeUserDto createCropUser(OrganizationDto organizationDto) {
@@ -219,6 +227,11 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     @Override
     public FeUserDto getUserByNricAndUen(String uen, String nric) {
         return feUserClient.getUserByNricAndUen(uen, nric).getEntity();
+    }
+
+    @Override
+    public List<FeUserDto> getAccountByOrgId(String orgId){
+        return feUserClient.getAccountByOrgId(orgId).getEntity();
     }
 
     @Override
