@@ -256,8 +256,7 @@ public class NotificationHelper {
 			//get mesContext
 			String mesContext;
 			String emailTemplate = msgTemplateDto.getMessageContent();
-			//replace num
-			emailTemplate = MessageTemplateUtil.replaceNum(emailTemplate);
+
 			if (templateContent != null && !templateContent.isEmpty()) {
 				if (templateContent.get("msgContent") != null) {
 					mesContext = (String) templateContent.get("msgContent");
@@ -272,7 +271,8 @@ public class NotificationHelper {
 			} else {
 				mesContext = emailTemplate;
 			}
-
+			//replace num
+			mesContext = MessageTemplateUtil.replaceNum(mesContext);
 			// send message
 			if(StringUtil.isEmpty(subject)){
 				subject = msgTemplateDto.getTemplateName();
@@ -300,8 +300,7 @@ public class NotificationHelper {
 				//get mesContext
 				String mesContext;
 				String emailTemplate = msgTemplateDto.getMessageContent();
-				//replace num
-				emailTemplate = MessageTemplateUtil.replaceNum(emailTemplate);
+
 				if (templateContent != null && !templateContent.isEmpty()) {
 					if (templateContent.get("msgContent") != null) {
 						mesContext = (String) templateContent.get("msgContent");
@@ -311,7 +310,8 @@ public class NotificationHelper {
 				} else {
 					mesContext = emailTemplate;
 				}
-
+				//replace num
+				mesContext = MessageTemplateUtil.replaceNum(mesContext);
 				if (StringUtil.isEmpty(subject)) {
 					subject = msgTemplateDto.getTemplateName();
 				}
