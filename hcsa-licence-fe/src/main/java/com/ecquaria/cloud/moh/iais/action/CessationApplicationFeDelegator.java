@@ -65,8 +65,14 @@ public class CessationApplicationFeDelegator {
 
     public void init(BaseProcessClass bpc) {
         List<String> licIds = (List<String>) ParamUtil.getSessionAttr(bpc.request, "licIds");
+        String licenceId = ParamUtil.getRequestString(bpc.request, "licenceId");
+//        licenceId =  "7B3EDEE7-A7ED-EA11-8B79-000C293F0C99" ;
         boolean isGrpLicence = cessationFeService.isGrpLicence(licIds);
         List<AppCessLicDto> appCessDtosByLicIds = cessationFeService.getAppCessDtosByLicIds(licIds);
+        if(!StringUtil.isEmpty(licenceId)){
+            List<AppCessLicDto> appCessLicDtos = cessationFeService.initRfiData(licIds);
+            appCessDtosByLicIds = appCessLicDtos ;
+        }
         List<AppSpecifiedLicDto> specLicInfo = cessationFeService.getSpecLicInfo(licIds);
         if (specLicInfo.size() > 0) {
             ParamUtil.setSessionAttr(bpc.request, "specLicInfo", (Serializable) specLicInfo);

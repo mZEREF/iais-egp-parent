@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import freemarker.template.TemplateException;
+import org.apache.kafka.common.protocol.types.Field;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -38,4 +39,8 @@ public interface CessationFeService {
     boolean isGrpLicence(List<String> licIds);
 
     String getStageId(String serviceId,String appType);
+
+    List<AppCessLicDto> initRfiData(List<String> licIds);
+
+
 }

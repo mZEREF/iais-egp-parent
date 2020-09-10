@@ -28,7 +28,6 @@ import com.ecquaria.cloud.moh.iais.helper.QueryHelp;
 import com.ecquaria.cloud.moh.iais.helper.SearchResultHelper;
 import com.ecquaria.cloud.moh.iais.helper.WebValidationHelper;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
-import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.role.Role;
@@ -72,11 +71,8 @@ public class MohIntranetUserDelegator {
             .resultAttr(IntranetUserConstant.SEARCH_RESULT)
             .sortField(IntranetUserConstant.INTRANET_USER_SORT_COLUMN).sortType(SearchParam.ASCENDING).build();
 
-
     @Autowired
     private IntranetUserService intranetUserService;
-    @Autowired
-    private EgpUserClient egpUserClient;
 
     public void start(BaseProcessClass bpc) {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>user");
@@ -559,7 +555,7 @@ public class MohIntranetUserDelegator {
         return;
     }
 
-    public void doExport(BaseProcessClass bpc) throws IOException {
+    public void doExport(BaseProcessClass bpc) {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String[] ids = ParamUtil.getStrings(request, "userUid");
         if (ids == null || ids.length == 0) {

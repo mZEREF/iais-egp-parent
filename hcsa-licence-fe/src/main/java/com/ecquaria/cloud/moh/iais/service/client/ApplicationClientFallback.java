@@ -498,11 +498,8 @@ public class ApplicationClientFallback implements ApplicationClient {
     }
 
     @Override
-    public FeignResponseEntity<ApplicationDto> getApplicationByLicId(String licId) {
-        FeignResponseEntity entity = new FeignResponseEntity<>();
-        HttpHeaders headers = new HttpHeaders();
-        entity.setHeaders(headers);
-        return entity;
+    public FeignResponseEntity<List<ApplicationDto>> getApplicationsByLicId(String licId) {
+        return null;
     }
 
     @Override

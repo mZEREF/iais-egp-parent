@@ -16,6 +16,7 @@ import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -230,8 +231,8 @@ public interface ApplicationClient  {
     @GetMapping(value = "/appeal/application-group-peronnel-by-grp-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppSvcCgoDto>> getAppGrpPersonnelByGrpId(@RequestParam("grpId") String grpId);
 
-    @PostMapping(value = "/iais-application/apps-by-licId/{licId}")
-    FeignResponseEntity<ApplicationDto> getApplicationByLicId(@PathVariable(name = "licId") String licId);
+    @GetMapping(value = "/iais-application/apps-by-licId/{licId}")
+    FeignResponseEntity<List<ApplicationDto>> getApplicationsByLicId(@PathVariable(name = "licId") String licId);
 
     @GetMapping(value = "/appeal/list-of-application-group-personnel",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<AppGrpPersonnelDto>> getAppGrpPersonnelDtosByGrpId(@RequestParam("grpId") String grpId);

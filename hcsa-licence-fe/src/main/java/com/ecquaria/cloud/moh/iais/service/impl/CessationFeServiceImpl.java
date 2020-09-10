@@ -103,7 +103,6 @@ public class CessationFeServiceImpl implements CessationFeService {
     private String secSecretKey;
 
 
-
     private final static String FURTHERDATECESSATION = "4FAD8B3B-E652-EA11-BE7F-000C29F371DC";
     private final static String PRESENTDATECESSATION = "50AD8B3B-E652-EA11-BE7F-000C29F371DC";
 
@@ -311,10 +310,10 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("systemLink", loginUrl);
                     emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
                     MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE).getEntity();
-                    Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+                    Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     map.put("ApplicationNumber", applicationNo);
-                    String subject= MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+                    String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE);
                     emailParam.setTemplateContent(emailMap);
@@ -327,7 +326,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     notificationHelper.sendNotification(emailParam);
                     //msg
                     HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-                    List<String> svcCode=IaisCommonUtils.genNewArrayList();
+                    List<String> svcCode = IaisCommonUtils.genNewArrayList();
                     svcCode.add(svcDto.getSvcCode());
                     emailParam.setSvcCodeList(svcCode);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_FUTURE_DATE_MSG);
@@ -349,12 +348,12 @@ public class CessationFeServiceImpl implements CessationFeService {
                     emailMap.put("CessationDate", Formatter.formatDateTime(effectiveDate));
                     emailMap.put("email", systemParamConfig.getSystemAddressOne());
                     emailMap.put("MOH_AGENCY_NAME", AppConsts.MOH_AGENCY_NAME);
-                    emailMap.put("MOH_AGENCY_NAM_GROUP",AppConsts.MOH_AGENCY_NAM_GROUP);
+                    emailMap.put("MOH_AGENCY_NAM_GROUP", AppConsts.MOH_AGENCY_NAM_GROUP);
                     MsgTemplateDto msgTemplateDto = msgTemplateClient.getMsgTemplate(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE).getEntity();
-                    Map<String,Object> map=IaisCommonUtils.genNewHashMap();
+                    Map<String, Object> map = IaisCommonUtils.genNewHashMap();
                     map.put("ApplicationType", MasterCodeUtil.retrieveOptionsByCodes(new String[]{applicationDto.getApplicationType()}).get(0).getText());
                     map.put("ApplicationNumber", applicationNo);
-                    String subject= MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(),map);
+                    String subject = MsgUtil.getTemplateMessageByContent(msgTemplateDto.getTemplateName(), map);
                     EmailParam emailParam = new EmailParam();
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE);
                     emailParam.setTemplateContent(emailMap);
@@ -367,7 +366,7 @@ public class CessationFeServiceImpl implements CessationFeService {
                     notificationHelper.sendNotification(emailParam);
                     //msg
                     HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(applicationDto.getServiceId()).getEntity();
-                    List<String> svcCode=IaisCommonUtils.genNewArrayList();
+                    List<String> svcCode = IaisCommonUtils.genNewArrayList();
                     svcCode.add(svcDto.getSvcCode());
                     emailParam.setSvcCodeList(svcCode);
                     emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_CEASE_PRESENT_DATE_MSG);
@@ -395,20 +394,20 @@ public class CessationFeServiceImpl implements CessationFeService {
         Date today = new Date();
         String todayStr = DateUtil.formatDate(today);
         Date date2 = DateUtil.parseDate(todayStr);
-        for(ApplicationDto applicationDto : applicationDtos){
+        for (ApplicationDto applicationDto : applicationDtos) {
             String appId = applicationDto.getId();
             List<AppPremiseMiscDto> appPremiseMiscDtos = cessationClient.getAppPremiseMiscDtoListByAppId(appId).getEntity();
-            if(!IaisCommonUtils.isEmpty(appPremiseMiscDtos)){
+            if (!IaisCommonUtils.isEmpty(appPremiseMiscDtos)) {
                 Date effectiveDate = appPremiseMiscDtos.get(0).getEffectiveDate();
                 String effectiveDateStr = DateUtil.formatDate(effectiveDate);
                 Date date1 = DateUtil.parseDate(effectiveDateStr);
-                if(date1.after(date2)){
+                if (date1.after(date2)) {
                     applicationDto.setStatus(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
                 }
             }
             String serviceId = applicationDto.getServiceId();
             String appStatus = getStageId(serviceId, ApplicationConsts.APPLICATION_TYPE_CESSATION);
-            if(!StringUtil.isEmpty(appStatus)){
+            if (!StringUtil.isEmpty(appStatus)) {
                 applicationDto.setStatus(appStatus);
             }
         }
@@ -429,7 +428,7 @@ public class CessationFeServiceImpl implements CessationFeService {
             }
         }
         //sort by appNo
-        Collections.sort(appCessationDtosConfirms,(s1,s2)->(s1.getAppNo().compareTo(s2.getAppNo())));
+        Collections.sort(appCessationDtosConfirms, (s1, s2) -> (s1.getAppNo().compareTo(s2.getAppNo())));
         return appCessationDtosConfirms;
     }
 
@@ -441,36 +440,78 @@ public class CessationFeServiceImpl implements CessationFeService {
 
     @Override
     public String getStageId(String serviceId, String appType) {
-        String appStatus ;
+        String appStatus;
         HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<HcsaSvcRoutingStageDto> serviceConfig = feEicGatewayClient.getServiceConfig(serviceId, appType, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
-        if(IaisCommonUtils.isEmpty(serviceConfig)){
+        if (IaisCommonUtils.isEmpty(serviceConfig)) {
             return null;
-        }else {
+        } else {
             String stageId = serviceConfig.get(0).getStageCode();
-            switch (stageId){
-                case RoleConsts.USER_ROLE_ASO :
+            switch (stageId) {
+                case RoleConsts.USER_ROLE_ASO:
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING;
                     break;
-                case RoleConsts.USER_ROLE_PSO :
+                case RoleConsts.USER_ROLE_PSO:
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_PROFESSIONAL_SCREENING;
                     break;
-                case RoleConsts.PROCESS_TYPE_INS :
+                case RoleConsts.PROCESS_TYPE_INS:
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_INSPECTION;
                     break;
-                case RoleConsts.USER_ROLE_AO1 :
+                case RoleConsts.USER_ROLE_AO1:
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01;
                     break;
-                case RoleConsts.USER_ROLE_AO2 :
+                case RoleConsts.USER_ROLE_AO2:
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02;
                     break;
-                default :
+                default:
                     appStatus = ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03;
             }
         }
-        return appStatus ;
+        return appStatus;
+    }
+
+    @Override
+    public List<AppCessLicDto> initRfiData(List<String> licIds) {
+        List<AppCessLicDto> appCessDtosByLicIds = getAppCessDtosByLicIds(licIds);
+        List<AppCessHciDto> appCessHciDtos = appCessDtosByLicIds.get(0).getAppCessHciDtos();
+        appCessHciDtos.clear();
+        String licId = licIds.get(0);
+        List<ApplicationDto> applicationDtos = applicationClient.getApplicationsByLicId(licId).getEntity();
+        if (!IaisCommonUtils.isEmpty(applicationDtos)) {
+            for (ApplicationDto applicationDto : applicationDtos) {
+                AppCessMiscDto appCessMiscDto = cessationClient.getAppMiscDtoByAppId(applicationDto.getId()).getEntity();
+                AppCessHciDto appCessHciDto = new AppCessHciDto();
+                Date effectiveDate = appCessMiscDto.getEffectiveDate();
+                String reason = appCessMiscDto.getReason();
+                String otherReason = appCessMiscDto.getOtherReason();
+                String patTransType = appCessMiscDto.getPatTransType();
+                String patTransTo = appCessMiscDto.getPatTransTo();
+                appCessHciDto.setPatientSelect(patTransType);
+                appCessHciDto.setReason(reason);
+                appCessHciDto.setOtherReason(otherReason);
+                appCessHciDto.setEffectiveDate(effectiveDate);
+                if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_HCI.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                    appCessHciDto.setPatHciName(patTransTo);
+                    appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_PRO.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                    appCessHciDto.setPatRegNo(patTransTo);
+                    appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                } else if (ApplicationConsts.CESSATION_PATIENT_TRANSFERRED_TO_OTHER.equals(patTransType) && !StringUtil.isEmpty(patTransTo)) {
+                    appCessHciDto.setPatOthers(patTransTo);
+                    appCessHciDto.setPatNeedTrans(Boolean.TRUE);
+                } else {
+                    String remarks = appCessMiscDto.getPatNoReason();
+                    appCessHciDto.setPatNoRemarks(remarks);
+                    appCessHciDto.setPatNeedTrans(Boolean.FALSE);
+                }
+                appCessHciDtos.add(appCessHciDto);
+            }
+        }else {
+            return null;
+        }
+        return appCessDtosByLicIds;
     }
 
 
