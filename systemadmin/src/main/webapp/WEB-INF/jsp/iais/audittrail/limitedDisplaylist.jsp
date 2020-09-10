@@ -26,7 +26,9 @@
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
                     <div class="intranet-content">
-                        <h2>Audit Trail View</h2>
+                        <div class="bg-title">
+                            <h2>Audit Trail View</h2>
+                        </div>
                         <%@ include file="maincontent.jsp"%>
                     </div>
                 </div>

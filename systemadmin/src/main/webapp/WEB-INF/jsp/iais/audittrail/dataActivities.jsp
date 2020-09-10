@@ -60,7 +60,7 @@
 
     function fmtJson(str, id) {
         if (str == undefined || str == '' ){
-            return
+            str = '[ "No Record !"]'
         }
         let obj = JSON.parse(str);
         let fmt = JSON.stringify(obj, null, "\t")
