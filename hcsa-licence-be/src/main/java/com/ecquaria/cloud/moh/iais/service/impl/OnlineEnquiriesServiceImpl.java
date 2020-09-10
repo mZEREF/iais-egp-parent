@@ -295,7 +295,10 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
                 AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
                 try {
                     complianceHistoryDto.setInspectionDate(Formatter.formatDateTime(appPreRecommentdationDtoDate.getRecomInDate(), AppConsts.DEFAULT_DATE_FORMAT));
-                    complianceHistoryDtos.add(complianceHistoryDto);
+                    AppPremisesRecommendationDto appPreRecommentdationDtoRep = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationDto.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+                    if(appPreRecommentdationDtoRep!=null){
+                        complianceHistoryDtos.add(complianceHistoryDto);
+                    }
                 }catch (Exception e){
                     log.error(e.getMessage(), e);
                     complianceHistoryDto.setInspectionDate("-");
@@ -582,10 +585,54 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
             log.error(e.getMessage(), e);
             insRepDto.setRecommendation("-");
         }
+        AppPremisesRecommendationDto appPremisesRecommendationDto =initRecommendation(appPremisesCorrelationId, applicationViewDto);
+        ParamUtil.setRequestAttr(request, "appPremisesRecommendationDto", appPremisesRecommendationDto);
         ParamUtil.setRequestAttr(request, "insRepDto", insRepDto);
         // 		preInspReport->OnStepProcess
     }
 
+    private AppPremisesRecommendationDto initRecommendation(String correlationId, ApplicationViewDto applicationViewDto) {
+        AppPremisesRecommendationDto appPremisesRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
+        AppPremisesRecommendationDto engageRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_ENGAGE).getEntity();
+        AppPremisesRecommendationDto followRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(correlationId, InspectionConstants.RECOM_TYPE_INSPCTION_FOLLOW_UP_ACTION).getEntity();
+
+        AppPremisesRecommendationDto initRecommendationDto = new AppPremisesRecommendationDto();
+        if (appPremisesRecommendationDto != null) {
+            String chronoUnit = appPremisesRecommendationDto.getChronoUnit();
+            Integer recomInNumber = appPremisesRecommendationDto.getRecomInNumber();
+            String recomDecision = appPremisesRecommendationDto.getRecomDecision();
+            String period = recomInNumber + " " + chronoUnit;
+            List<String> periods = insRepService.getPeriods(applicationViewDto);
+            if (periods != null && !periods.isEmpty() && !InspectionReportConstants.REJECTED.equals(recomDecision)) {
+                if (periods.contains(period)) {
+                    initRecommendationDto.setPeriod(period);
+                } else {
+                    initRecommendationDto.setPeriod("Others");
+                    initRecommendationDto.setRecomInNumber(recomInNumber);
+                    initRecommendationDto.setChronoUnit(chronoUnit);
+                }
+            } else if (InspectionReportConstants.REJECTED.equals(recomDecision)) {
+                initRecommendationDto.setPeriod(null);
+            }
+            initRecommendationDto.setRecommendation(recomDecision);
+        }
+
+        if (appPremisesRecommendationDto != null) {
+            String reportRemarks = appPremisesRecommendationDto.getRemarks();
+            initRecommendationDto.setRemarks(reportRemarks);
+        }
+        if (engageRecommendationDto != null) {
+            String remarks = engageRecommendationDto.getRemarks();
+            String engage = "on";
+            initRecommendationDto.setEngageEnforcement(engage);
+            initRecommendationDto.setEngageEnforcementRemarks(remarks);
+        }
+        if (followRecommendationDto != null) {
+            String followRemarks = followRecommendationDto.getRemarks();
+            initRecommendationDto.setFollowUpAction(followRemarks);
+        }
+        return initRecommendationDto;
+    }
     @Override
     public void setAppInfo(HttpServletRequest request) {
         String appCorrId = (String) ParamUtil.getSessionAttr(request, "id");
