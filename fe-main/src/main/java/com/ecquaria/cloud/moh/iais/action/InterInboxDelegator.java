@@ -724,14 +724,10 @@ public class InterInboxDelegator {
          */
         InterInboxUserDto interInboxUserDto = (InterInboxUserDto) ParamUtil.getSessionAttr(request,InboxConst.INTER_INBOX_USER_INFO);
         SearchParam appParam = HalpSearchResultHelper.getSearchParam(request,"inboxApp");
-        String repalceService = getRepalceService();
-        if(StringUtil.isEmpty(repalceService)){
-            appParam.addFilter("repalceService", "null",true);
-        }else {
-            appParam.addFilter("repalceService", repalceService,true);
-        }
         appParam.addFilter("licenseeId", interInboxUserDto.getLicenseeId(),true);
         QueryHelp.setMainSql(InboxConst.INBOX_QUERY,InboxConst.APPLICATION_QUERY_KEY,appParam);
+        String repalceService = getRepalceService();
+        appParam.setMainSql(appParam.getMainSql().replace("repalceService",repalceService));
         List<SelectOption> appTypes = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_TYPE);
         List<SelectOption> appStatus = MasterCodeUtil.retrieveOptionsByCate(MasterCodeUtil.CATE_ID_APP_STATUS);
         MasterCodePair mcp = new MasterCodePair("app_type", "app_type_desc", appTypes);
