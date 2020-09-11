@@ -263,7 +263,7 @@
             <div class="col-xs-12 col-md-9">
               <label class="col-xs-12 col-md-7 control-label">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="commDocId">
-              <div class="col-xs-12 col-md-4">
+              <div class="col-xs-12 col-md-3">
                 <input  type="text" name="descriptionServiceDoc" maxlength="255" value="${doc.docDesc}">
               </div>
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
@@ -297,7 +297,7 @@
             <div class="col-xs-12 col-md-9">
               <label class="col-xs-12 col-md-7 control-label">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="commDocId">
-              <div class="col-xs-12 col-md-4">
+              <div class="col-xs-12 col-md-3">
                 <input  type="text" name="descriptionCommDoc" maxlength="255" value="${doc.docDesc}">
               </div>
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
@@ -981,10 +981,10 @@
         if(number-number1>0){
             for(var i=0;i<number-number1;i++){
                 $(this).closest("div.form-group").next(".Numberfields").append(" <div class=\"form-group\">\n" +
-                    "            <div class=\"col-xs-12 col-md-8\">\n" +
+                    "            <div class=\"col-xs-12 col-md-9\">\n" +
                     "           <input type=\"hidden\" value=\"\" name=\"commDocId\">\n" +
-                    "              <label class=\"col-xs-12 col-md-6 control-label\">Name of Info Field</label>\n" +
-                    "              <div class=\"col-xs-12 col-md-4\">\n" +
+                    "              <label class=\"col-xs-12 col-md-7 control-label\">Name of Info Field</label>\n" +
+                    "              <div class=\"col-xs-12 col-md-3\">\n" +
                     "                <input  type=\"text\" name=\"descriptionCommDoc\" maxlength=\"255\">\n" +
                     "              </div>\n" +
                     "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
@@ -1011,10 +1011,10 @@
         if(number-number1>0){
             for(var i=0;i<number-number1;i++){
                 $(this).closest("div.form-group").next(".serviceNumberfields").append(" <div class=\"form-group\">\n" +
-                    "            <div class=\"col-xs-12 col-md-8\">\n" +
+                    "            <div class=\"col-xs-12 col-md-9\">\n" +
                     "           <input type=\"hidden\" value=\"\" name=\"serviceDocId\">\n" +
-                    "              <label class=\"col-xs-12 col-md-6 control-label\">Name of Info Field</label>\n" +
-                    "              <div class=\"col-xs-12 col-md-4\">\n" +
+                    "              <label class=\"col-xs-12 col-md-7 control-label\">Name of Info Field</label>\n" +
+                    "              <div class=\"col-xs-12 col-md-3\">\n" +
                     "                <input  type=\"text\" name=\"descriptionServiceDoc\" maxlength=\"255\">\n" +
                     "              </div>\n" +
                     "              <div class=\"col-xs-12 col-md-2 form-check\" style=\"margin-top: 1%\">\n" +
