@@ -297,12 +297,17 @@ public class ApplicationServiceImpl implements ApplicationService {
                             String svcCode = serviceDto.getSvcCode();
                             tlSvcName = svcName;
 
-                            svcCodeList.add(svcCode);
-                            svcNames.add(svcName);
+                            if (!svcCodeList.contains(svcCode)){
+                                svcCodeList.add(svcCode);
+                            }
+
+                            if (!svcNames.contains(svcName)){
+                                svcNames.add(svcName);
+                            }
                         }
                     }
 
-                    templateContent.put("serviceNames", svcNames.stream().distinct().collect(Collectors.toList()));
+                    templateContent.put("serviceNames", svcNames);
                 }
             } else {
                 // uncompleted self ass mt
@@ -326,8 +331,14 @@ public class ApplicationServiceImpl implements ApplicationService {
                     String svcCode = serviceDto.getSvcCode();
                     tlSvcName = svcName;
 
-                    svcCodeList.add(svcCode);
-                    svcNames.add(svcName);
+                    if (!svcCodeList.contains(svcCode)){
+                        svcCodeList.add(svcCode);
+                    }
+
+                    if (!svcNames.contains(svcName)){
+                        svcNames.add(svcName);
+                    }
+
                 }
                 templateContent.put("serviceNames", svcNames);
             }
