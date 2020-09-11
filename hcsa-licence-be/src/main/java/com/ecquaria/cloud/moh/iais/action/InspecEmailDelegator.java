@@ -374,7 +374,7 @@ public class InspecEmailDelegator {
             hcsaSvcStageWorkingGroupDto.setOrder(2);
             TaskDto taskDto1=new TaskDto();
             taskDto1.setApplicationNo(applicationViewDto.getApplicationDto().getApplicationNo());
-            taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_AO1);
+            taskDto1.setTaskKey(HcsaConsts.ROUTING_STAGE_INS);
             taskDto1.setRefNo(taskDto.getRefNo());
             taskDto1.setTaskType(taskDto.getTaskType());
             taskDto1.setProcessUrl(TaskConsts.TASK_PROCESS_URL_INSPECTION_AO1_VALIDATE_NCEMAIL);
