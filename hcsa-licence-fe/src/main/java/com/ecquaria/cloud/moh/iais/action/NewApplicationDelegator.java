@@ -287,6 +287,7 @@ public class NewApplicationDelegator {
         bpc.request.getSession().removeAttribute("submitAppSubmissionDto");
         bpc.request.getSession().removeAttribute("appSubmissionDtos");
         bpc.request.getSession().removeAttribute("rfiHcsaService");
+        bpc.request.getSession().removeAttribute("ackPageAppSubmissionDto");
     }
 
     /**
@@ -2856,6 +2857,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the do prepareAckPage start ...."));
         String txnRefNo = (String) bpc.request.getSession().getAttribute("txnDt");
         AppSubmissionDto appSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, APPSUBMISSIONDTO);
+        Object ackPageAppSubmissionDto = ParamUtil.getSessionAttr(bpc.request, "ackPageAppSubmissionDto");
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         String licenceId = "";
         String draftNo = "";
@@ -2865,6 +2867,11 @@ public class NewApplicationDelegator {
                 licenceId = loginContext.getLicenseeId();
             }
             draftNo = appSubmissionDto.getDraftNo();
+            if(ackPageAppSubmissionDto==null){
+                List<AppSubmissionDto> ackPageAppSubmission=new ArrayList<>(1);
+                ackPageAppSubmission.add(appSubmissionDto);
+                bpc.request.getSession().setAttribute("ackPageAppSubmissionDto",ackPageAppSubmission);
+            }
         }
         if(draftNo!=null){
             AppSubmissionDto draftAppSubmissionDto = serviceConfigService.getAppSubmissionDtoDraft(draftNo);
