@@ -7,10 +7,18 @@
     sop.webflow.rt.api.BaseProcessClass process =
             (sop.webflow.rt.api.BaseProcessClass)request.getAttribute("process");
     String webroot = IaisEGPConstant.CSS_ROOT + IaisEGPConstant.COMMON_CSS_ROOT;
+    String webroot1=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
 <webui:setLayout name="iais-intranet"/>
+<style>
+    .dropdown-menu-right{
+        background-color:white;
+        top: 0px;
+        left: 0px !important;
+    }
+</style>
 <%@ include file="mainContent.jsp" %>
-<%@ include file="../mastercode/suggestJs.jsp" %>
+<script type="text/javascript" src="<%=webroot1%>js/bootstrap-suggest/bootstrap-suggest.js" ></script>
 <script src="<%=webroot%>js/tinymce/tinymce.min.js"></script>
 <script src="<%=webroot%>js/initTinyMce.js"></script>
 <script>
