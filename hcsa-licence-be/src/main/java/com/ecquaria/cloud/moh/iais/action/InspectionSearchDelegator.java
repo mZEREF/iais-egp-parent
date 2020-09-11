@@ -317,7 +317,7 @@ public class InspectionSearchDelegator {
             if(userIdsByGroup != null) {
                 List<TaskDto> taskDtos = inspectionService.getSupervisorPoolByGroupWordId(workGrpId);
                 for (TaskDto tDto : taskDtos) {
-                    if (!StringUtil.isEmpty(tDto.getRoleId()) && userIdsByGroup.contains(tDto.getUserId())) {
+                    if (!StringUtil.isEmpty(tDto.getRoleId()) && (userIdsByGroup.contains(tDto.getUserId()) || StringUtil.isEmpty(tDto.getUserId()))) {
                         if (tDto.getRoleId().equals(curRole) || tDto.getRoleId().equals(memberRole)) {
                             taskDtoList.add(tDto);
                         }
