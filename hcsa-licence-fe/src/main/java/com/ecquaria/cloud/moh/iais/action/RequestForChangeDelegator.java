@@ -501,6 +501,7 @@ public class RequestForChangeDelegator {
                         sendRFCNotification(loginContext,licenceDto,licenseeDto,appSubmissionDto.getLicenseeId(),newLicenseeId,tranferSub);
                     }
                     ParamUtil.setSessionAttr(bpc.request, "app-rfc-tranfer", tranferSub);
+                    ParamUtil.setSessionAttr(bpc.request, "ackPageAppSubmissionDto", null);
                     StringBuilder url = new StringBuilder();
                     url.append("https://").append(bpc.request.getServerName())
                             .append(RfcConst.PAYMENTPROCESS);
