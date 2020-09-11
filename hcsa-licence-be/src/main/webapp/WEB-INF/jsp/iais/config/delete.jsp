@@ -23,29 +23,27 @@
         <h2> HCSA Service</h2>
       </div>
       <div class="form-group">
-        <div class="col-xs-12 col-md-10">
-          <h2 class="component-title">Delete HCSA Service</h2>
+        <div class="col-xs-12 col-md-9">
+          <h2 class="col-xs-0 col-md-7 component-title">Delete HCSA Service</h2>
         </div>
-      </div>
-      <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-8 control-label" for="serviceName">Service Name<span class="mandatory" >*</span></label>
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" for="serviceName">Service Name&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="serviceName" type="text" maxlength="100"  value="${hcsaServiceDto.svcName}" name="serviceName" disabled>
           </div>
         </div>
       </div>
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-8 control-label" for="description">Service Description<span class="mandatory" >*</span></label>
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" for="description">Service Description&nbsp;<span class="mandatory" >*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="description" type="text" maxlength="255" value="${hcsaServiceDto.svcDesc}" disabled>
           </div>
         </div>
       </div>
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-8 control-label" for="displayDescription">Service Display Description<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" for="displayDescription">Service Display Description&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="displayDescription" type="text" maxlength="255" value="${hcsaServiceDto.svcDisplayDesc}" disabled>
           </div>
@@ -53,8 +51,8 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-8 control-label" for="serviceCode">Service Code<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" for="serviceCode">Service Code&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="serviceCode" type="text" maxlength="3"  value="${hcsaServiceDto.svcCode}" disabled>
           </div>
@@ -62,8 +60,8 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-8 control-label" for="ServiceType">Service Type<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" for="ServiceType">Service Type&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <select id="ServiceType" name="ServiceType"  disabled>
 
@@ -78,7 +76,7 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-10">
-          <label class="col-xs-12 col-md-10 control-label" >Premises Type<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-10 control-label" style="margin-bottom: 20px;">Premises Type&nbsp;<span class="mandatory">*</span></label>
         </div>
       </div>
 
@@ -110,28 +108,36 @@
 
 
       <div class="form-group" style="display: none" id="Subsumption">
-        <div class="col-xs-12 col-md-8"  style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-6 control-label" >Base Service Subsumed Under<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-9"  style="margin-bottom: 10px">
+          <label class="col-xs-12 col-md-7 control-label" >Base Service Subsumed Under&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <iais:multipleSelect name="Subsumption" selectValue="${selectSubsumption}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
           </div>
         </div>
       </div>
 
-
       <div class="form-group" style="display: none" id="Pre-requisite">
-        <div class="col-xs-12 col-md-8" style="margin-bottom: 10px">
-          <label class="col-xs-12 col-md-6 control-label" >Pre-requisite Base Service:<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-9" style="margin-bottom: 10px">
+          <label class="col-xs-12 col-md-7 control-label" >Pre-requisite Base Service&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <iais:multipleSelect name="Pre-requisite" selectValue="${selectPreRequisite}" options="selsectBaseHcsaServiceDto"></iais:multipleSelect>
           </div>
         </div>
       </div>
 
+      <div class="form-group" >
+        <div class="col-xs-12 col-md-9" style="margin-bottom: 10px">
+          <label class="col-xs-12 col-md-7 control-label"></label>
+          <div class="col-xs-12 col-md-4">
+            <label class="col-xs-12 col-md-6 control-label" style="padding-left: 0px;">MINIMUM COUNT</label>
+            <label class="col-xs-12 col-md-6 control-label">MAXIMUM COUNT</label>
+          </div>
+        </div>
+      </div>
 
       <div class="form-group" >
-        <div class="col-xs-12 col-md-8" >
-          <label class="col-xs-12 col-md-6 control-label" >Principal Officer (PO)<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-9" >
+          <label class="col-xs-12 col-md-7 control-label" >Principal Officer (PO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2" >
             <input type="text"  disabled name="man-principalOfficer" maxlength="2" value="${PO.mandatoryCount}" placeholder="mandatory count">
             <input type="text" disabled name="poId" style="display: none" maxlength="2" value="${PO.id}">
@@ -145,8 +151,8 @@
 
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" >Deputy Principal Officer (DPO)<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Deputy Principal Officer (DPO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input  value="${DPO.id}" name="dpoId" style="display:none;" type="text">
             <input  readonly type="text" name="man-DeputyPrincipalOfficer" maxlength="2" value="${DPO.mandatoryCount}" placeholder="mandatory count">
@@ -159,8 +165,8 @@
 
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" >Clinical Governance Officer (CGO)<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Clinical Governance Officer (CGO)&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${CGO.id}" name="cgoId" style="display:none;" type="text">
             <input readonly  type="text" name="man-ClinicalGovernanceOfficer" maxlength="2" value="${CGO.mandatoryCount}" placeholder="mandatory count">
@@ -173,8 +179,8 @@
 
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" >Service Personnel<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" >Service Personnel&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-2">
             <input value="${SVCPSN.id}" name="svcpsnId" style="display:none;" maxlength="2" type="text">
             <input  readonly type="text" name="man-ServicePersonnel" maxlength="2" value="${SVCPSN.mandatoryCount}" placeholder="mandatory count">
@@ -187,9 +193,9 @@
 
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="NumberDocument">Number of Service-Related Document to be
-            uploaded<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" for="NumberDocument">Number of Service-Related Document to be
+            uploaded&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input id="NumberDocument"  readonly  type="text" maxlength="2" value="${serviceDocSize}">
           </div>
@@ -200,10 +206,10 @@
       <div class="serviceNumberfields">
         <c:forEach items="${serviceDoc}" var="doc">
           <div class="form-group">
-            <div class="col-xs-12 col-md-8">
-              <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
+            <div class="col-xs-12 col-md-9">
+              <label class="col-xs-12 col-md-7 control-label">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="serviceDocId">
-              <div class="col-xs-12 col-md-4">
+              <div class="col-xs-12 col-md-3">
                 <input  type="text" name="descriptionServiceDoc" disabled maxlength="255" value="${doc.docTitle}">
               </div>
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
@@ -216,8 +222,8 @@
         </c:forEach>
       </div>
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label" for="Numberfields">Number of Service-Related General Info fields to be captured<span class="mandatory">*</span></label>
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label" for="Numberfields">Number of Service-Related General Info fields to be captured&nbsp;<span class="mandatory">*</span></label>
           <div class="col-xs-12 col-md-4">
             <input readonly id="Numberfields" maxlength="2" type="text" value="${comDocSize}">
           </div>
@@ -227,10 +233,10 @@
       <div class="Numberfields">
         <c:forEach items="${comDoc}" var="doc">
           <div class="form-group">
-            <div class="col-xs-12 col-md-8">
-              <label class="col-xs-12 col-md-6 control-label">Name of Info Field</label>
+            <div class="col-xs-12 col-md-9">
+              <label class="col-xs-12 col-md-7 control-label">Name of Info Field</label>
               <input type="hidden" value="${doc.id}" name="commDocId">
-              <div class="col-xs-12 col-md-4">
+              <div class="col-xs-12 col-md-3">
                 <input  type="text" name="descriptionCommDoc" disabled maxlength="255" value="${doc.docTitle}">
               </div>
               <div class="col-xs-12 col-md-2 form-check" style="margin-top: 1%">
@@ -244,19 +250,19 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8">
-          <label class="col-xs-12 col-md-6 control-label">Will the doc be duplicated for individual premises?</label>
+        <div class="col-xs-12 col-md-9">
+          <label class="col-xs-12 col-md-7 control-label">Will the doc be duplicated for individual premises?</label>
           <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" checked value="0"><label>No</label>
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" checked value="0">&nbsp;&nbsp;<span style="font-size: 16px">No</span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" value="1"><label>Yes</label>
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises"  value="1">&nbsp;&nbsp;<span style="font-size: 16px">Yes</span>
           </div>
         </div>
       </div>
       <div class="form-group">
-        <div class="col-xs-12 col-md-8 marg-1">
-          <label class="col-xs-12 col-md-8 control-label" >Service-Related Checklists</label>
+        <div class="col-xs-12 col-md-9 marg-1">
+          <label class="col-xs-12 col-md-7 control-label" >Service-Related Checklists</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
               <a class="btn btn-secondary " data-toggle="modal" data-target= "#checklists" style="padding: 12px 60px"><span class="view">view</span></a>
@@ -266,19 +272,19 @@
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8 marg-1">
-          <label class="col-xs-12 col-md-8 control-label" >Service Risk Score</label>
+        <div class="col-xs-12 col-md-9 marg-1">
+          <label class="col-xs-12 col-md-7 control-label" >Service Risk Score</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
-              <a class="btn btn-secondary "  data-toggle="modal" data-target= "#riskScore" style="padding: 12px 60px"><span class="view">view</span></a>
+              <a class="btn btn-secondary" data-toggle="modal" data-target= "#riskScore" style="padding: 12px 60px"><span class="view">view</span></a>
             </div>
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <div class="col-xs-12 col-md-8 marg-1">
-          <label class="col-xs-12 col-md-8 control-label" >Service KPI</label>
+        <div class="col-xs-12 col-md-9 marg-1">
+          <label class="col-xs-12 col-md-7 control-label" >Service KPI</label>
           <div class="col-xs-10 col-md-4">
             <div class="components">
               <a class="btn btn-secondary " data-toggle="modal" data-target= "#kpi" style="padding: 12px 60px"><span class="view">view</span></a>
@@ -374,11 +380,11 @@
           <div class="col-xs-12 col-md-12"  style="margin-top: 10px">
             <table border="1px" style="text-align: center" >
               <tr>
-                <th style="width: 10% ;height: 40px;text-align: center">Application Type<span class="mandatory" >*</span></th>
-                <th  style="width: 20% ;height: 40px;text-align: center">Service Workflow Routing Stages<span class="mandatory" >*</span></th>
-                <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme<span class="mandatory">*</span></th>
-                <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours<span class="mandatory">*</span></th>
-                <th  style="width: 25% ;height: 40px;text-align: center">Working Group<span class="mandatory">*</span></th>
+                <th style="width: 10% ;height: 40px;text-align: center">Application Type&nbsp;<span class="mandatory" >*</span></th>
+                <th  style="width: 20% ;height: 40px;text-align: center">Service Workflow Routing Stages&nbsp;<span class="mandatory" >*</span></th>
+                <th  style="width: 30% ;height: 40px;text-align: center">Service Routing Scheme&nbsp;<span class="mandatory">*</span></th>
+                <th  style="width: 15% ;height: 40px;text-align: center">Service Workload Manhours&nbsp;<span class="mandatory">*</span></th>
+                <th  style="width: 25% ;height: 40px;text-align: center">Working Group&nbsp;<span class="mandatory">*</span></th>
               </tr>
               <c:forEach items="${routingStages.value}" var="routingStage" varStatus="status">
                 <tr>
@@ -442,13 +448,17 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
-          <label class="col-xs-12 col-md-12 control-label" >Service Sub-Types</label>
-          <div class="col-xs-12 col-md-4">
-            <label>Page Name</label>
-          </div >
-          <div  class="col-xs-12 col-md-8"><input  type="text" disabled style="width: 20%;" maxlength="100" value="${pageName}" ></div>
-          <div >
+          <label class="col-xs-12 col-md-12 control-label">Service Sub-Types</label>
+        </div>
+        <div class="col-xs-12 col-md-9 marg-1">
+          <label class="col-xs-12 col-md-7 control-label" >Page Name</label>
+          <div class="col-xs-10 col-md-4">
+            <div class="components">
+              <input type="text" disabled maxlength="100" value="${pageName}">
+            </div>
           </div>
+        </div>
+        <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
           <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
             <div class="view  col-xs-12 col-md-12">
               <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
@@ -527,49 +537,33 @@
 
 
 
-      <div class="col-xs-12 col-md-8">
+      <div class="col-xs-12 col-md-9">
         <div class="form-group">
-          <label class="col-xs-12 col-md-8 control-label">Effective Start Date<span class="mandatory">*</span></label>
+          <label class="col-xs-12 col-md-7 control-label">Effective Start Date&nbsp;<span class="mandatory">*</span></label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
             <input type="text" disabled value="${hcsaServiceDto.effectiveDate}" autocomplete="off" class="date_picker form-control form_datetime" name="StartDate" id="-20189532301300" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_StartDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>
 
-      <div class="col-xs-12 col-md-8">
+      <div class="col-xs-12 col-md-9" style="margin-bottom: 50px;">
         <div class="form-group">
-          <label class="col-xs-12 col-md-8 control-label">Effective End Date</label>
+          <label class="col-xs-12 col-md-7 control-label">Effective End Date</label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
             <input type="text" disabled autocomplete="off" value="<fmt:formatDate value="${hcsaServiceDto.endDate}" pattern="dd/MM/yyyy"/>" class="date_picker form-control form_datetime" name="EndDate" id="-20247433206800" data-date-start-date="01/01/1900" placeholder="dd/mm/yyyy" maxlength="10"><span id="error_EndDate" name="iaisErrorMsg" class="error-msg"></span>
           </div>
           <div class="clear"></div></div>
       </div>
 
-
-      <div class="col-xs-12 col-md-12" style="text-align: center">
-        <div class="row">
-          <div class="col-xs-10 col-md-5">
-            <div class="components">
-              <a class="btn  btn-secondary"data-toggle="modal" data-target= "#cancel">Cancel</a>
-            </div>
-          </div>
-          <div class="col-xs-10 col-md-5">
-            <div class="components">
-              <button class="btn  btn-secondary" id="deleteConfirm" value="${hcsaServiceDto.id}"  onclick="confirmDelete(this)" ><span class="mandatory">CONFIRM DELETE</span></button>
-            </div>
-          </div>
+      <div class="col-lg-12 col-xs-12">
+        <iais:action style="text-align:center;">
+          <a class="btn btn-secondary"data-toggle="modal" data-target= "#cancel">Cancel</a>
+          <button class="btn btn-secondary" id="deleteConfirm" value="${hcsaServiceDto.id}" onclick="confirmDelete(this)" ><span class="mandatory">CONFIRM DELETE</span></button>
+        </iais:action>
+        <div class="bg-title" style="text-align: center">
+          <p style="text-align: center">Version ${hcsaServiceDto.version}</p>
         </div>
       </div>
-      <div class="col-xs-12 col-md-12" style="text-align: center">
-        <div class="row">
-          <div class="col-xs-10 col-md-8">
-            <div class="components">
-            <p style="text-align: center">Version ${hcsaServiceDto.version}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
 
 
