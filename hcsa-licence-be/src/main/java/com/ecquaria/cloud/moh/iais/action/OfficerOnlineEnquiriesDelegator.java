@@ -3,6 +3,7 @@ package com.ecquaria.cloud.moh.iais.action;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.inspection.InspectionConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.intranetUser.IntranetUserConstant;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
@@ -13,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremPreInspectionNcDto;
 import com.ecquaria.cloud.moh.iais.common.dto.application.AppPremisesPreInspectionNcItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecommendationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicAppCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
@@ -73,6 +75,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1187,8 +1191,20 @@ public class OfficerOnlineEnquiriesDelegator {
             }
             if(applicationDto!=null&&applicationDto.getOriginLicenceId()!=null){
                 List<LicAppCorrelationDto> licAppCorrelationDtos1=hcsaLicenceClient.getLicCorrBylicId(applicationDto.getOriginLicenceId()).getEntity();
-                try {
-                    AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDtos1.get(0).getApplicationId()).getEntity();
+                try {Map<Date,String > map=IaisCommonUtils.genNewHashMap();
+                    for (LicAppCorrelationDto licApp :licAppCorrelationDtos1
+                    ) {
+                        AppPremisesCorrelationDto appPremises = applicationClient.getAppPremisesCorrelationDtosByAppId(licApp.getApplicationId()).getEntity();
+                        AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremises.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
+                        if(appPreRecommentdationDtoDate!=null){
+                            map.put(appPreRecommentdationDtoDate.getRecomInDate(),appPremises.getId());
+                        }
+                    }
+                    Set<Date> set = map.keySet();
+                    Date[] obj = (Date[]) set.toArray();
+                    Arrays.sort(obj);
+                    Date inspDate=obj[0];
+                    AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(map.get(inspDate)).getEntity();
                     AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
                     if (appPremPreInspectionNcDto1 != null) {
                         String ncId = appPremPreInspectionNcDto1.getId();
