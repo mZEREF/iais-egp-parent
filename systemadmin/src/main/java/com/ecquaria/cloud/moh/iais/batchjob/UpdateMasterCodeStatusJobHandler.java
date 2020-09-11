@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.batchjob;
 
-import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.job.executor.biz.model.ReturnT;
 import com.ecquaria.cloud.job.executor.handler.IJobHandler;
 import com.ecquaria.cloud.job.executor.handler.annotation.JobHandler;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import sop.webflow.rt.api.BaseProcessClass;
 
 @JobHandler(value="UpdateMasterCodeStatusJobHandler")
-@Delegator(value = "UpdateMasterCodeStatusJobHandler")
 @Component
 @Slf4j
 
