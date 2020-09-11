@@ -553,7 +553,7 @@
           <button class="btn btn-primary" value="<iais:mask name="crud_action_value"  value="${hcsaServiceDto.id}"/>" onclick="edit(this)">Update</button>
         </iais:action>
         <div class="bg-title" style="text-align: center">
-          <p style="text-align: center">Version 1.00</p>
+          <p style="text-align: center">Version ${hcsaServiceDto.version}</p>
         </div>
       </div>
     </div>
