@@ -1438,6 +1438,9 @@ public class NewApplicationDelegator {
                         NewApplicationHelper.setLaboratoryDisciplinesInfo(appSubmissionDto,hcsaSvcSubtypeOrSubsumedDtos);
                         appSubmissionDto.setAppSvcRelatedInfoDtoList(newSvcRelatedInfoDtos);
                     }
+                    //set DisciplineAllocationMap
+                    Map<String,List<AppSvcDisciplineAllocationDto>> reloadDisciplineAllocationMap= NewApplicationHelper.getDisciplineAllocationDtoList(appSubmissionDto,svcId);
+                    ParamUtil.setRequestAttr(bpc.request, "reloadDisciplineAllocationMap", (Serializable) reloadDisciplineAllocationMap);
                 }
 
                 for (AppGrpPremisesDto appGrpPremisesDto : appSubmissionDto.getAppGrpPremisesDtoList()) {
