@@ -319,8 +319,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
         EnquiryInspectionReportDto inspectionReportDto = new EnquiryInspectionReportDto();
         List<PremisesDto> licPremisesDto=hcsaLicenceClient.getPremisess(licenceId).getEntity();
         String appPremisesCorrelationId = applicationViewDto.getAppPremisesCorrelationId();
-        List<AppPremisesRecommendationDto>  appPremisesRecommendationDtos  = fillUpCheckListGetAppClient.getAppPremisesRecommendationHistoryDtosByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
-        AppPremisesRecommendationDto ncRecommendationDto =appPremisesRecommendationDtos.get(0);
+        AppPremisesRecommendationDto ncRecommendationDto = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremisesCorrelationId, InspectionConstants.RECOM_TYPE_INSEPCTION_REPORT).getEntity();
         //inspection report application dto
         AppInsRepDto appInsRepDto = insRepClient.getAppInsRepDto(appPremisesCorrelationId).getEntity();
         inspectionReportDto.setHciCode(appInsRepDto.getHciCode());
