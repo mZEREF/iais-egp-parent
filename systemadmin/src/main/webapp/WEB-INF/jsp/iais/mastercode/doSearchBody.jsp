@@ -1,3 +1,10 @@
+<style>
+    .dropdown-menu-right{
+        background-color:white;
+        top: 0px;
+        left: 0px !important;
+    }
+</style>
 <form method="post" id="MasterCodeFileForm" enctype="multipart/form-data" action=<%=process.runtime.continueURL()%>>
     <input type="hidden" name="crud_action_value" value="">
     <input type="hidden" name="crud_action_additional" value="">
