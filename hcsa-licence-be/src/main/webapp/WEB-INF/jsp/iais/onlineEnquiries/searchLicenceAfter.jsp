@@ -641,6 +641,7 @@
             SOP.Crud.cfxSubmit("mainForm", "reqForInfo");
         }
         else {
+            $("#selectDecisionMsg").show();
             dismissWaiting();
         }
 
