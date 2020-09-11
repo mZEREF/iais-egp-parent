@@ -1360,6 +1360,9 @@ public class WithOutRenewalDelegator {
             String appNo = groupNo;
             String appDate = Formatter.formatDateTime(new Date(), "dd/MM/yyyy");
             for (AppSubmissionDto appSubmissionDto : appSubmissionDtos) {
+                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByServiceName(appSubmissionDto.getServiceName());
+                List<String> svcCodeList = IaisCommonUtils.genNewArrayList();
+                svcCodeList.add(hcsaServiceDto.getSvcCode());
                 FeeExtDto detailFeeDto = appSubmissionDto.getDetailFeeDto();
                 String amountStr = detailFeeDto.getAmountStr();
                 appNo = getAppNo(groupNo,index);
@@ -1418,6 +1421,7 @@ public class WithOutRenewalDelegator {
                     messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
                     messageParam.setRefId(appNo);
                     messageParam.setSubject(subject);
+                    messageParam.setSvcCodeList(svcCodeList);
                     log.info(StringUtil.changeForLog("send renewal application message"));
                     notificationHelper.sendNotification(messageParam);
                     log.info(StringUtil.changeForLog("send renewal application message end"));
