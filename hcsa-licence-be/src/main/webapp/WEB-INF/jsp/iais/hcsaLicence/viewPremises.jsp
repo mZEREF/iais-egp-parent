@@ -7,6 +7,10 @@
   String webroot=IaisEGPConstant.CSS_ROOT+IaisEGPConstant.BE_CSS_ROOT;
   String webRootCommon = IaisEGPConstant.CSS_ROOT+IaisEGPConstant.COMMON_CSS_ROOT;
 %>
+<style>
+  tr {padding: 8px}
+  td {padding: 8px}
+</style>
 <input style="display: none" value="${NOT_VIEW}" id="view">
 <c:set var="appEdit" value="${appEditSelectDto}"/>
 <c:set value="${pageAppEditSelectDto}" var="pageEdit"></c:set>
@@ -157,7 +161,7 @@
                                         <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
                                           <p>The HCI name is currently used by another licensee</p>
                                           <br>
-                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;">
+                                          <table    border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px">
                                             <tr>
                                               <td  class="col-md-4">Name of Licensee</td>
                                               <td  class="col-md-4">HCI Name</td>
@@ -195,7 +199,7 @@
                                         <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
                                           <p>The address of the premises keyed in by applicant is currently used by another licensee</p>
                                           <br>
-                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;background-color: #ffffff">
+                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;background-color: #ffffff ;padding: 8px">
                                             <tr>
                                               <td  class="col-md-4">Name of Licensee</td>
                                               <td  class="col-md-4">HCI Name</td>
@@ -795,7 +799,25 @@
                                             </div>
                                           </div>
                                         </div>
-
+                                      <div class="row">
+                                        <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
+                                          <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px">
+                                            <tr>
+                                              <td>Indentification No.</td>
+                                              <td>Case No.</td>
+                                              <td>Case Type Description</td>
+                                              <td>Case Status Description</td>
+                                              <td>Offence Description</td>
+                                              <td>Outcome Description</td>
+                                              <td>Outcome Issue Date</td>
+                                              <td>Prosecuton Outcome Description</td>
+                                              <td>Created Date</td>
+                                              <td>Update Date</td>
+                                            </tr>
+                                          </table>
+                                        </div>
+                                      </div>
                                         <div class="row">
                                           <div class="col-md-6">
                                             Designation
@@ -838,6 +860,26 @@
                                              <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                             </span>
                                           </div>
+                                        </div>
+                                      </div>
+
+                                      <div class="row">
+                                        <div class="col-xs-12 col-md-12" style="position: absolute;z-index: 100;background-color: #F5F5F5">
+                                          <label style="font-weight: normal">The Professional has existing disciplinary records in HERIMS</label><span style="position: absolute;right: 0px;color: black" onclick="closeThis(this)">X</span>
+                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px">
+                                            <tr>
+                                              <td>Indentification No.</td>
+                                              <td>Case No.</td>
+                                              <td>Case Type Description</td>
+                                              <td>Case Status Description</td>
+                                              <td>Offence Description</td>
+                                              <td>Outcome Description</td>
+                                              <td>Outcome Issue Date</td>
+                                              <td>Prosecuton Outcome Description</td>
+                                              <td>Created Date</td>
+                                              <td>Update Date</td>
+                                            </tr>
+                                          </table>
                                         </div>
                                       </div>
 
@@ -951,6 +993,12 @@
   </div>
 </div>
 <script>
+
+    function closeThis(obj){
+        $(obj).next("table").attr("style","display: none");
+        $(obj).attr("style","display: none");
+        $(obj).prev("label").attr("style","display: none");
+    }
   $(document).ready(function () {
       <c:if test="${pageAppEditSelectDto.docEdit}">
       $('#primaryCheckbox').closest("div.panel-body").attr("style","");
@@ -972,4 +1020,6 @@
       }
 
   });
+
+
 </script>

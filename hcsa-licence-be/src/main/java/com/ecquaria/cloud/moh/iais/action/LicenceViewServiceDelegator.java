@@ -18,6 +18,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -33,17 +36,21 @@ import com.ecquaria.cloud.moh.iais.service.client.*;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * LicenceViewServiceDelegator
@@ -82,7 +89,16 @@ public class LicenceViewServiceDelegator {
 
     @Autowired
     private FillUpCheckListGetAppClient fillUpCheckListGetAppClient;
-
+    @Autowired
+    private BeEicGatewayClient beEicGatewayClient;
+    @Value("${iais.hmac.keyId}")
+    private String keyId;
+    @Value("${iais.hmac.second.keyId}")
+    private String secKeyId;
+    @Value("${iais.hmac.secretKey}")
+    private String secretKey;
+    @Value("${iais.hmac.second.secretKey}")
+    private String secSecretKey;
     /**
      * StartStep: doStart
      *
@@ -350,11 +366,57 @@ public class LicenceViewServiceDelegator {
             if(publicHolidayDtos!=null){
                 formatDate(appSubmissionDto.getOldAppSubmissionDto().getAppGrpPremisesDtoList(), publicHolidayDtos);
             }
-
             premise(appSubmissionDto,appSubmissionDto.getOldAppSubmissionDto());
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
+      /*  disciplinaryRecord(appSubmissionDto);*/
+    }
+
+    private void disciplinaryRecord(AppSubmissionDto appSubmissionDto){
+        if(appSubmissionDto==null){
+            return;
+        }
+        AppSvcRelatedInfoDto appSvcRelatedInfoDto = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0);
+        List<AppSvcCgoDto> appSvcCgoDtoList = appSvcRelatedInfoDto.getAppSvcCgoDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcPrincipalOfficersDtoList = appSvcRelatedInfoDto.getAppSvcPrincipalOfficersDtoList();
+        List<AppSvcPrincipalOfficersDto> appSvcMedAlertPersonList = appSvcRelatedInfoDto.getAppSvcMedAlertPersonList();
+        Set<String> redNo=new HashSet<>();
+        if(appSvcCgoDtoList!=null){
+            for(AppSvcCgoDto appSvcCgoDto : appSvcCgoDtoList){
+                String idNo = appSvcCgoDto.getIdNo();
+                String profRegNo = appSvcCgoDto.getProfRegNo();
+                redNo.add(idNo);
+                redNo.add(profRegNo);
+            }
+        }
+        if(appSvcPrincipalOfficersDtoList!=null){
+            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcPrincipalOfficersDtoList){
+                String idNo = appSvcPrincipalOfficersDto.getIdNo();
+                redNo.add(idNo);
+            }
+        }
+        if(appSvcMedAlertPersonList!=null){
+            for(AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto : appSvcMedAlertPersonList){
+                String idNo = appSvcPrincipalOfficersDto.getIdNo();
+                redNo.add(idNo);
+            }
+        }
+        List<String> list = new ArrayList<>();
+        list.addAll(redNo);
+        ProfessionalParameterDto professionalParameterDto =new ProfessionalParameterDto();
+        professionalParameterDto.setRegNo(list);
+        professionalParameterDto.setClientId("22222");
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String format = simpleDateFormat.format(new Date());
+        professionalParameterDto.setTimestamp(format);
+        professionalParameterDto.setSignature("2222");
+        HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+        HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
+        List<DisciplinaryRecordResponseDto> entity = beEicGatewayClient.getDisciplinaryRecord(professionalParameterDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
+        List<DisciplinaryRecordResponseDto> entity1 = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+                signature2.date(), signature2.authorization()).getEntity();
     }
     private void authorisedPerson( HttpServletRequest request,String licenseeId){
         if(licenseeId==null){
