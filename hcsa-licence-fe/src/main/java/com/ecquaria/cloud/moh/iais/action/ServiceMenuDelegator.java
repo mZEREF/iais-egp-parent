@@ -1166,12 +1166,7 @@ public class ServiceMenuDelegator {
 
     private void getDraft(BaseProcessClass bpc){
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request,AppConsts.SESSION_ATTR_LOGIN_USER);
-        String licenseeId;
-        if(loginContext!=null){
-            licenseeId = loginContext.getLicenseeId();
-        }else {
-            licenseeId = "9ED45E34-B4E9-E911-BE76-000C29C8FBE4";
-        }
+        String licenseeId = loginContext.getLicenseeId();
 
         List<String> licenceList =(List<String>) ParamUtil.getSessionAttr(bpc.request, "licence");
         List<String> baseServiceIds=IaisCommonUtils.genNewArrayList();
