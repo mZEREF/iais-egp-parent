@@ -319,10 +319,10 @@
         <div class="col-xs-12 col-md-9">
           <label class="col-xs-12 col-md-7 control-label">Will the doc be duplicated for individual premises?</label>
           <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" <c:if test="${individualPremises==0}">checked</c:if> value="0"><label>No</label>
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" <c:if test="${individualPremises==0}">checked</c:if> value="0">&nbsp;&nbsp;<span style="font-size: 16px">No</span>
           </div>
           <div class="col-xs-12 col-md-2">
-            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" <c:if test="${individualPremises==1}">checked</c:if> value="1"><label>Yes</label>
+            <input type="radio" class="form-check-input premTypeRadio" name="individualPremises" <c:if test="${individualPremises==1}">checked</c:if> value="1">&nbsp;&nbsp;<span style="font-size: 16px">Yes</span>
           </div>
         </div>
       </div>
@@ -521,17 +521,17 @@
 
       <div class="form-group">
         <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
-          <label class="col-xs-12 col-md-12 control-label" >Service Sub-Types</label>
-          <div class="col-xs-12 col-md-4">
-            <label>Page Name</label>
-          </div >
-          <div  class="col-xs-12 col-md-8">
-            <input  type="text" maxlength="100" style="width: 20%;" value="${pageName}" name="pageName">
-            <span name="iaisErrorMsg" class="error-msg" id="error_pageName"></span>
+          <label class="col-xs-12 col-md-12 control-label">Service Sub-Types</label>
+        </div>
+        <div class="col-xs-12 col-md-9 marg-1">
+          <label class="col-xs-12 col-md-7 control-label" >Page Name</label>
+          <div class="col-xs-10 col-md-4">
+            <div class="components">
+              <input type="text" maxlength="100" value="${pageName}">
+            </div>
           </div>
-          <span name="iaisErrorMsg" class="error-msg" id="error_hcsaSvcSubtypeOrSubsumed"></span>
-          <div>
-          </div>
+        </div>
+        <div class="col-xs-12 col-md-12 Sub-Types" style="margin-top: 20px ;margin-bottom: 20px">
           <c:forEach items="${hcsaSvcSubtypeOrSubsumedDto}" var="hcsaSvcSubtypeOrSubsumed">
             <div class="view col-xs-12 col-md-12" >
               <div class="col-xs-12 col-md-4" style="padding-right: 20%;" >
@@ -618,7 +618,7 @@
         </div>
       </div>
 
-    <div class="col-xs-12 col-md-9">
+    <div class="col-xs-12 col-md-9" style="margin-bottom: 50px;">
       <div class="form-group">
         <label class="col-xs-12 col-md-7 control-label">Effective End Date</label>
         <div class=" col-xs-7 col-sm-4 col-md-3">
@@ -633,7 +633,7 @@
           <button class="btn btn-primary" onclick="save()">Save</button>
         </iais:action>
         <div class="bg-title" style="text-align: center">
-          <p style="text-align: center">Version 1</p>
+          <p style="text-align: center">Version 1.00</p>
         </div>
       </div>
     </div>
