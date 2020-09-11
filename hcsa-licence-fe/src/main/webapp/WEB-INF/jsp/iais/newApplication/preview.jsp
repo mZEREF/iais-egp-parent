@@ -89,6 +89,12 @@
                                                 <input class="form-check-input" id="verifyInfoCheckbox" type="checkbox" name="verifyInfoCheckbox" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.userAgreement}">checked="checked"</c:if> >
                                                 <label class="form-check-label" for="verifyInfoCheckbox"><span class="check-square"></span><iais:message key="ACK_DEC001"></iais:message></label>
                                             </div>
+                                            <c:if test="${AppSubmissionDto.appType == 'APTY002' && requestInformationConfig == null && isCharity}">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" id="charityHci" type="checkbox" name="charityHci" value="1" aria-invalid="false" <c:if test="${AppSubmissionDto.charityHci}">checked="checked"</c:if> >
+                                                    <label class="form-check-label" for="charityHci"><span class="check-square"></span><iais:message key="ACK_DEC002"></iais:message></label>
+                                                </div>
+                                            </c:if>
                                             <div>
                                                 <span id="error_fieldMandatory"  class="error-msg"></span>
                                             </div>

@@ -582,6 +582,8 @@ public class NewApplicationDelegator {
             }
         }
 
+        ParamUtil.setRequestAttr(bpc.request,"isCharity",NewApplicationHelper.isCharity(bpc.request));
+
         log.info(StringUtil.changeForLog("the do preparePreview end ...."));
     }
 
@@ -1627,7 +1629,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the appGroupNo is -->:" + appGroupNo));
         appSubmissionDto.setAppGrpNo(appGroupNo);
         //get Amount
-        FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto,NewApplicationHelper.getIsCharity(bpc.request));
+        FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto,NewApplicationHelper.isCharity(bpc.request));
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         Double amount = feeDto.getTotal();
         log.info(StringUtil.changeForLog("the amount is -->:" + amount));
@@ -2662,7 +2664,7 @@ public class NewApplicationDelegator {
         log.info(StringUtil.changeForLog("the appGroupNo is -->:" + appGroupNo));
         appSubmissionDto.setAppGrpNo(appGroupNo);
         //get Amount
-        FeeDto feeDto = appSubmissionService.getNewAppAmount(appSubmissionDto,NewApplicationHelper.getIsCharity(bpc.request));
+        FeeDto feeDto = appSubmissionService.getNewAppAmount(appSubmissionDto,NewApplicationHelper.isCharity(bpc.request));
         appSubmissionDto.setFeeInfoDtos(feeDto.getFeeInfoDtos());
         Double amount = feeDto.getTotal();
         log.info(StringUtil.changeForLog("the amount is -->:" + amount));

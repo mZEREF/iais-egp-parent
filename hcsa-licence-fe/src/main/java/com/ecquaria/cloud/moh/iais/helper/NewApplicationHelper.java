@@ -2071,7 +2071,7 @@ public class NewApplicationHelper {
         }
     }
 
-    public static boolean getIsCharity(HttpServletRequest request){
+    public static boolean isCharity(HttpServletRequest request){
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
         boolean isCharity = false;
         if(loginContext != null && AcraConsts.ENTITY_TYPE_CHARITIES.equals(loginContext.getLicenseeEntityType())){

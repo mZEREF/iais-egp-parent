@@ -645,7 +645,7 @@ public class WithOutRenewalDelegator {
             }
             String licenceId = appSubmissionDto.getLicenceId();
             renewLicIds.add(licenceId);
-            FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto,NewApplicationHelper.getIsCharity(bpc.request));
+            FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto,NewApplicationHelper.isCharity(bpc.request));
             appSubmissionDto.setLicenseeId(licenseeId);
             //set fee detail
             List<FeeExtDto> detailFeeDtos = feeDto.getDetailFeeDto();
