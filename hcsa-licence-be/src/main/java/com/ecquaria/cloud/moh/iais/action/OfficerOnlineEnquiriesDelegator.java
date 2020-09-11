@@ -1201,21 +1201,37 @@ public class OfficerOnlineEnquiriesDelegator {
                         }
                     }
                     Set<Date> set = map.keySet();
-                    Date[] obj = (Date[]) set.toArray();
-                    Arrays.sort(obj);
-                    Date inspDate=obj[0];
-                    AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(map.get(inspDate)).getEntity();
-                    AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
-                    if (appPremPreInspectionNcDto1 != null) {
-                        String ncId = appPremPreInspectionNcDto1.getId();
-                        List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
-                        if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
-                            reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
+                    if(set.size()!=0){
+                        Date[] obj = (Date[]) set.toArray();
+                        Arrays.sort(obj);
+                        Date inspDate=obj[0];
+                        AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(map.get(inspDate)).getEntity();
+                        AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
+                        if (appPremPreInspectionNcDto1 != null) {
+                            String ncId = appPremPreInspectionNcDto1.getId();
+                            List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
+                            if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
+                                reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
+                            }
+                        } else {
+                            reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
                         }
-                    } else {
-                        reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
+                    }else {
+                        AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(licAppCorrelationDtos1.get(0).getApplicationId()).getEntity();
+                        AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
+                        if (appPremPreInspectionNcDto1 != null) {
+                            String ncId = appPremPreInspectionNcDto1.getId();
+                            List<AppPremisesPreInspectionNcItemDto> listAppPremisesPreInspectionNcItemDtos = fillUpCheckListGetAppClient.getAppNcItemByNcId(ncId).getEntity();
+                            if (listAppPremisesPreInspectionNcItemDtos != null && !listAppPremisesPreInspectionNcItemDtos.isEmpty()) {
+                                reqForInfoSearchListDto.setTwoLastComplianceHistory("Partial");
+                            }
+                        } else {
+                            reqForInfoSearchListDto.setTwoLastComplianceHistory("Full");
+                        }
                     }
+
                 }catch (Exception e){
+                    reqForInfoSearchListDto.setTwoLastComplianceHistory("-");
                     log.info(e.getMessage(),e);
                 }
             }
