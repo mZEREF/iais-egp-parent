@@ -608,7 +608,7 @@
           <div class="clear"></div></div>
       </div>
 
-      <div class="col-xs-12 col-md-9">
+      <div class="col-xs-12 col-md-9" style="margin-bottom: 50px;">
         <div class="form-group">
           <label class="col-xs-12 col-md-7 control-label">Effective End Date</label>
           <div class=" col-xs-7 col-sm-4 col-md-3">
@@ -618,25 +618,30 @@
           <div class="clear"></div></div>
       </div>
 
-      <div class="col-lg-12 col-xs-12" style="margin-bottom: 200px;">
-        <iais:action style="text-align:center;">
+      <div class="col-lg-12 col-xs-12">
+        <iais:action style="text-align:center;margin-bottom: 15px;">
           <a class="btn btn-secondary" data-toggle="modal" data-target= "#cancel">Cancel</a>
-          <button class="btn btn-primary" onclick="save()">Save</button>
-          <button class="btn btn-secondary" onclick="saveAsNewVersion()">Select as New Version</button>
+          <a class="btn btn-primary" onclick="save()">Save</a>
+          <a class="btn btn-secondary" onclick="saveAsNewVersion()">Select as New Version</a>
         </iais:action>
+      </div>
+      <div class="col-xs-12 col-md-9">
+        <div class="form-group" style="display: none" id="versionSelect">
+          <label class="col-xs-12 col-md-7 control-label"> </label>
+          <div class=" col-xs-7 col-sm-4 col-md-4">
+            <select name="versionSelect" id="version">
+              <option value="">Select one</option>
+              <c:forEach items="${hcsaServiceDtosVersion}" var="hcsaServiceDtosVer">
+                <option  value="<iais:mask name="crud_action_additional"  value="${hcsaServiceDtosVer.id}"/>">${hcsaServiceDtosVer.version}</option>
+              </c:forEach>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-xs-12" style="margin-bottom: 200px;">
         <div class="bg-title" style="text-align: center">
           <input style="display: none" value="${hcsaServiceDto.version}" name="version" type="text">
           <p style="text-align: center">Version ${hcsaServiceDto.version}</p>
-        </div>
-      </div>
-      <div class="col-xs-10 col-md-3"  style="margin-left: 50%;margin-top: 1%;">
-        <div class="components" style="display: none" id="versionSelect">
-          <select name="versionSelect" id="version">
-            <option value="">Select one</option>
-            <c:forEach items="${hcsaServiceDtosVersion}" var="hcsaServiceDtosVer">
-              <option  value="<iais:mask name="crud_action_additional"  value="${hcsaServiceDtosVer.id}"/>">${hcsaServiceDtosVer.version}</option>
-            </c:forEach>
-          </select>
         </div>
       </div>
     </div>
