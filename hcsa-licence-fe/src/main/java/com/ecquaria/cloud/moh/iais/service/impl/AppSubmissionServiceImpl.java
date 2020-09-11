@@ -164,19 +164,21 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                     premisesTypes.add(premType);
                 }
             }
-            /*boolean onlySpecifiedSvc = false;
-            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
-                if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
-                    onlySpecifiedSvc = true;
-                }
-            }*/
             for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
                 LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
-                HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
-                if(hcsaServiceDto != null){
-                    licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
-                }else{
-                    log.info(StringUtil.changeForLog("current svc"+appSvcRelatedInfoDto.getServiceCode()+"'s baseSvcInfo is empty"));
+                if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
+                    licenceFeeDto.setBaseService(appSvcRelatedInfoDto.getServiceCode());
+                }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(appSvcRelatedInfoDto.getServiceType())){
+                    if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getBaseServiceId())){
+                        HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
+                        if(hcsaServiceDto != null) {
+                            licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
+                        }else{
+                            log.info(StringUtil.changeForLog("current svc"+appSvcRelatedInfoDto.getServiceCode()+"'s baseSvcInfo is empty"));
+                        }
+                    }else{
+                        log.info("base svcId is empty");
+                    }
                 }
                 licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
                 licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
@@ -191,6 +193,7 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
                 licenceFeeQuaryDtos.add(licenceFeeDto);
             }
         }
+        log.info(StringUtil.changeForLog("licenceFeeQuaryDtos:"+JsonUtil.parseToJson(licenceFeeQuaryDtos)));
         log.debug(StringUtil.changeForLog("the getNewAppAmount end ...."));
         return appConfigClient.newFee(licenceFeeQuaryDtos).getEntity();
     }
