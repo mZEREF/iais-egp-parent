@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.appeal.AppPremisesSpecialDocD
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.*;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -106,7 +107,19 @@ public class InspectionNcCheckListDelegator {
     public void init(BaseProcessClass bpc){
         log.info("=======>>>>>initStep>>>>>>>>>>>>>>>>initRequest");
         HttpServletRequest request = bpc.request;
-        String taskId = ParamUtil.getMaskedString(request,"taskId");
+        String taskId = "";
+        try{
+            taskId = ParamUtil.getMaskedString(request,"taskId");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(),e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(),ioe);
+                return;
+            }
+
+        }
         AuditTrailHelper.auditFunction("Checklist Management", "Checklist Config");
         TaskDto taskDto = taskService.getTaskById(taskId);
         if( taskDto == null) return;
