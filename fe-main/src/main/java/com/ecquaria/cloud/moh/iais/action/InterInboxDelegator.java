@@ -4,6 +4,7 @@ import com.ecquaria.cloud.RedirectUtil;
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.inbox.InboxConst;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.constant.renewal.RenewalConstants;
@@ -988,8 +989,13 @@ public class InterInboxDelegator {
         String draft = ParamUtil.getString(bpc.request,InboxConst.ACTION_NO_VALUE);
         if(!StringUtil.isEmpty(draft)){
             log.debug(StringUtil.changeForLog("draft no. is not null"));
-            List<AuditTrailDto> adDtos = IaisCommonUtils.genNewArrayList(1);
             inboxService.deleteDraftByNo(draft);
+
+            AuditTrailDto auditTrailDto = new AuditTrailDto();
+            auditTrailDto.setApplicationNum(draft);
+            auditTrailDto.setOperation(AuditTrailConsts.OPERATION_DELETE);
+            IaisEGPHelper.insertAuditTrail(auditTrailDto);
+
             String delDraftAckMsg = MessageUtil.getMessageDesc("NEW_ACK003");
             ParamUtil.setRequestAttr(bpc.request,"needDelDraftMsg",AppConsts.YES);
             ParamUtil.setRequestAttr(bpc.request,"delDraftAckMsg",delDraftAckMsg);

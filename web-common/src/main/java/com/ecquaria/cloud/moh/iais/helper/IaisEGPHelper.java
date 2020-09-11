@@ -38,10 +38,13 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.dto.LoginContext;
 import com.ecquaria.cloud.moh.iais.dto.memorypage.PaginationHandler;
 import com.ecquaria.cloud.moh.iais.service.LicenseeService;
+import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
+import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import com.ecquaria.egp.api.EGPHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -181,6 +184,34 @@ public final class IaisEGPHelper extends EGPHelper {
     }
 
     /**
+     * insert operation of log
+     * reference consts ${@link AuditTrailConsts}
+     * @param auditTrailDto
+     */
+    public static void insertAuditTrail(AuditTrailDto auditTrailDto){
+        ApplicationContext context = SpringContextHelper.getContext();
+        if (context == null){
+            return;
+        }
+
+        SubmissionClient client = context.getBean(SubmissionClient.class);
+        if (client == null){
+            return;
+        }
+
+        log.info("insertAuditTrail.........fe");
+        List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList(1);
+        IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
+        adList.add(auditTrailDto);
+        try {
+            AuditLogUtil.callWithEventDriven(adList, client);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+
+    /**
      * @description: The method to set login user info into Audit trail from request
      *
      * @author: Jinhua on 2019/7/17 17:34
@@ -192,29 +223,37 @@ public final class IaisEGPHelper extends EGPHelper {
             return;
         }
 
-        HttpServletRequest request = MiscUtil.getCurrentRequest();
-        if (request == null) {
-            return;
-        }
-        User user = SessionManager.getInstance(request).getCurrentUser();
-        HttpSession session = request.getSession();
-        if (user != null) {
-            LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
-            if (loginContext != null) {
-                if (AppConsts.USER_DOMAIN_INTERNET.equals(loginContext.getUserDomain())) {
-                    dto.setNricNumber(loginContext.getNricNum());
-                    dto.setUenId(loginContext.getUenNo());
-                }
-                dto.setMohUserId(loginContext.getNricNum());
-                dto.setMohUserGuid(loginContext.getUserId());
-                dto.setOperationType(AppConsts.USER_DOMAIN_INTRANET.equals(loginContext.getUserDomain()) ?
-                        AuditTrailConsts.OPERATION_TYPE_INTRANET : AuditTrailConsts.OPERATION_TYPE_INTERNET);
-            }
-            dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
-        }
-        dto.setSessionId(session.getId());
-        dto.setClientIp(MiscUtil.getClientIp(request));
-        dto.setUserAgent(AccessUtil.getBrowserInfo(request));
+       HttpServletRequest request = MiscUtil.getCurrentRequest();
+       if (request != null){
+           log.info("start set up audit trail log info..................");
+           User user = SessionManager.getInstance(request).getCurrentUser();
+           HttpSession session = request.getSession();
+           if (user != null) {
+               LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(request, AppConsts.SESSION_ATTR_LOGIN_USER);
+               if (loginContext != null) {
+                   if (AppConsts.USER_DOMAIN_INTERNET.equals(loginContext.getUserDomain())) {
+                       dto.setNricNumber(loginContext.getNricNum());
+                       dto.setUenId(loginContext.getUenNo());
+                   }
+                   dto.setMohUserId(loginContext.getNricNum());
+                   dto.setMohUserGuid(loginContext.getUserId());
+                   dto.setOperationType(AppConsts.USER_DOMAIN_INTRANET.equals(loginContext.getUserDomain()) ?
+                           AuditTrailConsts.OPERATION_TYPE_INTRANET : AuditTrailConsts.OPERATION_TYPE_INTERNET);
+               }
+               dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
+           }
+
+           dto.setSessionId(session.getId());
+           dto.setClientIp(MiscUtil.getClientIp(request));
+           dto.setUserAgent(AccessUtil.getBrowserInfo(request));
+       }else {
+           dto.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
+       }
+
+
+
+        // TODO Remove the log later because it consumes performance
+        log.info(StringUtil.changeForLog("current audit trail info" + JsonUtil.parseToJson(dto)));
     }
 
 

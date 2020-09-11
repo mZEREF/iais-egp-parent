@@ -10,7 +10,6 @@ import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
 import sop.iwe.SessionManager;
 import sop.rbac.user.User;
 
@@ -59,28 +58,6 @@ public final class LoginHelper {
         throw new IllegalStateException("Utility class");
     }
 
-    public static void insertAuditTrail(AuditTrailDto auditTrailDto){
-        ApplicationContext context = SpringContextHelper.getContext();
-        if (context == null){
-            return;
-        }
-
-        SubmissionClient client = context.getBean(SubmissionClient.class);
-        if (client == null){
-            return;
-        }
-
-        log.info("insertAuditTrail.........fe");
-        List<AuditTrailDto> adList = IaisCommonUtils.genNewArrayList(1);
-        IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
-        adList.add(auditTrailDto);
-        try {
-            AuditLogUtil.callWithEventDriven(adList, client);
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
-
     public static void insertLoginFailreAuditTrail(String identityNo){
         insertLoginFailreAuditTrail(null, identityNo);
     }
@@ -95,6 +72,6 @@ public final class LoginHelper {
         auditTrailDto.setLoginType(StringUtil.isEmpty(uen) ? AuditTrailConsts.LOGIN_TYPE_SING_PASS : AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN_FAIL);
-        insertAuditTrail(auditTrailDto);
+        IaisEGPHelper.insertAuditTrail(auditTrailDto);
     }
 }
