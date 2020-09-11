@@ -59,6 +59,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
 import com.ecquaria.cloud.moh.iais.common.exception.IaisRuntimeException;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
@@ -207,7 +208,7 @@ public class HcsaApplicationDelegator {
      * @param bpc
      * @throws
      */
-    public void doStart(BaseProcessClass bpc){
+    public void doStart(BaseProcessClass bpc) throws IOException{
         log.debug(StringUtil.changeForLog("the do cleanSession start ...."));
         ParamUtil.setSessionAttr(bpc.request,"taskDto",null);
         ParamUtil.setSessionAttr(bpc.request,"applicationViewDto",null);
@@ -2464,9 +2465,15 @@ public class HcsaApplicationDelegator {
         }
     }
 
-    private void initData(BaseProcessClass bpc){
+    private void initData(BaseProcessClass bpc) throws IOException {
         //get the task
-        String  taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        String  taskId = "";
+        try{
+            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        }catch(MaskAttackException e){
+            log.error(e.getMessage(),e);
+            bpc.response.sendRedirect("/CsrfErrorPage.jsp");
+        }
         AuditTrailHelper.auditFunction("hcsa-licence", "hcsa licence");
         TaskDto taskDto = taskService.getTaskById(taskId);
         ParamUtil.setSessionAttr(bpc.request,"taskDto", taskDto);

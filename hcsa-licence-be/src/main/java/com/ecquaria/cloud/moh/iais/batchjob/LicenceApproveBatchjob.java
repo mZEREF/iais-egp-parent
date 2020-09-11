@@ -1973,151 +1973,151 @@ public class LicenceApproveBatchjob {
             log.info(StringUtil.changeForLog("send notification applicantName : " + applicantName));
             //new application send email zhilin
             if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationDto.getApplicationType())) {
-                applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
-                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                map.put("ApplicantName", applicantName);
-                map.put("ApplicationType", applicationTypeShow);
-                map.put("ApplicationNumber", applicationNo);
-                map.put("applicationDate", appDate);
-                map.put("licenceNumber", licenceNo);
-                map.put("isSpecial", "N");
-                map.put("isCorpPass", "N");
-                if(inspectionRecommendation != null){
-                    map.put("inInspection", "Y");
-                    map.put("inspectionText", inspectionRecommendation.getRemarks());
-                }else {
-                    map.put("inInspection", "N");
-                }
-                if(organizationDto != null){
-                    if(StringUtil.isEmpty(organizationDto.getUenNo())){
-                        map.put("isCorpPass", "Y");
-                        map.put("corpPassLink", corpPassUrl);
-                    }
-                }
-                map.put("systemLink", loginUrl);
-
-                map.put("createHyperlink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_CREATE_LINK));
-                map.put("regulationLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_REGULATIONS_LINK));
-                map.put("link", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_LINK));
-                map.put("scdfLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_SCDF_LINK));
-                map.put("momLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_MOM_LINK));
-
-                map.put("phoneNumber", systemPhoneNumber);
-                map.put("emailAddress1", systemAddressOne);
-                map.put("emailAddress2", systemAddressTwo);
-                map.put("MOH_AGENCY_NAME", MohName);
-
-                try {
-                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is approved ";
-                    EmailParam emailParam = new EmailParam();
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID);
-                    emailParam.setTemplateContent(map);
-                    emailParam.setQueryCode(applicationNo);
-                    emailParam.setReqRefNum(applicationNo);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                    emailParam.setRefId(applicationNo);
-                    emailParam.setSubject(subject);
-                    //send email
-                    log.info(StringUtil.changeForLog("send new application email"));
-                    notificationHelper.sendNotification(emailParam);
-                    log.info(StringUtil.changeForLog("send new application email end"));
-                    //send sms
-                    EmailParam smsParam = new EmailParam();
-                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_SMS_ID);
-                    smsParam.setSubject(subject);
-                    smsParam.setQueryCode(applicationNo);
-                    smsParam.setReqRefNum(applicationNo);
-                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    smsParam.setRefId(applicationNo);
-                    log.info(StringUtil.changeForLog("send new application sms"));
-                    notificationHelper.sendNotification(smsParam);
-                    log.info(StringUtil.changeForLog("send new application sms end"));
-                    //send message
-                    EmailParam messageParam = new EmailParam();
-                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_MESSAGE_ID);
-                    messageParam.setTemplateContent(map);
-                    messageParam.setQueryCode(applicationNo);
-                    messageParam.setReqRefNum(applicationNo);
-                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    messageParam.setRefId(applicationNo);
-                    messageParam.setSubject(subject);
-                    messageParam.setSvcCodeList(svcCodeList);
-                    log.info(StringUtil.changeForLog("send new application message"));
-                    notificationHelper.sendNotification(messageParam);
-                    log.info(StringUtil.changeForLog("send new application message end"));
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
+//                applicationTypeShow = MasterCodeUtil.getCodeDesc(ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION);
+//                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+//                map.put("ApplicantName", applicantName);
+//                map.put("ApplicationType", applicationTypeShow);
+//                map.put("ApplicationNumber", applicationNo);
+//                map.put("applicationDate", appDate);
+//                map.put("licenceNumber", licenceNo);
+//                map.put("isSpecial", "N");
+//                map.put("isCorpPass", "N");
+//                if(inspectionRecommendation != null){
+//                    map.put("inInspection", "Y");
+//                    map.put("inspectionText", inspectionRecommendation.getRemarks());
+//                }else {
+//                    map.put("inInspection", "N");
+//                }
+//                if(organizationDto != null){
+//                    if(StringUtil.isEmpty(organizationDto.getUenNo())){
+//                        map.put("isCorpPass", "Y");
+//                        map.put("corpPassLink", corpPassUrl);
+//                    }
+//                }
+//                map.put("systemLink", loginUrl);
+//
+//                map.put("createHyperlink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_CREATE_LINK));
+//                map.put("regulationLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_REGULATIONS_LINK));
+//                map.put("link", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_LINK));
+//                map.put("scdfLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_SCDF_LINK));
+//                map.put("momLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_MOM_LINK));
+//
+//                map.put("phoneNumber", systemPhoneNumber);
+//                map.put("emailAddress1", systemAddressOne);
+//                map.put("emailAddress2", systemAddressTwo);
+//                map.put("MOH_AGENCY_NAME", MohName);
+//
+//                try {
+//                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is approved ";
+//                    EmailParam emailParam = new EmailParam();
+//                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_ID);
+//                    emailParam.setTemplateContent(map);
+//                    emailParam.setQueryCode(applicationNo);
+//                    emailParam.setReqRefNum(applicationNo);
+//                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+//                    emailParam.setRefId(applicationNo);
+//                    emailParam.setSubject(subject);
+//                    //send email
+//                    log.info(StringUtil.changeForLog("send new application email"));
+//                    notificationHelper.sendNotification(emailParam);
+//                    log.info(StringUtil.changeForLog("send new application email end"));
+//                    //send sms
+//                    EmailParam smsParam = new EmailParam();
+//                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_SMS_ID);
+//                    smsParam.setSubject(subject);
+//                    smsParam.setQueryCode(applicationNo);
+//                    smsParam.setReqRefNum(applicationNo);
+//                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+//                    smsParam.setRefId(applicationNo);
+//                    log.info(StringUtil.changeForLog("send new application sms"));
+//                    notificationHelper.sendNotification(smsParam);
+//                    log.info(StringUtil.changeForLog("send new application sms end"));
+//                    //send message
+//                    EmailParam messageParam = new EmailParam();
+//                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_NEW_APP_APPROVED_MESSAGE_ID);
+//                    messageParam.setTemplateContent(map);
+//                    messageParam.setQueryCode(applicationNo);
+//                    messageParam.setReqRefNum(applicationNo);
+//                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+//                    messageParam.setRefId(applicationNo);
+//                    messageParam.setSubject(subject);
+//                    messageParam.setSvcCodeList(svcCodeList);
+//                    log.info(StringUtil.changeForLog("send new application message"));
+//                    notificationHelper.sendNotification(messageParam);
+//                    log.info(StringUtil.changeForLog("send new application message end"));
+//                }catch (Exception e){
+//                    log.error(e.getMessage(), e);
+//                }
 
                 //zhilin
             } else if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationDto.getApplicationType())) {
-                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
-                map.put("ApplicantName", applicantName);
-                map.put("ApplicationType", applicationTypeShow);
-                map.put("ApplicationNumber", applicationNo);
-                map.put("applicationDate", appDate);
-                map.put("licenceNumber", licenceNo);
-                map.put("isSpecial", "N");
-                if(inspectionRecommendation != null){
-                    map.put("inInspection", "Y");
-                    map.put("inspectionText", inspectionRecommendation.getRemarks());
-                }else {
-                    map.put("inInspection", "N");
-                }
-                map.put("systemLink", loginUrl);
-
-                map.put("createHyperlink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_CREATE_LINK));
-                map.put("regulationLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_REGULATIONS_LINK));
-                map.put("link", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_LINK));
-                map.put("scdfLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_SCDF_LINK));
-                map.put("momLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_MOM_LINK));
-                map.put("irasLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_IRAS_LINK));
-
-                map.put("phoneNumber", systemPhoneNumber);
-                map.put("emailAddress1", systemAddressOne);
-                map.put("emailAddress2", systemAddressTwo);
-                map.put("MOH_AGENCY_NAME", MohName);
-                try {
-                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is approved ";
-                    EmailParam emailParam = new EmailParam();
-                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE);
-                    emailParam.setTemplateContent(map);
-                    emailParam.setQueryCode(applicationNo);
-                    emailParam.setReqRefNum(applicationNo);
-                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
-                    emailParam.setRefId(applicationNo);
-                    emailParam.setSubject(subject);
-                    //send email
-                    log.info(StringUtil.changeForLog("send renewal application email"));
-                    notificationHelper.sendNotification(emailParam);
-                    log.info(StringUtil.changeForLog("send renewal application email end"));
-                    //send sms
-                    EmailParam smsParam = new EmailParam();
-                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE_SMS);
-                    smsParam.setSubject(subject);
-                    smsParam.setQueryCode(applicationNo);
-                    smsParam.setReqRefNum(applicationNo);
-                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
-                    smsParam.setRefId(applicationNo);
-                    log.info(StringUtil.changeForLog("send renewal application sms"));
-                    notificationHelper.sendNotification(smsParam);
-                    log.info(StringUtil.changeForLog("send renewal application sms end"));
-                    //send message
-                    EmailParam messageParam = new EmailParam();
-                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE_MESSAGE);
-                    messageParam.setTemplateContent(map);
-                    messageParam.setQueryCode(applicationNo);
-                    messageParam.setReqRefNum(applicationNo);
-                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-                    messageParam.setRefId(applicationNo);
-                    messageParam.setSubject(subject);
-                    messageParam.setSvcCodeList(svcCodeList);
-                    log.info(StringUtil.changeForLog("send renewal application message"));
-                    notificationHelper.sendNotification(messageParam);
-                    log.info(StringUtil.changeForLog("send renewal application message end"));
-                }catch (Exception e){
-                    log.error(e.getMessage(), e);
-                }
+//                Map<String, Object> map = IaisCommonUtils.genNewHashMap();
+//                map.put("ApplicantName", applicantName);
+//                map.put("ApplicationType", applicationTypeShow);
+//                map.put("ApplicationNumber", applicationNo);
+//                map.put("applicationDate", appDate);
+//                map.put("licenceNumber", licenceNo);
+//                map.put("isSpecial", "N");
+//                if(inspectionRecommendation != null){
+//                    map.put("inInspection", "Y");
+//                    map.put("inspectionText", inspectionRecommendation.getRemarks());
+//                }else {
+//                    map.put("inInspection", "N");
+//                }
+//                map.put("systemLink", loginUrl);
+//
+//                map.put("createHyperlink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_CREATE_LINK));
+//                map.put("regulationLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_REGULATIONS_LINK));
+//                map.put("link", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_LINK));
+//                map.put("scdfLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_SCDF_LINK));
+//                map.put("momLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_MOM_LINK));
+//                map.put("irasLink", MasterCodeUtil.getCodeDesc(AppConsts.MOH_RELATED_IRAS_LINK));
+//
+//                map.put("phoneNumber", systemPhoneNumber);
+//                map.put("emailAddress1", systemAddressOne);
+//                map.put("emailAddress2", systemAddressTwo);
+//                map.put("MOH_AGENCY_NAME", MohName);
+//                try {
+//                    String subject = "MOH HALP - Your "+ applicationTypeShow + ", "+ applicationNo +" is approved ";
+//                    EmailParam emailParam = new EmailParam();
+//                    emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE);
+//                    emailParam.setTemplateContent(map);
+//                    emailParam.setQueryCode(applicationNo);
+//                    emailParam.setReqRefNum(applicationNo);
+//                    emailParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_APP);
+//                    emailParam.setRefId(applicationNo);
+//                    emailParam.setSubject(subject);
+//                    //send email
+//                    log.info(StringUtil.changeForLog("send renewal application email"));
+//                    notificationHelper.sendNotification(emailParam);
+//                    log.info(StringUtil.changeForLog("send renewal application email end"));
+//                    //send sms
+//                    EmailParam smsParam = new EmailParam();
+//                    smsParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE_SMS);
+//                    smsParam.setSubject(subject);
+//                    smsParam.setQueryCode(applicationNo);
+//                    smsParam.setReqRefNum(applicationNo);
+//                    smsParam.setRefIdType(NotificationHelper.RECEIPT_TYPE_SMS_APP);
+//                    smsParam.setRefId(applicationNo);
+//                    log.info(StringUtil.changeForLog("send renewal application sms"));
+//                    notificationHelper.sendNotification(smsParam);
+//                    log.info(StringUtil.changeForLog("send renewal application sms end"));
+//                    //send message
+//                    EmailParam messageParam = new EmailParam();
+//                    messageParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_RENEW_APP_APPROVE_MESSAGE);
+//                    messageParam.setTemplateContent(map);
+//                    messageParam.setQueryCode(applicationNo);
+//                    messageParam.setReqRefNum(applicationNo);
+//                    messageParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
+//                    messageParam.setRefId(applicationNo);
+//                    messageParam.setSubject(subject);
+//                    messageParam.setSvcCodeList(svcCodeList);
+//                    log.info(StringUtil.changeForLog("send renewal application message"));
+//                    notificationHelper.sendNotification(messageParam);
+//                    log.info(StringUtil.changeForLog("send renewal application message end"));
+//                }catch (Exception e){
+//                    log.error(e.getMessage(), e);
+//                }
                 //guying
             } else if (ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationDto.getApplicationType())) {
                 //Send notification to transferor when licence transfer application is approve
