@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecTaskCreAndAssDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionCommonPoolQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.GroupRoleFieldDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -34,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -182,7 +184,18 @@ public class InspecAssignTaskDelegator {
         log.debug(StringUtil.changeForLog("the inspectionAllotTaskInspectorAssign start ...."));
         InspecTaskCreAndAssDto inspecTaskCreAndAssDto = (InspecTaskCreAndAssDto)ParamUtil.getSessionAttr(bpc.request, "inspecTaskCreAndAssDto");
         SearchResult<InspectionCommonPoolQueryDto> searchResult = (SearchResult<InspectionCommonPoolQueryDto>) ParamUtil.getSessionAttr(bpc.request, "cPoolSearchResult");
-        String appCorrelationId = ParamUtil.getMaskedString(bpc.request,"appCorrelationId");
+        String appCorrelationId = "";
+        try{
+            appCorrelationId = ParamUtil.getMaskedString(bpc.request,"appCorrelationId");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(), e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(), ioe);
+                return;
+            }
+        }
         LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
         if(!StringUtil.isEmpty(appCorrelationId) && !(AppConsts.NO.equals(appCorrelationId))){
             ApplicationViewDto applicationViewDto = applicationViewService.getApplicationViewDtoByCorrId(appCorrelationId);

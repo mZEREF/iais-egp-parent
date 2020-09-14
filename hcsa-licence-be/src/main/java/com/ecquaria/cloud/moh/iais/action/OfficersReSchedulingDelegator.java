@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.appointment.AppointmentDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ReschedulingOfficerQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -29,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -181,7 +183,18 @@ public class OfficersReSchedulingDelegator {
         ReschedulingOfficerDto reschedulingOfficerDto = (ReschedulingOfficerDto)ParamUtil.getSessionAttr(bpc.request, "reschedulingOfficerDto");
         String actionValue = ParamUtil.getRequestString(bpc.request, "actionValue");
         if("assign".equals(actionValue) || "audit".equals(actionValue)) {
-            String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+            String applicationNo = "";
+            try{
+                applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+            }catch (MaskAttackException e){
+                log.error(e.getMessage(), e);
+                try{
+                    bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+                } catch (IOException ioe){
+                    log.error(ioe.getMessage(), ioe);
+                    return;
+                }
+            }
             reschedulingOfficerDto.setAssignNo(applicationNo);
         }
         ParamUtil.setSessionAttr(bpc.request, "reschedulingOfficerDto", reschedulingOfficerDto);

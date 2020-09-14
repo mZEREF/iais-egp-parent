@@ -7,6 +7,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.application.ApplicationViewDto;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptInspectionDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -74,7 +76,18 @@ public class ApptReSchedulingInspDateDelegator {
      */
     public void apptReSchInspDateInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptReSchInspDateInit start ...."));
-        String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
+        String taskId = "";
+        try{
+            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(), e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(), ioe);
+                return;
+            }
+        }
         TaskDto taskDto = taskService.getTaskById(taskId);
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);
         ParamUtil.setSessionAttr(bpc.request, "apptInspectionDateDto", null);

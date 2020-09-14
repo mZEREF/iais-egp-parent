@@ -16,6 +16,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistConfigDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionHistoryShowDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionPreTaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -96,7 +97,18 @@ public class InspectionPreDelegator {
     public void inspectionPreInspectorInit(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspectionPreInspectorInit start ...."));
         String preInspInitFlag = (String) ParamUtil.getRequestAttr(bpc.request, "preInspInitFlag");
-        String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
+        String taskId = "";
+        try{
+            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(), e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(), ioe);
+                return;
+            }
+        }
         TaskDto taskDto = taskService.getTaskById(taskId);
         AuditTrailHelper.auditFunction("Inspector Pre Task", "Pre Inspection Task");
         ParamUtil.setSessionAttr(bpc.request, "taskDto", taskDto);

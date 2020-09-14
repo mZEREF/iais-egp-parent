@@ -25,11 +25,12 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.service.client.MasterCodeClient;
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -387,7 +388,7 @@ public final class MasterCodeUtil {
 
     private MasterCodeUtil() {throw new IllegalStateException("Util class");}
 
-    public List<String> getStatusBeforeIns(){
+    public static List<String> getStatusBeforeIns(){
         List<String> statusList = IaisCommonUtils.genNewArrayList();
         //pending status
         statusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
@@ -399,10 +400,12 @@ public final class MasterCodeUtil {
         statusList.add(ApplicationConsts.PENDING_INP_REPLY);
         //route back status
         statusList.add(ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK);
+        //insp common pool status
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_TASK_ASSIGNMENT);
         return statusList;
     }
 
-    public List<String> getStatusAfterIns(){
+    public static List<String> getStatusAfterIns(){
         List<String> statusList = IaisCommonUtils.genNewArrayList();
         //pending status
         statusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01);

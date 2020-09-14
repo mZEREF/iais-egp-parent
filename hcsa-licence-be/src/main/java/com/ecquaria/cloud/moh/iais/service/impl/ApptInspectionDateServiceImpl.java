@@ -263,6 +263,20 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             if (!IaisCommonUtils.isEmpty(apptInspectionDateDto.getRefNo())) {
                 for (String appPremCorrId : apptInspectionDateDto.getRefNo()) {
                     List<TaskDto> taskDtos = organizationClient.getCurrTaskByRefNo(appPremCorrId).getEntity();
+                    if(IaisCommonUtils.isEmpty(taskDtos)){
+                        //the task wait other app or wait batch job
+                        ApplicationDto appDto = inspectionTaskClient.getApplicationByCorreId(appPremCorrId).getEntity();
+                        String appStatus;
+                        if(ApplicationConsts.APPLICATION_STATUS_DELETED.equals(applicationDto.getStatus())){
+                            ApplicationDto maxVerAppDto = applicationClient.getAppByNo(appDto.getApplicationNo()).getEntity();
+                            appStatus = maxVerAppDto.getStatus();
+                        } else {
+                            appStatus = appDto.getStatus();
+                        }
+                        List<String> beforeStatus = MasterCodeUtil.getStatusBeforeIns();
+                        List<String> afterStatus = MasterCodeUtil.getStatusAfterIns();
+                        taskDtos = getTasksByStatus(appStatus, beforeStatus, afterStatus);
+                    }
                     actionButtonFlag = getActionButtonFlagByTasks(taskDtos);
                     if (AppConsts.FAIL.equals(actionButtonFlag)) {
                         return actionButtonFlag;
@@ -271,6 +285,18 @@ public class ApptInspectionDateServiceImpl implements ApptInspectionDateService 
             }
         }
         return actionButtonFlag;
+    }
+
+    private List<TaskDto> getTasksByStatus(String appStatus, List<String> beforeStatus, List<String> afterStatus) {
+        List<TaskDto> taskDtos = IaisCommonUtils.genNewArrayList();
+        TaskDto taskDto = new TaskDto();
+        if(beforeStatus.contains(appStatus)){
+            taskDto.setRoleId(RoleConsts.USER_ROLE_ASO);
+        } else if(afterStatus.contains(appStatus)){
+            taskDto.setRoleId(RoleConsts.USER_ROLE_AO3);
+        }
+        taskDtos.add(taskDto);
+        return taskDtos;
     }
 
     @Override
