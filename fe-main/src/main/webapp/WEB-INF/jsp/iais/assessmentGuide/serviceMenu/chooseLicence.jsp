@@ -60,12 +60,14 @@
         });
 
         $('#licContinue').click(function () {
-            submit(null,'next','next');
+            if( $('#draftsave').val()!=null|| $('#draftsave').val()!=''){
+                $('#saveDraft').modal('show');
+            }else {
+                submit(null,'next','next');
+            }
         });
 
-        if( $('#draftsave').val()!=null|| $('#draftsave').val()!=''){
-            $('#saveDraft').modal('show');
-        }
+
 
     });
 
