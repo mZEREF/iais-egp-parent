@@ -541,17 +541,6 @@ public class WithOutRenewalDelegator {
             appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
             appSubmissionDto.setChangeSelectDto(appEditSelectDto);
             List<AppGrpPremisesDto> appGrpPremisesDtoList = appSubmissionDto.getAppGrpPremisesDtoList();
-            if (appGrpPremisesDtoList != null) {
-                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList) {
-                    appGrpPremisesDto.setLicenceDtos(null);
-                    if (StringUtil.isEmpty(appGrpPremisesDto.getOffTelNo())) {
-                        appGrpPremisesDto.setOffTelNo(null);
-                    }
-                    if (StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
-                        appGrpPremisesDto.setCertIssuedDtStr(null);
-                    }
-                }
-            }
             boolean eqGrpPremisesResult = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
             if (eqGrpPremisesResult && appSubmissionDtos.size() == 1) {
                 if (appGrpPremisesDtoList != null) {
@@ -954,20 +943,68 @@ public class WithOutRenewalDelegator {
         }
         return false;
     }
+    private AppGrpPremisesDto copyAppGrpPremisesDto(AppGrpPremisesDto appGrpPremisesDto){
+        AppGrpPremisesDto copy=new AppGrpPremisesDto();
+        copy.setPremisesType(appGrpPremisesDto.getPremisesType());
+        copy.setPostalCode(appGrpPremisesDto.getPostalCode());
+        copy.setAddrType(appGrpPremisesDto.getAddrType());
+        copy.setBlkNo(appGrpPremisesDto.getBlkNo());
+        copy.setFloorNo(appGrpPremisesDto.getFloorNo());
+        copy.setUnitNo(appGrpPremisesDto.getUnitNo());
+        copy.setStreetName(appGrpPremisesDto.getStreetName());
+        copy.setBuildingName(appGrpPremisesDto.getBuildingName());
+        copy.setOnsiteStartMM(appGrpPremisesDto.getOnsiteStartMM());
+        copy.setOnsiteEndMM(appGrpPremisesDto.getOnsiteEndMM());
+        copy.setOnsiteStartHH(appGrpPremisesDto.getOnsiteStartHH());
+        copy.setOnsiteEndHH(appGrpPremisesDto.getOnsiteEndHH());
 
-    private List<AppGrpPremisesDto> copyAppGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList) throws Exception {
-        List<AppGrpPremisesDto> n = (List<AppGrpPremisesDto>) CopyUtil.copyMutableObject(appGrpPremisesDtoList);
-        for (AppGrpPremisesDto appGrpPremisesDto : n) {
-            appGrpPremisesDto.setLicenceDtos(null);
-            if (StringUtil.isEmpty(appGrpPremisesDto.getOffTelNo())) {
-                appGrpPremisesDto.setOffTelNo(null);
-            }
-            if (StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())) {
-                appGrpPremisesDto.setCertIssuedDtStr(null);
-            }
-            appGrpPremisesDto.setExistingData(null);
+        copy.setOffSitePostalCode(appGrpPremisesDto.getOffSitePostalCode());
+        copy.setOffSiteAddressType(appGrpPremisesDto.getOffSiteAddressType());
+        copy.setOffSiteBlockNo(appGrpPremisesDto.getOffSiteBlockNo());
+        copy.setOffSiteFloorNo(appGrpPremisesDto.getOffSiteFloorNo());
+        copy.setOffSiteUnitNo(appGrpPremisesDto.getOffSiteUnitNo());
+        copy.setOffSiteStreetName(appGrpPremisesDto.getOffSiteStreetName());
+        copy.setOffSiteBuildingName(appGrpPremisesDto.getOffSiteBuildingName());
+        copy.setOffSiteStartHH(appGrpPremisesDto.getOffSiteStartHH());
+        copy.setOffSiteStartMM(appGrpPremisesDto.getOffSiteStartMM());
+        copy.setOffSiteEndHH(appGrpPremisesDto.getOffSiteEndHH());
+        copy.setOffSiteEndMM(appGrpPremisesDto.getOffSiteEndMM());
+
+        copy.setConveyancePostalCode(appGrpPremisesDto.getConveyancePostalCode());
+        copy.setConveyanceAddressType(appGrpPremisesDto.getConveyanceAddressType());
+        copy.setConveyanceBlockNo(appGrpPremisesDto.getConveyanceBlockNo());
+        copy.setConveyanceFloorNo(appGrpPremisesDto.getConveyanceFloorNo());
+        copy.setConveyanceUnitNo(appGrpPremisesDto.getConveyanceUnitNo());
+        copy.setConveyanceStreetName(appGrpPremisesDto.getConveyanceStreetName());
+        copy.setConveyanceBuildingName(appGrpPremisesDto.getConveyanceBuildingName());
+        copy.setConStartHH(appGrpPremisesDto.getConStartHH());
+        copy.setConStartMM(appGrpPremisesDto.getConStartMM());
+        copy.setConEndHH(appGrpPremisesDto.getConEndHH());
+        copy.setConEndMM(appGrpPremisesDto.getConEndMM());
+        if(ApplicationConsts.PREMISES_TYPE_ON_SITE.equals(appGrpPremisesDto.getPremisesType())){
+            copy.setHciName(appGrpPremisesDto.getHciName());
+            copy.setOffTelNo(appGrpPremisesDto.getOffTelNo());
+            copy.setLocateWithOthers(appGrpPremisesDto.getLocateWithOthers());
+            copy.setScdfRefNo(appGrpPremisesDto.getScdfRefNo());
+            copy.setCertIssuedDt(appGrpPremisesDto.getCertIssuedDt());
+            copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
+        }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
+
+        }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
+            copy.setConveyanceVehicleNo(appGrpPremisesDto.getConveyanceVehicleNo());
         }
-        return n;
+
+        copy.setAppPremPhOpenPeriodList(appGrpPremisesDto.getAppPremPhOpenPeriodList());
+        return copy;
+    }
+    private List<AppGrpPremisesDto> copyAppGrpPremises(List<AppGrpPremisesDto> appGrpPremisesDtoList)  {
+        List<AppGrpPremisesDto> cpoyList=new ArrayList<>(appGrpPremisesDtoList.size());
+        for(AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtoList){
+            AppGrpPremisesDto copy = copyAppGrpPremisesDto(appGrpPremisesDto);
+            cpoyList.add( copy);
+        }
+
+        return cpoyList;
     }
 
     //prepareAcknowledgement

@@ -1190,9 +1190,23 @@ public class LicenceViewServiceDelegator {
         creatAppsvcLaboratory(appSvcLaboratoryDisciplinesDtoList,oldAppSvcLaboratoryDisciplinesDtoList);
         List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList = appSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDisciplineAllocationDtoList();
         List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList().get(0).getAppSvcDisciplineAllocationDtoList();
+        deleteGroup(oldAppSvcDisciplineAllocationDtoList,oldAppSvcLaboratoryDisciplinesDtoList.get(0).getPremiseVal());
         creatAppSvcDisciplineAllocation(appSvcDisciplineAllocationDtoList,oldAppSvcDisciplineAllocationDtoList,appSvcLaboratoryDisciplinesDtoList.get(0).getPremiseVal(),oldAppSvcLaboratoryDisciplinesDtoList.get(0).getPremiseVal());
     }
 
+    private void deleteGroup(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtos,String preVal){
+        if(appSvcDisciplineAllocationDtos==null){
+            return;
+        }
+        List<AppSvcDisciplineAllocationDto> list=IaisCommonUtils.genNewArrayList();
+        for(AppSvcDisciplineAllocationDto appSvcDisciplineAllocationDto : appSvcDisciplineAllocationDtos){
+            if(appSvcDisciplineAllocationDto.getPremiseVal().equals(preVal)){
+                list.add(appSvcDisciplineAllocationDto);
+            }
+        }
+        appSvcDisciplineAllocationDtos.clear();
+        appSvcDisciplineAllocationDtos.addAll(list);
+    }
     private void creatAppSvcDisciplineAllocation(List<AppSvcDisciplineAllocationDto> appSvcDisciplineAllocationDtoList ,List<AppSvcDisciplineAllocationDto> oldAppSvcDisciplineAllocationDtoList,String premiseVal,String oldPremiseVal) throws Exception{
         if(appSvcDisciplineAllocationDtoList==null && oldAppSvcDisciplineAllocationDtoList==null){
             return;

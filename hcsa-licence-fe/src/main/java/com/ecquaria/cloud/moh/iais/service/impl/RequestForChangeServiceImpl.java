@@ -136,7 +136,6 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     @Override
     public List<ApplicationDto> getAppByLicIdAndExcludeNew(String licenceId) {
         List<ApplicationDto> applicationDtos = applicationClient.getAppByLicIdAndExcludeNew(licenceId).getEntity();
-        ;
         List<ApplicationDto> newApplicationDtos = IaisCommonUtils.genNewArrayList();
         for (ApplicationDto applicationDto : applicationDtos) {
             if (!ApplicationConsts.APPLICATION_STATUS_APPROVED.equals(applicationDto.getStatus()) &&
@@ -144,7 +143,9 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
                     !ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED.equals(applicationDto.getStatus()) &&
                     !ApplicationConsts.APPLICATION_STATUS_NOT_PAYMENT.equals(applicationDto.getStatus()) &&
                     !ApplicationConsts.APPLICATION_STATUS_DELETED.equals(applicationDto.getStatus())&&
-                    !ApplicationConsts.APPLICATION_STATUS_RECALLED.equals(applicationDto.getStatus())) {
+                    !ApplicationConsts.APPLICATION_STATUS_RECALLED.equals(applicationDto.getStatus())&&
+                    !ApplicationConsts.APPLICATION_STATUS_WITHDRAWN.equals(applicationDto.getStatus())&&
+                    !ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE.equals(applicationDto.getStatus())) {
                 newApplicationDtos.add(applicationDto);
             }
         }
