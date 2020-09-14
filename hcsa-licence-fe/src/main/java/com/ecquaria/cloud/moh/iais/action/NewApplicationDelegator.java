@@ -1106,6 +1106,14 @@ public class NewApplicationDelegator {
             appSubmissionDto.setUserAgreement(false);
         }
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG);
+        if(requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+            String charityHci = ParamUtil.getString(bpc.request,"charityHci");
+            if(!StringUtil.isEmpty(charityHci)){
+                appSubmissionDto.setCharityHci(true);
+            }else{
+                appSubmissionDto.setCharityHci(false);
+            }
+        }
         if (requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
             String effectiveDateStr = ParamUtil.getString(bpc.request, "rfcEffectiveDate");
             if (!StringUtil.isEmpty(effectiveDateStr)) {
