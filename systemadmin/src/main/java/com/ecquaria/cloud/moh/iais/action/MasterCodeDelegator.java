@@ -20,7 +20,6 @@ import com.ecquaria.cloud.moh.iais.constant.IaisEGPConstant;
 import com.ecquaria.cloud.moh.iais.helper.*;
 import com.ecquaria.cloud.moh.iais.helper.excel.ExcelWriter;
 import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
-import com.ecquaria.egov.core.common.constants.AppConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -259,7 +258,7 @@ public class MasterCodeDelegator {
                     searchParam.removeFilter(SystemAdminBaseConstants.MASTER_CODE_EFFECTIVE_TO);
                 }
             } else {
-                ParamUtil.setRequestAttr(request, "ERR_EED", "Effective Start Date cannot be later than Effective End Date");
+                ParamUtil.setRequestAttr(request, "ERR_EED", MessageUtil.getMessageDesc("EMM_ERR004"));
             }
         } else {
             if (!StringUtil.isEmpty(codeStartDate)) {
@@ -372,59 +371,59 @@ public class MasterCodeDelegator {
                 Date codeEffTo = null;
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory()))
                 {
-                    String errMsg = "Code Category is a mandatory field.";
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Code Category","field");
                     errItems.add(errMsg);
                     result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeDescription())){
-                    String errMsg = "Code Description is a mandatory field.";
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Code Description","field");
                     errItems.add(errMsg);
                     result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getCodeValue())){
-                    String errMsg = "Code Value is a mandatory field.";
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Code Value","field");
                     errItems.add(errMsg);
                     result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getStatus())){
-                    String errMsg = "Status is a mandatory field.";
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Status","field");
                     errItems.add(errMsg);
                     result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getSequence())){
-                    String errMsg = "Sequence is a mandatory field.";
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Sequence","field");
                     errItems.add(errMsg);
                     result = true;
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveFrom())){
-                    String errMsg = "Effective Start Date is a mandatory field.";
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective Start Date","field");
                     errItems.add(errMsg);
                     result = true;
                 }else{
                     try{
                         codeEffFrom = Formatter.parseDate(masterCodeToExcelDto.getEffectiveFrom());
                     }catch (Exception e){
-                        String errMsg = "Invalid date format for effective dates.";
+                        String errMsg = MessageUtil.getMessageDesc("CHKL_ERR003");
                         errItems.add(errMsg);
                         result = true;
                     }
                 }
                 if (StringUtil.isEmpty(masterCodeToExcelDto.getEffectiveTo())){
-                    String errMsg = "Effective End Date is a mandatory field.";
+                    String errMsg = MessageUtil.replaceMessage("GENERAL_ERR0006","Effective End Date","field");
                     errItems.add(errMsg);
                     result = true;
                 }else{
                     try{
                         codeEffTo = Formatter.parseDate(masterCodeToExcelDto.getEffectiveTo());
                     }catch (Exception e){
-                        String errMsg = "Invalid date format for effective dates.";
+                        String errMsg = MessageUtil.getMessageDesc("CHKL_ERR003");
                         errItems.add(errMsg);
                         result = true;
                     }
                 }
                 if (codeEffFrom != null && codeEffTo != null){
                     if (codeEffFrom.compareTo(codeEffTo) >= 0) {
-                        String errMsg = "Effective Start Date cannot be later than Effective End Date.";
+                        String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
                         errItems.add(errMsg);
                         result = true;
                     }
@@ -433,7 +432,7 @@ public class MasterCodeDelegator {
                 if(!StringUtil.isEmpty(masterCodeToExcelDto.getCodeCategory())){
                     String  codeCategory =  masterCodeService.findCodeCategoryByDescription(masterCodeToExcelDto.getCodeCategory());
                     if (StringUtil.isEmpty(codeCategory)){
-                        String errMsg = "CodeCategory Value must be an existing CodeCategory Value.";
+                        String errMsg = MessageUtil.getMessageDesc("MCUPERR001");
                         errItems.add(errMsg);
                         result = true;
                     }else{
@@ -465,7 +464,7 @@ public class MasterCodeDelegator {
                             codeValueList.add(h.getCodeValue());
                         });
                         if (!codeValueList.contains(masterCodeToExcelDto.getFilterValue())){
-                            String errMsg = "Filter Value must be an existing Code Value";
+                            String errMsg = MessageUtil.getMessageDesc("MCUPERR002");
                             errItems.add(errMsg);
                             result = true;
                         }
@@ -479,7 +478,7 @@ public class MasterCodeDelegator {
                     }else if ("Inactive".equals(masterCodeToExcelDto.getStatus())){
                         masterCodeToExcelDto.setStatus(AppConsts.COMMON_STATUS_IACTIVE);
                     }else{
-                        String errMsg = "The Status can only be Active/Deleted/Inactive";
+                        String errMsg = MessageUtil.getMessageDesc("MCUPERR003");
                         errItems.add(errMsg);
                         result = true;
                     }
@@ -518,7 +517,8 @@ public class MasterCodeDelegator {
             ParamUtil.setSessionAttr(request,"ERR_RESULT_LIST_MAP",(Serializable) errResult);
         }catch (Exception e){
             log.error(e.getMessage(), e);
-            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, "The upload form is not predefined format for uploading.");
+            String errMsg = MessageUtil.getMessageDesc("MCUPERR004");
+            errorMap.put(MasterCodeConstants.MASTER_CODE_UPLOAD_FILE, errMsg);
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ERRORMSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
         }
@@ -621,12 +621,14 @@ public class MasterCodeDelegator {
             errorMap = validationResult.retrieveAll();
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
                 if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
-                    errorMap.put("effectiveTo", "Effective Start Date cannot be later than Effective End Date");
+                    String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
+                    errorMap.put("effectiveTo", errMsg);
                 }
             }
             if (cartOptional != null && cartOptional.isPresent()) {
                 validationResult.setHasErrors(true);
-                errorMap.put("codeValue", "Code Value is duplicated in System");
+                String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
+                errorMap.put("codeValue", errMsg);
             }
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
@@ -691,7 +693,8 @@ public class MasterCodeDelegator {
             errorMap = validationEditResult.retrieveAll();
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
                 if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
-                    errorMap.put("effectiveTo", "Effective Start Date cannot be later than Effective End Date");
+                    String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
+                    errorMap.put("effectiveTo", errMsg);
                 }
             }
             ParamUtil.setSessionAttr(request, MasterCodeConstants.MASTERCODE_USER_DTO_ATTR, masterCodeDto);
