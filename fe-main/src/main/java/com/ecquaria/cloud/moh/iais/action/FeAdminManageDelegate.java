@@ -175,7 +175,7 @@ public class FeAdminManageDelegate {
             feUserDto.setMobileNo(mobileNo);
             feUserDto.setOfficeTelNo(officeNo);
             feUserDto.setEmail(email);
-            feUserDto.setUserDomain(AppConsts.HALP_EGP_DOMAIN);
+            feUserDto.setUserDomain(AppConsts.USER_DOMAIN_INTERNET);
             feUserDto.setAvailable(Boolean.TRUE);
             LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
             if(loginContext.getRoleIds().contains(RoleConsts.USER_ROLE_ORG_ADMIN)) {
@@ -212,7 +212,7 @@ public class FeAdminManageDelegate {
                 //update be user
                 OrganizationDto organizationById = orgUserManageService.getOrganizationById(feUserDto.getOrgId());
                 OrganizationDto organizationDto = new OrganizationDto();
-                organizationDto.setDoMain(feUserDto.getUserDomain());
+                organizationDto.setDoMain(AppConsts.USER_DOMAIN_INTERNET);
                 organizationDto.setFeUserDto(feUserDto);
                 organizationDto.setOrgType(organizationById.getOrgType());
                 organizationDto.setStatus(organizationById.getStatus());
