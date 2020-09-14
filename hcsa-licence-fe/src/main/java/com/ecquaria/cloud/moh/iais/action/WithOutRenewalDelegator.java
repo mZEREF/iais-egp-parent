@@ -1077,31 +1077,35 @@ public class WithOutRenewalDelegator {
                     return;
                 }
                 boolean flag = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
+                log.info(StringUtil.changeForLog("flag is--"+flag));
                 if (flag) {
                     List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
                     if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)) {
                         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                         return;
                     }
-                    for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-                        List<LicenceDto> licenceDtos = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
-                        if (licenceDtos != null) {
-                            for (LicenceDto licenceDto : licenceDtos) {
-                                if (flag) {
+                    if(flag){
+                        for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+                            List<LicenceDto> licenceDtos = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
+                            if (licenceDtos != null) {
+                                for (LicenceDto licenceDto : licenceDtos) {
                                     List<ApplicationDto> appByLicIdAndExcludeNewOther = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
                                     if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNewOther)) {
                                         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                                         return;
                                     }
-                                }
-                                Boolean otherLicenceOperation = requestForChangeService.isOtherOperation(licenceDto.getId());
-                                if (!otherLicenceOperation) {
-                                    ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
-                                    return;
+                                    Boolean otherLicenceOperation = requestForChangeService.isOtherOperation(licenceDto.getId());
+                                    if (!otherLicenceOperation) {
+                                        ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                                        return;
+                                    }
+
+
                                 }
                             }
                         }
                     }
+
                 }
             }
         }
