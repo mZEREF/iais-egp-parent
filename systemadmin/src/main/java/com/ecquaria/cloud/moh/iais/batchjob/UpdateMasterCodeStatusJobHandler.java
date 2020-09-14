@@ -9,7 +9,6 @@ import com.ecquaria.cloud.moh.iais.service.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sop.webflow.rt.api.BaseProcessClass;
 
 @JobHandler(value="UpdateMasterCodeStatusJobHandler")
 @Component
@@ -20,17 +19,23 @@ public class UpdateMasterCodeStatusJobHandler extends IJobHandler {
     MasterCodeService masterCodeService;
 
 
-    public void updateStatus(BaseProcessClass bpc){
-        log.info(StringUtil.changeForLog("inactive master code"));
-        masterCodeService.inactiveMasterCode();
-    }
+//    public void updateStatus(BaseProcessClass bpc){
+//        log.info(StringUtil.changeForLog("inactive master code"));
+//        masterCodeService.inactiveMasterCode();
+//    }
 
 
     @Override
     public ReturnT<String> execute(String s) throws Exception {
         JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler start..." ));
-        masterCodeService.inactiveMasterCode();
-        JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler end..." ));
-        return ReturnT.SUCCESS;
+        try {
+            masterCodeService.inactiveMasterCode();
+            JobLogger.log(StringUtil.changeForLog("The InactiveMasterCodeJobHandler end..." ));
+            return ReturnT.SUCCESS;
+        }catch (Throwable e){
+            log.error(e.getMessage(), e);
+            JobLogger.log(e);
+            return ReturnT.FAIL;
+        }
     }
 }
