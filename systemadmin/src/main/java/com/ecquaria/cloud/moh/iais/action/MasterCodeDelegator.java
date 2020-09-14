@@ -55,6 +55,7 @@ public class MasterCodeDelegator {
     private final MasterCodeService masterCodeService;
 
 
+
     @Autowired
     private MasterCodeDelegator(MasterCodeService masterCodeService) {
         this.masterCodeService = masterCodeService;
@@ -166,6 +167,7 @@ public class MasterCodeDelegator {
     public void createCode(BaseProcessClass bpc) throws ParseException {
         logAboutStart("prepareCreate");
         HttpServletRequest request = bpc.request;
+        List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
         String type = ParamUtil.getString(request, SystemAdminBaseConstants.CRUD_ACTION_TYPE);
         if (!SystemAdminBaseConstants.SAVE_ACTION.equals(type)) {
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
@@ -173,27 +175,41 @@ public class MasterCodeDelegator {
         }
         MasterCodeDto masterCodeDto = (MasterCodeDto) ParamUtil.getSessionAttr(request, "MasterCodeView");
         getCategoryValueFromPage(masterCodeDto, request);
+        String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
+        masterCodeDto.setCodeCategory(codeCategory);
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
+        Optional<MasterCodeToExcelDto> cartOptional = null;
+        if (!StringUtil.isEmpty(masterCodeDto.getCodeCategory()) && !StringUtil.isEmpty(masterCodeDto.getCodeValue())){
+            cartOptional = masterCodeToExcelDtos.stream().filter(item -> item.getCodeValue().equals(masterCodeDto.getCodeValue())
+                    && item.getCodeCategory().equals(masterCodeDto.getCodeCategory())).findFirst();
+        }
         ValidationResult validationResult = WebValidationHelper.validateProperty(masterCodeDto, SystemAdminBaseConstants.SAVE_ACTION);
         if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
             if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                 validationResult.setHasErrors(true);
             }
         }
+        if (cartOptional != null && cartOptional.isPresent()) {
+            validationResult.setHasErrors(true);
+        }
         if (validationResult != null && validationResult.isHasErrors()) {
             errorMap = validationResult.retrieveAll();
             if (masterCodeDto.getEffectiveFrom() != null && masterCodeDto.getEffectiveTo() != null) {
                 if (!masterCodeDto.getEffectiveFrom().before(masterCodeDto.getEffectiveTo())) {
                     validationResult.setHasErrors(true);
-                    errorMap.put("effectiveTo", "Effective Start Date cannot be later than Effective End Date");
+                    String errMsg = MessageUtil.getMessageDesc("EMM_ERR004");
+                    errorMap.put("effectiveTo", errMsg);
                 }
+            }
+            if (cartOptional != null && cartOptional.isPresent()) {
+                validationResult.setHasErrors(true);
+                String errMsg = MessageUtil.replaceMessage("SYSPAM_ERROR0005","Code Value","Record Name");
+                errorMap.put("codeValue", errMsg);
             }
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ERROR_MSG, WebValidationHelper.generateJsonStr(errorMap));
             ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.NO);
             return;
         }
-        String codeCategory = masterCodeService.findCodeCategoryByDescription(masterCodeDto.getCodeCategory());
-        masterCodeDto.setCodeCategory(codeCategory);
         masterCodeService.saveMasterCode(masterCodeDto);
         ParamUtil.setRequestAttr(request, SystemAdminBaseConstants.ISVALID, SystemAdminBaseConstants.YES);
         ParamUtil.setRequestAttr(request, "CREATED_DATE", new Date());
@@ -347,6 +363,7 @@ public class MasterCodeDelegator {
     public void uploadStep(BaseProcessClass bpc) throws Exception {
         HttpServletRequest request = bpc.request;
         MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
+        List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
         String actionType = mulReq.getParameter(IaisEGPConstant.CRUD_ACTION_TYPE);
         if (!"doUpload".equals(actionType)){
             ParamUtil.setRequestAttr(request,IaisEGPConstant.ISVALID,IaisEGPConstant.NO);
@@ -360,7 +377,6 @@ public class MasterCodeDelegator {
         }
         File toFile = FileUtils.multipartFileToFile(file);
         try{
-            List<MasterCodeToExcelDto> masterCodeToExcelDtos = masterCodeService.findAllMasterCode();
             List<MasterCodeToExcelDto> masterCodeToExcelDtoList = FileUtils.transformToJavaBean(toFile, MasterCodeToExcelDto.class);
             boolean result = false;
             List<Map<String,Set<String>>> errResult = IaisCommonUtils.genNewArrayList();
