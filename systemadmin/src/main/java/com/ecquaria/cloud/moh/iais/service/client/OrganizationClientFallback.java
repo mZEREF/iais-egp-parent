@@ -53,5 +53,10 @@ public class OrganizationClientFallback implements OrganizationClient {
         return entity;
     }
 
+    @Override
+    public FeignResponseEntity<List<WorkingGroupDto>> getWorkingGroup(String uerDomain) {
+        return null;
+    }
+
 
 }

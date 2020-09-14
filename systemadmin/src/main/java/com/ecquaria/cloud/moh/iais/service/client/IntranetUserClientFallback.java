@@ -139,4 +139,19 @@ public class IntranetUserClientFallback implements IntranetUserClient{
     public FeignResponseEntity<List<OrgUserRoleDto>> getUserRoleByIds(List<String> ids) {
         return null;
     }
+
+    @Override
+    public FeignResponseEntity<List<UserGroupCorrelationDto>> createUserGroupCorrelation(List<UserGroupCorrelationDto> userGroupCorrelationDtos) {
+        return null;
+    }
+
+    @Override
+    public FeignResponseEntity<List<UserGroupCorrelationDto>> getUserGroupsByUserId(String userId) {
+        return null;
+    }
+
+    @Override
+    public FeignResponseEntity<WorkingGroupDto> getWrkGrpById(String workGroupId) {
+        return null;
+    }
 }

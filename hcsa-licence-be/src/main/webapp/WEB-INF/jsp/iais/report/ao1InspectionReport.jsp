@@ -192,7 +192,7 @@
                                                                     </div>
                                                                 </iais:section>
                                                                 <iais:action style="text-align:right;">
-                                                                    <a id="submitButton" class="btn btn-primary"
+                                                                    <a id="submitButton" name = "submitBtn" class="btn btn-primary"
                                                                        onclick="aoSubmit()">SUBMIT</a>
                                                                 </iais:action>
                                                             </div>

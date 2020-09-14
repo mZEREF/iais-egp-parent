@@ -70,4 +70,13 @@ public interface IntranetUserClient {
 
     @PostMapping(value = "/iais-orguser-be/user-role-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<OrgUserRoleDto>> getUserRoleByIds(@RequestBody List<String> ids);
+
+    @PostMapping(value = "/iais-workgroup/user-group-ids", consumes = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<UserGroupCorrelationDto>> createUserGroupCorrelation(@RequestBody List<UserGroupCorrelationDto> userGroupCorrelationDtos);
+
+    @GetMapping(value = "/iais-workgroup/user-groups/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<List<UserGroupCorrelationDto>> getUserGroupsByUserId(@PathVariable(name = "userId") String userId);
+
+    @GetMapping(value = "/iais-workgroup/workGrop/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<WorkingGroupDto> getWrkGrpById(@PathVariable(name = "id") String workGroupId);
 }

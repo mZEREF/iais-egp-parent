@@ -32,11 +32,17 @@ public interface IntranetUserService {
     List<OrgUserRoleDto> assignRole(List<OrgUserRoleDto> orgUserRoleDtos);
     void removeRole(List<String> ids);
     void removeEgpRoles(String userDomain,String userId,List<String> roleIds);
+    void addUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos);
+    List<UserGroupCorrelationDto> getUserGroupsByUserId(String userId);
+    String getWrkGrpById(String groupId);
+    void deleteUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos);
+
     String createEgpRoles(List<EgpUserRoleDto> egpUserRoleDtos);
     List<OrgUserRoleDto> retrieveRolesByuserAccId (String userAccId);
     List<OrgUserRoleDto> getOrgUserRoleDtoById(List<String> ids);
-
     List<Role> getRolesByDomain(String domain);
+    List<WorkingGroupDto> getWorkingGroups();
+
 
     SearchResult<WorkingGroupQueryDto> getWorkingGroupBySearchParam(@RequestBody SearchParam searchParam);
 }

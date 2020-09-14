@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.service.IntranetUserService;
 import com.ecquaria.cloud.moh.iais.service.client.EgpUserClient;
 import com.ecquaria.cloud.moh.iais.service.client.IntranetUserClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.role.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,11 @@ import java.util.Map;
 public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Autowired
-    private IntranetUserClient intranetUserClient ;
+    private IntranetUserClient intranetUserClient;
     @Autowired
     private EgpUserClient egpUserClient;
+    @Autowired
+    private OrganizationClient organizationClient;
 
     @Override
     public void createIntranetUser(OrgUserDto orgUserDto) {
@@ -58,7 +61,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public OrgUserDto findIntranetUserById(String id) {
-        return  intranetUserClient.findIntranetUserById(id).getEntity();
+        return intranetUserClient.findIntranetUserById(id).getEntity();
     }
 
     @Override
@@ -71,10 +74,10 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     @Override
     public Boolean UserIsExist(String userId) {
         OrgUserDto entity = intranetUserClient.retrieveOneOrgUserAccount(userId).getEntity();
-        if(entity!=null){
+        if (entity != null) {
             return Boolean.TRUE;
         }
-           return Boolean.FALSE;
+        return Boolean.FALSE;
     }
 
     @Override
@@ -89,18 +92,18 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public Boolean deleteEgpUser(String userDomian, String userId) {
-        return egpUserClient.deleteUser(userDomian,userId).getEntity();
+        return egpUserClient.deleteUser(userDomian, userId).getEntity();
     }
 
     @Override
-    public ClientUser getUserByIdentifier(String userId,String userDomain) {
-        return egpUserClient.getUserByIdentifier(userId,userDomain).getEntity();
+    public ClientUser getUserByIdentifier(String userId, String userDomain) {
+        return egpUserClient.getUserByIdentifier(userId, userDomain).getEntity();
     }
 
     @Override
     public Boolean validatepassword(String password, UserIdentifier userIdentifier) {
         Boolean entity = egpUserClient.validatepassword(password, userIdentifier).getEntity();
-        if(entity==null){
+        if (entity == null) {
             return Boolean.FALSE;
         }
         return entity;
@@ -118,17 +121,45 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public void removeEgpRoles(String userDomain, String userId, List<String> roleIds) {
-        if(!IaisCommonUtils.isEmpty(roleIds)){
-          for(String roleId : roleIds){
-              egpUserClient.deleteUerRoleIds(userDomain,userId,roleId);
-          }
+        if (!IaisCommonUtils.isEmpty(roleIds)) {
+            for (String roleId : roleIds) {
+                egpUserClient.deleteUerRoleIds(userDomain, userId, roleId);
+            }
         }
+    }
+
+
+    @Override
+    public void addUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos) {
+        intranetUserClient.createUserGroupCorrelation(userGroupCorrelationDtos);
+    }
+
+    @Override
+    public List<UserGroupCorrelationDto> getUserGroupsByUserId(String userId) {
+        List<UserGroupCorrelationDto> entity = intranetUserClient.getUserGroupsByUserId(userId).getEntity();
+        return entity;
+    }
+
+    @Override
+    public String getWrkGrpById(String groupId) {
+        WorkingGroupDto entity = intranetUserClient.getWrkGrpById(groupId).getEntity();
+        String groupName = null;
+        if(entity!=null){
+            groupName = entity.getGroupName();
+        }
+        return groupName;
+    }
+
+    @Override
+    public void deleteUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos) {
+
+        intranetUserClient.createUserGroupCorrelation(userGroupCorrelationDtos);
     }
 
     @Override
     public String createEgpRoles(List<EgpUserRoleDto> egpUserRoleDtos) {
-        if(!IaisCommonUtils.isEmpty(egpUserRoleDtos)){
-            for(EgpUserRoleDto egpUserRoleDto :egpUserRoleDtos){
+        if (!IaisCommonUtils.isEmpty(egpUserRoleDtos)) {
+            for (EgpUserRoleDto egpUserRoleDto : egpUserRoleDtos) {
                 egpUserClient.createUerRoleIds(egpUserRoleDto).getEntity();
             }
         }
@@ -147,9 +178,14 @@ public class IntranetUserServiceImpl implements IntranetUserService {
 
     @Override
     public List<Role> getRolesByDomain(String domain) {
-        Map<String,String> map  =  IaisCommonUtils.genNewHashMap();
+        Map<String, String> map = IaisCommonUtils.genNewHashMap();
         map.put("userDomain", domain);
         return egpUserClient.search(map).getEntity();
+    }
+
+    @Override
+    public List<WorkingGroupDto> getWorkingGroups() {
+        return organizationClient.getWorkingGroup("hcsa").getEntity();
     }
 
     @Override

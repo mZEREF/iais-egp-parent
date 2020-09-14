@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.client;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleGroupCorrelation;
 import com.ecquaria.cloud.role.Role;
 import com.ecquaria.cloudfeign.FeignConfiguration;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
@@ -46,4 +47,13 @@ public interface EgpUserClient {
 
     @RequestMapping(path = "/api/v1/roles/{map}", method = RequestMethod.GET)
     FeignResponseEntity<List<Role>> search(@RequestParam("map") Map<String,String> map);
+
+//    @RequestMapping(path = {"/api/v1/memberships"}, consumes = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.POST}, produces = MediaType.APPLICATION_JSON_VALUE)
+//    FeignResponseEntity<String> createUerRoleGroupCorrelation(@RequestBody EgpUserRoleGroupCorrelation var1);
+//
+//    @RequestMapping(path = {"/api/v1/memberships/{membershipNo}"}, consumes = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.GET}, produces = MediaType.APPLICATION_JSON_VALUE)
+//    FeignResponseEntity<String> deleteUerRoleGroupCorrelation(@PathVariable("membershipNo") String membershipNo);
+//
+//    @RequestMapping(path = {"/api/v1/memberships/userdomain_and_userid/{userDomain}/{userId}"}, consumes = MediaType.APPLICATION_JSON_VALUE, method = {RequestMethod.GET}, produces = MediaType.APPLICATION_JSON_VALUE)
+//    FeignResponseEntity<String> searchUerRoleGroupCorrelation(@PathVariable("userDomain") String userDomain,@PathVariable("userId") String  userId);
 }
