@@ -47,6 +47,7 @@ import com.ecquaria.cloud.moh.iais.service.AssessmentGuideService;
 import com.ecquaria.cloud.moh.iais.service.InboxService;
 import com.ecquaria.cloud.moh.iais.service.OrgUserManageService;
 import com.ecquaria.cloud.moh.iais.service.RequestForChangeService;
+import com.ecquaria.cloud.moh.iais.service.client.AppInboxClient;
 import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
 import com.ecquaria.cloud.moh.iais.service.client.LicenceInboxClient;
 import lombok.extern.slf4j.Slf4j;
@@ -116,7 +117,8 @@ public class HalpAssessmentGuideDelegator {
     private HcsaConfigClient hcsaConfigClient;
     @Autowired
     private InboxService inboxService;
-
+    @Autowired
+    AppInboxClient appInboxClient;
     @Autowired
     private LicenceInboxClient licenceInboxClient;
     @Autowired
@@ -1599,15 +1601,22 @@ public class HalpAssessmentGuideDelegator {
         String radioAppId = ParamUtil.getString(request, "withdrawApp");
         String appId = ParamUtil.getMaskedString(request, radioAppId+"Id");
         String appNo = ParamUtil.getMaskedString(request, radioAppId+"No");
-        StringBuilder url = new StringBuilder();
-        url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
-                .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohWithdrawalApplication")
-                .append("?withdrawAppId=")
-                .append(MaskUtil.maskValue("withdrawAppId", appId))
-                .append("&withdrawAppNo=")
-                .append(MaskUtil.maskValue("withdrawAppNo", appNo));
-        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-        bpc.response.sendRedirect(tokenUrl);
+        if (appInboxClient.isApplicationWithdrawal(appId).getEntity()) {
+            String withdrawalError = MessageUtil.getMessageDesc("WDL_EER001");
+            ParamUtil.setRequestAttr(bpc.request,"licIsWithdrawal",Boolean.TRUE);
+            bpc.request.setAttribute(InboxConst.LIC_ACTION_ERR_MSG,withdrawalError);
+        } else {
+            StringBuilder url = new StringBuilder();
+            url.append(InboxConst.URL_HTTPS).append(bpc.request.getServerName())
+                    .append(InboxConst.URL_LICENCE_WEB_MODULE + "MohWithdrawalApplication")
+                    .append("?withdrawAppId=")
+                    .append(MaskUtil.maskValue("withdrawAppId", appId))
+                    .append("&withdrawAppNo=")
+                    .append(MaskUtil.maskValue("withdrawAppNo", appNo));
+            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            bpc.response.sendRedirect(tokenUrl);
+        }
+
     }
 
     public void resumeDraftApp(BaseProcessClass bpc) {

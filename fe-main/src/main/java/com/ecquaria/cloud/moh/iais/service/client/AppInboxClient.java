@@ -84,6 +84,8 @@ public interface AppInboxClient {
     FeignResponseEntity<String> selectDarft(@RequestBody Map<String,Object> serviceCodes);
     @GetMapping(value = "/appeal/licence-appeal-or-cessation-by-licence-id")
     FeignResponseEntity<Boolean> isLiscenceAppealOrCessation(@RequestParam("licenceId") String licenceId);
+    @GetMapping(value = "/appeal/application-withdrawal-by-app-id")
+    FeignResponseEntity<Boolean> isApplicationWithdrawal(@RequestParam("appId") String appId);
     @GetMapping(value = "/iais-submission/get-draft-by-lic-app-id",produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<ApplicationSubDraftDto>> getDraftByLicAppId(@RequestParam(value = "licAppId",required = false)String licAppId);
     @PutMapping(value = "/iais-submission/delete-draft-by-no")

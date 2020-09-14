@@ -91,6 +91,10 @@
         if('${appCannotRecall}'){
             $('#isAppealModal').modal('show');
         }
+        if('${appIsWithdrawal}'){
+            $('#isAppealModal').modal('show');
+        }
+
     });
 
     function LimitDeadline(startDate) {

@@ -66,7 +66,7 @@
             $('.self-assessment-gp .self-assessment-item .table-gp .table tr.selectedRow').removeClass('selectedRow');
         });
 
-        if ('${licIsRenewed}' || '${licIsAppealed}' || '${licIsAmend}') {
+        if ('${licIsRenewed}' || '${licIsAppealed}' || '${licIsAmend}'|| '${licIsWithdrawal}') {
             $('#isRenewedModal').modal('show');
         }
 
