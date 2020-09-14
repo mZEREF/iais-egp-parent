@@ -1106,10 +1106,10 @@ public class ServiceMenuDelegator {
             StringBuilder url = new StringBuilder();
             url.append("https://").append(bpc.request.getServerName())
                     .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail");
-            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            String licenseeurl = tokenUrl + "&licenseView=Licensee";
-            String authorisedUrl = tokenUrl + "&licenseView=Authorised";
-            String medAlertUrl= tokenUrl + "&licenseView=MedAlert";
+//            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
+            String licenseeurl = url.toString() + "&licenseView=Licensee";
+            String authorisedUrl = url.toString() + "&licenseView=Authorised";
+            String medAlertUrl= url.toString() + "&licenseView=MedAlert";
 
             ParamUtil.setRequestAttr(bpc.request,"licenseeurl",licenseeurl);
             ParamUtil.setRequestAttr(bpc.request,"authorisedUrl",authorisedUrl);
