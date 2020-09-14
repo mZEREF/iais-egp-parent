@@ -30,6 +30,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.NcAnswerDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -118,9 +119,24 @@ public class InspecEmailDelegator {
     public void start(BaseProcessClass bpc){
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>emailRequest");
         HttpServletRequest request=bpc.request;
-        String taskId = ParamUtil.getMaskedString(request,"taskId");
+        String taskId = "";
+        try{
+            taskId = ParamUtil.getMaskedString(request,"taskId");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(),e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(),ioe);
+                return;
+            }
+
+        }
         AuditTrailHelper.auditFunction("NcEmail Management", "Post Inspection Task");
         TaskDto  taskDto = fillupChklistService.getTaskDtoById(taskId);
+        if( taskDto == null) {
+            return;
+        }
         ParamUtil.setSessionAttr(bpc.request, TASK_DTO, taskDto);
         ParamUtil.setSessionAttr(request,"appPremCorrId",null);
         ParamUtil.setSessionAttr(request,MSG_CON, null);
