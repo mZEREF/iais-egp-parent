@@ -190,7 +190,11 @@
                                                           || app.status == 'APST029'
                                                           || app.status == 'APST023'
                                                           || app.status == 'APST024'
+                                                          || app.status == 'APST013'
+                                                          || app.status == 'APST014'
+                                                          || app.status == 'APST062'
                                                           || app.status == 'APST012'
+                                                          || app.status == 'APST010'
                                                           || app.status == 'APST004'
                                                           || app.status == 'APST031'
                                                           || app.status == 'APST034'
@@ -240,7 +244,7 @@
                                                 </select>
                                             </c:if>
                                             <c:if test="${app.status == 'APST002'
-                                                       || app.status == 'APST012' || app.status == 'APST038'
+                                                       || app.status == 'APST012' || app.status == 'APST038' || app.status == 'APST010'
                                                           || app.status == 'APST011' || app.status == 'APST023'}">
                                                 <select id="appDoSelectActive" class="appDoSelectActive" name="appDoSelectActive">
                                                     <option value="" selected>Select</option>
@@ -263,7 +267,7 @@
                                             </c:if>
                                         </c:when>
                                         <c:when test="${app.applicationType == 'APTY006'}">
-                                            <c:if test="${app.status == 'APST007' || app.status == 'APST005' || app.status == 'APST006' || app.status == 'APST050'}">
+                                            <c:if test="${app.status == 'APST007' || app.status == 'APST005' || app.status == 'APST006' || app.status == 'APST050' || app.status == 'APST002'|| app.status == 'APST011'}">
                                                 <select disabled>
                                                     <option>N/A</option>
                                                 </select>
