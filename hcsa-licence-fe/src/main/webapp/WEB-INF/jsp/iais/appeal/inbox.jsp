@@ -60,7 +60,7 @@
 
           <div class="col-xs-12 col-md-10" id="othersReason" style="display: none" >
             <label style="font-size: 20px;margin-top: 1%">Others reason</label>
-            <input type="text" maxlength="100"   name="othersReason" value="${appPremiseMiscDto.otherReason}" >
+            <input type="text" maxlength="100" disabled name="othersReason" value="${appPremiseMiscDto.otherReason}" >
             <span class="error-msg" name="iaisErrorMsg" id="error_otherReason"></span>
           </div>
 
@@ -69,13 +69,13 @@
             <c:forEach items="${hciNames}" var="hciName" >
               <div >
                 <div class="form-check" >
-                  <input class="form-check-input"  onclick="isCheck(this)" type="checkbox" <c:if test="${fn:length(hciNames)==1}">checked="checked" </c:if> name="selectHciName" aria-invalid="false" value="${hciName}">
+                  <input class="form-check-input" disabled onclick="isCheck(this)" type="checkbox" <c:if test="${fn:length(hciNames)==1}">checked="checked" </c:if> name="selectHciName" aria-invalid="false" value="${hciName}">
                   <label class="form-check-label"><span class="check-square"></span>${hciName}</label>
                 </div>
 
                 <div class="col-xs-12 col-md-10" id="proposedHciName" style="display: none" >
                   <label style="font-size: 20px">Proposed  HCI Name</label>
-                  <input type="text" maxlength="100" name="proposedHciName" value="${appPremiseMiscDto.newHciName}">
+                  <input type="text" maxlength="100" disabled name="proposedHciName" value="${appPremiseMiscDto.newHciName}">
                   <span ></span>
                 </div>
               </div>
@@ -113,23 +113,18 @@
             <label style="font-size: 25px;margin-top: 25px;margin-left: 1%" >File Upload For Appeal Reasons</label>
           </div>
 
-          <div class="col-xs-12">
+          <div class="col-xs-12" style="margin-bottom: 20px;">
             <div class="document-upload-list">
               <div class="file-upload-gp">
                 <div class="fileContent col-xs-2">
                   ${upFile.originalFilename}
-                  <input class="selectedFile" disabled id="selectedFile" name = "selectedFile"  type="file" style="display: none;" aria-label="selectedFile1" onchange="javascript:doUserRecUploadConfirmFile()">
-                  <label class="btn btn-file-upload btn-secondary">Upload</label>
-
                 </div>
                 <span name="iaisErrorMsg" class="error-msg" id="error_file"></span>
                 <span class="error-msg" id="error_litterFile_Show" name="error_litterFile_Show"  style="color: #D22727; font-size: 1.6rem"></span>
                 <div class="col-xs-12 col-md-4" >
                   <span  name="fileName" style="font-size: 14px;color: #2199E8;text-align: center">${filename}</span>
-                  <input type="text" value="Y" style="display: none" name="isDelete" id="isDelete">
-                  <input type="text" value="${filename}" style="display: none" id="isFile">
-
-                  <a class="btn btn-danger btn-sm" style="margin-left: 20px;display: none" name="delete" id="delete" >X</a>
+                  <input type="text" disabled value="Y" style="display: none" name="isDelete" id="isDelete">
+                  <input type="text" disabled value="${filename}" style="display: none" id="isFile">
                 </div>
               </div>
             </div>
