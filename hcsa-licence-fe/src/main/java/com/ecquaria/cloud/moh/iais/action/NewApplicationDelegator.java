@@ -2013,7 +2013,7 @@ public class NewApplicationDelegator {
             //set missing data
             for (AppSubmissionDto appSubmissionDto1 : notAutoSaveAppsubmission) {
                 appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
-                appSubmissionDto.setEffectiveDate(effectiveDate);
+                appSubmissionDto1.setEffectiveDate(effectiveDate);
             }
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(notAutoSaveAppsubmission);
             notAutoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
@@ -2042,7 +2042,7 @@ public class NewApplicationDelegator {
             //set missing data
             for (AppSubmissionDto appSubmissionDto1 : autoSaveAppsubmission) {
                 appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
-                appSubmissionDto.setEffectiveDate(effectiveDate);
+                appSubmissionDto1.setEffectiveDate(effectiveDate);
             }
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoSaveAppsubmission);
             autoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
