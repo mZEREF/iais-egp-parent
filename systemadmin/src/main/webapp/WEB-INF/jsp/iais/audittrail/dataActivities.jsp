@@ -44,7 +44,7 @@
             </tr>
 
 
-        <a class="back" id="Back" onclick="window.history.go(-1)"><em class="fa fa-angle-left"></em> Back</a>
+        <a class="back" id="Back" onclick="doBack()"><em class="fa fa-angle-left"></em> Back</a>
     </>
 </div>
 
@@ -58,6 +58,11 @@
         fmtJson(hafterValue, 'afterValue')
     })
 
+    function doBack() {
+        $("input[name='switch_action_type']").val("doBack");
+        $("#mainForm").submit();
+    }
+    
     function fmtJson(str, id) {
         if (str == undefined || str == '' ){
             str = '[ "No Record !"]'
