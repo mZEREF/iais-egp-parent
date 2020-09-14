@@ -120,7 +120,6 @@
     function deleteFile(repoId) {
         $('#interalFileId').val(repoId);
         $('#mainForm').submit();
-        //alert(repoId);
     }
 
     function callAjaxUploadFile(){
@@ -134,13 +133,11 @@
             contentType: false,
             dataType: "json",
             success: function (data) {
-                alert('data name: ' + data.docName + 'data size: ' + data.docSize + ' ' + 'data type: ' +data.docType);
                 closeUploadDoc();
                 window.location.reload();
 
             },
             error: function (msg) {
-                alert("error");
             }
         });
     }

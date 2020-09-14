@@ -80,7 +80,6 @@
           window.close();
         },
         error: function (msg) {
-          alert("error");
         }
       });
     }
