@@ -14,6 +14,7 @@
 package com.ecquaria.cloud.moh.iais.helper;
 
 import com.ecquaria.cloud.helper.SpringContextHelper;
+import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
@@ -385,4 +386,48 @@ public final class MasterCodeUtil {
     }
 
     private MasterCodeUtil() {throw new IllegalStateException("Util class");}
+
+    public List<String> getStatusBeforeIns(){
+        List<String> statusList = IaisCommonUtils.genNewArrayList();
+        //pending status
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
+        //rfi status
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
+        statusList.add(ApplicationConsts.PENDING_ASO_REPLY);
+        statusList.add(ApplicationConsts.PENDING_PSO_REPLY);
+        statusList.add(ApplicationConsts.PENDING_INP_REPLY);
+        //route back status
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_PSO_ROUTE_BACK);
+        return statusList;
+    }
+
+    public List<String> getStatusAfterIns(){
+        List<String> statusList = IaisCommonUtils.genNewArrayList();
+        //pending status
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL02);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL03);
+        //route back status
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_AO);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_INSPECTOR_ROUTE_BACK);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_ASO);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_PSO);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_AO_ROUTE_BACK_INSPECTOR);
+        //final status
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_REJECTED);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_WITHDRAWN);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_APPEAL_APPROVE);
+        //generate status
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_CESSATION_NEED_LICENCE);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_CESSATION_NOT_LICENCE);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_CESSATION_TEMPORARY_LICENCE);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_LICENCE_GENERATED);
+        //ao3 verify status
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_BROADCAST);
+        statusList.add(ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS);
+
+        return statusList;
+    }
 }
