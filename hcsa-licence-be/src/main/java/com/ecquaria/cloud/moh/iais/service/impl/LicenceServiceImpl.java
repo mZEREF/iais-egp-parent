@@ -210,7 +210,11 @@ public class LicenceServiceImpl implements LicenceService {
             eicCallFeSuperLic(eventBusLicenceGroupDtos);
             trackDto.setStatus(AppConsts.EIC_STATUS_PROCESSING_COMPLETE);
             //send approve notification
-            sendNotification(eventBusLicenceGroupDtos);
+            try{
+                sendNotification(eventBusLicenceGroupDtos);
+            }catch (Exception e){
+                log.error(e.getMessage(),e);
+            }
             hcsaLicenceClient.updateEicTrackStatus(trackDto);
         }else{
             log.error(StringUtil.changeForLog("This eventReo can not get the LicEicRequestTrackingDto -->:"+eventRefNum));
