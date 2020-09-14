@@ -155,15 +155,26 @@
             submit('preview','saveDraft',null);
         });
         $('#Next').click(function(){
+            showWaiting();
+            var canSubmit = true;
             let jQuery = $('#verifyInfoCheckbox').prop("checked");
+            var charityHci  = $('#charityHci').prop('checked');
             if(!jQuery){
                 $('#error_fieldMandatory').html("The field is mandatory");
-                return;
-            }else if(jQuery) {
+                canSubmit = false;
+            }else{
                 $('#error_fieldMandatory').html("");
+            }
+            if(!charityHci){
+                $('#error_charityHci').html("The field is mandatory");
+                canSubmit = false;
+            }else{
+                $('#error_charityHci').html("");
+            }
+            if(canSubmit) {
                 submit('payment','doSubmit',null);
             }
-
+            dismissWaiting();
         });
 
         $('.doSvcEdit').click(function () {

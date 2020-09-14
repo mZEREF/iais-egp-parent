@@ -1088,6 +1088,7 @@ public class NewApplicationDelegator {
      */
     public void doPreview(BaseProcessClass bpc) {
         log.info(StringUtil.changeForLog("the do doPreview start ...."));
+        String action = ParamUtil.getString(bpc.request,IaisEGPConstant.CRUD_ACTION_VALUE);
         AppSubmissionDto appSubmissionDto = getAppSubmissionDto(bpc.request);
         String isGroupLic = ParamUtil.getString(bpc.request, "isGroupLic");
         Map<String, String> errorMap = IaisCommonUtils.genNewHashMap();
@@ -1112,7 +1113,9 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setCharityHci(true);
             }else{
                 appSubmissionDto.setCharityHci(false);
-                errorMap.put("charityHci","The field is mandatory");
+                if("doSubmit".equals(action)){
+                    errorMap.put("charityHci","The field is mandatory");
+                }
             }
         }
         if (requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
