@@ -11,7 +11,14 @@ import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
-import com.ecquaria.cloud.moh.iais.common.dto.organization.*;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserRoleDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserUpLoadDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.UserGroupCorrelationDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.WorkingGroupDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -29,17 +36,6 @@ import com.ecquaria.cloud.moh.iais.web.logging.util.AuditLogUtil;
 import com.ecquaria.cloud.pwd.util.PasswordUtil;
 import com.ecquaria.cloud.role.Role;
 import com.ecquaria.cloud.submission.client.wrapper.SubmissionClient;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-
-import com.ecquaria.csrfguard.action.IAction;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -51,6 +47,19 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author weilu
@@ -164,7 +173,18 @@ public class MohIntranetUserDelegator {
         if (request == null) {
             return;
         }
-        String id = ParamUtil.getMaskedString(bpc.request, "maskUserId");
+        String id = "";
+        try{
+            id = ParamUtil.getMaskedString(bpc.request, "maskUserId");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(), e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(), ioe);
+                return;
+            }
+        }
         OrgUserDto orgUserDto = (OrgUserDto) ParamUtil.getSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR);
         if (id != null && orgUserDto == null) {
             OrgUserDto intranetUserById = intranetUserService.findIntranetUserById(id);
@@ -226,7 +246,17 @@ public class MohIntranetUserDelegator {
         MultipartHttpServletRequest request = (MultipartHttpServletRequest) bpc.request.getAttribute(HttpHandler.SOP6_MULTIPART_REQUEST);
         String userAccId = ParamUtil.getRequestString(bpc.request, "userAccId");
         if (request != null) {
-            userAccId = ParamUtil.getMaskedString(bpc.request, "maskUserId");
+            try{
+                userAccId = ParamUtil.getMaskedString(bpc.request, "maskUserId");
+            }catch (MaskAttackException e){
+                log.error(e.getMessage(), e);
+                try{
+                    bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+                } catch (IOException ioe){
+                    log.error(ioe.getMessage(), ioe);
+                    return;
+                }
+            }
         }
         List<Role> rolesByDomain = intranetUserService.getRolesByDomain(AppConsts.HALP_EGP_DOMAIN);
         List<String> assignRoleOption = IaisCommonUtils.genNewArrayList();
