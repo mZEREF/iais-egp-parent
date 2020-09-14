@@ -9,6 +9,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.filerepo.FileRepoDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.checklist.ChecklistItemDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspecUserRecUploadDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -30,6 +31,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import sop.servlet.webflow.HttpHandler;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +66,18 @@ public class InspecUserRecUploadDelegator {
         ParamUtil.setSessionAttr(bpc.request, "recFileTypeHint", null);
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", null);
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
-        String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+        String applicationNo = "";
+        try{
+            applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(), e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(), ioe);
+                return;
+            }
+        }
         String appPremCorrId = applicantConfirmInspDateService.getAppPremCorrIdByAppNo(applicationNo);
         String versionStr = ParamUtil.getRequestString(bpc.request, "recVersion");
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
@@ -276,7 +289,18 @@ public class InspecUserRecUploadDelegator {
     public void inspecUserRectifiUploadConfirm(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the inspecUserRectifiUploadConfirm start ...."));
         List<InspecUserRecUploadDto> inspecUserRecUploadDtos = (List<InspecUserRecUploadDto>)ParamUtil.getSessionAttr(bpc.request, "inspecUserRecUploadDtos");
-        String ncItemId = ParamUtil.getMaskedString(bpc.request, "ncItemId");
+        String ncItemId = "";
+        try{
+            ncItemId = ParamUtil.getMaskedString(bpc.request, "ncItemId");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(), e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(), ioe);
+                return;
+            }
+        }
         log.info(StringUtil.changeForLog("The item id is ===>" + ncItemId));
         if(!StringUtil.isEmpty(ncItemId)) {
             InspecUserRecUploadDto inspecUserRecUploadDto = null;

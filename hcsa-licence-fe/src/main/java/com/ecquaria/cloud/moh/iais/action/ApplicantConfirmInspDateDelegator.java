@@ -10,6 +10,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.SelectOption;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -62,7 +64,18 @@ public class ApplicantConfirmInspDateDelegator {
     public void userConfirmInspDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmInspDateStart start ...."));
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", null);
-        String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+        String applicationNo = "";
+        try{
+            applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(), e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(), ioe);
+                return;
+            }
+        }
         String appPremCorrId = applicantConfirmInspDateService.getAppPremCorrIdByAppNo(applicationNo);
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();

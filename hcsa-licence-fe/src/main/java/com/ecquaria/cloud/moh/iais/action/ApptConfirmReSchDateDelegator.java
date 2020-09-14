@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ProcessReSchedulingDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.common.validation.dto.ValidationResult;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
@@ -55,7 +57,18 @@ public class ApptConfirmReSchDateDelegator {
     public void apptUserChooseDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the apptUserChooseDateStart start ...."));
         ParamUtil.setSessionAttr(bpc.request, "inspSetMaskValueDto", null);
-        String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+        String applicationNo = "";
+        try{
+            applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(), e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(), ioe);
+                return;
+            }
+        }
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
         inspSetMaskValueDto.setApplicationNo(applicationNo);

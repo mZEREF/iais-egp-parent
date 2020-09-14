@@ -8,6 +8,7 @@ import com.ecquaria.cloud.moh.iais.common.constant.task.TaskConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.appointment.ApptFeConfirmDateDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspSetMaskValueDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HcsaLicenceFeConstant;
@@ -17,6 +18,8 @@ import com.ecquaria.cloud.moh.iais.service.InspecUserRecUploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import sop.webflow.rt.api.BaseProcessClass;
+
+import java.io.IOException;
 
 /**
  * @Process MohUserConfirmSpecificDate
@@ -46,7 +49,18 @@ public class ApptConfirmSpecificDateDelegator {
      */
     public void userConfirmSpecificDateStart(BaseProcessClass bpc){
         log.debug(StringUtil.changeForLog("the userConfirmSpecificDateStart start ...."));
-        String applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+        String applicationNo = "";
+        try{
+            applicationNo = ParamUtil.getMaskedString(bpc.request, "applicationNo");
+        }catch (MaskAttackException e){
+            log.error(e.getMessage(), e);
+            try{
+                bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+            } catch (IOException ioe){
+                log.error(ioe.getMessage(), ioe);
+                return;
+            }
+        }
         String appPremCorrId = applicantConfirmInspDateService.getAppPremCorrIdByAppNo(applicationNo);
         String messageId = (String) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_INTER_INBOX_MESSAGE_ID);
         InspSetMaskValueDto inspSetMaskValueDto = new InspSetMaskValueDto();
