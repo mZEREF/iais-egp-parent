@@ -644,6 +644,7 @@ public class ServiceMenuDelegator {
             if("continue".equals(crud_action_value)){
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
+                log.info(StringUtil.changeForLog("delete draft start ..."));
                 applicationClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
@@ -792,6 +793,7 @@ public class ServiceMenuDelegator {
                     if("continue".equals(crud_action_value)){
                         List<String> list=new ArrayList<>(1);
                         list.add(draftNo);
+                        log.info(StringUtil.changeForLog("delete draft start ..."));
                         applicationClient.deleteDraftNUmber(list);
                         bpc.request.getSession().setAttribute("DraftNumber", null);
                     }else if("resume".equals(crud_action_value)){
@@ -877,6 +879,7 @@ public class ServiceMenuDelegator {
                 if("continue".equals(crud_action_value)){
                     List<String> list=new ArrayList<>(1);
                     list.add(draftNo);
+                    log.info(StringUtil.changeForLog("delete draft start ..."));
                     applicationClient.deleteDraftNUmber(list);
                     bpc.request.getSession().setAttribute("DraftNumber", null);
                 }else if("resume".equals(crud_action_value)){
@@ -926,6 +929,7 @@ public class ServiceMenuDelegator {
             if("continue".equals(crud_action_value)){
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
+                log.info(StringUtil.changeForLog("delete draft start ..."));
                 applicationClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
@@ -946,6 +950,7 @@ public class ServiceMenuDelegator {
             if("continue".equals(crud_action_value)){
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
+                log.info(StringUtil.changeForLog("delete draft start ..."));
                 applicationClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
@@ -1024,6 +1029,7 @@ public class ServiceMenuDelegator {
             if("continue".equals(crud_action_value)){
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
+                log.info(StringUtil.changeForLog("delete draft start ..."));
                 applicationClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){
@@ -1043,6 +1049,7 @@ public class ServiceMenuDelegator {
             if("continue".equals(crud_action_value)){
                 List<String> list=new ArrayList<>(1);
                 list.add(draftNo);
+                log.info(StringUtil.changeForLog("delete draft start ..."));
                 applicationClient.deleteDraftNUmber(list);
                 bpc.request.getSession().setAttribute("DraftNumber", null);
             }else if("resume".equals(crud_action_value)){

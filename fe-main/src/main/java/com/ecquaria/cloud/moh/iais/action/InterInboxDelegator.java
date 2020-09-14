@@ -989,6 +989,7 @@ public class InterInboxDelegator {
         String draft = ParamUtil.getString(bpc.request,InboxConst.ACTION_NO_VALUE);
         if(!StringUtil.isEmpty(draft)){
             log.debug(StringUtil.changeForLog("draft no. is not null"));
+            log.info(StringUtil.changeForLog("delete draft start ..."));
             inboxService.deleteDraftByNo(draft);
 
             AuditTrailDto auditTrailDto = new AuditTrailDto();
