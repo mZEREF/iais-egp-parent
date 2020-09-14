@@ -98,6 +98,9 @@
                                                     <label class="form-check-label" for="charityHci"><span class="check-square"></span><iais:message key="ACK_DEC002"></iais:message></label>
                                                 </div>
                                             </c:if>
+                                            <div>
+                                                <span id="error_charityHci"  class="error-msg"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -1112,6 +1112,7 @@ public class NewApplicationDelegator {
                 appSubmissionDto.setCharityHci(true);
             }else{
                 appSubmissionDto.setCharityHci(false);
+                errorMap.put("charityHci","The field is mandatory");
             }
         }
         if (requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(appSubmissionDto.getAppType())) {
