@@ -807,6 +807,8 @@ public class InterInboxDelegator {
                 inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Inspection");
             }else if(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING.equals(applicationStatus)){
                 inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Screening");
+            } else if(ApplicationConsts.APPLICATION_STATUS_PENDING_APPROVAL01.equals(applicationStatus)){
+                inParams = MasterCodeUtil.getCodeKeyByCodeValue("Pending Approval");
             }
             else{
                 inParams.add(applicationStatus);
