@@ -2185,10 +2185,12 @@ public class HcsaApplicationDelegator {
     private void rollBack(BaseProcessClass bpc,String stageId,String appStatus,String roleId ,String wrkGpId,String userId) throws CloneNotSupportedException {
         //get the user for this applicationNo
         ApplicationViewDto applicationViewDto = (ApplicationViewDto)ParamUtil.getSessionAttr(bpc.request,"applicationViewDto");
+        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         //send internal route back email
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         try{
             sendRouteBackEmail(licenseeId,applicationViewDto);
+            sendRfcClarificationEmail( licenseeId, applicationViewDto, internalRemarks);
         }catch (Exception e){
             log.error(StringUtil.changeForLog("send internal route back email error"));
         }
@@ -2203,7 +2205,6 @@ public class HcsaApplicationDelegator {
         broadcastOrganizationDto.setRollBackComplateTask((TaskDto) CopyUtil.copyMutableObject(taskDto));
         taskDto =  completedTask(taskDto);
         broadcastOrganizationDto.setComplateTask(taskDto);
-        String internalRemarks = ParamUtil.getString(bpc.request,"internalRemarks");
         String processDecision = ParamUtil.getString(bpc.request,"nextStage");
         String nextStageReplys = ParamUtil.getString(bpc.request, "nextStageReplys");
         if(!StringUtil.isEmpty(nextStageReplys) && StringUtil.isEmpty(processDecision)){
@@ -2286,11 +2287,6 @@ public class HcsaApplicationDelegator {
 
         //0062460 update FE  application status.
         applicationService.updateFEApplicaiton(broadcastApplicationDto.getApplicationDto());
-        try {
-            sendRfcClarificationEmail( licenseeId, applicationViewDto, internalRemarks);
-        }catch (Exception e){
-            log.error(StringUtil.changeForLog("send email error!-The following email will be triggered when Approval Officer routes an application back for Internal Clarification"));
-        }
     }
     //Send EN_RFC_005_CLARIFICATION
     public void sendRfcClarificationEmail(String licenseeId,ApplicationViewDto applicationViewDto,String internalRemarks) throws Exception{
