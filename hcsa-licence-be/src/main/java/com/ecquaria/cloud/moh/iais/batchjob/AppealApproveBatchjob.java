@@ -318,6 +318,7 @@ public class AppealApproveBatchjob {
                                           List<AppGrpPremisesEntityDto> rollBackAppGrpPremisesDto,
                                           AppealApproveDto appealApproveDto, List<ApplicationGroupDto> appealApplicationGroupDtos) throws Exception {
         log.info(StringUtil.changeForLog("The AppealApproveBatchjob applicationChangeHciName is start ..."));
+        AuditTrailDto intranet = AuditTrailHelper.getBatchJobDto(AppConsts.DOMAIN_INTRANET);
         AppPremiseMiscDto appealDto = appealApproveDto.getAppPremiseMiscDto();
         ApplicationDto appealApplication = appealApproveDto.getAppealApplicationDto();
         AppGrpPremisesEntityDto appGrpPremisesDto = appealApproveDto.getAppGrpPremisesEntityDto();
@@ -325,11 +326,14 @@ public class AppealApproveBatchjob {
             rollBackAppGrpPremisesDto.add(appGrpPremisesDto);
             String hciName = appealDto.getNewHciName();
             if(!StringUtil.isEmpty(hciName)){
-               AppGrpPremisesEntityDto appGrpPremisesDto1 = (AppGrpPremisesEntityDto)
+                AppGrpPremisesEntityDto appGrpPremisesDto1 = (AppGrpPremisesEntityDto)
                        CopyUtil.copyMutableObject(appGrpPremisesDto);
-               appGrpPremisesDto1.setHciName(hciName);
-               appealAppGrpPremisesDto.add(appGrpPremisesDto1);
-               //todo eic save hci Name
+                appGrpPremisesDto1.setHciName(hciName);
+                appGrpPremisesDto1.setAuditTrailDto(intranet);
+                appealAppGrpPremisesDto.add(appGrpPremisesDto1);
+                //todo eic save hci Name
+                HmacHelper.Signature signature = HmacHelper.getSignature(keyId, secretKey);
+                HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
            }
         }
         if (appealDto == null) {
