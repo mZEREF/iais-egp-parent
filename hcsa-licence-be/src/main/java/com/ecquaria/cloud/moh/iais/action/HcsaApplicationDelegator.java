@@ -288,7 +288,7 @@ public class HcsaApplicationDelegator {
                         applicationViewDto.setAppEditSelectDto(appEditSelectDto);
                     }
                 }
-               
+
             } else{
                 AppEditSelectDto appEditSelectDto = new AppEditSelectDto();
                 appEditSelectDto.setPremisesEdit(true);
@@ -1785,7 +1785,7 @@ public class HcsaApplicationDelegator {
                     }
                     for(ApplicationDto applicationDto1 : applicationDtos){
                         if(applicationDto1.getApplicationNo().equals(applicationDto.getApplicationNo())){
-                            applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_APPROVED);
+                            applicationDto1.setStatus(ApplicationConsts.APPLICATION_STATUS_REJECTED);
                         }
                     }
                     ApplicationDto oldApplication = applicationClient.getApplicationById(oldAppId).getEntity();

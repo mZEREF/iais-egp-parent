@@ -12,6 +12,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -66,13 +67,19 @@ public class InsReportAoDelegator {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>report");
     }
 
-    public void AoInit(BaseProcessClass bpc) throws FeignException {
+    public void AoInit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
         ParamUtil.setSessionAttr(bpc.request, INSREPDTO, null);
         ParamUtil.setSessionAttr(bpc.request, RECOMMENDATION_DTO, null);
         ParamUtil.setSessionAttr(bpc.request, APPLICATIONVIEWDTO, null);
         LoginContext loginContext = (LoginContext) ParamUtil.getSessionAttr(bpc.request, AppConsts.SESSION_ATTR_LOGIN_USER);
-        String taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        String taskId = null;
+        try{
+            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        }catch(MaskAttackException e){
+            log.error(e.getMessage(),e);
+            bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+        }
         AuditTrailHelper.auditFunction("InspectionAO Report", "InspectionAO Report");
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();

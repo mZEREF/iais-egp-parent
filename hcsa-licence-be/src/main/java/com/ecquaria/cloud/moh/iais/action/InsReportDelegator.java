@@ -14,6 +14,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppPremisesRecomm
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.ApplicationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.InspectionReportDto;
 import com.ecquaria.cloud.moh.iais.common.dto.task.TaskDto;
+import com.ecquaria.cloud.moh.iais.common.mask.MaskAttackException;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
@@ -72,9 +73,15 @@ public class InsReportDelegator {
         ParamUtil.setSessionAttr(bpc.request,"askType",null);
     }
 
-    public void inspectionReportInit(BaseProcessClass bpc) {
+    public void inspectionReportInit(BaseProcessClass bpc) throws IOException {
         log.debug(StringUtil.changeForLog("the inspectionReportInit start ...."));
-        String taskId = ParamUtil.getMaskedString(bpc.request, "taskId");
+        String taskId = null;
+        try{
+            taskId = ParamUtil.getMaskedString(bpc.request,"taskId");
+        }catch(MaskAttackException e){
+            log.error(e.getMessage(),e);
+            bpc.response.sendRedirect("https://"+bpc.request.getServerName()+"/hcsa-licence-web/CsrfErrorPage.jsp");
+        }
         AuditTrailHelper.auditFunction("Inspection Report", "Inspection Report");
         TaskDto taskDto = taskService.getTaskById(taskId);
         String correlationId = taskDto.getRefNo();
