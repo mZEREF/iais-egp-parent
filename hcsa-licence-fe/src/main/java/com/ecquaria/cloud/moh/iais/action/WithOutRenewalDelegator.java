@@ -74,6 +74,8 @@ import sop.util.DateUtil;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1018,7 +1020,12 @@ public class WithOutRenewalDelegator {
             copy.setLocateWithOthers(appGrpPremisesDto.getLocateWithOthers());
             copy.setScdfRefNo(appGrpPremisesDto.getScdfRefNo());
             copy.setCertIssuedDt(appGrpPremisesDto.getCertIssuedDt());
-            copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
+            if(StringUtil.isEmpty(appGrpPremisesDto.getCertIssuedDtStr())){
+                copy.setCertIssuedDtStr(null);
+            }else {
+                copy.setCertIssuedDtStr(appGrpPremisesDto.getCertIssuedDtStr());
+            }
+
         }else if(ApplicationConsts.PREMISES_TYPE_OFF_SITE.equals(appGrpPremisesDto.getPremisesType())){
 
         }else if(ApplicationConsts.PREMISES_TYPE_CONVEYANCE.equals(appGrpPremisesDto.getPremisesType())){
@@ -1071,9 +1078,20 @@ public class WithOutRenewalDelegator {
         //go page2
         ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
     }
-
+    public void jumpYeMian(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        StringBuilder url = new StringBuilder(10);
+        url.append("https://").append(request.getServerName()).append("/main-web/eservice/INTERNET/MohInternetInbox");
+        String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), request);
+        response.sendRedirect(tokenUrl);
+    }
     //doLicenceReview
     public void doLicenceReview(BaseProcessClass bpc) throws Exception {
+        String crud_action_type = bpc.request.getParameter("crud_action_type");
+        if("exitSaveDraft".equals(crud_action_type)){
+            jumpYeMian(bpc.request, bpc.response);
+            return;
+        }
+
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) bpc.request.getSession().getAttribute("oldAppSubmissionDto");
         List<AppGrpPremisesDto> oldAppSubmissionDtoAppGrpPremisesDtoList = oldAppSubmissionDto.getAppGrpPremisesDtoList();
         RenewDto renewDto = (RenewDto) ParamUtil.getSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR);
@@ -1107,37 +1125,36 @@ public class WithOutRenewalDelegator {
                     ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
                     return;
                 }
+                List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
+                if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)) {
+                    bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
+                    ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                    return;
+                }
                 boolean flag = eqGrpPremises(appGrpPremisesDtoList, oldAppSubmissionDtoAppGrpPremisesDtoList);
                 log.info(StringUtil.changeForLog("flag is--"+flag));
-                if (flag) {
-                    List<ApplicationDto> appByLicIdAndExcludeNew = requestForChangeService.getAppByLicIdAndExcludeNew(appSubmissionDto.getLicenceId());
-                    if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNew)) {
-                        ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
-                        return;
-                    }
-                    if(flag){
-                        for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
-                            List<LicenceDto> licenceDtos = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
-                            if (licenceDtos != null) {
-                                for (LicenceDto licenceDto : licenceDtos) {
-                                    List<ApplicationDto> appByLicIdAndExcludeNewOther = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
-                                    if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNewOther)) {
-                                        ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
-                                        return;
-                                    }
-                                    Boolean otherLicenceOperation = requestForChangeService.isOtherOperation(licenceDto.getId());
-                                    if (!otherLicenceOperation) {
-                                        ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
-                                        return;
-                                    }
-
-
+                if(flag){
+                    for (int i = 0; i < appGrpPremisesDtoList.size(); i++) {
+                        List<LicenceDto> licenceDtos = (List<LicenceDto>) bpc.request.getSession().getAttribute("selectLicence" + i);
+                        if (licenceDtos != null) {
+                            for (LicenceDto licenceDto : licenceDtos) {
+                                List<ApplicationDto> appByLicIdAndExcludeNewOther = requestForChangeService.getAppByLicIdAndExcludeNew(licenceDto.getId());
+                                if (!IaisCommonUtils.isEmpty(appByLicIdAndExcludeNewOther)) {
+                                    bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
+                                    ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                                    return;
+                                }
+                                Boolean otherLicenceOperation = requestForChangeService.isOtherOperation(licenceDto.getId());
+                                if (!otherLicenceOperation) {
+                                    bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
+                                    ParamUtil.setRequestAttr(bpc.request, PAGE_SWITCH, PAGE2);
+                                    return;
                                 }
                             }
                         }
                     }
-
                 }
+
             }
         }
         //go page3

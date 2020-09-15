@@ -1257,7 +1257,7 @@ public class RequestForChangeMenuDelegator {
                 if (!IaisCommonUtils.isEmpty(applicationDtos)) {
                     ParamUtil.setRequestAttr(bpc.request, RfcConst.SWITCH_VALUE, "loading");
                     ParamUtil.setRequestAttr(bpc.request, IaisEGPConstant.CRUD_ACTION_TYPE_FORM_VALUE, "prePremisesEdit");
-                    ParamUtil.setRequestAttr(bpc.request, ACKMESSAGE, "ACKMESSAGE");
+                    bpc.request.setAttribute("rfcPendingApplication","errorRfcPendingApplication");
                     return;
                 }
             }

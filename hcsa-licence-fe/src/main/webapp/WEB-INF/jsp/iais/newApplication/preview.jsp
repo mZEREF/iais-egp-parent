@@ -133,14 +133,34 @@
 <c:if test="${!('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType)}">
     <iais:confirm msg="This application has been saved successfully" callBack="cancel()" popupOrder="saveDraft" yesBtnDesc="continue" cancelBtnDesc="exit to inbox" cancelBtnCls="btn btn-primary" yesBtnCls="btn btn-secondary" cancelFunc="jumpPage()"></iais:confirm>
 </c:if>
-
-
+<input type="hidden" id="rfcPendingApplication" value="${rfcPendingApplication}">
+<div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
+                </div>
+            </div>
+            <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                <button type="button" class="btn btn-secondary col-md-6" data-dismiss="modal" onclick="cancel()">Continue amending</button>
+                <button type="button" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="exitAndSave()">Exit and save as draft</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
 
     $(document).ready(function() {
         //Binding method
         if($('#saveDraftSuccess').val()=='success'){
             $('#saveDraft').modal('show');
+        }
+        if($('#rfcPendingApplication').val()=='errorRfcPendingApplication'){
+            $('#rfcPending').modal('show');
         }
         $('#premisesEdit').click(function(){
             submit('premises',null,null);
@@ -225,7 +245,10 @@
 
     function cancel() {
         $('#saveDraft').modal('hide');
-
+        $('#rfcPending').modal('hide');
+    }
+    function exitAndSave() {
+        submit('premises','saveDraft','exitSaveDraft');
     }
 
     function jumpPage() {

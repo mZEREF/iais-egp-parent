@@ -20,6 +20,7 @@
     <input type="hidden" name="switch_value" value=""/>
     <input type="hidden" id="checkSingle" value="${isSingle}"/>
     <input id="EditValue" type="hidden" name="EditValue" value="" />
+    <input type="hidden" name="crud_action_type" value="" id="crud_action_type">
     <div class="main-content">
         <div class="container">
             <div class="row">
@@ -153,6 +154,25 @@
             </div>
         </div>
     </div>
+    <input type="hidden" id="rfcPendingApplication" value="${rfcPendingApplication}">
+    <div class="modal fade" id="rfcPending" role="dialog" aria-labelledby="myModalLabel" style="left: 50%;top: 50%;transform: translate(-50%,-50%);min-width:80%; overflow: visible;bottom: inherit;right: inherit;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body" style="text-align: center;">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2"><span style="font-size: 2rem;">The changes you have made affect licences with pending application</span></div>
+                    </div>
+                </div>
+                <div class="row " style="margin-top: 5%;margin-bottom: 5%">
+                    <button type="button" class="btn btn-secondary col-md-6" data-dismiss="modal" onclick="cancel()">Continue amending</button>
+                    <button type="button" class="next btn btn-primary col-md-6" data-dismiss="modal" onclick="exitAndSave()">Exit and save as draft</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <%@include file="/WEB-INF/jsp/include/validation.jsp" %>
 </form>
 <script>
@@ -160,6 +180,9 @@
     $(document).ready(function () {
         if('Y' != '${isSingle}'){
             checkSubmitButton();
+        }
+        if($('#rfcPendingApplication').val()=='errorRfcPendingApplication'){
+            $('#rfcPending').modal('show');
         }
     });
 
@@ -176,6 +199,13 @@
             $('#nextButton').removeClass("hidden");
         }
     });
+    function cancel() {
+        $('#rfcPending').modal('hide');
+    }
+    function exitAndSave() {
+        $('#crud_action_type').val('exitSaveDraft');
+        $('#SUBMIT').trigger("click");
+    }
 
     function checkSubmitButton(){
         var DtoSize = $('#DtoSize').val();
