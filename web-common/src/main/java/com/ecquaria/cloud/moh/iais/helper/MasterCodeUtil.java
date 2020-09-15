@@ -392,7 +392,6 @@ public final class MasterCodeUtil {
         List<String> statusList = IaisCommonUtils.genNewArrayList();
         //pending status
         statusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_ADMIN_SCREENING);
-        statusList.add(ApplicationConsts.APPLICATION_STATUS_PENDING_APPOINTMENT_SCHEDULING);
         //rfi status
         statusList.add(ApplicationConsts.APPLICATION_STATUS_REQUEST_INFORMATION);
         statusList.add(ApplicationConsts.PENDING_ASO_REPLY);
