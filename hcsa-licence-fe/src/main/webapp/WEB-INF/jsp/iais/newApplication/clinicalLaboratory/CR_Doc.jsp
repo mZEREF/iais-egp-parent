@@ -66,28 +66,82 @@
               </span>&nbsp;&nbsp;
               <c:choose>
                 <c:when test="${svcDoc.docName == '' || svcDoc.docName == null }">
-                                                    <span class="hidden delBtn">
-                                                      &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
-                                                    </span>
+                  <span class="hidden delBtn">
+                    &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                  </span>
                 </c:when>
                 <c:otherwise>
-                                                      <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
-                                                        &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
-                                                    </span>
+                  <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
+                    &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
+                  </span>
                 </c:otherwise>
               </c:choose>
             </div>
-            <input class="selectedFile svcDoc" id="selectedFile" name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
-
-            <%--<c:if test="${svcDoc.docName!=null}">--%>
-              <span name="iaisErrorMsg" class="error-msg" id="error_${docConfig.id}selectedFile"></span>
-            <%--</c:if>--%>
+            <input class="selectedFile svcDoc"  name = "${docConfig.id}selectedFile" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+            <span name="iaisErrorMsg" class="error-msg" id="error_${docConfig.id}selectedFile"></span>
           </div>
         </div>
       </div>
     </div>
   </div>
 </c:forEach>
+
+<%--prem svc doc--%>
+<c:forEach var="prem" items="${AppSubmissionDto.appGrpPremisesDtoList}" varStatus="premStatus">
+  <c:set var="premIndexNo" value="${prem.premisesIndexNo}" />
+  <c:forEach var="premDocConfig" items="${premServiceDocConfigDto}" varStatus="status">
+    <c:set var="premKey" value="prem${premDocConfig.id}${premIndexNo}" />
+    <c:set var="premSvcDoc" value="${ReloadSvcDoc[premKey]}" />
+    <c:set var="premDelFlag" value="prem${premDocConfig.id}${premIndexNo}flag"/>
+
+    <div class="row" style="margin-bottom:2%;">
+      <div class="col-xs-12">
+        <h3>premises${premStatus.index+1}: ${premDocConfig.docTitle}</h3>
+      </div>
+      <div class="col-xs-12">
+        <p>${premDocConfig.docDesc}</p>
+      </div>
+      <div class="col-xs-12">
+        <div class="">
+          <div class="document-upload-list">
+            <div class="file-upload-gp">
+              <div class="fileContent" style="margin-bottom:1%;">
+                <input class="hidden delFlag" type="hidden" name="${premDelFlag}" value="N"/>
+                <input type="hidden" name="premDocConfig" value=""/>
+                <span class="fileNameSpan">
+                <c:choose>
+                  <c:when test="${!premSvcDoc.passValidate}">
+                    ${premSvcDoc.docName}
+                  </c:when>
+                  <c:otherwise>
+                    <a class="fileName <c:if test="${!isClickEdit}">disabled</c:if>" href="${pageContext.request.contextPath}/file-repo?filerepo=fileRo${status.index}&fileRo${status.index}=<iais:mask name="fileRo${status.index}" value="${premSvcDoc.fileRepoId}"/>&fileRepoName=${premSvcDoc.docName}"  >${premSvcDoc.docName}</a>
+                  </c:otherwise>
+                </c:choose>
+              </span>&nbsp;&nbsp;
+                <c:choose>
+                  <c:when test="${premSvcDoc.docName == '' || premSvcDoc.docName == null }">
+                    <span class="hidden delBtn">
+                      &nbsp;&nbsp;<button type="button" class="btn btn-secondary btn-sm">Delete</button>
+                    </span>
+                  </c:when>
+                  <c:otherwise>
+                      <span class="existFile delBtn <c:if test="${!isClickEdit}">hidden</c:if>">
+                        &nbsp;&nbsp;<button type="button" class="btn btn-danger btn-sm"><em class="fa fa-times"></em></button>
+                    </span>
+                  </c:otherwise>
+                </c:choose>
+              </div>
+              <input class="selectedFile svcDoc"  name = "${premKey}" type="file" style="display: none;" aria-label="selectedFile1"><a class="btn btn-file-upload btn-secondary" >Upload</a>
+              <span name="iaisErrorMsg" class="error-msg" id="error_${premKey}"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </c:forEach>
+</c:forEach>
+
+
 <script>
     $(document).ready(function() {
         if(${AppSubmissionDto.needEditController && !isClickEdit}){

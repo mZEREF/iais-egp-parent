@@ -409,7 +409,17 @@ public class ClinicalLaboratoryDelegator {
         AppSvcRelatedInfoDto appSvcRelatedInfoDto = getAppSvcRelatedInfo(bpc.request, currentSvcId);
         List<HcsaSvcDocConfigDto> hcsaSvcDocDtos = serviceConfigService.getAllHcsaSvcDocs(currentSvcId);
         if (hcsaSvcDocDtos != null && !hcsaSvcDocDtos.isEmpty()) {
-            ParamUtil.setSessionAttr(bpc.request, "serviceDocConfigDto", (Serializable) hcsaSvcDocDtos);
+            List<HcsaSvcDocConfigDto> serviceDocConfigDto = IaisCommonUtils.genNewArrayList();
+            List<HcsaSvcDocConfigDto> premServiceDocConfigDto = IaisCommonUtils.genNewArrayList();
+            for(HcsaSvcDocConfigDto hcsaSvcDocConfigDto:hcsaSvcDocDtos){
+                if ("0".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
+                    serviceDocConfigDto.add(hcsaSvcDocConfigDto);
+                } else if ("1".equals(hcsaSvcDocConfigDto.getDupForPrem())) {
+                    premServiceDocConfigDto.add(hcsaSvcDocConfigDto);
+                }
+            }
+            ParamUtil.setSessionAttr(bpc.request, "serviceDocConfigDto", (Serializable) serviceDocConfigDto);
+            ParamUtil.setSessionAttr(bpc.request, "premServiceDocConfigDto", (Serializable) premServiceDocConfigDto);
         }
 
         Map<String, AppSvcDocDto> reloadSvcDo = IaisCommonUtils.genNewHashMap();
@@ -417,7 +427,12 @@ public class ClinicalLaboratoryDelegator {
             List<AppSvcDocDto> appSvcDocDtos = appSvcRelatedInfoDto.getAppSvcDocDtoLit();
             if (appSvcDocDtos != null && !appSvcDocDtos.isEmpty()) {
                 for (AppSvcDocDto appSvcDocDto : appSvcDocDtos) {
-                    reloadSvcDo.put(appSvcDocDto.getSvcDocId(), appSvcDocDto);
+                    String premVal = appSvcDocDto.getPremisesVal();
+                    if(StringUtil.isEmpty(premVal)){
+                        reloadSvcDo.put(appSvcDocDto.getSvcDocId(), appSvcDocDto);
+                    }else{
+                        reloadSvcDo.put("prem" + appSvcDocDto.getSvcDocId() + premVal, appSvcDocDto);
+                    }
                 }
             }
         }
@@ -1061,6 +1076,7 @@ public class ClinicalLaboratoryDelegator {
         if (isGetDataFromPage) {
             Map<String, AppSvcDocDto> beforeReloadDocMap = (Map<String, AppSvcDocDto>) ParamUtil.getSessionAttr(bpc.request, RELOADSVCDOC);
             List<HcsaSvcDocConfigDto> svcDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request, "serviceDocConfigDto");
+            List<HcsaSvcDocConfigDto> premServiceDocConfigDtos = (List<HcsaSvcDocConfigDto>) ParamUtil.getSessionAttr(bpc.request,"premServiceDocConfigDto");
             Map<String, CommonsMultipartFile> commonsMultipartFileMap = IaisCommonUtils.genNewHashMap();
             CommonsMultipartFile file = null;
 
@@ -1091,6 +1107,8 @@ public class ClinicalLaboratoryDelegator {
                             appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
                             String md5Code = FileUtil.genMd5FileChecksum(file.getBytes());
                             appSvcDocDto.setMd5Code(md5Code);
+                            appSvcDocDto.setPremisesVal("");
+                            appSvcDocDto.setPremisesType("");
                             commonsMultipartFileMap.put(docConfigId, file);
                             //wait api change to get fileRepoId
                             appSvcDocDtoList.add(appSvcDocDto);
@@ -1104,6 +1122,42 @@ public class ClinicalLaboratoryDelegator {
 
                 }
             }
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            if(!IaisCommonUtils.isEmpty(premServiceDocConfigDtos) && !IaisCommonUtils.isEmpty(appGrpPremisesDtos)){
+                for (AppGrpPremisesDto appGrpPremisesDto : appGrpPremisesDtos) {
+                    for (HcsaSvcDocConfigDto premSvcDocConfig : premServiceDocConfigDtos) {
+                        String premisesIndexNo = appGrpPremisesDto.getPremisesIndexNo();
+                        String name = "prem" + premSvcDocConfig.getId() + premisesIndexNo;
+                        String delFlag = name + "flag";
+                        String delFlagValue = mulReq.getParameter(delFlag);
+                        file = (CommonsMultipartFile) mulReq.getFile(name);
+                        if (file != null && file.getSize() != 0) {
+                            file.getFileItem().setFieldName("selectedFile");
+                            appSvcDocDto = new AppSvcDocDto();
+                            appSvcDocDto.setSvcDocId(premSvcDocConfig.getId());
+                            appSvcDocDto.setUpFileName(premSvcDocConfig.getDocTitle());
+                            appSvcDocDto.setDocName(file.getOriginalFilename());
+                            long size = file.getSize() / 1024;
+                            appSvcDocDto.setDocSize(Integer.valueOf(String.valueOf(size)));
+                            String md5Code = FileUtil.genMd5FileChecksum(file.getBytes());
+                            appSvcDocDto.setMd5Code(md5Code);
+                            appSvcDocDto.setPremisesVal(appGrpPremisesDto.getPremisesIndexNo());
+                            appSvcDocDto.setPremisesType(appGrpPremisesDto.getPremisesType());
+                            commonsMultipartFileMap.put(premisesIndexNo+premSvcDocConfig.getId(), file);
+                            //wait api change to get fileRepoId
+                            appSvcDocDtoList.add(appSvcDocDto);
+
+
+                        }else if ("N".equals(delFlagValue)) {
+                            AppSvcDocDto beforeDto = beforeReloadDocMap.get(name);
+                            if (beforeDto != null) {
+                                appSvcDocDtoList.add(beforeDto);
+                            }
+                        }
+                    }
+                }
+            }
+
             String crud_action_values = mulReq.getParameter("nextStep");
 
             String currentSvcId = (String) ParamUtil.getSessionAttr(bpc.request, NewApplicationDelegator.CURRENTSERVICEID);
@@ -1115,6 +1169,7 @@ public class ClinicalLaboratoryDelegator {
             ParamUtil.setSessionAttr(bpc.request, NewApplicationDelegator.APPSUBMISSIONDTO, appSubmissionDto);
             if ("next".equals(crud_action_values)) {
                 doValidateSvcDocument(bpc.request, errorMap);
+//                errorMap.put("test","test");
             }
             HashMap<String, String> coMap = (HashMap<String, String>) bpc.request.getSession().getAttribute("coMap");
             Map<String, String> allChecked = isAllChecked(bpc, appSubmissionDto);
@@ -1135,7 +1190,7 @@ public class ClinicalLaboratoryDelegator {
 
             if (commonsMultipartFileMap != null && commonsMultipartFileMap.size() > 0) {
                 for (AppSvcDocDto appSvcDocDto1 : appSvcDocDtoList) {
-                    String key = appSvcDocDto1.getSvcDocId();
+                    String key = appSvcDocDto1.getPremisesVal()+ appSvcDocDto1.getSvcDocId();
                     CommonsMultipartFile commonsMultipartFile = commonsMultipartFileMap.get(key);
                     if (commonsMultipartFile != null && commonsMultipartFile.getSize() != 0) {
                         String fileRepoGuid = serviceConfigService.saveFileToRepo(commonsMultipartFile);
@@ -2065,9 +2120,14 @@ public class ClinicalLaboratoryDelegator {
             String[] deputyMobileNo = ParamUtil.getStrings(request, "deputyMobileNo");
             String[] deputyOfficeTelNo = ParamUtil.getStrings(request, "deputyOfficeTelNo");
             String[] deputyEmailAddr = ParamUtil.getStrings(request, "deputyEmailAddr");
+            String[] dpoIsPartEdit = ParamUtil.getStrings(request,"dpoIsPartEdit");
+            String[] dpoIndexNos = ParamUtil.getStrings(request,"dpoIndexNo");
             int length = 0;
             if(assignSelect != null){
                 length = assignSelect.length;
+            }
+            if (needEdit) {
+                length = dpoIndexNos.length;
             }
             for (int i = 0; i < length; i++) {
                 AppSvcPrincipalOfficersDto appSvcPrincipalOfficersDto = new AppSvcPrincipalOfficersDto();
@@ -2088,9 +2148,33 @@ public class ClinicalLaboratoryDelegator {
                     }
                 }else if(needEdit){
                     if (assign != null) {
-                        if(AppConsts.YES.equals(existingPsn)){
+                        String dpoIndexNo = dpoIndexNos[i];
+                        if (!StringUtil.isEmpty(dpoIndexNo)) {
+                            //not click edit
+                            if (AppConsts.NO.equals(dpoIsPartEdit[i])) {
+                                appSvcPrincipalOfficersDto = getPsnByIndexNo(appSvcRelatedInfoDto, dpoIndexNo,PAGE_NAME_PO);
+                                appSvcPrincipalOfficersDtos.add(appSvcPrincipalOfficersDto);
+                                //change arr
+                                dpoIndexNos = removeArrIndex(dpoIndexNos, i);
+                                dpoIsPartEdit = removeArrIndex(dpoIsPartEdit, i);
+                                dpoLicPerson = removeArrIndex(dpoLicPerson, i);
+                                //dropdown cannot disabled
+                                assignSelect = removeArrIndex(assignSelect, i);
+                                deputySalutation = removeArrIndex(deputySalutation, i);
+                                deputyIdType = removeArrIndex(deputyIdType, i);
+                                deputyDesignation = removeArrIndex(deputyDesignation, i);
+//                                existingPsn = removeArrIndex(existingPsn, i);
+                                //change arr index
+                                --i;
+                                --length;
+                                continue;
+                            }
+                        }
+                        //isPartEdit->1.click edit button 2.add more psn
+                        if(isExistingPsn(assign,licPsn)){
+                            //add cgo and choose existing
                             chooseExisting = true;
-                        } else{
+                        }else{
                             getPageData = true;
                         }
                     }
@@ -2101,6 +2185,12 @@ public class ClinicalLaboratoryDelegator {
                 log.info(StringUtil.changeForLog("getPageData:"+getPageData));
                 if(chooseExisting){
                     appSvcPrincipalOfficersDto = NewApplicationHelper.getPsnInfoFromLic(request, assignSelect[i]);
+                    String dpoIndexNo = dpoIndexNos[i];
+                    if (StringUtil.isEmpty(dpoIndexNo)) {
+                        appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
+                    } else {
+                        appSvcPrincipalOfficersDto.setCgoIndexNo(dpoIndexNo);
+                    }
                     AppPsnEditDto appPsnEditDto;
                     try {
                         appPsnEditDto = NewApplicationHelper.setNeedEditField(appSvcPrincipalOfficersDto);
@@ -2149,6 +2239,12 @@ public class ClinicalLaboratoryDelegator {
                     --i;
                     --length;
                 }else if(getPageData){
+                    String dpoIndexNo = dpoIndexNos[i];
+                    if (StringUtil.isEmpty(dpoIndexNo)) {
+                        appSvcPrincipalOfficersDto.setCgoIndexNo(UUID.randomUUID().toString());
+                    } else {
+                        appSvcPrincipalOfficersDto.setCgoIndexNo(dpoIndexNo);
+                    }
                     appSvcPrincipalOfficersDto.setPsnType(ApplicationConsts.PERSONNEL_PSN_TYPE_DPO);
                     appSvcPrincipalOfficersDto.setAssignSelect(assignSelect[i]);
                     appSvcPrincipalOfficersDto.setSalutation(deputySalutation[i]);
@@ -2242,8 +2338,15 @@ public class ClinicalLaboratoryDelegator {
                             String docName = appSvcDocDtoLit.get(i).getDocName();
                             String id = appSvcDocDtoLit.get(i).getSvcDocId();
                             int uploadFileLimit = systemParamConfig.getUploadFileLimit();
+                            String premVal = appSvcDocDtoLit.get(i).getPremisesVal();
+                            String premKey = "prem" + appSvcDocDtoLit.get(i).getSvcDocId()+premVal;
                             if (docSize/1024 > uploadFileLimit) {
-                                errorMap.put(id + "selectedFile", MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(uploadFileLimit),"sizeMax"));
+                                String err19 =  MessageUtil.replaceMessage("GENERAL_ERR0019", String.valueOf(uploadFileLimit),"sizeMax");
+                                if(StringUtil.isEmpty(premVal)){
+                                    errorMap.put(id + "selectedFile", err19);
+                                }else{
+                                    errorMap.put(premKey, err19);
+                                }
                             }
                             Boolean flag = Boolean.FALSE;
                             String substring = docName.substring(docName.lastIndexOf('.') + 1);
@@ -2255,10 +2358,16 @@ public class ClinicalLaboratoryDelegator {
                                 }
                             }
                             if (!flag) {
-                                errorMap.put(id + "selectedFile", MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType,"fileType"));
+                                String err18 = MessageUtil.replaceMessage("GENERAL_ERR0018", sysFileType,"fileType");
+                                if(StringUtil.isEmpty(premVal)){
+                                    errorMap.put(id + "selectedFile", err18);
+                                }else{
+                                    errorMap.put(premKey, err18);
+                                }
                             }
                             String errMsg = errorMap.get(id + "selectedFile");
-                            if(StringUtil.isEmpty(errMsg)){
+                            String errMsg2 = errorMap.get(premKey);
+                            if(StringUtil.isEmpty(errMsg) && StringUtil.isEmpty(errMsg2)){
                                 appSvcDocDtoLit.get(i).setPassValidate(true);
                             }
                         }

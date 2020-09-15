@@ -268,7 +268,7 @@
                 <c:if test="${!isClickEditDpo}">
                   <c:set var="showPreview" value="true"/>
                   <c:set var="canEditDpoEdit" value="${AppSubmissionDto.appEditSelectDto.dpoEdit || AppSubmissionDto.appEditSelectDto.serviceEdit}"/>
-                  <div class=" <c:if test="${'true' != showPreview}">hidden</c:if>">
+                  <div class="<c:if test="${'true' != showPreview}">hidden</c:if>">
                     <c:choose>
                       <c:when test="${canEditDpoEdit}">
                           <p><div class="text-right app-font-size-16"><a id="edit-dpo"><em class="fa fa-pencil-square-o"></em>Edit</a></div></p>
@@ -285,22 +285,13 @@
                   <c:set var="needDpoDrop" value="Y"/>
               </c:if>
               <c:if test="${needDpoDrop == 'Y'}">
-              <div class="row">
+              <div class="row dpoDropDownDiv">
                 <div class="form-group form-horizontal formgap">
                   <div class="col-sm-6 col-md-4" style="font-size: 1.6rem;">
                     Deputy Principal Officer (Optional)
                   </div>
                   <c:if test="${DeputyPrincipalOfficersMandatory> 0}">
                   <div class="col-sm-5 col-md-8" >
-                      <%--<c:if test="${ReloadPrincipalOfficers ==null ||ReloadPrincipalOfficers.size()==0}">
-                        <c:set var="flag" value="-1"/>
-                      </c:if>
-                      <c:if test="${ReloadPrincipalOfficers !=null && ReloadPrincipalOfficers.size()>0}">
-                        <c:set var="flag" value="0"/>
-                      </c:if>
-                      <c:if test="${ReloadDeputyPrincipalOfficers != null && ReloadDeputyPrincipalOfficers.size()>0}" >
-                        <c:set var="flag" value="1"/>
-                      </c:if>--%>
                     <iais:select cssClass="deputySelect"  name="deputyPrincipalOfficer" options="DeputyFlagSelect"  value="${DeputyPoFlag}" ></iais:select>
                     <br/>
                     <br/>
@@ -345,6 +336,8 @@
                       </c:otherwise>
                     </c:choose>
                     <input type="hidden" name="dpoExistingPsn" value="0"/>
+                    <input type="hidden" name="dpoIsPartEdit" value="0"/>
+                    <input type="hidden" name="dpoIndexNo" value="${deputy.cgoIndexNo}"/>
                     <div class="row" <c:if test="${status.first}">style="margin-top:-4%;"</c:if> >
                       <div class="control control-caption-horizontal">
                         <div class=" form-group form-horizontal formgap">
@@ -358,11 +351,23 @@
                               <h4 class="text-danger"><em class="fa fa-times-circle removeDpoBtn cursorPointer"></em></h4>
                             </c:if>
                           </div>
+                          <c:if test="${('APTY005' ==AppSubmissionDto.appType || 'APTY004' ==AppSubmissionDto.appType || requestInformationConfig != null) && '1' == DeputyPoFlag }">
+                            <div class="col-sm-10">
+                              <label class="control-font-label">${deputy.name}, ${deputy.idNo} (${deputy.idType})</label>
+                            </div>
+                            <div class="col-sm-2 text-right">
+                              <div class="edit-content">
+                                <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag}">
+                                  <label class="control-font-label"><a class="dpoEdit"><em class="fa fa-pencil-square-o"></em><span>&nbsp;</span>Edit</a></label>
+                                </c:if>
+                              </div>
+                            </div>
+                          </c:if>
                         </div>
                       </div>
                     </div>
                     <div class="row">
-                      <div class="control control-caption-horizontal">
+                      <div class="control control-caption-horizontal <c:if test="${'true' == canEditDpoEdit && '1' == DeputyPoFlag}">hidden</c:if>">
                         <div class=" form-group form-horizontal formgap">
                           <div class="col-sm-6 control-label formtext col-md-4" style="font-size: 1.6rem;">
                             Assign a Deputy Principal Officer
@@ -545,6 +550,8 @@
         doEdit();
 
         doEditDpo();
+
+        dpoDropDown();
 
         $('select.poSelect').trigger('change');
         $('select.deputySelect').trigger('change');
@@ -752,6 +759,16 @@
         var $poContentEle = $(this).closest('div.panel-group');
         if("1" == deputyFlag){
             $poContentEle.find('div.deputy-content ').removeClass('hidden');
+
+            //remove hidden
+            var $contentEle = $('.dpo-content:eq(1)');
+            // $contentEle.find('input[name="dpoIsPartEdit"]').val('1');
+            $contentEle.find('.edit-content').removeClass('hidden');
+            $contentEle.find('input[type="text"]').prop('disabled',false);
+            $contentEle.find('div.nice-select').removeClass('disabled');
+            $contentEle.find('input[type="text"]').css('border-color','');
+            $contentEle.find('input[type="text"]').css('color','');
+
         }else{
             $poContentEle.find('div.deputy-content ').addClass('hidden');
         }
@@ -834,6 +851,8 @@
                         if(psnLength >='${dpoHcsaSvcPersonnelDto.maximumCount}'){
                             $('#addPsnDiv-dpo').addClass('hidden');
                         }
+                        //get data from page
+                        $('#isEditDpoHiddenVal').val('1');
                     }else{
                         $('.dpoErrorMsg').html(data.errInfo);
                     }
@@ -865,17 +884,17 @@
 
 
     var doEditDpo = function () {
-        $('#edit-dpo').click(function () {
-            $('.deputySelect').removeClass('disabled');
-            $('.deputy-content input[type="text"]').prop('disabled',false);
-            $('.deputy-content div.nice-select').removeClass('disabled');
-            $('.deputy-content input[type="text"]').css('border-color','');
-            $('.deputy-content input[type="text"]').css('color','');
+        $('.dpoEdit').click(function () {
+            var $contentEle = $(this).closest('div.dpo-content');
+            $contentEle.find('input[name="dpoIsPartEdit"]').val('1');
+            $contentEle.find('.edit-content').addClass('hidden');
+            $contentEle.find('input[type="text"]').prop('disabled',false);
+            $contentEle.find('div.nice-select').removeClass('disabled');
+            $contentEle.find('input[type="text"]').css('border-color','');
+            $contentEle.find('input[type="text"]').css('color','');
+            //get data from page
+            $contentEle.find('select[name="deputyPoSelect"] option[value="newOfficer"]').prop('selected',true);
             $('#isEditDpoHiddenVal').val('1');
-            addDpo();
-            $('#edit-dpo').addClass('hidden');
-            $('input[name="dpoExistingPsn"]').val('0');
-            // $('input[name="dpoLicPerson"]').val('0');
         });
     }
     var fillPoData = function ($poContentEle,data) {
@@ -1096,5 +1115,15 @@
             }
         });
         console.log("setPsnDisabled end...");
+    }
+
+    var dpoDropDown = function() {
+        $('#edit-dpo').click(function () {
+            $('#edit-dpo').addClass('hidden');
+            $('div.dpoDropDownDiv').find('input[type="text"]').css('border-color','');
+            $('div.dpoDropDownDiv').find('input[type="text"]').css('color','');
+            $('div.dpoDropDownDiv').find('div.nice-select').removeClass('disabled');
+            $('#isEditDpoHiddenVal').val('1');
+        });
     }
 </script>
