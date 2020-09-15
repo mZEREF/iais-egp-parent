@@ -27,9 +27,9 @@ public interface PaymentClient {
     FeignResponseEntity<PaymentRequestDto> saveHcsaPaymentResquset(@RequestBody PaymentRequestDto paymentReqDto);
 
 
-    @PostMapping(value = "/update-payment-resquset" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-payment/update-payment-resquset" ,consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentRequestDto> updatePaymentResquset(@RequestBody PaymentRequestDto paymentReqDto);
-    @PostMapping(value = "/isTxnRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/iais-payment/isTxnRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<String>> isTxnRef(@RequestBody List<String> txnRefNo);
 
     @PostMapping(value = "/iais-payment/payment-reqRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -38,6 +38,6 @@ public interface PaymentClient {
     @PostMapping(value = "/iais-payment/payment-request-reqRefNo",consumes = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<PaymentRequestDto> getPaymentRequestDtoByReqRefNo(@RequestBody String reqRefNo);
 
-    @GetMapping(value = "/paying-payment-requests")
+    @GetMapping(value = "/iais-payment/paying-payment-requests")
     FeignResponseEntity<List<PaymentRequestDto>> getAllPayingPaymentRequestDto();
 }
