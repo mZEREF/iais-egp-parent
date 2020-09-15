@@ -1744,9 +1744,8 @@ public class HcsaApplicationDelegator {
                 roleIds.add(RoleConsts.USER_ROLE_INSPECTIOR);
                 roleIds.add(RoleConsts.USER_ROLE_PSO);
                 List<AppPremisesRoutingHistoryDto> appPremisesRoutingHistoryDtoList=appPremisesRoutingHistoryService.getAppPremisesRoutingHistoryDtosByAppNoAndRoleIds(applicationDto.getApplicationNo(), roleIds);
-                if(appPremisesRoutingHistoryDtoList==null||StringUtil.isEmpty(appPremisesRoutingHistoryDtoList)){
+                if(appPremisesRoutingHistoryDtoList==null||appPremisesRoutingHistoryDtoList.size()==0){
                     applicationDto.setSelfAssMtFlag(4);
-                    updateApplicaiton(applicationDto,applicationDto.getStatus());
                 }
                 if(ApplicationConsts.APPLICATION_TYPE_APPEAL.equals(applicationType)){
                     String returnFee = appPremisesRecommendationDto.getRemarks();
