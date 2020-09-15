@@ -68,6 +68,14 @@
                     <iais:field value="Address Type" width="11"/>
                     <iais:field value="${licensee.addrType}" width="11"/>
                 </iais:row>
+                <iais:row>
+                    <iais:field value="Office Telephone No." width="11"/>
+                    <iais:field value="${licensee.getOfficeTelNo()}" width="11"/>
+                </iais:row>
+                <iais:row>
+                    <iais:field value="Email Address" width="11"/>
+                    <iais:field value="${licensee.getEmilAddr()}" width="11"/>
+                </iais:row>
             </div>
         </div>
         <c:forEach var="item" items="${person}" varStatus="status">

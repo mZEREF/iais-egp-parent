@@ -4,6 +4,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicPremisesReqForInfo
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeIndividualDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPersonDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
 import com.ecquaria.cloudfeign.FeignResponseEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +17,8 @@ import java.util.List;
  * @author caijing
  * @date 2020/1/15
  */
-public class OrganizationLienceseeClientFallback implements OrganizationLienceseeClient{
+public class OrganizationLienceseeClientFallback
+        implements OrganizationLienceseeClient{
     @Override
     public FeignResponseEntity<List<LicenseeKeyApptPersonDto>> getLicenseeKeyApptPersonDtoListByUen(String uenNo) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
@@ -83,6 +85,14 @@ public class OrganizationLienceseeClientFallback implements OrganizationLiencese
 
     @Override
     public FeignResponseEntity<List<String>> getAdminEmailAdd(String orgId) {
+        FeignResponseEntity entity = new FeignResponseEntity<>();
+        HttpHeaders headers = new HttpHeaders();
+        entity.setHeaders(headers);
+        return entity;
+    }
+
+    @Override
+    public FeignResponseEntity<List<FeUserDto>> getAccountByOrgId(String orgId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

@@ -13,6 +13,7 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.LicenseeKeyApptPerson
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.MenuLicenceDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
 import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
@@ -1107,15 +1108,17 @@ public class ServiceMenuDelegator {
             url.append("https://").append(bpc.request.getServerName())
                     .append("/main-web/eservice/INTERNET/MohLicenseeCompanyDetail");
 //            String tokenUrl = RedirectUtil.appendCsrfGuardToken(url.toString(), bpc.request);
-            String licenseeurl = url.toString() + "&licenseView=Licensee";
-            String authorisedUrl = url.toString() + "&licenseView=Authorised";
-            String medAlertUrl= url.toString() + "&licenseView=MedAlert";
+            String licenseeurl = url.toString() + "?licenseView=Licensee";
+            String authorisedUrl = url.toString() + "?licenseView=Authorised";
+            String medAlertUrl= url.toString() + "?licenseView=MedAlert";
+            List<FeUserDto> feUserDtos = requestForChangeService.getAccountByOrgId(loginContext.getOrgId());
 
             ParamUtil.setRequestAttr(bpc.request,"licenseeurl",licenseeurl);
             ParamUtil.setRequestAttr(bpc.request,"authorisedUrl",authorisedUrl);
             ParamUtil.setRequestAttr(bpc.request,"medAlertUrl",medAlertUrl);
             ParamUtil.setRequestAttr(bpc.request,"licensee",licenseeDto);
             ParamUtil.setRequestAttr(bpc.request,"keyperson",keyApptPersonDtos);
+            ParamUtil.setRequestAttr(bpc.request,"feUserDtos",feUserDtos);
 
             ParamUtil.setSessionAttr(bpc.request, "baseSvcIdList", (Serializable) baseSvcIds);
             ParamUtil.setSessionAttr(bpc.request, "speSvcIdList", (Serializable) speSvcIds);

@@ -15,7 +15,9 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelListQueryDto
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelQueryDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PersonnelTypeDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.licence.PremisesListQueryDto;
+import com.ecquaria.cloud.moh.iais.common.dto.organization.FeUserDto;
 import freemarker.template.TemplateException;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +50,8 @@ public interface RequestForChangeService {
     LicenceDto getByLicNo(String licNo);
 
     List<LicenseeKeyApptPersonDto> getLicenseeKeyApptPersonDtoListByLicenseeId(String licenseeId);
+
+    List<FeUserDto> getAccountByOrgId(String orgId);
 
     LicenseeDto getLicenseeByOrgId(String orgId);
 

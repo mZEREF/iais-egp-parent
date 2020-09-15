@@ -58,17 +58,17 @@
                 <p>Licensee: <strong>${licensee.name}</strong> </p>
               </div>
               <div class="license-edit">
-                <p><a class="license-view" href="${licenseeurl}">View</a></p>
+                <p><a class="license-view" href="javascript:void(0);" onclick="popUplicensee('${licenseeurl}')">View</a></p>
               </div>
             </div>
-            <c:if test="${!empty keyperson}">
-              <c:forEach var="item" items="${keyperson}" varStatus="status">
+            <c:if test="${!empty feUserDtos}">
+              <c:forEach var="item" items="${feUserDtos}" varStatus="status">
                 <div class="license-info-row">
                   <div class="licnese-info">
-                    <p>Authorised User ${(status.index + 1)}: <strong>${item.getName()}</strong> </p>
+                    <p>Authorised User ${(status.index + 1)}: <strong>${item.displayName}</strong> </p>
                   </div>
                   <div class="license-edit">
-                    <p><a class="authorise-view" href="${authorisedUrl}">View</a></p>
+                    <p><a class="authorise-view" href="javascript:void(0);" onclick="popUplicensee('${authorisedUrl}')">View</a></p>
                   </div>
                 </div>
               </c:forEach>
@@ -123,21 +123,25 @@
 
   }
 
-  $(".license-view").click(function () {
-    $("input[name='switch_action_type']").val("showlicense");
-    $("input[name='crud_action_additional']").val("Licensee");
-    $("#mainForm").submit();
-  })
+  function popUplicensee(url){
+    window.open(url);
+  }
 
-  $(".authorise-view").click(function () {
-    $("input[name='switch_action_type']").val("showlicense");
-    $("input[name='crud_action_additional']").val("Authorised");
-    $("#mainForm").submit();
-  })
-
-  $(".medAlert-view").click(function () {
-    $("input[name='switch_action_type']").val("showlicense");
-    $("input[name='crud_action_additional']").val("MedAlert");
-    $("#mainForm").submit();
-  })
+  // $(".license-view").click(function () {
+  //   $("input[name='switch_action_type']").val("showlicense");
+  //   $("input[name='crud_action_additional']").val("Licensee");
+  //   $("#mainForm").submit();
+  // })
+  //
+  // $(".authorise-view").click(function () {
+  //   $("input[name='switch_action_type']").val("showlicense");
+  //   $("input[name='crud_action_additional']").val("Authorised");
+  //   $("#mainForm").submit();
+  // })
+  //
+  // $(".medAlert-view").click(function () {
+  //   $("input[name='switch_action_type']").val("showlicense");
+  //   $("input[name='crud_action_additional']").val("MedAlert");
+  //   $("#mainForm").submit();
+  // })
 </script>
