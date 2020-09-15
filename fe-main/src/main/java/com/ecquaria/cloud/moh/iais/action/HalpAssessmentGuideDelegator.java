@@ -1601,7 +1601,7 @@ public class HalpAssessmentGuideDelegator {
         String radioAppId = ParamUtil.getString(request, "withdrawApp");
         String appId = ParamUtil.getMaskedString(request, radioAppId+"Id");
         String appNo = ParamUtil.getMaskedString(request, radioAppId+"No");
-        if (appInboxClient.isApplicationWithdrawal(appId).getEntity()) {
+        if (!appInboxClient.isApplicationWithdrawal(appId).getEntity()) {
             String withdrawalError = MessageUtil.getMessageDesc("WDL_EER001");
             ParamUtil.setRequestAttr(bpc.request,"licIsWithdrawal",Boolean.TRUE);
             bpc.request.setAttribute(InboxConst.LIC_ACTION_ERR_MSG,withdrawalError);

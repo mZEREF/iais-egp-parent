@@ -933,7 +933,7 @@ public class InterInboxDelegator {
         HttpServletRequest request = bpc.request;
         String appId = ParamUtil.getMaskedString(request, InboxConst.ACTION_ID_VALUE);
         String appNo = ParamUtil.getString(request, InboxConst.ACTION_NO_VALUE);
-        if (appInboxClient.isApplicationWithdrawal(appId).getEntity()) {
+        if (!appInboxClient.isApplicationWithdrawal(appId).getEntity()) {
             String withdrawalError = MessageUtil.getMessageDesc("WDL_EER001");
             ParamUtil.setRequestAttr(bpc.request,"appIsWithdrawal",Boolean.TRUE);
             bpc.request.setAttribute(InboxConst.APP_RECALL_RESULT,withdrawalError);

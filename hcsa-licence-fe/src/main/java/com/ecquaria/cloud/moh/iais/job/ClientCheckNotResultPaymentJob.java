@@ -39,7 +39,7 @@ public class ClientCheckNotResultPaymentJob {
                 ) {
             try {
                 PaymentDto paymentDto= appGrpPaymentClient.getPaymentDtoByReqRefNo(appGrp.getGroupNo()).getEntity();
-                if("success".equals(paymentDto.getPmtStatus())){
+                if(paymentDto!=null&&"success".equals(paymentDto.getPmtStatus())){
                     appGrp.setPmtRefNo(paymentDto.getReqRefNo());
                     appGrp.setPaymentDt(paymentDto.getTxnDt());
                     appGrp.setPmtStatus(ApplicationConsts.PAYMENT_STATUS_PAY_SUCCESS);
