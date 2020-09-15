@@ -503,6 +503,9 @@ public class InsRepServiceImpl implements InsRepService {
 
     @Override
     public String getPeriodDefault(ApplicationViewDto applicationViewDto, TaskDto taskDto) {
+        log.info("-----getPeriodDefault start -----");
+        log.info(JsonUtil.parseToJson(applicationViewDto));
+        log.info(JsonUtil.parseToJson(taskDto));
         String defaultOption = null;
         String serviceId = applicationViewDto.getApplicationDto().getServiceId();
         String applicationType = applicationViewDto.getApplicationDto().getApplicationType();
@@ -514,6 +517,7 @@ public class InsRepServiceImpl implements InsRepService {
         if (listHcsaServices != null && !listHcsaServices.isEmpty()) {
             for (HcsaServiceDto hcsaServiceDto : listHcsaServices) {
                 svcCode = hcsaServiceDto.getSvcCode();
+                log.info(svcCode);
             }
         }
         if (ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_REQUEST_FOR_CHANGE.equals(applicationType) || ApplicationConsts.APPLICATION_TYPE_CREATE_AUDIT_TASK.equals(applicationType)) {
@@ -528,6 +532,7 @@ public class InsRepServiceImpl implements InsRepService {
             hcsaRiskScoreDto.setServiceId(serviceId);
             HcsaRiskScoreDto entity = hcsaConfigClient.getHcsaRiskScoreDtoByHcsaRiskScoreDto(hcsaRiskScoreDto).getEntity();
             riskScore = entity.getRiskScore();
+            log.info(JsonUtil.parseToJson(entity));
         }
         RiskAcceptiionDto riskAcceptiionDto = new RiskAcceptiionDto();
         riskAcceptiionDto.setScvCode(svcCode);
@@ -536,6 +541,7 @@ public class InsRepServiceImpl implements InsRepService {
         listRiskAcceptiionDto.add(riskAcceptiionDto);
         List<RiskResultDto> listRiskResultDto = hcsaConfigClient.getRiskResult(listRiskAcceptiionDto).getEntity();
         if (listRiskResultDto != null && !listRiskResultDto.isEmpty()) {
+            log.info(JsonUtil.parseToJson(listRiskResultDto));
             for (RiskResultDto riskResultDto : listRiskResultDto) {
                 String dateType = riskResultDto.getDateType();
                 String count = String.valueOf(riskResultDto.getTimeCount());
@@ -545,6 +551,7 @@ public class InsRepServiceImpl implements InsRepService {
                 }
             }
         }
+        log.info(StringUtil.changeForLog("-----getPeriodDefault end-----" + "defaultOption :" +defaultOption));
         return defaultOption;
     }
 
