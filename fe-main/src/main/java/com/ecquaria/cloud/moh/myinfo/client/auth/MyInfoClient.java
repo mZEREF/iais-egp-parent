@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "myinfo", configuration = FeignConfiguration.class,url = "http://192.168.6.59:8383")
+@FeignClient(name = "myinfo", configuration = FeignConfiguration.class)
 public interface MyInfoClient {
 
     @GetMapping(value = "/testInfo/myinfo/person-basic/{uinfin}/",consumes = "application/jose",produces="application/jose")
