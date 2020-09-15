@@ -73,23 +73,6 @@
                                             </td>
                                         </tr>
                                     </c:forEach>
-<%--                                    <c:forEach var="AppSubmissionDto" items="${renewDto.appSubmissionDtos}"  varStatus="status">--%>
-<%--                                        <c:set var="detailFeeDto" value="${AppSubmissionDto.detailFeeDto}"/>--%>
-<%--                                        <c:if test="${detailFeeDto != null && detailFeeDto.lateFeeType != '' && detailFeeDto.lateFeeAmoumtStr != '' && detailFeeDto.lateFeeType != null && detailFeeDto.lateFeeAmoumtStr != null}">--%>
-<%--                                            <c:forEach var="svc" items="${AppSubmissionDto.appSvcRelatedInfoDtoList}">--%>
-<%--                                                <tr>--%>
-<%--                                                    <td>--%>
-<%--                                                        <p>${detailFeeDto.lateFeeType}</p>--%>
-<%--                                                        <p><em>Applicable to the following licence(s):</em></p>--%>
-<%--                                                        <p><c:out value="${svc.serviceName}"></c:out></p>--%>
-<%--                                                    </td>--%>
-<%--                                                    <td>NA</td>--%>
-<%--                                                    <td>NA</td>--%>
-<%--                                                    <td><p>${AppSubmissionDto.lateFeeStr}</p></td>--%>
-<%--                                                </tr>--%>
-<%--                                            </c:forEach>--%>
-<%--                                        </c:if>--%>
-<%--                                    </c:forEach>--%>
                                     <c:forEach items="${laterFeeDetailsMap}" var="laterFeeDetailMap">
                                         <c:set var="laterFeeType" value='${laterFeeDetailMap.key}' />
                                         <tr>

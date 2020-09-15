@@ -301,6 +301,103 @@ public class AppSubmissionServiceImpl implements AppSubmissionService {
         return  entity;
     }
 
+    public FeeDto getRenewalAmount(List<AppSubmissionDto> appSubmissionDtoList,boolean isCharity){
+        List<LicenceFeeDto> linenceFeeQuaryDtos = IaisCommonUtils.genNewArrayList();
+        log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount start ...."));
+        log.info(StringUtil.changeForLog("current account is charity:"+isCharity));
+        for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
+            List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
+            List<AppGrpPremisesDto> appGrpPremisesDtos = appSubmissionDto.getAppGrpPremisesDtoList();
+            List<String> premisessTypes =  IaisCommonUtils.genNewArrayList();
+
+            for(AppGrpPremisesDto appGrpPremisesDto:appGrpPremisesDtos){
+                premisessTypes.add(appGrpPremisesDto.getPremisesType());
+            }
+            List<String> baseServiceIds = IaisCommonUtils.genNewArrayList();
+            List<HcsaServiceCorrelationDto> hcsaServiceCorrelationDtos = appConfigClient.serviceCorrelation().getEntity();
+            boolean onlySpecifiedSvc = false;
+            for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
+                    onlySpecifiedSvc = true;
+                }
+            }
+            if(onlySpecifiedSvc && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
+                        licenceFeeDto.setIncludeBase(true);
+                    }
+                    HcsaServiceDto baseServiceDto = HcsaServiceCacheHelper.getServiceById(appSvcRelatedInfoDto.getBaseServiceId());
+                    licenceFeeDto.setBaseService(baseServiceDto.getSvcCode());
+                    licenceFeeDto.setServiceCode(appSvcRelatedInfoDto.getServiceCode());
+                    licenceFeeDto.setServiceName(appSvcRelatedInfoDto.getServiceName());
+                    licenceFeeDto.setPremises(premisessTypes);
+                    if(!StringUtil.isEmpty(appSvcRelatedInfoDto.getRelLicenceNo())){
+                        licenceFeeDto.setOnlyNewSpecified(true);
+                    }else{
+                        licenceFeeDto.setIncludeBase(true);
+                    }
+                    licenceFeeDto.setCharity(isCharity);
+                    linenceFeeQuaryDtos.add(licenceFeeDto);
+                }
+            }else{
+                for(AppSvcRelatedInfoDto appSvcRelatedInfoDto:appSvcRelatedInfoDtos){
+                    if(ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(appSvcRelatedInfoDto.getServiceType())){
+                        baseServiceIds.add(appSvcRelatedInfoDto.getServiceId());
+                    }else if(ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(appSvcRelatedInfoDto.getServiceType())){
+                        for(HcsaServiceCorrelationDto hcsaServiceCorrelationDto:hcsaServiceCorrelationDtos){
+                            if(appSvcRelatedInfoDto.getServiceId().equals(hcsaServiceCorrelationDto.getSpecifiedSvcId())){
+                                baseServiceIds.add(hcsaServiceCorrelationDto.getBaseSvcId());
+                            }
+                        }
+                    }
+                }
+            }
+            log.info(StringUtil.changeForLog("base service size:"+baseServiceIds.size()));
+            if(!onlySpecifiedSvc) {
+                for (AppSvcRelatedInfoDto appSvcRelatedInfoDto : appSvcRelatedInfoDtos) {
+                    LicenceFeeDto licenceFeeDto = new LicenceFeeDto();
+                    HcsaServiceDto hcsaServiceDto = HcsaServiceCacheHelper.getServiceByCode(appSvcRelatedInfoDto.getServiceCode());
+                    if (hcsaServiceDto == null) {
+                        log.info(StringUtil.changeForLog("hcsaServiceDto is empty "));
+                        continue;
+                    }
+                    if (ApplicationConsts.SERVICE_CONFIG_TYPE_BASE.equals(hcsaServiceDto.getSvcType())) {
+                        licenceFeeDto.setBaseService(hcsaServiceDto.getSvcCode());
+                        licenceFeeDto.setIncludeBase(true);
+                    } else if (ApplicationConsts.SERVICE_CONFIG_TYPE_SUBSUMED.equals(hcsaServiceDto.getSvcType())) {
+                        for (HcsaServiceCorrelationDto hcsaServiceCorrelationDto : hcsaServiceCorrelationDtos) {
+                            if (hcsaServiceDto.getId().equals(hcsaServiceCorrelationDto.getSpecifiedSvcId())) {
+                                String baseSvcId = hcsaServiceCorrelationDto.getBaseSvcId();
+                                if (baseServiceIds.contains(baseSvcId)) {
+                                    log.info("can match base service ...");
+                                    HcsaServiceDto baseService = HcsaServiceCacheHelper.getServiceById(baseSvcId);
+                                    licenceFeeDto.setBaseService(baseService.getSvcCode());
+                                }
+                            }
+                        }
+                    }
+                    licenceFeeDto.setServiceCode(hcsaServiceDto.getSvcCode());
+                    licenceFeeDto.setServiceName(hcsaServiceDto.getSvcName());
+                    licenceFeeDto.setPremises(premisessTypes);
+                    licenceFeeDto.setCharity(isCharity);
+                    if (ApplicationConsts.APPLICATION_TYPE_RENEWAL.equals(appSubmissionDto.getAppType())) {
+                        String licenceId = appSubmissionDto.getLicenceId();
+                        Date licExpiryDate = appSubmissionDto.getLicExpiryDate();
+                        licenceFeeDto.setExpiryDate(licExpiryDate);
+                        licenceFeeDto.setLicenceId(licenceId);
+                    }
+                    linenceFeeQuaryDtos.add(licenceFeeDto);
+                }
+                log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl linenceFeeQuaryDtos.size() is -->:" + linenceFeeQuaryDtos.size()));
+            }
+        }
+        FeeDto entity ;
+        entity = appConfigClient.renewFee(linenceFeeQuaryDtos).getEntity();
+        log.debug(StringUtil.changeForLog("the AppSubmisionServiceImpl getGroupAmount end ...."));
+        return  entity;
+    }
+
     @Override
     public PreOrPostInspectionResultDto judgeIsPreInspection(AppSubmissionDto appSubmissionDto) {
         RecommendInspectionDto recommendInspectionDto = new RecommendInspectionDto();

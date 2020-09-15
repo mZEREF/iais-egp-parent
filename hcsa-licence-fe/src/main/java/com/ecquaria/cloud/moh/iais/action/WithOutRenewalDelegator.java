@@ -668,7 +668,9 @@ public class WithOutRenewalDelegator {
             }
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
         }
-        HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(laterFeeDetails);
+        FeeDto renewalAmount = appSubmissionService.getRenewalAmount(appSubmissionDtos, NewApplicationHelper.isCharity(bpc.request));
+        setSubmissionAmount(appSubmissionDtos,renewalAmount,bpc);
+        HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(renewalAmount.getDetailFeeDto());
         ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);
         requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = oldAppSubmissionDto.getAppSvcRelatedInfoDtoList();
@@ -905,11 +907,37 @@ public class WithOutRenewalDelegator {
         bpc.request.getSession().setAttribute("rfcAppSubmissionDtos", rfcAppSubmissionDtos);
         ParamUtil.setSessionAttr(bpc.request, RenewalConstants.WITHOUT_RENEWAL_APPSUBMISSION_ATTR, renewDto);
         /*    ParamUtil.setRequestAttr(bpc.request,"applicationGroupDto",applicationGroupDto);*/
-        ParamUtil.setSessionAttr(bpc.request, "totalStr", totalStr);
-        ParamUtil.setSessionAttr(bpc.request, "totalAmount", total);
         ParamUtil.setSessionAttr(bpc.request, "serviceNamesAck", (Serializable) serviceNamesAck);
         //has app submit
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", "Y");
+    }
+
+    private void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList,FeeDto feeDto,BaseProcessClass bpc){
+        List<FeeExtDto> detailFeeDtoList = feeDto.getDetailFeeDto();
+        Double total = feeDto.getTotal();
+        String totalString = Formatter.formatterMoney(total);
+        ParamUtil.setSessionAttr(bpc.request, "totalStr", totalString);
+        ParamUtil.setSessionAttr(bpc.request, "totalAmount", total);
+        if(IaisCommonUtils.isEmpty(detailFeeDtoList) || IaisCommonUtils.isEmpty(appSubmissionDtoList)){
+            return;
+        }
+        for(AppSubmissionDto appSubmissionDto : appSubmissionDtoList){
+            for(FeeExtDto feeExtDto : detailFeeDtoList){
+                String svcName = feeExtDto.getSvcNames().get(0);
+                if(StringUtil.isEmpty(svcName)){
+                    continue;
+                }else{
+                    if(svcName.equals(appSubmissionDto.getServiceName())){
+                        Double lateFeeAmoumt = feeExtDto.getLateFeeAmoumt();
+                        Double amount = feeExtDto.getAmount();
+                        appSubmissionDto.setLateFee(lateFeeAmoumt);
+                        appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFeeAmoumt));
+                        appSubmissionDto.setAmount(amount);
+                        appSubmissionDto.setAmountStr(Formatter.formatterMoney(amount));
+                    }
+                }
+            }
+        }
     }
 
     public static HashMap<String, List<FeeExtDto>> getLaterFeeDetailsMap(List<FeeExtDto> laterFeeDetails){
