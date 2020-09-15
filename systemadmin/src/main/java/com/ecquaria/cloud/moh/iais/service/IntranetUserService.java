@@ -30,7 +30,7 @@ public interface IntranetUserService {
     ClientUser getUserByIdentifier(String userId,String userDomain);
     Boolean validatepassword(String password, UserIdentifier userIdentifier);
     List<OrgUserRoleDto> assignRole(List<OrgUserRoleDto> orgUserRoleDtos);
-    void removeRole(List<String> ids);
+    void removeRole(List<OrgUserRoleDto> orgUserRoleDtos);
     void removeEgpRoles(String userDomain,String userId,List<String> roleIds);
     void addUserGroupId(List<UserGroupCorrelationDto> userGroupCorrelationDtos);
     List<UserGroupCorrelationDto> getUserGroupsByUserId(String userId);

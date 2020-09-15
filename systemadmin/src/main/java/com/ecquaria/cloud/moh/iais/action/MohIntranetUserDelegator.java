@@ -163,6 +163,7 @@ public class MohIntranetUserDelegator {
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
             return;
         }
+        orgUserDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         intranetUserService.createIntranetUser(orgUserDto);
         saveEgpUser(orgUserDto);
         ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
@@ -209,6 +210,7 @@ public class MohIntranetUserDelegator {
             ParamUtil.setSessionAttr(bpc.request, IntranetUserConstant.INTRANET_USER_DTO_ATTR, orgUserDto);
             return;
         }
+        orgUserDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
         intranetUserService.updateOrgUser(orgUserDto);
         editEgpUser(orgUserDto);
         List<AuditTrailDto> trailDtoList = IaisCommonUtils.genNewArrayList(1);
@@ -234,6 +236,7 @@ public class MohIntranetUserDelegator {
         ClientUser clientUser = intranetUserService.getUserByIdentifier(userId, AppConsts.HALP_EGP_DOMAIN);
         if (clientUser != null && clientUser.isFirstTimeLoginNo()) {
             orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DELETED);
+            orgUserDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
             intranetUserService.updateOrgUser(orgUserDto);
             deleteEgpUser(userId);
         } else {
@@ -354,6 +357,7 @@ public class MohIntranetUserDelegator {
     }
 
     public void addRole(BaseProcessClass bpc) {
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         String actionType = ParamUtil.getString(bpc.request, "crud_action_type");
         if ("back".equals(actionType)) {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
@@ -480,12 +484,13 @@ public class MohIntranetUserDelegator {
         }
         if (assignRoles != null) {
             List<OrgUserRoleDto> orgUserRoleDtos = IaisCommonUtils.genNewArrayList();
-            List<EgpUserRoleDto> EgpUserRoleDtos = IaisCommonUtils.genNewArrayList();
+            List<EgpUserRoleDto> egpUserRoleDtos = IaisCommonUtils.genNewArrayList();
             for (String roleId : assignRoles) {
                 OrgUserRoleDto orgUserRoleDto = new OrgUserRoleDto();
                 orgUserRoleDto.setUserAccId(userAccId);
                 orgUserRoleDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 orgUserRoleDto.setRoleName(roleId);
+                orgUserRoleDto.setAuditTrailDto(IaisEGPHelper.getCurrentAuditTrailDto());
                 orgUserRoleDtos.add(orgUserRoleDto);
                 EgpUserRoleDto egpUserRoleDto = new EgpUserRoleDto();
                 egpUserRoleDto.setUserId(orgUserDto.getUserId());
@@ -493,10 +498,10 @@ public class MohIntranetUserDelegator {
                 egpUserRoleDto.setRoleId(roleId);
                 egpUserRoleDto.setPermission("A");
                 //egpUserRoleDto.isSystem()
-                EgpUserRoleDtos.add(egpUserRoleDto);
+                egpUserRoleDtos.add(egpUserRoleDto);
             }
             intranetUserService.assignRole(orgUserRoleDtos);
-            intranetUserService.createEgpRoles(EgpUserRoleDtos);
+            intranetUserService.createEgpRoles(egpUserRoleDtos);
 
             //add group
             List<UserGroupCorrelationDto> userGroupCorrelationDtos = IaisCommonUtils.genNewArrayList();
@@ -506,6 +511,7 @@ public class MohIntranetUserDelegator {
                 userGroupCorrelationDto.setStatus(AppConsts.COMMON_STATUS_ACTIVE);
                 userGroupCorrelationDto.setGroupId(groupId);
                 userGroupCorrelationDto.setIsLeadForGroup(0);
+                userGroupCorrelationDto.setAuditTrailDto(auditTrailDto);
                 userGroupCorrelationDtos.add(userGroupCorrelationDto);
             }
             intranetUserService.addUserGroupId(userGroupCorrelationDtos);
@@ -516,15 +522,16 @@ public class MohIntranetUserDelegator {
                 removeRoleIds.add(removeRole);
             }
             List<String> removeRoleNames = IaisCommonUtils.genNewArrayList();
-            List<OrgUserRoleDto> orgUserRoleDtoById = intranetUserService.getOrgUserRoleDtoById(removeRoleIds);
-            if (!IaisCommonUtils.isEmpty(orgUserRoleDtoById)) {
-                for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtoById) {
+            List<OrgUserRoleDto> orgUserRoleDtos = intranetUserService.getOrgUserRoleDtoById(removeRoleIds);
+            if (!IaisCommonUtils.isEmpty(orgUserRoleDtos)) {
+                for (OrgUserRoleDto orgUserRoleDto : orgUserRoleDtos) {
+                    orgUserRoleDto.setAuditTrailDto(auditTrailDto);
                     String roleName = orgUserRoleDto.getRoleName();
                     //AO1
                     removeRoleNames.add(roleName);
                 }
             }
-            intranetUserService.removeRole(removeRoleIds);
+            intranetUserService.removeRole(orgUserRoleDtos);
             intranetUserService.removeEgpRoles(AppConsts.HALP_EGP_DOMAIN, orgUserDto.getUserId(), removeRoleNames);
 
             //remove group
@@ -546,6 +553,7 @@ public class MohIntranetUserDelegator {
     }
 
     public void prepareImportAck(BaseProcessClass bpc) {
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         List<OrgUserDto> orgUserDtos = (List<OrgUserDto>) ParamUtil.getSessionAttr(bpc.request, "orgUserDtos");
         //do valiant
         List<OrgUserUpLoadDto> orgUserUpLoadDtos = IaisCommonUtils.genNewArrayList();
@@ -578,6 +586,7 @@ public class MohIntranetUserDelegator {
         List<OrgUserDto> existUsersNew = IaisCommonUtils.genNewArrayList();
         List<OrgUserDto> existUsersOld = IaisCommonUtils.genNewArrayList();
         for (OrgUserDto orgUserDto : orgUserDtos) {
+            orgUserDto.setAuditTrailDto(auditTrailDto);
             String userId = orgUserDto.getUserId();
             if (!StringUtil.isEmpty(userId)) {
                 OrgUserDto intranetUserByUserId = intranetUserService.findIntranetUserByUserId(userId);
@@ -695,6 +704,7 @@ public class MohIntranetUserDelegator {
     }
 
     public void importSubmit(BaseProcessClass bpc) {
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         List<OrgUserDto> orgUserDtos = (List<OrgUserDto>) ParamUtil.getSessionAttr(bpc.request, "orgUserDtos");
         List<OrgUserDto> orgUserDtosNew = IaisCommonUtils.genNewArrayList();
         List<OrgUserDto> orgUserDtosOld = IaisCommonUtils.genNewArrayList();
@@ -721,6 +731,8 @@ public class MohIntranetUserDelegator {
             for (OrgUserDto orgUserDto : orgUserDtos) {
                 String userId = orgUserDto.getUserId();
                 OrgUserDto oldOrgUserDto = intranetUserService.findIntranetUserByUserId(userId);
+                orgUserDto.setAuditTrailDto(auditTrailDto);
+                oldOrgUserDto.setAuditTrailDto(auditTrailDto);
                 if (oldOrgUserDto != null) {
                     String id = oldOrgUserDto.getId();
                     orgUserDto.setId(id);
@@ -737,6 +749,7 @@ public class MohIntranetUserDelegator {
             //update
             if (!IaisCommonUtils.isEmpty(orgUserDtosOld)) {
                 for (OrgUserDto orgUserDto : orgUserDtos) {
+                    orgUserDto.setAuditTrailDto(auditTrailDto);
                     intranetUserService.updateOrgUser(orgUserDto);
                     editEgpUser(orgUserDto);
                 }
@@ -788,6 +801,7 @@ public class MohIntranetUserDelegator {
             ParamUtil.setRequestAttr(bpc.request, IntranetUserConstant.ISVALID, IntranetUserConstant.TRUE);
             return;
         }
+        AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
         String userDomain = "intranet";
         OrgUserDto orgUserDto;
         ClientUser clientUser;
@@ -808,6 +822,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.DEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_DEACTIVATED.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_DEACTIVATED);
+                    orgUserDto.setAuditTrailDto(auditTrailDto);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_INACTIVE);
                     intranetUserService.updateEgpUser(clientUser);
@@ -820,6 +835,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.REDEACTIVATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                    orgUserDto.setAuditTrailDto(auditTrailDto);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
                     intranetUserService.updateEgpUser(clientUser);
@@ -832,6 +848,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.TERMINATE.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_TERMINATED);
+                    orgUserDto.setAuditTrailDto(auditTrailDto);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_TERMINATED);
                     intranetUserService.updateEgpUser(clientUser);
@@ -844,6 +861,7 @@ public class MohIntranetUserDelegator {
                     return;
                 } else if (IntranetUserConstant.UNLOCK.equals(actionType) && !IntranetUserConstant.COMMON_STATUS_ACTIVE.equals(status) && !IntranetUserConstant.COMMON_STATUS_TERMINATED.equals(status)) {
                     orgUserDto.setStatus(IntranetUserConstant.COMMON_STATUS_ACTIVE);
+                    orgUserDto.setAuditTrailDto(auditTrailDto);
                     intranetUserService.updateOrgUser(orgUserDto);
                     clientUser.setAccountStatus(ClientUser.STATUS_ACTIVE);
                     intranetUserService.updateEgpUser(clientUser);
