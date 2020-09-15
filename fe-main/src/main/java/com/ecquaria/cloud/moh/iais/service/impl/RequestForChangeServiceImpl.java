@@ -60,7 +60,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
-    public SearchResult<PremisesListQueryDto> searchPreInfo(SearchParam searchParam) {
+    public SearchResult<SelfPremisesListQueryDto> searchPreInfo(SearchParam searchParam) {
         return licenceClient.searchResultPremises(searchParam).getEntity();
     }
 

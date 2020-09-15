@@ -91,7 +91,7 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     }
 
     @Override
-    public FeignResponseEntity<SearchResult<PremisesListQueryDto>> searchResultPremises(SearchParam searchParam) {
+    public FeignResponseEntity<SearchResult<SelfPremisesListQueryDto>> searchResultPremises(SearchParam searchParam) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);

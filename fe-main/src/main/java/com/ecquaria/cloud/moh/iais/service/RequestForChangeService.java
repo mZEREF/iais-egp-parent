@@ -23,7 +23,7 @@ public interface RequestForChangeService {
 
     String getApplicationGroupNumber(String appType);
 
-    SearchResult<PremisesListQueryDto> searchPreInfo(SearchParam searchParam);
+    SearchResult<SelfPremisesListQueryDto> searchPreInfo(SearchParam searchParam);
 
     SearchResult<PersonnelQueryDto> searchPsnInfo(SearchParam searchParam);
 

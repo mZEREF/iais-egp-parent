@@ -194,15 +194,12 @@
                           else ', '+p.POSTAL_CODE end ))
 	               as address,p.ORGANIZATION_ID FROM
                    licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
-                   join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1
-                   <#if licenseeId??> and li.LICENSEE_ID =:licenseeId </#if>
-                   <#if type??> and p.PREMISES_TYPE=:type </#if> and
+                   join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1 <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>
+                    and p.PREMISES_TYPE in ('ONSITE','OFFSITE','CONVEYANCE') and
                    li.STATUS ='LICEST001' and p.ID in (
-                   SELECT  max (p.ID) as PREMISES_ID FROM
-                   licence as li  join lic_premises lp on li.ID = lp.LICENCE_ID
-                   join premises p on lp.PREMISES_ID = p.ID WHERE 1 = 1
-                  <#if licenseeId??>   and li.LICENSEE_ID =:licenseeId </#if>and
-                   li.STATUS ='LICEST001' group by p.HCI_CODE)
+                           SELECT MAX(li.PREMISES_ID)  FROM
+                   lic_premises as li WHERE li.LICENCE_ID in
+                   (SELECT b.ID FROM licence as b WHERE b.STATUS='LICEST001' <#if licenseeId??>   and b.LICENSEE_ID =:licenseeId </#if>) GROUP by li.LICENCE_ID)
             ]]>
     </sql>
     <sql key = "appPersonnelQuery" remarks = "Query Application Data by condition">
