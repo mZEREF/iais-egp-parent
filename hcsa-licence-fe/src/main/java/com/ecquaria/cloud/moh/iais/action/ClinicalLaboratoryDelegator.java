@@ -1624,23 +1624,29 @@ public class ClinicalLaboratoryDelegator {
     }
 
     private static void doValidatetionServicePerson(Map<String, String> errorMap, List<AppSvcPersonnelDto> appSvcPersonnelDtos, String svcCode) {
+        String errName = MessageUtil.replaceMessage("GENERAL_ERR0006","Name","field");
+        String errDesignation = MessageUtil.replaceMessage("GENERAL_ERR0006","Designation","field");
+        String errRegnNo = MessageUtil.replaceMessage("GENERAL_ERR0006","Professional Regn No.","field");
+        String errWrkExpYear = MessageUtil.replaceMessage("GENERAL_ERR0006","Relevant working experience (Years)","field");
+        String errQualification = MessageUtil.replaceMessage("GENERAL_ERR0006","Qualification","field");
+        String errSelSvcPsnel = MessageUtil.replaceMessage("GENERAL_ERR0006","Select Service Personnel","field");
         for (int i = 0; i < appSvcPersonnelDtos.size(); i++) {
             if (AppServicesConsts.SERVICE_CODE_BLOOD_BANKING.equals(svcCode)) {
                 String designation = appSvcPersonnelDtos.get(i).getDesignation();
                 if (StringUtil.isEmpty(designation)) {
-                    errorMap.put("designation" + i, "UC_CHKLMD001_ERR001");
+                    errorMap.put("designation" + i, errDesignation);
                 }
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
-                    errorMap.put("name" + i, "UC_CHKLMD001_ERR001");
+                    errorMap.put("name" + i, errName);
                 }
                 String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
                 if (StringUtil.isEmpty(profRegNo)) {
-                    errorMap.put("regnNo" + i, "UC_CHKLMD001_ERR001");
+                    errorMap.put("regnNo" + i, errRegnNo);
                 }
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                 if (StringUtil.isEmpty(wrkExpYear)) {
-                    errorMap.put("wrkExpYear" + i, "UC_CHKLMD001_ERR001");
+                    errorMap.put("wrkExpYear" + i, errWrkExpYear);
                 } else {
                     if (!wrkExpYear.matches("^[0-9]*$")) {
                         errorMap.put("wrkExpYear" + i, "CHKLMD001_ERR003");
@@ -1649,15 +1655,15 @@ public class ClinicalLaboratoryDelegator {
             } else if (AppServicesConsts.SERVICE_CODE_TISSUE_BANKING.equals(svcCode)) {
                 String name = appSvcPersonnelDtos.get(i).getName();
                 if (StringUtil.isEmpty(name)) {
-                    errorMap.put("name" + i, "UC_CHKLMD001_ERR001");
+                    errorMap.put("name" + i, errName);
                 }
                 String quaification = appSvcPersonnelDtos.get(i).getQualification();
                 if (StringUtil.isEmpty(quaification)) {
-                    errorMap.put("qualification" + i, "UC_CHKLMD001_ERR001");
+                    errorMap.put("qualification" + i, errQualification);
                 }
                 String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                 if (StringUtil.isEmpty(wrkExpYear)) {
-                    errorMap.put("wrkExpYear" + i, "UC_CHKLMD001_ERR001");
+                    errorMap.put("wrkExpYear" + i, errWrkExpYear);
                 } else {
                     if (!wrkExpYear.matches("^[0-9]*$")) {
                         errorMap.put("wrkExpYear" + i, "CHKLMD001_ERR003");
@@ -1666,17 +1672,17 @@ public class ClinicalLaboratoryDelegator {
             } else {
                 String personnelSel = appSvcPersonnelDtos.get(i).getPersonnelType();
                 if (StringUtils.isEmpty(personnelSel)) {
-                    errorMap.put("personnelSelErrorMsg" + i, "UC_CHKLMD001_ERR001");
+                    errorMap.put("personnelSelErrorMsg" + i, errSelSvcPsnel);
                 }
 
                 if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_REGISTERED_NURSE.equals(personnelSel)) {
                     String profRegNo = appSvcPersonnelDtos.get(i).getProfRegNo();
                     String name = appSvcPersonnelDtos.get(i).getName();
                     if (StringUtil.isEmpty(name)) {
-                        errorMap.put("name" + i, "UC_CHKLMD001_ERR001");
+                        errorMap.put("name" + i, errName);
                     }
                     if (StringUtil.isEmpty(profRegNo)) {
-                        errorMap.put("regnNo" + i, "UC_CHKLMD001_ERR001");
+                        errorMap.put("regnNo" + i, errRegnNo);
                     }
                 }
                 if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIOLOGY_PROFESSIONAL.equals(personnelSel)) {
@@ -1686,20 +1692,20 @@ public class ClinicalLaboratoryDelegator {
                     String qualification = appSvcPersonnelDtos.get(i).getQualification();
 
                     if (StringUtil.isEmpty(name)) {
-                        errorMap.put("name" + i, "UC_CHKLMD001_ERR001");
+                        errorMap.put("name" + i, errName);
                     }
                     if (StringUtil.isEmpty(designation)) {
-                        errorMap.put("designation" + i, "UC_CHKLMD001_ERR001");
+                        errorMap.put("designation" + i, errDesignation);
                     }
                     if (StringUtil.isEmpty(wrkExpYear)) {
-                        errorMap.put("wrkExpYear" + i, "UC_CHKLMD001_ERR001");
+                        errorMap.put("wrkExpYear" + i, errWrkExpYear);
                     } else {
                         if (!wrkExpYear.matches("^[0-9]*$")) {
                             errorMap.put("wrkExpYear" + i, "CHKLMD001_ERR003");
                         }
                     }
                     if (StringUtil.isEmpty(qualification)) {
-                        errorMap.put("qualification" + i, "UC_CHKLMD001_ERR001");
+                        errorMap.put("qualification" + i, errQualification);
                     }
                 }
 
@@ -1708,23 +1714,23 @@ public class ClinicalLaboratoryDelegator {
                     String wrkExpYear = appSvcPersonnelDtos.get(i).getWrkExpYear();
                     String quaification = appSvcPersonnelDtos.get(i).getQualification();
                     if (StringUtil.isEmpty(name)) {
-                        errorMap.put("name" + i, "UC_CHKLMD001_ERR001");
+                        errorMap.put("name" + i, errName);
                     }
                     if (StringUtil.isEmpty(wrkExpYear)) {
-                        errorMap.put("wrkExpYear" + i, "UC_CHKLMD001_ERR001");
+                        errorMap.put("wrkExpYear" + i, errWrkExpYear);
                     } else {
                         if (!wrkExpYear.matches("^[0-9]*$")) {
                             errorMap.put("wrkExpYear" + i, "CHKLMD001_ERR003");
                         }
                     }
                     if (StringUtil.isEmpty(quaification)) {
-                        errorMap.put("qualification" + i, "UC_CHKLMD001_ERR001");
+                        errorMap.put("qualification" + i, errQualification);
                     }
                 }
                 if (ApplicationConsts.SERVICE_PERSONNEL_PSN_TYPE_RADIATION_SAFETY_OFFICER.equals(personnelSel)) {
                     String name = appSvcPersonnelDtos.get(i).getName();
                     if (StringUtil.isEmpty(name)) {
-                        errorMap.put("name" + i, "UC_CHKLMD001_ERR001");
+                        errorMap.put("name" + i, errName);
                     }
                 }
             }
