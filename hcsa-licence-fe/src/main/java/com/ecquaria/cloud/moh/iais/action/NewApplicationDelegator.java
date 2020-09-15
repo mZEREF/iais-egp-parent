@@ -1430,7 +1430,7 @@ public class NewApplicationDelegator {
                     appSubmissionDto.setAppGrpPremisesDtoList(newPremisesDtos);
                     String svcId = applicationDto.getServiceId();
                     List<AppGrpPrimaryDocDto> appGrpPrimaryDocDtos = appSubmissionDto.getAppGrpPrimaryDocDtos();
-                    if(!StringUtil.isEmpty(svcId) && !IaisCommonUtils.isEmpty(appGrpPrimaryDocDtos)){
+                    if(!StringUtil.isEmpty(svcId)){
                         List<AppSvcRelatedInfoDto> appSvcRelatedInfoDtos = appSubmissionDto.getAppSvcRelatedInfoDtoList();
                         List<AppSvcRelatedInfoDto> newSvcRelatedInfoDtos = IaisCommonUtils.genNewArrayList();
                         List<HcsaSvcDocConfigDto> primaryDocConfig = serviceConfigService.getAllHcsaSvcDocs(null);
