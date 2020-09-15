@@ -1474,11 +1474,11 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         try {
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_003_APPROVED_PAYMENT_MSG);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(appSubmissionDto.getApplicationDtos().get(0).getServiceId()).getEntity();
+            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(appSubmissionDto.getServiceName())).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
-            svcCode.add(svcDto.getSvcCode());
+            svcCode.add(svcDto.get(0).getSvcCode());
             emailParam.setSvcCodeList(svcCode);
-            emailParam.setRefId(appSubmissionDto.getApplicationDtos().get(0).getApplicationNo());
+            emailParam.setRefId(appSubmissionDto.getLicenceId());
             notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.info(e.getMessage(),e);
@@ -1529,12 +1529,12 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         //msg
         try {
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_001_SUBMIT_MSG);
-            HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(appSubmissionDto.getApplicationDtos().get(0).getServiceId()).getEntity();
+            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(appSubmissionDto.getServiceName())).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
-            svcCode.add(svcDto.getSvcCode());
+            svcCode.add(svcDto.get(0).getSvcCode());
             emailParam.setSvcCodeList(svcCode);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            emailParam.setRefId(appSubmissionDto.getApplicationDtos().get(0).getApplicationNo());
+            emailParam.setRefId(appSubmissionDto.getLicenceId());
             notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.info(e.getMessage(),e);
@@ -1581,13 +1581,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         notificationHelper.sendNotification(emailParam);
         //msg
         try {
-            HcsaServiceDto svcDto = appConfigClient.getHcsaServiceDtoByServiceId(appSubmissionDto.getApplicationDtos().get(0).getServiceId()).getEntity();
+            List<HcsaServiceDto> svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(appSubmissionDto.getServiceName())).getEntity();
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
-            svcCode.add(svcDto.getSvcCode());
+            svcCode.add(svcDto.get(0).getSvcCode());
             emailParam.setSvcCodeList(svcCode);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_007_LICENSEE_APPROVED_MSG);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            emailParam.setRefId(appSubmissionDto.getApplicationDtos().get(0).getApplicationNo());
+            emailParam.setRefId(appSubmissionDto.getLicenceId());
             notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.info(e.getMessage(),e);
@@ -1633,14 +1633,13 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
         notificationHelper.sendNotification(emailParam);
         //msg
         try {
-            LicenceDto licenceDto= licenceClient.getLicBylicNo(appSubmissionDto.getLicenceNo()).getEntity();
-            HcsaServiceDto svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(licenceDto.getSvcName())).getEntity().get(0);
+            HcsaServiceDto svcDto = appConfigClient.getHcsaServiceByNames(Collections.singletonList(appSubmissionDto.getServiceName())).getEntity().get(0);
             List<String> svcCode=IaisCommonUtils.genNewArrayList();
             svcCode.add(svcDto.getSvcCode());
             emailParam.setSvcCodeList(svcCode);
             emailParam.setTemplateId(MsgTemplateConstants.MSG_TEMPLATE_EN_RFC_008_SUBMIT_OFFICER_MSG);
             emailParam.setRefIdType(NotificationHelper.MESSAGE_TYPE_NOTIFICATION);
-            emailParam.setRefId(licenceDto.getId());
+            emailParam.setRefId(appSubmissionDto.getLicenceId());
             notificationHelper.sendNotification(emailParam);
         }catch (Exception e){
             log.info(e.getMessage(),e);
