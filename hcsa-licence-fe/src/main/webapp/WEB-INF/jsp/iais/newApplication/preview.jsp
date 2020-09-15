@@ -155,7 +155,6 @@
             submit('preview','saveDraft',null);
         });
         $('#Next').click(function(){
-            showWaiting();
             var canSubmit = true;
             let jQuery = $('#verifyInfoCheckbox').prop("checked");
             var charityHci  = $('#charityHci').prop('checked');
@@ -165,16 +164,20 @@
             }else{
                 $('#error_fieldMandatory').html("");
             }
-            if(!charityHci){
-                $('#error_charityHci').html("The field is mandatory");
-                canSubmit = false;
-            }else{
-                $('#error_charityHci').html("");
-            }
+            <c:if test="${requestInformationConfig == null && 'APTY002' ==AppSubmissionDto.appType && isCharity}">
+                if(!charityHci){
+                    $('#error_charityHci').html("The field is mandatory");
+                    canSubmit = false;
+                }else{
+                    $('#error_charityHci').html("");
+                }
+            </c:if>
             if(canSubmit) {
+                showWaiting();
                 submit('payment','doSubmit',null);
+            }else{
+                dismissWaiting();
             }
-            dismissWaiting();
         });
 
         $('.doSvcEdit').click(function () {

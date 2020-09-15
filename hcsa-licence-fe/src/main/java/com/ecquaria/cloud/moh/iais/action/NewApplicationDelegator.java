@@ -1107,7 +1107,8 @@ public class NewApplicationDelegator {
             appSubmissionDto.setUserAgreement(false);
         }
         Object requestInformationConfig = ParamUtil.getSessionAttr(bpc.request, REQUESTINFORMATIONCONFIG);
-        if(requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
+        boolean isCharity = NewApplicationHelper.isCharity(bpc.request);
+        if(isCharity && requestInformationConfig == null && ApplicationConsts.APPLICATION_TYPE_NEW_APPLICATION.equals(appSubmissionDto.getAppType())){
             String charityHci = ParamUtil.getString(bpc.request,"charityHci");
             if(!StringUtil.isEmpty(charityHci)){
                 appSubmissionDto.setCharityHci(true);
