@@ -60,7 +60,7 @@
         });
 
         $('#licContinue').click(function () {
-            if( $('#draftsave').val()!=null|| $('#draftsave').val()!=''){
+            if( $('#draftsave').val()!=null|| $('#draftsave').val()!==''){
                 $('#saveDraft').modal('show');
             }else {
                 submit(null,'next','next');

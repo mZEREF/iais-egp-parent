@@ -30,7 +30,7 @@
     <JavaCode defClass="" executor="" methodName="doCreateRequest_OnStepProcess_0" name="doCreateRequest_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doCancel" x="1540" y="730">
+  <AutomaticStep defClass="" executor="" icon="" name="doCancel" x="1620" y="730">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -97,7 +97,7 @@
    <position>{(1700,480)(1560,520)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCancel" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch5" style="oblique">
-   <position>{(1930,750)(1560,750)}</position>
+   <position>{(1930,750)(1640,750)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/preReqForInfo" linkstyle="Direct" name="" sourceName="/Merges/Merge/Merge2" style="oblique">
    <position>{(1560,520)(1450,440)}</position>
@@ -120,8 +120,8 @@
   <SynchronousLink destinationName="/Pages/WebPage/ViewRFI" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/preViewRfi" style="oblique">
    <position>{(1920,480)(1930,630)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCancel" style="oblique">
-   <position>{(1560,750)(1560,520)}</position>
+  <SynchronousLink destinationName="/Conditions/Condition/Cond1" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doCancel" style="oblique">
+   <position>{(1640,750)(1650,640)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch5" style="rectanular">
    <position>{(1930,750)(1560,520)}</position>
