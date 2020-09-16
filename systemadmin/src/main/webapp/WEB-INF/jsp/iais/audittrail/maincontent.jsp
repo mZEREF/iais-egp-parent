@@ -123,7 +123,7 @@
                         <thead>
                         <tr>
                             <iais:sortableHeader needSort="false" field="" value="No."></iais:sortableHeader>
-                            <iais:sortableHeader needSort="true" field="operation"
+                            <iais:sortableHeader needSort="true" field="operation_desc"
                                                  value="Operation"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="domain"
                                                  value="Operation Type"></iais:sortableHeader>
@@ -165,7 +165,7 @@
                                                  value="Function / Use Case"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="programme_name"
                                                  value="Program Name"></iais:sortableHeader>
-                            <iais:sortableHeader needSort="true" field="operation"
+                            <iais:sortableHeader needSort="true" field="operation_desc"
                                                  value="Data Activities"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="moh_user_id"
                                                  value="Created by"></iais:sortableHeader>
