@@ -246,8 +246,6 @@ public final class IaisEGPHelper extends EGPHelper {
                }
                dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
            }
-
-           dto.setLoginTime(new Date());
            dto.setSessionId(session.getId());
            dto.setClientIp(MiscUtil.getClientIp(request));
            dto.setUserAgent(AccessUtil.getBrowserInfo(request));
@@ -255,7 +253,8 @@ public final class IaisEGPHelper extends EGPHelper {
            dto.setOperationType(AuditTrailConsts.OPERATION_TYPE_BATCH_JOB);
        }
 
-
+        RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
+        redisCacheHelper.set("Login audit trail", dto);
 
         // TODO Remove the log later because it consumes performance
         log.info(StringUtil.changeForLog("current audit trail info" + JsonUtil.parseToJson(dto)));
