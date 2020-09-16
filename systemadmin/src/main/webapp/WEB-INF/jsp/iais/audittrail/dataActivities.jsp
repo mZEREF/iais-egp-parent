@@ -50,6 +50,7 @@
 
 <input hidden id="hbeforeValue" value="<c:out value="${viewAuditActionData.beforeAction}"/>"/>
 <input hidden id="hafterValue" value="<c:out value="${viewAuditActionData.afterAction}"/>"/>
+<%@include file="/WEB-INF/jsp/include/utils.jsp"%>
 <script>
     $(document).ready(function() {
         let hbeforeValue = $("#hbeforeValue").val()
