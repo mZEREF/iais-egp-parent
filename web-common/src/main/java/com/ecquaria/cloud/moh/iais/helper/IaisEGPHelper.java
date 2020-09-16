@@ -254,7 +254,7 @@ public final class IaisEGPHelper extends EGPHelper {
        }
 
         RedisCacheHelper redisCacheHelper = SpringContextHelper.getContext().getBean(RedisCacheHelper.class);
-        redisCacheHelper.set("Login audit trail", dto);
+        redisCacheHelper.set("Login_audit_trail_Attr", dto);
 
         // TODO Remove the log later because it consumes performance
         log.info(StringUtil.changeForLog("current audit trail info" + JsonUtil.parseToJson(dto)));
