@@ -29,6 +29,7 @@
         <input type="hidden" name="crud_action_deactivate" value="">
         <input type="hidden" id="maskUserId" name="maskUserId" value="">
         <input type="hidden" id="importUserSelect" name="importUserSelect" value="">
+        <input type="hidden" id="userFileSize" name="userFileSize" value="${userFileSize}">
         <div class="row">
             <div class="col-lg-12 col-xs-12">
                 <div class="center-content">
@@ -98,14 +99,31 @@
         }
     }
 
-    function doImport() {
-        const file = document.getElementById("inputFile").value;
-        const ext = file.slice(file.lastIndexOf(".") + 1).toLowerCase();
-        if ("xml" != ext) {
-            alert("please import .xml");
-            return false;
+    function doExportRole() {
+        if ($("input[type='checkbox']").is(':checked')) {
+            $('#exportError').hide();
+            submitUser('doExportRole');
         } else {
-             submitUser('doImport');
+            $('#exportError').show();
+        }
+    }
+
+    function doImport() {
+        showWaiting();
+        const userFileSize = $("#userFileSize").val();
+        const error = validateUploadSizeMaxOrEmpty(userFileSize, "inputFile");
+        if (error == "N"){
+            $('#error_userUploadFile').html('The file has exceeded the maximum upload size of '+ userFileSize + 'M.');
+            dismissWaiting();
+        } else {
+            const file = $("#inputFile").get(0).files[0];
+            const ext = file.slice(file.lastIndexOf(".") + 1).toLowerCase();
+            if ("xml" != ext) {
+                $('#error_userUploadFile').html('Only files with the following extensions are allowed: XML. Please re-upload the file.');
+                dismissWaiting();
+            } else {
+                submitUser('doImport');
+            }
         }
     }
 

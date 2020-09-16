@@ -149,11 +149,14 @@
                     <a class="btn btn-primary" onclick="doCreate()">Create</a>
                     <a class="btn btn-primary" onclick="doStatus()">Change</a>
                     <a class="btn btn-primary" onclick="doExport()">Export</a>
-                    <input type="file" id="inputFile" name="xmlFile" style="display:none"
-                           onchange="javascript:doImport();"/>
-                    <input type="button" class="btn btn-primary" onclick="document.getElementById('inputFile').click()"
-                           value="Import"/>
+                    <input type="file" id="inputFile" name="xmlFile" style="display:none" onchange="javascript:doImport();"/>
+                    <input type="button" class="btn btn-primary" onclick="document.getElementById('inputFile').click()" value="Import"/>
+                    <a class="btn btn-primary" onclick="doExportRole()">Export Role</a>
+                    <input class="selectedFile premDoc" id="userRoleUpload" name = "userRoleUpload" type="file" onchange="javascript:doUserRoleUploadFile()" style="display: none;" aria-label="selectedFile1"/>
+                    <button type="button" class="btn btn-file-upload btn-primary" onclick="javascript:doUserRoleUploadDo()">Import Role</button>
                 </div>
+                <p></p>
+                <div class="text-right"><span class="error-msg" name="iaisErrorMsg" id="error_userUploadFile"></span></div>
             </iais:action>
         </div>
     </div>
@@ -161,6 +164,31 @@
 
 </div>
 <script>
+    function doUserRoleUploadDo() {
+        showWaiting();
+        $("#userRoleUpload").trigger('click');
+        dismissWaiting();
+    }
+
+    function doUserRoleUploadFile() {
+        showWaiting();
+        const userFileSize = $("#userFileSize").val();
+        const error = validateUploadSizeMaxOrEmpty(userFileSize, "userRoleUpload");
+        if (error == "N"){
+            $('#error_userUploadFile').html('The file has exceeded the maximum upload size of '+ userFileSize + 'M.');
+            dismissWaiting();
+        } else {
+            const file = $("#userRoleUpload").get(0).files[0];
+            const ext = file.slice(file.lastIndexOf(".") + 1).toLowerCase();
+            if ("xml" != ext) {
+                $('#error_userUploadFile').html('Only files with the following extensions are allowed: XML. Please re-upload the file.');
+                dismissWaiting();
+            } else {
+                submitUser('importUserRole');
+            }
+        }
+    }
+
     function checkAll() {
         if ($('#checkboxAll').is(':checked')) {
             $("input[name='userUid']").attr("checked", "true");
