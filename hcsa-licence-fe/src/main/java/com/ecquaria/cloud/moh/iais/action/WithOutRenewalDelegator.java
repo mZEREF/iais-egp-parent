@@ -639,39 +639,39 @@ public class WithOutRenewalDelegator {
             }
             String licenceId = appSubmissionDto.getLicenceId();
             renewLicIds.add(licenceId);
-            FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto,NewApplicationHelper.isCharity(bpc.request));
+            //FeeDto feeDto = appSubmissionService.getGroupAmount(appSubmissionDto,NewApplicationHelper.isCharity(bpc.request));
             appSubmissionDto.setLicenseeId(licenseeId);
             //set fee detail
-            List<FeeExtDto> detailFeeDtos = feeDto.getDetailFeeDto();
-            Double lateFee = 0.0;
-            if (!IaisCommonUtils.isEmpty(detailFeeDtos)) {
-                appSubmissionDto.setDetailFeeDto(detailFeeDtos.get(0));
-                laterFeeDetails.add(detailFeeDtos.get(0));
-                for (FeeExtDto feeExtDto : detailFeeDtos) {
-                    Double lateFeeAmoumt = feeExtDto.getLateFeeAmoumt();
-                    if (lateFeeAmoumt != null) {
-                        lateFee += lateFeeAmoumt;
-                    }
-                }
-            } else {
-                log.error(StringUtil.changeForLog("feeDto detailFeeDtos null"));
-            }
-            Double amount = feeDto.getTotal();
+            //List<FeeExtDto> detailFeeDtos = feeDto.getDetailFeeDto();
+//            Double lateFee = 0.0;
+//            if (!IaisCommonUtils.isEmpty(detailFeeDtos)) {
+//                appSubmissionDto.setDetailFeeDto(detailFeeDtos.get(0));
+//                laterFeeDetails.add(detailFeeDtos.get(0));
+//                for (FeeExtDto feeExtDto : detailFeeDtos) {
+//                    Double lateFeeAmoumt = feeExtDto.getLateFeeAmoumt();
+//                    if (lateFeeAmoumt != null) {
+//                        lateFee += lateFeeAmoumt;
+//                    }
+//                }
+//            } else {
+//                log.error(StringUtil.changeForLog("feeDto detailFeeDtos null"));
+//            }
+            //Double amount = feeDto.getTotal();
             appFeeDetailsDto.setAdmentFee(0.0);
-            appFeeDetailsDto.setLaterFee(lateFee);
-            appFeeDetailsDto.setBaseFee(amount - lateFee);
-            appSubmissionDto.setLateFee(lateFee);
-            appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFee));
-            if (!StringUtil.isEmpty(amount)) {
-                total += amount;
-                appSubmissionDto.setAmount(amount - lateFee);
-                String amountStr = Formatter.formatterMoney(amount - lateFee);
-                appSubmissionDto.setAmountStr(amountStr);
-            }
+            //appFeeDetailsDto.setLaterFee(lateFee);
+            //appFeeDetailsDto.setBaseFee(amount - lateFee);
+            //appSubmissionDto.setLateFee(lateFee);
+            //appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFee));
+//            if (!StringUtil.isEmpty(amount)) {
+//                total += amount;
+//                appSubmissionDto.setAmount(amount - lateFee);
+//                String amountStr = Formatter.formatterMoney(amount - lateFee);
+//                appSubmissionDto.setAmountStr(amountStr);
+//            }
             requestForChangeService.premisesDocToSvcDoc(appSubmissionDto);
         }
         FeeDto renewalAmount = appSubmissionService.getRenewalAmount(appSubmissionDtos, NewApplicationHelper.isCharity(bpc.request));
-        setSubmissionAmount(appSubmissionDtos,renewalAmount,bpc);
+        setSubmissionAmount(appSubmissionDtos,renewalAmount,appFeeDetailsDto,bpc);
         HashMap<String, List<FeeExtDto>> laterFeeDetailsMap = getLaterFeeDetailsMap(renewalAmount.getDetailFeeDto());
         ParamUtil.setRequestAttr(bpc.request, "laterFeeDetailsMap", laterFeeDetailsMap);
         requestForChangeService.premisesDocToSvcDoc(oldAppSubmissionDto);
@@ -914,7 +914,7 @@ public class WithOutRenewalDelegator {
         ParamUtil.setSessionAttr(bpc.request, "hasAppSubmit", "Y");
     }
 
-    private void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList,FeeDto feeDto,BaseProcessClass bpc){
+    private void setSubmissionAmount(List<AppSubmissionDto> appSubmissionDtoList,FeeDto feeDto,AppFeeDetailsDto appFeeDetailsDto,BaseProcessClass bpc){
         List<FeeExtDto> detailFeeDtoList = feeDto.getDetailFeeDto();
         Double total = feeDto.getTotal();
         String totalString = Formatter.formatterMoney(total);
@@ -930,12 +930,14 @@ public class WithOutRenewalDelegator {
                     continue;
                 }else{
                     if(svcName.equals(appSubmissionDto.getServiceName())){
-                        Double lateFeeAmoumt = feeExtDto.getLateFeeAmoumt();
+                        Double lateFeeAmount = feeExtDto.getLateFeeAmoumt();
                         Double amount = feeExtDto.getAmount();
-                        appSubmissionDto.setLateFee(lateFeeAmoumt);
-                        appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFeeAmoumt));
+                        appSubmissionDto.setLateFee(lateFeeAmount);
+                        appSubmissionDto.setLateFeeStr(Formatter.formatterMoney(lateFeeAmount));
                         appSubmissionDto.setAmount(amount);
                         appSubmissionDto.setAmountStr(Formatter.formatterMoney(amount));
+                        appFeeDetailsDto.setBaseFee(lateFeeAmount);
+                        appFeeDetailsDto.setLaterFee(amount);
                     }
                 }
             }
