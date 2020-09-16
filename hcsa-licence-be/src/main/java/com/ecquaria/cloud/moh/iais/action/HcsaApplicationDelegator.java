@@ -2190,7 +2190,7 @@ public class HcsaApplicationDelegator {
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         try{
             if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(appStatus)){
-                sendRouteBackEmail(licenseeId,applicationViewDto);
+//                sendRouteBackEmail(licenseeId,applicationViewDto);
                 sendRfcClarificationEmail( licenseeId, applicationViewDto, internalRemarks);
             }
         }catch (Exception e){
