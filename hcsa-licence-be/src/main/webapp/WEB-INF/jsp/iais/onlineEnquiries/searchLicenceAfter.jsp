@@ -484,11 +484,11 @@
                 </div>
             </div>
         </div>
+        <c:if test="${ SearchResult.rowCount<5}"><div class="row">&nbsp;</div><div class="row">&nbsp;</div><div class="row">&nbsp;</div><div class="row">&nbsp;</div><div class="row">&nbsp;</div><div class="row">&nbsp;</div></c:if>
     </iais:body>
     <div class="row" height="1" style="display: none ;color:#ff0000;" id="selectDecisionMsg">
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<iais:message key="CESS_ERR002" escape="true"></iais:message>
     </div>
-    <br>
     <iais:action style="text-align:right;">
         <a class="btn btn-secondary" onclick="$(this).attr('class', 'btn btn-secondary disabled')" href="${pageContext.request.contextPath}/officer-online-enquiries-information-file">Download</a>
         <c:if test="${cease==1}">
