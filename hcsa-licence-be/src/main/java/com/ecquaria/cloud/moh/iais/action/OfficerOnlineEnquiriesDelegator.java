@@ -1179,6 +1179,7 @@ public class OfficerOnlineEnquiriesDelegator {
                 }
             }
         }else {
+            AppPremisesRecommendationDto appPreRecommentdationDtoDateRoot = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(rfiApplicationQueryDto.getAppCorrId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
             AppPremPreInspectionNcDto appPremPreInspectionNcDto = fillUpCheckListGetAppClient.getAppNcByAppCorrId(rfiApplicationQueryDto.getAppCorrId()).getEntity();
             if (appPremPreInspectionNcDto != null) {
                 String ncId = appPremPreInspectionNcDto.getId();
@@ -1196,16 +1197,23 @@ public class OfficerOnlineEnquiriesDelegator {
                     ) {
                         AppPremisesCorrelationDto appPremises = applicationClient.getAppPremisesCorrelationDtosByAppId(licApp.getApplicationId()).getEntity();
                         AppPremisesRecommendationDto appPreRecommentdationDtoDate = fillUpCheckListGetAppClient.getAppPremRecordByIdAndType(appPremises.getId(), InspectionConstants.RECOM_TYPE_INSEPCTION_DATE).getEntity();
-                        if(appPreRecommentdationDtoDate!=null){
-                            map.put(appPreRecommentdationDtoDate.getRecomInDate(),appPremises.getId());
+                        if(appPreRecommentdationDtoDateRoot!=null){
+                            if(appPreRecommentdationDtoDate!=null&&appPreRecommentdationDtoDateRoot.getRecomInDate().compareTo(appPreRecommentdationDtoDate.getRecomInDate())<0){
+                                map.put(appPreRecommentdationDtoDate.getRecomInDate(),appPremises.getId());
+                            }
+                        }else {
+                            if(appPreRecommentdationDtoDate!=null){
+                                map.put(appPreRecommentdationDtoDate.getRecomInDate(),appPremises.getId());
+                            }
                         }
                     }
                     Set<Date> set = map.keySet();
                     if(set.size()!=0){
-                        Date[] obj = (Date[]) set.toArray();
+                        Date[] obj = set.toArray(new Date[0]);
                         Arrays.sort(obj);
                         Date inspDate=obj[0];
-                        AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(map.get(inspDate)).getEntity();
+                        String appId=map.get(inspDate);
+                        AppPremisesCorrelationDto appPremisesCorrelationDto1 = applicationClient.getAppPremisesCorrelationDtosByAppId(appId).getEntity();
                         AppPremPreInspectionNcDto appPremPreInspectionNcDto1 = fillUpCheckListGetAppClient.getAppNcByAppCorrId(appPremisesCorrelationDto1.getId()).getEntity();
                         if (appPremPreInspectionNcDto1 != null) {
                             String ncId = appPremPreInspectionNcDto1.getId();
