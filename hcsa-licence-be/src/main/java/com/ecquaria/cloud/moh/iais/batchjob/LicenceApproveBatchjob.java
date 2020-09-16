@@ -764,7 +764,7 @@ public class LicenceApproveBatchjob {
                 }
                 String originLicenceId = firstApplicationDto.getOriginLicenceId();
                 LicenceDto originLicenceDto = licenceService.getLicenceDto(originLicenceId);
-                LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), null, applicationGroupDto, appPremisesRecommendationDto,
+                LicenceDto licenceDto = getLicenceDto(hcsaServiceDto.getSvcName(), hcsaServiceDto.getSvcType(), applicationGroupDto, appPremisesRecommendationDto,
                         originLicenceDto, firstApplicationDto, applicationDtos, true);
                 licenceDto.setSvcCode(hcsaServiceDto.getSvcCode());
                 licenceDto.setPremiseSize(applicationDtos.size());
