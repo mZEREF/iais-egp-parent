@@ -142,7 +142,7 @@
     <JavaCode defClass="" executor="" methodName="submitDateMohStep_OnStepProcess_0" name="submitDateMohStep_OnStepProcess_0"/>
    </OnStepProcess>
   </AutomaticStep>
-  <AutomaticStep defClass="" executor="" icon="" name="doAmendLicStep" x="1380" y="-1040">
+  <AutomaticStep defClass="" executor="" icon="" name="doAmendLicStep" x="1390" y="-970">
    <Description/>
    <probepoint type="none"/>
    <OnStepProcess>
@@ -537,7 +537,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="amendLic3_2Page" stageIndicator="" x="1610" y="-70">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="amendLic3_2Page" stageIndicator="" x="1630" y="-70">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -579,7 +579,7 @@
    <Description/>
    <probepoint type="none"/>
   </WebPage>
-  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="amendLic3_3Page" stageIndicator="" x="1580" y="-70">
+  <WebPage defClass="" displayStageIndicator="false" executor="" icon="" name="amendLic3_3Page" stageIndicator="" x="1550" y="-80">
    <OnPageLoad/>
    <OnPageSubmit/>
    <Description/>
@@ -658,7 +658,7 @@
    <position>{(1440,120)(1480,-40)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/amendLic3_2Page" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch21" style="oblique">
-   <position>{(1665,70)(1630,-50)}</position>
+   <position>{(1640,40)(1650,-50)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/amendLic3_1Page" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/amendLic3_1" style="oblique">
    <position>{(1140,120)(1140,-130)}</position>
@@ -703,7 +703,7 @@
    <position>{(1480,-40)(1530,-480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch9" linkstyle="Direct" name="" sourceName="/Pages/WebPage/amendLic3_2Page" style="oblique">
-   <position>{(1630,-50)(1630,-480)}</position>
+   <position>{(1650,-50)(1630,-480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch10" linkstyle="Direct" name="" sourceName="/Pages/WebPage/amendLic3_1Page" style="oblique">
    <position>{(1140,-130)(1180,-480)}</position>
@@ -730,7 +730,7 @@
    <position>{(1820,390)(1820,510)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doAmendLicStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch11" style="oblique">
-   <position>{(930,-470)(1400,-1020)}</position>
+   <position>{(930,-470)(1410,-950)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doCeasLicStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch6" style="oblique">
    <position>{(1540,380)(1630,500)}</position>
@@ -751,22 +751,22 @@
    <position>{(1990,370)(2180,450)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doAmendLicStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch12" style="oblique">
-   <position>{(1060,-460)(1400,-1020)}</position>
+   <position>{(1060,-460)(1410,-950)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doAmendLicStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch10" style="oblique">
-   <position>{(1180,-480)(1400,-1020)}</position>
+   <position>{(1180,-480)(1410,-950)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doAmendLicStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch13" style="oblique">
-   <position>{(1350,-500)(1400,-1020)}</position>
+   <position>{(1350,-500)(1410,-950)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doAmendLicStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch8" style="oblique">
-   <position>{(1530,-480)(1400,-1020)}</position>
+   <position>{(1530,-480)(1410,-950)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doAmendLicStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch9" style="oblique">
-   <position>{(1630,-480)(1400,-1020)}</position>
+   <position>{(1630,-480)(1410,-950)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doAmendLicStep" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch7" style="oblique">
-   <position>{(1760,-480)(1400,-1020)}</position>
+   <position>{(1760,-480)(1410,-950)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Merges/Merge/Merge1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch5" style="rectanular">
    <position>{(880,390)(1320,720)}</position>
@@ -1050,8 +1050,8 @@
   <SynchronousLink destinationName="/Steps/AutomaticStep/prepareSwitch" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch16" style="rectanular">
    <position>{(2840,450)(600,120)}</position>
   </SynchronousLink>
-  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareSwitch" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/doAmendLicStep" style="oblique">
-   <position>{(1400,-1020)(600,120)}</position>
+  <SynchronousLink destinationName="/Steps/AutomaticStep/prepareSwitch" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch20" style="oblique">
+   <position>{(1440,-1150)(600,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/doResumeSort" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch2" style="rectanular">
    <position>{(1890,-490)(1990,-360)}</position>
@@ -1072,28 +1072,28 @@
    <position>{(1820,-360)(1720,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch20" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/doAmendLicStep" style="rectanular">
-   <position>{(1400,-1020)(1420,-1160)}</position>
+   <position>{(1410,-950)(1440,-1150)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic4_2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch20" style="rectanular">
-   <position>{(1420,-1160)(1720,120)}</position>
+   <position>{(1440,-1150)(1720,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic3_2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch20" style="rectanular">
-   <position>{(1420,-1160)(1630,120)}</position>
+   <position>{(1440,-1150)(1630,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic4_1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch20" style="rectanular">
-   <position>{(1420,-1160)(1440,120)}</position>
+   <position>{(1440,-1150)(1440,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic1_1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch20" style="rectanular">
-   <position>{(1420,-1160)(1330,120)}</position>
+   <position>{(1440,-1150)(1330,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic3_1" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch20" style="rectanular">
-   <position>{(1420,-1160)(1140,120)}</position>
+   <position>{(1440,-1150)(1140,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch20" style="rectanular">
-   <position>{(1420,-1160)(1050,120)}</position>
+   <position>{(1440,-1150)(1050,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Steps/AutomaticStep/amendLic1_2" linkstyle="Rectangle" name="" sourceName="/Switches/Switch/Switch20" style="rectanular">
-   <position>{(1420,-1160)(930,120)}</position>
+   <position>{(1440,-1150)(930,120)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/appBeforeStart" linkstyle="Rectangle" name="" sourceName="/Steps/AutomaticStep/jumpInstructionPage" style="rectanular">
    <position>{(3010,250)(2980,380)}</position>
@@ -1108,13 +1108,13 @@
    <position>{(2840,450)(2300,10)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Pages/WebPage/amendLic3_3Page" linkstyle="Direct" name="" sourceName="/Switches/Switch/Switch21" style="oblique">
-   <position>{(1665,70)(1600,-50)}</position>
+   <position>{(1640,40)(1570,-60)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch9" linkstyle="Rectangle" name="" sourceName="/Pages/WebPage/amendLic3_3Page" style="rectanular">
-   <position>{(1600,-50)(1630,-480)}</position>
+   <position>{(1570,-60)(1630,-480)}</position>
   </SynchronousLink>
   <SynchronousLink destinationName="/Switches/Switch/Switch21" linkstyle="Direct" name="" sourceName="/Steps/AutomaticStep/amendLic3_2" style="oblique">
-   <position>{(1630,120)(1665,70)}</position>
+   <position>{(1630,120)(1640,40)}</position>
   </SynchronousLink>
  </Links>
  <Conditions/>
@@ -1259,7 +1259,7 @@
    <SwitchCase component="/Steps/AutomaticStep/showLicensee" value="&quot;showlicense&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/backChooseSvc" value="&quot;doBack&quot;"/>
   </Switch>
-  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/amendLic1_1" executor="" icon="" leftOperand="amend_action_type" name="Switch20" x="1400" y="-1180">
+  <Switch defClass="" defaultComponent="/Steps/AutomaticStep/prepareSwitch" executor="" icon="" leftOperand="amend_action_type" name="Switch20" x="1420" y="-1170">
    <Description/>
    <SwitchCase component="/Steps/AutomaticStep/amendLic4_2" value="&quot;toamend4_2&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/amendLic3_2" value="&quot;toamend3_2&quot;"/>
@@ -1268,6 +1268,7 @@
    <SwitchCase component="/Steps/AutomaticStep/amendLic3_1" value="&quot;toamend3_1&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/amendLic2" value="&quot;toamend2&quot;"/>
    <SwitchCase component="/Steps/AutomaticStep/amendLic1_2" value="&quot;toamend1_2&quot;"/>
+   <SwitchCase component="/Steps/AutomaticStep/prepareSwitch" value=""/>
   </Switch>
   <Switch defClass="" defaultComponent="/Pages/WebPage/amendLic3_2Page" executor="" icon="" leftOperand="login_action_type" name="Switch21" x="1620" y="20">
    <Description/>

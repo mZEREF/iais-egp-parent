@@ -62,6 +62,7 @@
 
 <script>
     $(function () {
+
         $('.self-assessment-gp .self-assessment-item .table-gp .table input[type="radio"]').on('change', function() {
             $('.self-assessment-gp .self-assessment-item .table-gp .table tr.selectedRow').removeClass('selectedRow');
         });
@@ -94,6 +95,7 @@
         if('1' == '${isCeasedShow}'){
             $('#draftCeasdByLicAppId').modal('show');
         }
+
     });
 
     function cancel() {
