@@ -39,8 +39,7 @@ public class MyInfoAjax {
 		
 		if (loginContext != null) {
 			try{
-				//String responseStr = getMyInfoResponse(loginContext.getNricNum());
-				String responseStr = getMyInfoResponse("S0001661F");
+				String responseStr = getMyInfoResponse(loginContext.getNricNum());
 				if (responseStr != null){
 					dto = updateDtoFromResponse(dto, responseStr);
 				}
