@@ -1715,6 +1715,7 @@ public class NewApplicationDelegator {
         }
         String effectiveDateStr = appSubmissionDto.getEffectiveDateStr();
         Date effectiveDate = appSubmissionDto.getEffectiveDate();
+        log.info(StringUtil.changeForLog("effectiveDate"+effectiveDate));
         AppSubmissionDto oldAppSubmissionDto = (AppSubmissionDto) ParamUtil.getSessionAttr(bpc.request, OLDAPPSUBMISSIONDTO);
 
         Boolean otherOperation = requestForChangeService.isOtherOperation(appSubmissionDto.getLicenceId());
@@ -1750,6 +1751,7 @@ public class NewApplicationDelegator {
         AppSubmissionDto o = (AppSubmissionDto) CopyUtil.copyMutableObject(oldAppSubmissionDto);
         List<AppSvcRelatedInfoDto> oldAppSvcRelatedInfoDtoList = o.getAppSvcRelatedInfoDtoList();
         serviceIsChange = eqServiceChange(appSvcRelatedInfoDtoList, oldAppSvcRelatedInfoDtoList);
+        log.info(StringUtil.changeForLog("serviceIsChange"+serviceIsChange));
         appEditSelectDto.setServiceEdit(false);
         appEditSelectDto.setPremisesEdit(grpPremiseIsChange);
         appSubmissionDto.setAppEditSelectDto(appEditSelectDto);
@@ -1937,6 +1939,7 @@ public class NewApplicationDelegator {
                 for(AppGrpPremisesDto appGrpPremisesDto :  appSubmissionDto.getAppGrpPremisesDtoList()){
                     appGrpPremisesDto.setNeedNewLicNo(Boolean.FALSE);
                 }
+                appSubmissionDtos.add(appSubmissionDto);
                 autoSaveAppsubmission.addAll(appSubmissionDtos);
             } else {
                 appSubmissionDto.setIsNeedNewLicNo(AppConsts.YES);
@@ -2037,6 +2040,10 @@ public class NewApplicationDelegator {
                 appSubmissionDto1.setEffectiveDate(effectiveDate);
             }
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(notAutoSaveAppsubmission);
+            for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos1){
+                appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
+                appSubmissionDto1.setEffectiveDate(effectiveDate);
+            }
             notAutoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(notAutoAppSubmissionListDto, notAuto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                     EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, notAutoTime.toString(), bpc.process);
@@ -2066,6 +2073,10 @@ public class NewApplicationDelegator {
                 appSubmissionDto1.setEffectiveDate(effectiveDate);
             }
             List<AppSubmissionDto> appSubmissionDtos1 = requestForChangeService.saveAppsForRequestForGoupAndAppChangeByList(autoSaveAppsubmission);
+            for(AppSubmissionDto appSubmissionDto1 : appSubmissionDtos1){
+                appSubmissionDto1.setEffectiveDateStr(effectiveDateStr);
+                appSubmissionDto1.setEffectiveDate(effectiveDate);
+            }
             autoAppSubmissionListDto.setAppSubmissionDtos(appSubmissionDtos1);
             eventBusHelper.submitAsyncRequest(autoAppSubmissionListDto, auto, EventBusConsts.SERVICE_NAME_APPSUBMIT,
                     EventBusConsts.OPERATION_REQUEST_INFORMATION_SUBMIT, autoTime.toString(), bpc.process);

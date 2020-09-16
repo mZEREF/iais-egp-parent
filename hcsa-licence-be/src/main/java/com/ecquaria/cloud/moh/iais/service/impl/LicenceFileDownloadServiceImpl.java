@@ -151,6 +151,13 @@ public class LicenceFileDownloadServiceImpl implements LicenceFileDownloadServic
 
                 ProcessFileTrackDto processFileTrackDto = applicationClient.isFileExistence(map).getEntity();
                 if(processFileTrackDto!=null){
+                    processFileTrackDto.setStatus("PFT002");
+                    try {
+                        applicationClient.updateProcessFileTrack(processFileTrackDto);
+                    }catch (Exception e){
+                        log.info("error updateProcessFileTrack");
+                    }
+
                     //check file is changed
                     try (InputStream is=Files.newInputStream(fil.toPath());
                          ByteArrayOutputStream by=new ByteArrayOutputStream();) {

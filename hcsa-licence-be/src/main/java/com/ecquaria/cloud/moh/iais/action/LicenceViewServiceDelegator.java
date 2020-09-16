@@ -18,8 +18,10 @@ import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcDocConfi
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaSvcSubtypeOrSubsumedDto;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.withdrawn.WithdrawnDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrgUserDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ComplaintDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.DisciplinaryRecordResponseDto;
 import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalParameterDto;
+import com.ecquaria.cloud.moh.iais.common.dto.prs.ProfessionalResponseDto;
 import com.ecquaria.cloud.moh.iais.common.helper.HmacHelper;
 import com.ecquaria.cloud.moh.iais.common.utils.CopyUtil;
 import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
@@ -371,7 +373,7 @@ public class LicenceViewServiceDelegator {
         }
         ParamUtil.setSessionAttr(bpc.request, APPSUBMISSIONDTO, appSubmissionDto);
         prepareViewServiceForm(bpc);
-      /*  disciplinaryRecord(appSubmissionDto);*/
+        disciplinaryRecord(appSubmissionDto);
     }
 
     private void disciplinaryRecord(AppSubmissionDto appSubmissionDto){
@@ -416,8 +418,12 @@ public class LicenceViewServiceDelegator {
         HmacHelper.Signature signature2 = HmacHelper.getSignature(secKeyId, secSecretKey);
         List<DisciplinaryRecordResponseDto> entity = beEicGatewayClient.getDisciplinaryRecord(professionalParameterDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
-        List<DisciplinaryRecordResponseDto> entity1 = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
+        List<ProfessionalResponseDto> entity1 = beEicGatewayClient.getProfessionalDetail(professionalParameterDto, signature.date(), signature.authorization(),
                 signature2.date(), signature2.authorization()).getEntity();
+
+        for(ProfessionalResponseDto professionalResponseDto :entity1){
+
+        }
     }
     private void authorisedPerson( HttpServletRequest request,String licenseeId){
         if(licenseeId==null){

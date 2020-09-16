@@ -155,13 +155,13 @@
                                     <div class="row">
                                       <div class="col-md-6">
                                       Name of HCI
-                                      <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${empty appGrpPremDto.applicationViewHciNameDtos&&empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
+                                      <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${empty appGrpPremDto.applicationViewHciNameDtos}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
                                     </div>
                                       <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none;" id="hciNameShowOrHidden">
                                         <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
                                           <p>The HCI name is currently used by another licensee</p>
                                           <br>
-                                          <table    border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px">
+                                          <table    border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;padding: 8px;text-align: center;background-color: #ffffff">
                                             <tr>
                                               <td  class="col-md-4">Name of Licensee</td>
                                               <td  class="col-md-4">HCI Name</td>
@@ -192,14 +192,12 @@
                                   <div class="row">
                                     <div class="col-md-6">
                                       Postal Code
-                                      <a class="btn-tooltip styleguide-tooltip" id="hciNameClick" <c:if test="${ empty appGrpPremDto.applicationViewHciNameDtos &&  empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
+                                      <a class="btn-tooltip styleguide-tooltip" id="addressClick" <c:if test="${empty appGrpPremDto.applicationViewAddress}">style="display: none" </c:if> data-toggle="tooltip" data-html="true" title="" data-original-title="">i</a>
                                     </div>
-                                    <c:if test="${'ONSITE'!=appGrpPremDto.premisesType}">
-                                      <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #999999;display: none" id="hciNameShowOrHidden">
+                                      <div  class="col-md-7" style="position: absolute;z-index: 100;left: 40%;background-color: #EEEEEE;display: none" id="addressShowOrHidden">
                                         <c:forEach items="${appGrpPremDto.applicationViewAddress}" var="applicationViewAddress">
                                           <p>The address of the premises keyed in by applicant is currently used by another licensee</p>
-                                          <br>
-                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;background-color: #ffffff ;padding: 8px">
+                                          <table   border="1px" style="border-collapse: collapse;border-top: 0px solid #000000 ;padding: 8px;text-align: center;background-color: #ffffff">
                                             <tr>
                                               <td  class="col-md-4">Name of Licensee</td>
                                               <td  class="col-md-4">HCI Name</td>
@@ -212,24 +210,8 @@
                                             </tr>
                                           </table>
                                         </c:forEach>
-                                        <c:forEach items="${appGrpPremDto.applicationViewHciNameDtos}" var="applicationViewHciNameDtos">
-                                          <p>The HCI name is currently used by another licensee</p>
-                                          <br>
-                                          <table  class="table"  border="1px" style="border-collapse: collapse;border-top: 0px solid #000000;background-color:#ffffff">
-                                            <tr>
-                                              <td  class="col-md-4">Name of Licensee</td>
-                                              <td  class="col-md-4">HCI Name</td>
-                                              <td  class="col-md-4">Service Name</td>
-                                            </tr>
-                                            <tr>
-                                              <td>${applicationViewHciNameDtos.licensee}</td>
-                                              <td>${applicationViewHciNameDtos.hciName}</td>
-                                              <td>${applicationViewHciNameDtos.serviceName}</td>
-                                            </tr>
-                                          </table>
-                                        </c:forEach>
                                       </div>
-                                    </c:if>
+
 
                                     <div class="col-md-6">
                                       <div  class="col-md-6">
@@ -619,7 +601,6 @@
                                           <div class="col-md-6 ">
                                                 <span class="newVal " attr="${newLicenceDto.name}">
                                                   <c:out value="${newLicenceDto.name}"/>
-                                                     <img src="/hcsa-licence-web/img/20200707152208.png" width="25" height="25" alt="NETS">
                                                 </span>
                                           </div>
                                           <div class="col-md-6">
@@ -1015,11 +996,22 @@
       let jQuery = $('#hciNameShowOrHidden').attr('style');
       if(jQuery.match("display: none")){
           $('#hciNameShowOrHidden').show();
+          $('#addressShowOrHidden').hide();
       }else {
           $('#hciNameShowOrHidden').hide();
       }
-
   });
+
+  $('#addressClick').click(function () {
+      let jQuery = $('#addressShowOrHidden').attr('style');
+      if(jQuery.match("display: none")){
+          $('#addressShowOrHidden').show();
+          $('#hciNameShowOrHidden').hide();
+      }else {
+          $('#addressShowOrHidden').hide();
+      }
+  });
+
 
 
 </script>
