@@ -34,8 +34,8 @@ public final class LoginHelper {
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);
         auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGIN);
         auditTrailDto.setLoginType(loginType);
-        auditTrailDto.setModule("main-web");
-        auditTrailDto.setFunctionName("Fe Login");
+        auditTrailDto.setModule("login");
+        auditTrailDto.setFunctionName("login");
         IaisEGPHelper.setAuditLoginUserInfo(auditTrailDto);
         trailDtoList.add(auditTrailDto);
         SubmissionClient client = SpringContextHelper.getContext().getBean(SubmissionClient.class);
