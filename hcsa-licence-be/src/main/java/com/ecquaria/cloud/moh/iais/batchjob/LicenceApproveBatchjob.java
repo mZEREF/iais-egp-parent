@@ -57,15 +57,27 @@ import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicInspectionGroupDto;
 import com.ecquaria.cloud.moh.iais.common.dto.inspection.LicPremInspGrpCorrelationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.OrganizationDto;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
-import com.ecquaria.cloud.moh.iais.common.utils.*;
+import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
+import com.ecquaria.cloud.moh.iais.common.utils.IaisCommonUtils;
+import com.ecquaria.cloud.moh.iais.common.utils.MessageTemplateUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.MiscUtil;
+import com.ecquaria.cloud.moh.iais.common.utils.StringUtil;
 import com.ecquaria.cloud.moh.iais.constant.HmacConstants;
-import com.ecquaria.cloud.moh.iais.dto.EmailParam;
-import com.ecquaria.cloud.moh.iais.helper.*;
+import com.ecquaria.cloud.moh.iais.helper.AuditTrailHelper;
+import com.ecquaria.cloud.moh.iais.helper.HcsaServiceCacheHelper;
+import com.ecquaria.cloud.moh.iais.helper.IaisEGPHelper;
+import com.ecquaria.cloud.moh.iais.helper.MasterCodeUtil;
+import com.ecquaria.cloud.moh.iais.helper.NotificationHelper;
 import com.ecquaria.cloud.moh.iais.service.ApplicationGroupService;
 import com.ecquaria.cloud.moh.iais.service.InboxMsgService;
 import com.ecquaria.cloud.moh.iais.service.InspEmailService;
 import com.ecquaria.cloud.moh.iais.service.LicenceService;
-import com.ecquaria.cloud.moh.iais.service.client.*;
+import com.ecquaria.cloud.moh.iais.service.client.ApplicationClient;
+import com.ecquaria.cloud.moh.iais.service.client.EmailClient;
+import com.ecquaria.cloud.moh.iais.service.client.FillUpCheckListGetAppClient;
+import com.ecquaria.cloud.moh.iais.service.client.HcsaConfigClient;
+import com.ecquaria.cloud.moh.iais.service.client.MsgTemplateClient;
+import com.ecquaria.cloud.moh.iais.service.client.OrganizationClient;
 import com.ecquaria.cloud.moh.iais.util.LicenceUtil;
 import com.ecquaria.sz.commons.util.MsgUtil;
 import freemarker.template.TemplateException;
@@ -531,7 +543,7 @@ public class LicenceApproveBatchjob {
     }
 
     private Map<String, List<ApplicationListDto>> tidyAppForGroupLicence(List<ApplicationListDto> applicationListDtoList) {
-        Map<String, List<ApplicationListDto>> result = IaisCommonUtils.genNewHashMap();
+        Map<String, List<ApplicationListDto>> result = IaisCommonUtils.genNewLinkedHashMap();
         if (IaisCommonUtils.isEmpty(applicationListDtoList)) {
             return result;
         }
