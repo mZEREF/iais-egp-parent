@@ -26,7 +26,7 @@
                             <h2>Before Data</h2>
                         </div>
                         <div id="control--printerFriendly--34**errorMsg_section_top" class="error_placements"></div>
-                        <pre><span id="beforeValue"></span></pre>
+                        <span id="beforeValue"></span>
                     </div>
                 </td>
             </tr>
@@ -38,7 +38,7 @@
                             <h2>After Data</h2>
                         </div>
 
-                        <pre><span id="afterValue"></span></pre>
+                        <span id="afterValue"></span>
                     </div>
                 </td>
             </tr>
@@ -54,21 +54,12 @@
     $(document).ready(function() {
         let hbeforeValue = $("#hbeforeValue").val()
         let hafterValue = $("#hafterValue").val()
-        fmtJson(hbeforeValue, 'beforeValue')
-        fmtJson(hafterValue, 'afterValue')
+        jsonToHtmlTable(hbeforeValue, 'beforeValue')
+        jsonToHtmlTable(hafterValue, 'afterValue')
     })
 
     function doBack() {
         $("input[name='switch_action_type']").val("doBack");
         $("#mainForm").submit();
-    }
-    
-    function fmtJson(str, id) {
-        if (str == undefined || str == '' ){
-            str = '[ "No Record !"]'
-        }
-        let obj = JSON.parse(str);
-        let fmt = JSON.stringify(obj, null, "\t")
-        $("#" + id).text(fmt)
     }
 </script>

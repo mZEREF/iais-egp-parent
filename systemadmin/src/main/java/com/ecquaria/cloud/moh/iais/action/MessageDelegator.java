@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.action;
 
 import com.ecquaria.cloud.annotation.Delegator;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
+import com.ecquaria.cloud.moh.iais.common.constant.AuditTrailConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.message.MessageConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -87,9 +88,8 @@ public class MessageDelegator {
      * @throws IllegalAccessException
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
-        AuditTrailHelper.auditFunction("Error and Acknowledgement Message",
-                "Function is used by MOH system administrator (users given " +
-                        "the administrator rights and have the rights to modify the information");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_ERROR_MESSAGES_MANAGEMENT,
+                "Error Messages Management");
         HttpServletRequest request = bpc.request;
         IaisEGPHelper.clearSessionAttr(request, MessageConstants.class);
         ParamUtil.setSessionAttr(request, MessageConstants.PARAM_MESSAGE_SEARCH, null);
@@ -111,7 +111,6 @@ public class MessageDelegator {
         SearchResult searchResult = messageService.doQuery(param);
         ParamUtil.setSessionAttr(request, MessageConstants.PARAM_MESSAGE_SEARCH, param);
         ParamUtil.setRequestAttr(request, MessageConstants.PARAM_MESSAGE_SEARCH_RESULT, searchResult);
-
     }
 
 

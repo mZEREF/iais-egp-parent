@@ -234,8 +234,12 @@ public final class IaisEGPHelper extends EGPHelper {
                    if (AppConsts.USER_DOMAIN_INTERNET.equals(loginContext.getUserDomain())) {
                        dto.setNricNumber(loginContext.getNricNum());
                        dto.setUenId(loginContext.getUenNo());
+                       dto.setMohUserId(loginContext.getNricNum());
+                   }else if (AppConsts.USER_DOMAIN_INTRANET.equals(loginContext.getUserDomain())){
+                       dto.setMohUserId(loginContext.getLoginId());
+                       dto.setLoginType(AuditTrailConsts.LOGIN_TYPE_MOH);
                    }
-                   dto.setMohUserId(loginContext.getNricNum());
+
                    dto.setMohUserGuid(loginContext.getUserId());
                    dto.setOperationType(AppConsts.USER_DOMAIN_INTRANET.equals(loginContext.getUserDomain()) ?
                            AuditTrailConsts.OPERATION_TYPE_INTRANET : AuditTrailConsts.OPERATION_TYPE_INTERNET);
@@ -243,6 +247,7 @@ public final class IaisEGPHelper extends EGPHelper {
                dto.setUserDomain(SessionManager.getInstance(request).getCurrentUserDomain());
            }
 
+           dto.setLoginTime(new Date());
            dto.setSessionId(session.getId());
            dto.setClientIp(MiscUtil.getClientIp(request));
            dto.setUserAgent(AccessUtil.getBrowserInfo(request));

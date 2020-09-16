@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.appointment.AppointmentConstants;
@@ -141,6 +142,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     }
 
     @Override
+    @SearchTrack(catalog = "ReqForInfoQuery", key = "serviceQuery")
     public SearchResult<HcsaSvcQueryDto> searchSvcNamesParam(SearchParam searchParam) {
         return hcsaConfigClient.searchSvcNamesParam(searchParam).getEntity();
     }

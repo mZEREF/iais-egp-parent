@@ -71,7 +71,7 @@ public class AuditTrailDelegator {
      */
     public void startStep(BaseProcessClass bpc) throws IllegalAccessException {
         log.info("=======>>>>>startStep>>>>>>>>>>>>>>>>PARAM_SEARCH");
-        AuditTrailHelper.auditFunction("AuditTrail","AuditTrail View");
+        AuditTrailHelper.auditFunction(AuditTrailConsts.MODULE_AUDIT,"AuditTrail View");
 
         HttpServletRequest request = bpc.request;
 
@@ -154,10 +154,14 @@ public class AuditTrailDelegator {
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_DELETE), "Delete Record"));
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_VALIDATION_FAIL), "Data Validation Failure"));
         operationList.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_USER_UPDATE), "User Account"));
-
-
         ParamUtil.setRequestAttr(request, "operationValueTypeSelect", operationList);
 
+        List<SelectOption> dataActivites =  IaisCommonUtils.genNewArrayList();
+        dataActivites.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_INSERT), "Data Inserted"));
+        dataActivites.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_UPDATE), "Data Before Update"));
+        dataActivites.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_UPDATE), "Data After Update"));
+        dataActivites.add(new SelectOption(String.valueOf(AuditTrailConsts.OPERATION_DELETE), "Data After Delete"));
+        ParamUtil.setRequestAttr(request, "dataActivitesTypeSelect", dataActivites);
     }
 
     /**
@@ -213,6 +217,7 @@ public class AuditTrailDelegator {
 
         String startDate = ParamUtil.getString(request, AuditTrailConstants.PARAM_STARTDATE);
         String endDate = ParamUtil.getString(request, AuditTrailConstants.PARAM_ENDDATE);
+        String dataActivites = ParamUtil.getString(request, "dataActivites");
 
         AuditTrailQueryDto queryDto = new AuditTrailQueryDto();
         if(operation != null){
@@ -255,6 +260,10 @@ public class AuditTrailDelegator {
                 e = IaisEGPHelper.getLastSecond(e);
                 endDate = IaisEGPHelper.parseToString(e, "yyyy-MM-dd HH:mm:ss");
                 searchParam.addFilter(AuditTrailConstants.PARAM_ENDDATE, endDate, true);
+            }
+
+            if(!StringUtil.isEmpty(dataActivites)){
+                searchParam.addFilter(AuditTrailConstants.PARAM_OPERATION, Integer.valueOf(dataActivites), true);
             }
         }
 

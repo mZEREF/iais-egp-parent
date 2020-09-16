@@ -56,6 +56,16 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <div class="col-xs-5 col-md-10">
+                    <iais:field value="Data Activities" required="false"></iais:field>
+                    <div class="col-xs-5 col-md-5">
+                        <iais:select name="dataActivites" id="dataActivites" value="${param.activites}"
+                                     options="dataActivitesTypeSelect" firstOption="Please Select"></iais:select>
+                        <span id="error_dataActivites" name="iaisErrorMsg" class="error-msg"></span>
+                    </div>
+                </div>
+            </div>
 
             <div class="form-group">
                 <div class="col-xs-5 col-md-10">
@@ -117,6 +127,23 @@
                                                  value="Operation"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="domain"
                                                  value="Operation Type"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true" field="entity_id"
+                                                 value="Batch Job Id"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true" field="moh_user_id"
+                                                 value="Active directory ID"></iais:sortableHeader>
+
+                            <iais:sortableHeader needSort="true" field="entity_id"
+                                                 value="Corp-Pass Id"></iais:sortableHeader>
+
+                            <iais:sortableHeader needSort="true" field="nric_number"
+                                                 value="Corp-Pass NRIC"></iais:sortableHeader>
+
+                            <iais:sortableHeader needSort="true" field="uen_id"
+                                                 value="Uen"></iais:sortableHeader>
+
+                            <iais:sortableHeader needSort="true" field="nric_number"
+                                                 value="Singpass ID"></iais:sortableHeader>
+
                             <iais:sortableHeader needSort="true" field="action_time"
                                                  value="Operation Date"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="action_time"
@@ -125,10 +152,10 @@
                                                  value="Source Client IP"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="user_agent"
                                                  value="User Agent"></iais:sortableHeader>
-                            <iais:sortableHeader needSort="true" field="moh_user_id"
-                                                 value="MOH User&apos;s account ID"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="session_id"
                                                  value="Session Id"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true" field="TOTAL_SESSION_DURATION"
+                                                 value="Total Session Duration (min)"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="application_number"
                                                  value="Application ID"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="license_number"
@@ -140,6 +167,10 @@
                                                  value="Program Name"></iais:sortableHeader>
                             <iais:sortableHeader needSort="true" field="operation"
                                                  value="Data Activities"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true" field="moh_user_id"
+                                                 value="Created by"></iais:sortableHeader>
+                            <iais:sortableHeader needSort="true" field="action_time"
+                                                 value="Created date"></iais:sortableHeader>
                         </tr>
                         </thead>
                         <tbody>
@@ -156,46 +187,103 @@
                                     <tr>
                                         <td class="row_no">${(status.index + 1) + (auditTrailSearch.pageNo - 1) * auditTrailSearch.pageSize}</td>
                                             <%-- <td>${resultRow.operationType}</td>--%>
-                                        <td><c:out value="${resultRow.operationDesc}"></c:out></td>
+                                        <td>
+                                            <a href="javascript:;" style="text-decoration:underline;"
+                                               onclick="viewData('<iais:mask name="auditId"
+                                                                             value="${resultRow.auditId}"/>')">${resultRow.operationDesc}</a>
+                                        </td>
                                         <td><c:out value="${resultRow.domainDesc}"></c:out></td>
+                                        <c:choose>
+
+                                            <%--batchjob--%>
+                                            <c:when test="${resultRow.domain == 20001}">
+                                                <td><c:out value="${resultRow.entityId}"></c:out></td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                            </c:when>
+
+                                            <%--internet--%>
+                                            <c:when test="${resultRow.domain == 20003}">
+                                                <c:choose>
+                                                    <%-- singpass--%>
+                                                    <c:when test="${resultRow.loginType == 10001}">
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td><c:out value="${resultRow.nricNumber}"></c:out></td>
+                                                    </c:when>
+                                                    <%--corppass--%>
+                                                    <c:when test="${resultRow.loginType == 10002}">
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td><c:out value="${resultRow.entityId}"></c:out></td>
+                                                        <td><c:out value="${resultRow.nricNumber}"></c:out></td>
+                                                        <td><c:out value="${resultRow.uenId}"></c:out></td>
+                                                        <td>-</td>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td>-</td>
+                                                        <td></td>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </c:when>
+
+                                            <%--intranet--%>
+                                            <c:when test="${resultRow.domain == 20002}">
+                                                <td>-</td>
+                                                <td><c:out value="${resultRow.mohUserId}"></c:out></td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                            </c:when>
+
+                                            <c:otherwise>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                            </c:otherwise>
+                                        </c:choose>
+
+
+
+
                                         <td><fmt:formatDate value='${resultRow.actionTime}' pattern='dd/MM/yyyy'/></td>
                                         <td><fmt:formatDate value='${resultRow.actionTime}' pattern='HH:mm:ss'/></td>
-                                        <td><c:out value="${resultRow.clientIp}"></c:out></td>
-                                        <td><c:out value="${resultRow.userAgent}"></c:out></td>
-                                        <td><c:out value="${resultRow.mohUserId}"></c:out></td>
-                                        <td><c:out value="${resultRow.sessionId}"></c:out></td>
-                                        <td><c:out value="${resultRow.appNum}"></c:out></td>
-                                        <td><c:out value="${resultRow.licenseNum}"></c:out></td>
-                                        <td><c:out value="${resultRow.module}"></c:out></td>
-                                        <td><c:out value="${resultRow.functionName}"></c:out></td>
-                                        <td><c:out value="${resultRow.programmeName}"></c:out></td>
-
-
+                                        <td>${empty resultRow.clientIp ? "-" : resultRow.clientIp}</td>
+                                        <td>${empty resultRow.userAgent ? "-" : resultRow.userAgent}</td>
+                                        <td>${empty resultRow.sessionId ? "-" : resultRow.sessionId}</td>
+                                        <td>${empty resultRow.totalSessionDuration ? "-" : resultRow.totalSessionDuration}</td>
+                                        <td>${empty resultRow.appNum ? "-" : resultRow.appNum}</td>
+                                        <td>${empty resultRow.licenseNum ? "-" : resultRow.licenseNum}</td>
+                                        <td>${empty resultRow.module ? "-" : resultRow.module}</td>
+                                        <td>${empty resultRow.functionName ? "-" : resultRow.functionName}</td>
+                                        <td>${empty resultRow.programmeName ? "-" : resultRow.programmeName}</td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${resultRow.operation == 4}">
-                                                    <a href="javascript:;" style="text-decoration:underline;"
-                                                       onclick="viewData('<iais:mask name="auditId"
-                                                                                     value="${resultRow.auditId}"/>')">Data
-                                                        Read</a>
+                                                  Data Read
                                                 </c:when>
                                                 <c:when test="${resultRow.operation == 6}">
-                                                    <a href="javascript:;" style="text-decoration:underline;"
-                                                       onclick="viewData('<iais:mask name="auditId"
-                                                                                     value="${resultRow.auditId}"/>')">Data
-                                                        Added</a>
+                                                    Data Added
                                                 </c:when>
                                                 <c:when test="${resultRow.operation == 7}">
-                                                    <a href="javascript:;" style="text-decoration:underline;"
-                                                       onclick="viewData('<iais:mask name="auditId"
-                                                                                     value="${resultRow.auditId}"/>')">Data
-                                                        Updated</a>
+                                                   Data Updated
                                                 </c:when>
                                                 <c:when test="${resultRow.operation == 8}">
-                                                    <a href="javascript:;" style="text-decoration:underline;"
-                                                       onclick="viewData('<iais:mask name="auditId"
-                                                                                     value="${resultRow.auditId}"/>')">Data
-                                                        Deleted</a>
+                                                  Data Deleted
                                                 </c:when>
                                                 <c:otherwise>
                                                     <c:out value="-"></c:out>
@@ -203,6 +291,9 @@
                                             </c:choose>
 
                                         </td>
+
+                                        <td><c:out value="${resultRow.nricNumber}"></c:out></td>
+                                        <td><fmt:formatDate value='${resultRow.actionTime}' pattern='dd/MM/yyyy'/></td>
                                     </tr>
                                 </c:forEach>
 

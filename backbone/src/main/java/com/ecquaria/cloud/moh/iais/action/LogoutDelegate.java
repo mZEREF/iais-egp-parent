@@ -18,6 +18,7 @@ import sop.audit.SOPAuditLogConstants;
 import sop.webflow.rt.api.BaseProcessClass;
 
 import javax.servlet.http.Cookie;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,6 +30,7 @@ import java.util.List;
 @Slf4j
 @Delegator("iaisLogoutDelegate")
 public class LogoutDelegate {
+    private static final long nh = 1000 * 60;
     @Autowired
     private SubmissionClient client;
 
@@ -43,6 +45,16 @@ public class LogoutDelegate {
 
             //Add audit trail
             AuditTrailDto auditTrailDto = IaisEGPHelper.getCurrentAuditTrailDto();
+
+            Date now = new Date();
+            Date before = auditTrailDto.getLoginTime();
+            if (before != null){
+                long duration = now.getTime() - before.getTime();
+                log.info(StringUtil.changeForLog("logout duration minute " + duration));
+                auditTrailDto.setTotalSessionDuration((int) (duration / nh));
+            }
+
+
             List<AuditTrailDto> dtoList = IaisCommonUtils.genNewArrayList();
             dtoList.add(auditTrailDto);
             auditTrailDto.setOperation(AuditTrailConsts.OPERATION_LOGOUT);

@@ -108,9 +108,10 @@
 
     <sql key="queryFullModeAuditTrail" remarks="query full reocrd for audit trail">
         <![CDATA[
-         select
+            select
              audit_id,action_time,
             operation,
+            operation as data_active,
             case  operation
             when 1 then 'Login'
             when 2 then 'Logout'
@@ -124,6 +125,8 @@
             end operation_desc,
             nric_number,
             uen_id,
+            entity_id,
+            total_session_duration,
             moh_user_id,
             login_type,
             session_id,
@@ -162,6 +165,7 @@
              select
              audit_id,action_time,
             operation,
+            operation as data_active,
             case  operation
             when 1 then 'Login'
             when 2 then 'Logout'
@@ -175,12 +179,14 @@
             end operation_desc,
             nric_number,
             uen_id,
+            entity_id,
             moh_user_id,
             login_type,
             session_id,
             client_ip,
             user_agent,
             application_number,
+            total_session_duration,
             license_number,
             module,
             function_name,
