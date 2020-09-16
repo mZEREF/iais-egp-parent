@@ -26,6 +26,8 @@ public interface LicenceInboxClient {
     @GetMapping(path= "/hcsa-licence-rfc/licence-premises", produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PremisesListQueryDto>> getPremises(@RequestParam(value = "licenseeId" ) String licenseeId);
 
+    @GetMapping(value = "/hcsa-licence/licPremisesCorrelationsById/{licCorrId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    FeignResponseEntity<LicPremisesDto> getlicPremisesCorrelationsByPremises(@PathVariable("licCorrId") String licCorreId);
 
     @RequestMapping(path = "/hcsa-licence-rfc/licence-personnels",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     FeignResponseEntity<List<PersonnelListQueryDto>> getPersonnel(@RequestParam(value = "licenseeId")String licenseeId);

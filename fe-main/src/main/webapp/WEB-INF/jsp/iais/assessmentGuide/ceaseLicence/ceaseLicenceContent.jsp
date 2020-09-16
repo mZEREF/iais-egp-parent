@@ -30,7 +30,7 @@
                                     <input class="form-check-input" id="ceaseLicence" type="checkbox" name="ceaseLicIds" aria-invalid="false" <c:if test="${fn:contains(licence_err_list, pool.licenceId)}">checked</c:if> value="ceaseLicence${status.index}">
                                     <label class="form-check-label" for="ceaseLicence"><span class="check-square"></span></label>
                                 </div>
-                                <input type="hidden" name="ceaseLicence${status.index}" value="<iais:mask name= "ceaseLicence${status.index}" value="${pool.licenceId}"/>"/>
+                                <input type="hidden" name="ceaseLicence${status.index}" value="<iais:mask name= "ceaseLicence${status.index}" value="${pool.licPremId}"/>"/>
                             </td>
                             <td>${pool.hciName}<c:if test="${empty pool.hciName}">N/A</c:if></td>
                             <td>${pool.svcId}</td>

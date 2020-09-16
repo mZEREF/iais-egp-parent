@@ -1508,10 +1508,14 @@ public class HalpAssessmentGuideDelegator {
     public void doCeasLicStep(BaseProcessClass bpc) throws IOException {
         String cessationError = null ;
         List<String> licIdValue = IaisCommonUtils.genNewArrayList();
+        List<String> licPremIdValue = IaisCommonUtils.genNewArrayList();
         String[] licIds = ParamUtil.getStrings(bpc.request, "ceaseLicIds");
         boolean result = false;
         for (String item : licIds) {
-            licIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
+            licPremIdValue.add(ParamUtil.getMaskedString(bpc.request, item));
+        }
+        for (String item : licPremIdValue) {
+            licIdValue.add(licenceInboxClient.getlicPremisesCorrelationsByPremises(item).getEntity().getLicenceId());
         }
         for(String licId : licIdValue){
             LicenceDto licenceDto = licenceInboxClient.getLicBylicId(licId).getEntity();
@@ -1519,7 +1523,7 @@ public class HalpAssessmentGuideDelegator {
                 cessationError = MessageUtil.getMessageDesc("INBOX_ACK011");
                 ParamUtil.setRequestAttr(bpc.request,InboxConst.LIC_CEASED_ERR_RESULT,Boolean.TRUE);
                 bpc.request.setAttribute("cessationError",cessationError);
-                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licPremIdValue);
                 return ;
             }
         }
@@ -1547,7 +1551,7 @@ public class HalpAssessmentGuideDelegator {
                 bpc.request.setAttribute("draftByLicAppId",replace);
                 bpc.request.setAttribute("isCeasedShow","1");
                 bpc.request.setAttribute("appealApplication",licIdValue.get(0));
-                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+                ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licPremIdValue);
                 return;
             }
         }
@@ -1555,7 +1559,7 @@ public class HalpAssessmentGuideDelegator {
             ParamUtil.setRequestAttr(bpc.request, InboxConst.LIC_CEASED_ERR_RESULT, Boolean.TRUE);
             cessationError = MessageUtil.getMessageDesc("CESS_ERR002");
             bpc.request.setAttribute("cessationError",cessationError);
-            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licIdValue);
+            ParamUtil.setSessionAttr(bpc.request,"licence_err_list",(Serializable) licPremIdValue);
         } else {
             ParamUtil.setSessionAttr(bpc.request, "licIds", (Serializable) licIdValue);
             StringBuilder url = new StringBuilder();
