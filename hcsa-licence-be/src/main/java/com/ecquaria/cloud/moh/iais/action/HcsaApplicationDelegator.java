@@ -2189,8 +2189,10 @@ public class HcsaApplicationDelegator {
         //send internal route back email
         String licenseeId = applicationViewDto.getApplicationGroupDto().getLicenseeId();
         try{
-            sendRouteBackEmail(licenseeId,applicationViewDto);
-            sendRfcClarificationEmail( licenseeId, applicationViewDto, internalRemarks);
+            if(!ApplicationConsts.APPLICATION_STATUS_ROUTE_TO_DMS.equals(appStatus)){
+                sendRouteBackEmail(licenseeId,applicationViewDto);
+                sendRfcClarificationEmail( licenseeId, applicationViewDto, internalRemarks);
+            }
         }catch (Exception e){
             log.error(StringUtil.changeForLog("send internal route back email error"));
         }
