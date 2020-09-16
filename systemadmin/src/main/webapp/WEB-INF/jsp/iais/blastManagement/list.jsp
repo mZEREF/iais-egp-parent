@@ -81,9 +81,8 @@
                                 <th>Message Name</th>
                                 <th>Distribution Name</th>
                                 <th>Mode of Delivery</th>
-                                <th>Scheduled Send date</th>
-                                <th>Actual Send date</th>
-                                <th>Attachment</th>
+                                <th>Created By</th>
+                                <th>Created Date</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -129,21 +128,10 @@
                                                 <p><c:out value="${item.mode}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.schedule}"/></p>
+                                                <p><c:out value="${item.createBy}"/></p>
                                             </td>
                                             <td>
-                                                <p><c:out value="${item.actual}"/></p>
-                                                <c:choose>
-                                                <c:when test="${!empty item.actual}">
-                                                    <input hidden value="0" id="edit${item.id}">
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <input hidden value="1" id="edit${item.id}">
-                                                </c:otherwise>
-                                                </c:choose>
-                                            </td>
-                                            <td>
-                                                <p><c:out value="${item.docName}"/></p>
+                                                <p><c:out value="${item.createDt}"/></p>
                                             </td>
                                             <td>
                                                 <p><iais:code code="${item.status}"></iais:code></p>

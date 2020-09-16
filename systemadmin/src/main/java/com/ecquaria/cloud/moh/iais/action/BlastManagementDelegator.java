@@ -97,6 +97,17 @@ public class BlastManagementDelegator {
         CrudHelper.doPaging(searchParam,bpc.request);
         QueryHelp.setMainSql("systemAdmin", "queryBlastManagementList",searchParam);
         SearchResult<BlastManagementListDto> searchResult = blastManagementListService.blastList(searchParam);
+        Map<String, String> userNameList = IaisCommonUtils.genNewHashMap();
+        List<String> ids = IaisCommonUtils.genNewArrayList();
+        for (BlastManagementListDto item:searchResult.getRows()
+        ) {
+            ids.add(item.getCreateBy());
+        }
+        List<OrgUserDto> actionByRealNameList=blastManagementListService.retrieveOrgUserAccount(ids);
+        for (OrgUserDto item:actionByRealNameList
+        ) {
+            userNameList.put(item.getId(),item.getDisplayName());
+        }
         for (BlastManagementListDto item:searchResult.getRows()
              ) {
             if(item.getSchedule() != null){
@@ -105,6 +116,8 @@ public class BlastManagementDelegator {
             if(item.getActual() != null){
                 item.setActual(getDate(item.getActual()));
             }
+            String name = userNameList.get(item.getCreateBy());
+            item.setCreateBy(name);
         }
 
         getDistribution(bpc,(String)searchParam.getFilters().get("mode"));
