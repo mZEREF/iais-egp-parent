@@ -26,28 +26,32 @@ public class MyInfoAjax {
 
 
     public MyInfoDto getMyInfo(String NircNum){
-		MyInfoDto dto = new MyInfoDto();
+
 		String flag = Config.get("moh.halp.myinfo.enable");
 		if("Y".equalsIgnoreCase(flag)){
+
 			if(StringUtil.isEmpty(NircNum)){
 				log.info("----nircnum is null----");
 				return null;
 			}
 			try{
+				MyInfoDto dto = new MyInfoDto();
 				String responseStr = getMyInfoResponse(NircNum);
 				if (responseStr != null){
 					dto = updateDtoFromResponse(dto, responseStr);
 				}else {
 					log.info("----get myinfo is null----");
 				}
+				log.info(JsonUtil.parseToJson(dto));
+				return dto;
 			} catch (Exception e) {
 				log.error(e.getMessage(),e);
 			}
-			log.info(JsonUtil.parseToJson(dto));
+
 		}else {
 			log.info("---myinfo flag is closed----");
 		}
-		return dto;
+		return null;
 	}
 
 	private static MyInfoDto updateDtoFromResponse(MyInfoDto dto, String response) {
