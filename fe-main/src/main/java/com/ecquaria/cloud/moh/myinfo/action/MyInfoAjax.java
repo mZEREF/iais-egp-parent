@@ -6,15 +6,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-
-import javax.servlet.http.HttpServletRequest;
-
-
-import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.myinfo.MyInfoDto;
 import com.ecquaria.cloud.moh.iais.common.utils.Formatter;
-import com.ecquaria.cloud.moh.iais.common.utils.ParamUtil;
-import com.ecquaria.cloud.moh.iais.dto.LoginContext;
+import com.ecquaria.cloud.moh.iais.common.utils.JsonUtil;
 import com.ecquaria.cloud.moh.myinfo.client.model.MyinfoUtil;
 import com.ecquaria.sz.commons.util.StringUtil;
 import com.lowagie.text.pdf.codec.Base64;
@@ -31,21 +25,27 @@ import org.springframework.stereotype.Controller;
 public class MyInfoAjax {
 
 
-    public MyInfoDto getMyInfo(HttpServletRequest request){
-
+    public MyInfoDto getMyInfo(String NircNum){
 		MyInfoDto dto = new MyInfoDto();
-
-		LoginContext loginContext = (LoginContext)ParamUtil.getSessionAttr(request,AppConsts.SESSION_ATTR_LOGIN_USER);
-		
-		if (loginContext != null) {
+		String flag = Config.get("moh.halp.myinfo.enable");
+		if("Y".equalsIgnoreCase(flag)){
+			if(StringUtil.isEmpty(NircNum)){
+				log.info("----nircnum is null----");
+				return null;
+			}
 			try{
-				String responseStr = getMyInfoResponse(loginContext.getNricNum());
+				String responseStr = getMyInfoResponse(NircNum);
 				if (responseStr != null){
 					dto = updateDtoFromResponse(dto, responseStr);
+				}else {
+					log.info("----get myinfo is null----");
 				}
 			} catch (Exception e) {
-				ParamUtil.setRequestAttr(request, "myinfoErrorFlag", e.getMessage());
+				log.error(e.getMessage(),e);
 			}
+			log.info(JsonUtil.parseToJson(dto));
+		}else {
+			log.info("---myinfo flag is closed----");
 		}
 		return dto;
 	}
@@ -94,21 +94,22 @@ public class MyInfoAjax {
 			if (!StringUtil.isEmpty(email) && !"null".equalsIgnoreCase(email))
 				dto.setEmail(email);
 		}
-		if (!jsonObject.getJSONObject("homeno").isNullObject()) {
-			String homeno = jsonObject.getJSONObject("homeno").getString("nbr");
-			if (!StringUtil.isEmpty(homeno) && !"null".equalsIgnoreCase(homeno))
-				dto.setRelationShipsIdNum(homeno);
+		if (!jsonObject.getJSONObject("name").isNullObject()) {
+			String name = jsonObject.getJSONObject("name").getString("value");
+			if (!StringUtil.isEmpty(name) && !"null".equalsIgnoreCase(name))
+				dto.setUserName(name);
 		}
 		return dto;
 	}
 
 	private static String getMyInfoResponse(String idNum) throws Exception {
-    	String keyStore                     = Config.get("myinfo.jws.clientkey");
+    	String keyStore                     = Config.get("myinfo.jws.priclientkey");
 		String	appId 						= Config.get("myinfo.application.id");
 		String 	clientId 					= Config.get("myinfo.client.id");
 		String singPassEServiceId 			= Config.get("myinfo.singpass.eservice.id");
 		String	realm 						= Config.get("myinfo.realm");
-		String txnNo					    = "Moh" + Formatter.formatDateTime(new Date(), Formatter.DATE_REF_NUMBER);
+		//String txnNo					    = "Moh" + Formatter.formatDateTime(new Date(), Formatter.DATE_REF_NUMBER);
+		String txnNo                        =Config.get("myinfo.txnNo");
 		List<String> list = getAttrList();
 		String baseStr = null;
         String authorization = null;
@@ -139,7 +140,7 @@ public class MyInfoAjax {
 	}
 
 	private static List<String> getAttrList() {
-		String[] ss = {"name","email", "homeno", "mobileno","regadd"};
+		String[] ss = {"name","email", "mobileno","regadd"};
 		List<String> list = Arrays.asList(ss);
 		return list;
 	}

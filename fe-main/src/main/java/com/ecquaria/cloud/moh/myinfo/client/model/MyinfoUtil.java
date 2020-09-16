@@ -79,7 +79,7 @@ public class MyinfoUtil {
 						AlgorithmConstraints.ConstraintType.WHITELIST,
 						jwe.getEncryptionMethodHeaderParameter())
 		);
-		String  keyStore = Config.get("myinfo.jwe.clientkey");
+		String  keyStore = Config.get("myinfo.jwe.priclientkey");
 		jwe.setKey(getPrivateKey(keyStore));
 
 		encipheredData = jwe.getPlaintextString();
