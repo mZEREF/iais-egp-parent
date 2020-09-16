@@ -35,7 +35,7 @@ public class LicenceInboxFallback implements LicenceInboxClient {
     }
 
     @Override
-    public FeignResponseEntity<List<LicPremisesDto>> getlicPremisesCorrelationsByPremises(String licCorreId) {
+    public FeignResponseEntity<LicPremisesDto> getlicPremisesCorrelationsByPremises(String licCorreId) {
         FeignResponseEntity entity = new FeignResponseEntity<>();
         HttpHeaders headers = new HttpHeaders();
         entity.setHeaders(headers);
