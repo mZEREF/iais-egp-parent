@@ -1,6 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.organization.EgpUserRoleDto;
@@ -50,6 +51,7 @@ public class IntranetUserServiceImpl implements IntranetUserService {
     }
 
     @Override
+    @SearchTrack(catalog = "systemAdmin", key = "IntranetUserQuery")
     public SearchResult<OrgUserQueryDto> doQuery(SearchParam param) {
         return intranetUserClient.doQuery(param).getEntity();
     }
