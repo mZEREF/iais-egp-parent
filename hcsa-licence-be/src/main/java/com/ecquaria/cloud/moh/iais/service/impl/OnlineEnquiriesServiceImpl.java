@@ -137,6 +137,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     AcraUenBeClient acraUenBeClient;
 
     @Override
+    @SearchTrack(catalog = "ReqForInfoQuery", key = "licenseeQuery")
     public SearchResult<LicenseeQueryDto> searchLicenseeIdsParam(SearchParam searchParam) {
         return organizationClient.searchLicenseeIdsParam(searchParam).getEntity();
     }
@@ -148,6 +149,7 @@ public class OnlineEnquiriesServiceImpl implements OnlineEnquiriesService {
     }
 
     @Override
+    @SearchTrack(catalog = "onlineEnquiry", key = "searchByProfessionalInfo")
     public SearchResult<ProfessionalInformationQueryDto> searchProfessionalInformation(SearchParam searchParam) {
         return hcsaLicenceClient.searchProfessionalInformation(searchParam).getEntity();
     }

@@ -66,8 +66,8 @@ public final class LoginHelper {
         AuditTrailDto auditTrailDto = new AuditTrailDto();
         auditTrailDto.setMohUserId(identityNo);
         auditTrailDto.setNricNumber(identityNo);
-        auditTrailDto.setModule("main-web");
-        auditTrailDto.setFunctionName("Fe login failre");
+        auditTrailDto.setModule("login");
+        auditTrailDto.setFunctionName("login failure");
         auditTrailDto.setUenId(uen);
         auditTrailDto.setLoginType(StringUtil.isEmpty(uen) ? AuditTrailConsts.LOGIN_TYPE_SING_PASS : AuditTrailConsts.LOGIN_TYPE_CORP_PASS);
         auditTrailDto.setOperationType(AuditTrailConsts.OPERATION_TYPE_INTERNET);

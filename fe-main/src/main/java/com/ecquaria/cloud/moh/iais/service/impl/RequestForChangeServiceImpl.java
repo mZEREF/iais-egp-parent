@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.application.AppSubmissionDto;
@@ -60,6 +61,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
+    @SearchTrack(catalog = "interInboxQuery", key = "queryPremises")
     public SearchResult<SelfPremisesListQueryDto> searchPreInfo(SearchParam searchParam) {
         return licenceClient.searchResultPremises(searchParam).getEntity();
     }
@@ -70,6 +72,7 @@ public class RequestForChangeServiceImpl implements RequestForChangeService {
     }
 
     @Override
+    @SearchTrack(catalog = "interInboxQuery", key = "appPersonnelQuery")
     public SearchResult<PersonnlAssessQueryDto> searchAssessPsnInfo(SearchParam searchParam) {
         return licenceClient.assessPsnDoQuery(searchParam).getEntity();
     }

@@ -22,7 +22,7 @@ public class AuditTrailServiceImpl implements AuditTrailService {
     private AuditTrailClient trailClient;
 
 
-    @SearchTrack(catalog = "AuditTrail", key = "search")
+    @SearchTrack(catalog = "systemAdmin", key = "queryFullModeAuditTrail")
     @Override
     public SearchResult<AuditTrailQueryDto> listAuditTrailDto(SearchParam searchParam) {
         return trailClient.listAuditTrailDto(searchParam).getEntity();

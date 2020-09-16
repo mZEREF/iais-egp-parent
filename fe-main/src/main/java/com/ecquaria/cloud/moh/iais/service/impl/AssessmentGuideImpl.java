@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
@@ -65,6 +66,7 @@ public class AssessmentGuideImpl implements AssessmentGuideService {
     }
 
     @Override
+    @SearchTrack(catalog = "interInboxQuery", key = "getLicenceBySerName")
     public SearchResult<MenuLicenceDto> getMenuLicence(SearchParam searchParam) {
         return licenceClient.getMenuLicence(searchParam).getEntity();
     }

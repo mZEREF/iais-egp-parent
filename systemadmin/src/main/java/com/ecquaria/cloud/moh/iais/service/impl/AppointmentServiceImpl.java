@@ -57,7 +57,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 	private AppointmentClient appointmentClient;
 
 	@Override
-	@SearchTrack(catalog = "Appointment BlackOut Date", key = "search")
+	@SearchTrack(catalog = "systemAdmin", key = "getBlackedOutDateList")
 	public SearchResult<ApptBlackoutDateQueryDto> doQuery(SearchParam searchParam) {
 		return onlineApptClient.doQuery(searchParam).getEntity();
 	}

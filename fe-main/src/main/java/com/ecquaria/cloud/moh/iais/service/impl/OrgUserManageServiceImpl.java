@@ -2,6 +2,7 @@ package com.ecquaria.cloud.moh.iais.service.impl;
 
 import com.ecquaria.cloud.client.rbac.ClientUser;
 import com.ecquaria.cloud.client.rbac.UserClient;
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.role.RoleConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.EicRequestTrackingDto;
@@ -81,6 +82,7 @@ public class OrgUserManageServiceImpl implements OrgUserManageService {
     private EicRequestTrackingHelper eicRequestTrackingHelper;
 
     @Override
+    @SearchTrack(catalog = "interInboxQuery", key = "feUserList")
     public SearchResult<FeUserQueryDto> getFeUserList(SearchParam searchParam){
         return feUserClient.getFeUserList(searchParam).getEntity();
     }

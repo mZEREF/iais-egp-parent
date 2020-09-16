@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MasterCodeConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.mastercode.MasterCodeCategoryDto;
@@ -24,8 +26,8 @@ public class MasterCodeServiceImpl implements MasterCodeService {
 
     @Autowired
     private SaMasterCodeClient saMasterCodeClient;
-
     @Override
+    @SearchTrack(catalog = MasterCodeConstants.MSG_TEMPLATE_FILE, key = MasterCodeConstants.MSG_TEMPLATE_SQL)
     public SearchResult<MasterCodeQueryDto> doQuery(SearchParam param) {
         return saMasterCodeClient.doQuery(param).getEntity();
     }

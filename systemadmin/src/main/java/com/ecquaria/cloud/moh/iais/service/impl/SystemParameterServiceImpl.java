@@ -67,7 +67,7 @@ public class SystemParameterServiceImpl implements SystemParameterService {
     private String currentDomain;
 
     @Override
-    @SearchTrack(catalog = "systemAdmin",key = "queryMessage")
+    @SearchTrack(catalog = "systemAdmin",key = "querySystemParam")
     public SearchResult<SystemParameterQueryDto> doQuery(SearchParam param) {
         return systemClient.doQuery(param).getEntity();
     }

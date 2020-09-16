@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.emailsms.EmailAttachMentDto;
@@ -47,16 +48,20 @@ public class BlastManagementListServiceImpl implements BlastManagementListServic
     @Autowired
     private HcsaLicenceCommonClient hcsaLicenceClient;
     @Override
+
+    @SearchTrack(catalog = "systemAdmin", key = "queryBlastManagementList")
     public SearchResult<BlastManagementListDto> blastList(SearchParam searchParam) {
         return blastManagementListClient.getBlastManagementList(searchParam).getEntity();
     }
 
     @Override
+    @SearchTrack(catalog = "systemAdmin", key = "audit")
     public SearchResult<EmailAuditTrailDto> auditList(SearchParam searchParam){
         return emailHistoryClient.getAuditList(searchParam).getEntity();
     }
 
     @Override
+    @SearchTrack(catalog = "systemAdmin", key = "failEmail")
     public SearchResult<ResendListDto> resendList(SearchParam searchParam){
         return emailHistoryClient.getResendList(searchParam).getEntity();
     }

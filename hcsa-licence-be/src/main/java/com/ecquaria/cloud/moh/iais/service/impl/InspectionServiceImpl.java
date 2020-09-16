@@ -244,6 +244,7 @@ public class InspectionServiceImpl implements InspectionService {
     }
 
     @Override
+    @SearchTrack(catalog = "inspectionQuery", key = "supervisorPoolDropdown")
     public SearchResult<SuperPoolTaskQueryDto> getSupPoolSecondByParam(SearchParam searchParam) {
         return organizationClient.supervisorSecondSearch(searchParam).getEntity();
     }

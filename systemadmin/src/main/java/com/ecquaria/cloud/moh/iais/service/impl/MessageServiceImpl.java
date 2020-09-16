@@ -60,7 +60,7 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private EicRequestTrackingHelper trackingHelper;
 
-    @SearchTrack(catalog = "message", key = "search")
+    @SearchTrack(catalog = "systemAdmin", key = "queryMessage")
     @Override
     public SearchResult<MessageQueryDto> doQuery(SearchParam searchParam) {
         return systemClient.queryMessage(searchParam).getEntity();

@@ -1,5 +1,7 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
+import com.ecquaria.cloud.moh.iais.common.constant.systemadmin.MsgTemplateConstants;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.templates.MsgTemplateDto;
@@ -23,6 +25,7 @@ public class TemplatesServiceImpl implements TemplatesService {
     private MsgTemplateClient msgTemplateClient;
 
     @Override
+    @SearchTrack(catalog = MsgTemplateConstants.MSG_TEMPLATE_FILE, key = MsgTemplateConstants.MSG_TEMPLATE_SQL)
     public SearchResult<MsgTemplateQueryDto> getTemplateResults(SearchParam param) {
         return msgTemplateClient.getMsgTemplateResult(param).getEntity();
     }

@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.EventBusConsts;
@@ -247,11 +248,13 @@ public class RequestForInformationServiceImpl implements RequestForInformationSe
 
 
     @Override
+    @SearchTrack(catalog = "ReqForInfoQuery", key = "applicationQuery")
     public SearchResult<RfiApplicationQueryDto> appDoQuery(SearchParam searchParam) {
         return applicationClient.searchApp(searchParam).getEntity();
     }
 
     @Override
+    @SearchTrack(catalog = "ReqForInfoQuery", key = "licenceQuery")
     public SearchResult<RfiLicenceQueryDto> licenceDoQuery(SearchParam searchParam) {
 
         return requestForInformationClient.searchRfiLicence(searchParam).getEntity();

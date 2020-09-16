@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchParam;
 import com.ecquaria.cloud.moh.iais.common.dto.SearchResult;
 import com.ecquaria.cloud.moh.iais.common.dto.hcsa.serviceconfig.HcsaServiceDto;
@@ -37,6 +38,7 @@ public class DistributionListServiceImpl implements DistributionListService {
     @Autowired
     private OrganizationClient organizationClient;
     @Override
+    @SearchTrack(catalog = "systemAdmin", key = "queryMassDistributionList")
     public SearchResult<DistributionListDto> distributionList(SearchParam searchParam) {
         SearchResult<DistributionListDto> distributionListDtoSearchResult = distributionListClient.getDistributionList(searchParam).getEntity();
         List<String> userIdList = IaisCommonUtils.genNewArrayList();

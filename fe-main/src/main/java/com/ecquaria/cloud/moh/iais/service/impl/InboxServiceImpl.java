@@ -1,5 +1,6 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
+import com.ecquaria.cloud.moh.iais.annotation.SearchTrack;
 import com.ecquaria.cloud.moh.iais.common.constant.AppConsts;
 import com.ecquaria.cloud.moh.iais.common.constant.ApplicationConsts;
 import com.ecquaria.cloud.moh.iais.common.dto.AuditTrailDto;
@@ -106,6 +107,7 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
+    @SearchTrack(catalog = "interInboxQuery", key = "assessmentWithdrawAppQuery")
     public SearchResult<InboxAppQueryDto> appDoQuery(SearchParam searchParam) {
         SearchResult<InboxAppQueryDto> inboxAppQueryDtoSearchResult = appInboxClient.searchResultFromApp(searchParam).getEntity();
         List<InboxAppQueryDto> inboxAppQueryDtoList = inboxAppQueryDtoSearchResult.getRows();
@@ -130,6 +132,7 @@ public class InboxServiceImpl implements InboxService {
     }
 
     @Override
+    @SearchTrack(catalog = "interInboxQuery", key = "inboxQuery")
     public SearchResult<InboxQueryDto> inboxDoQuery(SearchParam searchParam) {
         SearchResult<InboxQueryDto> inboxQueryDtoSearchResult = inboxClient.searchInbox(searchParam).getEntity();
         List<InboxQueryDto> inboxAppQueryDtoListRows = inboxQueryDtoSearchResult.getRows();

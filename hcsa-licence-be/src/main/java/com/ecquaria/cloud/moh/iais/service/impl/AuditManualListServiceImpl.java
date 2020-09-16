@@ -1,6 +1,5 @@
 package com.ecquaria.cloud.moh.iais.service.impl;
 
-import com.ecquaria.cloud.moh.iais.service.AuditManualListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-public class AuditManualListServiceImpl implements AuditManualListService {
+public class AuditManualListServiceImpl {
 
 
 }

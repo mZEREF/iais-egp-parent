@@ -179,6 +179,7 @@ public class SystemSearchAssignPoolServiceImpl implements SystemSearchAssignPool
     }
 
     @Override
+    @SearchTrack(catalog = "inspectionQuery", key = "systemPoolDropdown")
     public SearchResult<SuperPoolTaskQueryDto> getSystemPoolSecondByParam(SearchParam searchParam) {
         return organizationClient.supervisorSecondSearch(searchParam).getEntity();
     }
